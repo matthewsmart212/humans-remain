@@ -51,6 +51,7 @@ import type {Atlas} from './packaging-renderer';
 import {clearTerrainViewport,drawHomeTerrain} from './terrain-renderer';
 import {drawFoliage,foliageVisible,type FoliageViewport} from './foliage-renderer';
 import {drawSceneTerrain} from './scene-terrain';
+import {circularWallDepth,circularWallGroup,orderCircularWallDraws,type CircularWallDraw} from './circular-wall-depth';
 
 /** A separate terrain pass keeps ground below every asset and the player, even on negative layers. */
 export function drawPlacedGround(ctx:CanvasRenderingContext2D,imgs:Record<string,HTMLImageElement>,layout?:WorldLayout,hideFoliage=false,viewport?:FoliageViewport){
@@ -62,6 +63,7 @@ export function drawPlacedGround(ctx:CanvasRenderingContext2D,imgs:Record<string
 }
 export function placedDrawables(ctx:CanvasRenderingContext2D,imgs:Record<string,HTMLImageElement>,w:World,editor=false,viewport?:FoliageViewport,hideFoliage=false){
  const out:{roof?:boolean;layer?:number;y:number;draw:()=>void}[]=[];if(!w.layout)return out;
+ const circular:CircularWallDraw[]=[];
  for(const p of visiblePlacements(w.layout,viewport)){const a=ASSET_BY_ID.get(p.assetId);if(!a)continue;if(!editor&&['animal','enemySpawn'].includes(p.role))continue;if(!editor&&['scrap','fuel','pallets'].includes(p.role)&&!w.loot.some(l=>l.placementId===p.id))continue;if(!editor&&p.role==='crate'&&!w.breakables.some(b=>b.placementId===p.id&&b.hp>0))continue;
   if(hideFoliage&&isFoliageAsset(a)||a.foliage&&!foliageVisible(p,viewport))continue;
   if(a.gate){const bounds=placementBounds(p);if(viewport&&!p.rotation&&!p.flipX&&!p.flipY&&(bounds.x+bounds.width<viewport.x||bounds.x>viewport.x+viewport.width||bounds.y+bounds.height<viewport.y||bounds.y>viewport.y+viewport.height))continue;for(const v of gateDrawables(ctx,imgs,w,p,a)){const draw=v.draw;out.push({...v,layer:p.layer??0,draw:()=>{ctx.save();rotatePlacement(ctx,p);draw();ctx.restore()}})}continue;}
@@ -72,6 +74,13 @@ export function placedDrawables(ctx:CanvasRenderingContext2D,imgs:Record<string,
   const animationReady=frames?.every(url=>!!imgs[assetImageKey(url)]);
   const frame=animationReady?(a.openFrames?.length?chestFrame(w,p.id,frames!.length):placedAnimationFrame(w,p,a)):0;
   const b=placementBounds(p),im=imgs[assetImageKey(restoration?.image||frames?.[frame]||a.image)]||imgs[assetImageKey(a.image)];if(!im)continue;
+  if(a.perimeterCurve?.length&&!p.rotation&&!p.flipX&&!p.flipY){
+   if(viewport&&(b.x+b.width<viewport.x||b.x>viewport.x+viewport.width||b.y+b.height<viewport.y||b.y>viewport.y+viewport.height))continue;
+   const depth=circularWallDepth(a.perimeterCurve,{x:(w.player.x-p.x)/p.scale,y:(w.player.y-p.y)/p.scale},a.perimeterRise??180);
+   const drawable={layer:p.layer??0,y:p.y+(depth.near?depth.depth*p.scale:0),draw:()=>{ctx.save();if((p.allowTransparency??a.allowTransparency)!==false&&depth.obscuresPlayer)ctx.globalAlpha=.48;ctx.drawImage(im,...a.crop as [number,number,number,number],b.x,b.y,b.width,b.height);ctx.restore()}};
+   out.push(drawable);circular.push({drawable,order:a.perimeterDrawOrder??0,priority:depth.near?1000:1,group:circularWallGroup(a.perimeterCurve,p)});
+   continue;
+  }
   if(a.perimeter==='wall'&&a.segments?.[0]&&!p.rotation&&!p.flipX&&!p.flipY){
    if(viewport&&(b.x+b.width<viewport.x||b.x>viewport.x+viewport.width||b.y+b.height<viewport.y||b.y>viewport.y+viewport.height))continue;
    // A painted bay is one volume. Slicing adjacent bays in screen columns made
@@ -94,6 +103,7 @@ export function placedDrawables(ctx:CanvasRenderingContext2D,imgs:Record<string,
   for(let i=first;i<out.length;i++)out[i].layer=p.layer??0;
   if(p.rotation||p.flipX||p.flipY)for(let i=first;i<out.length;i++){const draw=out[i].draw;out[i].draw=()=>{ctx.save();rotatePlacement(ctx,p);draw();ctx.restore()}}
  }
+ orderCircularWallDraws(circular);
  return out;
 }
 function rotatePlacement(ctx:CanvasRenderingContext2D,p:Placement){ctx.translate(p.x,p.y);ctx.rotate((p.rotation||0)*Math.PI/180);ctx.translate(-p.x,-p.y);if(p.flipX||p.flipY){const b=placementBounds(p),cx=b.x+b.width/2,cy=b.y+b.height/2;ctx.translate(cx,cy);ctx.scale(p.flipX?-1:1,p.flipY?-1:1);ctx.translate(-cx,-cy)}}

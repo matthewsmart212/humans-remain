@@ -1,5 +1,6 @@
 import {ironworksEntries} from './ironworks-catalogue';
 import {gardenEntries} from './camp-garden-catalogue';
+import {circularWallEntries} from './camp-circular-wall-catalogue';
 import {forageEntries} from './forage-catalogue';
 import raw from './base-catalogue.json';
 import {currentArtworkSources} from './artwork-source-policy';
@@ -8,7 +9,7 @@ import {sceneryEntries} from './scenery-catalogue';
 export type Mark='concept'|'art'|'exportComplete'|'implemented'|'tested';
 export type CatalogueEntry={id:string;lastUpdatedAt:string;name:string;family:string;category:string;recordType:string;phase:string;priority:string;tier:number|null;group:string;art:boolean|null;conceptApproved:boolean;exportComplete:boolean;implemented:boolean;tested:boolean;presentInPrototype:boolean;purpose:string;improvement:string;appearance?:string;states:string;image?:string;crop?:number[];sourceReferences?:string[];artPreview?:{openFrames?:string[];frames?:string[];animationMode?:import('./asset-animation').AnimationMode;unlit?:string;roof?:string;roofRect?:number[];worldWidth?:number;fps?:number};artworkExports?:string[];artReadiness?:string;evidence?:string;parent?:string;canonicalArt?:string;artLinks:string[];implementationDependencies:string[];blockers:string[];playerUnlock:string;resourceCost:string;inputs:string;outputs:string;capacity:string;buildMenuVisibility:string;physical?:Record<string,string>|null;assetSpec?:{dimensions:string;scale:string;groundAnchor:string;states:{name:string;method:string}[]};previous?:{group:string;batch:string;tier:number|null;name:string}|null;testScope:string|null;linkedBuildings?:string[];availability:string;fixtureRole?:string};
 export type SavedRow={id:string;art:number|null;concept:number|null;export_complete:number|null;implemented:number|null;tested:number|null;updated_at:string};
-export const entries=[...raw as unknown as CatalogueEntry[],...treeEntries,...sceneryEntries,...forageEntries,...ironworksEntries,...gardenEntries].map(entry=>({...entry,sourceReferences:currentArtworkSources(entry.sourceReferences),artworkExports:currentArtworkSources(entry.artworkExports)}));
+export const entries=[...raw as unknown as CatalogueEntry[],...treeEntries,...sceneryEntries,...forageEntries,...ironworksEntries,...gardenEntries,...circularWallEntries].map(entry=>({...entry,sourceReferences:currentArtworkSources(entry.sourceReferences),artworkExports:currentArtworkSources(entry.artworkExports)}));
 export const phases={B0:'Planning and foundations',B1:'First-night playable kit',B2:'Complete the core camp',B3:'Core progression',B4:'Advanced services',B5:'Validated expansion'} as const;
 export const views={build:'Build catalogue',art:'Asset production',system:'Systems and testing'} as const;
 export const buildEntries=entries.filter(e=>e.recordType==='buildable structure'||e.recordType==='upgrade'||e.recordType==='integrated capability'||e.recordType==='attachment'||e.recordType==='movable equipment'||e.recordType==='personal equipment'||e.recordType==='cosmetic'&&e.family==='Achievements'||!!e.canonicalArt);

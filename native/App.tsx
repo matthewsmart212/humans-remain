@@ -1,4 +1,4 @@
-import {RUN_SAVE_KEY,RunSaveWriter,encodeRun,decodeRun} from '../src/run-save';
+import {RUN_SAVE_KEY,RunSaveWriter,encodeRun,decodeRun,prepareSavedCampArtwork} from '../src/run-save';
 import NativeSpawnPanel from './SpawnPanel';
 import {spawnPlayCreature,spawnImages,clearPlaySpawns,type SpawnKind} from '../src/play-spawns';
 import {BOMBER_IMAGE_SOURCES} from '../src/bomber-sprites';
@@ -77,8 +77,10 @@ function Game(){
  const restoreSurvival=async(r:Runtime)=>{
   await saveWriter.flush();saveBlocked.current=false;setSaveNotice('');let snapshot:ReturnType<typeof decodeRun>|undefined;
   try{const text=await AsyncStorage.getItem(RUN_SAVE_KEY);if(text)snapshot=decodeRun(text)}catch(e){saveBlocked.current=true;setSaveNotice(`${(e as Error).message} Your save has been kept. Start a new Survival run to replace it.`)}
+  // Do not autosave the temporary camp world while reopening a saved interior.
+  if(snapshot)saveBlocked.current=true;
   bindTravel(r,snapshot?.worlds.find(([id])=>id==='camp')?.[1]??createCampPlaySession(r.saved.layout,undefined,'survival'));
-  if(snapshot)try{await r.travel.restore(snapshot)}catch(e){saveBlocked.current=true;setSaveNotice(`Could not reopen your saved location: ${(e as Error).message}. Your save has been kept.`)}
+  if(snapshot)try{await prepareSavedCampArtwork(snapshot,r.renderer.warmImages);await r.travel.restore(snapshot);saveBlocked.current=false}catch(e){saveBlocked.current=true;setSaveNotice(`Could not reopen your saved location: ${(e as Error).message}. Your save has been kept.`)}
  };
  const restart=()=>{const r=runtime.current;if(!r)return;gamePerformance.stop(performance.now(),'New Survival run');try{clear();continuousZoom.current=1;mapVisible.current=false;setAtlasAmount(1);playView.current.zoom=1;bindTravel(r,createCampPlaySession(r.saved.layout,undefined,'survival'));saveBlocked.current=false;setSaveNotice('');change('playing');saveRun()}catch(e){setError(String(e));change('error')}};
  const newRun=()=>Alert.alert('Start a new Survival run?','This replaces your saved Survival run on this device.',[{text:'Keep current run',style:'cancel'},{text:'Start new run',style:'destructive',onPress:restart}]);

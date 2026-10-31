@@ -43,6 +43,7 @@ export function mapBuildingArt(p:Placement,kind:MapArtKind):MapIllustration{
 }
 
 function wallSpine(p:Placement,a:WorldAsset){
+ if(a.perimeterCurve?.length)return a.perimeterCurve.map(([x,y])=>{const point=placementPoint(p,p.x+x*p.scale,p.y+y*p.scale);return{x:point[0],y:point[1]}});
  const b=placementBounds(p);
  const spine=WALL_LINES[a.name];
  // New unregistered walls get a narrow fence along their visual base, never

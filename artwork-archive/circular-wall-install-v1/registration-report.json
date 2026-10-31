@@ -1,0 +1,1091 @@
+{
+  "version": 1,
+  "generatedAt": "2026-10-31T23:16:45.231Z",
+  "pixelsPerWorldUnit": 1.4,
+  "registrations": [
+    {
+      "id": "wall-02",
+      "source": "artwork-archive/circular-wall-install-v1/generated/wall-02.png",
+      "sourceSha256": "f372428ae12c9e0089fa0bcb3cd8bb1adbe91dccd5c1aa5c2fc8e22d4ef2bef1",
+      "sourceSize": [
+        1254,
+        1254
+      ],
+      "sourceAlpha": {
+        "min": 0,
+        "max": 255,
+        "transparentPixels": 1409602,
+        "opaquePixels": 186,
+        "antialiasedPixels": 162728,
+        "transparentFraction": 0.8963991463361899,
+        "bbox": {
+          "left": 276,
+          "top": 278,
+          "width": 558,
+          "height": 585
+        }
+      },
+      "sourceComponentAnalysis": {
+        "connectivity": 8,
+        "alphaThreshold": 16,
+        "componentCount": 1,
+        "totalForegroundPixels": 154327,
+        "originalFullAlphaBBox": {
+          "left": 276,
+          "top": 278,
+          "width": 558,
+          "height": 585
+        },
+        "largestComponent": {
+          "pixelCount": 154327,
+          "bbox": {
+            "left": 276,
+            "top": 278,
+            "width": 558,
+            "height": 585
+          }
+        },
+        "largestComponentFraction": 1,
+        "dominanceRequired": 0.99,
+        "selectedBBox": {
+          "left": 276,
+          "top": 278,
+          "width": 558,
+          "height": 585
+        },
+        "selection": "largest-component-bounding-rectangle",
+        "excludedForegroundPixels": 0,
+        "detachedComponentPixels": 0,
+        "requiresHumanReview": false,
+        "largestOtherComponents": [],
+        "note": "Only the mechanical extraction rectangle changes. All original pixels inside it, including detached details, are retained; source files remain untouched."
+      },
+      "sourceBBox": {
+        "left": 276,
+        "top": 278,
+        "width": 558,
+        "height": 585
+      },
+      "guideAlphaBBox": {
+        "left": 343,
+        "top": 339,
+        "width": 612,
+        "height": 647
+      },
+      "fitXYRatios": [
+        1.096774193548387,
+        1.105982905982906
+      ],
+      "aspectDeltaPercent": -0.8326270130129321,
+      "requiresVisualAspectReview": false,
+      "trimCrop": {
+        "left": 323,
+        "top": 320,
+        "width": 652,
+        "height": 686
+      },
+      "size": [
+        652,
+        686
+      ],
+      "anchorPixels": [
+        333.519382236344,
+        455.5594618511054
+      ],
+      "losslessWebPVerified": true,
+      "pngSha256": "4022edc652a7a0e69f55520d77e36db4fdb34703ec4a551ee39099c29c8e454a",
+      "webpSha256": "da44e86f2c7fc0a85efaba89f3978dacc7f08298b2fd8ab3b8e19ace5a0e3ce6"
+    },
+    {
+      "id": "wall-03",
+      "source": "artwork-archive/circular-wall-install-v1/generated/wall-03.png",
+      "sourceSha256": "1935b02e5a0f575b4dbfba450ba67eea7c467910400ca4fb8fb40779044a032d",
+      "sourceSize": [
+        1254,
+        1254
+      ],
+      "sourceAlpha": {
+        "min": 0,
+        "max": 255,
+        "transparentPixels": 1428046,
+        "opaquePixels": 291,
+        "antialiasedPixels": 144179,
+        "transparentFraction": 0.9081281207949553,
+        "bbox": {
+          "left": 425,
+          "top": 229,
+          "width": 457,
+          "height": 834
+        }
+      },
+      "sourceComponentAnalysis": {
+        "connectivity": 8,
+        "alphaThreshold": 16,
+        "componentCount": 1,
+        "totalForegroundPixels": 136216,
+        "originalFullAlphaBBox": {
+          "left": 425,
+          "top": 229,
+          "width": 457,
+          "height": 834
+        },
+        "largestComponent": {
+          "pixelCount": 136216,
+          "bbox": {
+            "left": 425,
+            "top": 229,
+            "width": 457,
+            "height": 834
+          }
+        },
+        "largestComponentFraction": 1,
+        "dominanceRequired": 0.99,
+        "selectedBBox": {
+          "left": 425,
+          "top": 229,
+          "width": 457,
+          "height": 834
+        },
+        "selection": "largest-component-bounding-rectangle",
+        "excludedForegroundPixels": 0,
+        "detachedComponentPixels": 0,
+        "requiresHumanReview": false,
+        "largestOtherComponents": [],
+        "note": "Only the mechanical extraction rectangle changes. All original pixels inside it, including detached details, are retained; source files remain untouched."
+      },
+      "sourceBBox": {
+        "left": 425,
+        "top": 229,
+        "width": 457,
+        "height": 834
+      },
+      "guideAlphaBBox": {
+        "left": 523,
+        "top": 283,
+        "width": 551,
+        "height": 1021
+      },
+      "fitXYRatios": [
+        1.2056892778993435,
+        1.224220623501199
+      ],
+      "aspectDeltaPercent": -1.5137259776638046,
+      "requiresVisualAspectReview": false,
+      "trimCrop": {
+        "left": 503,
+        "top": 263,
+        "width": 591,
+        "height": 1061
+      },
+      "size": [
+        591,
+        1061
+      ],
+      "anchorPixels": [
+        323.32210445452915,
+        644.5034612967241
+      ],
+      "losslessWebPVerified": true,
+      "pngSha256": "757da77851a6db02e50e7fd1099341bc6de10cb379784f9f3563bf3affa3175e",
+      "webpSha256": "bf3716da73b8d02971d1b77f76c1749cd006bdcda995dfc5511027f1334a6cd6"
+    },
+    {
+      "id": "wall-06",
+      "source": "artwork-archive/circular-wall-install-v1/generated/wall-06.png",
+      "sourceSha256": "bff16fa93955204584e492e8ca44ee1202092fe9368001e2882cd6e42aa7445d",
+      "sourceSize": [
+        1254,
+        1254
+      ],
+      "sourceAlpha": {
+        "min": 0,
+        "max": 255,
+        "transparentPixels": 1459399,
+        "opaquePixels": 325,
+        "antialiasedPixels": 112792,
+        "transparentFraction": 0.9280662327124175,
+        "bbox": {
+          "left": 501,
+          "top": 183,
+          "width": 374,
+          "height": 745
+        }
+      },
+      "sourceComponentAnalysis": {
+        "connectivity": 8,
+        "alphaThreshold": 16,
+        "componentCount": 1,
+        "totalForegroundPixels": 107800,
+        "originalFullAlphaBBox": {
+          "left": 501,
+          "top": 183,
+          "width": 374,
+          "height": 745
+        },
+        "largestComponent": {
+          "pixelCount": 107800,
+          "bbox": {
+            "left": 501,
+            "top": 183,
+            "width": 374,
+            "height": 745
+          }
+        },
+        "largestComponentFraction": 1,
+        "dominanceRequired": 0.99,
+        "selectedBBox": {
+          "left": 501,
+          "top": 183,
+          "width": 374,
+          "height": 745
+        },
+        "selection": "largest-component-bounding-rectangle",
+        "excludedForegroundPixels": 0,
+        "detachedComponentPixels": 0,
+        "requiresHumanReview": false,
+        "largestOtherComponents": [],
+        "note": "Only the mechanical extraction rectangle changes. All original pixels inside it, including detached details, are retained; source files remain untouched."
+      },
+      "sourceBBox": {
+        "left": 501,
+        "top": 183,
+        "width": 374,
+        "height": 745
+      },
+      "guideAlphaBBox": {
+        "left": 615,
+        "top": 225,
+        "width": 455,
+        "height": 918
+      },
+      "fitXYRatios": [
+        1.2165775401069518,
+        1.2322147651006712
+      ],
+      "aspectDeltaPercent": -1.2690340545011836,
+      "requiresVisualAspectReview": false,
+      "trimCrop": {
+        "left": 595,
+        "top": 205,
+        "width": 495,
+        "height": 958
+      },
+      "size": [
+        495,
+        958
+      ],
+      "anchorPixels": [
+        268.69897114874186,
+        609.7514979903679
+      ],
+      "losslessWebPVerified": true,
+      "pngSha256": "e7b92a87dfaacf54ea8c1718e187f9ed267442a2fddc9b67be45e60459844a02",
+      "webpSha256": "279fe660ae88f8b2810c1ee047e6a613f30184ced904a9fac88ec1407dc73f12"
+    },
+    {
+      "id": "wall-07",
+      "source": "artwork-archive/circular-wall-install-v1/generated/wall-07.png",
+      "sourceSha256": "7ae0e7f33fd630cf857978eb3a60b0a9529c2c8fef0be73fe3b344bddcbc2e7d",
+      "sourceSize": [
+        1254,
+        1254
+      ],
+      "sourceAlpha": {
+        "min": 0,
+        "max": 255,
+        "transparentPixels": 1406567,
+        "opaquePixels": 155,
+        "antialiasedPixels": 165794,
+        "transparentFraction": 0.8944691182792417,
+        "bbox": {
+          "left": 285,
+          "top": 378,
+          "width": 575,
+          "height": 598
+        }
+      },
+      "sourceComponentAnalysis": {
+        "connectivity": 8,
+        "alphaThreshold": 16,
+        "componentCount": 1,
+        "totalForegroundPixels": 156009,
+        "originalFullAlphaBBox": {
+          "left": 285,
+          "top": 378,
+          "width": 575,
+          "height": 598
+        },
+        "largestComponent": {
+          "pixelCount": 156009,
+          "bbox": {
+            "left": 285,
+            "top": 378,
+            "width": 575,
+            "height": 598
+          }
+        },
+        "largestComponentFraction": 1,
+        "dominanceRequired": 0.99,
+        "selectedBBox": {
+          "left": 285,
+          "top": 378,
+          "width": 575,
+          "height": 598
+        },
+        "selection": "largest-component-bounding-rectangle",
+        "excludedForegroundPixels": 0,
+        "detachedComponentPixels": 0,
+        "requiresHumanReview": false,
+        "largestOtherComponents": [],
+        "note": "Only the mechanical extraction rectangle changes. All original pixels inside it, including detached details, are retained; source files remain untouched."
+      },
+      "sourceBBox": {
+        "left": 285,
+        "top": 378,
+        "width": 575,
+        "height": 598
+      },
+      "guideAlphaBBox": {
+        "left": 350,
+        "top": 465,
+        "width": 703,
+        "height": 730
+      },
+      "fitXYRatios": [
+        1.222608695652174,
+        1.2207357859531773
+      ],
+      "aspectDeltaPercent": 0.15342465753425127,
+      "requiresVisualAspectReview": false,
+      "trimCrop": {
+        "left": 330,
+        "top": 445,
+        "width": 743,
+        "height": 770
+      },
+      "size": [
+        743,
+        770
+      ],
+      "anchorPixels": [
+        376.9124964668466,
+        527.0532822182914
+      ],
+      "losslessWebPVerified": true,
+      "pngSha256": "25451975346f0db5b3d6198758ac76258033e8a4eebdb2c47336b84fa6bce7a0",
+      "webpSha256": "38074ff2e47716aa2039f768d85c5dbf1e7ce894dbf28a716807de42fc1784e1"
+    },
+    {
+      "id": "wall-08",
+      "source": "artwork-archive/circular-wall-install-v1/generated/wall-08.png",
+      "sourceSha256": "ca81f1bdb2e2c5d1d46aeb41020af4a9bb2648b7135d5ee0fd200e3b977d50cb",
+      "sourceSize": [
+        1254,
+        1254
+      ],
+      "sourceAlpha": {
+        "min": 0,
+        "max": 255,
+        "transparentPixels": 1289687,
+        "opaquePixels": 246,
+        "antialiasedPixels": 282583,
+        "transparentFraction": 0.8201423705704743,
+        "bbox": {
+          "left": 213,
+          "top": 418,
+          "width": 912,
+          "height": 513
+        }
+      },
+      "sourceComponentAnalysis": {
+        "connectivity": 8,
+        "alphaThreshold": 16,
+        "componentCount": 1,
+        "totalForegroundPixels": 271388,
+        "originalFullAlphaBBox": {
+          "left": 213,
+          "top": 418,
+          "width": 912,
+          "height": 513
+        },
+        "largestComponent": {
+          "pixelCount": 271388,
+          "bbox": {
+            "left": 213,
+            "top": 418,
+            "width": 912,
+            "height": 513
+          }
+        },
+        "largestComponentFraction": 1,
+        "dominanceRequired": 0.99,
+        "selectedBBox": {
+          "left": 213,
+          "top": 418,
+          "width": 912,
+          "height": 513
+        },
+        "selection": "largest-component-bounding-rectangle",
+        "excludedForegroundPixels": 0,
+        "detachedComponentPixels": 0,
+        "requiresHumanReview": false,
+        "largestOtherComponents": [],
+        "note": "Only the mechanical extraction rectangle changes. All original pixels inside it, including detached details, are retained; source files remain untouched."
+      },
+      "sourceBBox": {
+        "left": 213,
+        "top": 418,
+        "width": 912,
+        "height": 513
+      },
+      "guideAlphaBBox": {
+        "left": 356,
+        "top": 495,
+        "width": 886,
+        "height": 544
+      },
+      "fitXYRatios": [
+        0.9714912280701754,
+        1.060428849902534
+      ],
+      "aspectDeltaPercent": -8.386948529411764,
+      "requiresVisualAspectReview": true,
+      "trimCrop": {
+        "left": 337,
+        "top": 475,
+        "width": 925,
+        "height": 584
+      },
+      "size": [
+        925,
+        584
+      ],
+      "anchorPixels": [
+        464.49481231986624,
+        454.2449427882725
+      ],
+      "losslessWebPVerified": true,
+      "pngSha256": "7845fcca9c37a80b5478f585758f63f065e4f940db03f40d0e2fd9c23856d7e4",
+      "webpSha256": "da333513ab0abb6d941e7c2722ae38b7444e0ba37d24ee6ebc9031d444a122ae"
+    },
+    {
+      "id": "wall-09",
+      "source": "artwork-archive/circular-wall-install-v1/generated/wall-09.png",
+      "sourceSha256": "8be3383f01a36e96d9c802773465041d619be1e0cdc8d3c6d9faf7f8ee4d547f",
+      "sourceSize": [
+        1254,
+        1254
+      ],
+      "sourceAlpha": {
+        "min": 0,
+        "max": 255,
+        "transparentPixels": 1404070,
+        "opaquePixels": 247,
+        "antialiasedPixels": 168199,
+        "transparentFraction": 0.892881217106853,
+        "bbox": {
+          "left": 236,
+          "top": 420,
+          "width": 607,
+          "height": 420
+        }
+      },
+      "sourceComponentAnalysis": {
+        "connectivity": 8,
+        "alphaThreshold": 16,
+        "componentCount": 2,
+        "totalForegroundPixels": 161070,
+        "originalFullAlphaBBox": {
+          "left": 236,
+          "top": 420,
+          "width": 607,
+          "height": 420
+        },
+        "largestComponent": {
+          "pixelCount": 161069,
+          "bbox": {
+            "left": 236,
+            "top": 420,
+            "width": 607,
+            "height": 420
+          }
+        },
+        "largestComponentFraction": 0.9999937915192153,
+        "dominanceRequired": 0.99,
+        "selectedBBox": {
+          "left": 236,
+          "top": 420,
+          "width": 607,
+          "height": 420
+        },
+        "selection": "largest-component-bounding-rectangle",
+        "excludedForegroundPixels": 0,
+        "detachedComponentPixels": 1,
+        "requiresHumanReview": false,
+        "largestOtherComponents": [
+          {
+            "pixelCount": 1,
+            "bbox": {
+              "left": 767,
+              "top": 570,
+              "width": 1,
+              "height": 1
+            }
+          }
+        ],
+        "note": "Only the mechanical extraction rectangle changes. All original pixels inside it, including detached details, are retained; source files remain untouched."
+      },
+      "sourceBBox": {
+        "left": 236,
+        "top": 420,
+        "width": 607,
+        "height": 420
+      },
+      "guideAlphaBBox": {
+        "left": 290,
+        "top": 517,
+        "width": 686,
+        "height": 486
+      },
+      "fitXYRatios": [
+        1.130148270181219,
+        1.1571428571428573
+      ],
+      "aspectDeltaPercent": -2.3328655398946574,
+      "requiresVisualAspectReview": false,
+      "trimCrop": {
+        "left": 270,
+        "top": 498,
+        "width": 726,
+        "height": 525
+      },
+      "size": [
+        726,
+        525
+      ],
+      "anchorPixels": [
+        352.8559633795627,
+        388.7917692474748
+      ],
+      "losslessWebPVerified": true,
+      "pngSha256": "976e7181022dd1005ec085e93d54c759e4f5c45243d33e2a906451624d5988ed",
+      "webpSha256": "e47d7ec2b5dec1098ee769699a872d82d5d51528c25a66f302ab645dfa3004ff"
+    },
+    {
+      "id": "wall-10",
+      "source": "artwork-archive/circular-wall-install-v1/generated/wall-10.png",
+      "sourceSha256": "b354a288744bd07ac5cf9a3c8b16aee18fa0c567a81f2297ffa399d843647bc9",
+      "sourceSize": [
+        1254,
+        1254
+      ],
+      "sourceAlpha": {
+        "min": 0,
+        "max": 255,
+        "transparentPixels": 1435380,
+        "opaquePixels": 430,
+        "antialiasedPixels": 136706,
+        "transparentFraction": 0.9127919843104935,
+        "bbox": {
+          "left": 494,
+          "top": 443,
+          "width": 481,
+          "height": 515
+        }
+      },
+      "sourceComponentAnalysis": {
+        "connectivity": 8,
+        "alphaThreshold": 16,
+        "componentCount": 1,
+        "totalForegroundPixels": 129533,
+        "originalFullAlphaBBox": {
+          "left": 494,
+          "top": 443,
+          "width": 481,
+          "height": 515
+        },
+        "largestComponent": {
+          "pixelCount": 129533,
+          "bbox": {
+            "left": 494,
+            "top": 443,
+            "width": 481,
+            "height": 515
+          }
+        },
+        "largestComponentFraction": 1,
+        "dominanceRequired": 0.99,
+        "selectedBBox": {
+          "left": 494,
+          "top": 443,
+          "width": 481,
+          "height": 515
+        },
+        "selection": "largest-component-bounding-rectangle",
+        "excludedForegroundPixels": 0,
+        "detachedComponentPixels": 0,
+        "requiresHumanReview": false,
+        "largestOtherComponents": [],
+        "note": "Only the mechanical extraction rectangle changes. All original pixels inside it, including detached details, are retained; source files remain untouched."
+      },
+      "sourceBBox": {
+        "left": 494,
+        "top": 443,
+        "width": 481,
+        "height": 515
+      },
+      "guideAlphaBBox": {
+        "left": 605,
+        "top": 541,
+        "width": 588,
+        "height": 633
+      },
+      "fitXYRatios": [
+        1.2224532224532225,
+        1.229126213592233
+      ],
+      "aspectDeltaPercent": -0.5429052822417679,
+      "requiresVisualAspectReview": false,
+      "trimCrop": {
+        "left": 585,
+        "top": 522,
+        "width": 628,
+        "height": 672
+      },
+      "size": [
+        628,
+        672
+      ],
+      "anchorPixels": [
+        307.2762411326246,
+        476.48990038255806
+      ],
+      "losslessWebPVerified": true,
+      "pngSha256": "14bf9718fa2fbe7cee598063a9c87db0ca17752bfd1ae9f3c876c3d8643caac7",
+      "webpSha256": "34f1d5d59e710fac796221036dcca0c47640af748c12e9a558ce110db7fa20ed"
+    },
+    {
+      "id": "wall-11",
+      "source": "artwork-archive/circular-wall-install-v1/generated/wall-11.png",
+      "sourceSha256": "92fe947ab4c2d36729a31cc4a9be019b646b525a9d3c8f66e6801f43a0a7d705",
+      "sourceSize": [
+        1254,
+        1254
+      ],
+      "sourceAlpha": {
+        "min": 0,
+        "max": 255,
+        "transparentPixels": 1374620,
+        "opaquePixels": 470,
+        "antialiasedPixels": 197426,
+        "transparentFraction": 0.8741532677568941,
+        "bbox": {
+          "left": 372,
+          "top": 162,
+          "width": 560,
+          "height": 913
+        }
+      },
+      "sourceComponentAnalysis": {
+        "connectivity": 8,
+        "alphaThreshold": 16,
+        "componentCount": 2,
+        "totalForegroundPixels": 188065,
+        "originalFullAlphaBBox": {
+          "left": 372,
+          "top": 162,
+          "width": 560,
+          "height": 913
+        },
+        "largestComponent": {
+          "pixelCount": 188064,
+          "bbox": {
+            "left": 372,
+            "top": 162,
+            "width": 560,
+            "height": 913
+          }
+        },
+        "largestComponentFraction": 0.9999946826894957,
+        "dominanceRequired": 0.99,
+        "selectedBBox": {
+          "left": 372,
+          "top": 162,
+          "width": 560,
+          "height": 913
+        },
+        "selection": "largest-component-bounding-rectangle",
+        "excludedForegroundPixels": 0,
+        "detachedComponentPixels": 1,
+        "requiresHumanReview": false,
+        "largestOtherComponents": [
+          {
+            "pixelCount": 1,
+            "bbox": {
+              "left": 777,
+              "top": 684,
+              "width": 1,
+              "height": 1
+            }
+          }
+        ],
+        "note": "Only the mechanical extraction rectangle changes. All original pixels inside it, including detached details, are retained; source files remain untouched."
+      },
+      "sourceBBox": {
+        "left": 372,
+        "top": 162,
+        "width": 560,
+        "height": 913
+      },
+      "guideAlphaBBox": {
+        "left": 473,
+        "top": 213,
+        "width": 557,
+        "height": 1031
+      },
+      "fitXYRatios": [
+        0.9946428571428572,
+        1.1292442497261774
+      ],
+      "aspectDeltaPercent": -11.919599556602467,
+      "requiresVisualAspectReview": true,
+      "trimCrop": {
+        "left": 453,
+        "top": 193,
+        "width": 597,
+        "height": 1071
+      },
+      "size": [
+        597,
+        1071
+      ],
+      "anchorPixels": [
+        267.6791280607963,
+        676.77556115473
+      ],
+      "losslessWebPVerified": true,
+      "pngSha256": "20fb65e035c6b15267dbd9a38b2a84ebeafc0ebf4ba305ede75d9fafd6f54336",
+      "webpSha256": "bc2e00a8e6bdd04f1cf392f75deb77053c797c48ef7794fabe72d8ab9fa44a4f"
+    },
+    {
+      "id": "wall-12",
+      "source": "artwork-archive/circular-wall-install-v1/generated/wall-12.png",
+      "sourceSha256": "558b423827ef1f4dcca34f78e4d7906a8b2531cfb8d1c9df4d1c9d41f3cd4b93",
+      "sourceSize": [
+        1254,
+        1254
+      ],
+      "sourceAlpha": {
+        "min": 0,
+        "max": 255,
+        "transparentPixels": 1482104,
+        "opaquePixels": 342,
+        "antialiasedPixels": 90070,
+        "transparentFraction": 0.9425048775338375,
+        "bbox": {
+          "left": 515,
+          "top": 140,
+          "width": 218,
+          "height": 815
+        }
+      },
+      "sourceComponentAnalysis": {
+        "connectivity": 8,
+        "alphaThreshold": 16,
+        "componentCount": 1,
+        "totalForegroundPixels": 84273,
+        "originalFullAlphaBBox": {
+          "left": 515,
+          "top": 140,
+          "width": 218,
+          "height": 815
+        },
+        "largestComponent": {
+          "pixelCount": 84273,
+          "bbox": {
+            "left": 515,
+            "top": 140,
+            "width": 218,
+            "height": 815
+          }
+        },
+        "largestComponentFraction": 1,
+        "dominanceRequired": 0.99,
+        "selectedBBox": {
+          "left": 515,
+          "top": 140,
+          "width": 218,
+          "height": 815
+        },
+        "selection": "largest-component-bounding-rectangle",
+        "excludedForegroundPixels": 0,
+        "detachedComponentPixels": 0,
+        "requiresHumanReview": false,
+        "largestOtherComponents": [],
+        "note": "Only the mechanical extraction rectangle changes. All original pixels inside it, including detached details, are retained; source files remain untouched."
+      },
+      "sourceBBox": {
+        "left": 515,
+        "top": 140,
+        "width": 218,
+        "height": 815
+      },
+      "guideAlphaBBox": {
+        "left": 624,
+        "top": 180,
+        "width": 174,
+        "height": 808
+      },
+      "fitXYRatios": [
+        0.7981651376146789,
+        0.9914110429447853
+      ],
+      "aspectDeltaPercent": -19.492006540103556,
+      "requiresVisualAspectReview": true,
+      "trimCrop": {
+        "left": 604,
+        "top": 160,
+        "width": 214,
+        "height": 848
+      },
+      "size": [
+        214,
+        848
+      ],
+      "anchorPixels": [
+        93.09758827084534,
+        526.4373486985554
+      ],
+      "losslessWebPVerified": true,
+      "pngSha256": "c07691c291286163c10725a2d9de140a9a58a4ace58d449ccc0b099ebced988d",
+      "webpSha256": "a151ce84ec5115ce294c41f90be5ee29cb95e68f66a32414e472d8c22ade1421"
+    },
+    {
+      "id": "wall-14",
+      "source": "artwork-archive/circular-wall-install-v1/generated/wall-14.png",
+      "sourceSha256": "9cde708c2728b439096faa58c24522c58e2bfe77f37230e77f6341fcfb91a2a8",
+      "sourceSize": [
+        1254,
+        1254
+      ],
+      "sourceAlpha": {
+        "min": 0,
+        "max": 255,
+        "transparentPixels": 1431023,
+        "opaquePixels": 148,
+        "antialiasedPixels": 141345,
+        "transparentFraction": 0.9100212652844232,
+        "bbox": {
+          "left": 371,
+          "top": 234,
+          "width": 474,
+          "height": 838
+        }
+      },
+      "sourceComponentAnalysis": {
+        "connectivity": 8,
+        "alphaThreshold": 16,
+        "componentCount": 1,
+        "totalForegroundPixels": 133612,
+        "originalFullAlphaBBox": {
+          "left": 371,
+          "top": 234,
+          "width": 474,
+          "height": 838
+        },
+        "largestComponent": {
+          "pixelCount": 133612,
+          "bbox": {
+            "left": 371,
+            "top": 234,
+            "width": 474,
+            "height": 838
+          }
+        },
+        "largestComponentFraction": 1,
+        "dominanceRequired": 0.99,
+        "selectedBBox": {
+          "left": 371,
+          "top": 234,
+          "width": 474,
+          "height": 838
+        },
+        "selection": "largest-component-bounding-rectangle",
+        "excludedForegroundPixels": 0,
+        "detachedComponentPixels": 0,
+        "requiresHumanReview": false,
+        "largestOtherComponents": [],
+        "note": "Only the mechanical extraction rectangle changes. All original pixels inside it, including detached details, are retained; source files remain untouched."
+      },
+      "sourceBBox": {
+        "left": 371,
+        "top": 234,
+        "width": 474,
+        "height": 838
+      },
+      "guideAlphaBBox": {
+        "left": 466,
+        "top": 278,
+        "width": 535,
+        "height": 1016
+      },
+      "fitXYRatios": [
+        1.128691983122363,
+        1.2124105011933175
+      ],
+      "aspectDeltaPercent": -6.905129738529514,
+      "requiresVisualAspectReview": false,
+      "trimCrop": {
+        "left": 446,
+        "top": 258,
+        "width": 575,
+        "height": 1056
+      },
+      "size": [
+        575,
+        1056
+      ],
+      "anchorPixels": [
+        258.8745960221519,
+        632.9856270220641
+      ],
+      "losslessWebPVerified": true,
+      "pngSha256": "16a392be2d7e976493f2a5c2ba23f110f38723e751cc0d2886597202c62e754d",
+      "webpSha256": "b7d204d8934cfd377a780f786c834d9e99dbd39df62f06f1232f17d1df2b73e6"
+    },
+    {
+      "id": "wall-15",
+      "source": "artwork-archive/circular-wall-install-v1/generated/wall-15.png",
+      "sourceSha256": "a6eff3b808b1382d350bb93ce93ceb85b9dc0f93fb809223272c1bbc392fbe7b",
+      "sourceSize": [
+        1254,
+        1254
+      ],
+      "sourceAlpha": {
+        "min": 0,
+        "max": 255,
+        "transparentPixels": 1405569,
+        "opaquePixels": 258,
+        "antialiasedPixels": 166689,
+        "transparentFraction": 0.893834466549148,
+        "bbox": {
+          "left": 435,
+          "top": 309,
+          "width": 575,
+          "height": 561
+        }
+      },
+      "sourceComponentAnalysis": {
+        "connectivity": 8,
+        "alphaThreshold": 16,
+        "componentCount": 1,
+        "totalForegroundPixels": 159003,
+        "originalFullAlphaBBox": {
+          "left": 435,
+          "top": 309,
+          "width": 575,
+          "height": 561
+        },
+        "largestComponent": {
+          "pixelCount": 159003,
+          "bbox": {
+            "left": 435,
+            "top": 309,
+            "width": 575,
+            "height": 561
+          }
+        },
+        "largestComponentFraction": 1,
+        "dominanceRequired": 0.99,
+        "selectedBBox": {
+          "left": 435,
+          "top": 309,
+          "width": 575,
+          "height": 561
+        },
+        "selection": "largest-component-bounding-rectangle",
+        "excludedForegroundPixels": 0,
+        "detachedComponentPixels": 0,
+        "requiresHumanReview": false,
+        "largestOtherComponents": [],
+        "note": "Only the mechanical extraction rectangle changes. All original pixels inside it, including detached details, are retained; source files remain untouched."
+      },
+      "sourceBBox": {
+        "left": 435,
+        "top": 309,
+        "width": 575,
+        "height": 561
+      },
+      "guideAlphaBBox": {
+        "left": 556,
+        "top": 360,
+        "width": 630,
+        "height": 632
+      },
+      "fitXYRatios": [
+        1.0956521739130434,
+        1.1265597147950088
+      ],
+      "aspectDeltaPercent": -2.7435332966428194,
+      "requiresVisualAspectReview": false,
+      "trimCrop": {
+        "left": 536,
+        "top": 340,
+        "width": 670,
+        "height": 672
+      },
+      "size": [
+        670,
+        672
+      ],
+      "anchorPixels": [
+        334.1749566636274,
+        424.4590474046388
+      ],
+      "losslessWebPVerified": true,
+      "pngSha256": "d54aa99d6d38f7358a65aaff87adaa7b472601e5a1a5a9bc6b678b1cb75df21c",
+      "webpSha256": "4af5611da4790fd5b86b842198d5b596b6c643b703d8eaf48fb088e1970e0d02"
+    }
+  ],
+  "warnings": [
+    "wall-08 aspect change -8.39%: inspect before publication.",
+    "wall-11 aspect change -11.92%: inspect before publication.",
+    "wall-12 aspect change -19.49%: inspect before publication."
+  ],
+  "missing": [],
+  "originalsUnmodified": true,
+  "drawOrder": [
+    "wall-15",
+    "wall-16",
+    "wall-01",
+    "wall-02",
+    "wall-03",
+    "wall-14",
+    "wall-04",
+    "wall-13",
+    "wall-12",
+    "wall-05",
+    "wall-06",
+    "wall-11",
+    "wall-07",
+    "wall-10",
+    "wall-09",
+    "wall-08"
+  ],
+  "complete": true,
+  "generatedRoadEndCount": 11,
+  "reusedOriginalCount": 5,
+  "assembly": {
+    "file": "artwork-archive/circular-wall-install-v1/previews/installed-wall-assembly.png",
+    "size": [
+      4852,
+      5139
+    ],
+    "sha256": "f3b3f0fcc24c424b0524dd09107ac0e8cc1be3df7d12c7f269c790441f66d24f",
+    "pixelOrigin": [
+      2426,
+      2713
+    ],
+    "scale": 1.4
+  }
+}

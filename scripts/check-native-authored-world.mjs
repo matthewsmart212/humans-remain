@@ -33,7 +33,7 @@ try{
  globalThis.requestAnimationFrame=fn=>setImmediate(()=>fn(performance.now()));
  globalThis.fetch=async url=>new Response(JSON.stringify(String(url).includes('asset-artwork')?{records:snapshot.records}:{draft:snapshot.layout,applied:{items:[]},revision:90}));
  let candidates=await m.worldCandidates();assert.equal(candidates[0].source,'Latest saved editor world');
- const saved=m.validateSavedWorld(candidates[0].value,candidates[0].source);assert.equal(saved.layout.items.length,4465);assert.deepEqual(saved.layout,snapshot.layout);assert.equal(m.prepareAuthoredWorld(saved.layout),saved.layout,'Approved upgrades are idempotent');
+ const saved=m.validateSavedWorld(candidates[0].value,candidates[0].source);assert.equal(saved.layout.items.length,snapshot.layout.items.length);assert.deepEqual(saved.layout,snapshot.layout);assert.equal(m.prepareAuthoredWorld(saved.layout),saved.layout,'Approved upgrades are idempotent');
  cache.set(m.WORLD_CACHE,JSON.stringify(saved));globalThis.fetch=async()=>{throw Error('offline')};
  candidates=await m.worldCandidates();assert.equal(candidates.length,2);assert.equal(candidates[0].source,'Saved offline world');assert.equal(candidates[1].source,'Included editor world');
  assert.throws(()=>m.validateSavedWorld({layout:{},records:[]},'invalid'));

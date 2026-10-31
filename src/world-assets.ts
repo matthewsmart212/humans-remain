@@ -4,6 +4,7 @@ import {GARDEN_ART,GARDEN_ANCHOR,GARDEN_COLLISION} from './camp-garden-art';
 import {MINEABLE_ROCKS} from './mining-rocks';
 import {FORAGE_ART} from './forage-art';
 import perimeterArt from './camp-perimeter-art.json';
+import circularWallArt from './camp-circular-wall-art.json';
 import type {AnimationMode,AnimationArea} from './asset-animation';
 import {usesPaintedHomeTerrain} from './terrain-art';
 import type {AssetCollision} from './asset-collision';
@@ -30,7 +31,7 @@ export type WorldRole='prop'|'generator'|'hearth'|'well'|'storage'|'lamp'|'scrap
 export type LocalRect={x:number;y:number;hw:number;hh:number};
 /** Ground artwork is normalized to the original sprite canvas, independently of selection/collision bounds. */
 export type GroundArtwork={image:string;rect:[number,number,number,number];size:[number,number]};
-export type WorldAsset={perimeterRise?:number;gate?:import('./camp-gates').GateArt;perimeter?:'wall'|'post'|'gate';id:string;name:string;group:string;image:string;crop:number[];anchor:number[];width:number;height:number;solid:boolean;allowTransparency?:boolean;foliage?:boolean;groundDetail?:boolean;puddle?:{water:number[][]};role:WorldRole;body:LocalRect[];collision?:AssetCollision;segments?:{x:number;y:number;ex:number;ey:number;r:number}[];interior?:{x:number;y:number;width:number;height:number};roof?:string;roofRect?:number[];foreground?:number[][];ground?:GroundArtwork;openFrames?:string[];frames?:string[];animationMode?:AnimationMode;animationArea?:AnimationArea;fps?:number;unlitSize?:number[];unlit?:string;unlitAnchor?:number[];catalogueId?:string;note?:string};
+export type WorldAsset={perimeterCurve?:number[][];perimeterDrawOrder?:number;perimeterRise?:number;gate?:import('./camp-gates').GateArt;perimeter?:'wall'|'post'|'gate';id:string;name:string;group:string;image:string;crop:number[];anchor:number[];width:number;height:number;solid:boolean;allowTransparency?:boolean;foliage?:boolean;groundDetail?:boolean;puddle?:{water:number[][]};role:WorldRole;body:LocalRect[];collision?:AssetCollision;segments?:{x:number;y:number;ex:number;ey:number;r:number}[];interior?:{x:number;y:number;width:number;height:number};roof?:string;roofRect?:number[];foreground?:number[][];ground?:GroundArtwork;openFrames?:string[];frames?:string[];animationMode?:AnimationMode;animationArea?:AnimationArea;fps?:number;unlitSize?:number[];unlit?:string;unlitAnchor?:number[];catalogueId?:string;note?:string};
 export const imageDimensions=metadata as Record<string,number[]>;
 const sizes=imageDimensions;
 for(const f of [...foliageArt,...puddleArt,...treeArt,...sceneryArt,...FORAGE_ART,...IRONWORKS_WORLD_ART,...GARDEN_ART])sizes[f.image]=f.size;
@@ -39,7 +40,7 @@ const sourceKey=(image:string,crop:number[])=>image+':'+crop.join(',');
 const seen=new Map<string,WorldAsset>();
 function add(a:WorldAsset,deduplicate=true){const key=sourceKey(a.image,a.crop);if(deduplicate&&seen.has(key))return seen.get(key)!;assets.push(a);seen.set(key,a);return a}
 const body=(width:number,height:number):LocalRect[]=>[{x:0,y:-Math.min(40,height*.13),hw:width*.3,hh:Math.min(45,height*.2)}];
-for(const e of entries.filter(e=>e.image&&!e.canonicalArt&&!e.id.startsWith('map_')&&!perimeterArt.some(a=>a.id===e.id))){
+for(const e of entries.filter(e=>e.image&&!e.canonicalArt&&!e.id.startsWith('map_')&&!perimeterArt.some(a=>a.id===e.id)&&!circularWallArt.some(a=>a.id===e.id))){
  const image=e.image!,dim=sizes[image]||[1254,1254],crop=e.crop||[0,0,...dim];
  const width=e.artPreview?.worldWidth||(e.id.startsWith('base_hearth')?HEARTH_ART[e.tier as 1|2|3].width:e.id==='base_well_t1'?138:e.id==='base_lighting_t4'?72:e.id==='exp_generation_t1'?142:e.id==='prop_tree'?340:e.id==='base_water_store_t4'?180:e.id==='prop_flame'?65:e.id.startsWith('base_water_store')?150+(e.tier!-1)*70:e.id.includes('bed')||e.id.includes('cot')?160:130);
  let role:WorldRole=e.id==='exp_generation_t1'?'generator':e.id.startsWith('base_hearth')?'hearth':e.id.startsWith('base_well')?'well':e.id==='base_shared_store_t1'?'storage':e.id==='base_lighting_t4'?'lamp':e.id==='prop_scrap'?'scrap':e.id==='prop_planks'?'pallets':e.id==='existing_fuel_can'?'fuel':e.id==='existing_smashable_crate'?'crate':e.id==='existing_searchable_locker'?'search':'prop';
@@ -96,6 +97,7 @@ for(const e of entries.filter(e=>e.image&&!e.canonicalArt&&!e.id.startsWith('map
  add(a,['crate','search'].includes(role)?false:true);
 }
 for(const f of perimeterArt){sizes[f.image]=f.size;assets.push({id:f.id,name:f.name,group:'Camp perimeter',image:f.image,crop:[0,0,...f.size],anchor:[f.anchor[0]*f.size[0],f.anchor[1]*f.size[1]],width:f.width,height:f.height,solid:f.kind!=='post',role:'prop',body:[],segments:f.segments,perimeter:f.kind as 'wall'|'post'|'gate',perimeterRise:f.rise,gate:f.gate,note:f.kind==='gate'?'Painted open/closed gate · tap Close once; it waits for a clear doorway.':'Continuous worn stockade · traced ground collision.'});if(f.gate){sizes[f.gate.leaf]=f.gate.leafSize;sizes[f.gate.post]=f.gate.postSize;}}
+for(const f of circularWallArt){sizes[f.image]=f.size;assets.push({id:f.id,catalogueId:f.id,name:f.name,group:'Camp perimeter',image:f.image,crop:[0,0,...f.size],anchor:[f.anchor[0]*f.size[0],f.anchor[1]*f.size[1]],width:f.width,height:f.height,solid:true,allowTransparency:true,role:'prop',body:[],collision:f.collision as AssetCollision,segments:f.segments,perimeter:'wall',perimeterRise:f.rise,perimeterCurve:f.curve,perimeterDrawOrder:f.drawOrder,note:'Curved mossy timber wall · fixed orientation · keep the six camp roads clear.'});}
 const catalogueIds=new Set(entries.map(e=>e.id));
 export const WORLD_ASSETS=assets.filter(a=>catalogueIds.has(a.id)).map(addCampGround);
 for(const a of WORLD_ASSETS)if(a.ground)imageDimensions[a.ground.image]=a.ground.size;

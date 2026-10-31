@@ -1,0 +1,276 @@
+{
+  "result": "pass",
+  "snapshotRevision": 78,
+  "placements": 4548,
+  "artworkRecords": 15,
+  "wallCount": 16,
+  "wallImages": [
+    {
+      "id": "camp_circular_wall_01",
+      "url": "/survival/camp-circular-wall-v1/wall-01.webp",
+      "width": 979,
+      "height": 564,
+      "bytes": 536076
+    },
+    {
+      "id": "camp_circular_wall_02",
+      "url": "/survival/camp-circular-wall-install-v1/wall-02.webp",
+      "width": 652,
+      "height": 686,
+      "bytes": 365266
+    },
+    {
+      "id": "camp_circular_wall_03",
+      "url": "/survival/camp-circular-wall-install-v1/wall-03.webp",
+      "width": 591,
+      "height": 1061,
+      "bytes": 387190
+    },
+    {
+      "id": "camp_circular_wall_04",
+      "url": "/survival/camp-circular-wall-v1/wall-04.webp",
+      "width": 312,
+      "height": 1212,
+      "bytes": 281836
+    },
+    {
+      "id": "camp_circular_wall_05",
+      "url": "/survival/camp-circular-wall-v1/wall-05.webp",
+      "width": 316,
+      "height": 1226,
+      "bytes": 246968
+    },
+    {
+      "id": "camp_circular_wall_06",
+      "url": "/survival/camp-circular-wall-install-v1/wall-06.webp",
+      "width": 495,
+      "height": 958,
+      "bytes": 300770
+    },
+    {
+      "id": "camp_circular_wall_07",
+      "url": "/survival/camp-circular-wall-install-v1/wall-07.webp",
+      "width": 743,
+      "height": 770,
+      "bytes": 397142
+    },
+    {
+      "id": "camp_circular_wall_08",
+      "url": "/survival/camp-circular-wall-install-v1/wall-08.webp",
+      "width": 925,
+      "height": 584,
+      "bytes": 519022
+    },
+    {
+      "id": "camp_circular_wall_09",
+      "url": "/survival/camp-circular-wall-install-v1/wall-09.webp",
+      "width": 726,
+      "height": 525,
+      "bytes": 349858
+    },
+    {
+      "id": "camp_circular_wall_10",
+      "url": "/survival/camp-circular-wall-install-v1/wall-10.webp",
+      "width": 628,
+      "height": 672,
+      "bytes": 344120
+    },
+    {
+      "id": "camp_circular_wall_11",
+      "url": "/survival/camp-circular-wall-install-v1/wall-11.webp",
+      "width": 597,
+      "height": 1071,
+      "bytes": 395318
+    },
+    {
+      "id": "camp_circular_wall_12",
+      "url": "/survival/camp-circular-wall-install-v1/wall-12.webp",
+      "width": 214,
+      "height": 848,
+      "bytes": 133090
+    },
+    {
+      "id": "camp_circular_wall_13",
+      "url": "/survival/camp-circular-wall-v1/wall-13.webp",
+      "width": 316,
+      "height": 1191,
+      "bytes": 275744
+    },
+    {
+      "id": "camp_circular_wall_14",
+      "url": "/survival/camp-circular-wall-install-v1/wall-14.webp",
+      "width": 575,
+      "height": 1056,
+      "bytes": 359948
+    },
+    {
+      "id": "camp_circular_wall_15",
+      "url": "/survival/camp-circular-wall-install-v1/wall-15.webp",
+      "width": 670,
+      "height": 672,
+      "bytes": 367046
+    },
+    {
+      "id": "camp_circular_wall_16",
+      "url": "/survival/camp-circular-wall-v1/wall-16.webp",
+      "width": 972,
+      "height": 540,
+      "bytes": 549310
+    }
+  ],
+  "savedWallImages": [
+    {
+      "url": "/survival/camp-walls-moss-v1/wall-1.webp",
+      "width": 1168,
+      "height": 1040
+    },
+    {
+      "url": "/survival/camp-foundations-v2/wall-1.webp",
+      "width": 885,
+      "height": 470
+    },
+    {
+      "url": "/survival/camp-walls-moss-v1/wall-2.webp",
+      "width": 988,
+      "height": 804
+    },
+    {
+      "url": "/survival/camp-foundations-v2/wall-2.webp",
+      "width": 279,
+      "height": 539
+    },
+    {
+      "url": "/survival/camp-walls-moss-v1/wall-3.webp",
+      "width": 956,
+      "height": 916
+    },
+    {
+      "url": "/survival/camp-foundations-v2/wall-3.webp",
+      "width": 452,
+      "height": 612
+    },
+    {
+      "url": "/survival/camp-walls-moss-v1/wall-4.webp",
+      "width": 878,
+      "height": 694
+    },
+    {
+      "url": "/survival/camp-foundations-v2/wall-4.webp",
+      "width": 612,
+      "height": 286
+    },
+    {
+      "url": "/survival/camp-walls-moss-v1/wall-5.webp",
+      "width": 930,
+      "height": 1236
+    },
+    {
+      "url": "/survival/camp-foundations-v2/wall-5.webp",
+      "width": 644,
+      "height": 254
+    },
+    {
+      "url": "/survival/camp-walls-moss-v1/wall-6.webp",
+      "width": 930,
+      "height": 1148
+    },
+    {
+      "url": "/survival/camp-foundations-v2/wall-6.webp",
+      "width": 461,
+      "height": 668
+    },
+    {
+      "url": "/survival/camp-walls-moss-v1/wall-7.webp",
+      "width": 900,
+      "height": 934
+    },
+    {
+      "url": "/survival/camp-foundations-v2/wall-7.webp",
+      "width": 398,
+      "height": 654
+    },
+    {
+      "url": "/survival/camp-walls-moss-v1/wall-8.webp",
+      "width": 842,
+      "height": 1138
+    },
+    {
+      "url": "/survival/camp-foundations-v2/wall-8.webp",
+      "width": 677,
+      "height": 303
+    },
+    {
+      "url": "/survival/wall-tiers-v1/t2-wall-1.webp",
+      "width": 1168,
+      "height": 1040
+    },
+    {
+      "url": "/survival/wall-tiers-v1/t2-wall-2.webp",
+      "width": 988,
+      "height": 804
+    },
+    {
+      "url": "/survival/wall-tiers-v1/t2-wall-3.webp",
+      "width": 956,
+      "height": 916
+    },
+    {
+      "url": "/survival/wall-tiers-v1/t2-wall-4.webp",
+      "width": 878,
+      "height": 694
+    },
+    {
+      "url": "/survival/wall-tiers-v1/t2-wall-5.webp",
+      "width": 930,
+      "height": 1236
+    },
+    {
+      "url": "/survival/wall-tiers-v1/t2-wall-6.webp",
+      "width": 930,
+      "height": 1148
+    },
+    {
+      "url": "/survival/wall-tiers-v1/t2-wall-7.webp",
+      "width": 900,
+      "height": 934
+    },
+    {
+      "url": "/survival/wall-tiers-v1/t2-wall-8.webp",
+      "width": 842,
+      "height": 1138
+    }
+  ],
+  "offlineBundle": true,
+  "productionNativeRenderer": true,
+  "platformShim": "CanvasKit software Skia with file-backed Expo Asset and PixelRatio=2",
+  "player": {
+    "x": 1718.1675873489273,
+    "y": 19.51247733296259
+  },
+  "pictures": [
+    {
+      "file": "native-wall-844x390.png",
+      "width": 844,
+      "height": 390,
+      "bytes": 953741
+    },
+    {
+      "file": "native-wall-390x844.png",
+      "width": 390,
+      "height": 844,
+      "bytes": 815977
+    },
+    {
+      "file": "native-installed-camp-overview.png",
+      "width": 1500,
+      "height": 1500,
+      "bytes": 6690486
+    }
+  ],
+  "fullNativeTypecheck": false,
+  "physicalDeviceTested": false,
+  "limitations": [
+    "The full native typecheck and Expo/device build were not run because this checkout does not have the native Expo dependency set.",
+    "These images exercise the production native rendering code through platform shims; they do not certify physical-device GPU performance."
+  ]
+}

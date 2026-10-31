@@ -12,6 +12,7 @@ import {RIVER_DETAIL_IMAGES} from '../src/river-art';
 import {SCENES,sceneImages} from '../src/world-scenes';
 import {requiredImages,WORLD_ASSETS} from '../src/world-assets';
 import {libraryAssets} from '../src/asset-library-policy';
+import {wallIdentity} from '../src/world-tiers';
 import {validateLayout} from '../src/world-layout';
 import {WALKER_IMAGE_SOURCES} from '../src/walker-sprites';
 import {BOMBER_IMAGE_SOURCES} from '../src/bomber-sprites';
@@ -23,10 +24,13 @@ installImportedArt(art.records);
 const raw=JSON.parse(fs.readFileSync(path.join(input,'world.json'),'utf8'));
 const checked=validateLayout(raw.draft);if(!checked.layout||checked.errors.length)throw Error(checked.errors.join('; '));
 const layout=prepareAuthoredWorld(checked.layout);
+// A continued/custom camp can defer the circular migration. Keep its original
+// timber walls, the existing tier variants and their ground beds offline too.
+const savedWallIds=WORLD_ASSETS.filter(a=>wallIdentity(a.id)).map(a=>a.id);
 const sources={...Object.fromEntries(SPAWNABLES.map(v=>['spawn-thumb-'+v.id,v.image])),...EDITOR_IMAGE_SOURCES,...editorTerrainDetail(layout.terrainImage),
  ...Object.fromEntries(OUTDOOR_TILES.map(t=>[t.key,t.image])),...TERRAIN_CHUNK_IMAGES,...RIVER_DETAIL_IMAGES,
  ...Object.assign({},...[...SCENES.values()].map(sceneImages)),
- ...WALKER_IMAGE_SOURCES,...BOMBER_IMAGE_SOURCES,...requiredImages([...layout.items.map(p=>p.assetId),...GARDEN_ART.map(a=>a.id)],layout.terrainImage),
+ ...WALKER_IMAGE_SOURCES,...BOMBER_IMAGE_SOURCES,...requiredImages([...layout.items.map(p=>p.assetId),...GARDEN_ART.map(a=>a.id),...savedWallIds],layout.terrainImage),
  ...Object.assign({},...[...SCENES.values()].map(s=>requiredImages(s.layout?.items.map(p=>p.assetId)||[])))};
 const redirects=Object.assign({},...['lossless-artwork','retired-road','calm-river','river-features','river-quality'].map(n=>JSON.parse(fs.readFileSync(`server/${n}-redirects.json`,'utf8'))));
 const canonical=(url:string)=>{const seen=new Set();while(redirects[url]){if(seen.has(url))throw Error('Redirect cycle');seen.add(url);url=redirects[url]}return url};

@@ -7,7 +7,7 @@ import {placementBounds,placementPoint,insideBuilding,type Placement,type WorldL
 import {ASSET_CONNECTIONS} from './world-scenes';
 import {TREE_ART} from './tree-chopping';
 import {mapBuildingArt,mapWallsArt,type MapArtKind,type MapIllustration} from './player-map-art';
-import {CAMP_MAP_WALL_PATHS,isCampMapWall} from './player-map-camp-wall';
+import {CAMP_MAP_WALL_PATHS,isCampMapWall,circularCampMapWallPaths} from './player-map-camp-wall';
 import type {Direction,Vec,World} from './survival-engine';
 
 /** Illustrated cartography registered to the actual water masks and road data.
@@ -151,7 +151,10 @@ export function playerMapFeatures(layout?:WorldLayout):PlayerMapFeatures{
  const paths:PlayerMapPath[]=(Object.keys(batches) as (keyof typeof batches)[]).filter(id=>batches[id].length).map(id=>({id,path:batches[id].join(''),...styles[id]}));
  const campWall=(!layout.terrainImage||usesPaintedHomeTerrain(layout.terrainImage))&&walls.filter(w=>isCampMapWall(w.a.name)).length>=6;
  if(campWall)paths.push(...CAMP_MAP_WALL_PATHS);
- const result={paths,landmarks,illustrations:[...mapWallsArt(campWall?walls.filter(w=>!isCampMapWall(w.a.name)):walls),...buildings.sort((a,b)=>a.y-b.y)]};cache.set(layout,result);return result;
+ const curvedWalls=walls.filter(w=>(w.a.perimeterCurve?.length??0)>1);
+ paths.push(...circularCampMapWallPaths(curvedWalls));
+ const otherWalls=walls.filter(w=>!w.a.perimeterCurve?.length&&(!campWall||!isCampMapWall(w.a.name)));
+ const result={paths,landmarks,illustrations:[...mapWallsArt(otherWalls),...buildings.sort((a,b)=>a.y-b.y)]};cache.set(layout,result);return result;
 }
 
 /** Retained for geographic checks and callers that need the exact outdoor

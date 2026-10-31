@@ -10,10 +10,18 @@ import {SCENES,CAMP_SCENE_ID} from './world-scenes';
 import {resetHound} from './hound-ai';
 import {addApprovedCampGarden} from './camp-garden-placement';
 import {GARDEN_PLACEMENT_ID} from './camp-garden-art';
-import {placementBodies} from './world-layout';
+import {placementBodies,layoutBlocked,type WorldLayout} from './world-layout';
 import {hitCollider} from './camp-collision';
+import {addApprovedCampPerimeter} from './camp-perimeter';
+import {requiredImages} from './world-assets';
 
 export const RUN_SAVE_KEY='safety-last-expedition-v1';
+/** Saved camps may retain older or owner-edited assets. Prepare their own
+ * images even when the active save is inside another scene. */
+export async function prepareSavedCampArtwork(snapshot:TravelSnapshot,load:(sources:Record<string,string>)=>Promise<unknown>){
+ const camp=snapshot.worlds.find(([id])=>id===CAMP_SCENE_ID)?.[1];
+ if(camp?.layout)await load(requiredImages(camp.layout.items.map(p=>p.assetId),camp.layout.terrainImage));
+}
 const MAX_SAVE_BYTES=12_000_000;
 const OMIT=new Set(['scene','outdoorReady','foliageMotions','puddleMotion','stepOnMotions','effects','combatStats','stationPanel','repairHammerUntil','buildingRepair','buildingHits','fieldKitTarget','fieldKitBuildingFocus','repairCheckpoint','furnaceId','smithyId','attackQueuedUntil','axeSwing','spearThrust','swordThrust','bowShot','bowLock','bruteGrab','dodge']);
 export function encodeRun(travel:SceneTravel):string|null{
@@ -24,6 +32,47 @@ export function encodeRun(travel:SceneTravel):string|null{
 function validateNumbers(value:unknown,depth=0):boolean{if(depth>35)return false;if(typeof value==='number')return Number.isFinite(value);if(Array.isArray(value))return value.length<15000&&value.every(v=>validateNumbers(v,depth+1));if(value&&typeof value==='object')return Object.entries(value).every(([k,v])=>!['__proto__','constructor','prototype'].includes(k)&&validateNumbers(v,depth+1));return true}
 const point=(p:any)=>p&&Number.isFinite(p.x)&&Number.isFinite(p.y);
 const counters=(p:any)=>p&&typeof p==='object'&&!Array.isArray(p)&&Object.values(p).every(v=>typeof v==='number'&&Number.isFinite(v)&&v>=0);
+type SavedPoint={x:number;y:number};
+function nearbyClearGround(layout:WorldLayout,from:SavedPoint):SavedPoint|undefined{
+ if(!layoutBlocked(layout,from.x,from.y,19))return from;
+ // Search nearest rings first. A boundary update only nudges an occupied
+ // landing to nearby clear ground; it never resets the run to camp spawn.
+ for(let radius=6;radius<=480;radius+=6){
+  const count=Math.max(16,Math.min(192,Math.ceil(2*Math.PI*radius/6)));
+  for(let i=0;i<count;i++){
+   const angle=i*Math.PI*2/count,position={x:from.x+Math.cos(angle)*radius,y:from.y+Math.sin(angle)*radius};
+   if(!layoutBlocked(layout,position.x,position.y,19))return position;
+  }
+ }
+}
+/** Continued expeditions own their own layout snapshots. Upgrade only their
+ * perimeter, retaining all run state and safe camp return points. */
+export function migrateSavedCampPerimeter(w:World,route:{sceneId:string;spawn:SavedPoint}[]){
+ if(!w.layout)return false;
+ const next=addApprovedCampPerimeter(w.layout);if(next===w.layout)return false;
+ const previous=new Map(w.layout.items.map(p=>[p.id,p]));
+ const added=next.items.filter(p=>{
+  const old=previous.get(p.id);
+  return p.assetId.startsWith('camp_circular_wall_')||!old||old.x!==p.x||old.y!==p.y;
+ }).flatMap(p=>placementBodies(p));
+ const occupied=(p:SavedPoint)=>added.some(c=>hitCollider(c,p.x,p.y,19));
+ const points=[w.player,next.spawn,...route.filter(r=>r?.sceneId===CAMP_SCENE_ID&&point(r.spawn)).map(r=>r.spawn)];
+ const moves:{target:SavedPoint;position:SavedPoint}[]=[];
+ for(const target of points){
+  if(!occupied(target))continue;
+  const position=nearbyClearGround(next,target);
+  // An unusually obstructed custom landing keeps the old snapshot until a
+  // later load. Never trap the survivor or discard progress to force an edit.
+  if(!position)return false;
+  moves.push({target,position});
+ }
+ // The migration returns a new layout but may share its spawn object. Keep
+ // the previous snapshot immutable when a spawn adjustment is necessary.
+ const spawn=moves.find(move=>move.target===next.spawn)?.position;
+ w.layout=spawn?{...next,spawn:{...spawn}}:next;
+ for(const move of moves)if(move.target!==next.spawn)Object.assign(move.target,move.position);
+ return true;
+}
 export function decodeRun(text:string):TravelSnapshot{
  if(text.length>MAX_SAVE_BYTES)throw Error('The saved expedition is too large to open.');
  let data:any;try{data=JSON.parse(text)}catch{throw Error('The saved expedition could not be read.')}
@@ -45,6 +94,7 @@ export function decodeRun(text:string):TravelSnapshot{
   for(const e of w.enemies){resetHound(w,e);e.path=[];e.repathAt=w.tick/60+.3;e.attackAt=w.tick/60+1;if(e.motion){e.motion.phase='recover';e.motion.since=w.tick/60;e.motion.resolved=true}if(e.brute){e.brute.phase='stalk';e.brute.since=w.tick/60;e.brute.hook=undefined;e.brute.jump=undefined;e.brute.recovery=undefined;e.brute.meleeAt=w.tick/60+1}}
   w.scene=id===CAMP_SCENE_ID?undefined:SCENES.get(id);
   if(id===CAMP_SCENE_ID){
+   migrateSavedCampPerimeter(w,data.route);
    const next=addApprovedCampGarden(w.layout),garden=next.items.find(p=>p.id===GARDEN_PLACEMENT_ID);
    // A returning player standing on the new lot keeps their position. Add it on
    // a later load once clear rather than trapping or teleporting the player.

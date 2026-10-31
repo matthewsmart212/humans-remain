@@ -12,7 +12,7 @@ import {colliderBounds,hitCollider,type Collider} from './camp-collision';
 /** Captured once, before a tier change. Artwork never controls an established placement's size. */
 export type PlacementFrame={sourceAssetId:string;width:number;height:number;anchor:[number,number]};
 export type Placement={id:string;assetId:string;x:number;y:number;scale:number;frame?:PlacementFrame;rotation?:number;flipX?:boolean;flipY?:boolean;locked?:boolean;layer?:number;solid:boolean;allowTransparency?:boolean;roof:'auto'|'hidden'|'shown';role:WorldRole;collision?:AssetCollision;footprint?:{width:number;depth:number}};
-export type WorldLayout={campGardenVersion?:1;ironworksVersion?:1|2;forageVersion?:1;treeVariantsVersion?:1;campFringeVersion?:1;worldPlantingVersion?:1;woodlandZonesVersion?:1;campRiverVersion?:1;campOutskirtsVersion?:1;campPerimeterVersion?:1|2|3|4;terrainPuddleVersion?:1|2;terrainFoliageVersion?:1|2;foliageTrialVersion?:1|2|3;campCentreVersion?:1;hqPropsVersion?:1|2|3;version:1;name:string;terrain:'home';terrainImage?:ArtworkFile;terrainBorder?:number;spawn:{x:number;y:number};items:Placement[];updatedAt:string};
+export type WorldLayout={campGardenVersion?:1;ironworksVersion?:1|2;forageVersion?:1;treeVariantsVersion?:1;campFringeVersion?:1;worldPlantingVersion?:1;woodlandZonesVersion?:1;campRiverVersion?:1;campOutskirtsVersion?:1;campPerimeterVersion?:1|2|3|4|5;terrainPuddleVersion?:1|2;terrainFoliageVersion?:1|2;foliageTrialVersion?:1|2|3;campCentreVersion?:1;hqPropsVersion?:1|2|3;version:1;name:string;terrain:'home';terrainImage?:ArtworkFile;terrainBorder?:number;spawn:{x:number;y:number};items:Placement[];updatedAt:string};
 export const LAYOUT_KEY='safety-last-world-draft-v1',APPLIED_KEY='safety-last-world-applied-v1';
 export const emptyLayout=():WorldLayout=>({version:1,name:'My home camp',terrain:'home',spawn:{x:MAP_WIDTH*.5,y:MAP_HEIGHT*.55},items:[],updatedAt:new Date().toISOString()});
 let placementSequence=0;
@@ -80,7 +80,7 @@ export function validateLayout(raw:unknown,forGame=false,assets=ASSET_BY_ID):{la
  if(v.campFringeVersion!==undefined&&v.campFringeVersion!==1)return{errors:['Invalid camp fringe version']};
  if(v.worldPlantingVersion!==undefined&&v.worldPlantingVersion!==1)return{errors:['Invalid world planting version']}; if(v.woodlandZonesVersion!==undefined&&v.woodlandZonesVersion!==1)return{errors:['Invalid woodland zones version']}; if(v.campRiverVersion!==undefined&&v.campRiverVersion!==1)return{errors:['Invalid river planting version']};
  if(v.campOutskirtsVersion!==undefined&&v.campOutskirtsVersion!==1)return{errors:['Invalid camp outskirts version']};
- if(v.campPerimeterVersion!==undefined&&v.campPerimeterVersion!==1&&v.campPerimeterVersion!==2&&v.campPerimeterVersion!==3&&v.campPerimeterVersion!==4)return{errors:['Invalid camp perimeter version']};
+ if(v.campPerimeterVersion!==undefined&&v.campPerimeterVersion!==1&&v.campPerimeterVersion!==2&&v.campPerimeterVersion!==3&&v.campPerimeterVersion!==4&&v.campPerimeterVersion!==5)return{errors:['Invalid camp perimeter version']};
  if(v.terrainPuddleVersion!==undefined&&v.terrainPuddleVersion!==1&&v.terrainPuddleVersion!==2)return{errors:['Invalid terrain puddle version']};
  if(v.terrainFoliageVersion!==undefined&&v.terrainFoliageVersion!==1&&v.terrainFoliageVersion!==2)return{errors:['Invalid terrain foliage version']};
  if(v.foliageTrialVersion!==undefined&&v.foliageTrialVersion!==1&&v.foliageTrialVersion!==2&&v.foliageTrialVersion!==3)return{errors:['Invalid foliage trial version']};

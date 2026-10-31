@@ -1,0 +1,13 @@
+{
+  "result": "pass",
+  "sourceRevision": 78,
+  "artworkRecords": 15,
+  "legacyVersion3Readable": true,
+  "version4Placements": 4543,
+  "version5Placements": 4548,
+  "exactPlacementRoundTrips": true,
+  "unknownVersion6Rejected": true,
+  "staleWritesRejected": true,
+  "retiredGatesHidden": true,
+  "database": "disposable in-memory SQLite"
+}

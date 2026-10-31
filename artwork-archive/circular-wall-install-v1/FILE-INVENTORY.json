@@ -1,0 +1,336 @@
+{
+  "files": [
+    {
+      "path": "artwork-archive/circular-wall-install-v1/README.md",
+      "bytes": 6723,
+      "sha256": "fd3327ffa62c2e05b02a94e04bbe682ce0c388ce81391f6ebb2dac74c8e80c42"
+    },
+    {
+      "path": "artwork-archive/circular-wall-install-v1/generated/wall-02.png",
+      "bytes": 509410,
+      "sha256": "f372428ae12c9e0089fa0bcb3cd8bb1adbe91dccd5c1aa5c2fc8e22d4ef2bef1"
+    },
+    {
+      "path": "artwork-archive/circular-wall-install-v1/generated/wall-03.png",
+      "bytes": 448499,
+      "sha256": "1935b02e5a0f575b4dbfba450ba67eea7c467910400ca4fb8fb40779044a032d"
+    },
+    {
+      "path": "artwork-archive/circular-wall-install-v1/generated/wall-06.png",
+      "bytes": 359140,
+      "sha256": "bff16fa93955204584e492e8ca44ee1202092fe9368001e2882cd6e42aa7445d"
+    },
+    {
+      "path": "artwork-archive/circular-wall-install-v1/generated/wall-07.png",
+      "bytes": 458238,
+      "sha256": "7ae0e7f33fd630cf857978eb3a60b0a9529c2c8fef0be73fe3b344bddcbc2e7d"
+    },
+    {
+      "path": "artwork-archive/circular-wall-install-v1/generated/wall-08.png",
+      "bytes": 752944,
+      "sha256": "ca81f1bdb2e2c5d1d46aeb41020af4a9bb2648b7135d5ee0fd200e3b977d50cb"
+    },
+    {
+      "path": "artwork-archive/circular-wall-install-v1/generated/wall-09.png",
+      "bytes": 451851,
+      "sha256": "8be3383f01a36e96d9c802773465041d619be1e0cdc8d3c6d9faf7f8ee4d547f"
+    },
+    {
+      "path": "artwork-archive/circular-wall-install-v1/generated/wall-10.png",
+      "bytes": 402820,
+      "sha256": "b354a288744bd07ac5cf9a3c8b16aee18fa0c567a81f2297ffa399d843647bc9"
+    },
+    {
+      "path": "artwork-archive/circular-wall-install-v1/generated/wall-11-first-pass.png",
+      "bytes": 672972,
+      "sha256": "214817288c89403bc1427c9459a0cd90d0a8306c4a4f730c479d03304844d26c"
+    },
+    {
+      "path": "artwork-archive/circular-wall-install-v1/generated/wall-11.png",
+      "bytes": 538981,
+      "sha256": "92fe947ab4c2d36729a31cc4a9be019b646b525a9d3c8f66e6801f43a0a7d705"
+    },
+    {
+      "path": "artwork-archive/circular-wall-install-v1/generated/wall-12.png",
+      "bytes": 273891,
+      "sha256": "558b423827ef1f4dcca34f78e4d7906a8b2531cfb8d1c9df4d1c9d41f3cd4b93"
+    },
+    {
+      "path": "artwork-archive/circular-wall-install-v1/generated/wall-14.png",
+      "bytes": 452597,
+      "sha256": "9cde708c2728b439096faa58c24522c58e2bfe77f37230e77f6341fcfb91a2a8"
+    },
+    {
+      "path": "artwork-archive/circular-wall-install-v1/generated/wall-15.png",
+      "bytes": 497891,
+      "sha256": "a6eff3b808b1382d350bb93ce93ceb85b9dc0f93fb809223272c1bbc392fbe7b"
+    },
+    {
+      "path": "artwork-archive/circular-wall-install-v1/geometry/README.md",
+      "bytes": 1283,
+      "sha256": "1d35d35a9468f60d9cb885616154017762712c64fea65b39a95208cb7abf5b42"
+    },
+    {
+      "path": "artwork-archive/circular-wall-install-v1/geometry/assembled-clay-ring.png",
+      "bytes": 531909,
+      "sha256": "9d374fc8f6239d81777fbc54b4d082b1a2ea8cae28b26bc0e1f54c83ebfa46c2"
+    },
+    {
+      "path": "artwork-archive/circular-wall-install-v1/geometry/build-guides.mjs",
+      "bytes": 18408,
+      "sha256": "164e3d8c65edca1d87f5df3d1b4951fb5a355707a25f4121876642fd1d102d8d"
+    },
+    {
+      "path": "artwork-archive/circular-wall-install-v1/geometry/guide-contact-sheet.png",
+      "bytes": 322413,
+      "sha256": "592fe35533c4d79453244aee8cfc895af454290d35b02e8a6eeccc7a48a5588b"
+    },
+    {
+      "path": "artwork-archive/circular-wall-install-v1/geometry/manifest.json",
+      "bytes": 147046,
+      "sha256": "ca47a0c83ceee7a1dd4dc18a19afcb16f112e19d249f95a4ba7de57b6126f604"
+    },
+    {
+      "path": "artwork-archive/circular-wall-install-v1/geometry/wall-01.png",
+      "bytes": 115837,
+      "sha256": "3771766b64674c14197307b80cb1ff2053b68311277102db87dead9176c937d9"
+    },
+    {
+      "path": "artwork-archive/circular-wall-install-v1/geometry/wall-02.png",
+      "bytes": 89399,
+      "sha256": "02d966ba9a63b60382f37dd8deddc6aa7b4acccf74c547a08afee36e22f33bfc"
+    },
+    {
+      "path": "artwork-archive/circular-wall-install-v1/geometry/wall-03.png",
+      "bytes": 108576,
+      "sha256": "0f2f778675080c8db8d4184e13b9dcefd430902f76cf664709a8f0efd500bac9"
+    },
+    {
+      "path": "artwork-archive/circular-wall-install-v1/geometry/wall-04.png",
+      "bytes": 88256,
+      "sha256": "e605bf6a5ee152f60fea6dd8ced01eb843b51e2de9e938c7c86751b627d30b81"
+    },
+    {
+      "path": "artwork-archive/circular-wall-install-v1/geometry/wall-05.png",
+      "bytes": 83769,
+      "sha256": "bd5e1136746bdcf53fa7151fc48d085729b034fe8c512007b52b64ba3f43cd4e"
+    },
+    {
+      "path": "artwork-archive/circular-wall-install-v1/geometry/wall-06.png",
+      "bytes": 80512,
+      "sha256": "49544092dafeffe7774c389922d35a0afcc5933c194950fd01edf6dd13fccd5c"
+    },
+    {
+      "path": "artwork-archive/circular-wall-install-v1/geometry/wall-07.png",
+      "bytes": 86876,
+      "sha256": "efaf6a950e362c7a477d56ca8aa9bdce75870cf147e0092bb48dde788a36e51c"
+    },
+    {
+      "path": "artwork-archive/circular-wall-install-v1/geometry/wall-08.png",
+      "bytes": 89715,
+      "sha256": "4e66cc5361c4d2f0a4fabc5ef5d4e33da19553f328a6e2ff4775774910eb321c"
+    },
+    {
+      "path": "artwork-archive/circular-wall-install-v1/geometry/wall-09.png",
+      "bytes": 81545,
+      "sha256": "d3cfb90ecfc74e7ca7fe9e99e45e07e94c94a8a74732c50f0ac7649cff922e00"
+    },
+    {
+      "path": "artwork-archive/circular-wall-install-v1/geometry/wall-10.png",
+      "bytes": 72565,
+      "sha256": "b21ab389690e2dc547b715c303210621e4f957e3e51a8a4850e60fe428fdbb94"
+    },
+    {
+      "path": "artwork-archive/circular-wall-install-v1/geometry/wall-11.png",
+      "bytes": 87062,
+      "sha256": "ed75d176cdd346d611bc8e860bb7fc1b313bce3840aa4541d255d719511cc1d9"
+    },
+    {
+      "path": "artwork-archive/circular-wall-install-v1/geometry/wall-12.png",
+      "bytes": 46098,
+      "sha256": "9d4c673c9c988975bff9ad5952600dbc92491a3d41b8ac9ca2a0b038b4c25bef"
+    },
+    {
+      "path": "artwork-archive/circular-wall-install-v1/geometry/wall-13.png",
+      "bytes": 103099,
+      "sha256": "dc1945ffe0b5b60f688dd985f0c9eb37a4d46d9061237ba2445bce46ff20570b"
+    },
+    {
+      "path": "artwork-archive/circular-wall-install-v1/geometry/wall-14.png",
+      "bytes": 119586,
+      "sha256": "9df3a027534dd0bb786f35358cb2e263834c264533a562c6ac7c44ff72a52739"
+    },
+    {
+      "path": "artwork-archive/circular-wall-install-v1/geometry/wall-15.png",
+      "bytes": 91672,
+      "sha256": "1736ef5235d74fd2baaeaffcdc4a62fd4e71c73c204a5059fb58b2a403df8851"
+    },
+    {
+      "path": "artwork-archive/circular-wall-install-v1/geometry/wall-16.png",
+      "bytes": 110790,
+      "sha256": "fc50ea44710903861c1fc799379381c4e2f4b77185aa23f7637a4e2e66c8e88f"
+    },
+    {
+      "path": "artwork-archive/circular-wall-install-v1/previews/contact-sheet.png",
+      "bytes": 2441556,
+      "sha256": "4a769361de10e7bef31b65d73bc84eebe80aec0434a344494759d7e0a2e29478"
+    },
+    {
+      "path": "artwork-archive/circular-wall-install-v1/previews/entrance-detail-sheet.png",
+      "bytes": 1784479,
+      "sha256": "472d033e2b82ab5256dcea293f6d32da28a49adbcf70ac446deb7ace4d37cd4f"
+    },
+    {
+      "path": "artwork-archive/circular-wall-install-v1/previews/installed-wall-assembly.png",
+      "bytes": 7363990,
+      "sha256": "f3b3f0fcc24c424b0524dd09107ac0e8cc1be3df7d12c7f269c790441f66d24f"
+    },
+    {
+      "path": "artwork-archive/circular-wall-install-v1/previews/installed-wall-review.jpg",
+      "bytes": 293924,
+      "sha256": "d64d4a81a29362c2b4832d7c68cd74b4adf669f19dad2a494600789fe60a6fdc"
+    },
+    {
+      "path": "artwork-archive/circular-wall-install-v1/previews/seam-detail-sheet.png",
+      "bytes": 2409632,
+      "sha256": "e6b8e13ed29efca5ff14cd252d3b07f2f5c7bbc1f216e2dc836aeb8becca3aa4"
+    },
+    {
+      "path": "artwork-archive/circular-wall-install-v1/previews/wall-11-alpha-review.png",
+      "bytes": 510498,
+      "sha256": "50b76afda6a9e422cb4fd40883f4f3cb73ffa6cc3e8303c4dc76509a9f52e75f"
+    },
+    {
+      "path": "artwork-archive/circular-wall-install-v1/process-art.mjs",
+      "bytes": 15938,
+      "sha256": "c42fbd273831c837cbe2bcb2a8630535ea9cbae721d1029917d4e33c75384ebd"
+    },
+    {
+      "path": "artwork-archive/circular-wall-install-v1/prompts.json",
+      "bytes": 33660,
+      "sha256": "4d834195bb2688dc2d418e06f629f5675f958f87aa70a418fdc1fc72534f5d42"
+    },
+    {
+      "path": "artwork-archive/circular-wall-install-v1/registration-report.json",
+      "bytes": 29986,
+      "sha256": "cb1e90b9cd4f5d396f80d79901094c34f5f324dd460145ebb3aba8b395491b1f"
+    },
+    {
+      "path": "public/survival/camp-circular-wall-install-v1/manifest.json",
+      "bytes": 116773,
+      "sha256": "bbf1bee137ee1f929633186dbf8998a71ab8b0a00d7d075a5e394dab2619dafb"
+    },
+    {
+      "path": "public/survival/camp-circular-wall-install-v1/wall-02.png",
+      "bytes": 659984,
+      "sha256": "4022edc652a7a0e69f55520d77e36db4fdb34703ec4a551ee39099c29c8e454a"
+    },
+    {
+      "path": "public/survival/camp-circular-wall-install-v1/wall-02.webp",
+      "bytes": 365266,
+      "sha256": "da44e86f2c7fc0a85efaba89f3978dacc7f08298b2fd8ab3b8e19ace5a0e3ce6"
+    },
+    {
+      "path": "public/survival/camp-circular-wall-install-v1/wall-03.png",
+      "bytes": 711080,
+      "sha256": "757da77851a6db02e50e7fd1099341bc6de10cb379784f9f3563bf3affa3175e"
+    },
+    {
+      "path": "public/survival/camp-circular-wall-install-v1/wall-03.webp",
+      "bytes": 387190,
+      "sha256": "bf3716da73b8d02971d1b77f76c1749cd006bdcda995dfc5511027f1334a6cd6"
+    },
+    {
+      "path": "public/survival/camp-circular-wall-install-v1/wall-06.png",
+      "bytes": 577454,
+      "sha256": "e7b92a87dfaacf54ea8c1718e187f9ed267442a2fddc9b67be45e60459844a02"
+    },
+    {
+      "path": "public/survival/camp-circular-wall-install-v1/wall-06.webp",
+      "bytes": 300770,
+      "sha256": "279fe660ae88f8b2810c1ee047e6a613f30184ced904a9fac88ec1407dc73f12"
+    },
+    {
+      "path": "public/survival/camp-circular-wall-install-v1/wall-07.png",
+      "bytes": 814069,
+      "sha256": "25451975346f0db5b3d6198758ac76258033e8a4eebdb2c47336b84fa6bce7a0"
+    },
+    {
+      "path": "public/survival/camp-circular-wall-install-v1/wall-07.webp",
+      "bytes": 397142,
+      "sha256": "38074ff2e47716aa2039f768d85c5dbf1e7ce894dbf28a716807de42fc1784e1"
+    },
+    {
+      "path": "public/survival/camp-circular-wall-install-v1/wall-08.png",
+      "bytes": 966413,
+      "sha256": "7845fcca9c37a80b5478f585758f63f065e4f940db03f40d0e2fd9c23856d7e4"
+    },
+    {
+      "path": "public/survival/camp-circular-wall-install-v1/wall-08.webp",
+      "bytes": 519022,
+      "sha256": "da333513ab0abb6d941e7c2722ae38b7444e0ba37d24ee6ebc9031d444a122ae"
+    },
+    {
+      "path": "public/survival/camp-circular-wall-install-v1/wall-09.png",
+      "bytes": 713568,
+      "sha256": "976e7181022dd1005ec085e93d54c759e4f5c45243d33e2a906451624d5988ed"
+    },
+    {
+      "path": "public/survival/camp-circular-wall-install-v1/wall-09.webp",
+      "bytes": 349858,
+      "sha256": "e47d7ec2b5dec1098ee769699a872d82d5d51528c25a66f302ab645dfa3004ff"
+    },
+    {
+      "path": "public/survival/camp-circular-wall-install-v1/wall-10.png",
+      "bytes": 679212,
+      "sha256": "14bf9718fa2fbe7cee598063a9c87db0ca17752bfd1ae9f3c876c3d8643caac7"
+    },
+    {
+      "path": "public/survival/camp-circular-wall-install-v1/wall-10.webp",
+      "bytes": 344120,
+      "sha256": "34f1d5d59e710fac796221036dcca0c47640af748c12e9a558ce110db7fa20ed"
+    },
+    {
+      "path": "public/survival/camp-circular-wall-install-v1/wall-11.png",
+      "bytes": 723552,
+      "sha256": "20fb65e035c6b15267dbd9a38b2a84ebeafc0ebf4ba305ede75d9fafd6f54336"
+    },
+    {
+      "path": "public/survival/camp-circular-wall-install-v1/wall-11.webp",
+      "bytes": 395318,
+      "sha256": "bc2e00a8e6bdd04f1cf392f75deb77053c797c48ef7794fabe72d8ab9fa44a4f"
+    },
+    {
+      "path": "public/survival/camp-circular-wall-install-v1/wall-12.png",
+      "bytes": 241084,
+      "sha256": "c07691c291286163c10725a2d9de140a9a58a4ace58d449ccc0b099ebced988d"
+    },
+    {
+      "path": "public/survival/camp-circular-wall-install-v1/wall-12.webp",
+      "bytes": 133090,
+      "sha256": "a151ce84ec5115ce294c41f90be5ee29cb95e68f66a32414e472d8c22ade1421"
+    },
+    {
+      "path": "public/survival/camp-circular-wall-install-v1/wall-14.png",
+      "bytes": 655562,
+      "sha256": "16a392be2d7e976493f2a5c2ba23f110f38723e751cc0d2886597202c62e754d"
+    },
+    {
+      "path": "public/survival/camp-circular-wall-install-v1/wall-14.webp",
+      "bytes": 359948,
+      "sha256": "b7d204d8934cfd377a780f786c834d9e99dbd39df62f06f1232f17d1df2b73e6"
+    },
+    {
+      "path": "public/survival/camp-circular-wall-install-v1/wall-15.png",
+      "bytes": 691792,
+      "sha256": "d54aa99d6d38f7358a65aaff87adaa7b472601e5a1a5a9bc6b678b1cb75df21c"
+    },
+    {
+      "path": "public/survival/camp-circular-wall-install-v1/wall-15.webp",
+      "bytes": 367046,
+      "sha256": "4af5611da4790fd5b86b842198d5b596b6c643b703d8eaf48fb088e1970e0d02"
+    }
+  ],
+  "fileCount": 66,
+  "totalBytes": 34655349
+}
