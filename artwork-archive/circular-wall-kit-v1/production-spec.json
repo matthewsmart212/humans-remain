@@ -1,0 +1,29 @@
+{
+  "name": "Humans Remain — spiked timber and mossy stone circular wall",
+  "version": 1,
+  "approvedReference": "reference/approved-spiked-mossy-wall.png",
+  "requestedScope": "Create the circular wall parts from the approved design; asset production and assembly review, before replacing the live camp perimeter.",
+  "artDirection": {
+    "foundation": "Low, irregular grey-taupe stonework with different stone sizes, chipped edges and olive moss in sheltered joints.",
+    "timber": "Weathered oak planks of varied width and height, with rough asymmetrical sharpened points, splitting, grain and worn edges.",
+    "structure": "Substantial square timber junction posts with dark iron straps and small bolts; three bays per standard sector.",
+    "lighting": "One fixed light from upper left in screen space; upright timbers throughout the circle.",
+    "background": "Genuine transparent alpha. No terrain patch, labels, checkerboard, characters, buildings or gates."
+  },
+  "geometry": {
+    "sectors": 16,
+    "sectorAngleDegrees": 22.5,
+    "radiusWorldUnits": 1650,
+    "baseThicknessWorldUnits": 80,
+    "angleConvention": "0 degrees north, increasing clockwise",
+    "projection": "Ground coordinates retain a circular footprint; vertical height is illustrated upward in screen space.",
+    "placementRotationDegrees": 0,
+    "junctionOwnership": "Each sector owns its starting post. The following sector owns the ending junction post. A small overlap falls beneath the following post."
+  },
+  "validationPolicy": {
+    "required": ["Verify all 16 source images exist and decode", "Verify real transparency", "Record dimensions and anchors", "Check adjacent joins in a full assembled preview", "Verify the 16 placement intervals close at 360 degrees", "Retain source art and prompts"],
+    "caution": "Exact guide and placement geometry do not alone prove exact painted boundaries. Record any remaining artwork registration issues honestly."
+  },
+  "generationMode": "Built-in image generation with exact geometry guides and the approved style reference",
+  "liveIntegration": false
+}

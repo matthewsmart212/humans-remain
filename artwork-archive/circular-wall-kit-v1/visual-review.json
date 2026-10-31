@@ -1,0 +1,812 @@
+{
+  "version": 1,
+  "reviewed": true,
+  "approvalStatus": "accepted",
+  "reviewedAt": "2026-10-31T20:41:40.163578+00:00",
+  "reviewer": "Independent visual-review agent; direct inspection of actual raster outputs",
+  "approvalScope": "The standalone 16-piece closed-ring asset kit at the supplied fixed orientations, anchors, scale and draw order. This is not approval of live-game integration.",
+  "assemblyType": "Actual final independent transparent PNG sprites, not the clay/geometry ring.",
+  "assets": [
+    {
+      "id": "wall-01",
+      "size": [
+        979,
+        564
+      ],
+      "source": {
+        "path": "artwork-archive/circular-wall-kit-v1/generated/wall-01.png",
+        "sha256": "a91c97c5849db1febdaefc7092b390ef354282dac11a665b97cc3aeebe159896",
+        "size": [
+          1254,
+          1254
+        ]
+      },
+      "png": {
+        "path": "public/survival/camp-circular-wall-v1/wall-01.png",
+        "sha256": "73ca5ab5a59fbab560aeee394cea4541fa6f40d68ca3b69e6e5608999f984efc",
+        "size": [
+          979,
+          564
+        ]
+      },
+      "webp": {
+        "path": "public/survival/camp-circular-wall-v1/wall-01.webp",
+        "sha256": "f7984f33a6ba2d15b520686e57813aa12e2afc66a09ae34c7a476438cee30377",
+        "size": [
+          979,
+          564
+        ]
+      }
+    },
+    {
+      "id": "wall-02",
+      "size": [
+        873,
+        882
+      ],
+      "source": {
+        "path": "artwork-archive/circular-wall-kit-v1/generated/wall-02.png",
+        "sha256": "c022108eead50da705b67c1ff2cedcc7bc2950aa6538d8e5fafd915f94fe6149",
+        "size": [
+          1254,
+          1254
+        ]
+      },
+      "png": {
+        "path": "public/survival/camp-circular-wall-v1/wall-02.png",
+        "sha256": "3cc3b0295806b7e818dbc6d145edc0f760baf387fce34470ef04fba648358393",
+        "size": [
+          873,
+          882
+        ]
+      },
+      "webp": {
+        "path": "public/survival/camp-circular-wall-v1/wall-02.webp",
+        "sha256": "72fccf199db3f64dc4a796fb592381ab21be31c68b699bbb7cee55bc84e6f05b",
+        "size": [
+          873,
+          882
+        ]
+      }
+    },
+    {
+      "id": "wall-03",
+      "size": [
+        635,
+        1095
+      ],
+      "source": {
+        "path": "artwork-archive/circular-wall-kit-v1/generated/wall-03.png",
+        "sha256": "51aee010fd2ba5090c67a69efc952fff172b2196b548f351c8f8f5eb210dfd7f",
+        "size": [
+          1254,
+          1254
+        ]
+      },
+      "png": {
+        "path": "public/survival/camp-circular-wall-v1/wall-03.png",
+        "sha256": "ec01b08f009c7feec8ddb0ee6331c1f89da60a151f8293ae676c774d2d75deb0",
+        "size": [
+          635,
+          1095
+        ]
+      },
+      "webp": {
+        "path": "public/survival/camp-circular-wall-v1/wall-03.webp",
+        "sha256": "0d86e18fea889a02b2922c98b1a9983e7ba2c36fb529d7ccb72815986bc13116",
+        "size": [
+          635,
+          1095
+        ]
+      }
+    },
+    {
+      "id": "wall-04",
+      "size": [
+        312,
+        1212
+      ],
+      "source": {
+        "path": "artwork-archive/circular-wall-kit-v1/generated/wall-04.png",
+        "sha256": "84fce9938cb8b7fa32dc312639f633cce7318bcfa33f8208ba4b9fad88ef5cea",
+        "size": [
+          1254,
+          1254
+        ]
+      },
+      "png": {
+        "path": "public/survival/camp-circular-wall-v1/wall-04.png",
+        "sha256": "2c3eeb69c029b8db436da16b550225c5864f643195d2e4140a71d1079bd259a5",
+        "size": [
+          312,
+          1212
+        ]
+      },
+      "webp": {
+        "path": "public/survival/camp-circular-wall-v1/wall-04.webp",
+        "sha256": "8281ff61c93bd5edc8f90b2d95cce9c23688a2f9ebbb26ddb1e2c3e6e90fac45",
+        "size": [
+          312,
+          1212
+        ]
+      }
+    },
+    {
+      "id": "wall-05",
+      "size": [
+        316,
+        1226
+      ],
+      "source": {
+        "path": "artwork-archive/circular-wall-kit-v1/generated/wall-05.png",
+        "sha256": "a1896553c3b9d9273ce249024d5c834c25bfa2b8895ef34a44d2737fe75ea955",
+        "size": [
+          1254,
+          1254
+        ]
+      },
+      "png": {
+        "path": "public/survival/camp-circular-wall-v1/wall-05.png",
+        "sha256": "8a98d49d3acfd8fc37b3768b34fcc12441aa67cf3770c3e5e3d6d4edaf8df337",
+        "size": [
+          316,
+          1226
+        ]
+      },
+      "webp": {
+        "path": "public/survival/camp-circular-wall-v1/wall-05.webp",
+        "sha256": "ed0485ab7c28b90df04790632e77b2e233d9a9f768bb8dbf4d623335ae7aa15c",
+        "size": [
+          316,
+          1226
+        ]
+      }
+    },
+    {
+      "id": "wall-06",
+      "size": [
+        627,
+        1109
+      ],
+      "source": {
+        "path": "artwork-archive/circular-wall-kit-v1/generated/wall-06.png",
+        "sha256": "32f96254de2dd91054ac230c29eda8ab99ca2afd1ba04c9ef133212ba80fb1dc",
+        "size": [
+          1254,
+          1254
+        ]
+      },
+      "png": {
+        "path": "public/survival/camp-circular-wall-v1/wall-06.png",
+        "sha256": "163e6b490550e5cb79beb52e45d6287313695f034cd72db3ccf647255348a893",
+        "size": [
+          627,
+          1109
+        ]
+      },
+      "webp": {
+        "path": "public/survival/camp-circular-wall-v1/wall-06.webp",
+        "sha256": "f6eb05ca521b4c21f6cbb6b3d077a24d61a1699d4cd2de33bdb4929ae6e74061",
+        "size": [
+          627,
+          1109
+        ]
+      }
+    },
+    {
+      "id": "wall-07",
+      "size": [
+        859,
+        878
+      ],
+      "source": {
+        "path": "artwork-archive/circular-wall-kit-v1/generated/wall-07.png",
+        "sha256": "ac5a5c870265a56d86b864cdbcbd22f00fd9002ac50eba823aa5d440769566e8",
+        "size": [
+          1254,
+          1254
+        ]
+      },
+      "png": {
+        "path": "public/survival/camp-circular-wall-v1/wall-07.png",
+        "sha256": "801722d03b3a262d9e23ee4b0855aa58800620e71fead643096b79706a90e40f",
+        "size": [
+          859,
+          878
+        ]
+      },
+      "webp": {
+        "path": "public/survival/camp-circular-wall-v1/wall-07.webp",
+        "sha256": "498a72eab6913b18291df55c820e721725ba95bf89805da8dfdf0fa27c22eaed",
+        "size": [
+          859,
+          878
+        ]
+      }
+    },
+    {
+      "id": "wall-08",
+      "size": [
+        972,
+        570
+      ],
+      "source": {
+        "path": "artwork-archive/circular-wall-kit-v1/generated/wall-08.png",
+        "sha256": "891325cdbf8ecc950a76c740876146debead0f8cf511714face29afecba96514",
+        "size": [
+          1254,
+          1254
+        ]
+      },
+      "png": {
+        "path": "public/survival/camp-circular-wall-v1/wall-08.png",
+        "sha256": "1ef541e5753c45715e41ba19d750a92e004936055d9c537536907ea96ce46cc4",
+        "size": [
+          972,
+          570
+        ]
+      },
+      "webp": {
+        "path": "public/survival/camp-circular-wall-v1/wall-08.webp",
+        "sha256": "3deb460121c2ec4d432ab3b7fc379145ddccfc25c418d8e422ff1aafd8b88712",
+        "size": [
+          972,
+          570
+        ]
+      }
+    },
+    {
+      "id": "wall-09",
+      "size": [
+        979,
+        527
+      ],
+      "source": {
+        "path": "artwork-archive/circular-wall-kit-v1/generated/wall-09.png",
+        "sha256": "cb93e5bd831762acae63391261dbbdb0a5cef8690b6143ac393b1826299b4271",
+        "size": [
+          1254,
+          1254
+        ]
+      },
+      "png": {
+        "path": "public/survival/camp-circular-wall-v1/wall-09.png",
+        "sha256": "e39f79226b61c74436acb98a0c559b6074298ff2161e2d354abb7dbc9e56777e",
+        "size": [
+          979,
+          527
+        ]
+      },
+      "webp": {
+        "path": "public/survival/camp-circular-wall-v1/wall-09.webp",
+        "sha256": "7cb211e42f126c45ffa1cb1236e54704c901ee425d198d2307b97f0534d0e250",
+        "size": [
+          979,
+          527
+        ]
+      }
+    },
+    {
+      "id": "wall-10",
+      "size": [
+        874,
+        836
+      ],
+      "source": {
+        "path": "artwork-archive/circular-wall-kit-v1/generated/wall-10.png",
+        "sha256": "bcf78d1485ca47c4721e1601e64f2868466e4325e88e4ccc5f3714c7bc499112",
+        "size": [
+          1254,
+          1254
+        ]
+      },
+      "png": {
+        "path": "public/survival/camp-circular-wall-v1/wall-10.png",
+        "sha256": "a4199ed02de130c33bbf70c25f175a69f47f74516a4cf51699be680a24476ad0",
+        "size": [
+          874,
+          836
+        ]
+      },
+      "webp": {
+        "path": "public/survival/camp-circular-wall-v1/wall-10.webp",
+        "sha256": "122c0191fcb73fb08525ce4f032804a7cdc072352b21e07288158266082dc753",
+        "size": [
+          874,
+          836
+        ]
+      }
+    },
+    {
+      "id": "wall-11",
+      "size": [
+        635,
+        1068
+      ],
+      "source": {
+        "path": "artwork-archive/circular-wall-kit-v1/generated/wall-11.png",
+        "sha256": "c79f381fd01f242626fa2f22d7c6a12c12642802ffb3422860668355f88c4b27",
+        "size": [
+          1254,
+          1254
+        ]
+      },
+      "png": {
+        "path": "public/survival/camp-circular-wall-v1/wall-11.png",
+        "sha256": "b99db5cfed865b7718d4542e14ae5d9ab86aaf908e4eedd21675e80f9e032913",
+        "size": [
+          635,
+          1068
+        ]
+      },
+      "webp": {
+        "path": "public/survival/camp-circular-wall-v1/wall-11.webp",
+        "sha256": "4a3c2145e3625f9a591e871529743706c1cd60c730e611b9e4ca4eee82fc3c37",
+        "size": [
+          635,
+          1068
+        ]
+      }
+    },
+    {
+      "id": "wall-12",
+      "size": [
+        312,
+        1199
+      ],
+      "source": {
+        "path": "artwork-archive/circular-wall-kit-v1/generated/wall-12.png",
+        "sha256": "766f5b6dadad6ba88bec9441996353446089ca8ed94ea8dd5ed3c30ee70e8091",
+        "size": [
+          1254,
+          1254
+        ]
+      },
+      "png": {
+        "path": "public/survival/camp-circular-wall-v1/wall-12.png",
+        "sha256": "8fc8d2934b3f387436139c362c0cc9a9a2976b01ad8f45b91b0eeb1244719146",
+        "size": [
+          312,
+          1199
+        ]
+      },
+      "webp": {
+        "path": "public/survival/camp-circular-wall-v1/wall-12.webp",
+        "sha256": "9393064e04dcefdde50a5d375122a1fc21688b2ca372997812d559c8fcdf99c8",
+        "size": [
+          312,
+          1199
+        ]
+      }
+    },
+    {
+      "id": "wall-13",
+      "size": [
+        316,
+        1191
+      ],
+      "source": {
+        "path": "artwork-archive/circular-wall-kit-v1/generated/wall-13.png",
+        "sha256": "33f70871c566b65a76d244212086b428cfa1ddcc5ec6a2a10a9cff4df7fba7f7",
+        "size": [
+          1254,
+          1254
+        ]
+      },
+      "png": {
+        "path": "public/survival/camp-circular-wall-v1/wall-13.png",
+        "sha256": "0df9bc959846853270f3553b3d1926bf4375ab7b3006dc4dae2ceeff5d96a7dd",
+        "size": [
+          316,
+          1191
+        ]
+      },
+      "webp": {
+        "path": "public/survival/camp-circular-wall-v1/wall-13.webp",
+        "sha256": "1b9c7eb9df2338394db0cf13894db47f037e4824af883a9971c0fee19ed6ff7e",
+        "size": [
+          316,
+          1191
+        ]
+      }
+    },
+    {
+      "id": "wall-14",
+      "size": [
+        627,
+        1076
+      ],
+      "source": {
+        "path": "artwork-archive/circular-wall-kit-v1/generated/wall-14.png",
+        "sha256": "4e47fece13e5d4aaea879d702616a9c1e16540968e2159274839d8f57f5f64f8",
+        "size": [
+          1254,
+          1254
+        ]
+      },
+      "png": {
+        "path": "public/survival/camp-circular-wall-v1/wall-14.png",
+        "sha256": "287a70a1a0daf8b06611e9ccee519460aeb9cbca72fa95eeb77b3c015f3171fa",
+        "size": [
+          627,
+          1076
+        ]
+      },
+      "webp": {
+        "path": "public/survival/camp-circular-wall-v1/wall-14.webp",
+        "sha256": "c4a2bc7f9810b671883cdf24bfb18492314dfb3c6c41363c502e39908a6d83cc",
+        "size": [
+          627,
+          1076
+        ]
+      }
+    },
+    {
+      "id": "wall-15",
+      "size": [
+        859,
+        840
+      ],
+      "source": {
+        "path": "artwork-archive/circular-wall-kit-v1/generated/wall-15.png",
+        "sha256": "76b20b1dca81fe6b3a2994a32313e73abdaec66c9ac5b923b9184accd6fa0a87",
+        "size": [
+          1254,
+          1254
+        ]
+      },
+      "png": {
+        "path": "public/survival/camp-circular-wall-v1/wall-15.png",
+        "sha256": "193dbc1793a4dad20fbccda7646cd3cd3eaa74690a1b8a6a5de04ff2ab7e3c09",
+        "size": [
+          859,
+          840
+        ]
+      },
+      "webp": {
+        "path": "public/survival/camp-circular-wall-v1/wall-15.webp",
+        "sha256": "b4d9da4bc89975ff930c9ec721d8e6ceb49f214b776796fb3d9ad3b68e319853",
+        "size": [
+          859,
+          840
+        ]
+      }
+    },
+    {
+      "id": "wall-16",
+      "size": [
+        972,
+        540
+      ],
+      "source": {
+        "path": "artwork-archive/circular-wall-kit-v1/generated/wall-16.png",
+        "sha256": "2691dea3526571eab8d5fe5d631ac0e5316b18a8b1aeb66c885dcd68f28b11c5",
+        "size": [
+          1254,
+          1254
+        ]
+      },
+      "png": {
+        "path": "public/survival/camp-circular-wall-v1/wall-16.png",
+        "sha256": "82ffb4f4562ffb73655aba4e12881a8faf949fd91c2c89bc33262de18a895b2c",
+        "size": [
+          972,
+          540
+        ]
+      },
+      "webp": {
+        "path": "public/survival/camp-circular-wall-v1/wall-16.webp",
+        "sha256": "ceeef1816b4e178297f9fc14984eb1b24441b3c28cf13c8ce421f87644cbf9b8",
+        "size": [
+          972,
+          540
+        ]
+      }
+    }
+  ],
+  "assembledPreview": {
+    "path": "artwork-archive/circular-wall-kit-v1/previews/assembled-circle.png",
+    "sha256": "9c7a647e1294cf9205d82823d3ab1fd6af2cdc8b3b54ef577e9032623105e3c9",
+    "size": [
+      4834,
+      5082
+    ],
+    "drawOrder": [
+      "wall-15",
+      "wall-16",
+      "wall-01",
+      "wall-02",
+      "wall-03",
+      "wall-14",
+      "wall-04",
+      "wall-13",
+      "wall-12",
+      "wall-05",
+      "wall-06",
+      "wall-11",
+      "wall-07",
+      "wall-10",
+      "wall-08",
+      "wall-09"
+    ],
+    "pixelsPerWorldUnit": 1.4,
+    "pixelOrigin": [
+      2417,
+      2665
+    ]
+  },
+  "registrationReportPath": "artwork-archive/circular-wall-kit-v1/registration-report.json",
+  "baselineReview": {
+    "assembledPreviewSha256": "de5bdc8095ecb40fe8231b705c4a86f3b005892e0472e69520c13f52865a095c",
+    "generatedAt": "2026-10-31T20:27:36.255Z",
+    "all16JoinsInspectedAtNativeResolution": true,
+    "changedSpritesSinceBaseline": [
+      "wall-04",
+      "wall-12",
+      "wall-16"
+    ],
+    "unchangedSpritesVerifiedBySha256": true
+  },
+  "reviewMethod": [
+    "Viewed the full actual-sprite ring and the approved spiked, irregular, mossy wood-and-stone style.",
+    "Inspected all 16 join crops at native assembly pixel resolution.",
+    "Reinspected changed-adjacent joins 03→04, 04→05, 11→12, 12→13, 15→16, 16→01 and the 01→02 ordering guard after the final corrections.",
+    "Compared the flagged side-view proportions to their source/registered images and geometric guides.",
+    "Bound the reviewed state to actual SHA256 hashes of every original source, final PNG, final lossless WebP, and assembled PNG."
+  ],
+  "styleAndOrientation": {
+    "judgment": "coherent",
+    "notes": "Irregular sharpened oak, low rough mossy masonry, warm hand-painted shading, inside rails on the northern half and exterior plank faces on the southern half read as one consistent ring. Every part has its own fixed orientation; do not rotate or mirror one sprite to stand in for another."
+  },
+  "joins": [
+    {
+      "from": "wall-01",
+      "to": "wall-02",
+      "angleDeg": 22.5,
+      "reviewed": true,
+      "status": "accepted",
+      "notes": "One owned joint post covers the overlap; the rails and mossy base read continuously. Rechecked after the northern draw-order change.",
+      "evidencePath": "artwork-archive/circular-wall-kit-v1/previews/qa-final-join-01-02.png"
+    },
+    {
+      "from": "wall-02",
+      "to": "wall-03",
+      "angleDeg": 45.0,
+      "reviewed": true,
+      "status": "accepted",
+      "notes": "Continuous stone and timber join; one coherent structural post, with natural variation in nearby picket heights.",
+      "evidencePath": "artwork-archive/circular-wall-kit-v1/previews/qa-final-join-02-03.png"
+    },
+    {
+      "from": "wall-03",
+      "to": "wall-04",
+      "angleDeg": 67.5,
+      "reviewed": true,
+      "status": "accepted",
+      "notes": "Rechecked after wall-04 revision. Oblique pickets partly overlap the post at this steep view, but the foundation and rails remain continuous.",
+      "evidencePath": "artwork-archive/circular-wall-kit-v1/previews/qa-final-join-03-04.png"
+    },
+    {
+      "from": "wall-04",
+      "to": "wall-05",
+      "angleDeg": 90.0,
+      "reviewed": true,
+      "status": "acceptedWithMinorCaveat",
+      "notes": "Rechecked after revisions to wall-05 and wall-04. The large square inner end cap is reduced and beveled. A local inner silhouette jog of about 11.9 assembly pixels remains at ground Y=0; this is a visible rough stone edge, with no full-depth transparent gap.",
+      "evidencePath": "artwork-archive/circular-wall-kit-v1/previews/qa-final-join-04-05.png"
+    },
+    {
+      "from": "wall-05",
+      "to": "wall-06",
+      "angleDeg": 112.5,
+      "reviewed": true,
+      "status": "accepted",
+      "notes": "Rechecked with revised wall-05. Its extra far-end painted post is hidden by wall-06 in the reviewed assembly; only one joint post reads visibly. This depends on the supplied placement/order.",
+      "evidencePath": "artwork-archive/circular-wall-kit-v1/previews/qa-final-join-05-06.png"
+    },
+    {
+      "from": "wall-06",
+      "to": "wall-07",
+      "angleDeg": 135.0,
+      "reviewed": true,
+      "status": "accepted",
+      "notes": "A single coherent joint post and continuous stone footing; no obvious daylight gap or duplicate structural post.",
+      "evidencePath": "artwork-archive/circular-wall-kit-v1/previews/qa-final-join-06-07.png"
+    },
+    {
+      "from": "wall-07",
+      "to": "wall-08",
+      "angleDeg": 157.5,
+      "reviewed": true,
+      "status": "acceptedWithMinorCaveat",
+      "notes": "Timber closes cleanly. Individual stones produce a small irregular lower-edge step beside the joint post, consistent with the rough masonry style.",
+      "evidencePath": "artwork-archive/circular-wall-kit-v1/previews/qa-final-join-07-08.png"
+    },
+    {
+      "from": "wall-08",
+      "to": "wall-09",
+      "angleDeg": 180.0,
+      "reviewed": true,
+      "status": "accepted",
+      "notes": "The south join closes with one front post and a continuous, gently curved stone base.",
+      "evidencePath": "artwork-archive/circular-wall-kit-v1/previews/qa-final-join-08-09.png"
+    },
+    {
+      "from": "wall-09",
+      "to": "wall-10",
+      "angleDeg": 202.5,
+      "reviewed": true,
+      "status": "acceptedWithMinorCaveat",
+      "notes": "The stone base closes. Near pickets partly occlude the following post/collar at the angled exterior view; no second iron-banded post is visible.",
+      "evidencePath": "artwork-archive/circular-wall-kit-v1/previews/qa-final-join-09-10.png"
+    },
+    {
+      "from": "wall-10",
+      "to": "wall-11",
+      "angleDeg": 225.0,
+      "reviewed": true,
+      "status": "acceptedWithMinorCaveat",
+      "notes": "The foundation is continuous. Angled near pickets cover part of the following structural post; this remains a visible occlusion caveat at full asset resolution.",
+      "evidencePath": "artwork-archive/circular-wall-kit-v1/previews/qa-final-join-10-11.png"
+    },
+    {
+      "from": "wall-11",
+      "to": "wall-12",
+      "angleDeg": 247.5,
+      "reviewed": true,
+      "status": "acceptedWithMinorCaveat",
+      "notes": "Rechecked after wall-12 revision. The preceding pickets hide much of the joining post collar at the steep side view, but there is no through-gap or additional iron-banded post.",
+      "evidencePath": "artwork-archive/circular-wall-kit-v1/previews/qa-final-join-11-12.png"
+    },
+    {
+      "from": "wall-12",
+      "to": "wall-13",
+      "angleDeg": 270.0,
+      "reviewed": true,
+      "status": "acceptedWithMinorCaveat",
+      "notes": "Rechecked after wall-12 revision. The extra endpoint iron-banded post is gone. Ordinary near pickets still partly cover wall-13's starting post, and a small inner stone corner remains visible; no double collar or full-depth gap remains.",
+      "evidencePath": "artwork-archive/circular-wall-kit-v1/previews/qa-final-join-12-13.png"
+    },
+    {
+      "from": "wall-13",
+      "to": "wall-14",
+      "angleDeg": 292.5,
+      "reviewed": true,
+      "status": "acceptedWithMinorCaveat",
+      "notes": "The base is continuous; an ordinary near picket partially covers the joint post at the steep angle. The camp-facing rails remain coherent.",
+      "evidencePath": "artwork-archive/circular-wall-kit-v1/previews/qa-final-join-13-14.png"
+    },
+    {
+      "from": "wall-14",
+      "to": "wall-15",
+      "angleDeg": 315.0,
+      "reviewed": true,
+      "status": "acceptedWithMinorCaveat",
+      "notes": "Rails meet behind the joint post. The stone silhouette has an irregular individual-block step, not a full-depth break.",
+      "evidencePath": "artwork-archive/circular-wall-kit-v1/previews/qa-final-join-14-15.png"
+    },
+    {
+      "from": "wall-15",
+      "to": "wall-16",
+      "angleDeg": 337.5,
+      "reviewed": true,
+      "status": "accepted",
+      "notes": "Rechecked after the draw-order constraint and wall-16 revision. Drawing wall-16 after wall-15 restores the whole starting post and iron collar; both rails terminate plausibly at it.",
+      "evidencePath": "artwork-archive/circular-wall-kit-v1/previews/qa-final-join-15-16.png"
+    },
+    {
+      "from": "wall-16",
+      "to": "wall-01",
+      "angleDeg": 0.0,
+      "reviewed": true,
+      "status": "accepted",
+      "notes": "Rechecked after wall-16 foundation revision. The former rectangular lower-base step at the north closure is gone; the starting post and both rails remain coherent.",
+      "evidencePath": "artwork-archive/circular-wall-kit-v1/previews/qa-final-join-16-01.png"
+    }
+  ],
+  "aspectReviews": [
+    {
+      "id": "wall-04",
+      "aspectDeltaPercent": -11.08129263110813,
+      "fitXYRatios": [
+        1.062730627306273,
+        1.1951710261569417
+      ],
+      "reviewed": true,
+      "judgment": "acceptedWithDocumentedNonuniformFit",
+      "notes": "Reviewed the original, registered side-view sprite and both adjacent actual joins after correction. The narrow orientation remains plausible. Nonuniform fit is real; the residual small foundation jog is documented separately."
+    },
+    {
+      "id": "wall-05",
+      "aspectDeltaPercent": -17.278153557021604,
+      "fitXYRatios": [
+        0.9765886287625418,
+        1.1805691854759568
+      ],
+      "reviewed": true,
+      "judgment": "acceptedWithDocumentedNonuniformFit",
+      "notes": "Reviewed original, registered sprite and actual adjacent joins. The largest nonuniform fit narrows the image relative to its height, but the side-view timber remains visually coherent. The far-end fourth painted post is hidden only in the reviewed assembly."
+    },
+    {
+      "id": "wall-12",
+      "aspectDeltaPercent": -14.212765957446805,
+      "fitXYRatios": [
+        1.0140845070422535,
+        1.1820925553319919
+      ],
+      "reviewed": true,
+      "judgment": "acceptedWithDocumentedNonuniformFit",
+      "notes": "Reviewed revised original, registered sprite and both adjacent actual joins. The extra far-end banded post was replaced by ordinary pickets; the previous doubled collar is resolved. Narrow side-view proportions remain plausible despite the nonuniform fit."
+    }
+  ],
+  "resolvedIssues": [
+    {
+      "join": "04→05",
+      "resolution": "Revised05 inner footing and04 terminal stone cap reduce the conspicuous square end face; a minor residual silhouette jog remains."
+    },
+    {
+      "join": "12→13",
+      "resolution": "Removed wall-12's extra terminal iron-banded post; the visible doubled collar is resolved."
+    },
+    {
+      "join": "15→16",
+      "resolution": "The reviewed local draw-order constraint puts wall-16 after wall-15, restoring the complete owned post."
+    },
+    {
+      "join": "16→01",
+      "resolution": "Revised wall-16's terminal stone foundation removes the hard rectangular closure step."
+    }
+  ],
+  "remainingIssues": [
+    {
+      "severity": "minor",
+      "id": "east-inner-stone-jog",
+      "join": "04→05",
+      "description": "About 11.9 px difference between painted inner alpha edges at the shared ground plane. Both sides overlap across roughly 104 px of remaining wall depth. It reads as a rough bevel/stone edge; do not describe the painted contour as pixel-perfect.",
+      "measurement": {
+        "alphaThreshold": 16,
+        "assemblyPixelsPerWorldUnit": 1.4,
+        "worldY": 0,
+        "wall04InnerXRelativeToAssemblyOrigin": 2249.1983283006093,
+        "wall05InnerXRelativeToAssemblyOrigin": 2261.1089280035253,
+        "innerEdgeDifferencePixels": 11.910599702916
+      }
+    },
+    {
+      "severity": "minor",
+      "id": "oblique-post-occlusion",
+      "joins": [
+        "03→04",
+        "09→10",
+        "10→11",
+        "11→12",
+        "12→13",
+        "13→14"
+      ],
+      "description": "Ordinary neighboring pickets partly obscure structural post faces or collars in steep views. Whole-sprite compositing is not a per-pixel 3D depth-buffer rendering."
+    },
+    {
+      "severity": "minor",
+      "id": "nonuniform-registration",
+      "assets": [
+        "wall-04",
+        "wall-05",
+        "wall-12"
+      ],
+      "description": "The recorded aspect warnings remain real and visible in the process metadata; visual acceptance does not make the fit uniform or guarantee exact internal painted geometry."
+    },
+    {
+      "severity": "usageConstraint",
+      "id": "hidden-terminal-post05",
+      "asset": "wall-05",
+      "description": "The source includes a fourth terminal painted post that is hidden by wall-06 in this reviewed closed ring. Shortened/open-ended road variants must be designed and reviewed separately."
+    }
+  ],
+  "limitations": [
+    "Analytical anchors and nominal ground footprint form the exact radius 1650 circle; irregular painted wood and stone silhouettes do not constitute a pixel-perfect mathematical circumference.",
+    "Acceptance applies only to the documented fixed anchors, scale, orientation and draw order. Other placements, flips, cropping and arbitrary per-piece rescaling have not been reviewed.",
+    "The six camp road openings and their shortened end pieces/gates are not included in this base 16-piece art kit.",
+    "No live-game layout, collision behavior, character occlusion, walk-through testing or performance was changed or certified by this art review.",
+    "No live deployment was performed by this review."
+  ]
+}

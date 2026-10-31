@@ -1,0 +1,141 @@
+{
+  "schemaVersion": 1,
+  "auditDate": "2026-10-31",
+  "auditedSourceCommit": "f228d212f5f167d7ec89d24ba86f682aa801f1a7",
+  "status": "standalone_asset_kit_not_integrated_or_deployed",
+  "scope": {
+    "thisKit": "Sixteen orientation-specific 22.5-degree wall sectors forming an unbroken circle.",
+    "notIncludedInBaseKit": [
+      "Road-opening shortened sector variants",
+      "Road-opening end-post variants",
+      "Runtime asset registration or world-placement migration",
+      "Live deployment"
+    ],
+    "geometryApproval": "Conservative production candidate; final in-game placement still requires visual and collision review."
+  },
+  "sourceSnapshot": {
+    "worldPlacementCount": 4543,
+    "campPerimeterVersion": 4,
+    "originalWallPlacementCount": 11,
+    "gatesPresent": 0,
+    "originalWallPlacementsMatchSavedPlan": true,
+    "hearthPlacementId": "06c42057-0d46-43ef-977b-f183d7c50561",
+    "headquartersPlacementId": "4d468bcc-83b9-4bb7-af01-da4b69a67d9a",
+    "headquartersAssetId": "base_shelter_t1"
+  },
+  "candidateCircle": {
+    "units": "game_world_units",
+    "centre": [1718.1675873489273, 1573.5124773329626],
+    "centreSource": "Actual hearth placement in migration-data/world-layout.json draft",
+    "centrelineRadius": 1650,
+    "baseThickness": 80,
+    "innerRadius": 1610,
+    "outerRadius": 1690,
+    "sectorCount": 16,
+    "sectorAngleDegrees": 22.5,
+    "angleConvention": "0 degrees is north; increasing angles run clockwise; world y increases downward",
+    "parametricX": "centreX + radius * sin(theta)",
+    "parametricY": "centreY - radius * cos(theta)",
+    "placementRotationDegrees": 0,
+    "orientationSpecificArtRequired": true,
+    "normalisedKitOrigin": [0, 0]
+  },
+  "headquartersClearance": {
+    "method": "Transform the saved placement-specific closed collision polygon by its frame width, height, normalized anchor and scale; measure every vertex from the actual hearth centre.",
+    "largestVertexRadius": 1564.75,
+    "largestRadiusVertex": [2761.57, 407.43],
+    "candidateInnerEdgeClearanceAtLargestRadius": 45.25,
+    "otherNorthernVertex": [1953.91, 46.6],
+    "otherNorthernVertexRadius": 1545,
+    "radius1400WouldIntersectHeadquarters": true,
+    "limits": "This is an HQ polygon clearance check, not an exhaustive audit of all buildings, props, foliage, navigation or sprite overhangs."
+  },
+  "existingPerimeterFits": [
+    {
+      "input": "Twelve endpoints of the six saved gate traces",
+      "centre": [1737.87, 1593.81],
+      "radius": 1403.96,
+      "rmsRadialError": 27.25
+    },
+    {
+      "input": "All available vertices of the current eleven wall placement collision polygons",
+      "centre": [1766.62, 1656.72],
+      "radius": 1397.05,
+      "rmsRadialError": 102.89,
+      "caveat": "Includes inner and outer polygon edges; one non-solid original wall has no explicit collision polygon. Diagnostic only."
+    }
+  ],
+  "oldRoadOpeningTraces": [
+    {"direction": "NE", "a": [2744, 569], "b": [2956, 905], "width": 397.29},
+    {"direction": "SE", "a": [2828, 2490], "b": [2489, 2774], "width": 442.24},
+    {"direction": "S", "a": [1989, 2935], "b": [1553, 2975], "width": 437.83},
+    {"direction": "SW", "a": [979, 2787], "b": [750, 2621], "width": 282.84},
+    {"direction": "W", "a": [408, 2164], "b": [368, 1872], "width": 294.73},
+    {"direction": "NW", "a": [730, 704], "b": [918, 440], "width": 324.1}
+  ],
+  "candidateRoadOpenings": {
+    "status": "Planning measurements only; no road variants are included in the base sixteen-sector kit.",
+    "method": "Intersect each registered painted road centreline polyline with candidateCircle. Add 60 world units on each side of the road and correct for its crossing angle to estimate a clear opening. Measurements use polyline segments, not the map renderer's quadratic smoothing.",
+    "limits": "Registered atlas road traces approximate painted gameplay paths. Visually verify the actual ground art, shoulders, terrain and player clearance before using these intervals in a world migration.",
+    "sideClearance": 60,
+    "openings": [
+      {"direction": "NE", "roadId": "camp-northeast", "intersection": [2824.46, 349.33], "angleDegrees": 42.104, "roadWidth": 141.42, "suggestedClearWidth": 290.17, "clearAngleRangeDegrees": [37.059, 47.149]},
+      {"direction": "SE", "roadId": "camp-southeast", "intersection": [2896.97, 2728.04], "angleDegrees": 134.404, "roadWidth": 169.71, "suggestedClearWidth": 291.09, "clearAngleRangeDegrees": [129.343, 139.464]},
+      {"direction": "S", "roadId": "camp-south-painted", "intersection": [1651.02, 3222.15], "angleDegrees": 182.332, "roadWidth": 136.71, "suggestedClearWidth": 259.2, "clearAngleRangeDegrees": [177.827, 186.837]},
+      {"direction": "SW", "roadId": "camp-southwest", "intersection": [626.02, 2810.33], "angleDegrees": 221.446, "roadWidth": 150.85, "suggestedClearWidth": 294.32, "clearAngleRangeDegrees": [216.329, 226.562]},
+      {"direction": "W", "roadId": "camp-west", "intersection": [148.65, 2082.55], "angleDegrees": 252.031, "roadWidth": 146.14, "suggestedClearWidth": 284.61, "clearAngleRangeDegrees": [247.083, 256.978]},
+      {"direction": "NW", "roadId": "camp-northwest", "intersection": [595.6, 364.24], "angleDegrees": 317.129, "roadWidth": 150.85, "suggestedClearWidth": 271, "clearAngleRangeDegrees": [312.419, 321.84]}
+    ],
+    "futureVariantRules": [
+      "Preserve six road openings and no gate leaves.",
+      "Shorten every canonical sector intersected by an opening; an opening crossing a sector boundary requires two shortened neighboring variants.",
+      "Provide finished end posts at the true road boundaries.",
+      "Do not remove a whole 22.5-degree sector for every road: its approximately 648-world-unit arc is much wider than the road.",
+      "Do not retain old gate coordinates after enlarging the ring; use new road intersections."
+    ]
+  },
+  "engineConventions": {
+    "groundProjection": "Flat world x/y with uniform camera scale and translation; no global isometric ground compression.",
+    "placementAnchor": "Normalized ground midpoint within each sprite canvas; do not use visual centre.",
+    "spriteRotation": "Runtime rotation rotates the entire baked bitmap and its vertical timbers; create each orientation separately and place with rotation 0 and no flips.",
+    "collision": "Placement-specific normalized closed polygons or open polyline paths are supported.",
+    "occlusionCaveat": "Existing wall depth/fade code uses only the first straight segment. Curved walls need later depth/occlusion review.",
+    "slicingCaveat": "Keep whole upright volumes. Radial cuts in screen space can bisect vertical timber faces."
+  },
+  "nonAuthoritativeMapSymbol": {
+    "source": "src/player-map-camp-wall.ts",
+    "centre": [1700, 1550],
+    "radius": 1450,
+    "reason": "The source explicitly identifies this as a cartographic symbol that does not change gameplay walls, terrain or roads."
+  },
+  "independentGeometryGuideReview": {
+    "reviewDate": "2026-10-31",
+    "manifest": "geometry/manifest.json",
+    "result": "passed_geometry_and_file_checks_only",
+    "sectorCount": 16,
+    "angleCoverageDegrees": 360,
+    "endpointFormulaMaxErrorWorldUnits": 0,
+    "centrelineRadiusMaxErrorWorldUnits": 2.2737367544323206e-13,
+    "anchorFormulaMaxErrorPixels": 0,
+    "closureMaxErrorWorldUnits": 4.0413344371862654e-13,
+    "minimumAlphaCanvasMarginPixels": 166,
+    "allImages1536SquareRGBA": true,
+    "allImagesHaveAlphaRange0To255": true,
+    "uniqueOwnedPostAngles": 48,
+    "visualReview": "Contact sheet and complete clay ring show consistent upright timbers and a continuous circular ground foundation.",
+    "limits": "The assembled clay preview renders the combined 3D guide geometry with a depth buffer. It does not validate standalone 2D sprite compositing order or subsequent AI-painted registration. Final painted images need separate assembly and seam review."
+  },
+  "sources": [
+    "migration-data/world-layout.json",
+    "native/assets/world-snapshot.json",
+    "src/camp-original-wall-layout.json",
+    "src/camp-original-gate-layout.json",
+    "src/camp-perimeter.ts",
+    "src/player-map-camp-roads.json",
+    "src/player-map-camp-wall.ts",
+    "src/world-layout.ts",
+    "src/world-camera.ts",
+    "src/placed-world-renderer.ts",
+    "src/world-assets.ts"
+  ]
+}

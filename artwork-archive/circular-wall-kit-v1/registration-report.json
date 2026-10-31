@@ -1,0 +1,2466 @@
+{
+  "version": 2,
+  "mode": "complete-set",
+  "generatedAt": "2026-10-31T20:43:44.436Z",
+  "inputDirectory": "artwork-archive/circular-wall-kit-v1/generated",
+  "outputDirectory": "public/survival/camp-circular-wall-v1",
+  "generatedCount": 16,
+  "expectedCount": 16,
+  "missing": [],
+  "alphaThreshold": 16,
+  "trimPadding": 12,
+  "pixelsPerWorldUnit": 1.4,
+  "operations": [
+    "Measure genuine source alpha and visible bounds",
+    "Use largest 8-connected alpha component bounds only when it contains at least 99% of foreground pixels; otherwise retain full bounds and flag review",
+    "Extract that rectangle, retaining every original pixel inside it",
+    "Resize mechanically to the guide alpha bounding box",
+    "Place on the unchanged 1536-square guide canvas",
+    "Trim to visible bounds plus 12 pixels",
+    "Encode PNG and lossless WebP",
+    "Assemble those individual final images at their fixed anchors"
+  ],
+  "sourcesUnmodified": true,
+  "geometryIsExactButArtworkMayDrift": true,
+  "registrations": [
+    {
+      "id": "wall-01",
+      "source": "artwork-archive/circular-wall-kit-v1/generated/wall-01.png",
+      "sourceSha256": "a91c97c5849db1febdaefc7092b390ef354282dac11a665b97cc3aeebe159896",
+      "sourceSize": [
+        1254,
+        1254
+      ],
+      "sourceAlpha": {
+        "min": 0,
+        "max": 255,
+        "transparentPixels": 1306563,
+        "opaquePixels": 457,
+        "antialiasedPixels": 265496,
+        "transparentFraction": 0.8308742168601146,
+        "bbox": {
+          "left": 201,
+          "top": 395,
+          "width": 893,
+          "height": 522
+        }
+      },
+      "sourceFullAlphaBBox": {
+        "left": 201,
+        "top": 395,
+        "width": 893,
+        "height": 522
+      },
+      "sourceLargestComponentBBox": {
+        "left": 201,
+        "top": 395,
+        "width": 893,
+        "height": 522
+      },
+      "sourceComponentAnalysis": {
+        "connectivity": 8,
+        "alphaThreshold": 16,
+        "componentCount": 1,
+        "totalForegroundPixels": 254989,
+        "originalFullAlphaBBox": {
+          "left": 201,
+          "top": 395,
+          "width": 893,
+          "height": 522
+        },
+        "largestComponent": {
+          "pixelCount": 254989,
+          "bbox": {
+            "left": 201,
+            "top": 395,
+            "width": 893,
+            "height": 522
+          }
+        },
+        "largestComponentFraction": 1,
+        "dominanceRequired": 0.99,
+        "selectedBBox": {
+          "left": 201,
+          "top": 395,
+          "width": 893,
+          "height": 522
+        },
+        "selection": "largest-component-bounding-rectangle",
+        "excludedForegroundPixels": 0,
+        "detachedComponentPixels": 0,
+        "requiresHumanReview": false,
+        "largestOtherComponents": [],
+        "note": "Only the mechanical extraction rectangle changes. All original pixels inside it, including detached details, are retained; source files remain untouched."
+      },
+      "registrationSourceBBox": {
+        "left": 201,
+        "top": 395,
+        "width": 893,
+        "height": 522
+      },
+      "guideCanvas": [
+        1536,
+        1536
+      ],
+      "guideAlphaBBox": {
+        "left": 291,
+        "top": 498,
+        "width": 955,
+        "height": 540
+      },
+      "fitXYRatios": [
+        1.0694288913773795,
+        1.0344827586206897
+      ],
+      "sourceAspectRatio": 1.710727969348659,
+      "targetAspectRatio": 1.7685185185185186,
+      "aspectDelta": 0.03378126166480011,
+      "aspectDeltaPercent": 3.378126166480011,
+      "requiresHumanAspectReview": false,
+      "requiresHumanComponentReview": false,
+      "registeredAlphaBBox": {
+        "left": 291,
+        "top": 498,
+        "width": 955,
+        "height": 540
+      },
+      "trimCrop": {
+        "left": 279,
+        "top": 486,
+        "width": 979,
+        "height": 564
+      },
+      "finalSize": [
+        979,
+        564
+      ],
+      "finalAlpha": {
+        "min": 0,
+        "max": 255,
+        "transparentPixels": 258947,
+        "opaquePixels": 663,
+        "antialiasedPixels": 292546,
+        "transparentFraction": 0.46897434782923664,
+        "bbox": {
+          "left": 12,
+          "top": 12,
+          "width": 955,
+          "height": 540
+        }
+      },
+      "outputs": {
+        "png": {
+          "file": "public/survival/camp-circular-wall-v1/wall-01.png",
+          "bytes": 971772,
+          "sha256": "73ca5ab5a59fbab560aeee394cea4541fa6f40d68ca3b69e6e5608999f984efc"
+        },
+        "webp": {
+          "file": "public/survival/camp-circular-wall-v1/wall-01.webp",
+          "bytes": 536076,
+          "sha256": "f7984f33a6ba2d15b520686e57813aa12e2afc66a09ae34c7a476438cee30377"
+        }
+      },
+      "losslessWebPVerified": true
+    },
+    {
+      "id": "wall-02",
+      "source": "artwork-archive/circular-wall-kit-v1/generated/wall-02.png",
+      "sourceSha256": "c022108eead50da705b67c1ff2cedcc7bc2950aa6538d8e5fafd915f94fe6149",
+      "sourceSize": [
+        1254,
+        1254
+      ],
+      "sourceAlpha": {
+        "min": 0,
+        "max": 255,
+        "transparentPixels": 1368995,
+        "opaquePixels": 467,
+        "antialiasedPixels": 203054,
+        "transparentFraction": 0.870576197634873,
+        "bbox": {
+          "left": 269,
+          "top": 277,
+          "width": 710,
+          "height": 715
+        }
+      },
+      "sourceFullAlphaBBox": {
+        "left": 269,
+        "top": 277,
+        "width": 710,
+        "height": 715
+      },
+      "sourceLargestComponentBBox": {
+        "left": 269,
+        "top": 277,
+        "width": 710,
+        "height": 715
+      },
+      "sourceComponentAnalysis": {
+        "connectivity": 8,
+        "alphaThreshold": 16,
+        "componentCount": 1,
+        "totalForegroundPixels": 195719,
+        "originalFullAlphaBBox": {
+          "left": 269,
+          "top": 277,
+          "width": 710,
+          "height": 715
+        },
+        "largestComponent": {
+          "pixelCount": 195719,
+          "bbox": {
+            "left": 269,
+            "top": 277,
+            "width": 710,
+            "height": 715
+          }
+        },
+        "largestComponentFraction": 1,
+        "dominanceRequired": 0.99,
+        "selectedBBox": {
+          "left": 269,
+          "top": 277,
+          "width": 710,
+          "height": 715
+        },
+        "selection": "largest-component-bounding-rectangle",
+        "excludedForegroundPixels": 0,
+        "detachedComponentPixels": 0,
+        "requiresHumanReview": false,
+        "largestOtherComponents": [],
+        "note": "Only the mechanical extraction rectangle changes. All original pixels inside it, including detached details, are retained; source files remain untouched."
+      },
+      "registrationSourceBBox": {
+        "left": 269,
+        "top": 277,
+        "width": 710,
+        "height": 715
+      },
+      "guideCanvas": [
+        1536,
+        1536
+      ],
+      "guideAlphaBBox": {
+        "left": 343,
+        "top": 339,
+        "width": 850,
+        "height": 858
+      },
+      "fitXYRatios": [
+        1.1971830985915493,
+        1.2
+      ],
+      "sourceAspectRatio": 0.993006993006993,
+      "targetAspectRatio": 0.9906759906759907,
+      "aspectDelta": -0.0023474178403756207,
+      "aspectDeltaPercent": -0.23474178403756207,
+      "requiresHumanAspectReview": false,
+      "requiresHumanComponentReview": false,
+      "registeredAlphaBBox": {
+        "left": 344,
+        "top": 339,
+        "width": 849,
+        "height": 858
+      },
+      "trimCrop": {
+        "left": 332,
+        "top": 327,
+        "width": 873,
+        "height": 882
+      },
+      "finalSize": [
+        873,
+        882
+      ],
+      "finalAlpha": {
+        "min": 0,
+        "max": 255,
+        "transparentPixels": 478915,
+        "opaquePixels": 780,
+        "antialiasedPixels": 290291,
+        "transparentFraction": 0.6219788411737356,
+        "bbox": {
+          "left": 12,
+          "top": 12,
+          "width": 849,
+          "height": 858
+        }
+      },
+      "outputs": {
+        "png": {
+          "file": "public/survival/camp-circular-wall-v1/wall-02.png",
+          "bytes": 992476,
+          "sha256": "3cc3b0295806b7e818dbc6d145edc0f760baf387fce34470ef04fba648358393"
+        },
+        "webp": {
+          "file": "public/survival/camp-circular-wall-v1/wall-02.webp",
+          "bytes": 508118,
+          "sha256": "72fccf199db3f64dc4a796fb592381ab21be31c68b699bbb7cee55bc84e6f05b"
+        }
+      },
+      "losslessWebPVerified": true
+    },
+    {
+      "id": "wall-03",
+      "source": "artwork-archive/circular-wall-kit-v1/generated/wall-03.png",
+      "sourceSha256": "51aee010fd2ba5090c67a69efc952fff172b2196b548f351c8f8f5eb210dfd7f",
+      "sourceSize": [
+        1254,
+        1254
+      ],
+      "sourceAlpha": {
+        "min": 0,
+        "max": 255,
+        "transparentPixels": 1416873,
+        "opaquePixels": 337,
+        "antialiasedPixels": 155306,
+        "transparentFraction": 0.9010229466663614,
+        "bbox": {
+          "left": 373,
+          "top": 192,
+          "width": 519,
+          "height": 878
+        }
+      },
+      "sourceFullAlphaBBox": {
+        "left": 373,
+        "top": 192,
+        "width": 519,
+        "height": 878
+      },
+      "sourceLargestComponentBBox": {
+        "left": 373,
+        "top": 192,
+        "width": 519,
+        "height": 878
+      },
+      "sourceComponentAnalysis": {
+        "connectivity": 8,
+        "alphaThreshold": 16,
+        "componentCount": 1,
+        "totalForegroundPixels": 147663,
+        "originalFullAlphaBBox": {
+          "left": 373,
+          "top": 192,
+          "width": 519,
+          "height": 878
+        },
+        "largestComponent": {
+          "pixelCount": 147663,
+          "bbox": {
+            "left": 373,
+            "top": 192,
+            "width": 519,
+            "height": 878
+          }
+        },
+        "largestComponentFraction": 1,
+        "dominanceRequired": 0.99,
+        "selectedBBox": {
+          "left": 373,
+          "top": 192,
+          "width": 519,
+          "height": 878
+        },
+        "selection": "largest-component-bounding-rectangle",
+        "excludedForegroundPixels": 0,
+        "detachedComponentPixels": 0,
+        "requiresHumanReview": false,
+        "largestOtherComponents": [],
+        "note": "Only the mechanical extraction rectangle changes. All original pixels inside it, including detached details, are retained; source files remain untouched."
+      },
+      "registrationSourceBBox": {
+        "left": 373,
+        "top": 192,
+        "width": 519,
+        "height": 878
+      },
+      "guideCanvas": [
+        1536,
+        1536
+      ],
+      "guideAlphaBBox": {
+        "left": 463,
+        "top": 233,
+        "width": 611,
+        "height": 1071
+      },
+      "fitXYRatios": [
+        1.1772639691714837,
+        1.2198177676537585
+      ],
+      "sourceAspectRatio": 0.591116173120729,
+      "targetAspectRatio": 0.5704948646125116,
+      "aspectDelta": -0.0348853735456931,
+      "aspectDeltaPercent": -3.48853735456931,
+      "requiresHumanAspectReview": false,
+      "requiresHumanComponentReview": false,
+      "registeredAlphaBBox": {
+        "left": 463,
+        "top": 233,
+        "width": 611,
+        "height": 1071
+      },
+      "trimCrop": {
+        "left": 451,
+        "top": 221,
+        "width": 635,
+        "height": 1095
+      },
+      "finalSize": [
+        635,
+        1095
+      ],
+      "finalAlpha": {
+        "min": 0,
+        "max": 255,
+        "transparentPixels": 473651,
+        "opaquePixels": 720,
+        "antialiasedPixels": 220954,
+        "transparentFraction": 0.6811936864056376,
+        "bbox": {
+          "left": 12,
+          "top": 12,
+          "width": 611,
+          "height": 1071
+        }
+      },
+      "outputs": {
+        "png": {
+          "file": "public/survival/camp-circular-wall-v1/wall-03.png",
+          "bytes": 759539,
+          "sha256": "ec01b08f009c7feec8ddb0ee6331c1f89da60a151f8293ae676c774d2d75deb0"
+        },
+        "webp": {
+          "file": "public/survival/camp-circular-wall-v1/wall-03.webp",
+          "bytes": 413480,
+          "sha256": "0d86e18fea889a02b2922c98b1a9983e7ba2c36fb529d7ccb72815986bc13116"
+        }
+      },
+      "losslessWebPVerified": true
+    },
+    {
+      "id": "wall-04",
+      "source": "artwork-archive/circular-wall-kit-v1/generated/wall-04.png",
+      "sourceSha256": "84fce9938cb8b7fa32dc312639f633cce7318bcfa33f8208ba4b9fad88ef5cea",
+      "sourceSize": [
+        1254,
+        1254
+      ],
+      "sourceAlpha": {
+        "min": 0,
+        "max": 255,
+        "transparentPixels": 1442937,
+        "opaquePixels": 403,
+        "antialiasedPixels": 129176,
+        "transparentFraction": 0.917597658783758,
+        "bbox": {
+          "left": 518,
+          "top": 120,
+          "width": 271,
+          "height": 994
+        }
+      },
+      "sourceFullAlphaBBox": {
+        "left": 518,
+        "top": 120,
+        "width": 271,
+        "height": 994
+      },
+      "sourceLargestComponentBBox": {
+        "left": 518,
+        "top": 120,
+        "width": 271,
+        "height": 994
+      },
+      "sourceComponentAnalysis": {
+        "connectivity": 8,
+        "alphaThreshold": 16,
+        "componentCount": 1,
+        "totalForegroundPixels": 123337,
+        "originalFullAlphaBBox": {
+          "left": 518,
+          "top": 120,
+          "width": 271,
+          "height": 994
+        },
+        "largestComponent": {
+          "pixelCount": 123337,
+          "bbox": {
+            "left": 518,
+            "top": 120,
+            "width": 271,
+            "height": 994
+          }
+        },
+        "largestComponentFraction": 1,
+        "dominanceRequired": 0.99,
+        "selectedBBox": {
+          "left": 518,
+          "top": 120,
+          "width": 271,
+          "height": 994
+        },
+        "selection": "largest-component-bounding-rectangle",
+        "excludedForegroundPixels": 0,
+        "detachedComponentPixels": 0,
+        "requiresHumanReview": false,
+        "largestOtherComponents": [],
+        "note": "Only the mechanical extraction rectangle changes. All original pixels inside it, including detached details, are retained; source files remain untouched."
+      },
+      "registrationSourceBBox": {
+        "left": 518,
+        "top": 120,
+        "width": 271,
+        "height": 994
+      },
+      "guideCanvas": [
+        1536,
+        1536
+      ],
+      "guideAlphaBBox": {
+        "left": 624,
+        "top": 174,
+        "width": 288,
+        "height": 1188
+      },
+      "fitXYRatios": [
+        1.062730627306273,
+        1.1951710261569417
+      ],
+      "sourceAspectRatio": 0.272635814889336,
+      "targetAspectRatio": 0.24242424242424243,
+      "aspectDelta": -0.1108129263110813,
+      "aspectDeltaPercent": -11.08129263110813,
+      "requiresHumanAspectReview": true,
+      "requiresHumanComponentReview": false,
+      "registeredAlphaBBox": {
+        "left": 624,
+        "top": 174,
+        "width": 288,
+        "height": 1188
+      },
+      "trimCrop": {
+        "left": 612,
+        "top": 162,
+        "width": 312,
+        "height": 1212
+      },
+      "finalSize": [
+        312,
+        1212
+      ],
+      "finalAlpha": {
+        "min": 0,
+        "max": 255,
+        "transparentPixels": 214227,
+        "opaquePixels": 840,
+        "antialiasedPixels": 163077,
+        "transparentFraction": 0.5665222772277227,
+        "bbox": {
+          "left": 12,
+          "top": 12,
+          "width": 288,
+          "height": 1188
+        }
+      },
+      "outputs": {
+        "png": {
+          "file": "public/survival/camp-circular-wall-v1/wall-04.png",
+          "bytes": 548145,
+          "sha256": "2c3eeb69c029b8db436da16b550225c5864f643195d2e4140a71d1079bd259a5"
+        },
+        "webp": {
+          "file": "public/survival/camp-circular-wall-v1/wall-04.webp",
+          "bytes": 281836,
+          "sha256": "8281ff61c93bd5edc8f90b2d95cce9c23688a2f9ebbb26ddb1e2c3e6e90fac45"
+        }
+      },
+      "losslessWebPVerified": true
+    },
+    {
+      "id": "wall-05",
+      "source": "artwork-archive/circular-wall-kit-v1/generated/wall-05.png",
+      "sourceSha256": "a1896553c3b9d9273ce249024d5c834c25bfa2b8895ef34a44d2737fe75ea955",
+      "sourceSize": [
+        1254,
+        1254
+      ],
+      "sourceAlpha": {
+        "min": 0,
+        "max": 255,
+        "transparentPixels": 1443554,
+        "opaquePixels": 572,
+        "antialiasedPixels": 128390,
+        "transparentFraction": 0.9179900236309201,
+        "bbox": {
+          "left": 463,
+          "top": 135,
+          "width": 299,
+          "height": 1019
+        }
+      },
+      "sourceFullAlphaBBox": {
+        "left": 463,
+        "top": 135,
+        "width": 299,
+        "height": 1019
+      },
+      "sourceLargestComponentBBox": {
+        "left": 463,
+        "top": 135,
+        "width": 299,
+        "height": 1019
+      },
+      "sourceComponentAnalysis": {
+        "connectivity": 8,
+        "alphaThreshold": 16,
+        "componentCount": 1,
+        "totalForegroundPixels": 121176,
+        "originalFullAlphaBBox": {
+          "left": 463,
+          "top": 135,
+          "width": 299,
+          "height": 1019
+        },
+        "largestComponent": {
+          "pixelCount": 121176,
+          "bbox": {
+            "left": 463,
+            "top": 135,
+            "width": 299,
+            "height": 1019
+          }
+        },
+        "largestComponentFraction": 1,
+        "dominanceRequired": 0.99,
+        "selectedBBox": {
+          "left": 463,
+          "top": 135,
+          "width": 299,
+          "height": 1019
+        },
+        "selection": "largest-component-bounding-rectangle",
+        "excludedForegroundPixels": 0,
+        "detachedComponentPixels": 0,
+        "requiresHumanReview": false,
+        "largestOtherComponents": [],
+        "note": "Only the mechanical extraction rectangle changes. All original pixels inside it, including detached details, are retained; source files remain untouched."
+      },
+      "registrationSourceBBox": {
+        "left": 463,
+        "top": 135,
+        "width": 299,
+        "height": 1019
+      },
+      "guideCanvas": [
+        1536,
+        1536
+      ],
+      "guideAlphaBBox": {
+        "left": 622,
+        "top": 166,
+        "width": 292,
+        "height": 1203
+      },
+      "fitXYRatios": [
+        0.9765886287625418,
+        1.1805691854759568
+      ],
+      "sourceAspectRatio": 0.2934249263984298,
+      "targetAspectRatio": 0.2427265170407315,
+      "aspectDelta": -0.17278153557021603,
+      "aspectDeltaPercent": -17.278153557021604,
+      "requiresHumanAspectReview": true,
+      "requiresHumanComponentReview": false,
+      "registeredAlphaBBox": {
+        "left": 622,
+        "top": 167,
+        "width": 292,
+        "height": 1202
+      },
+      "trimCrop": {
+        "left": 610,
+        "top": 155,
+        "width": 316,
+        "height": 1226
+      },
+      "finalSize": [
+        316,
+        1226
+      ],
+      "finalAlpha": {
+        "min": 0,
+        "max": 255,
+        "transparentPixels": 239450,
+        "opaquePixels": 1118,
+        "antialiasedPixels": 146848,
+        "transparentFraction": 0.6180694653808826,
+        "bbox": {
+          "left": 12,
+          "top": 12,
+          "width": 292,
+          "height": 1202
+        }
+      },
+      "outputs": {
+        "png": {
+          "file": "public/survival/camp-circular-wall-v1/wall-05.png",
+          "bytes": 491641,
+          "sha256": "8a98d49d3acfd8fc37b3768b34fcc12441aa67cf3770c3e5e3d6d4edaf8df337"
+        },
+        "webp": {
+          "file": "public/survival/camp-circular-wall-v1/wall-05.webp",
+          "bytes": 246968,
+          "sha256": "ed0485ab7c28b90df04790632e77b2e233d9a9f768bb8dbf4d623335ae7aa15c"
+        }
+      },
+      "losslessWebPVerified": true
+    },
+    {
+      "id": "wall-06",
+      "source": "artwork-archive/circular-wall-kit-v1/generated/wall-06.png",
+      "sourceSha256": "32f96254de2dd91054ac230c29eda8ab99ca2afd1ba04c9ef133212ba80fb1dc",
+      "sourceSize": [
+        1254,
+        1254
+      ],
+      "sourceAlpha": {
+        "min": 0,
+        "max": 255,
+        "transparentPixels": 1416663,
+        "opaquePixels": 171,
+        "antialiasedPixels": 155682,
+        "transparentFraction": 0.9008894027151393,
+        "bbox": {
+          "left": 364,
+          "top": 183,
+          "width": 523,
+          "height": 903
+        }
+      },
+      "sourceFullAlphaBBox": {
+        "left": 364,
+        "top": 183,
+        "width": 523,
+        "height": 903
+      },
+      "sourceLargestComponentBBox": {
+        "left": 364,
+        "top": 183,
+        "width": 523,
+        "height": 903
+      },
+      "sourceComponentAnalysis": {
+        "connectivity": 8,
+        "alphaThreshold": 16,
+        "componentCount": 1,
+        "totalForegroundPixels": 146720,
+        "originalFullAlphaBBox": {
+          "left": 364,
+          "top": 183,
+          "width": 523,
+          "height": 903
+        },
+        "largestComponent": {
+          "pixelCount": 146720,
+          "bbox": {
+            "left": 364,
+            "top": 183,
+            "width": 523,
+            "height": 903
+          }
+        },
+        "largestComponentFraction": 1,
+        "dominanceRequired": 0.99,
+        "selectedBBox": {
+          "left": 364,
+          "top": 183,
+          "width": 523,
+          "height": 903
+        },
+        "selection": "largest-component-bounding-rectangle",
+        "excludedForegroundPixels": 0,
+        "detachedComponentPixels": 0,
+        "requiresHumanReview": false,
+        "largestOtherComponents": [],
+        "note": "Only the mechanical extraction rectangle changes. All original pixels inside it, including detached details, are retained; source files remain untouched."
+      },
+      "registrationSourceBBox": {
+        "left": 364,
+        "top": 183,
+        "width": 523,
+        "height": 903
+      },
+      "guideCanvas": [
+        1536,
+        1536
+      ],
+      "guideAlphaBBox": {
+        "left": 467,
+        "top": 225,
+        "width": 603,
+        "height": 1086
+      },
+      "fitXYRatios": [
+        1.152963671128107,
+        1.2026578073089702
+      ],
+      "sourceAspectRatio": 0.5791805094130675,
+      "targetAspectRatio": 0.5552486187845304,
+      "aspectDelta": -0.041320262404529906,
+      "aspectDeltaPercent": -4.132026240452991,
+      "requiresHumanAspectReview": false,
+      "requiresHumanComponentReview": false,
+      "registeredAlphaBBox": {
+        "left": 467,
+        "top": 226,
+        "width": 603,
+        "height": 1085
+      },
+      "trimCrop": {
+        "left": 455,
+        "top": 214,
+        "width": 627,
+        "height": 1109
+      },
+      "finalSize": [
+        627,
+        1109
+      ],
+      "finalAlpha": {
+        "min": 0,
+        "max": 255,
+        "transparentPixels": 480092,
+        "opaquePixels": 394,
+        "antialiasedPixels": 214857,
+        "transparentFraction": 0.6904391070306309,
+        "bbox": {
+          "left": 12,
+          "top": 12,
+          "width": 603,
+          "height": 1085
+        }
+      },
+      "outputs": {
+        "png": {
+          "file": "public/survival/camp-circular-wall-v1/wall-06.png",
+          "bytes": 736430,
+          "sha256": "163e6b490550e5cb79beb52e45d6287313695f034cd72db3ccf647255348a893"
+        },
+        "webp": {
+          "file": "public/survival/camp-circular-wall-v1/wall-06.webp",
+          "bytes": 398642,
+          "sha256": "f6eb05ca521b4c21f6cbb6b3d077a24d61a1699d4cd2de33bdb4929ae6e74061"
+        }
+      },
+      "losslessWebPVerified": true
+    },
+    {
+      "id": "wall-07",
+      "source": "artwork-archive/circular-wall-kit-v1/generated/wall-07.png",
+      "sourceSha256": "ac5a5c870265a56d86b864cdbcbd22f00fd9002ac50eba823aa5d440769566e8",
+      "sourceSize": [
+        1254,
+        1254
+      ],
+      "sourceAlpha": {
+        "min": 0,
+        "max": 255,
+        "transparentPixels": 1367118,
+        "opaquePixels": 208,
+        "antialiasedPixels": 205190,
+        "transparentFraction": 0.8693825690803781,
+        "bbox": {
+          "left": 283,
+          "top": 273,
+          "width": 712,
+          "height": 708
+        }
+      },
+      "sourceFullAlphaBBox": {
+        "left": 283,
+        "top": 273,
+        "width": 712,
+        "height": 708
+      },
+      "sourceLargestComponentBBox": {
+        "left": 283,
+        "top": 273,
+        "width": 712,
+        "height": 708
+      },
+      "sourceComponentAnalysis": {
+        "connectivity": 8,
+        "alphaThreshold": 16,
+        "componentCount": 1,
+        "totalForegroundPixels": 194105,
+        "originalFullAlphaBBox": {
+          "left": 283,
+          "top": 273,
+          "width": 712,
+          "height": 708
+        },
+        "largestComponent": {
+          "pixelCount": 194105,
+          "bbox": {
+            "left": 283,
+            "top": 273,
+            "width": 712,
+            "height": 708
+          }
+        },
+        "largestComponentFraction": 1,
+        "dominanceRequired": 0.99,
+        "selectedBBox": {
+          "left": 283,
+          "top": 273,
+          "width": 712,
+          "height": 708
+        },
+        "selection": "largest-component-bounding-rectangle",
+        "excludedForegroundPixels": 0,
+        "detachedComponentPixels": 0,
+        "requiresHumanReview": false,
+        "largestOtherComponents": [],
+        "note": "Only the mechanical extraction rectangle changes. All original pixels inside it, including detached details, are retained; source files remain untouched."
+      },
+      "registrationSourceBBox": {
+        "left": 283,
+        "top": 273,
+        "width": 712,
+        "height": 708
+      },
+      "guideCanvas": [
+        1536,
+        1536
+      ],
+      "guideAlphaBBox": {
+        "left": 350,
+        "top": 341,
+        "width": 835,
+        "height": 854
+      },
+      "fitXYRatios": [
+        1.172752808988764,
+        1.2062146892655368
+      ],
+      "sourceAspectRatio": 1.0056497175141244,
+      "targetAspectRatio": 0.977751756440281,
+      "aspectDelta": -0.027741230955451,
+      "aspectDeltaPercent": -2.7741230955451,
+      "requiresHumanAspectReview": false,
+      "requiresHumanComponentReview": false,
+      "registeredAlphaBBox": {
+        "left": 350,
+        "top": 341,
+        "width": 835,
+        "height": 854
+      },
+      "trimCrop": {
+        "left": 338,
+        "top": 329,
+        "width": 859,
+        "height": 878
+      },
+      "finalSize": [
+        859,
+        878
+      ],
+      "finalAlpha": {
+        "min": 0,
+        "max": 255,
+        "transparentPixels": 464900,
+        "opaquePixels": 470,
+        "antialiasedPixels": 288832,
+        "transparentFraction": 0.6164131094852573,
+        "bbox": {
+          "left": 12,
+          "top": 12,
+          "width": 835,
+          "height": 854
+        }
+      },
+      "outputs": {
+        "png": {
+          "file": "public/survival/camp-circular-wall-v1/wall-07.png",
+          "bytes": 980067,
+          "sha256": "801722d03b3a262d9e23ee4b0855aa58800620e71fead643096b79706a90e40f"
+        },
+        "webp": {
+          "file": "public/survival/camp-circular-wall-v1/wall-07.webp",
+          "bytes": 503710,
+          "sha256": "498a72eab6913b18291df55c820e721725ba95bf89805da8dfdf0fa27c22eaed"
+        }
+      },
+      "losslessWebPVerified": true
+    },
+    {
+      "id": "wall-08",
+      "source": "artwork-archive/circular-wall-kit-v1/generated/wall-08.png",
+      "sourceSha256": "891325cdbf8ecc950a76c740876146debead0f8cf511714face29afecba96514",
+      "sourceSize": [
+        1254,
+        1254
+      ],
+      "sourceAlpha": {
+        "min": 0,
+        "max": 255,
+        "transparentPixels": 1266209,
+        "opaquePixels": 439,
+        "antialiasedPixels": 305868,
+        "transparentFraction": 0.8052121568238415,
+        "bbox": {
+          "left": 169,
+          "top": 443,
+          "width": 958,
+          "height": 515
+        }
+      },
+      "sourceFullAlphaBBox": {
+        "left": 169,
+        "top": 443,
+        "width": 958,
+        "height": 515
+      },
+      "sourceLargestComponentBBox": {
+        "left": 169,
+        "top": 443,
+        "width": 958,
+        "height": 515
+      },
+      "sourceComponentAnalysis": {
+        "connectivity": 8,
+        "alphaThreshold": 16,
+        "componentCount": 1,
+        "totalForegroundPixels": 291215,
+        "originalFullAlphaBBox": {
+          "left": 169,
+          "top": 443,
+          "width": 958,
+          "height": 515
+        },
+        "largestComponent": {
+          "pixelCount": 291215,
+          "bbox": {
+            "left": 169,
+            "top": 443,
+            "width": 958,
+            "height": 515
+          }
+        },
+        "largestComponentFraction": 1,
+        "dominanceRequired": 0.99,
+        "selectedBBox": {
+          "left": 169,
+          "top": 443,
+          "width": 958,
+          "height": 515
+        },
+        "selection": "largest-component-bounding-rectangle",
+        "excludedForegroundPixels": 0,
+        "detachedComponentPixels": 0,
+        "requiresHumanReview": false,
+        "largestOtherComponents": [],
+        "note": "Only the mechanical extraction rectangle changes. All original pixels inside it, including detached details, are retained; source files remain untouched."
+      },
+      "registrationSourceBBox": {
+        "left": 169,
+        "top": 443,
+        "width": 958,
+        "height": 515
+      },
+      "guideCanvas": [
+        1536,
+        1536
+      ],
+      "guideAlphaBBox": {
+        "left": 294,
+        "top": 495,
+        "width": 948,
+        "height": 546
+      },
+      "fitXYRatios": [
+        0.9895615866388309,
+        1.0601941747572816
+      ],
+      "sourceAspectRatio": 1.8601941747572817,
+      "targetAspectRatio": 1.7362637362637363,
+      "aspectDelta": -0.06662231296886834,
+      "aspectDeltaPercent": -6.662231296886834,
+      "requiresHumanAspectReview": false,
+      "requiresHumanComponentReview": false,
+      "registeredAlphaBBox": {
+        "left": 294,
+        "top": 495,
+        "width": 948,
+        "height": 546
+      },
+      "trimCrop": {
+        "left": 282,
+        "top": 483,
+        "width": 972,
+        "height": 570
+      },
+      "finalSize": [
+        972,
+        570
+      ],
+      "finalAlpha": {
+        "min": 0,
+        "max": 255,
+        "transparentPixels": 236617,
+        "opaquePixels": 766,
+        "antialiasedPixels": 316657,
+        "transparentFraction": 0.4270756624070464,
+        "bbox": {
+          "left": 12,
+          "top": 12,
+          "width": 948,
+          "height": 546
+        }
+      },
+      "outputs": {
+        "png": {
+          "file": "public/survival/camp-circular-wall-v1/wall-08.png",
+          "bytes": 1070163,
+          "sha256": "1ef541e5753c45715e41ba19d750a92e004936055d9c537536907ea96ce46cc4"
+        },
+        "webp": {
+          "file": "public/survival/camp-circular-wall-v1/wall-08.webp",
+          "bytes": 553004,
+          "sha256": "3deb460121c2ec4d432ab3b7fc379145ddccfc25c418d8e422ff1aafd8b88712"
+        }
+      },
+      "losslessWebPVerified": true
+    },
+    {
+      "id": "wall-09",
+      "source": "artwork-archive/circular-wall-kit-v1/generated/wall-09.png",
+      "sourceSha256": "cb93e5bd831762acae63391261dbbdb0a5cef8690b6143ac393b1826299b4271",
+      "sourceSize": [
+        1254,
+        1254
+      ],
+      "sourceAlpha": {
+        "min": 0,
+        "max": 255,
+        "transparentPixels": 1252118,
+        "opaquePixels": 369,
+        "antialiasedPixels": 320029,
+        "transparentFraction": 0.7962513576968374,
+        "bbox": {
+          "left": 10,
+          "top": 10,
+          "width": 1126,
+          "height": 908
+        }
+      },
+      "sourceFullAlphaBBox": {
+        "left": 10,
+        "top": 10,
+        "width": 1126,
+        "height": 908
+      },
+      "sourceLargestComponentBBox": {
+        "left": 156,
+        "top": 411,
+        "width": 980,
+        "height": 507
+      },
+      "sourceComponentAnalysis": {
+        "connectivity": 8,
+        "alphaThreshold": 16,
+        "componentCount": 2,
+        "totalForegroundPixels": 307332,
+        "originalFullAlphaBBox": {
+          "left": 10,
+          "top": 10,
+          "width": 1126,
+          "height": 908
+        },
+        "largestComponent": {
+          "pixelCount": 307190,
+          "bbox": {
+            "left": 156,
+            "top": 411,
+            "width": 980,
+            "height": 507
+          }
+        },
+        "largestComponentFraction": 0.9995379589499304,
+        "dominanceRequired": 0.99,
+        "selectedBBox": {
+          "left": 156,
+          "top": 411,
+          "width": 980,
+          "height": 507
+        },
+        "selection": "largest-component-bounding-rectangle",
+        "excludedForegroundPixels": 142,
+        "detachedComponentPixels": 142,
+        "requiresHumanReview": false,
+        "largestOtherComponents": [
+          {
+            "pixelCount": 142,
+            "bbox": {
+              "left": 10,
+              "top": 10,
+              "width": 15,
+              "height": 14
+            }
+          }
+        ],
+        "note": "Only the mechanical extraction rectangle changes. All original pixels inside it, including detached details, are retained; source files remain untouched."
+      },
+      "registrationSourceBBox": {
+        "left": 156,
+        "top": 411,
+        "width": 980,
+        "height": 507
+      },
+      "guideCanvas": [
+        1536,
+        1536
+      ],
+      "guideAlphaBBox": {
+        "left": 290,
+        "top": 517,
+        "width": 955,
+        "height": 503
+      },
+      "fitXYRatios": [
+        0.9744897959183674,
+        0.9921104536489151
+      ],
+      "sourceAspectRatio": 1.9329388560157792,
+      "targetAspectRatio": 1.8986083499005963,
+      "aspectDelta": -0.01776078224530364,
+      "aspectDeltaPercent": -1.7760782245303641,
+      "requiresHumanAspectReview": false,
+      "requiresHumanComponentReview": false,
+      "registeredAlphaBBox": {
+        "left": 290,
+        "top": 517,
+        "width": 955,
+        "height": 503
+      },
+      "trimCrop": {
+        "left": 278,
+        "top": 505,
+        "width": 979,
+        "height": 527
+      },
+      "finalSize": [
+        979,
+        527
+      ],
+      "finalAlpha": {
+        "min": 0,
+        "max": 255,
+        "transparentPixels": 208740,
+        "opaquePixels": 654,
+        "antialiasedPixels": 306539,
+        "transparentFraction": 0.40458741735845544,
+        "bbox": {
+          "left": 12,
+          "top": 12,
+          "width": 955,
+          "height": 503
+        }
+      },
+      "outputs": {
+        "png": {
+          "file": "public/survival/camp-circular-wall-v1/wall-09.png",
+          "bytes": 1026770,
+          "sha256": "e39f79226b61c74436acb98a0c559b6074298ff2161e2d354abb7dbc9e56777e"
+        },
+        "webp": {
+          "file": "public/survival/camp-circular-wall-v1/wall-09.webp",
+          "bytes": 542842,
+          "sha256": "7cb211e42f126c45ffa1cb1236e54704c901ee425d198d2307b97f0534d0e250"
+        }
+      },
+      "losslessWebPVerified": true
+    },
+    {
+      "id": "wall-10",
+      "source": "artwork-archive/circular-wall-kit-v1/generated/wall-10.png",
+      "sourceSha256": "bcf78d1485ca47c4721e1601e64f2868466e4325e88e4ccc5f3714c7bc499112",
+      "sourceSize": [
+        1254,
+        1254
+      ],
+      "sourceAlpha": {
+        "min": 0,
+        "max": 255,
+        "transparentPixels": 1362211,
+        "opaquePixels": 246,
+        "antialiasedPixels": 210059,
+        "transparentFraction": 0.8662620920868214,
+        "bbox": {
+          "left": 275,
+          "top": 311,
+          "width": 718,
+          "height": 688
+        }
+      },
+      "sourceFullAlphaBBox": {
+        "left": 275,
+        "top": 311,
+        "width": 718,
+        "height": 688
+      },
+      "sourceLargestComponentBBox": {
+        "left": 275,
+        "top": 311,
+        "width": 718,
+        "height": 688
+      },
+      "sourceComponentAnalysis": {
+        "connectivity": 8,
+        "alphaThreshold": 16,
+        "componentCount": 1,
+        "totalForegroundPixels": 199183,
+        "originalFullAlphaBBox": {
+          "left": 275,
+          "top": 311,
+          "width": 718,
+          "height": 688
+        },
+        "largestComponent": {
+          "pixelCount": 199183,
+          "bbox": {
+            "left": 275,
+            "top": 311,
+            "width": 718,
+            "height": 688
+          }
+        },
+        "largestComponentFraction": 1,
+        "dominanceRequired": 0.99,
+        "selectedBBox": {
+          "left": 275,
+          "top": 311,
+          "width": 718,
+          "height": 688
+        },
+        "selection": "largest-component-bounding-rectangle",
+        "excludedForegroundPixels": 0,
+        "detachedComponentPixels": 0,
+        "requiresHumanReview": false,
+        "largestOtherComponents": [],
+        "note": "Only the mechanical extraction rectangle changes. All original pixels inside it, including detached details, are retained; source files remain untouched."
+      },
+      "registrationSourceBBox": {
+        "left": 275,
+        "top": 311,
+        "width": 718,
+        "height": 688
+      },
+      "guideCanvas": [
+        1536,
+        1536
+      ],
+      "guideAlphaBBox": {
+        "left": 343,
+        "top": 362,
+        "width": 850,
+        "height": 812
+      },
+      "fitXYRatios": [
+        1.1838440111420614,
+        1.180232558139535
+      ],
+      "sourceAspectRatio": 1.0436046511627908,
+      "targetAspectRatio": 1.0467980295566504,
+      "aspectDelta": 0.003059950327263694,
+      "aspectDeltaPercent": 0.3059950327263694,
+      "requiresHumanAspectReview": false,
+      "requiresHumanComponentReview": false,
+      "registeredAlphaBBox": {
+        "left": 343,
+        "top": 362,
+        "width": 850,
+        "height": 812
+      },
+      "trimCrop": {
+        "left": 331,
+        "top": 350,
+        "width": 874,
+        "height": 836
+      },
+      "finalSize": [
+        874,
+        836
+      ],
+      "finalAlpha": {
+        "min": 0,
+        "max": 255,
+        "transparentPixels": 439422,
+        "opaquePixels": 468,
+        "antialiasedPixels": 290774,
+        "transparentFraction": 0.6014009175215967,
+        "bbox": {
+          "left": 12,
+          "top": 12,
+          "width": 850,
+          "height": 812
+        }
+      },
+      "outputs": {
+        "png": {
+          "file": "public/survival/camp-circular-wall-v1/wall-10.png",
+          "bytes": 989911,
+          "sha256": "a4199ed02de130c33bbf70c25f175a69f47f74516a4cf51699be680a24476ad0"
+        },
+        "webp": {
+          "file": "public/survival/camp-circular-wall-v1/wall-10.webp",
+          "bytes": 500428,
+          "sha256": "122c0191fcb73fb08525ce4f032804a7cdc072352b21e07288158266082dc753"
+        }
+      },
+      "losslessWebPVerified": true
+    },
+    {
+      "id": "wall-11",
+      "source": "artwork-archive/circular-wall-kit-v1/generated/wall-11.png",
+      "sourceSha256": "c79f381fd01f242626fa2f22d7c6a12c12642802ffb3422860668355f88c4b27",
+      "sourceSize": [
+        1254,
+        1254
+      ],
+      "sourceAlpha": {
+        "min": 0,
+        "max": 255,
+        "transparentPixels": 1389226,
+        "opaquePixels": 110,
+        "antialiasedPixels": 183180,
+        "transparentFraction": 0.883441567526181,
+        "bbox": {
+          "left": 363,
+          "top": 179,
+          "width": 549,
+          "height": 896
+        }
+      },
+      "sourceFullAlphaBBox": {
+        "left": 363,
+        "top": 179,
+        "width": 549,
+        "height": 896
+      },
+      "sourceLargestComponentBBox": {
+        "left": 363,
+        "top": 179,
+        "width": 549,
+        "height": 896
+      },
+      "sourceComponentAnalysis": {
+        "connectivity": 8,
+        "alphaThreshold": 16,
+        "componentCount": 1,
+        "totalForegroundPixels": 173520,
+        "originalFullAlphaBBox": {
+          "left": 363,
+          "top": 179,
+          "width": 549,
+          "height": 896
+        },
+        "largestComponent": {
+          "pixelCount": 173520,
+          "bbox": {
+            "left": 363,
+            "top": 179,
+            "width": 549,
+            "height": 896
+          }
+        },
+        "largestComponentFraction": 1,
+        "dominanceRequired": 0.99,
+        "selectedBBox": {
+          "left": 363,
+          "top": 179,
+          "width": 549,
+          "height": 896
+        },
+        "selection": "largest-component-bounding-rectangle",
+        "excludedForegroundPixels": 0,
+        "detachedComponentPixels": 0,
+        "requiresHumanReview": false,
+        "largestOtherComponents": [],
+        "note": "Only the mechanical extraction rectangle changes. All original pixels inside it, including detached details, are retained; source files remain untouched."
+      },
+      "registrationSourceBBox": {
+        "left": 363,
+        "top": 179,
+        "width": 549,
+        "height": 896
+      },
+      "guideCanvas": [
+        1536,
+        1536
+      ],
+      "guideAlphaBBox": {
+        "left": 462,
+        "top": 246,
+        "width": 611,
+        "height": 1044
+      },
+      "fitXYRatios": [
+        1.1129326047358834,
+        1.1651785714285714
+      ],
+      "sourceAspectRatio": 0.6127232142857143,
+      "targetAspectRatio": 0.5852490421455939,
+      "aspectDelta": -0.04483945034161729,
+      "aspectDeltaPercent": -4.48394503416173,
+      "requiresHumanAspectReview": false,
+      "requiresHumanComponentReview": false,
+      "registeredAlphaBBox": {
+        "left": 462,
+        "top": 246,
+        "width": 611,
+        "height": 1044
+      },
+      "trimCrop": {
+        "left": 450,
+        "top": 234,
+        "width": 635,
+        "height": 1068
+      },
+      "finalSize": [
+        635,
+        1068
+      ],
+      "finalAlpha": {
+        "min": 0,
+        "max": 255,
+        "transparentPixels": 442443,
+        "opaquePixels": 211,
+        "antialiasedPixels": 235526,
+        "transparentFraction": 0.6523975935592321,
+        "bbox": {
+          "left": 12,
+          "top": 12,
+          "width": 611,
+          "height": 1044
+        }
+      },
+      "outputs": {
+        "png": {
+          "file": "public/survival/camp-circular-wall-v1/wall-11.png",
+          "bytes": 798235,
+          "sha256": "b99db5cfed865b7718d4542e14ae5d9ab86aaf908e4eedd21675e80f9e032913"
+        },
+        "webp": {
+          "file": "public/survival/camp-circular-wall-v1/wall-11.webp",
+          "bytes": 433892,
+          "sha256": "4a3c2145e3625f9a591e871529743706c1cd60c730e611b9e4ca4eee82fc3c37"
+        }
+      },
+      "losslessWebPVerified": true
+    },
+    {
+      "id": "wall-12",
+      "source": "artwork-archive/circular-wall-kit-v1/generated/wall-12.png",
+      "sourceSha256": "766f5b6dadad6ba88bec9441996353446089ca8ed94ea8dd5ed3c30ee70e8091",
+      "sourceSize": [
+        1254,
+        1254
+      ],
+      "sourceAlpha": {
+        "min": 0,
+        "max": 255,
+        "transparentPixels": 1448485,
+        "opaquePixels": 217,
+        "antialiasedPixels": 123814,
+        "transparentFraction": 0.9211257627903309,
+        "bbox": {
+          "left": 505,
+          "top": 106,
+          "width": 284,
+          "height": 994
+        }
+      },
+      "sourceFullAlphaBBox": {
+        "left": 505,
+        "top": 106,
+        "width": 284,
+        "height": 994
+      },
+      "sourceLargestComponentBBox": {
+        "left": 505,
+        "top": 106,
+        "width": 284,
+        "height": 994
+      },
+      "sourceComponentAnalysis": {
+        "connectivity": 8,
+        "alphaThreshold": 16,
+        "componentCount": 1,
+        "totalForegroundPixels": 115044,
+        "originalFullAlphaBBox": {
+          "left": 505,
+          "top": 106,
+          "width": 284,
+          "height": 994
+        },
+        "largestComponent": {
+          "pixelCount": 115044,
+          "bbox": {
+            "left": 505,
+            "top": 106,
+            "width": 284,
+            "height": 994
+          }
+        },
+        "largestComponentFraction": 1,
+        "dominanceRequired": 0.99,
+        "selectedBBox": {
+          "left": 505,
+          "top": 106,
+          "width": 284,
+          "height": 994
+        },
+        "selection": "largest-component-bounding-rectangle",
+        "excludedForegroundPixels": 0,
+        "detachedComponentPixels": 0,
+        "requiresHumanReview": false,
+        "largestOtherComponents": [],
+        "note": "Only the mechanical extraction rectangle changes. All original pixels inside it, including detached details, are retained; source files remain untouched."
+      },
+      "registrationSourceBBox": {
+        "left": 505,
+        "top": 106,
+        "width": 284,
+        "height": 994
+      },
+      "guideCanvas": [
+        1536,
+        1536
+      ],
+      "guideAlphaBBox": {
+        "left": 624,
+        "top": 180,
+        "width": 288,
+        "height": 1175
+      },
+      "fitXYRatios": [
+        1.0140845070422535,
+        1.1820925553319919
+      ],
+      "sourceAspectRatio": 0.2857142857142857,
+      "targetAspectRatio": 0.2451063829787234,
+      "aspectDelta": -0.14212765957446805,
+      "aspectDeltaPercent": -14.212765957446805,
+      "requiresHumanAspectReview": true,
+      "requiresHumanComponentReview": false,
+      "registeredAlphaBBox": {
+        "left": 624,
+        "top": 180,
+        "width": 288,
+        "height": 1175
+      },
+      "trimCrop": {
+        "left": 612,
+        "top": 168,
+        "width": 312,
+        "height": 1199
+      },
+      "finalSize": [
+        312,
+        1199
+      ],
+      "finalAlpha": {
+        "min": 0,
+        "max": 255,
+        "transparentPixels": 227164,
+        "opaquePixels": 572,
+        "antialiasedPixels": 146352,
+        "transparentFraction": 0.6072474925685934,
+        "bbox": {
+          "left": 12,
+          "top": 12,
+          "width": 288,
+          "height": 1175
+        }
+      },
+      "outputs": {
+        "png": {
+          "file": "public/survival/camp-circular-wall-v1/wall-12.png",
+          "bytes": 490507,
+          "sha256": "8fc8d2934b3f387436139c362c0cc9a9a2976b01ad8f45b91b0eeb1244719146"
+        },
+        "webp": {
+          "file": "public/survival/camp-circular-wall-v1/wall-12.webp",
+          "bytes": 240714,
+          "sha256": "9393064e04dcefdde50a5d375122a1fc21688b2ca372997812d559c8fcdf99c8"
+        }
+      },
+      "losslessWebPVerified": true
+    },
+    {
+      "id": "wall-13",
+      "source": "artwork-archive/circular-wall-kit-v1/generated/wall-13.png",
+      "sourceSha256": "33f70871c566b65a76d244212086b428cfa1ddcc5ec6a2a10a9cff4df7fba7f7",
+      "sourceSize": [
+        1254,
+        1254
+      ],
+      "sourceAlpha": {
+        "min": 0,
+        "max": 255,
+        "transparentPixels": 1464792,
+        "opaquePixels": 334,
+        "antialiasedPixels": 107390,
+        "transparentFraction": 0.931495768564517,
+        "bbox": {
+          "left": 508,
+          "top": 170,
+          "width": 248,
+          "height": 936
+        }
+      },
+      "sourceFullAlphaBBox": {
+        "left": 508,
+        "top": 170,
+        "width": 248,
+        "height": 936
+      },
+      "sourceLargestComponentBBox": {
+        "left": 508,
+        "top": 170,
+        "width": 248,
+        "height": 936
+      },
+      "sourceComponentAnalysis": {
+        "connectivity": 8,
+        "alphaThreshold": 16,
+        "componentCount": 1,
+        "totalForegroundPixels": 99382,
+        "originalFullAlphaBBox": {
+          "left": 508,
+          "top": 170,
+          "width": 248,
+          "height": 936
+        },
+        "largestComponent": {
+          "pixelCount": 99382,
+          "bbox": {
+            "left": 508,
+            "top": 170,
+            "width": 248,
+            "height": 936
+          }
+        },
+        "largestComponentFraction": 1,
+        "dominanceRequired": 0.99,
+        "selectedBBox": {
+          "left": 508,
+          "top": 170,
+          "width": 248,
+          "height": 936
+        },
+        "selection": "largest-component-bounding-rectangle",
+        "excludedForegroundPixels": 0,
+        "detachedComponentPixels": 0,
+        "requiresHumanReview": false,
+        "largestOtherComponents": [],
+        "note": "Only the mechanical extraction rectangle changes. All original pixels inside it, including detached details, are retained; source files remain untouched."
+      },
+      "registrationSourceBBox": {
+        "left": 508,
+        "top": 170,
+        "width": 248,
+        "height": 936
+      },
+      "guideCanvas": [
+        1536,
+        1536
+      ],
+      "guideAlphaBBox": {
+        "left": 622,
+        "top": 184,
+        "width": 292,
+        "height": 1167
+      },
+      "fitXYRatios": [
+        1.1774193548387097,
+        1.2467948717948718
+      ],
+      "sourceAspectRatio": 0.26495726495726496,
+      "targetAspectRatio": 0.25021422450728364,
+      "aspectDelta": -0.055643088149929465,
+      "aspectDeltaPercent": -5.5643088149929465,
+      "requiresHumanAspectReview": false,
+      "requiresHumanComponentReview": false,
+      "registeredAlphaBBox": {
+        "left": 622,
+        "top": 184,
+        "width": 292,
+        "height": 1167
+      },
+      "trimCrop": {
+        "left": 610,
+        "top": 172,
+        "width": 316,
+        "height": 1191
+      },
+      "finalSize": [
+        316,
+        1191
+      ],
+      "finalAlpha": {
+        "min": 0,
+        "max": 255,
+        "transparentPixels": 220821,
+        "opaquePixels": 661,
+        "antialiasedPixels": 154874,
+        "transparentFraction": 0.5867343685234193,
+        "bbox": {
+          "left": 12,
+          "top": 12,
+          "width": 292,
+          "height": 1167
+        }
+      },
+      "outputs": {
+        "png": {
+          "file": "public/survival/camp-circular-wall-v1/wall-13.png",
+          "bytes": 530117,
+          "sha256": "0df9bc959846853270f3553b3d1926bf4375ab7b3006dc4dae2ceeff5d96a7dd"
+        },
+        "webp": {
+          "file": "public/survival/camp-circular-wall-v1/wall-13.webp",
+          "bytes": 275744,
+          "sha256": "1b9c7eb9df2338394db0cf13894db47f037e4824af883a9971c0fee19ed6ff7e"
+        }
+      },
+      "losslessWebPVerified": true
+    },
+    {
+      "id": "wall-14",
+      "source": "artwork-archive/circular-wall-kit-v1/generated/wall-14.png",
+      "sourceSha256": "4e47fece13e5d4aaea879d702616a9c1e16540968e2159274839d8f57f5f64f8",
+      "sourceSize": [
+        1254,
+        1254
+      ],
+      "sourceAlpha": {
+        "min": 0,
+        "max": 255,
+        "transparentPixels": 1396484,
+        "opaquePixels": 377,
+        "antialiasedPixels": 175655,
+        "transparentFraction": 0.8880571008498482,
+        "bbox": {
+          "left": 354,
+          "top": 196,
+          "width": 551,
+          "height": 921
+        }
+      },
+      "sourceFullAlphaBBox": {
+        "left": 354,
+        "top": 196,
+        "width": 551,
+        "height": 921
+      },
+      "sourceLargestComponentBBox": {
+        "left": 354,
+        "top": 196,
+        "width": 551,
+        "height": 921
+      },
+      "sourceComponentAnalysis": {
+        "connectivity": 8,
+        "alphaThreshold": 16,
+        "componentCount": 1,
+        "totalForegroundPixels": 168120,
+        "originalFullAlphaBBox": {
+          "left": 354,
+          "top": 196,
+          "width": 551,
+          "height": 921
+        },
+        "largestComponent": {
+          "pixelCount": 168120,
+          "bbox": {
+            "left": 354,
+            "top": 196,
+            "width": 551,
+            "height": 921
+          }
+        },
+        "largestComponentFraction": 1,
+        "dominanceRequired": 0.99,
+        "selectedBBox": {
+          "left": 354,
+          "top": 196,
+          "width": 551,
+          "height": 921
+        },
+        "selection": "largest-component-bounding-rectangle",
+        "excludedForegroundPixels": 0,
+        "detachedComponentPixels": 0,
+        "requiresHumanReview": false,
+        "largestOtherComponents": [],
+        "note": "Only the mechanical extraction rectangle changes. All original pixels inside it, including detached details, are retained; source files remain untouched."
+      },
+      "registrationSourceBBox": {
+        "left": 354,
+        "top": 196,
+        "width": 551,
+        "height": 921
+      },
+      "guideCanvas": [
+        1536,
+        1536
+      ],
+      "guideAlphaBBox": {
+        "left": 466,
+        "top": 242,
+        "width": 603,
+        "height": 1052
+      },
+      "fitXYRatios": [
+        1.0943738656987296,
+        1.1422366992399566
+      ],
+      "sourceAspectRatio": 0.5982627578718784,
+      "targetAspectRatio": 0.5731939163498099,
+      "aspectDelta": -0.041902727843602716,
+      "aspectDeltaPercent": -4.190272784360271,
+      "requiresHumanAspectReview": false,
+      "requiresHumanComponentReview": false,
+      "registeredAlphaBBox": {
+        "left": 466,
+        "top": 242,
+        "width": 603,
+        "height": 1052
+      },
+      "trimCrop": {
+        "left": 454,
+        "top": 230,
+        "width": 627,
+        "height": 1076
+      },
+      "finalSize": [
+        627,
+        1076
+      ],
+      "finalAlpha": {
+        "min": 0,
+        "max": 255,
+        "transparentPixels": 456034,
+        "opaquePixels": 696,
+        "antialiasedPixels": 217922,
+        "transparentFraction": 0.6759544179814185,
+        "bbox": {
+          "left": 12,
+          "top": 12,
+          "width": 603,
+          "height": 1052
+        }
+      },
+      "outputs": {
+        "png": {
+          "file": "public/survival/camp-circular-wall-v1/wall-14.png",
+          "bytes": 748762,
+          "sha256": "287a70a1a0daf8b06611e9ccee519460aeb9cbca72fa95eeb77b3c015f3171fa"
+        },
+        "webp": {
+          "file": "public/survival/camp-circular-wall-v1/wall-14.webp",
+          "bytes": 404858,
+          "sha256": "c4a2bc7f9810b671883cdf24bfb18492314dfb3c6c41363c502e39908a6d83cc"
+        }
+      },
+      "losslessWebPVerified": true
+    },
+    {
+      "id": "wall-15",
+      "source": "artwork-archive/circular-wall-kit-v1/generated/wall-15.png",
+      "sourceSha256": "76b20b1dca81fe6b3a2994a32313e73abdaec66c9ac5b923b9184accd6fa0a87",
+      "sourceSize": [
+        1254,
+        1254
+      ],
+      "sourceAlpha": {
+        "min": 0,
+        "max": 255,
+        "transparentPixels": 1364581,
+        "opaquePixels": 153,
+        "antialiasedPixels": 207782,
+        "transparentFraction": 0.8677692309648996,
+        "bbox": {
+          "left": 264,
+          "top": 314,
+          "width": 716,
+          "height": 689
+        }
+      },
+      "sourceFullAlphaBBox": {
+        "left": 264,
+        "top": 314,
+        "width": 716,
+        "height": 689
+      },
+      "sourceLargestComponentBBox": {
+        "left": 264,
+        "top": 314,
+        "width": 716,
+        "height": 689
+      },
+      "sourceComponentAnalysis": {
+        "connectivity": 8,
+        "alphaThreshold": 16,
+        "componentCount": 1,
+        "totalForegroundPixels": 195518,
+        "originalFullAlphaBBox": {
+          "left": 264,
+          "top": 314,
+          "width": 716,
+          "height": 689
+        },
+        "largestComponent": {
+          "pixelCount": 195518,
+          "bbox": {
+            "left": 264,
+            "top": 314,
+            "width": 716,
+            "height": 689
+          }
+        },
+        "largestComponentFraction": 1,
+        "dominanceRequired": 0.99,
+        "selectedBBox": {
+          "left": 264,
+          "top": 314,
+          "width": 716,
+          "height": 689
+        },
+        "selection": "largest-component-bounding-rectangle",
+        "excludedForegroundPixels": 0,
+        "detachedComponentPixels": 0,
+        "requiresHumanReview": false,
+        "largestOtherComponents": [],
+        "note": "Only the mechanical extraction rectangle changes. All original pixels inside it, including detached details, are retained; source files remain untouched."
+      },
+      "registrationSourceBBox": {
+        "left": 264,
+        "top": 314,
+        "width": 716,
+        "height": 689
+      },
+      "guideCanvas": [
+        1536,
+        1536
+      ],
+      "guideAlphaBBox": {
+        "left": 351,
+        "top": 360,
+        "width": 835,
+        "height": 816
+      },
+      "fitXYRatios": [
+        1.1662011173184357,
+        1.1843251088534108
+      ],
+      "sourceAspectRatio": 1.039187227866473,
+      "targetAspectRatio": 1.0232843137254901,
+      "aspectDelta": -0.015303223244605202,
+      "aspectDeltaPercent": -1.5303223244605202,
+      "requiresHumanAspectReview": false,
+      "requiresHumanComponentReview": false,
+      "registeredAlphaBBox": {
+        "left": 351,
+        "top": 360,
+        "width": 835,
+        "height": 816
+      },
+      "trimCrop": {
+        "left": 339,
+        "top": 348,
+        "width": 859,
+        "height": 840
+      },
+      "finalSize": [
+        859,
+        840
+      ],
+      "finalAlpha": {
+        "min": 0,
+        "max": 255,
+        "transparentPixels": 436343,
+        "opaquePixels": 255,
+        "antialiasedPixels": 284962,
+        "transparentFraction": 0.6047217140639725,
+        "bbox": {
+          "left": 12,
+          "top": 12,
+          "width": 835,
+          "height": 816
+        }
+      },
+      "outputs": {
+        "png": {
+          "file": "public/survival/camp-circular-wall-v1/wall-15.png",
+          "bytes": 958809,
+          "sha256": "193dbc1793a4dad20fbccda7646cd3cd3eaa74690a1b8a6a5de04ff2ab7e3c09"
+        },
+        "webp": {
+          "file": "public/survival/camp-circular-wall-v1/wall-15.webp",
+          "bytes": 494420,
+          "sha256": "b4d9da4bc89975ff930c9ec721d8e6ceb49f214b776796fb3d9ad3b68e319853"
+        }
+      },
+      "losslessWebPVerified": true
+    },
+    {
+      "id": "wall-16",
+      "source": "artwork-archive/circular-wall-kit-v1/generated/wall-16.png",
+      "sourceSha256": "2691dea3526571eab8d5fe5d631ac0e5316b18a8b1aeb66c885dcd68f28b11c5",
+      "sourceSize": [
+        1254,
+        1254
+      ],
+      "sourceAlpha": {
+        "min": 0,
+        "max": 255,
+        "transparentPixels": 1174728,
+        "opaquePixels": 336,
+        "antialiasedPixels": 397452,
+        "transparentFraction": 0.7470372320536007,
+        "bbox": {
+          "left": 104,
+          "top": 429,
+          "width": 1095,
+          "height": 584
+        }
+      },
+      "sourceFullAlphaBBox": {
+        "left": 104,
+        "top": 429,
+        "width": 1095,
+        "height": 584
+      },
+      "sourceLargestComponentBBox": {
+        "left": 104,
+        "top": 429,
+        "width": 1095,
+        "height": 584
+      },
+      "sourceComponentAnalysis": {
+        "connectivity": 8,
+        "alphaThreshold": 16,
+        "componentCount": 1,
+        "totalForegroundPixels": 384027,
+        "originalFullAlphaBBox": {
+          "left": 104,
+          "top": 429,
+          "width": 1095,
+          "height": 584
+        },
+        "largestComponent": {
+          "pixelCount": 384027,
+          "bbox": {
+            "left": 104,
+            "top": 429,
+            "width": 1095,
+            "height": 584
+          }
+        },
+        "largestComponentFraction": 1,
+        "dominanceRequired": 0.99,
+        "selectedBBox": {
+          "left": 104,
+          "top": 429,
+          "width": 1095,
+          "height": 584
+        },
+        "selection": "largest-component-bounding-rectangle",
+        "excludedForegroundPixels": 0,
+        "detachedComponentPixels": 0,
+        "requiresHumanReview": false,
+        "largestOtherComponents": [],
+        "note": "Only the mechanical extraction rectangle changes. All original pixels inside it, including detached details, are retained; source files remain untouched."
+      },
+      "registrationSourceBBox": {
+        "left": 104,
+        "top": 429,
+        "width": 1095,
+        "height": 584
+      },
+      "guideCanvas": [
+        1536,
+        1536
+      ],
+      "guideAlphaBBox": {
+        "left": 294,
+        "top": 510,
+        "width": 948,
+        "height": 516
+      },
+      "fitXYRatios": [
+        0.8657534246575342,
+        0.8835616438356164
+      ],
+      "sourceAspectRatio": 1.875,
+      "targetAspectRatio": 1.8372093023255813,
+      "aspectDelta": -0.020155038759689936,
+      "aspectDeltaPercent": -2.0155038759689936,
+      "requiresHumanAspectReview": false,
+      "requiresHumanComponentReview": false,
+      "registeredAlphaBBox": {
+        "left": 294,
+        "top": 510,
+        "width": 948,
+        "height": 516
+      },
+      "trimCrop": {
+        "left": 282,
+        "top": 498,
+        "width": 972,
+        "height": 540
+      },
+      "finalSize": [
+        972,
+        540
+      ],
+      "finalAlpha": {
+        "min": 0,
+        "max": 255,
+        "transparentPixels": 222384,
+        "opaquePixels": 557,
+        "antialiasedPixels": 301939,
+        "transparentFraction": 0.4236854138088706,
+        "bbox": {
+          "left": 12,
+          "top": 12,
+          "width": 948,
+          "height": 516
+        }
+      },
+      "outputs": {
+        "png": {
+          "file": "public/survival/camp-circular-wall-v1/wall-16.png",
+          "bytes": 995766,
+          "sha256": "82ffb4f4562ffb73655aba4e12881a8faf949fd91c2c89bc33262de18a895b2c"
+        },
+        "webp": {
+          "file": "public/survival/camp-circular-wall-v1/wall-16.webp",
+          "bytes": 549310,
+          "sha256": "ceeef1816b4e178297f9fc14984eb1b24441b3c28cf13c8ce421f87644cbf9b8"
+        }
+      },
+      "losslessWebPVerified": true
+    }
+  ],
+  "warnings": [
+    "wall-04: bbox aspect changed -11.08%; inspect silhouette and joints before accepting this asset.",
+    "wall-05: bbox aspect changed -17.28%; inspect silhouette and joints before accepting this asset.",
+    "wall-12: bbox aspect changed -14.21%; inspect silhouette and joints before accepting this asset."
+  ],
+  "assemblyOrdering": {
+    "baseGroundYOrder": [
+      "wall-16",
+      "wall-01",
+      "wall-02",
+      "wall-15",
+      "wall-03",
+      "wall-14",
+      "wall-04",
+      "wall-13",
+      "wall-12",
+      "wall-05",
+      "wall-06",
+      "wall-11",
+      "wall-07",
+      "wall-10",
+      "wall-08",
+      "wall-09"
+    ],
+    "drawOrder": [
+      "wall-15",
+      "wall-16",
+      "wall-01",
+      "wall-02",
+      "wall-03",
+      "wall-14",
+      "wall-04",
+      "wall-13",
+      "wall-12",
+      "wall-05",
+      "wall-06",
+      "wall-11",
+      "wall-07",
+      "wall-10",
+      "wall-08",
+      "wall-09"
+    ],
+    "manualConstraints": [
+      [
+        "wall-15",
+        "wall-16"
+      ],
+      [
+        "wall-16",
+        "wall-01"
+      ],
+      [
+        "wall-01",
+        "wall-02"
+      ]
+    ],
+    "activeConstraints": [
+      [
+        "wall-15",
+        "wall-16"
+      ],
+      [
+        "wall-16",
+        "wall-01"
+      ],
+      [
+        "wall-01",
+        "wall-02"
+      ]
+    ],
+    "policy": "Stable topological ordering using ordinary ground-midpoint Y as priority, with only the three reviewed northern overlap constraints. No universal owner-post ordering is imposed."
+  },
+  "visualReview": {
+    "file": "artwork-archive/circular-wall-kit-v1/visual-review.json",
+    "found": true,
+    "accepted": true,
+    "reviewSha256": "9ce651a6a8a54513f839410826d1983663341b808a0b5eaf010ebc9808a55d99",
+    "reviewedAt": "2026-10-31T20:41:40.163578+00:00",
+    "approvalStatus": "accepted",
+    "matchingAssetCount": 16,
+    "reason": "All 16 current PNG, WebP and source hashes plus the assembled preview hash, dimensions and draw order match the accepted review.",
+    "mismatches": []
+  },
+  "registrationFlagSemantics": "requiresHumanAspectReview and requiresHumanComponentReview record the original numerical triggers. Matching visualReview.accepted resolves their review requirement without deleting those historical metrics or warnings.",
+  "preview": {
+    "assembled": {
+      "file": "artwork-archive/circular-wall-kit-v1/previews/assembled-circle.png",
+      "size": [
+        4834,
+        5082
+      ],
+      "pixelOrigin": [
+        2417,
+        2665
+      ],
+      "pixelsPerWorldUnit": 1.4,
+      "drawOrder": [
+        "wall-15",
+        "wall-16",
+        "wall-01",
+        "wall-02",
+        "wall-03",
+        "wall-14",
+        "wall-04",
+        "wall-13",
+        "wall-12",
+        "wall-05",
+        "wall-06",
+        "wall-11",
+        "wall-07",
+        "wall-10",
+        "wall-08",
+        "wall-09"
+      ],
+      "manualOrderingConstraints": [
+        [
+          "wall-15",
+          "wall-16"
+        ],
+        [
+          "wall-16",
+          "wall-01"
+        ],
+        [
+          "wall-01",
+          "wall-02"
+        ]
+      ],
+      "radialExplosionWorldUnits": 0,
+      "renderer": "Actual final independent PNGs; fractional-pixel anchors; stable ground-Y priority with reviewed 15-before-16-before-01-before-02 overlap constraints",
+      "generatedCount": 16,
+      "expectedCount": 16
+    },
+    "exploded": {
+      "file": "artwork-archive/circular-wall-kit-v1/previews/exploded-ring.png",
+      "size": [
+        5394,
+        5642
+      ],
+      "pixelOrigin": [
+        2697,
+        2945
+      ],
+      "pixelsPerWorldUnit": 1.4,
+      "drawOrder": [
+        "wall-15",
+        "wall-16",
+        "wall-01",
+        "wall-02",
+        "wall-03",
+        "wall-14",
+        "wall-04",
+        "wall-13",
+        "wall-12",
+        "wall-05",
+        "wall-06",
+        "wall-11",
+        "wall-07",
+        "wall-10",
+        "wall-08",
+        "wall-09"
+      ],
+      "manualOrderingConstraints": [
+        [
+          "wall-15",
+          "wall-16"
+        ],
+        [
+          "wall-16",
+          "wall-01"
+        ],
+        [
+          "wall-01",
+          "wall-02"
+        ]
+      ],
+      "radialExplosionWorldUnits": 200,
+      "renderer": "Actual final independent PNGs; fractional-pixel anchors; stable ground-Y priority with reviewed 15-before-16-before-01-before-02 overlap constraints",
+      "generatedCount": 16,
+      "expectedCount": 16
+    },
+    "review": "artwork-archive/circular-wall-kit-v1/previews/assembly-review.jpg",
+    "contactSheet": "artwork-archive/circular-wall-kit-v1/previews/contact-sheet.png"
+  },
+  "validation": {
+    "allPresentInputsDecoded": true,
+    "allFinalPNGsAndWebPsDecoded": true,
+    "allHaveGenuineAlpha": true,
+    "losslessWebPVisiblePixelsVerified": true,
+    "all16Available": true,
+    "packagedAngleSumDeg": 360,
+    "fullKitAngleSumDeg": 360,
+    "maxAnalyticalSeamErrorWorldUnits": 4.0413344371862654e-13,
+    "fixedPixelsPerWorldUnit": 1.4,
+    "sourceOriginalsUnmodified": true,
+    "requiresHumanAspectReview": [
+      "wall-04",
+      "wall-05",
+      "wall-12"
+    ],
+    "requiresHumanComponentReview": [],
+    "actualPaintedJoinReviewComplete": true,
+    "visualReviewReference": "artwork-archive/circular-wall-kit-v1/visual-review.json",
+    "liveLayoutModified": false
+  }
+}
