@@ -1,0 +1,17 @@
+{
+  "result": "published-and-verified",
+  "siteVersion": 325,
+  "liveURL": "https://safety-last.matthew-smart212.chatgpt.site",
+  "sitesSourceCommit": "c21df182c128d4f15094b4c7b712ddb8e8c4a7e5",
+  "githubGameCommit": "7fe34ba2da89ebd0e2019405066e0fb4543c0ba1",
+  "liveBrowserChecks": [
+    "Published editor loads 4548 placements",
+    "Scene list contains all 16 Circular camp wall sections",
+    "New wall visibly renders behind the headquarters",
+    "No authored placement was edited during final browser inspection"
+  ],
+  "screenshot": "live-published-wall.jpg",
+  "screenshotOrigin": "Published game in the browser, after successful version 325 deployment",
+  "screenshotSHA256": "c0a36dc2f70fb646264810dcf74abc9d1c6bde47a12e81b8c474f6c6dcf9cb38",
+  "note": "This documentation-only commit records the published result; gameplay source is unchanged."
+}
