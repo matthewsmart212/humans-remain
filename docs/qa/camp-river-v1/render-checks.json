@@ -1,0 +1,17 @@
+{
+  "result": "pass",
+  "renderer": "Production CanvasKit software renderer",
+  "captures": [
+    "before-overview",
+    "after-overview",
+    "stream-bank",
+    "woodland",
+    "bridge-approach",
+    "lower-riverside"
+  ],
+  "missing": [],
+  "sourceRevision": 69,
+  "placements": 2299,
+  "liveMapWrites": false,
+  "deviceFPSMeasured": false
+}

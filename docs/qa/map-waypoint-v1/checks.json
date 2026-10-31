@@ -1,0 +1,21 @@
+{
+  "checks": [
+    "web TypeScript",
+    "native TypeScript",
+    "shared waypoint projection and gesture tests",
+    "player-map projection/labels/art checks",
+    "continuous zoom regression tests",
+    "browser: tablet and phone landscape layouts",
+    "browser: arm, drag, place, exit, gameplay arrow, remove on HUD, remove on map",
+    "browser: font caption overflow checks",
+    "unchanged terrain, roads, wall data and gameplay placements"
+  ],
+  "physicalIPhoneTested": false,
+  "portraitSource": "public/survival/ui-field-kit-v1/vitals.png",
+  "portraitCrop": {
+    "left": 12,
+    "top": 35,
+    "width": 160,
+    "height": 160
+  }
+}

@@ -1,0 +1,78 @@
+{
+  "result": "pass",
+  "boundaryChecks": 281,
+  "oldWallsRemoved": 52,
+  "originalWallsRestored": 11,
+  "nonWallPlacementsPreserved": 1357,
+  "foliage": 1335,
+  "puddles": 8,
+  "gates": [
+    {
+      "gate": "camp_gate_northeast_classic_v1",
+      "center": [
+        2850,
+        737
+      ],
+      "pathCells": 10,
+      "closedSprintAndDodge": true,
+      "openBothDirections": true,
+      "safeClosing": true
+    },
+    {
+      "gate": "camp_gate_southeast_classic_v1",
+      "center": [
+        2658.5,
+        2632
+      ],
+      "pathCells": 11,
+      "closedSprintAndDodge": true,
+      "openBothDirections": true,
+      "safeClosing": true
+    },
+    {
+      "gate": "camp_gate_south_classic_v1",
+      "center": [
+        1771,
+        2955
+      ],
+      "pathCells": 8,
+      "closedSprintAndDodge": true,
+      "openBothDirections": true,
+      "safeClosing": true
+    },
+    {
+      "gate": "camp_gate_southwest_classic_v1",
+      "center": [
+        864.5,
+        2704
+      ],
+      "pathCells": 11,
+      "closedSprintAndDodge": true,
+      "openBothDirections": true,
+      "safeClosing": true
+    },
+    {
+      "gate": "camp_gate_west_classic_v1",
+      "center": [
+        388,
+        2018
+      ],
+      "pathCells": 9,
+      "closedSprintAndDodge": true,
+      "openBothDirections": true,
+      "safeClosing": true
+    },
+    {
+      "gate": "camp_gate_northwest_classic_v1",
+      "center": [
+        824,
+        572
+      ],
+      "pathCells": 10,
+      "closedSprintAndDodge": true,
+      "openBothDirections": true,
+      "safeClosing": true
+    }
+  ],
+  "transformedGateChecks": 6
+}

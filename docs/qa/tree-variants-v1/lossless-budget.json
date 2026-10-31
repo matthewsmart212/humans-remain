@@ -1,0 +1,168 @@
+{
+  "result": "pass",
+  "savedBytes": 9923007,
+  "images": [
+    {
+      "source": "public/survival/water-storage/tier-2-barrel-bank.png",
+      "replacement": "public/survival/water-storage/tier-2-barrel-bank.webp",
+      "before": 1731608,
+      "after": 1352490,
+      "saved": 379118,
+      "alphaMismatches": 0,
+      "visibleRGBMismatches": 0
+    },
+    {
+      "source": "public/survival/equipment/camp-axe-v1.png",
+      "replacement": "public/survival/equipment/camp-axe-v1.webp",
+      "before": 1715387,
+      "after": 663622,
+      "saved": 1051765,
+      "alphaMismatches": 0,
+      "visibleRGBMismatches": 0
+    },
+    {
+      "source": "public/survival/worker-diagonal.png",
+      "replacement": "public/survival/worker-diagonal.webp",
+      "before": 1678247,
+      "after": 614068,
+      "saved": 1064179,
+      "alphaMismatches": 0,
+      "visibleRGBMismatches": 0
+    },
+    {
+      "source": "public/survival/scrap-runner/scrap-runner-down-right-walk-sprint-v1.png",
+      "replacement": "public/survival/scrap-runner/scrap-runner-down-right-walk-sprint-v1.webp",
+      "before": 1646380,
+      "after": 1150480,
+      "saved": 495900,
+      "alphaMismatches": 0,
+      "visibleRGBMismatches": 0
+    },
+    {
+      "source": "public/survival/scrap-runner/scrap-runner-down-walk-sprint-v1.png",
+      "replacement": "public/survival/scrap-runner/scrap-runner-down-walk-sprint-v1.webp",
+      "before": 1627331,
+      "after": 1146456,
+      "saved": 480875,
+      "alphaMismatches": 0,
+      "visibleRGBMismatches": 0
+    },
+    {
+      "source": "public/survival/home-salvage.png",
+      "replacement": "public/survival/home-salvage.webp",
+      "before": 1594994,
+      "after": 1195772,
+      "saved": 399222,
+      "alphaMismatches": 0,
+      "visibleRGBMismatches": 0
+    },
+    {
+      "source": "public/survival/scrap-runner/scrap-runner-leg-layers-v1.png",
+      "replacement": "public/survival/scrap-runner/scrap-runner-leg-layers-v1.webp",
+      "before": 1588325,
+      "after": 557744,
+      "saved": 1030581,
+      "alphaMismatches": 0,
+      "visibleRGBMismatches": 0
+    },
+    {
+      "source": "public/survival/scrap-runner/scrap-runner-right-walk-sprint-v1.png",
+      "replacement": "public/survival/scrap-runner/scrap-runner-right-walk-sprint-v1.webp",
+      "before": 1556289,
+      "after": 1092310,
+      "saved": 463979,
+      "alphaMismatches": 0,
+      "visibleRGBMismatches": 0
+    },
+    {
+      "source": "public/survival/scrap-runner/motion-a-v1.png",
+      "replacement": "public/survival/scrap-runner/motion-a-v1.webp",
+      "before": 1523873,
+      "after": 1056048,
+      "saved": 467825,
+      "alphaMismatches": 0,
+      "visibleRGBMismatches": 0
+    },
+    {
+      "source": "public/survival/hearth/tier-1-lit-sheet.png",
+      "replacement": "public/survival/hearth/tier-1-lit-sheet.webp",
+      "before": 1500363,
+      "after": 1093988,
+      "saved": 406375,
+      "alphaMismatches": 0,
+      "visibleRGBMismatches": 0
+    },
+    {
+      "source": "public/survival/shelters/bedroll.png",
+      "replacement": "public/survival/shelters/bedroll.webp",
+      "before": 1494139,
+      "after": 1009480,
+      "saved": 484659,
+      "alphaMismatches": 0,
+      "visibleRGBMismatches": 0
+    },
+    {
+      "source": "public/survival/scrap-runner/scrap-runner-up-right-walk-sprint-v1.png",
+      "replacement": "public/survival/scrap-runner/scrap-runner-up-right-walk-sprint-v1.webp",
+      "before": 1430314,
+      "after": 992890,
+      "saved": 437424,
+      "alphaMismatches": 0,
+      "visibleRGBMismatches": 0
+    },
+    {
+      "source": "public/survival/scrap-runner/scrap-runner-up-walk-sprint-v1.png",
+      "replacement": "public/survival/scrap-runner/scrap-runner-up-walk-sprint-v1.webp",
+      "before": 1383980,
+      "after": 958620,
+      "saved": 425360,
+      "alphaMismatches": 0,
+      "visibleRGBMismatches": 0
+    },
+    {
+      "source": "public/survival/camp-lamp.png",
+      "replacement": "public/survival/camp-lamp.webp",
+      "before": 1378828,
+      "after": 421218,
+      "saved": 957610,
+      "alphaMismatches": 0,
+      "visibleRGBMismatches": 0
+    },
+    {
+      "source": "public/survival/scrap-runner/motion-b-v1.png",
+      "replacement": "public/survival/scrap-runner/motion-b-v1.webp",
+      "before": 1331764,
+      "after": 930802,
+      "saved": 400962,
+      "alphaMismatches": 0,
+      "visibleRGBMismatches": 0
+    },
+    {
+      "source": "public/survival/water-storage/tier-1-barrel.png",
+      "replacement": "public/survival/water-storage/tier-1-barrel.webp",
+      "before": 1281248,
+      "after": 945264,
+      "saved": 335984,
+      "alphaMismatches": 0,
+      "visibleRGBMismatches": 0
+    },
+    {
+      "source": "public/survival/worker-motion-b.png",
+      "replacement": "public/survival/worker-motion-b.webp",
+      "before": 1190811,
+      "after": 888582,
+      "saved": 302229,
+      "alphaMismatches": 0,
+      "visibleRGBMismatches": 0
+    },
+    {
+      "source": "public/survival/camp-hearth-t1.png",
+      "replacement": "public/survival/camp-hearth-t1.webp",
+      "before": 1155676,
+      "after": 816716,
+      "saved": 338960,
+      "alphaMismatches": 0,
+      "visibleRGBMismatches": 0
+    }
+  ]
+}

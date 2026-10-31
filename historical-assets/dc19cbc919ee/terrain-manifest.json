@@ -1,0 +1,147 @@
+{
+  "name": "Safety Last — Return towards camp",
+  "date": "2026-10-14",
+  "method": "Four close-up built-in image_gen patches; registered contacts and lossless cuts",
+  "sourceCommit": "d0d2d2b68a103672a09b406ebf07ac58f6b117c0",
+  "nativeGeneration": {
+    "patches": [
+      {
+        "patch": "ne",
+        "source": {
+          "width": 1599,
+          "height": 984,
+          "file": "ne-generated-original.png"
+        },
+        "registered": {
+          "x": 1534,
+          "y": 0,
+          "width": 1670,
+          "height": 1026,
+          "north": 260,
+          "right": 264
+        },
+        "scale": {
+          "x": 1.0444027517198249,
+          "y": 1.0426829268292683
+        }
+      },
+      {
+        "patch": "nw",
+        "source": {
+          "width": 1660,
+          "height": 948,
+          "file": "nw-generated-original.png"
+        },
+        "registered": {
+          "x": 0,
+          "y": 0,
+          "width": 1798,
+          "height": 1026,
+          "north": 260,
+          "right": 264
+        },
+        "scale": {
+          "x": 1.083132530120482,
+          "y": 1.0822784810126582
+        }
+      },
+      {
+        "patch": "se",
+        "source": {
+          "width": 1712,
+          "height": 919,
+          "file": "se-generated-original.png"
+        },
+        "registered": {
+          "x": 1534,
+          "y": 770,
+          "width": 1670,
+          "height": 896,
+          "north": 256,
+          "right": 264
+        },
+        "scale": {
+          "x": 0.9754672897196262,
+          "y": 0.9749727965179543
+        }
+      },
+      {
+        "patch": "sw",
+        "source": {
+          "width": 1776,
+          "height": 886,
+          "file": "sw-generated-original.png"
+        },
+        "registered": {
+          "x": 0,
+          "y": 770,
+          "width": 1798,
+          "height": 896,
+          "north": 256,
+          "right": 264
+        },
+        "scale": {
+          "x": 1.0123873873873874,
+          "y": 1.0112866817155757
+        }
+      }
+    ],
+    "totalSourcePixels": 6293960,
+    "maxPixelEnlargement": 1.083132530120482,
+    "previousSource": {
+      "width": 1740,
+      "height": 904
+    }
+  },
+  "registeredMaster": {
+    "x": 4096,
+    "y": 4540,
+    "width": 3204,
+    "height": 1666,
+    "file": "registered-master.png"
+  },
+  "packaging": "Four separately generated close-ups are registered near native scale. The assembled 3204 by 1666 canvas is not claimed as a single native generation.",
+  "tiles": [
+    {
+      "id": "18-camp-southeast-meadow",
+      "url": "/survival/maps/camp-return-v2/18-camp-southeast-meadow.webp",
+      "x": 4096,
+      "y": 4668,
+      "width": 1666,
+      "height": 1538
+    },
+    {
+      "id": "19-camp-works-open-ground",
+      "url": "/survival/maps/camp-return-v2/19-camp-works-open-ground.webp",
+      "x": 5630,
+      "y": 4668,
+      "width": 1538,
+      "height": 1538
+    }
+  ],
+  "contacts": {
+    "north": {
+      "masterPreservedRows": 132,
+      "masterBlendRows": 128,
+      "outputExactRows": 4,
+      "exactRegion": "Before the eastern 132-pixel overlap",
+      "runtimeOverlap": 132,
+      "featherRows": 36,
+      "maxChannelError": 0
+    },
+    "east": {
+      "runtimeOverlap": 132,
+      "registrationBlendColumns": 96,
+      "exactOutputColumns": 36,
+      "featherColumns": 36,
+      "maxChannelError": 0
+    },
+    "betweenNewTiles": {
+      "sharedColumns": 132,
+      "featherColumns": 36,
+      "maxChannelError": 0
+    }
+  },
+  "scope": "Quality repair of sections 18 and 19 only: finer natural dirt and short grass, same two rectangles and road-free layout.",
+  "next": "Continue west directly beneath the main camp, then wrap its western and northern sides before extending distant districts."
+}

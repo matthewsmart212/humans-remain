@@ -1,0 +1,6 @@
+[
+ {"id":"river-western-bends-v1","name":"Western bends","source":{"x":-6144,"y":-1800,"width":4608,"height":4096},"topFade":384,"points":[[-3100,-1800],[-3100,-1100],[-2500,-700],[-3500,300],[-4800,1100],[-5200,1900],[-4936,2296]],"bridges":[{"id":"logging-bridge","from":[-3700,-1100],"to":[-2500,-1100],"width":145}]},
+ {"id":"river-waterworks-approach-v1","name":"Waterworks approach","source":{"x":-5888,"y":1900,"width":4608,"height":4096},"topFade":384,"points":[[-5200,1900],[-4400,2800],[-3200,3600],[-2700,4400],[-1900,5000],[-2400,5900],[-2464,5996]],"bridges":[{"id":"west-camp-bridge","from":[-4850,2800],"to":[-4000,2800],"width":140},{"id":"waterworks-bridge","from":[-2900,5900],"to":[-1900,5900],"width":150}]},
+ {"id":"river-lower-pools-v1","name":"Lower river pools","source":{"x":-5120,"y":5600,"width":4608,"height":4096},"topFade":384,"points":[[-2233,5600],[-2400,5900],[-3000,6800],[-2100,7800],[-2600,8600],[-3600,9200],[-4034,9696]],"bridges":[{"id":"waterworks-bridge","from":[-2900,5900],"to":[-1900,5900],"width":150},{"id":"lower-river-bridge","from":[-3050,8300],"to":[-2100,8900],"width":120}]},
+ {"id":"river-southern-reach-v1","name":"Southern river reach","source":{"x":-5632,"y":9300,"width":4608,"height":4500},"topFade":384,"points":[[-3688,9300],[-4300,10000],[-4100,11000],[-3200,11800],[-2600,13800]],"bridges":[]}
+]

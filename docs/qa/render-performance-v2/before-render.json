@@ -1,0 +1,784 @@
+{
+  "revision": "2267db9eeed503800030cfff4ba972d9ab838d9f",
+  "backend": "CanvasKit software",
+  "viewport": [
+    844,
+    390
+  ],
+  "framesPerScene": 3,
+  "deviceFPSMeasured": false,
+  "results": [
+    {
+      "name": "camp",
+      "ms": 2834.838479,
+      "costs": {
+        "drawTerrainTile": 2753.452438999999,
+        "drawImage": 55.80450800000108,
+        "drawWeather": 0.003565000000889995
+      },
+      "shaderFieldBytes": 0,
+      "MiB": 128.44901275634766,
+      "textures": [
+        {
+          "key": "survivorRear",
+          "url": "/survival/scrap-runner/motion-b-v1.png",
+          "width": 1312,
+          "height": 1199,
+          "MiB": 6.0008544921875
+        },
+        {
+          "key": "placed:/api/asset-files/93db0d98-1245-4026-a136-6248654149f9",
+          "url": "/api/asset-files/93db0d98-1245-4026-a136-6248654149f9",
+          "width": 1536,
+          "height": 1024,
+          "MiB": 6
+        },
+        {
+          "key": "placed:/survival/hq-furniture-v2/exploration-bench.webp",
+          "url": "/survival/hq-furniture-v2/exploration-bench.webp",
+          "width": 1536,
+          "height": 1024,
+          "MiB": 6
+        },
+        {
+          "key": "placed:/survival/camp-essentials-v1/treatment-centre.webp",
+          "url": "/survival/camp-essentials-v1/treatment-centre.webp",
+          "width": 1536,
+          "height": 1024,
+          "MiB": 6
+        },
+        {
+          "key": "placed:/survival/trees-v2/oak.webp",
+          "url": "/survival/trees-v2/oak.webp",
+          "width": 1536,
+          "height": 1024,
+          "MiB": 6
+        },
+        {
+          "key": "placed:/api/asset-files/cc6d2270-1400-486e-a12a-2014ca70f4e3",
+          "url": "/api/asset-files/cc6d2270-1400-486e-a12a-2014ca70f4e3",
+          "width": 1536,
+          "height": 1024,
+          "MiB": 6
+        },
+        {
+          "key": "world-ground:v1:0:0",
+          "url": "/survival/world-ground-v2/warm.webp",
+          "width": 1254,
+          "height": 1254,
+          "MiB": 5.9986724853515625
+        },
+        {
+          "key": "worldGroundBrown",
+          "url": "/survival/world-ground-v2/brown.webp",
+          "width": 1254,
+          "height": 1254,
+          "MiB": 5.9986724853515625
+        },
+        {
+          "key": "worldGroundClear",
+          "url": "/survival/world-ground-v3/clear-earth.webp",
+          "width": 1254,
+          "height": 1254,
+          "MiB": 5.9986724853515625
+        },
+        {
+          "key": "placed:/survival/camp-ground-v3/bonfire-clearing.webp",
+          "url": "/survival/camp-ground-v3/bonfire-clearing.webp",
+          "width": 1254,
+          "height": 1254,
+          "MiB": 5.9986724853515625
+        },
+        {
+          "key": "placed:/survival/camp-workshop-v1/camp-workshop.png",
+          "url": "/survival/camp-workshop-v1/camp-workshop.png",
+          "width": 1254,
+          "height": 1254,
+          "MiB": 5.9986724853515625
+        },
+        {
+          "key": "placed:/api/asset-files/0e6f4385-99d4-4bd1-990e-1f3cb3fa87ea",
+          "url": "/api/asset-files/0e6f4385-99d4-4bd1-990e-1f3cb3fa87ea",
+          "width": 1254,
+          "height": 1254,
+          "MiB": 5.9986724853515625
+        },
+        {
+          "key": "homeGround",
+          "url": "/survival/camp-ground-v3/preview.webp",
+          "width": 1200,
+          "height": 1200,
+          "MiB": 5.4931640625
+        },
+        {
+          "key": "placed:/survival/camp-walls-moss-v1/wall-5.webp",
+          "url": "/survival/camp-walls-moss-v1/wall-5.webp",
+          "width": 930,
+          "height": 1236,
+          "MiB": 4.384918212890625
+        },
+        {
+          "key": "placed:/survival/camp-well-v2/oak-well.webp",
+          "url": "/survival/camp-well-v2/oak-well.webp",
+          "width": 1091,
+          "height": 1012,
+          "MiB": 4.2117767333984375
+        },
+        {
+          "key": "placed:/survival/camp-walls-moss-v1/wall-8.webp",
+          "url": "/survival/camp-walls-moss-v1/wall-8.webp",
+          "width": 842,
+          "height": 1138,
+          "MiB": 3.6552276611328125
+        },
+        {
+          "key": "placed:/survival/hq-furniture-v2/storage-station-0.webp",
+          "url": "/survival/hq-furniture-v2/storage-station-0.webp",
+          "width": 960,
+          "height": 960,
+          "MiB": 3.515625
+        },
+        {
+          "key": "placed:/survival/camp-walls-moss-v1/wall-3.webp",
+          "url": "/survival/camp-walls-moss-v1/wall-3.webp",
+          "width": 956,
+          "height": 916,
+          "MiB": 3.34051513671875
+        },
+        {
+          "key": "placed:/survival/camp-walls-moss-v1/wall-7.webp",
+          "url": "/survival/camp-walls-moss-v1/wall-7.webp",
+          "width": 900,
+          "height": 934,
+          "MiB": 3.206634521484375
+        },
+        {
+          "key": "chickenDownLeft",
+          "url": "/survival/chicken-v1/down-left.webp",
+          "width": 896,
+          "height": 896,
+          "MiB": 3.0625
+        },
+        {
+          "key": "placed:/survival/camp-walls-moss-v1/wall-2.webp",
+          "url": "/survival/camp-walls-moss-v1/wall-2.webp",
+          "width": 988,
+          "height": 804,
+          "MiB": 3.03021240234375
+        },
+        {
+          "key": "placed:/survival/tree-variants-v1/oak-forked.webp",
+          "url": "/survival/tree-variants-v1/oak-forked.webp",
+          "width": 636,
+          "height": 1216,
+          "MiB": 2.9501953125
+        },
+        {
+          "key": "placed:/survival/tree-variants-v1/oak-leaning.webp",
+          "url": "/survival/tree-variants-v1/oak-leaning.webp",
+          "width": 650,
+          "height": 1129,
+          "MiB": 2.7994155883789062
+        },
+        {
+          "key": "placed:/survival/tree-variants-v1/birch-branching.webp",
+          "url": "/survival/tree-variants-v1/birch-branching.webp",
+          "width": 534,
+          "height": 1294,
+          "MiB": 2.6359405517578125
+        },
+        {
+          "key": "placed:/survival/camp-foundations-v2/headquarters.webp",
+          "url": "/survival/camp-foundations-v2/headquarters.webp",
+          "width": 1365,
+          "height": 374,
+          "MiB": 1.9474411010742188
+        },
+        {
+          "key": "placed:/survival/camp-foundations-v2/workshop.webp",
+          "url": "/survival/camp-foundations-v2/workshop.webp",
+          "width": 1079,
+          "height": 302,
+          "MiB": 1.2430496215820312
+        },
+        {
+          "key": "campSpit",
+          "url": "/survival/camp-cooking-v1/roasting-spit.webp",
+          "width": 768,
+          "height": 366,
+          "MiB": 1.072265625
+        },
+        {
+          "key": "placed:/survival/camp-foundations-v2/wall-3.webp",
+          "url": "/survival/camp-foundations-v2/wall-3.webp",
+          "width": 452,
+          "height": 612,
+          "MiB": 1.05523681640625
+        },
+        {
+          "key": "placed:/survival/world-scenery-v1/hollow-birch-log.webp",
+          "url": "/survival/world-scenery-v1/hollow-birch-log.webp",
+          "width": 640,
+          "height": 429,
+          "MiB": 1.04736328125
+        },
+        {
+          "key": "placed:/survival/camp-foundations-v2/wall-7.webp",
+          "url": "/survival/camp-foundations-v2/wall-7.webp",
+          "width": 398,
+          "height": 654,
+          "MiB": 0.9929351806640625
+        },
+        {
+          "key": "placed:/survival/puddles-v1/round.webp",
+          "url": "/survival/puddles-v1/round.webp",
+          "width": 512,
+          "height": 464,
+          "MiB": 0.90625
+        },
+        {
+          "key": "placed:/survival/camp-foundations-v2/wall-8.webp",
+          "url": "/survival/camp-foundations-v2/wall-8.webp",
+          "width": 677,
+          "height": 303,
+          "MiB": 0.7825126647949219
+        },
+        {
+          "key": "campServing",
+          "url": "/survival/camp-cooking-v1/serving-board.webp",
+          "width": 512,
+          "height": 341,
+          "MiB": 0.666015625
+        },
+        {
+          "key": "placed:/survival/camp-foundations-v2/wall-5.webp",
+          "url": "/survival/camp-foundations-v2/wall-5.webp",
+          "width": 644,
+          "height": 254,
+          "MiB": 0.623992919921875
+        },
+        {
+          "key": "placed:/survival/camp-foundations-v2/wall-2.webp",
+          "url": "/survival/camp-foundations-v2/wall-2.webp",
+          "width": 279,
+          "height": 539,
+          "MiB": 0.5736579895019531
+        },
+        {
+          "key": "placed:/survival/world-scenery-v1/meadow-fescue.webp",
+          "url": "/survival/world-scenery-v1/meadow-fescue.webp",
+          "width": 384,
+          "height": 357,
+          "MiB": 0.52294921875
+        },
+        {
+          "key": "placed:/survival/world-scenery-v1/ground-ivy.webp",
+          "url": "/survival/world-scenery-v1/ground-ivy.webp",
+          "width": 384,
+          "height": 290,
+          "MiB": 0.4248046875
+        },
+        {
+          "key": "placed:/survival/foliage-v3/lime-rosette.webp",
+          "url": "/survival/foliage-v3/lime-rosette.webp",
+          "width": 384,
+          "height": 249,
+          "MiB": 0.36474609375
+        },
+        {
+          "key": "placed:/survival/foliage-v3/moss-rosette.webp",
+          "url": "/survival/foliage-v3/moss-rosette.webp",
+          "width": 384,
+          "height": 243,
+          "MiB": 0.35595703125
+        },
+        {
+          "key": "placed:/survival/foliage-v4/copper-leaf.webp",
+          "url": "/survival/foliage-v4/copper-leaf.webp",
+          "width": 384,
+          "height": 226,
+          "MiB": 0.3310546875
+        },
+        {
+          "key": "placed:/survival/foliage-v4/forest-ivy.webp",
+          "url": "/survival/foliage-v4/forest-ivy.webp",
+          "width": 384,
+          "height": 220,
+          "MiB": 0.322265625
+        },
+        {
+          "key": "placed:/survival/foliage-v4/yellow-woodland-flowers.webp",
+          "url": "/survival/foliage-v4/yellow-woodland-flowers.webp",
+          "width": 384,
+          "height": 217,
+          "MiB": 0.31787109375
+        },
+        {
+          "key": "placed:/survival/foliage-v4/white-woodland-flowers.webp",
+          "url": "/survival/foliage-v4/white-woodland-flowers.webp",
+          "width": 384,
+          "height": 213,
+          "MiB": 0.31201171875
+        },
+        {
+          "key": "placed:/survival/foliage-v4/berry-bramble.webp",
+          "url": "/survival/foliage-v4/berry-bramble.webp",
+          "width": 384,
+          "height": 210,
+          "MiB": 0.3076171875
+        }
+      ]
+    },
+    {
+      "name": "forest",
+      "ms": 7530.342322,
+      "costs": {
+        "drawTerrainTile": 2997.837048999998,
+        "drawRiverTerrainPatch": 4243.775709999994,
+        "drawImage": 33.86951200001204,
+        "drawWeather": 0.003936000000976492
+      },
+      "shaderFieldBytes": 0,
+      "MiB": 72.02402114868164,
+      "textures": [
+        {
+          "key": "survivorRear",
+          "url": "/survival/scrap-runner/motion-b-v1.png",
+          "width": 1312,
+          "height": 1199,
+          "MiB": 6.0008544921875
+        },
+        {
+          "key": "placed:/survival/trees-v2/oak.webp",
+          "url": "/survival/trees-v2/oak.webp",
+          "width": 1536,
+          "height": 1024,
+          "MiB": 6
+        },
+        {
+          "key": "placed:/survival/trees-world-v1/willow.webp",
+          "url": "/survival/trees-world-v1/willow.webp",
+          "width": 1536,
+          "height": 1024,
+          "MiB": 6
+        },
+        {
+          "key": "placed:/survival/trees-world-v1/rowan.webp",
+          "url": "/survival/trees-world-v1/rowan.webp",
+          "width": 1536,
+          "height": 1024,
+          "MiB": 6
+        },
+        {
+          "key": "world-ground:v1:0:0",
+          "url": "/survival/world-ground-v2/warm.webp",
+          "width": 1254,
+          "height": 1254,
+          "MiB": 5.9986724853515625
+        },
+        {
+          "key": "worldGroundBrown",
+          "url": "/survival/world-ground-v2/brown.webp",
+          "width": 1254,
+          "height": 1254,
+          "MiB": 5.9986724853515625
+        },
+        {
+          "key": "worldGroundClear",
+          "url": "/survival/world-ground-v3/clear-earth.webp",
+          "width": 1254,
+          "height": 1254,
+          "MiB": 5.9986724853515625
+        },
+        {
+          "key": "stagDownLeft",
+          "url": "/survival/deer-v1/stag/down-left.webp",
+          "width": 896,
+          "height": 896,
+          "MiB": 3.0625
+        },
+        {
+          "key": "doeDownLeft",
+          "url": "/survival/deer-v1/doe/down-left.webp",
+          "width": 896,
+          "height": 896,
+          "MiB": 3.0625
+        },
+        {
+          "key": "placed:/survival/tree-variants-v1/oak-forked.webp",
+          "url": "/survival/tree-variants-v1/oak-forked.webp",
+          "width": 636,
+          "height": 1216,
+          "MiB": 2.9501953125
+        },
+        {
+          "key": "placed:/survival/tree-variants-v1/oak-leaning.webp",
+          "url": "/survival/tree-variants-v1/oak-leaning.webp",
+          "width": 650,
+          "height": 1129,
+          "MiB": 2.7994155883789062
+        },
+        {
+          "key": "placed:/survival/tree-variants-v1/willow-bent.webp",
+          "url": "/survival/tree-variants-v1/willow-bent.webp",
+          "width": 596,
+          "height": 1177,
+          "MiB": 2.6759796142578125
+        },
+        {
+          "key": "placed:/survival/tree-variants-v1/willow-forked.webp",
+          "url": "/survival/tree-variants-v1/willow-forked.webp",
+          "width": 563,
+          "height": 1221,
+          "MiB": 2.6223106384277344
+        },
+        {
+          "key": "placed:/survival/world-scenery-v1/mossy-fallen-oak.webp",
+          "url": "/survival/world-scenery-v1/mossy-fallen-oak.webp",
+          "width": 768,
+          "height": 649,
+          "MiB": 1.9013671875
+        },
+        {
+          "key": "placed:/survival/world-rocks-v1/lichen-twin-stones.webp",
+          "url": "/survival/world-rocks-v1/lichen-twin-stones.webp",
+          "width": 640,
+          "height": 474,
+          "MiB": 1.1572265625
+        },
+        {
+          "key": "campSpit",
+          "url": "/survival/camp-cooking-v1/roasting-spit.webp",
+          "width": 768,
+          "height": 366,
+          "MiB": 1.072265625
+        },
+        {
+          "key": "placed:/survival/world-rocks-v1/mossy-flat-shelf.webp",
+          "url": "/survival/world-rocks-v1/mossy-flat-shelf.webp",
+          "width": 640,
+          "height": 319,
+          "MiB": 0.77880859375
+        },
+        {
+          "key": "placed:/survival/world-rocks-v1/flat-river-slab.webp",
+          "url": "/survival/world-rocks-v1/flat-river-slab.webp",
+          "width": 576,
+          "height": 339,
+          "MiB": 0.744873046875
+        },
+        {
+          "key": "placed:/survival/world-rocks-v1/moss-capped-boulder.webp",
+          "url": "/survival/world-rocks-v1/moss-capped-boulder.webp",
+          "width": 512,
+          "height": 365,
+          "MiB": 0.712890625
+        },
+        {
+          "key": "campServing",
+          "url": "/survival/camp-cooking-v1/serving-board.webp",
+          "width": 512,
+          "height": 341,
+          "MiB": 0.666015625
+        },
+        {
+          "key": "placed:/survival/world-rocks-v1/river-stone-trio.webp",
+          "url": "/survival/world-rocks-v1/river-stone-trio.webp",
+          "width": 512,
+          "height": 306,
+          "MiB": 0.59765625
+        },
+        {
+          "key": "placed:/survival/world-rocks-v1/smooth-river-boulder.webp",
+          "url": "/survival/world-rocks-v1/smooth-river-boulder.webp",
+          "width": 512,
+          "height": 302,
+          "MiB": 0.58984375
+        },
+        {
+          "key": "placed:/survival/world-scenery-v1/reed-cluster.webp",
+          "url": "/survival/world-scenery-v1/reed-cluster.webp",
+          "width": 376,
+          "height": 384,
+          "MiB": 0.55078125
+        },
+        {
+          "key": "placed:/survival/world-scenery-v1/blue-sword-fern.webp",
+          "url": "/survival/world-scenery-v1/blue-sword-fern.webp",
+          "width": 384,
+          "height": 338,
+          "MiB": 0.4951171875
+        },
+        {
+          "key": "placed:/survival/world-scenery-v1/alder-sapling.webp",
+          "url": "/survival/world-scenery-v1/alder-sapling.webp",
+          "width": 384,
+          "height": 335,
+          "MiB": 0.49072265625
+        },
+        {
+          "key": "placed:/survival/world-scenery-v1/copper-bracken.webp",
+          "url": "/survival/world-scenery-v1/copper-bracken.webp",
+          "width": 384,
+          "height": 334,
+          "MiB": 0.4892578125
+        },
+        {
+          "key": "placed:/survival/world-scenery-v1/willow-scrub.webp",
+          "url": "/survival/world-scenery-v1/willow-scrub.webp",
+          "width": 384,
+          "height": 322,
+          "MiB": 0.4716796875
+        },
+        {
+          "key": "placed:/survival/world-scenery-v1/river-sedge.webp",
+          "url": "/survival/world-scenery-v1/river-sedge.webp",
+          "width": 384,
+          "height": 307,
+          "MiB": 0.44970703125
+        },
+        {
+          "key": "placed:/survival/world-scenery-v1/wetland-butterbur.webp",
+          "url": "/survival/world-scenery-v1/wetland-butterbur.webp",
+          "width": 384,
+          "height": 304,
+          "MiB": 0.4453125
+        },
+        {
+          "key": "placed:/survival/world-scenery-v1/ground-ivy.webp",
+          "url": "/survival/world-scenery-v1/ground-ivy.webp",
+          "width": 384,
+          "height": 290,
+          "MiB": 0.4248046875
+        },
+        {
+          "key": "placed:/survival/world-scenery-v1/moss-cushions.webp",
+          "url": "/survival/world-scenery-v1/moss-cushions.webp",
+          "width": 384,
+          "height": 285,
+          "MiB": 0.41748046875
+        },
+        {
+          "key": "riverExtension1_2Preview",
+          "url": "/survival/river-detail-v5/river-waterworks-approach-v1-reach-3-preview.webp",
+          "width": 512,
+          "height": 102,
+          "MiB": 0.19921875
+        },
+        {
+          "key": "riverExtension1_3Preview",
+          "url": "/survival/river-detail-v5/river-waterworks-approach-v1-reach-4-preview.webp",
+          "width": 512,
+          "height": 102,
+          "MiB": 0.19921875
+        }
+      ]
+    },
+    {
+      "name": "river",
+      "ms": 10201.086951000005,
+      "costs": {
+        "drawTerrainTile": 3439.1166620000076,
+        "drawRoadTerrainPatch": 408.5542900000073,
+        "drawRiverTerrainPatch": 6146.964381999998,
+        "drawImage": 21.760479999997187,
+        "drawSpriteOutline": 7.279078999999911,
+        "drawWeather": 0.004136000003200024
+      },
+      "shaderFieldBytes": 0,
+      "MiB": 50.02385711669922,
+      "textures": [
+        {
+          "key": "survivorRear",
+          "url": "/survival/scrap-runner/motion-b-v1.png",
+          "width": 1312,
+          "height": 1199,
+          "MiB": 6.0008544921875
+        },
+        {
+          "key": "placed:/survival/trees-world-v1/willow.webp",
+          "url": "/survival/trees-world-v1/willow.webp",
+          "width": 1536,
+          "height": 1024,
+          "MiB": 6
+        },
+        {
+          "key": "placed:/survival/trees-v2/pine.webp",
+          "url": "/survival/trees-v2/pine.webp",
+          "width": 1536,
+          "height": 1024,
+          "MiB": 6
+        },
+        {
+          "key": "world-ground:v1:0:0",
+          "url": "/survival/world-ground-v2/warm.webp",
+          "width": 1254,
+          "height": 1254,
+          "MiB": 5.9986724853515625
+        },
+        {
+          "key": "worldGroundBrown",
+          "url": "/survival/world-ground-v2/brown.webp",
+          "width": 1254,
+          "height": 1254,
+          "MiB": 5.9986724853515625
+        },
+        {
+          "key": "worldGroundClear",
+          "url": "/survival/world-ground-v3/clear-earth.webp",
+          "width": 1254,
+          "height": 1254,
+          "MiB": 5.9986724853515625
+        },
+        {
+          "key": "placed:/survival/tree-variants-v1/pine-bent.webp",
+          "url": "/survival/tree-variants-v1/pine-bent.webp",
+          "width": 538,
+          "height": 1299,
+          "MiB": 2.6659469604492188
+        },
+        {
+          "key": "placed:/survival/tree-variants-v1/pine-branching.webp",
+          "url": "/survival/tree-variants-v1/pine-branching.webp",
+          "width": 530,
+          "height": 1290,
+          "MiB": 2.6081085205078125
+        },
+        {
+          "key": "placed:/survival/world-rocks-v1/lichen-twin-stones.webp",
+          "url": "/survival/world-rocks-v1/lichen-twin-stones.webp",
+          "width": 640,
+          "height": 474,
+          "MiB": 1.1572265625
+        },
+        {
+          "key": "campSpit",
+          "url": "/survival/camp-cooking-v1/roasting-spit.webp",
+          "width": 768,
+          "height": 366,
+          "MiB": 1.072265625
+        },
+        {
+          "key": "campServing",
+          "url": "/survival/camp-cooking-v1/serving-board.webp",
+          "width": 512,
+          "height": 341,
+          "MiB": 0.666015625
+        },
+        {
+          "key": "placed:/survival/world-rocks-v1/smooth-river-boulder.webp",
+          "url": "/survival/world-rocks-v1/smooth-river-boulder.webp",
+          "width": 512,
+          "height": 302,
+          "MiB": 0.58984375
+        },
+        {
+          "key": "placed:/survival/world-scenery-v1/reed-cluster.webp",
+          "url": "/survival/world-scenery-v1/reed-cluster.webp",
+          "width": 376,
+          "height": 384,
+          "MiB": 0.55078125
+        },
+        {
+          "key": "placed:/survival/world-scenery-v1/copper-bracken.webp",
+          "url": "/survival/world-scenery-v1/copper-bracken.webp",
+          "width": 384,
+          "height": 334,
+          "MiB": 0.4892578125
+        },
+        {
+          "key": "placed:/survival/world-scenery-v1/dusky-heather.webp",
+          "url": "/survival/world-scenery-v1/dusky-heather.webp",
+          "width": 384,
+          "height": 325,
+          "MiB": 0.47607421875
+        },
+        {
+          "key": "placed:/survival/world-scenery-v1/willow-scrub.webp",
+          "url": "/survival/world-scenery-v1/willow-scrub.webp",
+          "width": 384,
+          "height": 322,
+          "MiB": 0.4716796875
+        },
+        {
+          "key": "placed:/survival/world-scenery-v1/river-sedge.webp",
+          "url": "/survival/world-scenery-v1/river-sedge.webp",
+          "width": 384,
+          "height": 307,
+          "MiB": 0.44970703125
+        },
+        {
+          "key": "placed:/survival/world-scenery-v1/wetland-butterbur.webp",
+          "url": "/survival/world-scenery-v1/wetland-butterbur.webp",
+          "width": 384,
+          "height": 304,
+          "MiB": 0.4453125
+        },
+        {
+          "key": "placed:/survival/world-scenery-v1/juniper-cushion.webp",
+          "url": "/survival/world-scenery-v1/juniper-cushion.webp",
+          "width": 384,
+          "height": 294,
+          "MiB": 0.4306640625
+        },
+        {
+          "key": "placed:/survival/world-scenery-v1/moss-cushions.webp",
+          "url": "/survival/world-scenery-v1/moss-cushions.webp",
+          "width": 384,
+          "height": 285,
+          "MiB": 0.41748046875
+        },
+        {
+          "key": "riverCrossingPoolPreview",
+          "url": "/survival/river-detail-v5/river-logging-v1-crossing-pool-preview.webp",
+          "width": 512,
+          "height": 186,
+          "MiB": 0.36328125
+        },
+        {
+          "key": "placed:/survival/world-rocks-v1/forest-pebble-patch.webp",
+          "url": "/survival/world-rocks-v1/forest-pebble-patch.webp",
+          "width": 384,
+          "height": 209,
+          "MiB": 0.30615234375
+        },
+        {
+          "key": "riverExtension0_0Preview",
+          "url": "/survival/river-detail-v5/river-western-bends-v1-reach-1-preview.webp",
+          "width": 512,
+          "height": 102,
+          "MiB": 0.19921875
+        },
+        {
+          "key": "roadComplete33Preview",
+          "url": "/survival/road-overviews-v1/roadComplete33.webp",
+          "width": 256,
+          "height": 171,
+          "MiB": 0.1669921875
+        },
+        {
+          "key": "roadComplete45Preview",
+          "url": "/survival/road-overviews-v1/roadComplete45.webp",
+          "width": 256,
+          "height": 171,
+          "MiB": 0.1669921875
+        },
+        {
+          "key": "roadComplete48Preview",
+          "url": "/survival/road-overviews-v1/roadComplete48.webp",
+          "width": 171,
+          "height": 256,
+          "MiB": 0.1669921875
+        },
+        {
+          "key": "roadComplete72Preview",
+          "url": "/survival/road-overviews-v1/roadComplete72.webp",
+          "width": 171,
+          "height": 256,
+          "MiB": 0.1669921875
+        }
+      ]
+    }
+  ],
+  "note": "Software-renderer cost probe, not device FPS. Streamed camp detail is not enabled in this probe; browser QA covers the live streams."
+}

@@ -1,0 +1,444 @@
+[
+  {
+    "key": "silver-sage",
+    "source": "/workspace/scratch/721c0d4dc4ac/generated_images/exec-8c25623a-4e14-4780-967d-6eaf9a3c535f.png",
+    "size": [
+      384,
+      261
+    ],
+    "bytes": 49330,
+    "crop": [
+      4,
+      206,
+      1250,
+      851
+    ],
+    "cropAlphaThreshold": 8,
+    "alphaPreservedInsideCrop": true
+  },
+  {
+    "key": "blue-sword-fern",
+    "source": "/workspace/scratch/721c0d4dc4ac/generated_images/exec-2ce40425-5764-49f2-8756-8726a09b78a5.png",
+    "size": [
+      384,
+      338
+    ],
+    "bytes": 67320,
+    "crop": [
+      0,
+      68,
+      1254,
+      1105
+    ],
+    "cropAlphaThreshold": 8,
+    "alphaPreservedInsideCrop": true
+  },
+  {
+    "key": "copper-bracken",
+    "source": "/workspace/scratch/721c0d4dc4ac/generated_images/exec-7b1a41f2-13aa-4725-84cb-7e83fdf0a59f.png",
+    "size": [
+      384,
+      334
+    ],
+    "bytes": 70416,
+    "crop": [
+      3,
+      63,
+      1251,
+      1088
+    ],
+    "cropAlphaThreshold": 8,
+    "alphaPreservedInsideCrop": true
+  },
+  {
+    "key": "juniper-cushion",
+    "source": "/workspace/scratch/721c0d4dc4ac/generated_images/exec-e5636450-6b26-4288-9bc2-e7d580ea57a0.png",
+    "size": [
+      384,
+      294
+    ],
+    "bytes": 64458,
+    "crop": [
+      8,
+      156,
+      1246,
+      953
+    ],
+    "cropAlphaThreshold": 8,
+    "alphaPreservedInsideCrop": true
+  },
+  {
+    "key": "hazel-scrub",
+    "source": "/workspace/scratch/721c0d4dc4ac/generated_images/exec-812190d8-66dc-45cf-9169-80c45e0a43a6.png",
+    "size": [
+      384,
+      320
+    ],
+    "bytes": 71844,
+    "crop": [
+      9,
+      108,
+      1240,
+      1034
+    ],
+    "cropAlphaThreshold": 8,
+    "alphaPreservedInsideCrop": true
+  },
+  {
+    "key": "russet-bilberry",
+    "source": "/workspace/scratch/721c0d4dc4ac/generated_images/exec-aa7bcd47-45ee-4230-a9dc-e62546f96b74.png",
+    "size": [
+      384,
+      245
+    ],
+    "bytes": 53032,
+    "crop": [
+      0,
+      228,
+      1247,
+      797
+    ],
+    "cropAlphaThreshold": 8,
+    "alphaPreservedInsideCrop": true
+  },
+  {
+    "key": "willow-scrub",
+    "source": "/workspace/scratch/721c0d4dc4ac/generated_images/exec-9982e59f-f37a-4505-bdc1-152c94cd4efc.png",
+    "size": [
+      384,
+      322
+    ],
+    "bytes": 83020,
+    "crop": [
+      25,
+      135,
+      1218,
+      1022
+    ],
+    "cropAlphaThreshold": 8,
+    "alphaPreservedInsideCrop": true
+  },
+  {
+    "key": "alder-sapling",
+    "source": "/workspace/scratch/721c0d4dc4ac/generated_images/exec-9a38e81c-2588-4d2a-9367-3810c61b68d1.png",
+    "size": [
+      384,
+      335
+    ],
+    "bytes": 68752,
+    "crop": [
+      48,
+      109,
+      1187,
+      1035
+    ],
+    "cropAlphaThreshold": 8,
+    "alphaPreservedInsideCrop": true
+  },
+  {
+    "key": "river-sedge",
+    "source": "/workspace/scratch/721c0d4dc4ac/generated_images/exec-8c1d401c-bdcd-4df2-b9b0-bb96f1d9447c.png",
+    "size": [
+      384,
+      307
+    ],
+    "bytes": 60144,
+    "crop": [
+      20,
+      138,
+      1218,
+      975
+    ],
+    "cropAlphaThreshold": 8,
+    "alphaPreservedInsideCrop": true
+  },
+  {
+    "key": "reed-cluster",
+    "source": "/workspace/scratch/721c0d4dc4ac/generated_images/exec-645f626a-e56d-4873-87b1-2bfce052f305.png",
+    "size": [
+      376,
+      384
+    ],
+    "bytes": 68072,
+    "crop": [
+      40,
+      28,
+      1178,
+      1204
+    ],
+    "cropAlphaThreshold": 8,
+    "alphaPreservedInsideCrop": true
+  },
+  {
+    "key": "golden-tussock",
+    "source": "/workspace/scratch/721c0d4dc4ac/generated_images/exec-130b493e-02cb-4e86-a136-9cd68e2aa0ec.png",
+    "size": [
+      384,
+      291
+    ],
+    "bytes": 75236,
+    "crop": [
+      58,
+      194,
+      1157,
+      878
+    ],
+    "cropAlphaThreshold": 8,
+    "alphaPreservedInsideCrop": true
+  },
+  {
+    "key": "meadow-fescue",
+    "source": "/workspace/scratch/721c0d4dc4ac/generated_images/exec-d5efd056-c73a-4e74-ae97-b9cf50c74ba7.png",
+    "size": [
+      384,
+      357
+    ],
+    "bytes": 72900,
+    "crop": [
+      70,
+      83,
+      1166,
+      1085
+    ],
+    "cropAlphaThreshold": 8,
+    "alphaPreservedInsideCrop": true
+  },
+  {
+    "key": "dusky-heather",
+    "source": "/workspace/scratch/721c0d4dc4ac/generated_images/exec-f2cf9ec7-be6f-4245-840f-f1119c7673e1.png",
+    "size": [
+      384,
+      325
+    ],
+    "bytes": 75774,
+    "crop": [
+      4,
+      86,
+      1249,
+      1056
+    ],
+    "cropAlphaThreshold": 8,
+    "alphaPreservedInsideCrop": true
+  },
+  {
+    "key": "meadow-yarrow",
+    "source": "/workspace/scratch/721c0d4dc4ac/generated_images/exec-12754eae-14df-4594-b17a-5a2534ba1488.png",
+    "size": [
+      384,
+      344
+    ],
+    "bytes": 85610,
+    "crop": [
+      50,
+      97,
+      1192,
+      1067
+    ],
+    "cropAlphaThreshold": 8,
+    "alphaPreservedInsideCrop": true
+  },
+  {
+    "key": "bluebell-patch",
+    "source": "/workspace/scratch/721c0d4dc4ac/generated_images/exec-67c0e3d7-9d35-4bb4-b79f-0a5309dcc89f.png",
+    "size": [
+      384,
+      326
+    ],
+    "bytes": 62574,
+    "crop": [
+      30,
+      123,
+      1193,
+      1012
+    ],
+    "cropAlphaThreshold": 8,
+    "alphaPreservedInsideCrop": true
+  },
+  {
+    "key": "dock-rosette",
+    "source": "/workspace/scratch/721c0d4dc4ac/generated_images/exec-3fca4842-2dc2-4c18-9ec1-a6fe9b33875a.png",
+    "size": [
+      384,
+      318
+    ],
+    "bytes": 56416,
+    "crop": [
+      18,
+      129,
+      1230,
+      1017
+    ],
+    "cropAlphaThreshold": 8,
+    "alphaPreservedInsideCrop": true
+  },
+  {
+    "key": "ground-ivy",
+    "source": "/workspace/scratch/721c0d4dc4ac/generated_images/exec-4dfdcb8d-ee5f-48d7-85a5-499fc7d2b94d.png",
+    "size": [
+      384,
+      290
+    ],
+    "bytes": 60564,
+    "crop": [
+      6,
+      179,
+      1240,
+      936
+    ],
+    "cropAlphaThreshold": 8,
+    "alphaPreservedInsideCrop": true
+  },
+  {
+    "key": "moss-cushions",
+    "source": "/workspace/scratch/721c0d4dc4ac/generated_images/exec-6ee5ee7d-ac08-4229-be53-6639c17b51a1.png",
+    "size": [
+      384,
+      285
+    ],
+    "bytes": 59880,
+    "crop": [
+      2,
+      172,
+      1251,
+      929
+    ],
+    "cropAlphaThreshold": 8,
+    "alphaPreservedInsideCrop": true
+  },
+  {
+    "key": "wetland-butterbur",
+    "source": "/workspace/scratch/721c0d4dc4ac/generated_images/exec-325f864b-4b14-41c7-8cc3-7c953a5d86da.png",
+    "size": [
+      384,
+      304
+    ],
+    "bytes": 59748,
+    "crop": [
+      17,
+      125,
+      1230,
+      975
+    ],
+    "cropAlphaThreshold": 8,
+    "alphaPreservedInsideCrop": true
+  },
+  {
+    "key": "amber-blackberry",
+    "source": "/workspace/scratch/721c0d4dc4ac/generated_images/exec-2cba3a5e-63d8-4bbc-be30-966a4f52ea33.png",
+    "size": [
+      384,
+      295
+    ],
+    "bytes": 62224,
+    "crop": [
+      1,
+      140,
+      1253,
+      964
+    ],
+    "cropAlphaThreshold": 8,
+    "alphaPreservedInsideCrop": true
+  },
+  {
+    "key": "mossy-fallen-oak",
+    "source": "/workspace/scratch/721c0d4dc4ac/generated_images/exec-3effd9c9-42f8-499b-9fbe-4285856bdd56.png",
+    "size": [
+      768,
+      649
+    ],
+    "bytes": 155826,
+    "crop": [
+      20,
+      107,
+      1234,
+      1043
+    ],
+    "cropAlphaThreshold": 8,
+    "alphaPreservedInsideCrop": true
+  },
+  {
+    "key": "hollow-birch-log",
+    "source": "/workspace/scratch/721c0d4dc4ac/generated_images/exec-94429d60-3d2b-49a7-8f26-8f880bc7d16b.png",
+    "size": [
+      640,
+      429
+    ],
+    "bytes": 98644,
+    "crop": [
+      24,
+      226,
+      1202,
+      805
+    ],
+    "cropAlphaThreshold": 8,
+    "alphaPreservedInsideCrop": true
+  },
+  {
+    "key": "twisted-root-log",
+    "source": "/workspace/scratch/721c0d4dc4ac/generated_images/exec-48af3c4a-6d91-43dd-ab43-fc0b6ac54077.png",
+    "size": [
+      640,
+      469
+    ],
+    "bytes": 113182,
+    "crop": [
+      8,
+      186,
+      1242,
+      910
+    ],
+    "cropAlphaThreshold": 8,
+    "alphaPreservedInsideCrop": true
+  },
+  {
+    "key": "mossy-boulder-cluster",
+    "source": "/workspace/scratch/721c0d4dc4ac/generated_images/exec-f4203741-e00c-435e-8dbc-b13bebebc99b.png",
+    "size": [
+      768,
+      586
+    ],
+    "bytes": 196452,
+    "crop": [
+      86,
+      213,
+      1081,
+      825
+    ],
+    "cropAlphaThreshold": 8,
+    "alphaPreservedInsideCrop": true
+  },
+  {
+    "key": "slate-ridge",
+    "source": "/workspace/scratch/721c0d4dc4ac/generated_images/exec-b091dc5c-9ff0-4dbd-b9c8-8b5ebbfbe63e.png",
+    "size": [
+      896,
+      477
+    ],
+    "bytes": 177574,
+    "crop": [
+      12,
+      306,
+      1235,
+      657
+    ],
+    "cropAlphaThreshold": 8,
+    "alphaPreservedInsideCrop": true
+  },
+  {
+    "key": "ochre-crag",
+    "source": "/workspace/scratch/721c0d4dc4ac/generated_images/exec-0db98544-25ce-4c56-8ca2-cd55fdbfb09d.png",
+    "size": [
+      896,
+      491
+    ],
+    "bytes": 181996,
+    "crop": [
+      16,
+      307,
+      1222,
+      669
+    ],
+    "cropAlphaThreshold": 8,
+    "alphaPreservedInsideCrop": true
+  }
+]

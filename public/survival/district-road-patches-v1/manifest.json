@@ -1,0 +1,56 @@
+[
+  {
+    "id": "northwest-trail",
+    "key": "roadDistrictNW",
+    "x": -2050,
+    "y": -1100,
+    "width": 1536,
+    "height": 1024,
+    "bytes": 716056
+  },
+  {
+    "id": "village-approach",
+    "key": "roadDistrictNE",
+    "x": 4700,
+    "y": -1250,
+    "width": 1536,
+    "height": 1024,
+    "bytes": 697796
+  },
+  {
+    "id": "western-trail",
+    "key": "roadDistrictW",
+    "x": -2250,
+    "y": 2300,
+    "width": 1536,
+    "height": 1024,
+    "bytes": 740508
+  },
+  {
+    "id": "southwest-trail",
+    "key": "roadDistrictSW",
+    "x": -1700,
+    "y": 4800,
+    "width": 1536,
+    "height": 1024,
+    "bytes": 736164
+  },
+  {
+    "id": "southern-trail",
+    "key": "roadDistrictS",
+    "x": 1400,
+    "y": 5400,
+    "width": 1024,
+    "height": 1536,
+    "bytes": 720232
+  },
+  {
+    "id": "eastern-junction",
+    "key": "roadDistrictSE",
+    "x": 5400,
+    "y": 3650,
+    "width": 1536,
+    "height": 1024,
+    "bytes": 821294
+  }
+]

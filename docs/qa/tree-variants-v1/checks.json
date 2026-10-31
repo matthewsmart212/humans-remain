@@ -1,0 +1,33 @@
+{
+  "result": "pass",
+  "species": 6,
+  "designs": 18,
+  "stages": 54,
+  "captures": [
+    "oak-states.webp",
+    "pine-states.webp",
+    "birch-states.webp",
+    "deadwood-states.webp",
+    "rowan-states.webp",
+    "willow-states.webp"
+  ],
+  "transformAndArcCases": 486,
+  "sharedTextures": 18,
+  "compressedBytes": 11373050,
+  "maxDecodedMiB": 68.757568359375,
+  "checks": [
+    "contact timing",
+    "single damage per swing",
+    "health and stump",
+    "reach and facing",
+    "occlusion callback",
+    "rotated/mirrored/scaled roots",
+    "Walk and Play",
+    "draft unchanged",
+    "restart reset",
+    "library visibility",
+    "shared images",
+    "CanvasKit raster output"
+  ],
+  "limits": "No physical device or browser GPU playtest. Log pickup uses the wood supply slot; no timed regrowth."
+}

@@ -1,0 +1,183 @@
+{
+  "passed": true,
+  "batches": [
+    0,
+    1,
+    2,
+    3,
+    4,
+    5
+  ],
+  "locations": [
+    {
+      "id": "reach-0",
+      "batch": 0,
+      "waterPixels": 13299,
+      "movingFraction": 0.6508008120911347,
+      "dryPixels": 22027,
+      "dryChanged": 0,
+      "shorelineBlendPixels": 0,
+      "loopMeanChannelDelta": 0.0000055114638447971785,
+      "paintingStationary": true
+    },
+    {
+      "id": "reach-1",
+      "batch": 1,
+      "waterPixels": 11968,
+      "movingFraction": 0.6421290106951871,
+      "dryPixels": 14107,
+      "dryChanged": 0,
+      "shorelineBlendPixels": 0,
+      "loopMeanChannelDelta": 0.0000055114638447971785,
+      "paintingStationary": true
+    },
+    {
+      "id": "logging-stream",
+      "batch": 1,
+      "waterPixels": 9356,
+      "movingFraction": 0.6383069687900812,
+      "dryPixels": 11209,
+      "dryChanged": 0,
+      "shorelineBlendPixels": 0,
+      "loopMeanChannelDelta": 0,
+      "paintingStationary": true
+    },
+    {
+      "id": "join-1",
+      "batch": 1,
+      "waterPixels": 14700,
+      "movingFraction": 0.6461904761904762,
+      "dryPixels": 16619,
+      "dryChanged": 0,
+      "shorelineBlendPixels": 3,
+      "loopMeanChannelDelta": 0.0000055114638447971785,
+      "paintingStationary": true
+    },
+    {
+      "id": "reach-2",
+      "batch": 2,
+      "waterPixels": 12428,
+      "movingFraction": 0.6230286449951722,
+      "dryPixels": 12790,
+      "dryChanged": 0,
+      "shorelineBlendPixels": 0,
+      "loopMeanChannelDelta": 0.000016534391534391536,
+      "paintingStationary": true
+    },
+    {
+      "id": "western-stream",
+      "batch": 2,
+      "waterPixels": 5818,
+      "movingFraction": 0.6435201100034376,
+      "dryPixels": 9185,
+      "dryChanged": 0,
+      "shorelineBlendPixels": 0,
+      "loopMeanChannelDelta": 0,
+      "paintingStationary": true
+    },
+    {
+      "id": "join-2",
+      "batch": 2,
+      "waterPixels": 14589,
+      "movingFraction": 0.6578243882377134,
+      "dryPixels": 14651,
+      "dryChanged": 0,
+      "shorelineBlendPixels": 8,
+      "loopMeanChannelDelta": 0.000011022927689594357,
+      "paintingStationary": true
+    },
+    {
+      "id": "reach-3",
+      "batch": 3,
+      "waterPixels": 12988,
+      "movingFraction": 0.6402833384662766,
+      "dryPixels": 14251,
+      "dryChanged": 0,
+      "shorelineBlendPixels": 0,
+      "loopMeanChannelDelta": 0.000011022927689594357,
+      "paintingStationary": true
+    },
+    {
+      "id": "join-3",
+      "batch": 3,
+      "waterPixels": 12379,
+      "movingFraction": 0.6578075773487357,
+      "dryPixels": 15741,
+      "dryChanged": 0,
+      "shorelineBlendPixels": 3,
+      "loopMeanChannelDelta": 0,
+      "paintingStationary": true
+    },
+    {
+      "id": "reach-4",
+      "batch": 4,
+      "waterPixels": 34105,
+      "movingFraction": 0.6420759419439965,
+      "dryPixels": 5042,
+      "dryChanged": 0,
+      "shorelineBlendPixels": 0,
+      "loopMeanChannelDelta": 0.000016534391534391536,
+      "paintingStationary": true
+    },
+    {
+      "id": "lower-lake",
+      "batch": 4,
+      "waterPixels": 38650,
+      "movingFraction": 0.6416817593790427,
+      "dryPixels": 1301,
+      "dryChanged": 0,
+      "shorelineBlendPixels": 0,
+      "loopMeanChannelDelta": 0.000016534391534391536,
+      "paintingStationary": true
+    },
+    {
+      "id": "join-4",
+      "batch": 4,
+      "waterPixels": 14654,
+      "movingFraction": 0.6392111368909513,
+      "dryPixels": 12665,
+      "dryChanged": 0,
+      "shorelineBlendPixels": 6,
+      "loopMeanChannelDelta": 0,
+      "paintingStationary": true
+    },
+    {
+      "id": "reach-5",
+      "batch": 5,
+      "waterPixels": 16431,
+      "movingFraction": 0.6200474712433814,
+      "dryPixels": 11668,
+      "dryChanged": 0,
+      "shorelineBlendPixels": 0,
+      "loopMeanChannelDelta": 0.00003306878306878307,
+      "paintingStationary": true
+    },
+    {
+      "id": "southern-stream",
+      "batch": 5,
+      "waterPixels": 3920,
+      "movingFraction": 0.5505102040816326,
+      "dryPixels": 5744,
+      "dryChanged": 0,
+      "shorelineBlendPixels": 0,
+      "loopMeanChannelDelta": 0,
+      "paintingStationary": true
+    },
+    {
+      "id": "join-5",
+      "batch": 5,
+      "waterPixels": 10891,
+      "movingFraction": 0.6543935359471122,
+      "dryPixels": 14444,
+      "dryChanged": 0,
+      "shorelineBlendPixels": 0,
+      "loopMeanChannelDelta": 0.0000055114638447971785,
+      "paintingStationary": true
+    }
+  ],
+  "approvedBridgeMeanDelta": 0.025591666666666665,
+  "waterfallOverlaysLoaded": 0,
+  "sharedSurfaceTextureBytes": 589824,
+  "shaderFieldBytes": 21577728,
+  "physicalIPhoneTested": false
+}

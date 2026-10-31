@@ -1,0 +1,6 @@
+[
+ {"id":"logging-stream","name":"Logging brook","batch":1,"master":"logging","nativeSize":[1254,1254],"roi":[100,340,700,440],"points":[[700,650],[580,720],[430,650],[360,600],[220,520]],"focus":[420,630],"kind":"stream"},
+ {"id":"western-stream","name":"Western bend stream","batch":2,"master":"western","nativeSize":[1330,1182],"roi":[850,370,480,520],"points":[[950,470],[1120,500],[1260,620],[1190,700],[1180,780]],"focus":[1190,630],"kind":"stream"},
+ {"id":"lower-lake","name":"Stillwater Lake","batch":4,"master":"lower","nativeSize":[1330,1182],"roi":[600,300,690,580],"points":[[800,440],[1010,540],[1030,650],[850,760]],"focus":[1000,585],"kind":"lake"},
+ {"id":"southern-stream","name":"Southern meadow brook","batch":5,"master":"southern","nativeSize":[1269,1240],"roi":[380,230,860,310],"points":[[460,410],[760,340],[900,430],[1060,390],[1140,350]],"focus":[830,400],"kind":"stream"}
+]

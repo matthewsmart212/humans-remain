@@ -1,0 +1,170 @@
+[
+  {
+    "wall": 1,
+    "originalBounds": {
+      "left": 50,
+      "top": 80,
+      "width": 888,
+      "height": 570
+    },
+    "generatedBounds": {
+      "left": 51,
+      "top": 89,
+      "width": 1080,
+      "height": 696
+    },
+    "canvas": [
+      1168,
+      1040
+    ],
+    "silhouetteOverlap": 0.9571,
+    "output": "public/survival/camp-walls-moss-v1/wall-1.webp"
+  },
+  {
+    "wall": 2,
+    "originalBounds": {
+      "left": 640,
+      "top": 48,
+      "width": 308,
+      "height": 706
+    },
+    "generatedBounds": {
+      "left": 908,
+      "top": 65,
+      "width": 444,
+      "height": 1003
+    },
+    "canvas": [
+      988,
+      804
+    ],
+    "silhouetteOverlap": 0.9729,
+    "output": "public/survival/camp-walls-moss-v1/wall-2.webp"
+  },
+  {
+    "wall": 3,
+    "originalBounds": {
+      "left": 450,
+      "top": 104,
+      "width": 472,
+      "height": 746
+    },
+    "generatedBounds": {
+      "left": 592,
+      "top": 136,
+      "width": 638,
+      "height": 1003
+    },
+    "canvas": [
+      956,
+      916
+    ],
+    "silhouetteOverlap": 0.9592,
+    "output": "public/survival/camp-walls-moss-v1/wall-3.webp"
+  },
+  {
+    "wall": 4,
+    "originalBounds": {
+      "left": 46,
+      "top": 248,
+      "width": 642,
+      "height": 412
+    },
+    "generatedBounds": {
+      "left": 74,
+      "top": 390,
+      "width": 1052,
+      "height": 675
+    },
+    "canvas": [
+      878,
+      694
+    ],
+    "silhouetteOverlap": 0.969,
+    "output": "public/survival/camp-walls-moss-v1/wall-4.webp"
+  },
+  {
+    "wall": 5,
+    "originalBounds": {
+      "left": 170,
+      "top": 700,
+      "width": 690,
+      "height": 426
+    },
+    "generatedBounds": {
+      "left": 87,
+      "top": 608,
+      "width": 996,
+      "height": 616
+    },
+    "canvas": [
+      930,
+      1236
+    ],
+    "silhouetteOverlap": 0.9603,
+    "output": "public/survival/camp-walls-moss-v1/wall-5.webp"
+  },
+  {
+    "wall": 6,
+    "originalBounds": {
+      "left": 34,
+      "top": 34,
+      "width": 492,
+      "height": 824
+    },
+    "generatedBounds": {
+      "left": 49,
+      "top": 51,
+      "width": 735,
+      "height": 1207
+    },
+    "canvas": [
+      930,
+      1148
+    ],
+    "silhouetteOverlap": 0.9547,
+    "output": "public/survival/camp-walls-moss-v1/wall-6.webp"
+  },
+  {
+    "wall": 7,
+    "originalBounds": {
+      "left": 78,
+      "top": 106,
+      "width": 440,
+      "height": 788
+    },
+    "generatedBounds": {
+      "left": 105,
+      "top": 104,
+      "width": 623,
+      "height": 1100
+    },
+    "canvas": [
+      900,
+      934
+    ],
+    "silhouetteOverlap": 0.9429,
+    "output": "public/survival/camp-walls-moss-v1/wall-7.webp"
+  },
+  {
+    "wall": 8,
+    "originalBounds": {
+      "left": 86,
+      "top": 34,
+      "width": 706,
+      "height": 450
+    },
+    "generatedBounds": {
+      "left": 74,
+      "top": 44,
+      "width": 922,
+      "height": 583
+    },
+    "canvas": [
+      842,
+      1138
+    ],
+    "silhouetteOverlap": 0.9575,
+    "output": "public/survival/camp-walls-moss-v1/wall-8.webp"
+  }
+]

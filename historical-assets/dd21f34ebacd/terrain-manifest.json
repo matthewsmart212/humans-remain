@@ -1,0 +1,79 @@
+{
+  "name": "Safety Last — Village approach, sparse ground revision",
+  "date": "2026-10-14",
+  "method": "Built-in image_gen; deterministic edge registration and lossless texture cuts",
+  "sourceCommit": "8a79e80fb11b9109f97e4c0bbdc7454b71dac777",
+  "nativeGeneration": {
+    "width": 1705,
+    "height": 922,
+    "file": "generated-master-original.png"
+  },
+  "registeredMaster": {
+    "x": 4096,
+    "y": 1860,
+    "width": 3072,
+    "height": 1660,
+    "file": "registered-master.png"
+  },
+  "packaging": "Native generated artwork resampled to the existing camp pixel scale; packaged dimensions are not native generation resolution.",
+  "tiles": [
+    {
+      "id": "03-camp-east-clearing",
+      "url": "/survival/maps/village-approach-v2/03-camp-east-clearing.webp",
+      "x": 4096,
+      "y": 1860,
+      "width": 1538,
+      "height": 1538,
+      "paintHeight": 1536
+    },
+    {
+      "id": "04-village-trail",
+      "url": "/survival/maps/village-approach-v2/04-village-trail.webp",
+      "x": 5630,
+      "y": 1860,
+      "width": 1538,
+      "height": 1538,
+      "paintHeight": 1536
+    }
+  ],
+  "contacts": {
+    "camp": {
+      "preservedColumns": 128,
+      "blendColumns": 128
+    },
+    "betweenNewTiles": {
+      "overlapColumns": 4,
+      "maxChannelError": 0
+    },
+    "existingJunction": {
+      "sharedSourceRows": [
+        128,
+        134
+      ],
+      "newSourceRows": [
+        1532,
+        1538
+      ],
+      "paintBoundaryY": 3396,
+      "maxChannelError": 0
+    },
+    "campContactMaxChannelError": 0
+  },
+  "nextExits": {
+    "north": {
+      "x": 6093,
+      "y": 1860,
+      "destination": "Village outskirts",
+      "note": "Approximate position; use actual texture edges for the next outpaint."
+    },
+    "east": {
+      "x": 7168,
+      "y": 2430,
+      "destination": "Eastern works approach",
+      "note": "Approximate position; use actual texture edges for the next outpaint."
+    }
+  },
+  "scope": "Ground and paths only; separately placed buildings, foliage, rocks, water and resources are added later.",
+  "palette": "Ochre contact strips transition to brown dirt, darker earth and muted grassy ground.",
+  "groundCover": "Broad leaf-free dirt and grassy areas; occasional small subdued leaf clusters. Dense existing contact strips are preserved to match published neighbours."
+}

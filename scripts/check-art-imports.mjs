@@ -1,0 +1,137 @@
+import {build} from 'esbuild';import fs from 'node:fs';import os from 'node:os';import path from 'node:path';import {pathToFileURL} from 'node:url';import {DatabaseSync} from 'node:sqlite';import assert from 'node:assert/strict';
+const dir=fs.mkdtempSync(path.join(os.tmpdir(),'safety-art-check-'));
+try{
+ await build({stdin:{contents:`export * from './src/imported-art';export * from './src/world-assets';export * from './src/world-layout';export * from './src/placed-world-renderer';export * from './src/survival-engine';export * from './src/catalogue-library';export * from './src/catalogue-model';export * from './src/asset-collision';export * from './src/artwork-draft';export * from './src/camp-collision';`,resolveDir:process.cwd()},outfile:path.join(dir,'checks.mjs'),bundle:true,platform:'node',format:'esm'});
+ const m=await import(pathToFileURL(path.join(dir,'checks.mjs'))),worker=(await import(pathToFileURL(process.cwd()+'/dist/server/index.js'))).default;
+ const sql=new DatabaseSync(':memory:');for(const f of fs.readdirSync('drizzle').filter(f=>f.endsWith('.sql')).sort())sql.exec(fs.readFileSync('drizzle/'+f,'utf8'));
+ const DB={prepare(q){let params=[];return{bind(...p){params=p;return this},async all(){return{results:sql.prepare(q).all(...params)}},async run(){const r=sql.prepare(q).run(...params);return{meta:{changes:Number(r.changes)}}}}}},blobs=new Map(),env={DB,SITE_OWNER_EMAIL:'owner@example.test',ARTWORK:{async put(k,v){blobs.set(k,v instanceof ReadableStream?await new Response(v).arrayBuffer():v)},async get(k){return blobs.has(k)?{body:blobs.get(k)}:null},async delete(k){blobs.delete(k)}}};
+ const origin='https://test.local',owner={'oai-authenticated-user-id':'site-scoped-owner-subject','oai-authenticated-user-email':'owner@example.test'},call=(p,options={})=>worker.fetch(new Request(origin+p,options),env);
+ for(const route of ['/api/base-checklist','/api/asset-artwork','/api/world-layout']){assert.equal((await(await call(route,{headers:owner})).json()).canEdit,true,'owner controls enabled: '+route);assert.equal((await(await call(route)).json()).canEdit,false,'anonymous controls read-only: '+route)}
+ const png=fs.readFileSync('artwork-archive/hearth-legacy-v1/tier-1-flame-0.png');
+ const upload=async(id,bytes=png,auth=true)=>call('/api/asset-files',{method:'POST',headers:{Origin:origin,'Content-Type':'image/png','X-Asset-Id':id,'X-File-Name':'test.png',...(auth?owner:{})},body:bytes});
+ assert.equal((await upload('base_workshop_t1',png,false)).status,403);
+ assert.equal((await upload('unknown')).status,400);
+ assert.equal((await upload('base_workshop_t1',Buffer.from('<svg><script>bad()</script></svg>'))).status,400);
+ const config=(base)=>({kind:'sprite',base:base.id,frames:[],fps:8,worldWidth:150,anchor:[.5,.94],solid:true,footprint:{width:.6,depth:.2}});
+ const save=(id,c,revision=0,auth=true)=>call('/api/asset-artwork',{method:'PUT',headers:{Origin:origin,'Content-Type':'application/json',...(auth?owner:{})},body:JSON.stringify({id,revision,config:c})});
+ const first=await upload('base_workshop_t1');assert.equal(first.status,201);const f=await first.json();assert.equal(f.width,627);assert.equal((await call(f.url)).status,404,'pending file private');
+ assert.equal((await save('base_workshop_t1',config(f),0,false)).status,403);
+ let r=await save('base_workshop_t1',config(f));assert.equal(r.status,200);const single=(await r.json()).record;
+ assert.equal((await call(f.url)).status,200);assert.deepEqual(Buffer.from(await(await call(f.url+'?download=1')).arrayBuffer()),png,'download original bytes');
+ const changed=await call('/api/asset-artwork',{method:'PUT',headers:{Origin:'https://bad.test','Content-Type':'application/json',...owner},body:'{}'});assert.equal(changed.status,403);
+ assert.equal((await save('base_workshop_t1',config(f),0)).status,409,'stale changes rejected');
+ const f2=await(await upload('base_workshop_t1')).json();r=await save('base_workshop_t1',{...config(f),frames:[f.id,f2.id],fps:12},1);assert.equal(r.status,200);const animated=(await r.json()).record;assert.equal(animated.revision,2);assert.equal(sql.prepare('SELECT COUNT(*) n FROM asset_artwork').get().n,2,'versions retained');
+ assert.equal((await save('base_workshop_t1',{...config(f),frames:[f.id]},2)).status,400);
+ const off=await(await upload('base_workshop_t1',fs.readFileSync('artwork-archive/hearth-legacy-v1/tier-1-unlit.png'))).json();assert.equal((await save('base_workshop_t1',{...config(f),unlit:off.id},2)).status,400,'mismatched frame dimensions rejected');
+ const interior=await(await upload('base_shelter_t4')).json(),roof=await(await upload('base_shelter_t4')).json(),shape={left:.08,top:.25,right:.92,bottom:.94,doorSide:'south',doorStart:.36,doorEnd:.64};
+ const building={...config(interior),kind:'building',roof:roof.id,worldWidth:672,building:shape};
+ assert.equal((await save('base_shelter_t4',{...building,roof:undefined})).status,400);assert.equal((await save('base_shelter_t4',{...building,building:{...shape,doorEnd:.37}})).status,400,'narrow doorway rejected');
+ r=await save('base_shelter_t4',building);assert.equal(r.status,200);const home=(await r.json()).record;
+ assert.equal((await save('base_shelter_t4',{...building,roof:f.id},1)).status,400,'cross-asset files cannot be referenced');
+ // Image-relative outlines round-trip, with durable frame reordering/removal.
+ const collision={lineWidth:.012,paths:[{closed:true,points:[[.12,.5],[.7,.5],[.85,.85],[.12,.85]]}]};
+ r=await save('base_workshop_t1',{...config(f2),frames:[f2.id,f.id],fps:12,collision},2);assert.equal(r.status,200);const reordered=(await r.json()).record;assert.deepEqual(reordered.config.frames.map(f=>f.id),[f2.id,f.id]);
+ r=await save('base_workshop_t1',{...config(f2),collision},3);assert.equal(r.status,200);const removed=(await r.json()).record;assert.equal(removed.config.frames.length,0);assert.equal(removed.config.base.id,f2.id);assert.equal((await call(f.url)).status,200,'removed frame retained as historical source');
+ assert.equal((await save('base_workshop_t1',{...config(f2),collision:{...collision,paths:[{closed:true,points:[[0,0],[2,0],[0,1]]}]}},4)).status,400,'out-of-range coordinates rejected');
+ assert.equal((await save('base_workshop_t1',{...config(f2),collision:{...collision,paths:[{closed:true,points:[[0,0],[1,1],[1,0],[0,1]]}]}},4)).status,400,'crossing polygon rejected');
+ r=await save('base_workshop_t1',{...config(f),frames:[f.id,f2.id],fps:12,collision},4);assert.equal(r.status,200);
+ const walls={lineWidth:.01,paths:[{closed:false,points:[[.1,.85],[.1,.2],[.9,.2],[.9,.85],[.65,.85]]},{closed:false,points:[[.1,.85],[.35,.85]]}]};
+ r=await save('base_shelter_t4',{...building,collision:walls},1);assert.equal(r.status,200);
+ const loaded=await(await call('/api/asset-artwork')).json();assert.equal(loaded.records.length,2);assert.equal(loaded.canEdit,false);m.installImportedArt(loaded.records);
+ assert(m.ASSET_BY_ID.has('base_shelter_t4'));assert.equal(m.ASSET_BY_ID.get('base_workshop_t1').frames.length,2);assert.equal(m.ASSET_BY_ID.get('base_workshop_t1').fps,12);assert(m.requiredImages(['base_shelter_t4'])[m.assetImageKey(roof.url)]);
+ const layout=m.starterLayout(),p=m.newPlacement('base_shelter_t4',1900,2550);layout.items.push(p);assert.deepEqual(m.validateLayout(layout,true).errors,[]);
+ const b=m.ASSET_BY_ID.get(p.assetId).interior;assert(!m.layoutBlocked(layout,p.x,p.y),'door opening traversable');assert(m.insideBuilding(p,p.x,p.y-100),'roof cutaway inside');assert(m.layoutBlocked(layout,p.x+(.1-.5)*672,p.y+(.5-.94)*672),'drawn side wall blocks');
+ const polyAsset=m.ASSET_BY_ID.get('base_workshop_t1'),poly=m.newPlacement('base_workshop_t1',1200,1900);const pointAt=(p,u,v)=>({x:p.x+(u-.5)*150*p.scale,y:p.y+(v-.94)*150*p.scale});
+ for(const scale of [.25,1,3]){const placed={...poly,scale},l={...m.emptyLayout(),items:[placed]},inside=pointAt(placed,.4,.65),outside=pointAt(placed,.95,.65);assert(m.layoutBlocked(l,inside.x,inside.y,1),'scaled polygon interior blocks');assert(!m.layoutBlocked(l,outside.x,outside.y,1),'scaled polygon outside stays clear');assert.equal(m.placementBodies(placed)[0].shape,'polygon');}
+ const movedPoly={...poly,x:poly.x+350};assert(!m.layoutBlocked({...m.emptyLayout(),items:[movedPoly]},pointAt(poly,.4,.65).x,pointAt(poly,.4,.65).y,1),'moved outline leaves no old blocker');
+ assert.equal(m.TERRAIN_COLLIDERS.length,0);const blank=m.emptyLayout();for(let y=30;y<3300;y+=45)for(let x=30;x<2500;x+=45)assert(!m.layoutBlocked(blank,x,y,19),'blank terrain remains walkable');assert(!m.layoutBlocked(blank,50,50,19),'no invisible edge inset');assert(!m.layoutBlocked(blank,0,0,19),'old origin opens into outer scenery');assert(m.layoutBlocked(blank,-600,0,19),'new outer edge contains worker');
+ const concave={id:'concave',shape:'polygon',points:[[0,0],[100,0],[100,30],[30,30],[30,100],[0,100]],x:50,y:50,hw:50,hh:50};assert(!m.hitCollider(concave,70,70,5));assert(m.hitCollider(concave,20,70,5));assert(m.hitCollider(concave,33,70,5),'worker radius respects polygon edges');
+ for(const id of ['base_hearth_t1','base_hearth_t2','base_hearth_t3','base_shelter_t1','base_shelter_t2','base_shelter_t3']){const e=m.entries.find(e=>e.id===id),d=m.existingArtwork(e);assert(d.base);assert.equal(m.collisionError(m.assetOutline(m.ASSET_BY_ID.get(id))), '');if(id.includes('hearth')){assert.equal(d.frames.length,8);for(const f of [d.idle,...d.frames]){assert.equal(f.width,1024);assert.equal(f.height,1024)}}else{assert.equal(d.base.width,d.roof.width);assert.equal(d.base.height,d.roof.height)}}
+ const request=new Request(origin+'/api/world-layout',{method:'PUT',headers:{Origin:origin,'Content-Type':'application/json',...owner},body:JSON.stringify({layout,revision:0,action:'apply'})});r=await worker.fetch(request,env);assert.equal(r.status,200,'server accepts imported asset IDs');
+ const reload=await(await call('/api/world-layout')).json();assert(reload.applied.items.some(p=>p.assetId==='base_shelter_t4'));assert.deepEqual(m.validateLayout(reload.applied,true).errors,[]);
+ const draws=[],ctx=new Proxy({globalAlpha:1,drawImage:(im)=>draws.push(im)},{get:(t,k)=>k in t?t[k]:(()=>{})});const imgs=Object.fromEntries([interior.url,roof.url,f.url,f2.url].map(url=>[m.assetImageKey(url),url]));
+ const aw=m.createWorld({...m.emptyLayout(),items:[m.newPlacement('base_workshop_t1',1200,1900)]});aw.tick=5;m.placedDrawables(ctx,imgs,aw,true).forEach(o=>o.draw());assert(draws.includes(f2.url),'renderer uses uploaded frame timing');
+ const html=await(await call('/checklist.html')).text();assert(html.includes(origin+roof.url));assert(html.includes('<code>base_shelter_t4</code>'));assert(!html.includes('<script'));assert(html.includes('Original'));assert(html.includes('Imported artwork'));
+ const groups=m.groupCatalogue(m.buildEntries),hearth=groups.filter(g=>g.name==='Camp hearth');assert.equal(hearth.length,1);assert.equal(hearth[0].items.filter(e=>e.tier!==null).length,3);assert.equal(groups[0].name,'Camp hearth');
+ // Asset-wide automatic transparency survives owner save/reload and reaches both render paths.
+ assert.equal(single.config.allowTransparency,true,'legacy configurations retain automatic fading');
+ assert.equal((await save('base_workshop_t1',{...config(f),allowTransparency:'false'},5)).status,400,'boolean required');
+ r=await save('base_workshop_t1',{...config(f),frames:[f.id,f2.id],fps:12,collision,allowTransparency:false},5);assert.equal(r.status,200);
+ r=await save('base_shelter_t4',{...building,collision:walls,allowTransparency:false},2);assert.equal(r.status,200);
+ const visibilityRecords=(await(await call('/api/asset-artwork')).json()).records;
+ assert(visibilityRecords.every(r=>r.config.allowTransparency===false),'disabled flag persisted');
+ function renderedOpacity(id,enabled,roofMode='auto',override){
+  m.installImportedArt(visibilityRecords.map(r=>({...r,config:{...r.config,allowTransparency:enabled}})));
+  const a=m.ASSET_BY_ID.get(id),p={...m.newPlacement(id,1200,1900),roof:roofMode,allowTransparency:override},w=m.createWorld({...m.emptyLayout(),items:[p]});
+  w.player.x=p.x+(a.interior?a.interior.x+a.interior.width/2:0);w.player.y=p.y+(a.interior?a.interior.y+a.interior.height/2:-a.height*.1);
+  const stack=[],seen=[],target=a.roof||a.image,context=new Proxy({globalAlpha:1,save(){stack.push(this.globalAlpha)},restore(){this.globalAlpha=stack.pop()},drawImage(im){seen.push({im,alpha:this.globalAlpha})}},{get:(o,k)=>k in o?o[k]:(()=>{})});
+  const images=Object.fromEntries([a.image,a.roof,...(a.frames||[])].filter(Boolean).map(url=>[m.assetImageKey(url),url]));
+  m.placedDrawables(context,images,w,true).forEach(d=>d.draw());return seen.find(d=>d.im===target)?.alpha;
+ }
+ assert.equal(renderedOpacity('base_workshop_t1',false),1);assert.equal(renderedOpacity('base_workshop_t1',true),.6);
+ assert.equal(renderedOpacity('base_shelter_t4',false),1);assert.equal(renderedOpacity('base_shelter_t4',true),.08);
+ assert.equal(renderedOpacity('base_shelter_t4',false,'hidden'),undefined,'explicit roof hiding remains available');
+ console.log('PASS: automatic transparency setting persists; props and roofs obey off/on; manual roof hiding preserved.');
+ assert.equal(renderedOpacity('base_workshop_t1',true,'auto',false),1,'placement can disable library fade');
+ assert.equal(renderedOpacity('base_shelter_t4',false,'auto',true),.08,'placement can override opaque library roof');
+ // Terrain is an immutable owner upload, persisted with the world and publicly downloadable after save.
+ const terrainUpload=(body=png,headers=owner)=>call('/api/world-terrain',{method:'POST',headers:{Origin:origin,'Content-Type':'image/png','X-File-Name':'new-ground.png',...headers},body});
+ assert.equal((await terrainUpload(png,{})).status,403);
+ assert.equal((await terrainUpload(Buffer.from('<svg/>'))).status,400);
+ assert.equal((await terrainUpload(png,{...owner,Origin:'https://bad.test'})).status,403);
+ const tr=await terrainUpload();assert.equal(tr.status,201);const terrain=await tr.json();assert.equal((await call(terrain.url)).status,404);
+ const worldSave=(l,revision,action='save')=>call('/api/world-layout',{method:'PUT',headers:{Origin:origin,'Content-Type':'application/json',...owner},body:JSON.stringify({layout:l,revision,action})});
+ const changedWorld={...layout,terrainImage:terrain,items:layout.items.map(p=>({...p,allowTransparency:false}))};
+ assert.equal(m.requiredImages([],terrain)[m.assetImageKey(terrain.url)],terrain.url);
+ assert.equal(m.validateLayout({...changedWorld,terrainImage:{...terrain,url:'https://bad.test/track'}}).layout,undefined);
+ assert.equal(m.validateLayout({...layout,items:[{...layout.items[0],allowTransparency:'false'}]}).layout,undefined);
+ assert.equal((await worldSave({...changedWorld,terrainImage:f},1)).status,400,'catalogue art cannot silently become terrain upload');
+ assert.equal((await worldSave(changedWorld,1)).status,200);
+ let savedWorld=await(await call('/api/world-layout')).json();assert.deepEqual(savedWorld.draft.terrainImage,terrain);assert.equal(savedWorld.applied.terrainImage,undefined,'save leaves live game unchanged');
+ assert(savedWorld.draft.items.every(p=>p.allowTransparency===false));
+ assert.equal((await call(terrain.url)).status,200);assert.deepEqual(Buffer.from(await(await call(terrain.url+'?download=1')).arrayBuffer()),png);
+ assert.equal((await worldSave(changedWorld,2,'apply')).status,200);
+ savedWorld=await(await call('/api/world-layout')).json();assert.deepEqual(savedWorld.applied.terrainImage,terrain);assert.deepEqual(savedWorld.applied.spawn,layout.spawn);assert.equal(savedWorld.applied.items[0].x,layout.items[0].x);
+ assert.equal((await worldSave({...changedWorld,terrainImage:undefined},3,'apply')).status,200);assert.equal((await(await call('/api/world-layout')).json()).applied.terrainImage,undefined,'restore original background');
+ assert.equal((await call(terrain.url)).status,200,'previous background retained for undo/history');
+ // A full-size 4800px PNG header fixture follows the large streaming path.
+ const large=Buffer.alloc(49_891_187);png.copy(large);large.writeUInt32BE(4800,16);large.writeUInt32BE(4800,20);
+ const largeHeaders={...owner,'Content-Length':String(large.length),'X-File-Size':String(large.length)};
+ const expandedResponse=await terrainUpload(large,largeHeaders);assert.equal(expandedResponse.status,201);
+ const expanded=await expandedResponse.json();assert.equal(expanded.width,4800);assert.equal(expanded.height,4800);assert.equal(expanded.bytes,large.length);
+ assert.equal((await upload('base_workshop_t1',large)).status,413,'catalogue sprites retain 20MB safety limit');
+ const hdWorld={...changedWorld,terrainImage:expanded,terrainBorder:600};
+ assert.equal(m.validateLayout(hdWorld).errors.length,0);
+ assert.equal(m.validateLayout({...hdWorld,terrainBorder:2400}).layout,undefined,'invalid inset rejected');
+ assert.equal((await worldSave(hdWorld,4,'apply')).status,200);
+ const hdReload=await(await call('/api/world-layout')).json();assert.equal(hdReload.applied.terrainBorder,600);assert.deepEqual(hdReload.applied.items,changedWorld.items);assert.deepEqual(hdReload.applied.spawn,layout.spawn);
+ assert.deepEqual(Buffer.from(await(await call(expanded.url+'?download=1')).arrayBuffer()),large,'original high-resolution bytes retained');
+ const tooManyPixels=Buffer.from(png);tooManyPixels.writeUInt32BE(6000,16);tooManyPixels.writeUInt32BE(6000,20);assert.equal((await terrainUpload(tooManyPixels)).status,400,'32MP safety cap retained');
+ assert.equal((await terrainUpload(png,{...owner,'Content-Length':String(65*1024*1024)})).status,413,'64MB safety cap retained');
+ console.log('PASS: world terrain upload/auth/validation/download, draft vs apply, restore, preserved coordinates, and per-copy transparency overrides.');
+ // Custom entries persist before upload, then use the complete existing art/world pipeline.
+ const create=(name,headers=owner)=>call('/api/custom-assets',{method:'POST',headers:{Origin:origin,'Content-Type':'application/json',...headers},body:JSON.stringify({name})});
+ assert.equal((await create('Gate',{})).status,403);
+ assert.equal((await create('Gate',{...owner,Origin:'https://bad.test'})).status,403);
+ for(const name of ['', '   ', 'x'.repeat(81), 'bad\nname',null])assert.equal((await create(name)).status,400);
+ const created=await create('  My wooden gate  ');assert.equal(created.status,201);const custom=(await created.json()).asset;
+ assert.equal(custom.name,'My wooden gate');assert(custom.id.startsWith('misc_'));
+ let library=await(await call('/api/asset-artwork')).json();assert.deepEqual(library.customAssets,[custom]);assert(!library.records.some(r=>r.id===custom.id),'unfinished entries survive without appearing as broken world assets');
+ const customFileResponse=await upload(custom.id);assert.equal(customFileResponse.status,201);const customFile=await customFileResponse.json();
+ assert.equal((await save(custom.id,config(f))).status,400,'custom assets cannot reuse another entry’s private files');
+ const customSave=await save(custom.id,{...config(customFile),solid:false});assert.equal(customSave.status,200);
+ const customRecord=(await customSave.json()).record;assert.deepEqual(customRecord.customAsset,custom);
+ library=await(await call('/api/asset-artwork')).json();assert.deepEqual(library.records.find(r=>r.id===custom.id),customRecord);
+ m.installImportedArt(library.records);assert.equal(m.ASSET_BY_ID.get(custom.id).name,custom.name);assert.equal(m.ASSET_BY_ID.get(custom.id).group,'Miscellaneous');assert(m.WORLD_ASSETS.some(a=>a.id===custom.id));
+ const customPlacement={...m.newPlacement(custom.id,1600,1600),rotation:35,flipX:true,flipY:true};
+ const customLayout={...hdWorld,items:[...hdWorld.items,customPlacement]};
+ assert.equal((await worldSave(customLayout,hdReload.revision,'apply')).status,200,'custom asset can be placed and applied');
+ assert.deepEqual((await(await call('/api/world-layout')).json()).applied.items.find(p=>p.assetId===custom.id),customPlacement,'custom placement and flips survive reload');
+ const transforms=[],flipCtx=new Proxy({globalAlpha:1,scale:(x,y)=>transforms.push([x,y])},{get:(o,k)=>k in o?o[k]:(()=>{})});
+ const flipWorld=m.createWorld({...m.emptyLayout(),items:[customPlacement]});m.placedDrawables(flipCtx,{[m.assetImageKey(customFile.url)]:customFile.url},flipWorld,true).forEach(d=>d.draw());assert(transforms.some(([x,y])=>x===-1&&y===-1),'renderer mirrors both axes');
+ assert.equal((await call('/api/base-checklist',{method:'PUT',headers:{Origin:origin,'Content-Type':'application/json',...owner},body:JSON.stringify({id:custom.id,field:'art',checked:true})})).status,200);
+ assert((await(await call('/api/base-checklist')).json()).rows.some(r=>r.id===custom.id&&r.art===1));
+ const customHtml=await(await call('/checklist.html')).text();assert(customHtml.includes(custom.name));assert(customHtml.includes(customFile.url));
+ console.log('PASS: Miscellaneous asset creation, validation, owner/origin guards, saved empty entries, image upload/save/reload, editor registration, world apply/reload, checklist marks and public catalogue.');
+ sql.close();console.log('PASS: owner/origin guards, raster upload, private staging, downloads, revision conflicts/history, animation dimensions/order/timing, interior/roof pairing, doorway collision, server save/apply/reload, public HTML and family grouping; authored polygons/door lines, scaling, no terrain blockers, original frame editing, durable frame reorder/removal.');
+}finally{fs.rmSync(dir,{recursive:true,force:true})}

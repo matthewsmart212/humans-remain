@@ -1,0 +1,17 @@
+{
+  "passed": true,
+  "axeStaminaCost": [0, 0],
+  "axeWorksAtZeroStamina": true,
+  "choppingAllowsNormalStaminaRecovery": true,
+  "chickenHp": 32,
+  "chickenPunchDamage": 16,
+  "punchesToKillChicken": 2,
+  "axeHitsToKillChicken": 1,
+  "nutritionChanged": false,
+  "foodArt": ["/survival/chicken-food-v1/raw-chicken.webp", "/survival/chicken-food-v1/cooked-chicken.webp"],
+  "usedBy": ["ground loot", "cooking", "backpack", "quick bar", "Eat button", "held food"],
+  "checks": ["web/native typecheck", "axe combo and zero-stamina recovery", "two-punch and one-axe chicken harvest", "survival needs", "backpack labels and item stats", "quick bar and all eight held-food directions", "web/native input and layout", "native world rendering through CanvasKit adapter", "iOS export with both food textures", "cooking/pickup/eating regression"],
+  "nativeWorldProof": "native-food.png",
+  "nativeUiProofMethod": "Production native component tree and styles painted by the existing Canvas2D adapter, with missing artwork now failing the check.",
+  "physicalDeviceTested": false
+}

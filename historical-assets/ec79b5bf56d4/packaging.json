@@ -1,0 +1,110 @@
+[
+  {
+    "key": "moss-rosette",
+    "id": "moss_rosette",
+    "name": "Broad moss leaf clump",
+    "source": "exec-566eaee1-a7ef-4042-8f16-505d238af77c.png",
+    "anchor": [
+      0.52,
+      0.76
+    ],
+    "worldWidth": 165,
+    "nativeSize": [
+      1441,
+      1092
+    ],
+    "crop": {
+      "left": 45,
+      "top": 112,
+      "width": 1371,
+      "height": 868
+    },
+    "entry": {
+      "id": "art_foliage_moss_rosette",
+      "name": "Broad moss leaf clump",
+      "image": "/survival/foliage-v3/moss-rosette.webp",
+      "size": [
+        384,
+        243
+      ],
+      "anchor": [
+        0.52,
+        0.76
+      ],
+      "worldWidth": 165
+    },
+    "bytes": 92772
+  },
+  {
+    "key": "lime-rosette",
+    "id": "lime_rosette",
+    "name": "Golden paddle leaf clump",
+    "source": "exec-60b25870-381a-4c4e-85e4-b38bc0a07e83.png",
+    "anchor": [
+      0.52,
+      0.76
+    ],
+    "worldWidth": 150,
+    "nativeSize": [
+      1430,
+      1100
+    ],
+    "crop": {
+      "left": 26,
+      "top": 113,
+      "width": 1379,
+      "height": 893
+    },
+    "entry": {
+      "id": "art_foliage_lime_rosette",
+      "name": "Golden paddle leaf clump",
+      "image": "/survival/foliage-v3/lime-rosette.webp",
+      "size": [
+        384,
+        249
+      ],
+      "anchor": [
+        0.52,
+        0.76
+      ],
+      "worldWidth": 150
+    },
+    "bytes": 82110
+  },
+  {
+    "key": "flower-leaf-clump",
+    "id": "flower_leaf_clump",
+    "name": "Flowering woodland groundcover",
+    "source": "exec-1571cdcf-c8b8-4ab8-a9d9-a4c8086f318b.png",
+    "anchor": [
+      0.5,
+      0.73
+    ],
+    "worldWidth": 205,
+    "nativeSize": [
+      1586,
+      992
+    ],
+    "crop": {
+      "left": 51,
+      "top": 82,
+      "width": 1498,
+      "height": 819
+    },
+    "entry": {
+      "id": "art_foliage_flower_leaf_clump",
+      "name": "Flowering woodland groundcover",
+      "image": "/survival/foliage-v3/flower-leaf-clump.webp",
+      "size": [
+        384,
+        210
+      ],
+      "anchor": [
+        0.5,
+        0.73
+      ],
+      "worldWidth": 205
+    },
+    "bytes": 94232
+  }
+]

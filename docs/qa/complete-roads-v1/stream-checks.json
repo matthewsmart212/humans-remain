@@ -1,0 +1,9 @@
+{
+  "result": "pass",
+  "residentBudgetMiB": 48,
+  "concurrentFetchLimit": 2,
+  "zoomOutReleases": true,
+  "staleCompletionsRelease": true,
+  "failedRequestsBackOff": true,
+  "disposeReleases": true
+}

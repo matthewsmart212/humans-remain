@@ -1,0 +1,47 @@
+{
+  "source_commit": "4fb29e47ef5aac4ba49ee115dae54740a55ea614",
+  "tracked_source_files": 5334,
+  "source_status_counts": {
+    "documented_public_export_edit": 4,
+    "byte_identical": 5328,
+    "excluded_temporary_file": 2
+  },
+  "inventoried_payload_files": 8719,
+  "inventoried_payload_bytes": 3702641042,
+  "categories": {
+    "export_support": {
+      "files": 15,
+      "bytes": 4248116
+    },
+    "current_source": {
+      "files": 5332,
+      "bytes": 1169993479
+    },
+    "historical_original": {
+      "files": 3320,
+      "bytes": 2454036598
+    },
+    "captured_game_data": {
+      "files": 10,
+      "bytes": 1756298
+    },
+    "published_uploaded_asset": {
+      "files": 42,
+      "bytes": 72606551
+    }
+  },
+  "self_excluded_files": [
+    "FILE-INVENTORY.csv",
+    "INVENTORY-SUMMARY.json"
+  ],
+  "self_excluded_coverage": "Covered by the actual archive SHA-256 checksums",
+  "largest_file": {
+    "path": "public/survival/predators-v1/sprite-pack.zip",
+    "bytes": 24339215,
+    "sha256": "5ef55ec6f9699903275ac3c1b9dcd0cac9627c3bc87065bdb07ea20a092ba0c4",
+    "category": "current_source",
+    "origin": "published_source_commit"
+  },
+  "files_at_least_50_mib": [],
+  "original_source_modified": false
+}

@@ -1,0 +1,47 @@
+[
+  {
+    "asset": "survival/hearth/tier-3-lit-sheet",
+    "savedBytes": 693563,
+    "visiblePixelsIdentical": true
+  },
+  {
+    "asset": "survival/hearth/tier-2-lit-sheet",
+    "savedBytes": 463507,
+    "visiblePixelsIdentical": true
+  },
+  {
+    "asset": "survival/shelters/proper-bed",
+    "savedBytes": 1171035,
+    "visiblePixelsIdentical": true
+  },
+  {
+    "asset": "survival/shelters/tier-1-interior",
+    "savedBytes": 559050,
+    "visiblePixelsIdentical": true
+  },
+  {
+    "asset": "survival/shelters/tier-1-roof",
+    "savedBytes": 539133,
+    "visiblePixelsIdentical": true
+  },
+  {
+    "asset": "survival/shelters/tier-2-interior",
+    "savedBytes": 554249,
+    "visiblePixelsIdentical": true
+  },
+  {
+    "asset": "survival/shelters/tier-2-roof",
+    "savedBytes": 599813,
+    "visiblePixelsIdentical": true
+  },
+  {
+    "asset": "survival/shelters/tier-3-interior",
+    "savedBytes": 495940,
+    "visiblePixelsIdentical": true
+  },
+  {
+    "asset": "survival/shelters/tier-3-roof",
+    "savedBytes": 440783,
+    "visiblePixelsIdentical": true
+  }
+]

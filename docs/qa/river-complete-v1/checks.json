@@ -1,0 +1,135 @@
+{
+  "result": "pass",
+  "sections": 26,
+  "newSections": 20,
+  "newAnimatedReaches": 20,
+  "bridges": 4,
+  "collisionSamples": 111,
+  "streamResidentLimit": 3,
+  "concurrentLoads": 2,
+  "entryAssetsAdded": 0,
+  "campAndUpperRiverUnchanged": true,
+  "motion": [
+    {
+      "id": "riverExtension0_0Flow",
+      "changed": 4767,
+      "maxLoop": 0,
+      "protectedChanged": 0
+    },
+    {
+      "id": "riverExtension0_1Flow",
+      "changed": 22951,
+      "maxLoop": 1,
+      "protectedChanged": 0
+    },
+    {
+      "id": "riverExtension0_2Flow",
+      "changed": 35371,
+      "maxLoop": 1,
+      "protectedChanged": 0
+    },
+    {
+      "id": "riverExtension0_3Flow",
+      "changed": 28757,
+      "maxLoop": 1,
+      "protectedChanged": 0
+    },
+    {
+      "id": "riverExtension0_4Flow",
+      "changed": 25044,
+      "maxLoop": 1,
+      "protectedChanged": 0
+    },
+    {
+      "id": "riverExtension1_0Flow",
+      "changed": 8999,
+      "maxLoop": 0,
+      "protectedChanged": 0
+    },
+    {
+      "id": "riverExtension1_1Flow",
+      "changed": 18177,
+      "maxLoop": 0,
+      "protectedChanged": 0
+    },
+    {
+      "id": "riverExtension1_2Flow",
+      "changed": 24052,
+      "maxLoop": 0,
+      "protectedChanged": 0
+    },
+    {
+      "id": "riverExtension1_3Flow",
+      "changed": 26306,
+      "maxLoop": 0,
+      "protectedChanged": 0
+    },
+    {
+      "id": "riverExtension1_4Flow",
+      "changed": 18600,
+      "maxLoop": 0,
+      "protectedChanged": 0
+    },
+    {
+      "id": "riverExtension2_0Flow",
+      "changed": 13558,
+      "maxLoop": 0,
+      "protectedChanged": 0
+    },
+    {
+      "id": "riverExtension2_1Flow",
+      "changed": 26902,
+      "maxLoop": 1,
+      "protectedChanged": 0
+    },
+    {
+      "id": "riverExtension2_2Flow",
+      "changed": 22968,
+      "maxLoop": 0,
+      "protectedChanged": 0
+    },
+    {
+      "id": "riverExtension2_3Flow",
+      "changed": 27994,
+      "maxLoop": 0,
+      "protectedChanged": 0
+    },
+    {
+      "id": "riverExtension2_4Flow",
+      "changed": 27102,
+      "maxLoop": 0,
+      "protectedChanged": 0
+    },
+    {
+      "id": "riverExtension3_0Flow",
+      "changed": 8526,
+      "maxLoop": 1,
+      "protectedChanged": 0
+    },
+    {
+      "id": "riverExtension3_1Flow",
+      "changed": 24993,
+      "maxLoop": 0,
+      "protectedChanged": 0
+    },
+    {
+      "id": "riverExtension3_2Flow",
+      "changed": 26458,
+      "maxLoop": 0,
+      "protectedChanged": 0
+    },
+    {
+      "id": "riverExtension3_3Flow",
+      "changed": 19118,
+      "maxLoop": 0,
+      "protectedChanged": 0
+    },
+    {
+      "id": "riverExtension3_4Flow",
+      "changed": 25092,
+      "maxLoop": 1,
+      "protectedChanged": 0
+    }
+  ],
+  "browserAndPhone": "Unavailable; checked using actual CanvasKit software renderer."
+}

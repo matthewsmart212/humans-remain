@@ -1,0 +1,47 @@
+{
+  "passed": true,
+  "batches": [
+    0,
+    3
+  ],
+  "locations": [
+    {
+      "id": "reach-0",
+      "batch": 0,
+      "waterPixels": 13299,
+      "movingFraction": 0.6514775547033611,
+      "dryPixels": 22027,
+      "dryChanged": 0,
+      "shorelineBlendPixels": 0,
+      "loopMeanChannelDelta": 0.0000055114638447971785,
+      "paintingStationary": true
+    },
+    {
+      "id": "reach-3",
+      "batch": 3,
+      "waterPixels": 12988,
+      "movingFraction": 0.6390514320911611,
+      "dryPixels": 14280,
+      "dryChanged": 0,
+      "shorelineBlendPixels": 0,
+      "loopMeanChannelDelta": 0.000011022927689594357,
+      "paintingStationary": true
+    },
+    {
+      "id": "join-3",
+      "batch": 3,
+      "waterPixels": 12379,
+      "movingFraction": 0.6575652314403425,
+      "dryPixels": 15762,
+      "dryChanged": 0,
+      "shorelineBlendPixels": 3,
+      "loopMeanChannelDelta": 0.0000055114638447971785,
+      "paintingStationary": true
+    }
+  ],
+  "approvedBridgeMeanDelta": 0,
+  "waterfallOverlaysLoaded": 0,
+  "sharedSurfaceTextureBytes": 589824,
+  "newTexturesBeyondApprovedTrial": 0,
+  "physicalIPhoneTested": false
+}

@@ -1,0 +1,18 @@
+{
+  "passed": true,
+  "checks": [
+    "live inventory and item definitions",
+    "equip/stow",
+    "eat and capped health/food",
+    "drop and recollect",
+    "stack quantity and weight conservation",
+    "partial stack conservation",
+    "no scrap score farming",
+    "safe reachable landing positions",
+    "atomic failure on blocked ground",
+    "downed action guards",
+    "cooking and storage capacity regression",
+    "dropped loot retained on refresh",
+    "current item artwork present"
+  ]
+}

@@ -1,0 +1,59 @@
+{
+  "passed": true,
+  "balance": {
+    "sprintPerSecond": 5,
+    "recoveryPerSecond": 14,
+    "recoveryDelay": 1.1,
+    "exhaustionRelease": 25,
+    "foodPerRecoveredStamina": 0.025,
+    "foodPerSecond": 0.05,
+    "waterPerSecond": 0.075,
+    "sprintWaterPerSecond": 0.065,
+    "healthPerSecond": 0.4,
+    "healthRecoveryDelay": 10,
+    "healthyNeeds": 35,
+    "foodPerRecoveredHealth": 0.12,
+    "waterPerRecoveredHealth": 0.06,
+    "starvationDamagePerSecond": 0.35,
+    "dehydrationDamagePerSecond": 0.6
+  },
+  "metrics": [
+    {
+      "mode": "idle",
+      "seconds": 300,
+      "sprintingSeconds": 0,
+      "food": 85,
+      "water": 77.5,
+      "health": 100
+    },
+    {
+      "mode": "sprint",
+      "seconds": 300,
+      "sprintingSeconds": 196.75,
+      "food": 62.44,
+      "water": 64.71,
+      "health": 100
+    }
+  ],
+  "checks": [
+    "full starting vitals",
+    "timed hunger and thirst",
+    "healthy health stays stable",
+    "only running spends stamina; walking and taking hits are free",
+    "punches, both axe cuts and dodges work at zero stamina without delaying recovery",
+    "exhaustion hysteresis and dodge cooldown",
+    "blocked movement is free",
+    "food-backed stamina recovery",
+    "slow healing with delay and nutrition costs",
+    "starvation/dehydration and useful warnings",
+    "environmental damage cannot be dodged",
+    "no environmental camera shake",
+    "meals and well",
+    "no accidental food waste from fractional drift",
+    "bunker transfer preserves fatigue and needs",
+    "editor preview unaffected",
+    "zero health ends the run and offers restart",
+    "authored layout unchanged"
+  ],
+  "physicalDeviceTested": false
+}

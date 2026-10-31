@@ -1,0 +1,3653 @@
+{
+  "date": "2026-10-06",
+  "originalCount": 256,
+  "resultCount": 276,
+  "preservedIds": [
+    "base_hearth_t1",
+    "base_hearth_t2",
+    "base_hearth_t3",
+    "base_cooking_t1",
+    "base_cooking_t2",
+    "base_cooking_t3",
+    "base_well_t1",
+    "base_well_t2",
+    "base_well_t3",
+    "base_water_store_t1",
+    "base_water_store_t2",
+    "base_water_store_t3",
+    "base_vegetables_t1",
+    "base_vegetables_t2",
+    "base_vegetables_t3",
+    "base_shelter_t1",
+    "base_shelter_t2",
+    "base_shelter_t3",
+    "base_medical_t1",
+    "base_medical_t2",
+    "base_medical_t3",
+    "base_workshop_t1",
+    "base_workshop_t2",
+    "base_workshop_t3",
+    "base_shared_store_t1",
+    "base_shared_store_t2",
+    "base_shared_store_t3",
+    "base_walls_t1",
+    "base_walls_t2",
+    "base_walls_t3",
+    "base_gate_t1",
+    "base_gate_t2",
+    "base_gate_t3",
+    "base_lighting_t1",
+    "base_lighting_t2",
+    "base_lighting_t3",
+    "base_cooking_t4",
+    "base_well_t4",
+    "base_water_store_t4",
+    "base_vegetables_t4",
+    "base_shelter_t4",
+    "base_medical_t4",
+    "base_workshop_t4",
+    "base_shared_store_t4",
+    "base_lighting_t4",
+    "exp_rainwater_collector_t1",
+    "exp_rainwater_collector_t2",
+    "exp_rainwater_collector_t3",
+    "exp_water_treatment_t1",
+    "exp_water_treatment_t2",
+    "exp_water_treatment_t3",
+    "exp_food_storage_t1",
+    "exp_food_storage_t2",
+    "exp_food_storage_t3",
+    "exp_food_storage_t4",
+    "exp_food_preservation_t1",
+    "exp_food_preservation_t2",
+    "exp_food_preservation_t3",
+    "exp_berries_t1",
+    "exp_berries_t2",
+    "exp_berries_t3",
+    "exp_herbs_t1",
+    "exp_herbs_t2",
+    "exp_herbs_t3",
+    "exp_chicken_housing_t1",
+    "exp_chicken_housing_t2",
+    "exp_chicken_housing_t3",
+    "exp_livestock_t1",
+    "exp_livestock_t2",
+    "exp_livestock_t3",
+    "exp_irrigation_t1",
+    "exp_irrigation_t2",
+    "exp_irrigation_t3",
+    "exp_sleeping_furniture_t1",
+    "exp_sleeping_furniture_t2",
+    "exp_sleeping_furniture_t3",
+    "exp_medicine_preparation_t1",
+    "exp_medicine_preparation_t2",
+    "exp_medicine_preparation_t3",
+    "exp_weather_protection_t1",
+    "exp_weather_protection_t2",
+    "exp_weather_protection_t3",
+    "exp_communal_dining_t1",
+    "exp_communal_dining_t2",
+    "exp_communal_dining_t3",
+    "exp_repair_t1",
+    "exp_repair_t2",
+    "exp_repair_t3",
+    "exp_wood_processing_t1",
+    "exp_wood_processing_t2",
+    "exp_wood_processing_t3",
+    "exp_stoneworking_t1",
+    "exp_stoneworking_t2",
+    "exp_stoneworking_t3",
+    "exp_metalworking_t1",
+    "exp_metalworking_t2",
+    "exp_metalworking_t3",
+    "exp_salvage_processing_t1",
+    "exp_salvage_processing_t2",
+    "exp_salvage_processing_t3",
+    "exp_tailoring_t1",
+    "exp_tailoring_t2",
+    "exp_tailoring_t3",
+    "exp_timber_storage_t1",
+    "exp_timber_storage_t2",
+    "exp_timber_storage_t3",
+    "exp_construction_storage_t1",
+    "exp_construction_storage_t2",
+    "exp_construction_storage_t3",
+    "exp_fuel_storage_t1",
+    "exp_fuel_storage_t2",
+    "exp_fuel_storage_t3",
+    "exp_hauling_equipment_t1",
+    "exp_hauling_equipment_t2",
+    "exp_hauling_equipment_t3",
+    "exp_drop_off_t1",
+    "exp_drop_off_t2",
+    "exp_drop_off_t3",
+    "exp_barricades_t1",
+    "exp_barricades_t2",
+    "exp_barricades_t3",
+    "exp_lookout_t1",
+    "exp_lookout_t2",
+    "exp_lookout_t3",
+    "exp_alarm_t1",
+    "exp_alarm_t2",
+    "exp_alarm_t3",
+    "exp_spikes_t1",
+    "exp_spikes_t2",
+    "exp_spikes_t3",
+    "exp_slowing_obstacles_t1",
+    "exp_slowing_obstacles_t2",
+    "exp_slowing_obstacles_t3",
+    "exp_decoys_t1",
+    "exp_decoys_t2",
+    "exp_decoys_t3",
+    "exp_emplacements_t1",
+    "exp_emplacements_t2",
+    "exp_emplacements_t3",
+    "exp_area_lighting_t1",
+    "exp_area_lighting_t2",
+    "exp_area_lighting_t3",
+    "exp_generation_t1",
+    "exp_generation_t2",
+    "exp_generation_t3",
+    "exp_power_storage_t1",
+    "exp_power_storage_t2",
+    "exp_power_storage_t3",
+    "exp_wind_generation_t1",
+    "exp_wind_generation_t2",
+    "exp_wind_generation_t3",
+    "exp_research_planning_t1",
+    "exp_research_planning_t2",
+    "exp_research_planning_t3",
+    "exp_expedition_map_t1",
+    "exp_expedition_map_t2",
+    "exp_expedition_map_t3",
+    "exp_radio_t1",
+    "exp_radio_t2",
+    "exp_radio_t3",
+    "exp_radio_t4",
+    "exp_trading_t1",
+    "exp_trading_t2",
+    "exp_trading_t3",
+    "exp_survivor_reception_t1",
+    "exp_survivor_reception_t2",
+    "exp_survivor_reception_t3",
+    "exp_weather_warnings_t1",
+    "exp_weather_warnings_t2",
+    "exp_weather_warnings_t3",
+    "exp_achievements_t1",
+    "exp_achievements_t2",
+    "exp_achievements_t3",
+    "prop_logs",
+    "prop_planks",
+    "prop_stone",
+    "prop_scrap",
+    "prop_fabric",
+    "prop_food_sacks",
+    "prop_water_containers",
+    "prop_stools",
+    "prop_benches",
+    "prop_tables",
+    "prop_bedrolls",
+    "prop_cots",
+    "prop_shelves",
+    "prop_cupboards",
+    "prop_pot",
+    "prop_pan",
+    "prop_chopping_board",
+    "prop_food_basket",
+    "prop_serving_bowl",
+    "prop_drying_rack",
+    "prop_bucket",
+    "prop_barrel",
+    "prop_tap",
+    "prop_trough",
+    "prop_hose",
+    "prop_supports",
+    "prop_tool_rack",
+    "prop_sawhorse",
+    "prop_anvil",
+    "prop_offcuts",
+    "prop_wheelbarrow",
+    "prop_tree",
+    "prop_bush",
+    "prop_rock",
+    "prop_grass_tuft",
+    "prop_stump",
+    "prop_fallen_log",
+    "prop_dirt",
+    "prop_gravel",
+    "prop_paving",
+    "prop_path_edge",
+    "prop_removable_foundation",
+    "prop_garden_soil",
+    "prop_flag",
+    "prop_sign",
+    "prop_banner",
+    "prop_noticeboard",
+    "prop_marker",
+    "prop_trophy",
+    "prop_flame",
+    "prop_smoke",
+    "prop_steam",
+    "prop_embers",
+    "prop_lantern_glow",
+    "prop_fluttering_cloth",
+    "prop_material_bundle",
+    "prop_scaffold",
+    "prop_repair_patch",
+    "prop_dust",
+    "prop_rubble",
+    "system_terrain",
+    "system_placement",
+    "system_upgrades",
+    "system_save",
+    "system_inventory",
+    "system_cooking",
+    "system_water",
+    "system_farming",
+    "system_recovery",
+    "system_crafting",
+    "system_defence",
+    "system_power",
+    "system_feedback",
+    "system_night",
+    "system_coop",
+    "existing_pallets",
+    "existing_fuel_can",
+    "existing_smashable_crate",
+    "existing_searchable_locker",
+    "existing_security_shutter",
+    "existing_industrial_crusher",
+    "existing_ventilation_fan",
+    "map_home_terrain"
+  ],
+  "addedIds": [
+    "art_clean_buildable_terrain",
+    "art_camp_planning_board",
+    "art_wall_modules",
+    "art_gate_components",
+    "art_seed_packet",
+    "art_crop_growth",
+    "art_harvested_produce",
+    "art_medical_supply",
+    "art_stock_level",
+    "art_proper_bed",
+    "art_pickup_icons",
+    "art_build_feedback",
+    "art_work_effects",
+    "system_seed_source",
+    "system_medical_supply_source",
+    "system_hauling",
+    "system_wall_gate_collision",
+    "system_coop_contract",
+    "system_coop_two_client",
+    "system_acceptance"
+  ],
+  "renamed": [
+    {
+      "id": "base_hearth_t2",
+      "from": "Stone-ringed hearth",
+      "to": "Reinforced stone-and-brick hearth"
+    },
+    {
+      "id": "base_cooking_t1",
+      "from": "Basic fire pit",
+      "to": "Starter campfire cooking"
+    },
+    {
+      "id": "base_walls_t3",
+      "from": "Reinforced stone wall",
+      "to": "Reinforced masonry wall"
+    },
+    {
+      "id": "base_lighting_t1",
+      "from": "Torch stakes",
+      "to": "Torch stake"
+    },
+    {
+      "id": "base_lighting_t2",
+      "from": "Covered lanterns",
+      "to": "Covered lantern"
+    },
+    {
+      "id": "base_lighting_t3",
+      "from": "Tall lantern posts",
+      "to": "Tall lantern post"
+    },
+    {
+      "id": "base_cooking_t4",
+      "from": "equipped camp kitchen",
+      "to": "Equipped camp kitchen"
+    },
+    {
+      "id": "base_well_t4",
+      "from": "powered pump house",
+      "to": "Powered pump house"
+    },
+    {
+      "id": "base_water_store_t4",
+      "from": "raised water tower",
+      "to": "Raised water tower"
+    },
+    {
+      "id": "base_vegetables_t4",
+      "from": "greenhouse",
+      "to": "Greenhouse"
+    },
+    {
+      "id": "base_shelter_t4",
+      "from": "reinforced bunkhouse with protected four-worker accommodation",
+      "to": "Reinforced bunkhouse"
+    },
+    {
+      "id": "base_medical_t4",
+      "from": "infirmary",
+      "to": "Infirmary"
+    },
+    {
+      "id": "base_workshop_t4",
+      "from": "reinforced workshop",
+      "to": "Reinforced workshop"
+    },
+    {
+      "id": "base_shared_store_t4",
+      "from": "storehouse",
+      "to": "Storehouse"
+    },
+    {
+      "id": "base_lighting_t4",
+      "from": "electric lamps",
+      "to": "Electric lamp"
+    },
+    {
+      "id": "exp_radio_t1",
+      "from": "Damaged radio",
+      "to": "Broken radio (restore)"
+    },
+    {
+      "id": "exp_radio_t2",
+      "from": "Working desk",
+      "to": "Working radio desk"
+    }
+  ],
+  "reclassified": [
+    {
+      "id": "base_hearth_t1",
+      "from": "Core buildings",
+      "to": "Camp hearth, shelter and medical care",
+      "recordType": "buildable structure"
+    },
+    {
+      "id": "base_hearth_t2",
+      "from": "Core buildings",
+      "to": "Camp hearth, shelter and medical care",
+      "recordType": "buildable structure"
+    },
+    {
+      "id": "base_hearth_t3",
+      "from": "Core buildings",
+      "to": "Camp hearth, shelter and medical care",
+      "recordType": "buildable structure"
+    },
+    {
+      "id": "base_cooking_t1",
+      "from": "Core buildings",
+      "to": "Cooking, food production and farming",
+      "recordType": "integrated capability"
+    },
+    {
+      "id": "base_cooking_t2",
+      "from": "Core buildings",
+      "to": "Cooking, food production and farming",
+      "recordType": "buildable structure"
+    },
+    {
+      "id": "base_cooking_t3",
+      "from": "Core buildings",
+      "to": "Cooking, food production and farming",
+      "recordType": "buildable structure"
+    },
+    {
+      "id": "base_well_t1",
+      "from": "Core buildings",
+      "to": "Water collection, storage and treatment",
+      "recordType": "buildable structure"
+    },
+    {
+      "id": "base_well_t2",
+      "from": "Core buildings",
+      "to": "Water collection, storage and treatment",
+      "recordType": "buildable structure"
+    },
+    {
+      "id": "base_well_t3",
+      "from": "Core buildings",
+      "to": "Water collection, storage and treatment",
+      "recordType": "buildable structure"
+    },
+    {
+      "id": "base_water_store_t1",
+      "from": "Core buildings",
+      "to": "Water collection, storage and treatment",
+      "recordType": "buildable structure"
+    },
+    {
+      "id": "base_water_store_t2",
+      "from": "Core buildings",
+      "to": "Water collection, storage and treatment",
+      "recordType": "buildable structure"
+    },
+    {
+      "id": "base_water_store_t3",
+      "from": "Core buildings",
+      "to": "Water collection, storage and treatment",
+      "recordType": "buildable structure"
+    },
+    {
+      "id": "base_vegetables_t1",
+      "from": "Core buildings",
+      "to": "Cooking, food production and farming",
+      "recordType": "buildable structure"
+    },
+    {
+      "id": "base_vegetables_t2",
+      "from": "Core buildings",
+      "to": "Cooking, food production and farming",
+      "recordType": "buildable structure"
+    },
+    {
+      "id": "base_vegetables_t3",
+      "from": "Core buildings",
+      "to": "Cooking, food production and farming",
+      "recordType": "buildable structure"
+    },
+    {
+      "id": "base_shelter_t1",
+      "from": "Core buildings",
+      "to": "Camp hearth, shelter and medical care",
+      "recordType": "buildable structure"
+    },
+    {
+      "id": "base_shelter_t2",
+      "from": "Core buildings",
+      "to": "Camp hearth, shelter and medical care",
+      "recordType": "buildable structure"
+    },
+    {
+      "id": "base_shelter_t3",
+      "from": "Core buildings",
+      "to": "Camp hearth, shelter and medical care",
+      "recordType": "buildable structure"
+    },
+    {
+      "id": "base_medical_t1",
+      "from": "Core buildings",
+      "to": "Camp hearth, shelter and medical care",
+      "recordType": "buildable structure"
+    },
+    {
+      "id": "base_medical_t2",
+      "from": "Core buildings",
+      "to": "Camp hearth, shelter and medical care",
+      "recordType": "buildable structure"
+    },
+    {
+      "id": "base_medical_t3",
+      "from": "Core buildings",
+      "to": "Camp hearth, shelter and medical care",
+      "recordType": "buildable structure"
+    },
+    {
+      "id": "base_workshop_t1",
+      "from": "Core buildings",
+      "to": "Crafting, repairs and material processing",
+      "recordType": "buildable structure"
+    },
+    {
+      "id": "base_workshop_t2",
+      "from": "Core buildings",
+      "to": "Crafting, repairs and material processing",
+      "recordType": "buildable structure"
+    },
+    {
+      "id": "base_workshop_t3",
+      "from": "Core buildings",
+      "to": "Crafting, repairs and material processing",
+      "recordType": "buildable structure"
+    },
+    {
+      "id": "base_shared_store_t1",
+      "from": "Core buildings",
+      "to": "Storage and logistics",
+      "recordType": "buildable structure"
+    },
+    {
+      "id": "base_shared_store_t2",
+      "from": "Core buildings",
+      "to": "Storage and logistics",
+      "recordType": "buildable structure"
+    },
+    {
+      "id": "base_shared_store_t3",
+      "from": "Core buildings",
+      "to": "Storage and logistics",
+      "recordType": "buildable structure"
+    },
+    {
+      "id": "base_walls_t1",
+      "from": "Core buildings",
+      "to": "Defences and warnings",
+      "recordType": "buildable structure"
+    },
+    {
+      "id": "base_walls_t2",
+      "from": "Core buildings",
+      "to": "Defences and warnings",
+      "recordType": "buildable structure"
+    },
+    {
+      "id": "base_walls_t3",
+      "from": "Core buildings",
+      "to": "Defences and warnings",
+      "recordType": "buildable structure"
+    },
+    {
+      "id": "base_gate_t1",
+      "from": "Core buildings",
+      "to": "Defences and warnings",
+      "recordType": "buildable structure"
+    },
+    {
+      "id": "base_gate_t2",
+      "from": "Core buildings",
+      "to": "Defences and warnings",
+      "recordType": "buildable structure"
+    },
+    {
+      "id": "base_gate_t3",
+      "from": "Core buildings",
+      "to": "Defences and warnings",
+      "recordType": "buildable structure"
+    },
+    {
+      "id": "base_lighting_t1",
+      "from": "Core buildings",
+      "to": "Lighting and power",
+      "recordType": "buildable structure"
+    },
+    {
+      "id": "base_lighting_t2",
+      "from": "Core buildings",
+      "to": "Lighting and power",
+      "recordType": "buildable structure"
+    },
+    {
+      "id": "base_lighting_t3",
+      "from": "Core buildings",
+      "to": "Lighting and power",
+      "recordType": "buildable structure"
+    },
+    {
+      "id": "base_cooking_t4",
+      "from": "Later upgrades",
+      "to": "Cooking, food production and farming",
+      "recordType": "buildable structure"
+    },
+    {
+      "id": "base_well_t4",
+      "from": "Later upgrades",
+      "to": "Water collection, storage and treatment",
+      "recordType": "buildable structure"
+    },
+    {
+      "id": "base_water_store_t4",
+      "from": "Later upgrades",
+      "to": "Water collection, storage and treatment",
+      "recordType": "buildable structure"
+    },
+    {
+      "id": "base_vegetables_t4",
+      "from": "Later upgrades",
+      "to": "Cooking, food production and farming",
+      "recordType": "buildable structure"
+    },
+    {
+      "id": "base_shelter_t4",
+      "from": "Later upgrades",
+      "to": "Camp hearth, shelter and medical care",
+      "recordType": "buildable structure"
+    },
+    {
+      "id": "base_medical_t4",
+      "from": "Later upgrades",
+      "to": "Camp hearth, shelter and medical care",
+      "recordType": "buildable structure"
+    },
+    {
+      "id": "base_workshop_t4",
+      "from": "Later upgrades",
+      "to": "Crafting, repairs and material processing",
+      "recordType": "buildable structure"
+    },
+    {
+      "id": "base_shared_store_t4",
+      "from": "Later upgrades",
+      "to": "Storage and logistics",
+      "recordType": "buildable structure"
+    },
+    {
+      "id": "base_lighting_t4",
+      "from": "Later upgrades",
+      "to": "Lighting and power",
+      "recordType": "buildable structure"
+    },
+    {
+      "id": "exp_rainwater_collector_t1",
+      "from": "Expansion",
+      "to": "Water collection, storage and treatment",
+      "recordType": "buildable structure"
+    },
+    {
+      "id": "exp_rainwater_collector_t2",
+      "from": "Expansion",
+      "to": "Water collection, storage and treatment",
+      "recordType": "buildable structure"
+    },
+    {
+      "id": "exp_rainwater_collector_t3",
+      "from": "Expansion",
+      "to": "Water collection, storage and treatment",
+      "recordType": "buildable structure"
+    },
+    {
+      "id": "exp_water_treatment_t1",
+      "from": "Expansion",
+      "to": "Water collection, storage and treatment",
+      "recordType": "buildable structure"
+    },
+    {
+      "id": "exp_water_treatment_t2",
+      "from": "Expansion",
+      "to": "Water collection, storage and treatment",
+      "recordType": "buildable structure"
+    },
+    {
+      "id": "exp_water_treatment_t3",
+      "from": "Expansion",
+      "to": "Water collection, storage and treatment",
+      "recordType": "buildable structure"
+    },
+    {
+      "id": "exp_food_storage_t1",
+      "from": "Expansion",
+      "to": "Cooking, food production and farming",
+      "recordType": "buildable structure"
+    },
+    {
+      "id": "exp_food_storage_t2",
+      "from": "Expansion",
+      "to": "Cooking, food production and farming",
+      "recordType": "buildable structure"
+    },
+    {
+      "id": "exp_food_storage_t3",
+      "from": "Expansion",
+      "to": "Cooking, food production and farming",
+      "recordType": "buildable structure"
+    },
+    {
+      "id": "exp_food_storage_t4",
+      "from": "Expansion",
+      "to": "Cooking, food production and farming",
+      "recordType": "buildable structure"
+    },
+    {
+      "id": "exp_food_preservation_t1",
+      "from": "Expansion",
+      "to": "Cooking, food production and farming",
+      "recordType": "buildable structure"
+    },
+    {
+      "id": "exp_food_preservation_t2",
+      "from": "Expansion",
+      "to": "Cooking, food production and farming",
+      "recordType": "buildable structure"
+    },
+    {
+      "id": "exp_food_preservation_t3",
+      "from": "Expansion",
+      "to": "Cooking, food production and farming",
+      "recordType": "buildable structure"
+    },
+    {
+      "id": "exp_berries_t1",
+      "from": "Expansion",
+      "to": "Cooking, food production and farming",
+      "recordType": "buildable structure"
+    },
+    {
+      "id": "exp_berries_t2",
+      "from": "Expansion",
+      "to": "Cooking, food production and farming",
+      "recordType": "buildable structure"
+    },
+    {
+      "id": "exp_berries_t3",
+      "from": "Expansion",
+      "to": "Cooking, food production and farming",
+      "recordType": "buildable structure"
+    },
+    {
+      "id": "exp_herbs_t1",
+      "from": "Expansion",
+      "to": "Cooking, food production and farming",
+      "recordType": "buildable structure"
+    },
+    {
+      "id": "exp_herbs_t2",
+      "from": "Expansion",
+      "to": "Cooking, food production and farming",
+      "recordType": "buildable structure"
+    },
+    {
+      "id": "exp_herbs_t3",
+      "from": "Expansion",
+      "to": "Cooking, food production and farming",
+      "recordType": "buildable structure"
+    },
+    {
+      "id": "exp_chicken_housing_t1",
+      "from": "Expansion",
+      "to": "Cooking, food production and farming",
+      "recordType": "buildable structure"
+    },
+    {
+      "id": "exp_chicken_housing_t2",
+      "from": "Expansion",
+      "to": "Cooking, food production and farming",
+      "recordType": "buildable structure"
+    },
+    {
+      "id": "exp_chicken_housing_t3",
+      "from": "Expansion",
+      "to": "Cooking, food production and farming",
+      "recordType": "buildable structure"
+    },
+    {
+      "id": "exp_livestock_t1",
+      "from": "Expansion",
+      "to": "Cooking, food production and farming",
+      "recordType": "buildable structure"
+    },
+    {
+      "id": "exp_livestock_t2",
+      "from": "Expansion",
+      "to": "Cooking, food production and farming",
+      "recordType": "buildable structure"
+    },
+    {
+      "id": "exp_livestock_t3",
+      "from": "Expansion",
+      "to": "Cooking, food production and farming",
+      "recordType": "buildable structure"
+    },
+    {
+      "id": "exp_irrigation_t1",
+      "from": "Expansion",
+      "to": "Cooking, food production and farming",
+      "recordType": "buildable structure"
+    },
+    {
+      "id": "exp_irrigation_t2",
+      "from": "Expansion",
+      "to": "Cooking, food production and farming",
+      "recordType": "buildable structure"
+    },
+    {
+      "id": "exp_irrigation_t3",
+      "from": "Expansion",
+      "to": "Cooking, food production and farming",
+      "recordType": "buildable structure"
+    },
+    {
+      "id": "exp_sleeping_furniture_t1",
+      "from": "Expansion",
+      "to": "Camp hearth, shelter and medical care",
+      "recordType": "reusable prop"
+    },
+    {
+      "id": "exp_sleeping_furniture_t2",
+      "from": "Expansion",
+      "to": "Camp hearth, shelter and medical care",
+      "recordType": "reusable prop"
+    },
+    {
+      "id": "exp_sleeping_furniture_t3",
+      "from": "Expansion",
+      "to": "Camp hearth, shelter and medical care",
+      "recordType": "reusable prop"
+    },
+    {
+      "id": "exp_medicine_preparation_t1",
+      "from": "Expansion",
+      "to": "Camp hearth, shelter and medical care",
+      "recordType": "attachment"
+    },
+    {
+      "id": "exp_medicine_preparation_t2",
+      "from": "Expansion",
+      "to": "Camp hearth, shelter and medical care",
+      "recordType": "attachment"
+    },
+    {
+      "id": "exp_medicine_preparation_t3",
+      "from": "Expansion",
+      "to": "Camp hearth, shelter and medical care",
+      "recordType": "attachment"
+    },
+    {
+      "id": "exp_weather_protection_t1",
+      "from": "Expansion",
+      "to": "Camp hearth, shelter and medical care",
+      "recordType": "buildable structure"
+    },
+    {
+      "id": "exp_weather_protection_t2",
+      "from": "Expansion",
+      "to": "Camp hearth, shelter and medical care",
+      "recordType": "buildable structure"
+    },
+    {
+      "id": "exp_weather_protection_t3",
+      "from": "Expansion",
+      "to": "Camp hearth, shelter and medical care",
+      "recordType": "buildable structure"
+    },
+    {
+      "id": "exp_communal_dining_t1",
+      "from": "Expansion",
+      "to": "Optional social spaces and decoration",
+      "recordType": "buildable structure"
+    },
+    {
+      "id": "exp_communal_dining_t2",
+      "from": "Expansion",
+      "to": "Optional social spaces and decoration",
+      "recordType": "buildable structure"
+    },
+    {
+      "id": "exp_communal_dining_t3",
+      "from": "Expansion",
+      "to": "Optional social spaces and decoration",
+      "recordType": "buildable structure"
+    },
+    {
+      "id": "exp_repair_t1",
+      "from": "Expansion",
+      "to": "Crafting, repairs and material processing",
+      "recordType": "attachment"
+    },
+    {
+      "id": "exp_repair_t2",
+      "from": "Expansion",
+      "to": "Crafting, repairs and material processing",
+      "recordType": "attachment"
+    },
+    {
+      "id": "exp_repair_t3",
+      "from": "Expansion",
+      "to": "Crafting, repairs and material processing",
+      "recordType": "attachment"
+    },
+    {
+      "id": "exp_wood_processing_t1",
+      "from": "Expansion",
+      "to": "Crafting, repairs and material processing",
+      "recordType": "attachment"
+    },
+    {
+      "id": "exp_wood_processing_t2",
+      "from": "Expansion",
+      "to": "Crafting, repairs and material processing",
+      "recordType": "attachment"
+    },
+    {
+      "id": "exp_wood_processing_t3",
+      "from": "Expansion",
+      "to": "Crafting, repairs and material processing",
+      "recordType": "attachment"
+    },
+    {
+      "id": "exp_stoneworking_t1",
+      "from": "Expansion",
+      "to": "Crafting, repairs and material processing",
+      "recordType": "attachment"
+    },
+    {
+      "id": "exp_stoneworking_t2",
+      "from": "Expansion",
+      "to": "Crafting, repairs and material processing",
+      "recordType": "attachment"
+    },
+    {
+      "id": "exp_stoneworking_t3",
+      "from": "Expansion",
+      "to": "Crafting, repairs and material processing",
+      "recordType": "attachment"
+    },
+    {
+      "id": "exp_metalworking_t1",
+      "from": "Expansion",
+      "to": "Crafting, repairs and material processing",
+      "recordType": "attachment"
+    },
+    {
+      "id": "exp_metalworking_t2",
+      "from": "Expansion",
+      "to": "Crafting, repairs and material processing",
+      "recordType": "attachment"
+    },
+    {
+      "id": "exp_metalworking_t3",
+      "from": "Expansion",
+      "to": "Crafting, repairs and material processing",
+      "recordType": "attachment"
+    },
+    {
+      "id": "exp_salvage_processing_t1",
+      "from": "Expansion",
+      "to": "Crafting, repairs and material processing",
+      "recordType": "attachment"
+    },
+    {
+      "id": "exp_salvage_processing_t2",
+      "from": "Expansion",
+      "to": "Crafting, repairs and material processing",
+      "recordType": "attachment"
+    },
+    {
+      "id": "exp_salvage_processing_t3",
+      "from": "Expansion",
+      "to": "Crafting, repairs and material processing",
+      "recordType": "attachment"
+    },
+    {
+      "id": "exp_tailoring_t1",
+      "from": "Expansion",
+      "to": "Crafting, repairs and material processing",
+      "recordType": "attachment"
+    },
+    {
+      "id": "exp_tailoring_t2",
+      "from": "Expansion",
+      "to": "Crafting, repairs and material processing",
+      "recordType": "attachment"
+    },
+    {
+      "id": "exp_tailoring_t3",
+      "from": "Expansion",
+      "to": "Crafting, repairs and material processing",
+      "recordType": "attachment"
+    },
+    {
+      "id": "exp_timber_storage_t1",
+      "from": "Expansion",
+      "to": "Storage and logistics",
+      "recordType": "resource node"
+    },
+    {
+      "id": "exp_timber_storage_t2",
+      "from": "Expansion",
+      "to": "Storage and logistics",
+      "recordType": "buildable structure"
+    },
+    {
+      "id": "exp_timber_storage_t3",
+      "from": "Expansion",
+      "to": "Storage and logistics",
+      "recordType": "buildable structure"
+    },
+    {
+      "id": "exp_construction_storage_t1",
+      "from": "Expansion",
+      "to": "Storage and logistics",
+      "recordType": "resource node"
+    },
+    {
+      "id": "exp_construction_storage_t2",
+      "from": "Expansion",
+      "to": "Storage and logistics",
+      "recordType": "buildable structure"
+    },
+    {
+      "id": "exp_construction_storage_t3",
+      "from": "Expansion",
+      "to": "Storage and logistics",
+      "recordType": "buildable structure"
+    },
+    {
+      "id": "exp_fuel_storage_t1",
+      "from": "Expansion",
+      "to": "Storage and logistics",
+      "recordType": "resource node"
+    },
+    {
+      "id": "exp_fuel_storage_t2",
+      "from": "Expansion",
+      "to": "Storage and logistics",
+      "recordType": "buildable structure"
+    },
+    {
+      "id": "exp_fuel_storage_t3",
+      "from": "Expansion",
+      "to": "Storage and logistics",
+      "recordType": "buildable structure"
+    },
+    {
+      "id": "exp_hauling_equipment_t1",
+      "from": "Expansion",
+      "to": "Storage and logistics",
+      "recordType": "personal equipment"
+    },
+    {
+      "id": "exp_hauling_equipment_t2",
+      "from": "Expansion",
+      "to": "Storage and logistics",
+      "recordType": "movable equipment"
+    },
+    {
+      "id": "exp_hauling_equipment_t3",
+      "from": "Expansion",
+      "to": "Storage and logistics",
+      "recordType": "movable equipment"
+    },
+    {
+      "id": "exp_drop_off_t1",
+      "from": "Expansion",
+      "to": "Storage and logistics",
+      "recordType": "integrated capability"
+    },
+    {
+      "id": "exp_drop_off_t2",
+      "from": "Expansion",
+      "to": "Storage and logistics",
+      "recordType": "integrated capability"
+    },
+    {
+      "id": "exp_drop_off_t3",
+      "from": "Expansion",
+      "to": "Storage and logistics",
+      "recordType": "integrated capability"
+    },
+    {
+      "id": "exp_barricades_t1",
+      "from": "Expansion",
+      "to": "Defences and warnings",
+      "recordType": "buildable structure"
+    },
+    {
+      "id": "exp_barricades_t2",
+      "from": "Expansion",
+      "to": "Defences and warnings",
+      "recordType": "buildable structure"
+    },
+    {
+      "id": "exp_barricades_t3",
+      "from": "Expansion",
+      "to": "Defences and warnings",
+      "recordType": "buildable structure"
+    },
+    {
+      "id": "exp_lookout_t1",
+      "from": "Expansion",
+      "to": "Defences and warnings",
+      "recordType": "buildable structure"
+    },
+    {
+      "id": "exp_lookout_t2",
+      "from": "Expansion",
+      "to": "Defences and warnings",
+      "recordType": "buildable structure"
+    },
+    {
+      "id": "exp_lookout_t3",
+      "from": "Expansion",
+      "to": "Defences and warnings",
+      "recordType": "buildable structure"
+    },
+    {
+      "id": "exp_alarm_t1",
+      "from": "Expansion",
+      "to": "Defences and warnings",
+      "recordType": "buildable structure"
+    },
+    {
+      "id": "exp_alarm_t2",
+      "from": "Expansion",
+      "to": "Defences and warnings",
+      "recordType": "buildable structure"
+    },
+    {
+      "id": "exp_alarm_t3",
+      "from": "Expansion",
+      "to": "Defences and warnings",
+      "recordType": "buildable structure"
+    },
+    {
+      "id": "exp_spikes_t1",
+      "from": "Expansion",
+      "to": "Defences and warnings",
+      "recordType": "buildable structure"
+    },
+    {
+      "id": "exp_spikes_t2",
+      "from": "Expansion",
+      "to": "Defences and warnings",
+      "recordType": "buildable structure"
+    },
+    {
+      "id": "exp_spikes_t3",
+      "from": "Expansion",
+      "to": "Defences and warnings",
+      "recordType": "buildable structure"
+    },
+    {
+      "id": "exp_slowing_obstacles_t1",
+      "from": "Expansion",
+      "to": "Defences and warnings",
+      "recordType": "buildable structure"
+    },
+    {
+      "id": "exp_slowing_obstacles_t2",
+      "from": "Expansion",
+      "to": "Defences and warnings",
+      "recordType": "buildable structure"
+    },
+    {
+      "id": "exp_slowing_obstacles_t3",
+      "from": "Expansion",
+      "to": "Defences and warnings",
+      "recordType": "buildable structure"
+    },
+    {
+      "id": "exp_decoys_t1",
+      "from": "Expansion",
+      "to": "Defences and warnings",
+      "recordType": "buildable structure"
+    },
+    {
+      "id": "exp_decoys_t2",
+      "from": "Expansion",
+      "to": "Defences and warnings",
+      "recordType": "buildable structure"
+    },
+    {
+      "id": "exp_decoys_t3",
+      "from": "Expansion",
+      "to": "Defences and warnings",
+      "recordType": "buildable structure"
+    },
+    {
+      "id": "exp_emplacements_t1",
+      "from": "Expansion",
+      "to": "Defences and warnings",
+      "recordType": "buildable structure"
+    },
+    {
+      "id": "exp_emplacements_t2",
+      "from": "Expansion",
+      "to": "Defences and warnings",
+      "recordType": "buildable structure"
+    },
+    {
+      "id": "exp_emplacements_t3",
+      "from": "Expansion",
+      "to": "Defences and warnings",
+      "recordType": "buildable structure"
+    },
+    {
+      "id": "exp_area_lighting_t1",
+      "from": "Expansion",
+      "to": "Lighting and power",
+      "recordType": "buildable structure"
+    },
+    {
+      "id": "exp_area_lighting_t2",
+      "from": "Expansion",
+      "to": "Lighting and power",
+      "recordType": "buildable structure"
+    },
+    {
+      "id": "exp_area_lighting_t3",
+      "from": "Expansion",
+      "to": "Lighting and power",
+      "recordType": "buildable structure"
+    },
+    {
+      "id": "exp_generation_t1",
+      "from": "Expansion",
+      "to": "Lighting and power",
+      "recordType": "buildable structure"
+    },
+    {
+      "id": "exp_generation_t2",
+      "from": "Expansion",
+      "to": "Lighting and power",
+      "recordType": "buildable structure"
+    },
+    {
+      "id": "exp_generation_t3",
+      "from": "Expansion",
+      "to": "Lighting and power",
+      "recordType": "buildable structure"
+    },
+    {
+      "id": "exp_power_storage_t1",
+      "from": "Expansion",
+      "to": "Lighting and power",
+      "recordType": "buildable structure"
+    },
+    {
+      "id": "exp_power_storage_t2",
+      "from": "Expansion",
+      "to": "Lighting and power",
+      "recordType": "buildable structure"
+    },
+    {
+      "id": "exp_power_storage_t3",
+      "from": "Expansion",
+      "to": "Lighting and power",
+      "recordType": "buildable structure"
+    },
+    {
+      "id": "exp_wind_generation_t1",
+      "from": "Expansion",
+      "to": "Lighting and power",
+      "recordType": "buildable structure"
+    },
+    {
+      "id": "exp_wind_generation_t2",
+      "from": "Expansion",
+      "to": "Lighting and power",
+      "recordType": "buildable structure"
+    },
+    {
+      "id": "exp_wind_generation_t3",
+      "from": "Expansion",
+      "to": "Lighting and power",
+      "recordType": "buildable structure"
+    },
+    {
+      "id": "exp_research_planning_t1",
+      "from": "Expansion",
+      "to": "Exploration, communication and visitors",
+      "recordType": "integrated capability"
+    },
+    {
+      "id": "exp_research_planning_t2",
+      "from": "Expansion",
+      "to": "Exploration, communication and visitors",
+      "recordType": "attachment"
+    },
+    {
+      "id": "exp_research_planning_t3",
+      "from": "Expansion",
+      "to": "Exploration, communication and visitors",
+      "recordType": "attachment"
+    },
+    {
+      "id": "exp_expedition_map_t1",
+      "from": "Expansion",
+      "to": "Exploration, communication and visitors",
+      "recordType": "integrated capability"
+    },
+    {
+      "id": "exp_expedition_map_t2",
+      "from": "Expansion",
+      "to": "Exploration, communication and visitors",
+      "recordType": "attachment"
+    },
+    {
+      "id": "exp_expedition_map_t3",
+      "from": "Expansion",
+      "to": "Exploration, communication and visitors",
+      "recordType": "attachment"
+    },
+    {
+      "id": "exp_radio_t1",
+      "from": "Expansion",
+      "to": "Exploration, communication and visitors",
+      "recordType": "world fixture"
+    },
+    {
+      "id": "exp_radio_t2",
+      "from": "Expansion",
+      "to": "Exploration, communication and visitors",
+      "recordType": "buildable structure"
+    },
+    {
+      "id": "exp_radio_t3",
+      "from": "Expansion",
+      "to": "Exploration, communication and visitors",
+      "recordType": "buildable structure"
+    },
+    {
+      "id": "exp_radio_t4",
+      "from": "Expansion",
+      "to": "Exploration, communication and visitors",
+      "recordType": "buildable structure"
+    },
+    {
+      "id": "exp_trading_t1",
+      "from": "Expansion",
+      "to": "Exploration, communication and visitors",
+      "recordType": "buildable structure"
+    },
+    {
+      "id": "exp_trading_t2",
+      "from": "Expansion",
+      "to": "Exploration, communication and visitors",
+      "recordType": "buildable structure"
+    },
+    {
+      "id": "exp_trading_t3",
+      "from": "Expansion",
+      "to": "Exploration, communication and visitors",
+      "recordType": "buildable structure"
+    },
+    {
+      "id": "exp_survivor_reception_t1",
+      "from": "Expansion",
+      "to": "Exploration, communication and visitors",
+      "recordType": "buildable structure"
+    },
+    {
+      "id": "exp_survivor_reception_t2",
+      "from": "Expansion",
+      "to": "Exploration, communication and visitors",
+      "recordType": "buildable structure"
+    },
+    {
+      "id": "exp_survivor_reception_t3",
+      "from": "Expansion",
+      "to": "Exploration, communication and visitors",
+      "recordType": "buildable structure"
+    },
+    {
+      "id": "exp_weather_warnings_t1",
+      "from": "Expansion",
+      "to": "Exploration, communication and visitors",
+      "recordType": "buildable structure"
+    },
+    {
+      "id": "exp_weather_warnings_t2",
+      "from": "Expansion",
+      "to": "Exploration, communication and visitors",
+      "recordType": "buildable structure"
+    },
+    {
+      "id": "exp_weather_warnings_t3",
+      "from": "Expansion",
+      "to": "Exploration, communication and visitors",
+      "recordType": "buildable structure"
+    },
+    {
+      "id": "exp_achievements_t1",
+      "from": "Expansion",
+      "to": "Optional social spaces and decoration",
+      "recordType": "cosmetic"
+    },
+    {
+      "id": "exp_achievements_t2",
+      "from": "Expansion",
+      "to": "Optional social spaces and decoration",
+      "recordType": "cosmetic"
+    },
+    {
+      "id": "exp_achievements_t3",
+      "from": "Expansion",
+      "to": "Optional social spaces and decoration",
+      "recordType": "cosmetic"
+    },
+    {
+      "id": "prop_logs",
+      "from": "Supporting props",
+      "to": "Resources and collectibles",
+      "recordType": "reusable prop"
+    },
+    {
+      "id": "prop_planks",
+      "from": "Supporting props",
+      "to": "Resources and collectibles",
+      "recordType": "reusable prop"
+    },
+    {
+      "id": "prop_stone",
+      "from": "Supporting props",
+      "to": "Resources and collectibles",
+      "recordType": "reusable prop"
+    },
+    {
+      "id": "prop_scrap",
+      "from": "Supporting props",
+      "to": "Resources and collectibles",
+      "recordType": "reusable prop"
+    },
+    {
+      "id": "prop_fabric",
+      "from": "Supporting props",
+      "to": "Resources and collectibles",
+      "recordType": "reusable prop"
+    },
+    {
+      "id": "prop_food_sacks",
+      "from": "Supporting props",
+      "to": "Resources and collectibles",
+      "recordType": "reusable prop"
+    },
+    {
+      "id": "prop_water_containers",
+      "from": "Supporting props",
+      "to": "Resources and collectibles",
+      "recordType": "reusable prop"
+    },
+    {
+      "id": "prop_stools",
+      "from": "Supporting props",
+      "to": "Reusable furniture and props",
+      "recordType": "reusable prop"
+    },
+    {
+      "id": "prop_benches",
+      "from": "Supporting props",
+      "to": "Reusable furniture and props",
+      "recordType": "reusable prop"
+    },
+    {
+      "id": "prop_tables",
+      "from": "Supporting props",
+      "to": "Reusable furniture and props",
+      "recordType": "reusable prop"
+    },
+    {
+      "id": "prop_bedrolls",
+      "from": "Supporting props",
+      "to": "Reusable furniture and props",
+      "recordType": "reusable prop"
+    },
+    {
+      "id": "prop_cots",
+      "from": "Supporting props",
+      "to": "Reusable furniture and props",
+      "recordType": "reusable prop"
+    },
+    {
+      "id": "prop_shelves",
+      "from": "Supporting props",
+      "to": "Reusable furniture and props",
+      "recordType": "reusable prop"
+    },
+    {
+      "id": "prop_cupboards",
+      "from": "Supporting props",
+      "to": "Reusable furniture and props",
+      "recordType": "reusable prop"
+    },
+    {
+      "id": "prop_pot",
+      "from": "Supporting props",
+      "to": "Reusable furniture and props",
+      "recordType": "reusable prop"
+    },
+    {
+      "id": "prop_pan",
+      "from": "Supporting props",
+      "to": "Reusable furniture and props",
+      "recordType": "reusable prop"
+    },
+    {
+      "id": "prop_chopping_board",
+      "from": "Supporting props",
+      "to": "Reusable furniture and props",
+      "recordType": "reusable prop"
+    },
+    {
+      "id": "prop_food_basket",
+      "from": "Supporting props",
+      "to": "Reusable furniture and props",
+      "recordType": "reusable prop"
+    },
+    {
+      "id": "prop_serving_bowl",
+      "from": "Supporting props",
+      "to": "Reusable furniture and props",
+      "recordType": "reusable prop"
+    },
+    {
+      "id": "prop_drying_rack",
+      "from": "Supporting props",
+      "to": "Reusable furniture and props",
+      "recordType": "reusable prop"
+    },
+    {
+      "id": "prop_bucket",
+      "from": "Supporting props",
+      "to": "Reusable furniture and props",
+      "recordType": "reusable prop"
+    },
+    {
+      "id": "prop_barrel",
+      "from": "Supporting props",
+      "to": "Reusable furniture and props",
+      "recordType": "reusable prop"
+    },
+    {
+      "id": "prop_tap",
+      "from": "Supporting props",
+      "to": "Reusable furniture and props",
+      "recordType": "reusable prop"
+    },
+    {
+      "id": "prop_trough",
+      "from": "Supporting props",
+      "to": "Reusable furniture and props",
+      "recordType": "reusable prop"
+    },
+    {
+      "id": "prop_hose",
+      "from": "Supporting props",
+      "to": "Reusable furniture and props",
+      "recordType": "reusable prop"
+    },
+    {
+      "id": "prop_supports",
+      "from": "Supporting props",
+      "to": "Reusable furniture and props",
+      "recordType": "reusable prop"
+    },
+    {
+      "id": "prop_tool_rack",
+      "from": "Supporting props",
+      "to": "Reusable furniture and props",
+      "recordType": "reusable prop"
+    },
+    {
+      "id": "prop_sawhorse",
+      "from": "Supporting props",
+      "to": "Reusable furniture and props",
+      "recordType": "reusable prop"
+    },
+    {
+      "id": "prop_anvil",
+      "from": "Supporting props",
+      "to": "Reusable furniture and props",
+      "recordType": "reusable prop"
+    },
+    {
+      "id": "prop_offcuts",
+      "from": "Supporting props",
+      "to": "Reusable furniture and props",
+      "recordType": "reusable prop"
+    },
+    {
+      "id": "prop_wheelbarrow",
+      "from": "Supporting props",
+      "to": "Storage and logistics",
+      "recordType": "movable equipment"
+    },
+    {
+      "id": "prop_tree",
+      "from": "Supporting props",
+      "to": "World and environment",
+      "recordType": "resource node"
+    },
+    {
+      "id": "prop_bush",
+      "from": "Supporting props",
+      "to": "World and environment",
+      "recordType": "resource node"
+    },
+    {
+      "id": "prop_rock",
+      "from": "Supporting props",
+      "to": "World and environment",
+      "recordType": "resource node"
+    },
+    {
+      "id": "prop_grass_tuft",
+      "from": "Supporting props",
+      "to": "World and environment",
+      "recordType": "resource node"
+    },
+    {
+      "id": "prop_stump",
+      "from": "Supporting props",
+      "to": "World and environment",
+      "recordType": "resource node"
+    },
+    {
+      "id": "prop_fallen_log",
+      "from": "Supporting props",
+      "to": "World and environment",
+      "recordType": "resource node"
+    },
+    {
+      "id": "prop_dirt",
+      "from": "Supporting props",
+      "to": "World and environment",
+      "recordType": "world fixture"
+    },
+    {
+      "id": "prop_gravel",
+      "from": "Supporting props",
+      "to": "World and environment",
+      "recordType": "world fixture"
+    },
+    {
+      "id": "prop_paving",
+      "from": "Supporting props",
+      "to": "World and environment",
+      "recordType": "world fixture"
+    },
+    {
+      "id": "prop_path_edge",
+      "from": "Supporting props",
+      "to": "World and environment",
+      "recordType": "world fixture"
+    },
+    {
+      "id": "prop_removable_foundation",
+      "from": "Supporting props",
+      "to": "World and environment",
+      "recordType": "world fixture"
+    },
+    {
+      "id": "prop_garden_soil",
+      "from": "Supporting props",
+      "to": "World and environment",
+      "recordType": "world fixture"
+    },
+    {
+      "id": "prop_flag",
+      "from": "Supporting props",
+      "to": "Optional social spaces and decoration",
+      "recordType": "cosmetic"
+    },
+    {
+      "id": "prop_sign",
+      "from": "Supporting props",
+      "to": "Optional social spaces and decoration",
+      "recordType": "cosmetic"
+    },
+    {
+      "id": "prop_banner",
+      "from": "Supporting props",
+      "to": "Optional social spaces and decoration",
+      "recordType": "cosmetic"
+    },
+    {
+      "id": "prop_noticeboard",
+      "from": "Supporting props",
+      "to": "Optional social spaces and decoration",
+      "recordType": "cosmetic"
+    },
+    {
+      "id": "prop_marker",
+      "from": "Supporting props",
+      "to": "Optional social spaces and decoration",
+      "recordType": "cosmetic"
+    },
+    {
+      "id": "prop_trophy",
+      "from": "Supporting props",
+      "to": "Optional social spaces and decoration",
+      "recordType": "cosmetic"
+    },
+    {
+      "id": "prop_flame",
+      "from": "Supporting props",
+      "to": "Shared effects",
+      "recordType": "effect"
+    },
+    {
+      "id": "prop_smoke",
+      "from": "Supporting props",
+      "to": "Shared effects",
+      "recordType": "effect"
+    },
+    {
+      "id": "prop_steam",
+      "from": "Supporting props",
+      "to": "Shared effects",
+      "recordType": "effect"
+    },
+    {
+      "id": "prop_embers",
+      "from": "Supporting props",
+      "to": "Shared effects",
+      "recordType": "effect"
+    },
+    {
+      "id": "prop_lantern_glow",
+      "from": "Supporting props",
+      "to": "Shared effects",
+      "recordType": "effect"
+    },
+    {
+      "id": "prop_fluttering_cloth",
+      "from": "Supporting props",
+      "to": "Shared effects",
+      "recordType": "effect"
+    },
+    {
+      "id": "prop_material_bundle",
+      "from": "Supporting props",
+      "to": "Shared effects",
+      "recordType": "effect"
+    },
+    {
+      "id": "prop_scaffold",
+      "from": "Supporting props",
+      "to": "Shared effects",
+      "recordType": "effect"
+    },
+    {
+      "id": "prop_repair_patch",
+      "from": "Supporting props",
+      "to": "Shared effects",
+      "recordType": "effect"
+    },
+    {
+      "id": "prop_dust",
+      "from": "Supporting props",
+      "to": "Shared effects",
+      "recordType": "effect"
+    },
+    {
+      "id": "prop_rubble",
+      "from": "Supporting props",
+      "to": "Shared effects",
+      "recordType": "effect"
+    },
+    {
+      "id": "system_terrain",
+      "from": "Core systems",
+      "to": "Systems and testing",
+      "recordType": "system task"
+    },
+    {
+      "id": "system_placement",
+      "from": "Core systems",
+      "to": "Systems and testing",
+      "recordType": "system task"
+    },
+    {
+      "id": "system_upgrades",
+      "from": "Core systems",
+      "to": "Systems and testing",
+      "recordType": "system task"
+    },
+    {
+      "id": "system_save",
+      "from": "Core systems",
+      "to": "Systems and testing",
+      "recordType": "system task"
+    },
+    {
+      "id": "system_inventory",
+      "from": "Core systems",
+      "to": "Systems and testing",
+      "recordType": "system task"
+    },
+    {
+      "id": "system_cooking",
+      "from": "Core systems",
+      "to": "Systems and testing",
+      "recordType": "system task"
+    },
+    {
+      "id": "system_water",
+      "from": "Core systems",
+      "to": "Systems and testing",
+      "recordType": "system task"
+    },
+    {
+      "id": "system_farming",
+      "from": "Core systems",
+      "to": "Systems and testing",
+      "recordType": "system task"
+    },
+    {
+      "id": "system_recovery",
+      "from": "Core systems",
+      "to": "Systems and testing",
+      "recordType": "system task"
+    },
+    {
+      "id": "system_crafting",
+      "from": "Core systems",
+      "to": "Systems and testing",
+      "recordType": "system task"
+    },
+    {
+      "id": "system_defence",
+      "from": "Core systems",
+      "to": "Systems and testing",
+      "recordType": "system task"
+    },
+    {
+      "id": "system_power",
+      "from": "Core systems",
+      "to": "Systems and testing",
+      "recordType": "system task"
+    },
+    {
+      "id": "system_feedback",
+      "from": "Core systems",
+      "to": "Systems and testing",
+      "recordType": "system task"
+    },
+    {
+      "id": "system_night",
+      "from": "Core systems",
+      "to": "Systems and testing",
+      "recordType": "system task"
+    },
+    {
+      "id": "system_coop",
+      "from": "Core systems",
+      "to": "Systems and testing",
+      "recordType": "system task"
+    },
+    {
+      "id": "existing_pallets",
+      "from": "Supporting props",
+      "to": "World and environment",
+      "recordType": "world fixture"
+    },
+    {
+      "id": "existing_fuel_can",
+      "from": "Supporting props",
+      "to": "World and environment",
+      "recordType": "world fixture"
+    },
+    {
+      "id": "existing_smashable_crate",
+      "from": "Supporting props",
+      "to": "World and environment",
+      "recordType": "world fixture"
+    },
+    {
+      "id": "existing_searchable_locker",
+      "from": "Supporting props",
+      "to": "World and environment",
+      "recordType": "world fixture"
+    },
+    {
+      "id": "existing_security_shutter",
+      "from": "Supporting props",
+      "to": "World and environment",
+      "recordType": "world fixture"
+    },
+    {
+      "id": "existing_industrial_crusher",
+      "from": "Supporting props",
+      "to": "World and environment",
+      "recordType": "world fixture"
+    },
+    {
+      "id": "existing_ventilation_fan",
+      "from": "Supporting props",
+      "to": "World and environment",
+      "recordType": "world fixture"
+    },
+    {
+      "id": "map_home_terrain",
+      "from": "Supporting props",
+      "to": "World and environment",
+      "recordType": "world fixture"
+    }
+  ],
+  "retiered": [
+    {
+      "id": "base_cooking_t1",
+      "from": 1,
+      "to": null
+    },
+    {
+      "id": "base_cooking_t2",
+      "from": 2,
+      "to": 1
+    },
+    {
+      "id": "base_cooking_t3",
+      "from": 3,
+      "to": 2
+    },
+    {
+      "id": "base_cooking_t4",
+      "from": 4,
+      "to": 3
+    },
+    {
+      "id": "exp_sleeping_furniture_t1",
+      "from": 1,
+      "to": null
+    },
+    {
+      "id": "exp_sleeping_furniture_t2",
+      "from": 2,
+      "to": null
+    },
+    {
+      "id": "exp_sleeping_furniture_t3",
+      "from": 3,
+      "to": null
+    },
+    {
+      "id": "exp_medicine_preparation_t1",
+      "from": 1,
+      "to": null
+    },
+    {
+      "id": "exp_medicine_preparation_t2",
+      "from": 2,
+      "to": null
+    },
+    {
+      "id": "exp_medicine_preparation_t3",
+      "from": 3,
+      "to": null
+    },
+    {
+      "id": "exp_timber_storage_t1",
+      "from": 1,
+      "to": null
+    },
+    {
+      "id": "exp_construction_storage_t1",
+      "from": 1,
+      "to": null
+    },
+    {
+      "id": "exp_fuel_storage_t1",
+      "from": 1,
+      "to": null
+    },
+    {
+      "id": "exp_hauling_equipment_t1",
+      "from": 1,
+      "to": null
+    },
+    {
+      "id": "exp_hauling_equipment_t2",
+      "from": 2,
+      "to": null
+    },
+    {
+      "id": "exp_hauling_equipment_t3",
+      "from": 3,
+      "to": null
+    },
+    {
+      "id": "exp_drop_off_t1",
+      "from": 1,
+      "to": null
+    },
+    {
+      "id": "exp_drop_off_t2",
+      "from": 2,
+      "to": null
+    },
+    {
+      "id": "exp_drop_off_t3",
+      "from": 3,
+      "to": null
+    },
+    {
+      "id": "exp_research_planning_t1",
+      "from": 1,
+      "to": null
+    },
+    {
+      "id": "exp_research_planning_t2",
+      "from": 2,
+      "to": null
+    },
+    {
+      "id": "exp_research_planning_t3",
+      "from": 3,
+      "to": null
+    },
+    {
+      "id": "exp_expedition_map_t1",
+      "from": 1,
+      "to": null
+    },
+    {
+      "id": "exp_expedition_map_t2",
+      "from": 2,
+      "to": null
+    },
+    {
+      "id": "exp_expedition_map_t3",
+      "from": 3,
+      "to": null
+    },
+    {
+      "id": "exp_radio_t1",
+      "from": 1,
+      "to": null
+    },
+    {
+      "id": "exp_radio_t2",
+      "from": 2,
+      "to": 1
+    },
+    {
+      "id": "exp_radio_t3",
+      "from": 3,
+      "to": 2
+    },
+    {
+      "id": "exp_radio_t4",
+      "from": 4,
+      "to": 3
+    },
+    {
+      "id": "exp_achievements_t1",
+      "from": 1,
+      "to": null
+    },
+    {
+      "id": "exp_achievements_t2",
+      "from": 2,
+      "to": null
+    },
+    {
+      "id": "exp_achievements_t3",
+      "from": 3,
+      "to": null
+    },
+    {
+      "id": "prop_logs",
+      "from": null
+    },
+    {
+      "id": "prop_planks",
+      "from": null
+    },
+    {
+      "id": "prop_stone",
+      "from": null
+    },
+    {
+      "id": "prop_scrap",
+      "from": null
+    },
+    {
+      "id": "prop_fabric",
+      "from": null
+    },
+    {
+      "id": "prop_food_sacks",
+      "from": null
+    },
+    {
+      "id": "prop_water_containers",
+      "from": null
+    },
+    {
+      "id": "prop_stools",
+      "from": null
+    },
+    {
+      "id": "prop_benches",
+      "from": null
+    },
+    {
+      "id": "prop_tables",
+      "from": null
+    },
+    {
+      "id": "prop_bedrolls",
+      "from": null
+    },
+    {
+      "id": "prop_cots",
+      "from": null
+    },
+    {
+      "id": "prop_shelves",
+      "from": null
+    },
+    {
+      "id": "prop_cupboards",
+      "from": null
+    },
+    {
+      "id": "prop_pot",
+      "from": null
+    },
+    {
+      "id": "prop_pan",
+      "from": null
+    },
+    {
+      "id": "prop_chopping_board",
+      "from": null
+    },
+    {
+      "id": "prop_food_basket",
+      "from": null
+    },
+    {
+      "id": "prop_serving_bowl",
+      "from": null
+    },
+    {
+      "id": "prop_drying_rack",
+      "from": null
+    },
+    {
+      "id": "prop_bucket",
+      "from": null
+    },
+    {
+      "id": "prop_barrel",
+      "from": null
+    },
+    {
+      "id": "prop_tap",
+      "from": null
+    },
+    {
+      "id": "prop_trough",
+      "from": null
+    },
+    {
+      "id": "prop_hose",
+      "from": null
+    },
+    {
+      "id": "prop_supports",
+      "from": null
+    },
+    {
+      "id": "prop_tool_rack",
+      "from": null
+    },
+    {
+      "id": "prop_sawhorse",
+      "from": null
+    },
+    {
+      "id": "prop_anvil",
+      "from": null
+    },
+    {
+      "id": "prop_offcuts",
+      "from": null
+    },
+    {
+      "id": "prop_wheelbarrow",
+      "from": null
+    },
+    {
+      "id": "prop_tree",
+      "from": null
+    },
+    {
+      "id": "prop_bush",
+      "from": null
+    },
+    {
+      "id": "prop_rock",
+      "from": null
+    },
+    {
+      "id": "prop_grass_tuft",
+      "from": null
+    },
+    {
+      "id": "prop_stump",
+      "from": null
+    },
+    {
+      "id": "prop_fallen_log",
+      "from": null
+    },
+    {
+      "id": "prop_dirt",
+      "from": null
+    },
+    {
+      "id": "prop_gravel",
+      "from": null
+    },
+    {
+      "id": "prop_paving",
+      "from": null
+    },
+    {
+      "id": "prop_path_edge",
+      "from": null
+    },
+    {
+      "id": "prop_removable_foundation",
+      "from": null
+    },
+    {
+      "id": "prop_garden_soil",
+      "from": null
+    },
+    {
+      "id": "prop_flag",
+      "from": null
+    },
+    {
+      "id": "prop_sign",
+      "from": null
+    },
+    {
+      "id": "prop_banner",
+      "from": null
+    },
+    {
+      "id": "prop_noticeboard",
+      "from": null
+    },
+    {
+      "id": "prop_marker",
+      "from": null
+    },
+    {
+      "id": "prop_trophy",
+      "from": null
+    },
+    {
+      "id": "prop_flame",
+      "from": null
+    },
+    {
+      "id": "prop_smoke",
+      "from": null
+    },
+    {
+      "id": "prop_steam",
+      "from": null
+    },
+    {
+      "id": "prop_embers",
+      "from": null
+    },
+    {
+      "id": "prop_lantern_glow",
+      "from": null
+    },
+    {
+      "id": "prop_fluttering_cloth",
+      "from": null
+    },
+    {
+      "id": "prop_material_bundle",
+      "from": null
+    },
+    {
+      "id": "prop_scaffold",
+      "from": null
+    },
+    {
+      "id": "prop_repair_patch",
+      "from": null
+    },
+    {
+      "id": "prop_dust",
+      "from": null
+    },
+    {
+      "id": "prop_rubble",
+      "from": null
+    },
+    {
+      "id": "system_terrain",
+      "from": null
+    },
+    {
+      "id": "system_placement",
+      "from": null
+    },
+    {
+      "id": "system_upgrades",
+      "from": null
+    },
+    {
+      "id": "system_save",
+      "from": null
+    },
+    {
+      "id": "system_inventory",
+      "from": null
+    },
+    {
+      "id": "system_cooking",
+      "from": null
+    },
+    {
+      "id": "system_water",
+      "from": null
+    },
+    {
+      "id": "system_farming",
+      "from": null
+    },
+    {
+      "id": "system_recovery",
+      "from": null
+    },
+    {
+      "id": "system_crafting",
+      "from": null
+    },
+    {
+      "id": "system_defence",
+      "from": null
+    },
+    {
+      "id": "system_power",
+      "from": null
+    },
+    {
+      "id": "system_feedback",
+      "from": null
+    },
+    {
+      "id": "system_night",
+      "from": null
+    },
+    {
+      "id": "system_coop",
+      "from": null
+    },
+    {
+      "id": "existing_pallets",
+      "from": null
+    },
+    {
+      "id": "existing_fuel_can",
+      "from": null
+    },
+    {
+      "id": "existing_smashable_crate",
+      "from": null
+    },
+    {
+      "id": "existing_searchable_locker",
+      "from": null
+    },
+    {
+      "id": "existing_security_shutter",
+      "from": null
+    },
+    {
+      "id": "existing_industrial_crusher",
+      "from": null
+    },
+    {
+      "id": "existing_ventilation_fan",
+      "from": null
+    },
+    {
+      "id": "map_home_terrain",
+      "from": null
+    }
+  ],
+  "batchMoves": [
+    {
+      "id": "base_hearth_t2",
+      "from": "B1",
+      "to": "B2"
+    },
+    {
+      "id": "base_hearth_t3",
+      "from": "B1",
+      "to": "B3"
+    },
+    {
+      "id": "base_cooking_t1",
+      "from": "B2",
+      "to": "B1"
+    },
+    {
+      "id": "base_cooking_t2",
+      "from": "B2",
+      "to": "B1"
+    },
+    {
+      "id": "base_cooking_t3",
+      "from": "B2",
+      "to": "B3"
+    },
+    {
+      "id": "base_well_t2",
+      "from": "B1",
+      "to": "B2"
+    },
+    {
+      "id": "base_well_t3",
+      "from": "B1",
+      "to": "B3"
+    },
+    {
+      "id": "base_water_store_t2",
+      "from": "B2",
+      "to": "B3"
+    },
+    {
+      "id": "base_water_store_t3",
+      "from": "B2",
+      "to": "B3"
+    },
+    {
+      "id": "base_vegetables_t1",
+      "from": "B4",
+      "to": "B2"
+    },
+    {
+      "id": "base_vegetables_t2",
+      "from": "B4",
+      "to": "B3"
+    },
+    {
+      "id": "base_vegetables_t3",
+      "from": "B4",
+      "to": "B3"
+    },
+    {
+      "id": "base_shelter_t1",
+      "from": "B3",
+      "to": "B2"
+    },
+    {
+      "id": "base_medical_t1",
+      "from": "B3",
+      "to": "B1"
+    },
+    {
+      "id": "base_workshop_t1",
+      "from": "B2",
+      "to": "B1"
+    },
+    {
+      "id": "base_workshop_t2",
+      "from": "B2",
+      "to": "B3"
+    },
+    {
+      "id": "base_workshop_t3",
+      "from": "B2",
+      "to": "B3"
+    },
+    {
+      "id": "base_shared_store_t2",
+      "from": "B1",
+      "to": "B2"
+    },
+    {
+      "id": "base_shared_store_t3",
+      "from": "B1",
+      "to": "B3"
+    },
+    {
+      "id": "base_walls_t1",
+      "from": "B5",
+      "to": "B1"
+    },
+    {
+      "id": "base_walls_t2",
+      "from": "B5",
+      "to": "B3"
+    },
+    {
+      "id": "base_walls_t3",
+      "from": "B5",
+      "to": "B3"
+    },
+    {
+      "id": "base_gate_t1",
+      "from": "B5",
+      "to": "B1"
+    },
+    {
+      "id": "base_gate_t2",
+      "from": "B5",
+      "to": "B3"
+    },
+    {
+      "id": "base_gate_t3",
+      "from": "B5",
+      "to": "B3"
+    },
+    {
+      "id": "base_lighting_t2",
+      "from": "B1",
+      "to": "B2"
+    },
+    {
+      "id": "base_lighting_t3",
+      "from": "B1",
+      "to": "B3"
+    },
+    {
+      "id": "base_cooking_t4",
+      "from": "Later",
+      "to": "B4"
+    },
+    {
+      "id": "base_well_t4",
+      "from": "Later",
+      "to": "B4"
+    },
+    {
+      "id": "base_water_store_t4",
+      "from": "Later",
+      "to": "B4"
+    },
+    {
+      "id": "base_vegetables_t4",
+      "from": "Later",
+      "to": "B4"
+    },
+    {
+      "id": "base_shelter_t4",
+      "from": "Later",
+      "to": "B4"
+    },
+    {
+      "id": "base_medical_t4",
+      "from": "Later",
+      "to": "B4"
+    },
+    {
+      "id": "base_workshop_t4",
+      "from": "Later",
+      "to": "B4"
+    },
+    {
+      "id": "base_shared_store_t4",
+      "from": "Later",
+      "to": "B4"
+    },
+    {
+      "id": "base_lighting_t4",
+      "from": "Later",
+      "to": "B4"
+    },
+    {
+      "id": "exp_rainwater_collector_t1",
+      "from": "Later",
+      "to": "B5"
+    },
+    {
+      "id": "exp_rainwater_collector_t2",
+      "from": "Later",
+      "to": "B5"
+    },
+    {
+      "id": "exp_rainwater_collector_t3",
+      "from": "Later",
+      "to": "B5"
+    },
+    {
+      "id": "exp_water_treatment_t1",
+      "from": "Later",
+      "to": "B5"
+    },
+    {
+      "id": "exp_water_treatment_t2",
+      "from": "Later",
+      "to": "B5"
+    },
+    {
+      "id": "exp_water_treatment_t3",
+      "from": "Later",
+      "to": "B5"
+    },
+    {
+      "id": "exp_food_storage_t1",
+      "from": "Later",
+      "to": "B5"
+    },
+    {
+      "id": "exp_food_storage_t2",
+      "from": "Later",
+      "to": "B5"
+    },
+    {
+      "id": "exp_food_storage_t3",
+      "from": "Later",
+      "to": "B5"
+    },
+    {
+      "id": "exp_food_storage_t4",
+      "from": "Later",
+      "to": "B5"
+    },
+    {
+      "id": "exp_food_preservation_t1",
+      "from": "Later",
+      "to": "B5"
+    },
+    {
+      "id": "exp_food_preservation_t2",
+      "from": "Later",
+      "to": "B5"
+    },
+    {
+      "id": "exp_food_preservation_t3",
+      "from": "Later",
+      "to": "B5"
+    },
+    {
+      "id": "exp_berries_t1",
+      "from": "Later",
+      "to": "B5"
+    },
+    {
+      "id": "exp_berries_t2",
+      "from": "Later",
+      "to": "B5"
+    },
+    {
+      "id": "exp_berries_t3",
+      "from": "Later",
+      "to": "B5"
+    },
+    {
+      "id": "exp_herbs_t1",
+      "from": "Later",
+      "to": "B5"
+    },
+    {
+      "id": "exp_herbs_t2",
+      "from": "Later",
+      "to": "B5"
+    },
+    {
+      "id": "exp_herbs_t3",
+      "from": "Later",
+      "to": "B5"
+    },
+    {
+      "id": "exp_chicken_housing_t1",
+      "from": "Later",
+      "to": "B5"
+    },
+    {
+      "id": "exp_chicken_housing_t2",
+      "from": "Later",
+      "to": "B5"
+    },
+    {
+      "id": "exp_chicken_housing_t3",
+      "from": "Later",
+      "to": "B5"
+    },
+    {
+      "id": "exp_livestock_t1",
+      "from": "Later",
+      "to": "B5"
+    },
+    {
+      "id": "exp_livestock_t2",
+      "from": "Later",
+      "to": "B5"
+    },
+    {
+      "id": "exp_livestock_t3",
+      "from": "Later",
+      "to": "B5"
+    },
+    {
+      "id": "exp_irrigation_t1",
+      "from": "Later",
+      "to": "B5"
+    },
+    {
+      "id": "exp_irrigation_t2",
+      "from": "Later",
+      "to": "B5"
+    },
+    {
+      "id": "exp_irrigation_t3",
+      "from": "Later",
+      "to": "B5"
+    },
+    {
+      "id": "exp_sleeping_furniture_t1",
+      "from": "Later",
+      "to": "B5"
+    },
+    {
+      "id": "exp_sleeping_furniture_t2",
+      "from": "Later",
+      "to": "B5"
+    },
+    {
+      "id": "exp_sleeping_furniture_t3",
+      "from": "Later",
+      "to": "B5"
+    },
+    {
+      "id": "exp_medicine_preparation_t1",
+      "from": "Later",
+      "to": "B5"
+    },
+    {
+      "id": "exp_medicine_preparation_t2",
+      "from": "Later",
+      "to": "B5"
+    },
+    {
+      "id": "exp_medicine_preparation_t3",
+      "from": "Later",
+      "to": "B5"
+    },
+    {
+      "id": "exp_weather_protection_t1",
+      "from": "Later",
+      "to": "B5"
+    },
+    {
+      "id": "exp_weather_protection_t2",
+      "from": "Later",
+      "to": "B5"
+    },
+    {
+      "id": "exp_weather_protection_t3",
+      "from": "Later",
+      "to": "B5"
+    },
+    {
+      "id": "exp_communal_dining_t1",
+      "from": "Later",
+      "to": "B5"
+    },
+    {
+      "id": "exp_communal_dining_t2",
+      "from": "Later",
+      "to": "B5"
+    },
+    {
+      "id": "exp_communal_dining_t3",
+      "from": "Later",
+      "to": "B5"
+    },
+    {
+      "id": "exp_repair_t1",
+      "from": "Later",
+      "to": "B5"
+    },
+    {
+      "id": "exp_repair_t2",
+      "from": "Later",
+      "to": "B5"
+    },
+    {
+      "id": "exp_repair_t3",
+      "from": "Later",
+      "to": "B5"
+    },
+    {
+      "id": "exp_wood_processing_t1",
+      "from": "Later",
+      "to": "B5"
+    },
+    {
+      "id": "exp_wood_processing_t2",
+      "from": "Later",
+      "to": "B5"
+    },
+    {
+      "id": "exp_wood_processing_t3",
+      "from": "Later",
+      "to": "B5"
+    },
+    {
+      "id": "exp_stoneworking_t1",
+      "from": "Later",
+      "to": "B5"
+    },
+    {
+      "id": "exp_stoneworking_t2",
+      "from": "Later",
+      "to": "B5"
+    },
+    {
+      "id": "exp_stoneworking_t3",
+      "from": "Later",
+      "to": "B5"
+    },
+    {
+      "id": "exp_metalworking_t1",
+      "from": "Later",
+      "to": "B5"
+    },
+    {
+      "id": "exp_metalworking_t2",
+      "from": "Later",
+      "to": "B5"
+    },
+    {
+      "id": "exp_metalworking_t3",
+      "from": "Later",
+      "to": "B5"
+    },
+    {
+      "id": "exp_salvage_processing_t1",
+      "from": "Later",
+      "to": "B5"
+    },
+    {
+      "id": "exp_salvage_processing_t2",
+      "from": "Later",
+      "to": "B5"
+    },
+    {
+      "id": "exp_salvage_processing_t3",
+      "from": "Later",
+      "to": "B5"
+    },
+    {
+      "id": "exp_tailoring_t1",
+      "from": "Later",
+      "to": "B5"
+    },
+    {
+      "id": "exp_tailoring_t2",
+      "from": "Later",
+      "to": "B5"
+    },
+    {
+      "id": "exp_tailoring_t3",
+      "from": "Later",
+      "to": "B5"
+    },
+    {
+      "id": "exp_timber_storage_t1",
+      "from": "Later",
+      "to": "B5"
+    },
+    {
+      "id": "exp_timber_storage_t2",
+      "from": "Later",
+      "to": "B5"
+    },
+    {
+      "id": "exp_timber_storage_t3",
+      "from": "Later",
+      "to": "B5"
+    },
+    {
+      "id": "exp_construction_storage_t1",
+      "from": "Later",
+      "to": "B5"
+    },
+    {
+      "id": "exp_construction_storage_t2",
+      "from": "Later",
+      "to": "B5"
+    },
+    {
+      "id": "exp_construction_storage_t3",
+      "from": "Later",
+      "to": "B5"
+    },
+    {
+      "id": "exp_fuel_storage_t1",
+      "from": "Later",
+      "to": "B5"
+    },
+    {
+      "id": "exp_fuel_storage_t2",
+      "from": "Later",
+      "to": "B5"
+    },
+    {
+      "id": "exp_fuel_storage_t3",
+      "from": "Later",
+      "to": "B5"
+    },
+    {
+      "id": "exp_hauling_equipment_t1",
+      "from": "Later",
+      "to": "B5"
+    },
+    {
+      "id": "exp_hauling_equipment_t2",
+      "from": "Later",
+      "to": "B5"
+    },
+    {
+      "id": "exp_hauling_equipment_t3",
+      "from": "Later",
+      "to": "B5"
+    },
+    {
+      "id": "exp_drop_off_t1",
+      "from": "Later",
+      "to": "B5"
+    },
+    {
+      "id": "exp_drop_off_t2",
+      "from": "Later",
+      "to": "B5"
+    },
+    {
+      "id": "exp_drop_off_t3",
+      "from": "Later",
+      "to": "B5"
+    },
+    {
+      "id": "exp_barricades_t1",
+      "from": "Later",
+      "to": "B5"
+    },
+    {
+      "id": "exp_barricades_t2",
+      "from": "Later",
+      "to": "B5"
+    },
+    {
+      "id": "exp_barricades_t3",
+      "from": "Later",
+      "to": "B5"
+    },
+    {
+      "id": "exp_lookout_t1",
+      "from": "Later",
+      "to": "B5"
+    },
+    {
+      "id": "exp_lookout_t2",
+      "from": "Later",
+      "to": "B5"
+    },
+    {
+      "id": "exp_lookout_t3",
+      "from": "Later",
+      "to": "B5"
+    },
+    {
+      "id": "exp_alarm_t1",
+      "from": "Later",
+      "to": "B5"
+    },
+    {
+      "id": "exp_alarm_t2",
+      "from": "Later",
+      "to": "B5"
+    },
+    {
+      "id": "exp_alarm_t3",
+      "from": "Later",
+      "to": "B5"
+    },
+    {
+      "id": "exp_spikes_t1",
+      "from": "Later",
+      "to": "B5"
+    },
+    {
+      "id": "exp_spikes_t2",
+      "from": "Later",
+      "to": "B5"
+    },
+    {
+      "id": "exp_spikes_t3",
+      "from": "Later",
+      "to": "B5"
+    },
+    {
+      "id": "exp_slowing_obstacles_t1",
+      "from": "Later",
+      "to": "B5"
+    },
+    {
+      "id": "exp_slowing_obstacles_t2",
+      "from": "Later",
+      "to": "B5"
+    },
+    {
+      "id": "exp_slowing_obstacles_t3",
+      "from": "Later",
+      "to": "B5"
+    },
+    {
+      "id": "exp_decoys_t1",
+      "from": "Later",
+      "to": "B5"
+    },
+    {
+      "id": "exp_decoys_t2",
+      "from": "Later",
+      "to": "B5"
+    },
+    {
+      "id": "exp_decoys_t3",
+      "from": "Later",
+      "to": "B5"
+    },
+    {
+      "id": "exp_emplacements_t1",
+      "from": "Later",
+      "to": "B5"
+    },
+    {
+      "id": "exp_emplacements_t2",
+      "from": "Later",
+      "to": "B5"
+    },
+    {
+      "id": "exp_emplacements_t3",
+      "from": "Later",
+      "to": "B5"
+    },
+    {
+      "id": "exp_area_lighting_t1",
+      "from": "Later",
+      "to": "B5"
+    },
+    {
+      "id": "exp_area_lighting_t2",
+      "from": "Later",
+      "to": "B5"
+    },
+    {
+      "id": "exp_area_lighting_t3",
+      "from": "Later",
+      "to": "B5"
+    },
+    {
+      "id": "exp_generation_t1",
+      "from": "Later",
+      "to": "B4"
+    },
+    {
+      "id": "exp_generation_t2",
+      "from": "Later",
+      "to": "B4"
+    },
+    {
+      "id": "exp_generation_t3",
+      "from": "Later",
+      "to": "B4"
+    },
+    {
+      "id": "exp_power_storage_t1",
+      "from": "Later",
+      "to": "B4"
+    },
+    {
+      "id": "exp_power_storage_t2",
+      "from": "Later",
+      "to": "B4"
+    },
+    {
+      "id": "exp_power_storage_t3",
+      "from": "Later",
+      "to": "B4"
+    },
+    {
+      "id": "exp_wind_generation_t1",
+      "from": "Later",
+      "to": "B5"
+    },
+    {
+      "id": "exp_wind_generation_t2",
+      "from": "Later",
+      "to": "B5"
+    },
+    {
+      "id": "exp_wind_generation_t3",
+      "from": "Later",
+      "to": "B5"
+    },
+    {
+      "id": "exp_research_planning_t1",
+      "from": "Later",
+      "to": "B5"
+    },
+    {
+      "id": "exp_research_planning_t2",
+      "from": "Later",
+      "to": "B5"
+    },
+    {
+      "id": "exp_research_planning_t3",
+      "from": "Later",
+      "to": "B5"
+    },
+    {
+      "id": "exp_expedition_map_t1",
+      "from": "Later",
+      "to": "B5"
+    },
+    {
+      "id": "exp_expedition_map_t2",
+      "from": "Later",
+      "to": "B5"
+    },
+    {
+      "id": "exp_expedition_map_t3",
+      "from": "Later",
+      "to": "B5"
+    },
+    {
+      "id": "exp_radio_t1",
+      "from": "Later",
+      "to": "B5"
+    },
+    {
+      "id": "exp_radio_t2",
+      "from": "Later",
+      "to": "B5"
+    },
+    {
+      "id": "exp_radio_t3",
+      "from": "Later",
+      "to": "B5"
+    },
+    {
+      "id": "exp_radio_t4",
+      "from": "Later",
+      "to": "B5"
+    },
+    {
+      "id": "exp_trading_t1",
+      "from": "Later",
+      "to": "B5"
+    },
+    {
+      "id": "exp_trading_t2",
+      "from": "Later",
+      "to": "B5"
+    },
+    {
+      "id": "exp_trading_t3",
+      "from": "Later",
+      "to": "B5"
+    },
+    {
+      "id": "exp_survivor_reception_t1",
+      "from": "Later",
+      "to": "B5"
+    },
+    {
+      "id": "exp_survivor_reception_t2",
+      "from": "Later",
+      "to": "B5"
+    },
+    {
+      "id": "exp_survivor_reception_t3",
+      "from": "Later",
+      "to": "B5"
+    },
+    {
+      "id": "exp_weather_warnings_t1",
+      "from": "Later",
+      "to": "B5"
+    },
+    {
+      "id": "exp_weather_warnings_t2",
+      "from": "Later",
+      "to": "B5"
+    },
+    {
+      "id": "exp_weather_warnings_t3",
+      "from": "Later",
+      "to": "B5"
+    },
+    {
+      "id": "exp_achievements_t1",
+      "from": "Later",
+      "to": "B5"
+    },
+    {
+      "id": "exp_achievements_t2",
+      "from": "Later",
+      "to": "B5"
+    },
+    {
+      "id": "exp_achievements_t3",
+      "from": "Later",
+      "to": "B5"
+    },
+    {
+      "id": "prop_logs",
+      "from": "B1/B2",
+      "to": "B1"
+    },
+    {
+      "id": "prop_planks",
+      "from": "B1/B2",
+      "to": "B1"
+    },
+    {
+      "id": "prop_stone",
+      "from": "B1/B2",
+      "to": "B1"
+    },
+    {
+      "id": "prop_scrap",
+      "from": "B1/B2",
+      "to": "B1"
+    },
+    {
+      "id": "prop_fabric",
+      "from": "B1/B2",
+      "to": "B1"
+    },
+    {
+      "id": "prop_food_sacks",
+      "from": "B1/B2",
+      "to": "B1"
+    },
+    {
+      "id": "prop_water_containers",
+      "from": "B1/B2",
+      "to": "B1"
+    },
+    {
+      "id": "prop_stools",
+      "from": "B2/B3",
+      "to": "B2"
+    },
+    {
+      "id": "prop_benches",
+      "from": "B2/B3",
+      "to": "B2"
+    },
+    {
+      "id": "prop_tables",
+      "from": "B2/B3",
+      "to": "B2"
+    },
+    {
+      "id": "prop_bedrolls",
+      "from": "B2/B3",
+      "to": "B2"
+    },
+    {
+      "id": "prop_cots",
+      "from": "B2/B3",
+      "to": "B2"
+    },
+    {
+      "id": "prop_shelves",
+      "from": "B2/B3",
+      "to": "B2"
+    },
+    {
+      "id": "prop_cupboards",
+      "from": "B2/B3",
+      "to": "B2"
+    },
+    {
+      "id": "prop_bucket",
+      "from": "B1/B2",
+      "to": "B1"
+    },
+    {
+      "id": "prop_barrel",
+      "from": "B1/B2",
+      "to": "B1"
+    },
+    {
+      "id": "prop_tap",
+      "from": "B1/B2",
+      "to": "B1"
+    },
+    {
+      "id": "prop_trough",
+      "from": "B1/B2",
+      "to": "B1"
+    },
+    {
+      "id": "prop_hose",
+      "from": "B1/B2",
+      "to": "B1"
+    },
+    {
+      "id": "prop_supports",
+      "from": "B1/B2",
+      "to": "B1"
+    },
+    {
+      "id": "prop_tool_rack",
+      "from": "B2/later",
+      "to": "B2"
+    },
+    {
+      "id": "prop_sawhorse",
+      "from": "B2/later",
+      "to": "B2"
+    },
+    {
+      "id": "prop_anvil",
+      "from": "B2/later",
+      "to": "B2"
+    },
+    {
+      "id": "prop_offcuts",
+      "from": "B2/later",
+      "to": "B2"
+    },
+    {
+      "id": "prop_wheelbarrow",
+      "from": "B2/later",
+      "to": "B2"
+    },
+    {
+      "id": "prop_tree",
+      "from": "B0/B4",
+      "to": "B0"
+    },
+    {
+      "id": "prop_bush",
+      "from": "B0/B4",
+      "to": "B0"
+    },
+    {
+      "id": "prop_rock",
+      "from": "B0/B4",
+      "to": "B0"
+    },
+    {
+      "id": "prop_grass_tuft",
+      "from": "B0/B4",
+      "to": "B0"
+    },
+    {
+      "id": "prop_stump",
+      "from": "B0/B4",
+      "to": "B0"
+    },
+    {
+      "id": "prop_fallen_log",
+      "from": "B0/B4",
+      "to": "B0"
+    },
+    {
+      "id": "prop_dirt",
+      "from": "B0/B4",
+      "to": "B0"
+    },
+    {
+      "id": "prop_gravel",
+      "from": "B0/B4",
+      "to": "B0"
+    },
+    {
+      "id": "prop_paving",
+      "from": "B0/B4",
+      "to": "B0"
+    },
+    {
+      "id": "prop_path_edge",
+      "from": "B0/B4",
+      "to": "B0"
+    },
+    {
+      "id": "prop_removable_foundation",
+      "from": "B0/B4",
+      "to": "B0"
+    },
+    {
+      "id": "prop_garden_soil",
+      "from": "B0/B4",
+      "to": "B0"
+    },
+    {
+      "id": "prop_flag",
+      "from": "B2/later",
+      "to": "B5"
+    },
+    {
+      "id": "prop_sign",
+      "from": "B2/later",
+      "to": "B5"
+    },
+    {
+      "id": "prop_banner",
+      "from": "B2/later",
+      "to": "B5"
+    },
+    {
+      "id": "prop_noticeboard",
+      "from": "B2/later",
+      "to": "B5"
+    },
+    {
+      "id": "prop_marker",
+      "from": "B2/later",
+      "to": "B5"
+    },
+    {
+      "id": "prop_trophy",
+      "from": "B2/later",
+      "to": "B5"
+    },
+    {
+      "id": "prop_flame",
+      "from": "B1/B2",
+      "to": "B1"
+    },
+    {
+      "id": "prop_smoke",
+      "from": "B1/B2",
+      "to": "B5"
+    },
+    {
+      "id": "prop_steam",
+      "from": "B1/B2",
+      "to": "B5"
+    },
+    {
+      "id": "prop_embers",
+      "from": "B1/B2",
+      "to": "B5"
+    },
+    {
+      "id": "prop_lantern_glow",
+      "from": "B1/B2",
+      "to": "B5"
+    },
+    {
+      "id": "prop_fluttering_cloth",
+      "from": "B1/B2",
+      "to": "B5"
+    },
+    {
+      "id": "prop_material_bundle",
+      "from": "B0/B5",
+      "to": "B0"
+    },
+    {
+      "id": "prop_scaffold",
+      "from": "B0/B5",
+      "to": "B0"
+    },
+    {
+      "id": "prop_repair_patch",
+      "from": "B0/B5",
+      "to": "B0"
+    },
+    {
+      "id": "prop_dust",
+      "from": "B0/B5",
+      "to": "B0"
+    },
+    {
+      "id": "prop_rubble",
+      "from": "B0/B5",
+      "to": "B0"
+    },
+    {
+      "id": "system_terrain",
+      "from": "Foundation",
+      "to": "B0"
+    },
+    {
+      "id": "system_placement",
+      "from": "Foundation",
+      "to": "B0"
+    },
+    {
+      "id": "system_upgrades",
+      "from": "Foundation",
+      "to": "B0"
+    },
+    {
+      "id": "system_save",
+      "from": "Foundation",
+      "to": "B0"
+    },
+    {
+      "id": "system_inventory",
+      "from": "Existing",
+      "to": "B0"
+    },
+    {
+      "id": "system_cooking",
+      "from": "Existing",
+      "to": "B1"
+    },
+    {
+      "id": "system_water",
+      "from": "Foundation",
+      "to": "B2"
+    },
+    {
+      "id": "system_farming",
+      "from": "Foundation",
+      "to": "B2"
+    },
+    {
+      "id": "system_recovery",
+      "from": "Foundation",
+      "to": "B2"
+    },
+    {
+      "id": "system_crafting",
+      "from": "Foundation",
+      "to": "B1"
+    },
+    {
+      "id": "system_defence",
+      "from": "Foundation",
+      "to": "B1"
+    },
+    {
+      "id": "system_power",
+      "from": "Existing",
+      "to": "B1"
+    },
+    {
+      "id": "system_feedback",
+      "from": "Existing",
+      "to": "B1"
+    },
+    {
+      "id": "system_night",
+      "from": "Existing",
+      "to": "B1"
+    },
+    {
+      "id": "system_coop",
+      "from": "Foundation",
+      "to": "B0"
+    },
+    {
+      "id": "existing_pallets",
+      "from": "Existing",
+      "to": "B0"
+    },
+    {
+      "id": "existing_fuel_can",
+      "from": "Existing",
+      "to": "B0"
+    },
+    {
+      "id": "existing_smashable_crate",
+      "from": "Existing",
+      "to": "B0"
+    },
+    {
+      "id": "existing_searchable_locker",
+      "from": "Existing",
+      "to": "B0"
+    },
+    {
+      "id": "existing_security_shutter",
+      "from": "Existing",
+      "to": "B0"
+    },
+    {
+      "id": "existing_industrial_crusher",
+      "from": "Existing",
+      "to": "B0"
+    },
+    {
+      "id": "existing_ventilation_fan",
+      "from": "Existing",
+      "to": "B0"
+    },
+    {
+      "id": "map_home_terrain",
+      "from": "Existing / B0",
+      "to": "B0"
+    }
+  ],
+  "merges": [
+    {
+      "canonical": "prop_bedrolls",
+      "references": [
+        "exp_sleeping_furniture_t1"
+      ]
+    },
+    {
+      "canonical": "prop_cots",
+      "references": [
+        "exp_sleeping_furniture_t2"
+      ]
+    },
+    {
+      "canonical": "art_proper_bed",
+      "references": [
+        "exp_sleeping_furniture_t3"
+      ]
+    },
+    {
+      "canonical": "art_camp_planning_board",
+      "references": [
+        "exp_research_planning_t1",
+        "exp_expedition_map_t1"
+      ]
+    },
+    {
+      "canonical": "base_hearth_t1",
+      "references": [
+        "base_cooking_t1"
+      ]
+    },
+    {
+      "canonical": "base_shared_store_t1",
+      "references": [
+        "exp_drop_off_t1",
+        "exp_drop_off_t2",
+        "exp_drop_off_t3"
+      ]
+    }
+  ],
+  "deletedIds": []
+}

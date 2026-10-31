@@ -1,0 +1,92 @@
+[
+  {
+    "asset": "bunker.png",
+    "width": 1312,
+    "height": 1199,
+    "pngBytes": 2258535,
+    "webpBytes": 1608416,
+    "visiblePixelsIdentical": true,
+    "alphaIdentical": true
+  },
+  {
+    "asset": "fire.png",
+    "width": 1254,
+    "height": 1254,
+    "pngBytes": 1262838,
+    "webpBytes": 840704,
+    "visiblePixelsIdentical": true,
+    "alphaIdentical": true
+  },
+  {
+    "asset": "furnace.png",
+    "width": 1254,
+    "height": 1254,
+    "pngBytes": 1984342,
+    "webpBytes": 1373444,
+    "visiblePixelsIdentical": true,
+    "alphaIdentical": true
+  },
+  {
+    "asset": "garden.png",
+    "width": 1254,
+    "height": 1254,
+    "pngBytes": 1583793,
+    "webpBytes": 1125952,
+    "visiblePixelsIdentical": true,
+    "alphaIdentical": true
+  },
+  {
+    "asset": "headquarters-interior.png",
+    "width": 1536,
+    "height": 1024,
+    "pngBytes": 2819477,
+    "webpBytes": 1534912,
+    "visiblePixelsIdentical": true,
+    "alphaIdentical": true
+  },
+  {
+    "asset": "headquarters.png",
+    "width": 1536,
+    "height": 1024,
+    "pngBytes": 2964236,
+    "webpBytes": 1677464,
+    "visiblePixelsIdentical": true,
+    "alphaIdentical": true
+  },
+  {
+    "asset": "treatment.png",
+    "width": 1536,
+    "height": 1024,
+    "pngBytes": 2680927,
+    "webpBytes": 1514962,
+    "visiblePixelsIdentical": true,
+    "alphaIdentical": true
+  },
+  {
+    "asset": "warehouse.png",
+    "width": 1254,
+    "height": 1254,
+    "pngBytes": 2141573,
+    "webpBytes": 1450766,
+    "visiblePixelsIdentical": true,
+    "alphaIdentical": true
+  },
+  {
+    "asset": "well.png",
+    "width": 1302,
+    "height": 1208,
+    "pngBytes": 1629049,
+    "webpBytes": 1111502,
+    "visiblePixelsIdentical": true,
+    "alphaIdentical": true
+  },
+  {
+    "asset": "workshop.png",
+    "width": 1254,
+    "height": 1254,
+    "pngBytes": 2201502,
+    "webpBytes": 1472804,
+    "visiblePixelsIdentical": true,
+    "alphaIdentical": true
+  }
+]

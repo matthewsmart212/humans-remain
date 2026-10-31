@@ -1,0 +1,1838 @@
+[
+  {
+    "id": "camp_gate_northeast_classic_v1",
+    "name": "Northeast matching timber gate",
+    "image": "/survival/camp-gate-states-v1/northeast-closed.webp",
+    "size": [
+      1464,
+      1712
+    ],
+    "width": 732,
+    "height": 856,
+    "anchor": [
+      0.5,
+      0.5
+    ],
+    "kind": "gate",
+    "rise": 185,
+    "segments": [],
+    "gate": {
+      "a": [
+        0.3551912568306011,
+        0.3037383177570093
+      ],
+      "b": [
+        0.644808743169399,
+        0.6962616822429907
+      ],
+      "height": 185,
+      "leaf": "/survival/camp-gates-classic-v1/gate-leaf.webp",
+      "leafSize": [
+        768,
+        735
+      ],
+      "post": "/survival/camp-gates-classic-v1/gate-post.webp",
+      "postSize": [
+        348,
+        768
+      ],
+      "postWidth": 104.21875,
+      "postHeight": 230,
+      "postAnchor": [
+        0.692063492063492,
+        0.9741379310344828
+      ],
+      "topRail": false,
+      "states": {
+        "closed": "/survival/camp-gate-states-v1/northeast-closed.webp",
+        "open": "/survival/camp-gate-states-v1/northeast-open.webp",
+        "size": [
+          1464,
+          1712
+        ]
+      }
+    }
+  },
+  {
+    "id": "camp_gate_southeast_classic_v1",
+    "name": "Southeast matching timber gate",
+    "image": "/survival/camp-gate-states-v1/southeast-closed.webp",
+    "size": [
+      1718,
+      1608
+    ],
+    "width": 859,
+    "height": 804,
+    "anchor": [
+      0.5,
+      0.5
+    ],
+    "kind": "gate",
+    "rise": 185,
+    "segments": [],
+    "gate": {
+      "a": [
+        0.6973224679860303,
+        0.32338308457711445
+      ],
+      "b": [
+        0.30267753201396974,
+        0.6766169154228856
+      ],
+      "height": 185,
+      "leaf": "/survival/camp-gates-classic-v1/gate-leaf.webp",
+      "leafSize": [
+        768,
+        735
+      ],
+      "post": "/survival/camp-gates-classic-v1/gate-post.webp",
+      "postSize": [
+        348,
+        768
+      ],
+      "postWidth": 104.21875,
+      "postHeight": 230,
+      "postAnchor": [
+        0.692063492063492,
+        0.9741379310344828
+      ],
+      "topRail": false,
+      "states": {
+        "closed": "/survival/camp-gate-states-v1/southeast-closed.webp",
+        "open": "/survival/camp-gate-states-v1/southeast-open.webp",
+        "size": [
+          1718,
+          1608
+        ]
+      }
+    }
+  },
+  {
+    "id": "camp_gate_south_classic_v1",
+    "name": "South matching timber gate",
+    "image": "/survival/camp-gate-states-v1/south-closed.webp",
+    "size": [
+      1912,
+      1120
+    ],
+    "width": 956,
+    "height": 560,
+    "anchor": [
+      0.5,
+      0.5
+    ],
+    "kind": "gate",
+    "rise": 185,
+    "segments": [],
+    "gate": {
+      "a": [
+        0.7280334728033473,
+        0.4642857142857143
+      ],
+      "b": [
+        0.2719665271966527,
+        0.5357142857142857
+      ],
+      "height": 185,
+      "leaf": "/survival/camp-gates-classic-v1/gate-leaf.webp",
+      "leafSize": [
+        768,
+        735
+      ],
+      "post": "/survival/camp-gates-classic-v1/gate-post.webp",
+      "postSize": [
+        348,
+        768
+      ],
+      "postWidth": 104.21875,
+      "postHeight": 230,
+      "postAnchor": [
+        0.692063492063492,
+        0.9741379310344828
+      ],
+      "topRail": false,
+      "states": {
+        "closed": "/survival/camp-gate-states-v1/south-closed.webp",
+        "open": "/survival/camp-gate-states-v1/south-open.webp",
+        "size": [
+          1912,
+          1120
+        ]
+      }
+    }
+  },
+  {
+    "id": "camp_gate_southwest_classic_v1",
+    "name": "Southwest matching timber gate",
+    "image": "/survival/camp-gate-states-v1/southwest-closed.webp",
+    "size": [
+      1498,
+      1372
+    ],
+    "width": 749,
+    "height": 686,
+    "anchor": [
+      0.5,
+      0.5
+    ],
+    "kind": "gate",
+    "rise": 185,
+    "segments": [],
+    "gate": {
+      "a": [
+        0.6528704939919893,
+        0.6209912536443148
+      ],
+      "b": [
+        0.3471295060080107,
+        0.37900874635568516
+      ],
+      "height": 185,
+      "leaf": "/survival/camp-gates-classic-v1/gate-leaf.webp",
+      "leafSize": [
+        768,
+        735
+      ],
+      "post": "/survival/camp-gates-classic-v1/gate-post.webp",
+      "postSize": [
+        348,
+        768
+      ],
+      "postWidth": 104.21875,
+      "postHeight": 230,
+      "postAnchor": [
+        0.692063492063492,
+        0.9741379310344828
+      ],
+      "topRail": false,
+      "states": {
+        "closed": "/survival/camp-gate-states-v1/southwest-closed.webp",
+        "open": "/survival/camp-gate-states-v1/southwest-open.webp",
+        "size": [
+          1498,
+          1372
+        ]
+      }
+    }
+  },
+  {
+    "id": "camp_gate_west_classic_v1",
+    "name": "West matching timber gate",
+    "image": "/survival/camp-gate-states-v1/west-closed.webp",
+    "size": [
+      1120,
+      1624
+    ],
+    "width": 560,
+    "height": 812,
+    "anchor": [
+      0.5,
+      0.5
+    ],
+    "kind": "gate",
+    "rise": 185,
+    "segments": [],
+    "gate": {
+      "a": [
+        0.5625,
+        0.6798029556650246
+      ],
+      "b": [
+        0.4375,
+        0.32019704433497537
+      ],
+      "height": 185,
+      "leaf": "/survival/camp-gates-classic-v1/gate-leaf.webp",
+      "leafSize": [
+        768,
+        735
+      ],
+      "post": "/survival/camp-gates-classic-v1/gate-post.webp",
+      "postSize": [
+        348,
+        768
+      ],
+      "postWidth": 104.21875,
+      "postHeight": 230,
+      "postAnchor": [
+        0.692063492063492,
+        0.9741379310344828
+      ],
+      "topRail": false,
+      "states": {
+        "closed": "/survival/camp-gate-states-v1/west-closed.webp",
+        "open": "/survival/camp-gate-states-v1/west-open.webp",
+        "size": [
+          1120,
+          1624
+        ]
+      }
+    }
+  },
+  {
+    "id": "camp_gate_northwest_classic_v1",
+    "name": "Northwest matching timber gate",
+    "image": "/survival/camp-gate-states-v1/northwest-closed.webp",
+    "size": [
+      1416,
+      1568
+    ],
+    "width": 708,
+    "height": 784,
+    "anchor": [
+      0.5,
+      0.5
+    ],
+    "kind": "gate",
+    "rise": 185,
+    "segments": [],
+    "gate": {
+      "a": [
+        0.3672316384180791,
+        0.6683673469387755
+      ],
+      "b": [
+        0.632768361581921,
+        0.33163265306122447
+      ],
+      "height": 185,
+      "leaf": "/survival/camp-gates-classic-v1/gate-leaf.webp",
+      "leafSize": [
+        768,
+        735
+      ],
+      "post": "/survival/camp-gates-classic-v1/gate-post.webp",
+      "postSize": [
+        348,
+        768
+      ],
+      "postWidth": 104.21875,
+      "postHeight": 230,
+      "postAnchor": [
+        0.692063492063492,
+        0.9741379310344828
+      ],
+      "topRail": false,
+      "states": {
+        "closed": "/survival/camp-gate-states-v1/northwest-closed.webp",
+        "open": "/survival/camp-gate-states-v1/northwest-open.webp",
+        "size": [
+          1416,
+          1568
+        ]
+      }
+    }
+  },
+  {
+    "id": "camp_stockade_post_v3",
+    "name": "Heavy weathered fortification pier",
+    "image": "/survival/camp-fortification-v4/joint-post.webp",
+    "size": [
+      527,
+      900
+    ],
+    "width": 165.1266666666667,
+    "height": 282,
+    "anchor": [
+      0.51,
+      0.92
+    ],
+    "kind": "post",
+    "rise": 260,
+    "segments": []
+  },
+  {
+    "id": "camp_gate_southeast_v3",
+    "name": "Southeast timber fort gate",
+    "image": "/survival/camp-fortification-v4/gate-southeast.webp",
+    "size": [
+      1654,
+      1598
+    ],
+    "width": 826.9433090758039,
+    "height": 798.9040933895294,
+    "anchor": [
+      0.5,
+      0.5
+    ],
+    "kind": "gate",
+    "rise": 213,
+    "segments": [],
+    "gate": {
+      "a": [
+        0.649310905817588,
+        0.362997263876331
+      ],
+      "b": [
+        0.35068909418241195,
+        0.637002736123669
+      ],
+      "height": 213,
+      "leaf": "/survival/camp-fortification-v4/gate-leaf.webp",
+      "leafSize": [
+        768,
+        696
+      ],
+      "post": "/survival/camp-fortification-v4/joint-post.webp",
+      "postSize": [
+        527,
+        900
+      ],
+      "postWidth": 165.1266666666667,
+      "postHeight": 282
+    }
+  },
+  {
+    "id": "camp_round_rampart_1_v4",
+    "name": "Round camp rampart · bay 2",
+    "image": "/survival/camp-fortification-v4/round-rampart-1.webp",
+    "size": [
+      728,
+      996
+    ],
+    "width": 364,
+    "height": 498,
+    "anchor": [
+      0.4983857588300878,
+      0.6728758812754989
+    ],
+    "kind": "wall",
+    "rise": 235,
+    "segments": [
+      {
+        "x": -123.68783394721049,
+        "y": 71.43386790095656,
+        "ex": 123.68783394721049,
+        "ey": -71.43386790095656,
+        "r": 22
+      }
+    ]
+  },
+  {
+    "id": "camp_round_rampart_2_v4",
+    "name": "Round camp rampart · bay 3",
+    "image": "/survival/camp-fortification-v4/round-rampart-2.webp",
+    "size": [
+      793,
+      1138
+    ],
+    "width": 396.5,
+    "height": 569,
+    "anchor": [
+      0.4984538928027971,
+      0.6510477612579092
+    ],
+    "kind": "wall",
+    "rise": 235,
+    "segments": [
+      {
+        "x": -134.8111245203006,
+        "y": 47.195746158060274,
+        "ex": 134.8111245203006,
+        "ey": -47.195746158060274,
+        "r": 22
+      }
+    ]
+  },
+  {
+    "id": "camp_round_rampart_3_v4",
+    "name": "Round camp rampart · bay 4",
+    "image": "/survival/camp-fortification-v4/round-rampart-3.webp",
+    "size": [
+      822,
+      892
+    ],
+    "width": 411,
+    "height": 446,
+    "anchor": [
+      0.5041235678845721,
+      0.6947587135020269
+    ],
+    "kind": "wall",
+    "rise": 235,
+    "segments": [
+      {
+        "x": -141.23477622401117,
+        "y": 21.312337619263644,
+        "ex": 141.23477622401117,
+        "ey": -21.312337619263644,
+        "r": 22
+      }
+    ]
+  },
+  {
+    "id": "camp_gate_south_v3",
+    "name": "South timber fort gate",
+    "image": "/survival/camp-fortification-v4/gate-south.webp",
+    "size": [
+      1820,
+      1195
+    ],
+    "width": 909.5577964699607,
+    "height": 597.0780205487686,
+    "anchor": [
+      0.5,
+      0.5
+    ],
+    "kind": "gate",
+    "rise": 213,
+    "segments": [],
+    "gate": {
+      "a": [
+        0.6811637466849226,
+        0.5143013307817564
+      ],
+      "b": [
+        0.31883625331507737,
+        0.4856986692182436
+      ],
+      "height": 213,
+      "leaf": "/survival/camp-fortification-v4/gate-leaf.webp",
+      "leafSize": [
+        768,
+        696
+      ],
+      "post": "/survival/camp-fortification-v4/joint-post.webp",
+      "postSize": [
+        527,
+        900
+      ],
+      "postWidth": 165.1266666666667,
+      "postHeight": 282
+    }
+  },
+  {
+    "id": "camp_round_rampart_5_v4",
+    "name": "Round camp rampart · bay 6",
+    "image": "/survival/camp-fortification-v4/round-rampart-5.webp",
+    "size": [
+      803,
+      1208
+    ],
+    "width": 401.5,
+    "height": 604,
+    "anchor": [
+      0.5003855316760866,
+      0.6423775678660798
+    ],
+    "kind": "wall",
+    "rise": 235,
+    "segments": [
+      {
+        "x": -136.51717693782598,
+        "y": -35.16383588280564,
+        "ex": 136.51717693782598,
+        "ey": 35.16383588280564,
+        "r": 22
+      }
+    ]
+  },
+  {
+    "id": "camp_round_rampart_6_v4",
+    "name": "Round camp rampart · bay 7",
+    "image": "/survival/camp-fortification-v4/round-rampart-6.webp",
+    "size": [
+      751,
+      1065
+    ],
+    "width": 375.5,
+    "height": 532.5,
+    "anchor": [
+      0.500831421827117,
+      0.6616496763141623
+    ],
+    "kind": "wall",
+    "rise": 235,
+    "segments": [
+      {
+        "x": -127.74682978543382,
+        "y": -59.616964304113935,
+        "ex": 127.74682978543382,
+        "ey": 59.616964304113935,
+        "r": 22
+      }
+    ]
+  },
+  {
+    "id": "camp_gate_southwest_v3",
+    "name": "Southwest timber fort gate",
+    "image": "/survival/camp-fortification-v4/gate-southwest.webp",
+    "size": [
+      1691,
+      1553
+    ],
+    "width": 845.2890781931006,
+    "height": 776.2694703499628,
+    "anchor": [
+      0.5,
+      0.5
+    ],
+    "kind": "gate",
+    "rise": 213,
+    "segments": [],
+    "gate": {
+      "a": [
+        0.6569221021760896,
+        0.6264183881027031
+      ],
+      "b": [
+        0.3430778978239104,
+        0.37358161189729683
+      ],
+      "height": 213,
+      "leaf": "/survival/camp-fortification-v4/gate-leaf.webp",
+      "leafSize": [
+        768,
+        696
+      ],
+      "post": "/survival/camp-fortification-v4/joint-post.webp",
+      "postSize": [
+        527,
+        900
+      ],
+      "postWidth": 165.1266666666667,
+      "postHeight": 282
+    }
+  },
+  {
+    "id": "camp_round_rampart_8_v4",
+    "name": "Round camp rampart · bay 9",
+    "image": "/survival/camp-fortification-v4/round-rampart-8.webp",
+    "size": [
+      498,
+      1056
+    ],
+    "width": 249,
+    "height": 528,
+    "anchor": [
+      0.5004135624976218,
+      0.6633816507427682
+    ],
+    "kind": "wall",
+    "rise": 235,
+    "segments": [
+      {
+        "x": -84.40983033922362,
+        "y": -91.65889713020329,
+        "ex": 84.40983033922362,
+        "ey": 91.65889713020329,
+        "r": 22
+      }
+    ]
+  },
+  {
+    "id": "camp_round_rampart_9_v4",
+    "name": "Round camp rampart · bay 10",
+    "image": "/survival/camp-fortification-v4/round-rampart-9.webp",
+    "size": [
+      1207,
+      1874
+    ],
+    "width": 603.5,
+    "height": 937,
+    "anchor": [
+      0.4409707429022266,
+      0.5969799293685183
+    ],
+    "kind": "wall",
+    "rise": 235,
+    "segments": [
+      {
+        "x": -68.41010132731788,
+        "y": -104.14619972619175,
+        "ex": 68.41010132731788,
+        "ey": 104.14619972619175,
+        "r": 22
+      }
+    ]
+  },
+  {
+    "id": "camp_gate_west_v3",
+    "name": "West timber fort gate",
+    "image": "/survival/camp-fortification-v4/gate-west.webp",
+    "size": [
+      1412,
+      1771
+    ],
+    "width": 705.9510272849275,
+    "height": 885.0185875088134,
+    "anchor": [
+      0.5,
+      0.5
+    ],
+    "kind": "gate",
+    "rise": 213,
+    "segments": [],
+    "gate": {
+      "a": [
+        0.5892066322003471,
+        0.672323266321102
+      ],
+      "b": [
+        0.41079336779965286,
+        0.32767673367889805
+      ],
+      "height": 213,
+      "leaf": "/survival/camp-fortification-v4/gate-leaf.webp",
+      "leafSize": [
+        768,
+        696
+      ],
+      "post": "/survival/camp-fortification-v4/joint-post.webp",
+      "postSize": [
+        527,
+        900
+      ],
+      "postWidth": 165.1266666666667,
+      "postHeight": 282
+    }
+  },
+  {
+    "id": "camp_round_rampart_11_v4",
+    "name": "Round camp rampart · bay 12",
+    "image": "/survival/camp-fortification-v4/round-rampart-11.webp",
+    "size": [
+      838,
+      1000
+    ],
+    "width": 419,
+    "height": 500,
+    "anchor": [
+      0.5158718704831173,
+      0.6199037532086625
+    ],
+    "kind": "wall",
+    "rise": 210.72268603653234,
+    "segments": [
+      {
+        "x": -26.994302687854315,
+        "y": -140.3737277751054,
+        "ex": 26.994302687854315,
+        "ey": 140.3737277751054,
+        "r": 22
+      }
+    ]
+  },
+  {
+    "id": "camp_round_rampart_12_v4",
+    "name": "Round camp rampart · bay 13",
+    "image": "/survival/camp-fortification-v4/round-rampart-12.webp",
+    "size": [
+      841,
+      1019
+    ],
+    "width": 420.5,
+    "height": 509.5,
+    "anchor": [
+      0.48885839558080196,
+      0.619453053862176
+    ],
+    "kind": "wall",
+    "rise": 214.58275457797075,
+    "segments": [
+      {
+        "x": -0.40793856464142664,
+        "y": -142.94512728040206,
+        "ex": 0.40793856464142664,
+        "ey": 142.94512728040206,
+        "r": 22
+      }
+    ]
+  },
+  {
+    "id": "camp_round_rampart_13_v4",
+    "name": "Round camp rampart · bay 14",
+    "image": "/survival/camp-fortification-v4/round-rampart-13.webp",
+    "size": [
+      832,
+      1001
+    ],
+    "width": 416,
+    "height": 500.5,
+    "anchor": [
+      0.48405652482765055,
+      0.6199519384983767
+    ],
+    "kind": "wall",
+    "rise": 210.9505397607391,
+    "segments": [
+      {
+        "x": 26.192668974009166,
+        "y": -140.5255134098462,
+        "ex": -26.192668974009166,
+        "ey": 140.5255134098462,
+        "r": 22
+      }
+    ]
+  },
+  {
+    "id": "camp_round_rampart_14_v4",
+    "name": "Round camp rampart · bay 15",
+    "image": "/survival/camp-fortification-v4/round-rampart-14.webp",
+    "size": [
+      916,
+      1364
+    ],
+    "width": 458,
+    "height": 682,
+    "anchor": [
+      0.5588222906259515,
+      0.6108477780516177
+    ],
+    "kind": "wall",
+    "rise": 235,
+    "segments": [
+      {
+        "x": -51.87874403655701,
+        "y": 133.19936840793315,
+        "ex": 51.87874403655701,
+        "ey": -133.19936840793315,
+        "r": 22
+      }
+    ]
+  },
+  {
+    "id": "camp_round_rampart_15_v4",
+    "name": "Round camp rampart · bay 16",
+    "image": "/survival/camp-fortification-v4/round-rampart-15.webp",
+    "size": [
+      1336,
+      1574
+    ],
+    "width": 668,
+    "height": 787,
+    "anchor": [
+      0.5587795950171629,
+      0.6041353540272891
+    ],
+    "kind": "wall",
+    "rise": 235,
+    "segments": [
+      {
+        "x": -75.75344217192253,
+        "y": 121.22248894569066,
+        "ex": 75.75344217192253,
+        "ey": -121.22248894569066,
+        "r": 22
+      }
+    ]
+  },
+  {
+    "id": "camp_gate_northwest_v3",
+    "name": "Northwest timber fort gate",
+    "image": "/survival/camp-fortification-v4/gate-northwest.webp",
+    "size": [
+      1615,
+      1639
+    ],
+    "width": 807.3810674757195,
+    "height": 819.1607203401142,
+    "anchor": [
+      0.5,
+      0.5
+    ],
+    "kind": "gate",
+    "rise": 213,
+    "segments": [],
+    "gate": {
+      "a": [
+        0.35918602959899254,
+        0.6459791188723105
+      ],
+      "b": [
+        0.6408139704010074,
+        0.3540208811276894
+      ],
+      "height": 213,
+      "leaf": "/survival/camp-fortification-v4/gate-leaf.webp",
+      "leafSize": [
+        768,
+        696
+      ],
+      "post": "/survival/camp-fortification-v4/joint-post.webp",
+      "postSize": [
+        527,
+        900
+      ],
+      "postWidth": 165.1266666666667,
+      "postHeight": 282
+    }
+  },
+  {
+    "id": "camp_round_rampart_17_v4",
+    "name": "Round camp rampart · bay 18",
+    "image": "/survival/camp-fortification-v4/round-rampart-17.webp",
+    "size": [
+      706,
+      1008
+    ],
+    "width": 353,
+    "height": 504,
+    "anchor": [
+      0.4986951536717523,
+      0.6707727813858787
+    ],
+    "kind": "wall",
+    "rise": 235,
+    "segments": [
+      {
+        "x": -120.00417357970065,
+        "y": 83.33009447123163,
+        "ex": 120.00417357970065,
+        "ey": -83.33009447123163,
+        "r": 22
+      }
+    ]
+  },
+  {
+    "id": "camp_round_rampart_18_v4",
+    "name": "Round camp rampart · bay 19",
+    "image": "/survival/camp-fortification-v4/round-rampart-18.webp",
+    "size": [
+      786,
+      1069
+    ],
+    "width": 393,
+    "height": 534.5,
+    "anchor": [
+      0.498610645961127,
+      0.6608660397448622
+    ],
+    "kind": "wall",
+    "rise": 235,
+    "segments": [
+      {
+        "x": -133.65729748187982,
+        "y": 58.996891028014375,
+        "ex": 133.65729748187982,
+        "ey": -58.996891028014375,
+        "r": 22
+      }
+    ]
+  },
+  {
+    "id": "camp_round_rampart_19_v4",
+    "name": "Round camp rampart · bay 20",
+    "image": "/survival/camp-fortification-v4/round-rampart-19.webp",
+    "size": [
+      829,
+      957
+    ],
+    "width": 414.5,
+    "height": 478.5,
+    "anchor": [
+      0.5040961001694644,
+      0.6811675208320114
+    ],
+    "kind": "wall",
+    "rise": 235,
+    "segments": [
+      {
+        "x": -142.43553993865578,
+        "y": 32.51189449285687,
+        "ex": 142.43553993865578,
+        "ey": -32.51189449285687,
+        "r": 22
+      }
+    ]
+  },
+  {
+    "id": "camp_round_rampart_20_v4",
+    "name": "Round camp rampart · bay 21",
+    "image": "/survival/camp-fortification-v4/round-rampart-20.webp",
+    "size": [
+      850,
+      796
+    ],
+    "width": 425,
+    "height": 398,
+    "anchor": [
+      0.5039508037067666,
+      0.7191430398254626
+    ],
+    "kind": "wall",
+    "rise": 235,
+    "segments": [
+      {
+        "x": -146.01873218946014,
+        "y": 4.841091913404512,
+        "ex": 146.01873218946014,
+        "ey": -4.841091913404512,
+        "r": 22
+      }
+    ]
+  },
+  {
+    "id": "camp_round_rampart_21_v4",
+    "name": "Round camp rampart · bay 22",
+    "image": "/survival/camp-fortification-v4/round-rampart-21.webp",
+    "size": [
+      840,
+      902
+    ],
+    "width": 420,
+    "height": 451,
+    "anchor": [
+      0.5038930249587091,
+      0.693697802035419
+    ],
+    "kind": "wall",
+    "rise": 235,
+    "segments": [
+      {
+        "x": -144.27618449457714,
+        "y": -23.006279769185767,
+        "ex": 144.27618449457714,
+        "ey": 23.006279769185767,
+        "r": 22
+      }
+    ]
+  },
+  {
+    "id": "camp_round_rampart_22_v4",
+    "name": "Round camp rampart · bay 23",
+    "image": "/survival/camp-fortification-v4/round-rampart-22.webp",
+    "size": [
+      807,
+      1121
+    ],
+    "width": 403.5,
+    "height": 560.5,
+    "anchor": [
+      0.5006426070404004,
+      0.6535854551593312
+    ],
+    "kind": "wall",
+    "rise": 235,
+    "segments": [
+      {
+        "x": -137.27145278088528,
+        "y": -50.01454361039646,
+        "ex": 137.27145278088528,
+        "ey": 50.01454361039646,
+        "r": 22
+      }
+    ]
+  },
+  {
+    "id": "camp_round_rampart_23_v4",
+    "name": "Round camp rampart · bay 24",
+    "image": "/survival/camp-fortification-v4/round-rampart-23.webp",
+    "size": [
+      737,
+      974
+    ],
+    "width": 368.5,
+    "height": 487,
+    "anchor": [
+      0.5004632704983464,
+      0.676798500570463
+    ],
+    "kind": "wall",
+    "rise": 235,
+    "segments": [
+      {
+        "x": -125.2600205670899,
+        "y": -75.19862743869271,
+        "ex": 125.2600205670899,
+        "ey": 75.19862743869271,
+        "r": 22
+      }
+    ]
+  },
+  {
+    "id": "camp_round_rampart_24_v4",
+    "name": "Round camp rampart · bay 25",
+    "image": "/survival/camp-fortification-v4/round-rampart-24.webp",
+    "size": [
+      640,
+      1091
+    ],
+    "width": 320,
+    "height": 545.5,
+    "anchor": [
+      0.5004444883481882,
+      0.6581553568716735
+    ],
+    "kind": "wall",
+    "rise": 235,
+    "segments": [
+      {
+        "x": -108.67998071557031,
+        "y": -97.6399923842406,
+        "ex": 108.67998071557031,
+        "ey": 97.6399923842406,
+        "r": 22
+      }
+    ]
+  },
+  {
+    "id": "camp_gate_northeast_v3",
+    "name": "Northeast timber fort gate",
+    "image": "/survival/camp-fortification-v4/gate-northeast.webp",
+    "size": [
+      1552,
+      1692
+    ],
+    "width": 775.7931397390398,
+    "height": 845.6408222226565,
+    "anchor": [
+      0.5,
+      0.5
+    ],
+    "kind": "gate",
+    "rise": 213,
+    "segments": [],
+    "gate": {
+      "a": [
+        0.37381098793622974,
+        0.3429351946820316
+      ],
+      "b": [
+        0.6261890120637703,
+        0.6570648053179684
+      ],
+      "height": 213,
+      "leaf": "/survival/camp-fortification-v4/gate-leaf.webp",
+      "leafSize": [
+        768,
+        696
+      ],
+      "post": "/survival/camp-fortification-v4/joint-post.webp",
+      "postSize": [
+        527,
+        900
+      ],
+      "postWidth": 165.1266666666667,
+      "postHeight": 282
+    }
+  },
+  {
+    "id": "camp_round_rampart_26_v4",
+    "name": "Round camp rampart · bay 27",
+    "image": "/survival/camp-fortification-v4/round-rampart-26.webp",
+    "size": [
+      1163,
+      1124
+    ],
+    "width": 581.5,
+    "height": 562,
+    "anchor": [
+      0.44077568248691346,
+      0.6220536946230935
+    ],
+    "kind": "wall",
+    "rise": 235,
+    "segments": [
+      {
+        "x": -65.87760446546031,
+        "y": -146.83424519653994,
+        "ex": 65.87760446546031,
+        "ey": 146.83424519653994,
+        "r": 22
+      }
+    ]
+  },
+  {
+    "id": "camp_round_rampart_27_v4",
+    "name": "Round camp rampart · bay 28",
+    "image": "/survival/camp-fortification-v4/round-rampart-27.webp",
+    "size": [
+      885,
+      1121
+    ],
+    "width": 442.5,
+    "height": 560.5,
+    "anchor": [
+      0.521834608546607,
+      0.6197195734837367
+    ],
+    "kind": "wall",
+    "rise": 236.23224932787235,
+    "segments": [
+      {
+        "x": -33.70125939080367,
+        "y": -157.36702147533651,
+        "ex": 33.70125939080367,
+        "ey": 157.36702147533651,
+        "r": 22
+      }
+    ]
+  },
+  {
+    "id": "camp_round_rampart_28_v4",
+    "name": "Round camp rampart · bay 29",
+    "image": "/survival/camp-fortification-v4/round-rampart-28.webp",
+    "size": [
+      843,
+      1146
+    ],
+    "width": 421.5,
+    "height": 573,
+    "anchor": [
+      0.48889497814509686,
+      0.6199061254523257
+    ],
+    "kind": "wall",
+    "rise": 241.58870558732286,
+    "segments": [
+      {
+        "x": -0.033406230499622325,
+        "y": -160.9352454143243,
+        "ex": 0.033406230499622325,
+        "ey": 160.9352454143243,
+        "r": 22
+      }
+    ]
+  },
+  {
+    "id": "camp_round_rampart_29_v4",
+    "name": "Round camp rampart · bay 30",
+    "image": "/survival/camp-fortification-v4/round-rampart-29.webp",
+    "size": [
+      885,
+      1121
+    ],
+    "width": 442.5,
+    "height": 560.5,
+    "anchor": [
+      0.47771585542649814,
+      0.6197744593659903
+    ],
+    "kind": "wall",
+    "rise": 236.25323180326802,
+    "segments": [
+      {
+        "x": 33.635925380871186,
+        "y": -157.38099903202317,
+        "ex": -33.635925380871186,
+        "ey": 157.38099903202317,
+        "r": 22
+      }
+    ]
+  },
+  {
+    "id": "camp_round_rampart_30_v4",
+    "name": "Round camp rampart · bay 31",
+    "image": "/survival/camp-fortification-v4/round-rampart-30.webp",
+    "size": [
+      1162,
+      1123
+    ],
+    "width": 581,
+    "height": 561.5,
+    "anchor": [
+      0.5584056882244043,
+      0.6223683709687308
+    ],
+    "kind": "wall",
+    "rise": 235,
+    "segments": [
+      {
+        "x": -65.81664037729456,
+        "y": 146.86158170873387,
+        "ex": 65.81664037729456,
+        "ey": -146.86158170873387,
+        "r": 22
+      }
+    ]
+  },
+  {
+    "id": "camp_round_rampart_31_v4",
+    "name": "Round camp rampart · bay 32",
+    "image": "/survival/camp-fortification-v4/round-rampart-31.webp",
+    "size": [
+      560,
+      1280
+    ],
+    "width": 280,
+    "height": 640,
+    "anchor": [
+      0.4988975698536523,
+      0.6346540383238535
+    ],
+    "kind": "wall",
+    "rise": 235,
+    "segments": [
+      {
+        "x": -95.08452502056934,
+        "y": 129.8425486277822,
+        "ex": 95.08452502056934,
+        "ey": -129.8425486277822,
+        "r": 22
+      }
+    ]
+  },
+  {
+    "id": "camp_stockade_run_0_v3",
+    "name": "Worn stockade · section 1",
+    "image": "/survival/camp-perimeter-v3/stockade-run-0.webp",
+    "size": [
+      894,
+      1161
+    ],
+    "width": 447,
+    "height": 580.5,
+    "anchor": [
+      0.5001589222625641,
+      0.6106974816679566
+    ],
+    "kind": "wall",
+    "segments": [
+      {
+        "x": -132.5,
+        "y": 150,
+        "ex": 132.5,
+        "ey": -150,
+        "r": 14
+      }
+    ],
+    "rise": 130
+  },
+  {
+    "id": "camp_stockade_run_1_v3",
+    "name": "Worn stockade · section 2",
+    "image": "/survival/camp-perimeter-v3/stockade-run-1.webp",
+    "size": [
+      760,
+      753
+    ],
+    "width": 380,
+    "height": 376.5,
+    "anchor": [
+      0.49993528904227785,
+      0.6709519282571337
+    ],
+    "kind": "wall",
+    "segments": [
+      {
+        "x": -112.5,
+        "y": 55,
+        "ex": 112.5,
+        "ey": -55,
+        "r": 14
+      }
+    ],
+    "rise": 130
+  },
+  {
+    "id": "camp_stockade_run_2_v3",
+    "name": "Worn stockade · section 3",
+    "image": "/survival/camp-perimeter-v3/stockade-run-2.webp",
+    "size": [
+      1093,
+      519
+    ],
+    "width": 546.5,
+    "height": 259.5,
+    "anchor": [
+      0.4982676269814518,
+      0.7435475559253212
+    ],
+    "kind": "wall",
+    "segments": [
+      {
+        "x": -250,
+        "y": 30,
+        "ex": 250,
+        "ey": -30,
+        "r": 14
+      }
+    ],
+    "rise": 130
+  },
+  {
+    "id": "camp_stockade_run_3_v3",
+    "name": "Worn stockade · section 4",
+    "image": "/survival/camp-perimeter-v3/stockade-run-3.webp",
+    "size": [
+      1159,
+      519
+    ],
+    "width": 579.5,
+    "height": 259.5,
+    "anchor": [
+      0.49798352654717026,
+      0.742736279178541
+    ],
+    "kind": "wall",
+    "segments": [
+      {
+        "x": -265,
+        "y": -30,
+        "ex": 265,
+        "ey": 30,
+        "r": 14
+      }
+    ],
+    "rise": 130
+  },
+  {
+    "id": "camp_stockade_run_4_v3",
+    "name": "Worn stockade · section 5",
+    "image": "/survival/camp-perimeter-v3/stockade-run-4.webp",
+    "size": [
+      390,
+      760
+    ],
+    "width": 195,
+    "height": 380,
+    "anchor": [
+      0.5,
+      0.6842105263157895
+    ],
+    "kind": "wall",
+    "segments": [
+      {
+        "x": -32.5,
+        "y": -90,
+        "ex": 32.5,
+        "ey": 90,
+        "r": 14
+      }
+    ],
+    "rise": 130
+  },
+  {
+    "id": "camp_stockade_run_5_v3",
+    "name": "Worn stockade · section 6",
+    "image": "/survival/camp-perimeter-v3/stockade-run-5.webp",
+    "size": [
+      280,
+      640
+    ],
+    "width": 140,
+    "height": 320,
+    "anchor": [
+      0.5,
+      0.71875
+    ],
+    "kind": "wall",
+    "segments": [
+      {
+        "x": -5,
+        "y": -60,
+        "ex": 5,
+        "ey": 60,
+        "r": 14
+      }
+    ],
+    "rise": 130
+  },
+  {
+    "id": "camp_stockade_run_7_v3",
+    "name": "Worn stockade · section 8",
+    "image": "/survival/camp-perimeter-v3/stockade-run-7.webp",
+    "size": [
+      400,
+      760
+    ],
+    "width": 200,
+    "height": 380,
+    "anchor": [
+      0.5,
+      0.6842105263157895
+    ],
+    "kind": "wall",
+    "segments": [
+      {
+        "x": -35,
+        "y": -90,
+        "ex": 35,
+        "ey": 90,
+        "r": 14
+      }
+    ],
+    "rise": 130
+  },
+  {
+    "id": "camp_stockade_run_8_v3",
+    "name": "Worn stockade · section 9",
+    "image": "/survival/camp-perimeter-v3/stockade-run-8.webp",
+    "size": [
+      320,
+      750
+    ],
+    "width": 160,
+    "height": 375,
+    "anchor": [
+      0.5,
+      0.6866666666666666
+    ],
+    "kind": "wall",
+    "segments": [
+      {
+        "x": -15,
+        "y": -87.5,
+        "ex": 15,
+        "ey": 87.5,
+        "r": 14
+      }
+    ],
+    "rise": 130
+  },
+  {
+    "id": "camp_stockade_run_9_v3",
+    "name": "Worn stockade · section 10",
+    "image": "/survival/camp-perimeter-v3/stockade-run-9.webp",
+    "size": [
+      320,
+      780
+    ],
+    "width": 160,
+    "height": 390,
+    "anchor": [
+      0.5,
+      0.6794871794871795
+    ],
+    "kind": "wall",
+    "segments": [
+      {
+        "x": -15,
+        "y": -95,
+        "ex": 15,
+        "ey": 95,
+        "r": 14
+      }
+    ],
+    "rise": 130
+  },
+  {
+    "id": "camp_stockade_run_10_v3",
+    "name": "Worn stockade · section 11",
+    "image": "/survival/camp-perimeter-v3/stockade-run-10.webp",
+    "size": [
+      676,
+      1296
+    ],
+    "width": 338,
+    "height": 648,
+    "anchor": [
+      0.49993533158728626,
+      0.5988608035132018
+    ],
+    "kind": "wall",
+    "segments": [
+      {
+        "x": -100,
+        "y": 170,
+        "ex": 100,
+        "ey": -170,
+        "r": 14
+      }
+    ],
+    "rise": 130
+  },
+  {
+    "id": "camp_stockade_run_11_v3",
+    "name": "Worn stockade · section 12",
+    "image": "/survival/camp-perimeter-v3/stockade-run-11.webp",
+    "size": [
+      978,
+      1027
+    ],
+    "width": 489,
+    "height": 513.5,
+    "anchor": [
+      0.5001396850939243,
+      0.6250398744692166
+    ],
+    "kind": "wall",
+    "segments": [
+      {
+        "x": -145,
+        "y": 130,
+        "ex": 145,
+        "ey": -130,
+        "r": 14
+      }
+    ],
+    "rise": 130
+  },
+  {
+    "id": "camp_stockade_run_13_v3",
+    "name": "Worn stockade · section 14",
+    "image": "/survival/camp-perimeter-v3/stockade-run-13.webp",
+    "size": [
+      1079,
+      725
+    ],
+    "width": 539.5,
+    "height": 362.5,
+    "anchor": [
+      0.500027854165717,
+      0.6771480614103564
+    ],
+    "kind": "wall",
+    "segments": [
+      {
+        "x": -160,
+        "y": 85,
+        "ex": 160,
+        "ey": -85,
+        "r": 14
+      }
+    ],
+    "rise": 130
+  },
+  {
+    "id": "camp_stockade_run_14_v3",
+    "name": "Worn stockade · section 15",
+    "image": "/survival/camp-perimeter-v3/stockade-run-14.webp",
+    "size": [
+      810,
+      465
+    ],
+    "width": 405,
+    "height": 232.5,
+    "anchor": [
+      0.498183730932269,
+      0.771172940030568
+    ],
+    "kind": "wall",
+    "segments": [
+      {
+        "x": -185,
+        "y": 17.5,
+        "ex": 185,
+        "ey": -17.5,
+        "r": 14
+      }
+    ],
+    "rise": 130
+  },
+  {
+    "id": "camp_stockade_run_16_v3",
+    "name": "Worn stockade · section 17",
+    "image": "/survival/camp-perimeter-v3/stockade-run-16.webp",
+    "size": [
+      1146,
+      675
+    ],
+    "width": 573,
+    "height": 337.5,
+    "anchor": [
+      0.5001096710821198,
+      0.6900272742167096
+    ],
+    "kind": "wall",
+    "segments": [
+      {
+        "x": -170,
+        "y": 77.5,
+        "ex": 170,
+        "ey": -77.5,
+        "r": 14
+      }
+    ],
+    "rise": 130
+  },
+  {
+    "id": "camp_stockade_run_17_v3",
+    "name": "Worn stockade · section 18",
+    "image": "/survival/camp-perimeter-v3/stockade-run-17.webp",
+    "size": [
+      854,
+      563
+    ],
+    "width": 427,
+    "height": 281.5,
+    "anchor": [
+      0.49793101019527747,
+      0.7232404787660601
+    ],
+    "kind": "wall",
+    "segments": [
+      {
+        "x": -195,
+        "y": -40,
+        "ex": 195,
+        "ey": 40,
+        "r": 14
+      }
+    ],
+    "rise": 130
+  },
+  {
+    "id": "camp_stockade_run_19_v3",
+    "name": "Worn stockade · section 20",
+    "image": "/survival/camp-perimeter-v3/stockade-run-19.webp",
+    "size": [
+      676,
+      658
+    ],
+    "width": 338,
+    "height": 329,
+    "anchor": [
+      0.4992886474601481,
+      0.6951070394440767
+    ],
+    "kind": "wall",
+    "segments": [
+      {
+        "x": -100,
+        "y": -75,
+        "ex": 100,
+        "ey": 75,
+        "r": 14
+      }
+    ],
+    "rise": 130
+  },
+  {
+    "id": "camp_stockade_run_20_v3",
+    "name": "Worn stockade · section 21",
+    "image": "/survival/camp-perimeter-v3/stockade-run-20.webp",
+    "size": [
+      374,
+      725
+    ],
+    "width": 187,
+    "height": 362.5,
+    "anchor": [
+      0.4987580725285643,
+      0.6771480614103564
+    ],
+    "kind": "wall",
+    "segments": [
+      {
+        "x": -55,
+        "y": -85,
+        "ex": 55,
+        "ey": 85,
+        "r": 14
+      }
+    ],
+    "rise": 130
+  },
+  {
+    "id": "camp_stockade_run_21_v3",
+    "name": "Worn stockade · section 22",
+    "image": "/survival/camp-perimeter-v3/stockade-run-21.webp",
+    "size": [
+      441,
+      809
+    ],
+    "width": 220.5,
+    "height": 404.5,
+    "anchor": [
+      0.4997088088422983,
+      0.6586801424386787
+    ],
+    "kind": "wall",
+    "segments": [
+      {
+        "x": -65,
+        "y": 97.5,
+        "ex": 65,
+        "ey": -97.5,
+        "r": 14
+      }
+    ],
+    "rise": 130
+  },
+  {
+    "id": "camp_stockade_run_23_v3",
+    "name": "Worn stockade · section 24",
+    "image": "/survival/camp-perimeter-v3/stockade-run-23.webp",
+    "size": [
+      276,
+      746
+    ],
+    "width": 138,
+    "height": 373,
+    "anchor": [
+      0.49818840579710144,
+      0.6869973190348525
+    ],
+    "kind": "wall",
+    "segments": [
+      {
+        "x": -3.75,
+        "y": 86.25,
+        "ex": 3.75,
+        "ey": -86.25,
+        "r": 14
+      }
+    ],
+    "rise": 130
+  },
+  {
+    "id": "camp_stockade_run_24_v3",
+    "name": "Worn stockade · section 25",
+    "image": "/survival/camp-perimeter-v3/stockade-run-24.webp",
+    "size": [
+      338,
+      688
+    ],
+    "width": 169,
+    "height": 344,
+    "anchor": [
+      0.49802761341222884,
+      0.7025193798449613
+    ],
+    "kind": "wall",
+    "segments": [
+      {
+        "x": -19.166666666666668,
+        "y": 71.66666666666667,
+        "ex": 19.166666666666668,
+        "ey": -71.66666666666667,
+        "r": 14
+      }
+    ],
+    "rise": 130
+  },
+  {
+    "id": "camp_stockade_run_25_v3",
+    "name": "Worn stockade · section 26",
+    "image": "/survival/camp-perimeter-v3/stockade-run-25.webp",
+    "size": [
+      360,
+      640
+    ],
+    "width": 180,
+    "height": 320,
+    "anchor": [
+      0.5,
+      0.71875
+    ],
+    "kind": "wall",
+    "segments": [
+      {
+        "x": -25,
+        "y": 60,
+        "ex": 25,
+        "ey": -60,
+        "r": 14
+      }
+    ],
+    "rise": 130
+  },
+  {
+    "id": "camp_stockade_run_26_v3",
+    "name": "Worn stockade · section 27",
+    "image": "/survival/camp-perimeter-v3/stockade-run-26.webp",
+    "size": [
+      458,
+      859
+    ],
+    "width": 229,
+    "height": 429.5,
+    "anchor": [
+      0.49949889040017176,
+      0.6496346561805826
+    ],
+    "kind": "wall",
+    "segments": [
+      {
+        "x": -67.5,
+        "y": 105,
+        "ex": 67.5,
+        "ey": -105,
+        "r": 14
+      }
+    ],
+    "rise": 130
+  }
+]

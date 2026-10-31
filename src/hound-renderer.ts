@@ -1,0 +1,35 @@
+import {timeOf,type World,type Direction,type Enemy} from './survival-engine';
+import {HOUND as H} from './hound-model';
+import {houndView,houndFrame,houndEyes,houndVents,houndLift,houndOffset,HOUND_CELL,HOUND_DISPLAY,HOUND_ANCHOR} from './hound-sprites';
+const TAU=Math.PI*2,k=HOUND_DISPLAY/HOUND_CELL,clamp=(n:number)=>Math.max(0,Math.min(1,n));
+const line=(ctx:CanvasRenderingContext2D,x:number,y:number,ex:number,ey:number)=>{ctx.beginPath();ctx.moveTo(x,y);ctx.lineTo(ex,ey);ctx.stroke()};
+function sprite(ctx:CanvasRenderingContext2D,imgs:Record<string,HTMLImageElement>,direction:Direction,frame:number){const view=houndView(direction),sheet=imgs[view.key];if(!sheet)return;ctx.save();if(view.mirror)ctx.scale(-1,1);ctx.drawImage(sheet,frame%4*HOUND_CELL,Math.floor(frame/4)*HOUND_CELL,HOUND_CELL,HOUND_CELL,-HOUND_ANCHOR[0]*k,-HOUND_ANCHOR[1]*k,HOUND_DISPLAY,HOUND_DISPLAY);if(frame>=10)for(const [x,y,r] of [...houndEyes(direction,frame),...houndVents(direction,frame)]){ctx.fillStyle='#17201f';ctx.beginPath();ctx.ellipse((x-192)*k,(y-320)*k,r*k*1.4,r*k*1.4,0,0,TAU);ctx.fill()}ctx.restore()}
+export function houndDrawables(ctx:CanvasRenderingContext2D,imgs:Record<string,HTMLImageElement>,w:World){const t=timeOf(w),reduced=!!w.weather?.reducedMotion,out=w.enemies.filter(e=>e.hp>0&&e.kind==='scrap-hound').map(e=>({y:e.y,draw:()=>{const h=e.hound,direction=h?.direction??e.motion?.direction??'down',offset=houndOffset(e,t,reduced);ctx.save();ctx.translate(e.x+offset.x,e.y+offset.y-houndLift(e,t,reduced));ctx.globalAlpha=clamp((t-(e.spawnedAt??-1))/.2);if(e.flashUntil>t)ctx.filter='brightness(2)';sprite(ctx,imgs,direction,houndFrame(e,t));ctx.restore()}}));
+ for(const fx of w.effects){const age=t-fx.born;if(fx.type==='kill'&&fx.enemyKind==='scrap-hound'&&age>=0&&age<1.05)out.push({y:fx.y,draw:()=>{ctx.save();ctx.translate(fx.x,fx.y);ctx.globalAlpha=1-clamp((age-.35)/.7);sprite(ctx,imgs,fx.direction??'down',age<.18?10:11);ctx.restore()}})}return out;
+}
+function maskBody(ctx:CanvasRenderingContext2D,imgs:Record<string,HTMLImageElement>,e:Enemy,t:number,reduced:boolean){
+ const mask=ctx as CanvasRenderingContext2D&{artworkSilhouette?:(im:HTMLImageElement,crop:readonly number[])=>readonly (readonly [number,number])[];clipOutsidePath?:()=>void};if(!mask.artworkSilhouette||!mask.clipOutsidePath)return;
+ const frame=houndFrame(e,t),view=houndView(e.hound!.direction),image=imgs[view.key];if(!image)return;const shape=mask.artworkSilhouette(image,[frame%4*384,Math.floor(frame/4)*384,384,384]),offset=houndOffset(e,t,reduced),lift=houndLift(e,t,reduced);if(shape.length<3)return;
+ ctx.beginPath();shape.forEach(([u,v],i)=>{const x=e.x+offset.x+(u*384-192)*k*(view.mirror?-1:1),y=e.y+offset.y-lift+(v*384-320)*k;i?ctx.lineTo(x,y):ctx.moveTo(x,y)});ctx.closePath();mask.clipOutsidePath();
+}
+/** Short scored tracks point down the committed rush lane, without an attack disk. */
+export function drawHoundGround(ctx:CanvasRenderingContext2D,w:World,imgs:Record<string,HTMLImageElement>={}){const t=timeOf(w);ctx.save();for(const e of w.enemies){const h=e.hound;if(e.hp<=0||h?.phase!=='charge'||!h.pounce)continue;ctx.save();maskBody(ctx,imgs,e,t,!!w.weather?.reducedMotion);const to=h.pounce.to,dx=Math.cos(h.angle),dy=Math.sin(h.angle),locked=t-h.since>=H.track,d=Math.hypot(to.x-e.x,to.y-e.y);ctx.strokeStyle=locked?'#ffa15fbc':'#e79c5d66';ctx.lineWidth=locked?1.8:1.2;ctx.setLineDash([9,11]);for(const side of [-1,1])line(ctx,e.x-dy*side*17,e.y+dx*side*17,to.x-dy*side*17,to.y+dx*side*17);ctx.setLineDash([]);ctx.strokeStyle='#ffc282b0';ctx.lineWidth=1.8;for(const u of [.5,.75]){const x=e.x+dx*d*u,y=e.y+dy*d*u;ctx.beginPath();ctx.moveTo(x-dx*9-dy*7,y-dy*9+dx*7);ctx.lineTo(x,y);ctx.lineTo(x-dx*9+dy*7,y-dy*9-dx*7);ctx.stroke()}ctx.restore()}ctx.restore()}
+function lens(ctx:CanvasRenderingContext2D,x:number,y:number,r:number,vent:boolean,drive:number){const glow=r*(2.5+drive*1.5),halo=ctx.createRadialGradient(x,y,0,x,y,glow);halo.addColorStop(0,vent?'#ff9f44a0':'#ff3a23b0');halo.addColorStop(1,'#ff351900');ctx.fillStyle=halo;ctx.beginPath();ctx.ellipse(x,y,glow,glow,0,0,TAU);ctx.fill();ctx.fillStyle=drive>.5?'#ffe4a0':vent?'#eb7b36':'#ff7354';ctx.beginPath();ctx.ellipse(x,y,r*.7,r*.7,0,0,TAU);ctx.fill()}
+/** Self-lit eyes/vent jets, bounded sparks and trails use the simulation clock. */
+export function drawHoundEffects(ctx:CanvasRenderingContext2D,w:World){const t=timeOf(w),reduced=!!w.weather?.reducedMotion;ctx.save();
+ for(const e of w.enemies){if(e.hp<=0||e.kind!=='scrap-hound'||!e.hound)continue;const h=e.hound,age=t-h.since,frame=houndFrame(e,t),view=houndView(h.direction),offset=houndOffset(e,t,reduced),lift=houndLift(e,t,reduced),drive=h.phase==='charge'?clamp(age/H.charge):h.phase==='pounce'?1:0;
+  const point=(x:number,y:number)=>({x:e.x+(x-192)*k*(view.mirror?-1:1)+offset.x,y:e.y+(y-320)*k-lift+offset.y});
+  for(const [x,y,r] of houndEyes(h.direction,frame)){const p=point(x,y);lens(ctx,p.x,p.y,r*k,false,drive)}
+  for(const [x,y,r] of houndVents(h.direction,frame)){const p=point(x,y);lens(ctx,p.x,p.y,r*k,true,drive);
+   if(h.phase==='recover'&&h.last==='pounce'&&!reduced){const life=1-clamp(age/H.recovery),r=7+age*16,sy=p.y-age*20;ctx.globalAlpha=life*.22;const steam=ctx.createRadialGradient(p.x,sy,0,p.x,sy,r);steam.addColorStop(0,'#c7bda587');steam.addColorStop(1,'#c7bda500');ctx.fillStyle=steam;ctx.beginPath();ctx.ellipse(p.x,sy,r,r,0,0,TAU);ctx.fill();ctx.globalAlpha=1}
+   if((h.phase==='charge'||h.phase==='pounce')&&!reduced){const length=(h.phase==='pounce'?52:10+drive*16),dx=-Math.cos(h.angle),dy=-Math.sin(h.angle),start=5;for(const [width,color] of [[7,'#ff55243d'],[3,'#ff965eaa'],[1,'#ffe3aa']] as const){ctx.lineWidth=width;ctx.strokeStyle=color;line(ctx,p.x+dx*start,p.y+dy*start,p.x+dx*length,p.y+dy*length-9)} }
+  }
+  if(h.phase==='recover'&&h.last==='pounce'&&!reduced){ctx.globalAlpha=(1-clamp(age/H.recovery))*.3;ctx.fillStyle='#b59b7360';for(let i=0;i<3;i++){const x=e.x-Math.cos(h.angle)*(15+i*13),y=e.y-Math.sin(h.angle)*(15+i*13);ctx.beginPath();ctx.ellipse(x,y,9+age*30,4+age*14,0,0,TAU);ctx.fill()}ctx.globalAlpha=1}
+  if(e.hp<e.maxHp||h.phase==='charge'){const x=e.x-33,y=e.y-145-lift,hp=clamp(e.hp/e.maxHp);ctx.fillStyle='#102421e8';ctx.fillRect(x,y,66,7);ctx.fillStyle='#ffe0a9';ctx.fillRect(x+2,y+2,62*hp,3)}
+ }
+ for(const fx of w.effects){const age=t-fx.born;if(age<0||age>.4||!['hound-contact','hound-land'].includes(fx.type))continue;const life=1-age/.4,land=fx.type==='hound-land';ctx.globalAlpha=life;
+  if(land){ctx.strokeStyle='#b3a08390';ctx.lineWidth=2;for(const side of [-1,1]){const dx=Math.cos(fx.angle??0),dy=Math.sin(fx.angle??0);line(ctx,fx.x-dy*side*16,fx.y+dx*side*16,fx.x-dx*(reduced?12:16+age*70)-dy*side*16,fx.y-dy*(reduced?12:16+age*70)+dx*side*16)}}
+  else if((fx.amount??0)>0){ctx.strokeStyle='#ffd490';ctx.lineWidth=1.6;ctx.beginPath();for(let i=0;i<(reduced?3:8);i++){const a=i*TAU/8+fx.id,d=8+(reduced?0:age*85),x=fx.x+Math.cos(a)*d,y=fx.y-50+Math.sin(a)*d*.7;ctx.moveTo(x,y);ctx.lineTo(x+Math.cos(a)*life*10,y+Math.sin(a)*life*10)}ctx.stroke()}
+ }
+ ctx.restore();
+}

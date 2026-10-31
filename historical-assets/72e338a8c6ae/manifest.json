@@ -1,0 +1,51 @@
+{
+  "version": "road-materials-v1",
+  "tool": "Built-in image_gen.imagegen",
+  "encoding": "WebP quality 96, original dimensions; original PNGs retained",
+  "materials": [
+    {
+      "id": "camp-stone",
+      "width": 1254,
+      "height": 1254,
+      "path": "/survival/road-materials-v1/camp-stone.webp",
+      "bytes": 326756,
+      "meanChannelError": 1.166
+    },
+    {
+      "id": "dry-earth",
+      "width": 1254,
+      "height": 1254,
+      "path": "/survival/road-materials-v1/dry-earth.webp",
+      "bytes": 933598,
+      "meanChannelError": 2.245
+    },
+    {
+      "id": "dark-earth",
+      "width": 1254,
+      "height": 1254,
+      "path": "/survival/road-materials-v1/dark-earth.webp",
+      "bytes": 1022212,
+      "meanChannelError": 2.327
+    },
+    {
+      "id": "works-gravel",
+      "width": 1254,
+      "height": 1254,
+      "path": "/survival/road-materials-v1/works-gravel.webp",
+      "bytes": 1070468,
+      "meanChannelError": 2.183
+    },
+    {
+      "id": "salvage-gravel",
+      "width": 1254,
+      "height": 1254,
+      "path": "/survival/road-materials-v1/salvage-gravel.webp",
+      "bytes": 1109662,
+      "meanChannelError": 3.078
+    }
+  ],
+  "totalBytes": 4462696,
+  "loading": "Background terrain detail, not editor-entry requirements",
+  "reference": "Original camp stone walkways and clear earth",
+  "prompts": "artwork-archive/road-materials-v1/prompts.json"
+}

@@ -1,0 +1,162 @@
+[
+  {
+    "key": "0-0",
+    "row": 0,
+    "col": 0,
+    "left": 0,
+    "top": 0,
+    "edge": 1328,
+    "sourcePath": "/workspace/scratch/23bb648437fc/generated_images/exec-63f7b88b-fc6c-4fcb-b5f0-f9e18b2344e7.png",
+    "prompt": "Use case: precise-object-edit. EDIT TARGET: the attached square is an exact registered small section of an existing top-down illustrated game terrain. Deliver this SAME section with exactly the same framing, path layout, scale, colours and painterly shading. Make only these changes across the WHOLE image: (1) remove ALL blue-grey water/puddles, including tiny ones touching edges; fill their former area with seamlessly matching dry ochre soil, fine grit and flat dead leaf litter; (2) remove every prominent standalone loose grey/tan rock or cluster that resembles a collectable resource, replacing with matching ground. Retain only tiny gravel specks/pebbles and ALL stones embedded in the cobblestone WALKWAYS; (3) make EVERY walkway stone crisply resolved, including any blurry strip or patch at an image edge: clear natural painted contours, fine pitted surfaces and sharp dark joints, with equal detail throughout. Reconstruct indistinct stones in their existing positions, never shift the path or change width. No blur, haze, depth-of-field, sharpening halos or new paths. Preserve terrain colour, existing dry leaves, soil texture and any outer dark edge fade. Do not add plants, vegetation, branches, water, rocks, props, people or UI. Do not crop, zoom, tilt, rotate or change the camera. The exact path endpoints must match this input. Opaque square terrain texture, highest-resolution crisp detail, ideally 2048x2048. ONE image only."
+  },
+  {
+    "key": "0-1",
+    "row": 0,
+    "col": 1,
+    "left": 1136,
+    "top": 0,
+    "edge": 1328,
+    "sourcePath": "/workspace/scratch/23bb648437fc/generated_images/exec-c3148bc0-5bfe-46a6-9861-08e96554fcee.png",
+    "prompt": "Use case: precise-object-edit. EDIT TARGET: the attached square is an exact registered small section of an existing top-down illustrated game terrain. Deliver this SAME section with exactly the same framing, path layout, scale, colours and painterly shading. Make only these changes across the WHOLE image: (1) remove ALL blue-grey water/puddles, including tiny ones touching edges; fill their former area with seamlessly matching dry ochre soil, fine grit and flat dead leaf litter; (2) remove every prominent standalone loose grey/tan rock or cluster that resembles a collectable resource, replacing with matching ground. Retain only tiny gravel specks/pebbles and ALL stones embedded in the cobblestone WALKWAYS; (3) make EVERY walkway stone crisply resolved, including any blurry strip or patch at an image edge: clear natural painted contours, fine pitted surfaces and sharp dark joints, with equal detail throughout. Reconstruct indistinct stones in their existing positions, never shift the path or change width. No blur, haze, depth-of-field, sharpening halos or new paths. Preserve terrain colour, existing dry leaves, soil texture and any outer dark edge fade. Do not add plants, vegetation, branches, water, rocks, props, people or UI. Do not crop, zoom, tilt, rotate or change the camera. The exact path endpoints must match this input. Opaque square terrain texture, highest-resolution crisp detail, ideally 2048x2048. ONE image only."
+  },
+  {
+    "key": "0-2",
+    "row": 0,
+    "col": 2,
+    "left": 2336,
+    "top": 0,
+    "edge": 1328,
+    "sourcePath": "/workspace/scratch/23bb648437fc/generated_images/exec-89e55879-4faf-4efc-b95f-240ce93237bb.png",
+    "prompt": "Use case: precise-object-edit. EDIT TARGET: the attached square is an exact registered small section of an existing top-down illustrated game terrain. Deliver this SAME section with exactly the same framing, path layout, scale, colours and painterly shading. Make only these changes across the WHOLE image: (1) remove ALL blue-grey water/puddles, including tiny ones touching edges; fill their former area with seamlessly matching dry ochre soil, fine grit and flat dead leaf litter; (2) remove every prominent standalone loose grey/tan rock or cluster that resembles a collectable resource, replacing with matching ground. Retain only tiny gravel specks/pebbles and ALL stones embedded in the cobblestone WALKWAYS; (3) make EVERY walkway stone crisply resolved, including any blurry strip or patch at an image edge: clear natural painted contours, fine pitted surfaces and sharp dark joints, with equal detail throughout. Reconstruct indistinct stones in their existing positions, never shift the path or change width. No blur, haze, depth-of-field, sharpening halos or new paths. Preserve terrain colour, existing dry leaves, soil texture and any outer dark edge fade. Do not add plants, vegetation, branches, water, rocks, props, people or UI. Do not crop, zoom, tilt, rotate or change the camera. The exact path endpoints must match this input. Opaque square terrain texture, highest-resolution crisp detail, ideally 2048x2048. ONE image only."
+  },
+  {
+    "key": "0-3",
+    "row": 0,
+    "col": 3,
+    "left": 3472,
+    "top": 0,
+    "edge": 1328,
+    "sourcePath": "/workspace/scratch/23bb648437fc/generated_images/exec-864a42f2-9119-45f3-b236-53a305d0e324.png",
+    "prompt": "Use case: precise-object-edit. EDIT TARGET: the attached square is an exact registered small section of an existing top-down illustrated game terrain. Deliver this SAME section with exactly the same framing, path layout, scale, colours and painterly shading. Make only these changes across the WHOLE image: (1) remove ALL blue-grey water/puddles, including tiny ones touching edges; fill their former area with seamlessly matching dry ochre soil, fine grit and flat dead leaf litter; (2) remove every prominent standalone loose grey/tan rock or cluster that resembles a collectable resource, replacing with matching ground. Retain only tiny gravel specks/pebbles and ALL stones embedded in the cobblestone WALKWAYS; (3) make EVERY walkway stone crisply resolved, including any blurry strip or patch at an image edge: clear natural painted contours, fine pitted surfaces and sharp dark joints, with equal detail throughout. Reconstruct indistinct stones in their existing positions, never shift the path or change width. No blur, haze, depth-of-field, sharpening halos or new paths. Preserve terrain colour, existing dry leaves, soil texture and any outer dark edge fade. Do not add plants, vegetation, branches, water, rocks, props, people or UI. Do not crop, zoom, tilt, rotate or change the camera. The exact path endpoints must match this input. Opaque square terrain texture, highest-resolution crisp detail, ideally 2048x2048. ONE image only."
+  },
+  {
+    "key": "1-0",
+    "row": 1,
+    "col": 0,
+    "left": 0,
+    "top": 1136,
+    "edge": 1328,
+    "sourcePath": "/workspace/scratch/23bb648437fc/generated_images/exec-c361c83e-cf89-4b41-8b92-24c4b6a03e13.png",
+    "prompt": "Use case: precise-object-edit. EDIT TARGET: the attached square is an exact registered small section of an existing top-down illustrated game terrain. Deliver this SAME section with exactly the same framing, path layout, scale, colours and painterly shading. Make only these changes across the WHOLE image: (1) remove ALL blue-grey water/puddles, including tiny ones touching edges; fill their former area with seamlessly matching dry ochre soil, fine grit and flat dead leaf litter; (2) remove every prominent standalone loose grey/tan rock or cluster that resembles a collectable resource, replacing with matching ground. Retain only tiny gravel specks/pebbles and ALL stones embedded in the cobblestone WALKWAYS; (3) make EVERY walkway stone crisply resolved, including any blurry strip or patch at an image edge: clear natural painted contours, fine pitted surfaces and sharp dark joints, with equal detail throughout. Reconstruct indistinct stones in their existing positions, never shift the path or change width. No blur, haze, depth-of-field, sharpening halos or new paths. Preserve terrain colour, existing dry leaves, soil texture and any outer dark edge fade. Do not add plants, vegetation, branches, water, rocks, props, people or UI. Do not crop, zoom, tilt, rotate or change the camera. The exact path endpoints must match this input. Opaque square terrain texture, highest-resolution crisp detail, ideally 2048x2048. ONE image only."
+  },
+  {
+    "key": "1-1",
+    "row": 1,
+    "col": 1,
+    "left": 1136,
+    "top": 1136,
+    "edge": 1328,
+    "sourcePath": "/workspace/scratch/23bb648437fc/generated_images/exec-cff02301-210c-4cf0-9b80-9b6cc193f959.png",
+    "prompt": "Use case: precise-object-edit. EDIT TARGET: the attached square is an exact registered small section of an existing top-down illustrated game terrain. Deliver this SAME section with exactly the same framing, path layout, scale, colours and painterly shading. Make only these changes across the WHOLE image: (1) remove ALL blue-grey water/puddles, including tiny ones touching edges; fill their former area with seamlessly matching dry ochre soil, fine grit and flat dead leaf litter; (2) remove every prominent standalone loose grey/tan rock or cluster that resembles a collectable resource, replacing with matching ground. Retain only tiny gravel specks/pebbles and ALL stones embedded in the cobblestone WALKWAYS; (3) make EVERY walkway stone crisply resolved, including any blurry strip or patch at an image edge: clear natural painted contours, fine pitted surfaces and sharp dark joints, with equal detail throughout. Reconstruct indistinct stones in their existing positions, never shift the path or change width. No blur, haze, depth-of-field, sharpening halos or new paths. Preserve terrain colour, existing dry leaves, soil texture and any outer dark edge fade. Do not add plants, vegetation, branches, water, rocks, props, people or UI. Do not crop, zoom, tilt, rotate or change the camera. The exact path endpoints must match this input. Opaque square terrain texture, highest-resolution crisp detail, ideally 2048x2048. ONE image only."
+  },
+  {
+    "key": "1-2",
+    "row": 1,
+    "col": 2,
+    "left": 2336,
+    "top": 1136,
+    "edge": 1328,
+    "sourcePath": "/workspace/scratch/23bb648437fc/generated_images/exec-30f922ea-19e8-45dd-98e4-09be9eabb594.png",
+    "prompt": "Use case: precise-object-edit. EDIT TARGET: the attached square is an exact registered small section of an existing top-down illustrated game terrain. Deliver this SAME section with exactly the same framing, path layout, scale, colours and painterly shading. Make only these changes across the WHOLE image: (1) remove ALL blue-grey water/puddles, including tiny ones touching edges; fill their former area with seamlessly matching dry ochre soil, fine grit and flat dead leaf litter; (2) remove every prominent standalone loose grey/tan rock or cluster that resembles a collectable resource, replacing with matching ground. Retain only tiny gravel specks/pebbles and ALL stones embedded in the cobblestone WALKWAYS; (3) make EVERY walkway stone crisply resolved, including any blurry strip or patch at an image edge: clear natural painted contours, fine pitted surfaces and sharp dark joints, with equal detail throughout. Reconstruct indistinct stones in their existing positions, never shift the path or change width. No blur, haze, depth-of-field, sharpening halos or new paths. Preserve terrain colour, existing dry leaves, soil texture and any outer dark edge fade. Do not add plants, vegetation, branches, water, rocks, props, people or UI. Do not crop, zoom, tilt, rotate or change the camera. The exact path endpoints must match this input. Opaque square terrain texture, highest-resolution crisp detail, ideally 2048x2048. ONE image only."
+  },
+  {
+    "key": "1-3",
+    "row": 1,
+    "col": 3,
+    "left": 3472,
+    "top": 1136,
+    "edge": 1328,
+    "sourcePath": "/workspace/scratch/23bb648437fc/generated_images/exec-6da14930-4233-4bfb-a400-24dc1fc6bfd6.png",
+    "prompt": "Use case: precise-object-edit. EDIT TARGET: the attached square is an exact registered small section of an existing top-down illustrated game terrain. Deliver this SAME section with exactly the same framing, path layout, scale, colours and painterly shading. Make only these changes across the WHOLE image: (1) remove ALL blue-grey water/puddles, including tiny ones touching edges; fill their former area with seamlessly matching dry ochre soil, fine grit and flat dead leaf litter; (2) remove every prominent standalone loose grey/tan rock or cluster that resembles a collectable resource, replacing with matching ground. Retain only tiny gravel specks/pebbles and ALL stones embedded in the cobblestone WALKWAYS; (3) make EVERY walkway stone crisply resolved, including any blurry strip or patch at an image edge: clear natural painted contours, fine pitted surfaces and sharp dark joints, with equal detail throughout. Reconstruct indistinct stones in their existing positions, never shift the path or change width. No blur, haze, depth-of-field, sharpening halos or new paths. Preserve terrain colour, existing dry leaves, soil texture and any outer dark edge fade. Do not add plants, vegetation, branches, water, rocks, props, people or UI. Do not crop, zoom, tilt, rotate or change the camera. The exact path endpoints must match this input. Opaque square terrain texture, highest-resolution crisp detail, ideally 2048x2048. ONE image only."
+  },
+  {
+    "key": "2-0",
+    "row": 2,
+    "col": 0,
+    "left": 0,
+    "top": 2336,
+    "edge": 1328,
+    "sourcePath": "/workspace/scratch/23bb648437fc/generated_images/exec-56da48f5-ad6f-4936-a08c-b8294c5ce43d.png",
+    "prompt": "Use case: precise-object-edit. EDIT TARGET: the attached square is an exact registered small section of an existing top-down illustrated game terrain. Deliver this SAME section with exactly the same framing, path layout, scale, colours and painterly shading. Make only these changes across the WHOLE image: (1) remove ALL blue-grey water/puddles, including tiny ones touching edges; fill their former area with seamlessly matching dry ochre soil, fine grit and flat dead leaf litter; (2) remove every prominent standalone loose grey/tan rock or cluster that resembles a collectable resource, replacing with matching ground. Retain only tiny gravel specks/pebbles and ALL stones embedded in the cobblestone WALKWAYS; (3) make EVERY walkway stone crisply resolved, including any blurry strip or patch at an image edge: clear natural painted contours, fine pitted surfaces and sharp dark joints, with equal detail throughout. Reconstruct indistinct stones in their existing positions, never shift the path or change width. No blur, haze, depth-of-field, sharpening halos or new paths. Preserve terrain colour, existing dry leaves, soil texture and any outer dark edge fade. Do not add plants, vegetation, branches, water, rocks, props, people or UI. Do not crop, zoom, tilt, rotate or change the camera. The exact path endpoints must match this input. Opaque square terrain texture, highest-resolution crisp detail, ideally 2048x2048. ONE image only."
+  },
+  {
+    "key": "2-1",
+    "row": 2,
+    "col": 1,
+    "left": 1136,
+    "top": 2336,
+    "edge": 1328,
+    "sourcePath": "/workspace/scratch/23bb648437fc/generated_images/exec-e2ebfeac-25e8-4781-b787-41410ebca33d.png",
+    "prompt": "Use case: precise-object-edit. EDIT TARGET: the attached square is an exact registered small section of an existing top-down illustrated game terrain. Deliver this SAME section with exactly the same framing, path layout, scale, colours and painterly shading. Make only these changes across the WHOLE image: (1) remove ALL blue-grey water/puddles, including tiny ones touching edges; fill their former area with seamlessly matching dry ochre soil, fine grit and flat dead leaf litter; (2) remove every prominent standalone loose grey/tan rock or cluster that resembles a collectable resource, replacing with matching ground. Retain only tiny gravel specks/pebbles and ALL stones embedded in the cobblestone WALKWAYS; (3) make EVERY walkway stone crisply resolved, including any blurry strip or patch at an image edge: clear natural painted contours, fine pitted surfaces and sharp dark joints, with equal detail throughout. Reconstruct indistinct stones in their existing positions, never shift the path or change width. No blur, haze, depth-of-field, sharpening halos or new paths. Preserve terrain colour, existing dry leaves, soil texture and any outer dark edge fade. Do not add plants, vegetation, branches, water, rocks, props, people or UI. Do not crop, zoom, tilt, rotate or change the camera. The exact path endpoints must match this input. Opaque square terrain texture, highest-resolution crisp detail, ideally 2048x2048. ONE image only."
+  },
+  {
+    "key": "2-2",
+    "row": 2,
+    "col": 2,
+    "left": 2336,
+    "top": 2336,
+    "edge": 1328,
+    "sourcePath": "/workspace/scratch/23bb648437fc/generated_images/exec-3047f15a-b5b6-4c84-9c6a-2148a79661e9.png",
+    "prompt": "Use case: precise-object-edit. EDIT TARGET: the attached square is an exact registered small section of an existing top-down illustrated game terrain. Deliver this SAME section with exactly the same framing, path layout, scale, colours and painterly shading. Make only these changes across the WHOLE image: (1) remove ALL blue-grey water/puddles, including tiny ones touching edges; fill their former area with seamlessly matching dry ochre soil, fine grit and flat dead leaf litter; (2) remove every prominent standalone loose grey/tan rock or cluster that resembles a collectable resource, replacing with matching ground. Retain only tiny gravel specks/pebbles and ALL stones embedded in the cobblestone WALKWAYS; (3) make EVERY walkway stone crisply resolved, including any blurry strip or patch at an image edge: clear natural painted contours, fine pitted surfaces and sharp dark joints, with equal detail throughout. Reconstruct indistinct stones in their existing positions, never shift the path or change width. No blur, haze, depth-of-field, sharpening halos or new paths. Preserve terrain colour, existing dry leaves, soil texture and any outer dark edge fade. Do not add plants, vegetation, branches, water, rocks, props, people or UI. Do not crop, zoom, tilt, rotate or change the camera. The exact path endpoints must match this input. Opaque square terrain texture, highest-resolution crisp detail, ideally 2048x2048. ONE image only."
+  },
+  {
+    "key": "2-3",
+    "row": 2,
+    "col": 3,
+    "left": 3472,
+    "top": 2336,
+    "edge": 1328,
+    "sourcePath": "/workspace/scratch/23bb648437fc/generated_images/exec-0f7da3bf-f0f5-41c8-b855-dbd92127f36a.png",
+    "prompt": "Use case: precise-object-edit. EDIT TARGET: the attached square is an exact registered small section of an existing top-down illustrated game terrain. Deliver this SAME section with exactly the same framing, path layout, scale, colours and painterly shading. Make only these changes across the WHOLE image: (1) remove ALL blue-grey water/puddles, including tiny ones touching edges; fill their former area with seamlessly matching dry ochre soil, fine grit and flat dead leaf litter; (2) remove every prominent standalone loose grey/tan rock or cluster that resembles a collectable resource, replacing with matching ground. Retain only tiny gravel specks/pebbles and ALL stones embedded in the cobblestone WALKWAYS; (3) make EVERY walkway stone crisply resolved, including any blurry strip or patch at an image edge: clear natural painted contours, fine pitted surfaces and sharp dark joints, with equal detail throughout. Reconstruct indistinct stones in their existing positions, never shift the path or change width. No blur, haze, depth-of-field, sharpening halos or new paths. Preserve terrain colour, existing dry leaves, soil texture and any outer dark edge fade. Do not add plants, vegetation, branches, water, rocks, props, people or UI. Do not crop, zoom, tilt, rotate or change the camera. The exact path endpoints must match this input. Opaque square terrain texture, highest-resolution crisp detail, ideally 2048x2048. ONE image only."
+  },
+  {
+    "key": "3-0",
+    "row": 3,
+    "col": 0,
+    "left": 0,
+    "top": 3472,
+    "edge": 1328,
+    "sourcePath": "/workspace/scratch/23bb648437fc/generated_images/exec-30c349e1-631d-4016-9c38-5415dd67604c.png",
+    "prompt": "Use case: precise-object-edit. EDIT TARGET: the attached square is an exact registered small section of an existing top-down illustrated game terrain. Deliver this SAME section with exactly the same framing, path layout, scale, colours and painterly shading. Make only these changes across the WHOLE image: (1) remove ALL blue-grey water/puddles, including tiny ones touching edges; fill their former area with seamlessly matching dry ochre soil, fine grit and flat dead leaf litter; (2) remove every prominent standalone loose grey/tan rock or cluster that resembles a collectable resource, replacing with matching ground. Retain only tiny gravel specks/pebbles and ALL stones embedded in the cobblestone WALKWAYS; (3) make EVERY walkway stone crisply resolved, including any blurry strip or patch at an image edge: clear natural painted contours, fine pitted surfaces and sharp dark joints, with equal detail throughout. Reconstruct indistinct stones in their existing positions, never shift the path or change width. No blur, haze, depth-of-field, sharpening halos or new paths. Preserve terrain colour, existing dry leaves, soil texture and any outer dark edge fade. Do not add plants, vegetation, branches, water, rocks, props, people or UI. Do not crop, zoom, tilt, rotate or change the camera. The exact path endpoints must match this input. Opaque square terrain texture, highest-resolution crisp detail, ideally 2048x2048. ONE image only."
+  },
+  {
+    "key": "3-1",
+    "row": 3,
+    "col": 1,
+    "left": 1136,
+    "top": 3472,
+    "edge": 1328,
+    "sourcePath": "/workspace/scratch/23bb648437fc/generated_images/exec-e23482ff-5f1d-4683-8e23-f837d8a801ec.png",
+    "prompt": "Use case: precise-object-edit. EDIT TARGET: the attached square is an exact registered small section of an existing top-down illustrated game terrain. Deliver this SAME section with exactly the same framing, path layout, scale, colours and painterly shading. Make only these changes across the WHOLE image: (1) remove ALL blue-grey water/puddles, including tiny ones touching edges; fill their former area with seamlessly matching dry ochre soil, fine grit and flat dead leaf litter; (2) remove every prominent standalone loose grey/tan rock or cluster that resembles a collectable resource, replacing with matching ground. Retain only tiny gravel specks/pebbles and ALL stones embedded in the cobblestone WALKWAYS; (3) make EVERY walkway stone crisply resolved, including any blurry strip or patch at an image edge: clear natural painted contours, fine pitted surfaces and sharp dark joints, with equal detail throughout. Reconstruct indistinct stones in their existing positions, never shift the path or change width. No blur, haze, depth-of-field, sharpening halos or new paths. Preserve terrain colour, existing dry leaves, soil texture and any outer dark edge fade. Do not add plants, vegetation, branches, water, rocks, props, people or UI. Do not crop, zoom, tilt, rotate or change the camera. The exact path endpoints must match this input. Opaque square terrain texture, highest-resolution crisp detail, ideally 2048x2048. ONE image only."
+  },
+  {
+    "key": "3-2",
+    "row": 3,
+    "col": 2,
+    "left": 2336,
+    "top": 3472,
+    "edge": 1328,
+    "sourcePath": "/workspace/scratch/23bb648437fc/generated_images/exec-4133ddfb-36d9-4bec-aab0-44ae2135ecf1.png",
+    "prompt": "Use case: precise-object-edit. EDIT TARGET: the attached square is an exact registered small section of an existing top-down illustrated game terrain. Deliver this SAME section with exactly the same framing, path layout, scale, colours and painterly shading. Make only these changes across the WHOLE image: (1) remove ALL blue-grey water/puddles, including tiny ones touching edges; fill their former area with seamlessly matching dry ochre soil, fine grit and flat dead leaf litter; (2) remove every prominent standalone loose grey/tan rock or cluster that resembles a collectable resource, replacing with matching ground. Retain only tiny gravel specks/pebbles and ALL stones embedded in the cobblestone WALKWAYS; (3) make EVERY walkway stone crisply resolved, including any blurry strip or patch at an image edge: clear natural painted contours, fine pitted surfaces and sharp dark joints, with equal detail throughout. Reconstruct indistinct stones in their existing positions, never shift the path or change width. No blur, haze, depth-of-field, sharpening halos or new paths. Preserve terrain colour, existing dry leaves, soil texture and any outer dark edge fade. Do not add plants, vegetation, branches, water, rocks, props, people or UI. Do not crop, zoom, tilt, rotate or change the camera. The exact path endpoints must match this input. Opaque square terrain texture, highest-resolution crisp detail, ideally 2048x2048. ONE image only."
+  },
+  {
+    "key": "3-3",
+    "row": 3,
+    "col": 3,
+    "left": 3472,
+    "top": 3472,
+    "edge": 1328,
+    "sourcePath": "/workspace/scratch/23bb648437fc/generated_images/exec-d0555e3e-a248-4685-bcc1-0e14e953f918.png",
+    "prompt": "Use case: precise-object-edit. EDIT TARGET: the attached square is an exact registered small section of an existing top-down illustrated game terrain. Deliver this SAME section with exactly the same framing, path layout, scale, colours and painterly shading. Make only these changes across the WHOLE image: (1) remove ALL blue-grey water/puddles, including tiny ones touching edges; fill their former area with seamlessly matching dry ochre soil, fine grit and flat dead leaf litter; (2) remove every prominent standalone loose grey/tan rock or cluster that resembles a collectable resource, replacing with matching ground. Retain only tiny gravel specks/pebbles and ALL stones embedded in the cobblestone WALKWAYS; (3) make EVERY walkway stone crisply resolved, including any blurry strip or patch at an image edge: clear natural painted contours, fine pitted surfaces and sharp dark joints, with equal detail throughout. Reconstruct indistinct stones in their existing positions, never shift the path or change width. No blur, haze, depth-of-field, sharpening halos or new paths. Preserve terrain colour, existing dry leaves, soil texture and any outer dark edge fade. Do not add plants, vegetation, branches, water, rocks, props, people or UI. Do not crop, zoom, tilt, rotate or change the camera. The exact path endpoints must match this input. Opaque square terrain texture, highest-resolution crisp detail, ideally 2048x2048. ONE image only."
+  }
+]

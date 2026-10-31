@@ -1,0 +1,5 @@
+import fs from 'node:fs';import {createRequire} from 'node:module';const sharp=createRequire(import.meta.url)('sharp');
+const [kind,startArg,endArg]=process.argv.slice(2),start=Number(startArg),end=Number(endArg),patches=JSON.parse(fs.readFileSync('src/complete-road-patches.json')).slice(start,end);
+const cols=4,w=384,h=412,images=[];
+for(let i=0;i<patches.length;i++){const p=patches[i],file=kind==='generated'?`artwork-archive/complete-roads-v1/${p.id}.png`:`docs/qa/world-roads-v3/${kind}-${p.id}.webp`;const b=await sharp(file).resize(w,h-28,{fit:'contain',background:'#192c30'}).png().toBuffer();images.push({input:b,left:(i%cols)*w,top:Math.floor(i/cols)*h+28});images.push({input:Buffer.from(`<svg width="384" height="28"><rect width="384" height="28" fill="#192c30"/><text x="10" y="20" fill="white" font-size="16">${p.id} · ${p.material}</text></svg>`),left:(i%cols)*w,top:Math.floor(i/cols)*h});}
+const out=`docs/qa/complete-roads-v1/${kind}-${start+1}-${end}.webp`;await sharp({create:{width:cols*w,height:Math.ceil(patches.length/cols)*h,channels:3,background:'#192c30'}}).composite(images).webp({quality:90}).toFile(out);console.log(out);

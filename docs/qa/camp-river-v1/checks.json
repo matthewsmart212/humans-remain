@@ -1,0 +1,27 @@
+{
+  "result": "pass",
+  "sourceRevision": 69,
+  "existingPreserved": 1758,
+  "added": 541,
+  "trees": 56,
+  "reachableTrees": 56,
+  "roadSamples": 3595,
+  "reachableNavigationCells": 30119,
+  "sharedNewImages": 7,
+  "newTextureBytes": 959490,
+  "newDecodedMiB": 9.55322265625,
+  "peakAdditionalVisible": 118,
+  "checks": [
+    "Water and bridge approaches clear",
+    "Existing placements and terrain preserved",
+    "All trees reachable from camp",
+    "Real axe contact yields collectible logs once",
+    "Manual pickup and backpack capacity",
+    "No regeneration of edited or deleted placements",
+    "Routes retain existing clear width",
+    "Session-only harvesting state",
+    "Bounded visible density and shared textures"
+  ],
+  "browserQA": false,
+  "deviceFPSMeasured": false
+}

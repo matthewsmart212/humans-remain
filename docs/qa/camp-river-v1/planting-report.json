@@ -1,0 +1,313 @@
+{
+  "sourceRevision": 69,
+  "existing": 1758,
+  "added": 541,
+  "counts": {
+    "tree": 56,
+    "plant": 424,
+    "rock": 54,
+    "log": 7
+  },
+  "groups": [
+    {
+      "id": "north-trail",
+      "sourceCentre": [
+        -1540,
+        -440
+      ],
+      "radius": 510,
+      "biome": "woodland",
+      "counts": {
+        "tree": 2,
+        "plant": 21,
+        "rock": 3,
+        "log": 1
+      }
+    },
+    {
+      "id": "stream-east",
+      "sourceCentre": [
+        -1120,
+        450
+      ],
+      "radius": 420,
+      "biome": "woodland",
+      "counts": {
+        "tree": 4,
+        "plant": 21,
+        "rock": 3,
+        "log": 0
+      }
+    },
+    {
+      "id": "stream-head",
+      "sourceCentre": [
+        -2320,
+        350
+      ],
+      "radius": 320,
+      "biome": "wet",
+      "counts": {
+        "tree": 1,
+        "plant": 19,
+        "rock": 3,
+        "log": 0
+      }
+    },
+    {
+      "id": "stream-meadow",
+      "sourceCentre": [
+        -1600,
+        1350
+      ],
+      "radius": 510,
+      "biome": "meadow",
+      "counts": {
+        "tree": 4,
+        "plant": 16,
+        "rock": 2,
+        "log": 1
+      }
+    },
+    {
+      "id": "west-upper",
+      "sourceCentre": [
+        -3340,
+        1050
+      ],
+      "radius": 400,
+      "biome": "wet",
+      "counts": {
+        "tree": 4,
+        "plant": 19,
+        "rock": 3,
+        "log": 0
+      }
+    },
+    {
+      "id": "upper-glade",
+      "sourceCentre": [
+        -2640,
+        1660
+      ],
+      "radius": 540,
+      "biome": "woodland",
+      "counts": {
+        "tree": 5,
+        "plant": 21,
+        "rock": 3,
+        "log": 0
+      }
+    },
+    {
+      "id": "upper-link",
+      "sourceCentre": [
+        -750,
+        1860
+      ],
+      "radius": 450,
+      "biome": "woodland",
+      "counts": {
+        "tree": 4,
+        "plant": 21,
+        "rock": 3,
+        "log": 1
+      }
+    },
+    {
+      "id": "river-bend",
+      "sourceCentre": [
+        -4070,
+        1890
+      ],
+      "radius": 470,
+      "biome": "wet",
+      "counts": {
+        "tree": 4,
+        "plant": 19,
+        "rock": 3,
+        "log": 0
+      }
+    },
+    {
+      "id": "west-trail-north",
+      "sourceCentre": [
+        -3400,
+        2280
+      ],
+      "radius": 470,
+      "biome": "woodland",
+      "counts": {
+        "tree": 4,
+        "plant": 21,
+        "rock": 3,
+        "log": 0
+      }
+    },
+    {
+      "id": "central-rise",
+      "sourceCentre": [
+        -2040,
+        2290
+      ],
+      "radius": 530,
+      "biome": "woodland",
+      "counts": {
+        "tree": 5,
+        "plant": 21,
+        "rock": 3,
+        "log": 1
+      }
+    },
+    {
+      "id": "bridge-glade",
+      "sourceCentre": [
+        -3830,
+        3210
+      ],
+      "radius": 350,
+      "biome": "wet",
+      "counts": {
+        "tree": 0,
+        "plant": 18,
+        "rock": 2,
+        "log": 0
+      }
+    },
+    {
+      "id": "west-trail-south",
+      "sourceCentre": [
+        -3030,
+        3070
+      ],
+      "radius": 430,
+      "biome": "woodland",
+      "counts": {
+        "tree": 1,
+        "plant": 21,
+        "rock": 3,
+        "log": 0
+      }
+    },
+    {
+      "id": "middle-meadow",
+      "sourceCentre": [
+        -2020,
+        3350
+      ],
+      "radius": 470,
+      "biome": "meadow",
+      "counts": {
+        "tree": 3,
+        "plant": 16,
+        "rock": 2,
+        "log": 1
+      }
+    },
+    {
+      "id": "lower-link",
+      "sourceCentre": [
+        -1250,
+        2630
+      ],
+      "radius": 440,
+      "biome": "woodland",
+      "counts": {
+        "tree": 2,
+        "plant": 21,
+        "rock": 3,
+        "log": 0
+      }
+    },
+    {
+      "id": "southern-birches",
+      "sourceCentre": [
+        -1950,
+        4060
+      ],
+      "radius": 420,
+      "biome": "woodland",
+      "counts": {
+        "tree": 4,
+        "plant": 21,
+        "rock": 3,
+        "log": 0
+      }
+    },
+    {
+      "id": "river-shelf",
+      "sourceCentre": [
+        -2330,
+        3900
+      ],
+      "radius": 360,
+      "biome": "wet",
+      "counts": {
+        "tree": 1,
+        "plant": 19,
+        "rock": 3,
+        "log": 1
+      }
+    },
+    {
+      "id": "lower-riverside",
+      "sourceCentre": [
+        -1700,
+        4590
+      ],
+      "radius": 330,
+      "biome": "wet",
+      "counts": {
+        "tree": 3,
+        "plant": 19,
+        "rock": 3,
+        "log": 0
+      }
+    },
+    {
+      "id": "south-meadow",
+      "sourceCentre": [
+        -700,
+        5050
+      ],
+      "radius": 450,
+      "biome": "meadow",
+      "counts": {
+        "tree": 2,
+        "plant": 16,
+        "rock": 2,
+        "log": 0
+      }
+    },
+    {
+      "id": "bridge-scrub",
+      "sourceCentre": [
+        -1470,
+        5400
+      ],
+      "radius": 370,
+      "biome": "meadow",
+      "counts": {
+        "tree": 1,
+        "plant": 16,
+        "rock": 2,
+        "log": 1
+      }
+    },
+    {
+      "id": "south-link",
+      "sourceCentre": [
+        120,
+        4920
+      ],
+      "radius": 340,
+      "biome": "meadow",
+      "counts": {
+        "tree": 2,
+        "plant": 16,
+        "rock": 2,
+        "log": 0
+      }
+    }
+  ]
+}

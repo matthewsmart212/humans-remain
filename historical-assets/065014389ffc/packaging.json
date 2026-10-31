@@ -1,0 +1,47 @@
+{
+  "source": "ImageGen edits of all four original terrain quarters, blended against a unified ground-only overview",
+  "size": 4800,
+  "playable": 3600,
+  "border": 600,
+  "tileOverlap": 4,
+  "clearingCrop": {
+    "left": 1773,
+    "top": 1596,
+    "width": 1330,
+    "height": 1330
+  },
+  "files": [
+    {
+      "name": "bonfire-clearing.webp",
+      "bytes": 495564
+    },
+    {
+      "name": "centre-3600.webp",
+      "bytes": 4035988
+    },
+    {
+      "name": "full-4800.webp",
+      "bytes": 7132362
+    },
+    {
+      "name": "ne.webp",
+      "bytes": 1482542
+    },
+    {
+      "name": "nw.webp",
+      "bytes": 1625914
+    },
+    {
+      "name": "preview.webp",
+      "bytes": 785438
+    },
+    {
+      "name": "se.webp",
+      "bytes": 1610294
+    },
+    {
+      "name": "sw.webp",
+      "bytes": 1790260
+    }
+  ]
+}

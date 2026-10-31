@@ -1,0 +1,338 @@
+[
+  {
+    "piece": 1,
+    "tier": 2,
+    "canvas": [
+      1168,
+      1040
+    ],
+    "registeredBox": {
+      "left": 50,
+      "top": 80,
+      "width": 889,
+      "height": 571
+    },
+    "sourceCrop": {
+      "left": 655,
+      "top": 70,
+      "width": 440,
+      "height": 256
+    },
+    "bytes": 91752
+  },
+  {
+    "piece": 1,
+    "tier": 3,
+    "canvas": [
+      1168,
+      1040
+    ],
+    "registeredBox": {
+      "left": 50,
+      "top": 80,
+      "width": 889,
+      "height": 571
+    },
+    "sourceCrop": {
+      "left": 643,
+      "top": 40,
+      "width": 497,
+      "height": 313
+    },
+    "bytes": 96314
+  },
+  {
+    "piece": 2,
+    "tier": 2,
+    "canvas": [
+      988,
+      804
+    ],
+    "registeredBox": {
+      "left": 640,
+      "top": 48,
+      "width": 309,
+      "height": 705
+    },
+    "sourceCrop": {
+      "left": 1081,
+      "top": 297,
+      "width": 151,
+      "height": 351
+    },
+    "bytes": 55854
+  },
+  {
+    "piece": 2,
+    "tier": 3,
+    "canvas": [
+      988,
+      804
+    ],
+    "registeredBox": {
+      "left": 640,
+      "top": 48,
+      "width": 309,
+      "height": 705
+    },
+    "sourceCrop": {
+      "left": 1051,
+      "top": 295,
+      "width": 197,
+      "height": 353
+    },
+    "bytes": 52138
+  },
+  {
+    "piece": 3,
+    "tier": 2,
+    "canvas": [
+      956,
+      916
+    ],
+    "registeredBox": {
+      "left": 449,
+      "top": 104,
+      "width": 474,
+      "height": 747
+    },
+    "sourceCrop": {
+      "left": 989,
+      "top": 662,
+      "width": 224,
+      "height": 371
+    },
+    "bytes": 63392
+  },
+  {
+    "piece": 3,
+    "tier": 3,
+    "canvas": [
+      956,
+      916
+    ],
+    "registeredBox": {
+      "left": 449,
+      "top": 104,
+      "width": 474,
+      "height": 747
+    },
+    "sourceCrop": {
+      "left": 968,
+      "top": 648,
+      "width": 273,
+      "height": 400
+    },
+    "bytes": 73166
+  },
+  {
+    "piece": 4,
+    "tier": 2,
+    "canvas": [
+      878,
+      694
+    ],
+    "registeredBox": {
+      "left": 45,
+      "top": 248,
+      "width": 644,
+      "height": 413
+    },
+    "sourceCrop": {
+      "left": 661,
+      "top": 989,
+      "width": 326,
+      "height": 199
+    },
+    "bytes": 66444
+  },
+  {
+    "piece": 4,
+    "tier": 3,
+    "canvas": [
+      878,
+      694
+    ],
+    "registeredBox": {
+      "left": 45,
+      "top": 248,
+      "width": 644,
+      "height": 413
+    },
+    "sourceCrop": {
+      "left": 659,
+      "top": 961,
+      "width": 377,
+      "height": 230
+    },
+    "bytes": 65440
+  },
+  {
+    "piece": 5,
+    "tier": 2,
+    "canvas": [
+      930,
+      1236
+    ],
+    "registeredBox": {
+      "left": 169,
+      "top": 701,
+      "width": 692,
+      "height": 426
+    },
+    "sourceCrop": {
+      "left": 286,
+      "top": 991,
+      "width": 341,
+      "height": 197
+    },
+    "bytes": 66466
+  },
+  {
+    "piece": 5,
+    "tier": 3,
+    "canvas": [
+      930,
+      1236
+    ],
+    "registeredBox": {
+      "left": 169,
+      "top": 701,
+      "width": 692,
+      "height": 426
+    },
+    "sourceCrop": {
+      "left": 246,
+      "top": 956,
+      "width": 384,
+      "height": 236
+    },
+    "bytes": 73288
+  },
+  {
+    "piece": 6,
+    "tier": 2,
+    "canvas": [
+      930,
+      1148
+    ],
+    "registeredBox": {
+      "left": 33,
+      "top": 35,
+      "width": 494,
+      "height": 824
+    },
+    "sourceCrop": {
+      "left": 49,
+      "top": 637,
+      "width": 243,
+      "height": 403
+    },
+    "bytes": 68424
+  },
+  {
+    "piece": 6,
+    "tier": 3,
+    "canvas": [
+      930,
+      1148
+    ],
+    "registeredBox": {
+      "left": 33,
+      "top": 35,
+      "width": 494,
+      "height": 824
+    },
+    "sourceCrop": {
+      "left": 12,
+      "top": 617,
+      "width": 292,
+      "height": 420
+    },
+    "bytes": 74038
+  },
+  {
+    "piece": 7,
+    "tier": 2,
+    "canvas": [
+      900,
+      934
+    ],
+    "registeredBox": {
+      "left": 77,
+      "top": 106,
+      "width": 442,
+      "height": 789
+    },
+    "sourceCrop": {
+      "left": 31,
+      "top": 226,
+      "width": 208,
+      "height": 406
+    },
+    "bytes": 65494
+  },
+  {
+    "piece": 7,
+    "tier": 3,
+    "canvas": [
+      900,
+      934
+    ],
+    "registeredBox": {
+      "left": 77,
+      "top": 106,
+      "width": 442,
+      "height": 789
+    },
+    "sourceCrop": {
+      "left": 4,
+      "top": 213,
+      "width": 295,
+      "height": 405
+    },
+    "bytes": 68898
+  },
+  {
+    "piece": 8,
+    "tier": 2,
+    "canvas": [
+      842,
+      1138
+    ],
+    "registeredBox": {
+      "left": 85,
+      "top": 33,
+      "width": 707,
+      "height": 452
+    },
+    "sourceCrop": {
+      "left": 258,
+      "top": 68,
+      "width": 334,
+      "height": 205
+    },
+    "bytes": 76638
+  },
+  {
+    "piece": 8,
+    "tier": 3,
+    "canvas": [
+      842,
+      1138
+    ],
+    "registeredBox": {
+      "left": 85,
+      "top": 33,
+      "width": 707,
+      "height": 452
+    },
+    "sourceCrop": {
+      "left": 234,
+      "top": 37,
+      "width": 374,
+      "height": 256
+    },
+    "bytes": 73824
+  }
+]

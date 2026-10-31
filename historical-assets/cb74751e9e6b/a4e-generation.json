@@ -1,0 +1,20 @@
+{
+  "patch": "a4e",
+  "source": {
+    "width": 1013,
+    "height": 1552,
+    "file": "a4e-generated-original.png"
+  },
+  "registered": {
+    "x": -694,
+    "y": 190,
+    "width": 1092,
+    "height": 1672,
+    "bottom": 264,
+    "right": 264
+  },
+  "scale": {
+    "x": 1.0779861796643633,
+    "y": 1.077319587628866
+  }
+}

@@ -1,0 +1,39 @@
+{
+  "method": "Built-in image generation; transparent sprites matched to existing game artwork.",
+  "assets": [
+    {
+      "id": "ironOre",
+      "path": "public/survival/ironworks-v1/iron-ore.png",
+      "prompt": "Use case: stylized-concept. Asset type: transparent inventory and world pickup sprite for the existing painted woodland/abandoned industrial survival game. Reference images are STYLE references only: match their crisp hand-painted stone facets, dark warm outline and weathered materials. Create one compact iron ore chunk, with a smaller attached chip at its base. Dark charcoal-grey raw stone with visible rusty red-brown iron seams and small dull gunmetal crystalline flecks. It must read as raw iron-bearing rock, not copper, gold, a metal ingot or a glowing gem. Broad chunky silhouette readable at 40 pixels. Three-quarter overhead view, centred on a square canvas, subject fills 80% of frame. Controlled warm upper-left highlights, muted olive traces, earthy palette consistent with the existing rocks. Isolated on genuinely transparent background. No text, no UI frame, no landscape, no hand, no separate shadow, no glow.",
+      "reference_images": [
+        "/workspace/sites/safety-last-mining-work/public/survival/world-rocks-v1/moss-capped-boulder.webp",
+        "/workspace/sites/safety-last-mining-work/public/survival/ui-backpack-v1/scrap.png"
+      ]
+    },
+    {
+      "id": "ironIngot",
+      "path": "public/survival/ironworks-v1/iron-ingot.png",
+      "prompt": "Use case: stylized-concept. Asset type: transparent inventory and world pickup sprite for a painted woodland/abandoned industrial survival game. The reference scrap item is a STYLE reference only; match hand-painted dark outlines, chunky readable form and weathered steel textures. Create ONE finished iron ingot: a squat trapezoid cast-metal bar in three-quarter overhead view, angled lower-left to upper-right. Cool muted charcoal-grey steel, subtle pale silver upper edge, a few casting pits and light hammer marks, slightly warm reflected light. Clearly refined and solid, contrasting with jagged rust-coloured ore. Broad silhouette that remains readable at 40 pixels. Centred on a square canvas, subject fills about 80% of frame, with all edges visible. Isolated on truly transparent background. No stamps, text, labels, numbers, UI frame, gold, copper, shine/glow, landscape or hands.",
+      "reference_images": [
+        "/workspace/sites/safety-last-mining-work/public/survival/ui-backpack-v1/scrap.png"
+      ]
+    },
+    {
+      "id": "furnace",
+      "path": "public/survival/ironworks-v1/camp-furnace.png",
+      "prompt": "Use case: stylized-concept. Asset type: transparent in-world camp furnace sprite for the same hand-painted overhead woodland survival game as the reference workshop and boulder. References are for STYLE and materials only. Create one compact abandoned camp SMELTING FURNACE, restored by survivors: squat rounded rough stone-and-brick body, short tapering stone flue, salvaged iron reinforcing bands and a small worn dark teal metal patch, hand-operated leather bellows attached on the right, a shallow steel ingot mould on the lower-left ledge. Strong chunky readable silhouette, warm taupe/grey stone, weathered timber details and restrained moss at the feet. Same elevated three-quarter camera angle and bold painted outlines as the workshop; no flat schematic view. The front arch-shaped firebox is prominent and centred in the lower half, visibly DARK AND UNLIT with a black interior, ready for an independently rendered fire effect. No embers, flames, smoke or lighting aura baked in. Entire furnace centred on a square canvas, top at 8% and stone feet at 90%, full silhouette and bellows visible with comfortable transparent margins. No platform, grass carpet, surrounding terrain, extra buildings, characters, labels, text, UI or background. Genuine transparent background.",
+      "reference_images": [
+        "/workspace/sites/safety-last-mining-work/public/survival/camp-workshop-v1/camp-workshop.webp",
+        "/workspace/sites/safety-last-mining-work/public/survival/world-rocks-v1/moss-capped-boulder.webp"
+      ]
+    },
+    {
+      "id": "ironBoulder",
+      "path": "public/survival/ironworks-v1/iron-boulder.png",
+      "prompt": "Use case: precise-object-edit. Asset type: transparent mineable IRON-VEINED BOULDER variant for this woodland survival game. Edit target: the reference moss-capped boulder. Preserve its exact painted style, broad squat connected boulder silhouette, overhead three-quarter view, grounded base and dark outline. Change only the upper/central rock faces and moss coverage to show iron ore: reduce the moss to a few modest olive patches, introduce broad broken rusty red-brown mineral seams crossing charcoal-grey stone faces, with small dull silvery gunmetal inclusions. Make the ore veins recognisable at gameplay size but natural, with no magical glow, gold or copper pipes. One connected boulder, no extra pebbles, no symbols, no text, no UI. Transparent background. Keep the whole rock visible, centred and large in the canvas; preserve its proportions and ground contact.",
+      "reference_images": [
+        "/workspace/sites/safety-last-mining-work/public/survival/world-rocks-v1/moss-capped-boulder.webp"
+      ]
+    }
+  ]
+}

@@ -1,0 +1,12 @@
+{
+  "passed": true,
+  "checks": [
+    "Camp level automatically unlocks standard plans, without a research payment or recovered-note gate",
+    "HQ construction validates location, life, daytime, site and full cost; pays exactly once and preserves player and map",
+    "Legacy saves keep working facilities and access; malformed blueprint IDs are rejected",
+    "Optional tracking, next-step map links and completed objectives persist; malformed journal saves reject",
+    "Camp plans and journal tracking survive bunker travel, save reload and returning to camp",
+    "Browsing is read-only, previews cannot charge resources, discoveries contain only known events and navigation is voluntary",
+    "All headquarters, equipment and discovery illustrations resolve on web and in the offline native bundle"
+  ]
+}

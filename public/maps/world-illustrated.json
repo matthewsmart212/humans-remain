@@ -1,0 +1,168 @@
+{
+  "version": 2,
+  "style": "Engraved terrain-colour atlas with ochre soil, olive woodland ink, turquoise water and traced routes",
+  "image": "/maps/world-illustrated.webp",
+  "pixels": {
+    "width": 3072,
+    "height": 3072
+  },
+  "sourceBounds": {
+    "x": -7200,
+    "y": -6200,
+    "width": 20000,
+    "height": 20000
+  },
+  "worldBounds": {
+    "x": -7353.9105243400945,
+    "y": -6411.101482758031,
+    "width": 18856.180831641268,
+    "height": 18856.180831641268
+  },
+  "sourceOriginOffset": 600,
+  "sourceScale": 0.9428090415820634,
+  "geography": {
+    "water": "Installed collision mask rows with exact batch ownership and every disjoint side span",
+    "mainMaskRows": 2502,
+    "sideMaskSpans": 1505,
+    "mainBatches": 6,
+    "riverSections": 26,
+    "sideFeatures": 4,
+    "bridges": 4,
+    "roads": "WORLD_ROADS production geometry refined against registered painted road pixels within bounded corridors; camp ring traced from CAMP_INNER_RING and actual camp artwork",
+    "roadPaths": 39,
+    "paintedRoadPatches": 86,
+    "roadTrace": {
+      "points": 2484,
+      "adjusted": 1991,
+      "maxShift": 180,
+      "totalShift": 67995
+    },
+    "terrainElevation": "None; only bank-distance relief",
+    "mutablePlacements": "Not baked; supplied by live current-layout overlay"
+  },
+  "paper": {
+    "path": "art-source/maps/atlas-paper.png",
+    "sha256": "9e17b31604018fbdc13e717a8b38608ee1b7a896c96fccb3d8083356f844fd01"
+  },
+  "terrainColour": {
+    "source": "/maps/world-terrain.webp",
+    "sha256": "feafc26c47f6ba027aabf85abf7917be5d4bac89122f8d67dc23248b328f0b3a",
+    "registration": "Same source bounds as the geography; no coordinate transform or displacement",
+    "grid": 192,
+    "blur": 2.6,
+    "terrainBlend": 0.57,
+    "paperBlend": 0.43,
+    "waterExcludedFromGround": true,
+    "sampledWaterRGB": [
+      27,
+      102,
+      138
+    ],
+    "waterSamples": 92459,
+    "samples": [
+      {
+        "name": "Camp soil",
+        "source": [
+          2400,
+          2400
+        ],
+        "terrainRGB": [
+          199,
+          122,
+          41
+        ],
+        "atlasPaperRGB": [
+          213,
+          165,
+          108
+        ]
+      },
+      {
+        "name": "Northern approach",
+        "source": [
+          3000,
+          -400
+        ],
+        "terrainRGB": [
+          225,
+          133,
+          43
+        ],
+        "atlasPaperRGB": [
+          226,
+          168,
+          107
+        ]
+      },
+      {
+        "name": "Eastern ground",
+        "source": [
+          9600,
+          -2000
+        ],
+        "terrainRGB": [
+          150,
+          99,
+          57
+        ],
+        "atlasPaperRGB": [
+          171,
+          139,
+          103
+        ]
+      },
+      {
+        "name": "Western ground",
+        "source": [
+          -5600,
+          1000
+        ],
+        "terrainRGB": [
+          169,
+          99,
+          38
+        ],
+        "atlasPaperRGB": [
+          188,
+          142,
+          96
+        ]
+      },
+      {
+        "name": "Southern ground",
+        "source": [
+          6400,
+          10500
+        ],
+        "terrainRGB": [
+          125,
+          91,
+          57
+        ],
+        "atlasPaperRGB": [
+          167,
+          147,
+          111
+        ]
+      }
+    ]
+  },
+  "bytes": 601854,
+  "checks": {
+    "result": "pass",
+    "waterSamples": [
+      "logging-stream:wet",
+      "logging-stream:dry",
+      "western-stream:wet",
+      "western-stream:dry",
+      "lower-lake:wet",
+      "lower-lake:dry",
+      "southern-stream:wet",
+      "southern-stream:dry"
+    ],
+    "runtimeWaterSamples": 62407,
+    "bankSamplingDifferences": 39,
+    "maxBankSamplingDistance": 1.4433491230010986,
+    "registration": "Identical to existing terrain and live-player map coordinates"
+  }
+}

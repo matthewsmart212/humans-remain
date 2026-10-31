@@ -1,0 +1,61 @@
+.fire-tending{position:absolute;inset:0;z-index:12;pointer-events:auto;isolation:isolate;touch-action:none;user-select:none;-webkit-user-select:none;background:linear-gradient(0deg,#100e0b77,transparent 60%)}
+/* Safari can retain :hover after a tap. This full-screen hit target must never
+   inherit the editor's opaque button hover/active/focus skins. */
+.camp-studio .field-kit .fire-world-exit{position:absolute;inset:0;width:100%;height:100%;border:0!important;border-radius:0;background:transparent!important;box-shadow:none!important;appearance:none;-webkit-appearance:none;cursor:default}
+.fire-dock{position:absolute;left:50%;bottom:max(12px,calc(env(safe-area-inset-bottom) + 8px));transform:translateX(-50%);width:min(356px,calc(100% - 24px));box-sizing:border-box;padding:10px 12px 8px;border:2px solid #9d7950;border-radius:12px 12px 18px 18px;background:radial-gradient(ellipse at 50% 0,#71412a66,transparent 72%),repeating-linear-gradient(2deg,#fff0 0 5px,#ddad6c05 6px 7px),#211f19f5;color:#f8e8c8;box-shadow:0 0 0 3px #1a1c17,0 0 0 4px #c6a87950,inset 0 0 0 2px #0f100e,inset 0 8px 18px #fff1,0 12px 28px #0008;font-family:'Barlow Condensed',sans-serif}
+.fire-dock:before,.fire-dock:after{content:'';position:absolute;bottom:7px;width:5px;height:5px;border-radius:50%;background:#c1a37a;box-shadow:inset 1px 1px 1px #fff6,1px 2px 1px #0008;pointer-events:none}.fire-dock:before{left:4px}.fire-dock:after{right:4px}
+.fire-heading{height:42px;display:flex;align-items:center;gap:8px}.fire-heading>img{width:36px;height:40px;filter:drop-shadow(0 0 8px #ff86234d)}.fire-dock[data-lit=false] .fire-heading>img{filter:grayscale(1);opacity:.6}.fire-heading>div{flex:1}.fire-heading h2{margin:0;font-size:22px;line-height:22px;letter-spacing:1px;font-weight:900;color:#ffe0a0}.fire-heading span{font-size:12px;color:#d5bfa0}
+.camp-studio .field-kit .fire-dock button{font-family:inherit;touch-action:manipulation;cursor:pointer;min-height:44px;min-width:44px;padding:0;color:inherit;box-shadow:none;-webkit-tap-highlight-color:transparent}
+.camp-studio .field-kit .fire-dock .fire-close{border:0;background:transparent;width:44px;height:44px;display:grid;place-items:center;border-radius:8px}.fire-close img{width:24px;height:24px}
+.camp-studio .field-kit .fire-dock button:focus-visible{outline:2px solid #ffe2a5;outline-offset:2px}.camp-studio .field-kit .fire-dock button:active:not(:disabled){transform:translateY(1px);filter:brightness(1.3)}
+.fire-fuel{height:8px;margin:6px 0 7px;border-radius:5px;border:1px solid #8f6c42;background:#0e1513;position:relative;overflow:hidden}.fire-fuel>i{display:block;height:100%;background:linear-gradient(90deg,#c65c2d,#ffbb52,#ffe3a2);box-shadow:0 0 10px #ff9b46;transition:width .2s linear}.fire-fuel>b{position:absolute;top:0;bottom:0;width:1px;background:#241a1688}.fire-dock[data-low=true] .fire-fuel>i{background:#ed8d5b;animation:fire-low 1.4s ease-in-out infinite}
+.fire-rail-heading{display:flex;align-items:center;justify-content:space-between;height:18px;margin-top:3px;font-size:10px;letter-spacing:.6px}.fire-rail-heading strong{font-size:11px;color:#e1c79c}.fire-rail-heading>span{font:10px 'Barlow',sans-serif;letter-spacing:0;color:#b5ac94}
+.fire-slots{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:6px}.camp-studio .field-kit .fire-dock .fire-slot{position:relative;display:flex;align-items:center;justify-content:center;flex-direction:column;height:50px;min-width:0;border:1px solid #766546;border-radius:7px;background:radial-gradient(ellipse at center,#77644c22,#0d1616aa);overflow:hidden;box-shadow:inset 0 1px 2px #0009,inset 0 -2px 1px #b4a16d14}
+.fire-slot>img{width:45px;height:37px;object-fit:contain;pointer-events:none;filter:drop-shadow(0 2px 2px #0007)}.fire-slot b{position:absolute;top:2px;right:4px;font-size:13px;line-height:14px;font-weight:800;color:#ffe7b2;text-shadow:0 1px 2px #000}.fire-slot>strong{font-size:11px;line-height:12px}.fire-slot>small{font-size:9px;color:#c7b899;line-height:12px}
+.camp-studio .field-kit .fire-dock .fire-job{background:linear-gradient(#33271d,#4a3222);border-color:#997242}.fire-job>img{position:absolute;top:2px;left:50%;transform:translateX(-50%);width:44px;height:34px}.fire-job-time{position:absolute;bottom:7px;right:0;left:0;text-align:center;font-size:10px;color:#ffe2b1;text-shadow:0 1px 3px #000}.fire-job[data-active=true]{box-shadow:inset 0 -8px 15px #ee862333!important;border-color:#efb463!important}.fire-job[data-active=true]:after{content:'';position:absolute;top:4px;left:10px;width:3px;height:3px;border-radius:50%;background:#ffd787;box-shadow:20px 6px #e6b27c;animation:fire-heat 1.6s ease-out infinite;pointer-events:none}.fire-cook-progress{position:absolute;bottom:0;left:0;right:0;height:4px;background:#101a18}.fire-cook-progress i{display:block;height:100%;background:#ecc17e;transition:width .2s linear}
+.fire-empty{opacity:.48}.fire-empty>span:last-child{font-size:10px;letter-spacing:1px;color:#a9a18c;position:relative;margin-top:12px}.fire-skewer{position:absolute;width:44px;height:2px;background:#a79c7a;transform:rotate(-24deg);top:18px;box-shadow:0 2px 0 #000}
+.fire-serving .fire-ready img{height:35px;width:47px}.fire-ready>span{position:absolute;bottom:2px;font-size:9px;color:#d5df9f}.fire-serving .fire-ready[data-ready=true]{border-color:#a6a565!important;background:radial-gradient(ellipse,#8994453b,#1b291e)!important}.fire-ready[data-ready=false]>img{opacity:.18;filter:grayscale(.7)}.fire-ready[data-ready=false]>b{opacity:.35}.fire-take img{height:28px;width:28px}.fire-take>span{font-size:10px;color:#ead7ab}.camp-studio .field-kit .fire-dock .fire-take:disabled{opacity:.38}
+.fire-pack-heading{border-top:1px solid #94734966;padding-top:5px;margin-top:7px}.camp-studio .field-kit .fire-dock .fire-supplies .fire-slot{height:76px;background:linear-gradient(150deg,#6b503440,#14221dd9);border-color:#97805b}.fire-supplies .fire-slot>img{width:52px;height:43px}.camp-studio .field-kit .fire-dock .fire-log{background:linear-gradient(145deg,#94603155,#28241a)!important;border-color:#c59553!important}.fire-log strong{color:#ffd898}.fire-log small{color:#e4ba7d}.fire-supplies button:disabled>img{opacity:.35;filter:grayscale(.5)}.fire-supplies button:disabled>strong,.fire-supplies button:disabled>small,.fire-supplies button:disabled>b{opacity:.45}
+.fire-guidance{height:16px;line-height:16px;margin:6px 0 0;text-align:center;font:10px/16px 'Barlow',sans-serif;color:#d1bfa0;white-space:nowrap;letter-spacing:-.15px}
+@keyframes fire-heat{0%{opacity:0;transform:translateY(8px)}35%{opacity:.7}100%{opacity:0;transform:translateY(-8px)}}@keyframes fire-low{50%{opacity:.6}}
+@media(min-aspect-ratio:6/5){.fire-tending{background:linear-gradient(270deg,#100e0b66,transparent 58%)}.fire-dock{left:auto;right:max(12px,calc(env(safe-area-inset-right) + 8px));bottom:50%;transform:translateY(50%);width:326px}.fire-heading{height:36px}.fire-supplies .fire-slot>img{width:46px;height:38px}.camp-studio .field-kit .fire-dock .fire-supplies .fire-slot{height:68px}}
+@media(max-height:360px) and (min-aspect-ratio:6/5),(max-height:660px) and (max-aspect-ratio:6/5){.fire-dock{padding-top:5px;padding-bottom:4px}.fire-heading{height:30px}.fire-heading h2{font-size:18px}.fire-heading span{font-size:10px}.fire-rail-heading{height:16px}.fire-fuel{margin:3px 0}.fire-guidance{display:none}.camp-studio .field-kit .fire-dock .fire-slot{height:44px}.camp-studio .field-kit .fire-dock .fire-supplies .fire-slot{height:64px}.fire-supplies .fire-slot>img{height:32px}}
+/* Explicitly reset editor button defaults: inherited gaps clipped the last line,
+   while inherited disabled opacity multiplied the item artwork's own dimming. */
+.camp-studio .field-kit .fire-dock button{gap:0;line-height:1;opacity:1}
+.camp-studio .field-kit .fire-dock button:disabled{opacity:1;cursor:default}
+.camp-studio .field-kit .fire-dock .fire-take:disabled{opacity:.55}
+.fire-dock{animation:fire-tray-enter .2s ease-out both}
+.fire-slot>img,.fire-slot>strong,.fire-slot>small{flex-shrink:0}
+.fire-slot>strong{font-size:12px;line-height:14px;white-space:nowrap}
+.fire-slot>small{font-size:10px;line-height:12px;white-space:nowrap}
+.fire-slot b{font-size:14px;line-height:16px}
+.fire-job-time{font-size:12px;line-height:14px;font-weight:800}
+.fire-job[data-active=false]>img{opacity:.72}
+.fire-serving .fire-ready[data-ready=true]{box-shadow:inset 0 0 15px #b6cb6530,0 0 5px #9ab45825!important}
+.fire-ready[data-ready=true]>img{animation:fire-meal-ready .35s ease-out}
+.fire-ready>span{font-size:10px;line-height:12px;font-weight:800}
+.fire-ready[data-ready=false]>img{opacity:.26;filter:grayscale(.5)}
+.fire-ready>.fire-none{color:#c1b694;opacity:.6}
+.fire-rail-heading[data-ready=true] strong,.fire-rail-heading[data-ready=true]>span{color:#d4dfa1}
+.fire-supplies button:disabled>img{opacity:.48;filter:grayscale(.35)}
+.fire-supplies button:disabled>strong,.fire-supplies button:disabled>small,.fire-supplies button:disabled>b{opacity:.75}
+.fire-supplies .fire-slot>img{height:38px}
+.camp-studio .field-kit .fire-dock .fire-guidance{margin:6px 0 0;color:#d1bfa0;font:11px/16px 'Barlow',sans-serif}
+@keyframes fire-tray-enter{from{opacity:0;translate:0 10px}to{opacity:1;translate:0 0}}
+@keyframes fire-meal-ready{0%{transform:translateY(-3px) scale(.85);filter:brightness(1.5)}100%{transform:translateY(0) scale(1)}}
+@media(min-aspect-ratio:6/5){.fire-supplies .fire-slot>img{height:34px}}
+@media(max-height:360px) and (min-aspect-ratio:6/5),(max-height:660px) and (max-aspect-ratio:6/5){.fire-supplies .fire-slot>img{height:30px}.fire-slot>strong{font-size:11px;line-height:13px}.fire-slot>small{font-size:9px;line-height:11px}.fire-job>img{height:29px}.fire-job-time{font-size:11px;line-height:12px}.fire-ready>span{font-size:9px}}
+@media(prefers-reduced-motion:reduce){.fire-dock,.fire-dock *{animation:none!important;transition:none!important}}
+
+/* A prepared meal shares the existing supplies rail without increasing tray height. */
+.fire-supplies{grid-template-columns:repeat(5,minmax(0,1fr))}
+.fire-supplies .fire-slot>img{max-width:100%}
+.camp-studio .field-kit .fire-dock .fire-prepared{border-color:#a6a565;background:linear-gradient(145deg,#64734633,#1b291e)}
+.fire-prepared>strong{font-size:11px}
+.fire-prepared>small{white-space:normal;max-width:100%;text-align:center;font-size:9px;line-height:10px}
+
+.fire-supplies .fire-slot>strong{font-size:11px}
+.fire-supplies .fire-prepared>img{height:34px}
+@media(min-aspect-ratio:6/5){.fire-supplies .fire-prepared>img{height:30px}}
+@media(max-height:360px) and (min-aspect-ratio:6/5),(max-height:660px) and (max-aspect-ratio:6/5){.fire-supplies .fire-prepared>img{height:26px}}

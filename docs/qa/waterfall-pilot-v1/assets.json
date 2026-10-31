@@ -1,0 +1,14 @@
+{
+  "frames": 12,
+  "periodSeconds": 1.5,
+  "atlasPixels": [
+    640,
+    480
+  ],
+  "referencePixels": [
+    280,
+    260
+  ],
+  "activeMaskPixels": 16995,
+  "bytes": 309428
+}

@@ -1,0 +1,47 @@
+{
+  "source": "16 registered ImageGen terrain edits; two-pixel minimum-error joins between full-detail neighbours",
+  "size": 4800,
+  "playable": 3600,
+  "border": 600,
+  "tileOverlap": 4,
+  "clearingCrop": {
+    "left": 1773,
+    "top": 1596,
+    "width": 1330,
+    "height": 1330
+  },
+  "files": [
+    {
+      "name": "bonfire-clearing.webp",
+      "bytes": 689768
+    },
+    {
+      "name": "centre-3600.webp",
+      "bytes": 5334960
+    },
+    {
+      "name": "full-4800.webp",
+      "bytes": 9088078
+    },
+    {
+      "name": "ne.webp",
+      "bytes": 2074718
+    },
+    {
+      "name": "nw.webp",
+      "bytes": 2078728
+    },
+    {
+      "name": "preview.webp",
+      "bytes": 882880
+    },
+    {
+      "name": "se.webp",
+      "bytes": 1979184
+    },
+    {
+      "name": "sw.webp",
+      "bytes": 2381202
+    }
+  ]
+}

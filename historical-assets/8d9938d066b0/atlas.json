@@ -1,0 +1,31 @@
+{
+  "cell": [
+    384,
+    384
+  ],
+  "columns": 6,
+  "anchor": [
+    192,
+    333.3333333333333
+  ],
+  "scale": 0.5,
+  "states": [
+    "ready",
+    "raise",
+    "half-draw",
+    "full-draw",
+    "release",
+    "lower"
+  ],
+  "views": {
+    "up": "/survival/scrap-runner/bow-v1/up.webp",
+    "up-right": "/survival/scrap-runner/bow-v1/up-right.webp",
+    "right": "/survival/scrap-runner/bow-v1/right.webp",
+    "down-right": "/survival/scrap-runner/bow-v1/down-right.webp",
+    "down": "/survival/scrap-runner/bow-v1/down.webp",
+    "down-left": "/survival/scrap-runner/bow-v1/down-left.webp",
+    "left": "/survival/scrap-runner/bow-v1/left.webp",
+    "up-left": "/survival/scrap-runner/bow-v1/up-left.webp"
+  },
+  "sourceLibraryFile": "libfile_fbf4320628f48191be9b65d2167be077"
+}

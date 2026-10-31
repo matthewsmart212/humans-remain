@@ -1,0 +1,382 @@
+[
+  {
+    "id": "art_rock_moss_capped_boulder",
+    "name": "Moss-capped boulder",
+    "kind": "prop",
+    "zone": "Woodland rocks",
+    "description": "one squat broad solitary woodland boulder, an irregular domed silhouette with a deep notch on the right, grey-taupe stone and a thick muted olive moss cap flowing over the left shoulder; no separate stones",
+    "image": "/survival/world-rocks-v1/moss-capped-boulder.webp",
+    "size": [
+      512,
+      365
+    ],
+    "anchor": [
+      0.5,
+      0.87
+    ],
+    "worldWidth": 170,
+    "walkable": false,
+    "body": []
+  },
+  {
+    "id": "art_rock_lichen_twin_stones",
+    "name": "Lichen twin stones",
+    "kind": "prop",
+    "zone": "Woodland rocks",
+    "description": "two touching woodland granite stones, one tall blunt slanted block behind a much lower rounded stone to its right; thin pale sage and warm cream lichen patches rather than thick moss; asymmetrical stepped silhouette",
+    "image": "/survival/world-rocks-v1/lichen-twin-stones.webp",
+    "size": [
+      640,
+      474
+    ],
+    "anchor": [
+      0.5,
+      0.88
+    ],
+    "worldWidth": 220,
+    "walkable": false,
+    "body": []
+  },
+  {
+    "id": "art_rock_split_forest_rock",
+    "name": "Split forest rock",
+    "kind": "prop",
+    "zone": "Woodland rocks",
+    "description": "one rounded wide forest rock split by a deep diagonal fissure, two connected unequal halves, muted olive-grey stone with small moss seams and warm ochre chips in the split, low grounded silhouette",
+    "image": "/survival/world-rocks-v1/split-forest-rock.webp",
+    "size": [
+      576,
+      361
+    ],
+    "anchor": [
+      0.5,
+      0.87
+    ],
+    "worldWidth": 200,
+    "walkable": false,
+    "body": []
+  },
+  {
+    "id": "art_rock_mossy_flat_shelf",
+    "name": "Mossy flat shelf",
+    "kind": "prop",
+    "zone": "Woodland rocks",
+    "description": "one very low broad flat irregular rock shelf with a thin chipped layered rim, warm slate-grey horizontal top, thin velvety moss following one back edge and a tiny fern in a crack; shallow saucer-like footprint, no pedestal",
+    "image": "/survival/world-rocks-v1/mossy-flat-shelf.webp",
+    "size": [
+      640,
+      319
+    ],
+    "anchor": [
+      0.5,
+      0.83
+    ],
+    "worldWidth": 260,
+    "walkable": false,
+    "body": []
+  },
+  {
+    "id": "art_rock_forest_pebble_patch",
+    "name": "Forest pebble patch",
+    "kind": "prop",
+    "zone": "Woodland rocks",
+    "description": "a compact asymmetrical scatter of eight small low rounded forest pebbles of mixed unequal sizes, warm grey and olive tones with a little sage lichen, open transparent gaps between them, no central large boulder; loose natural oval arrangement, very low ground detail",
+    "image": "/survival/world-rocks-v1/forest-pebble-patch.webp",
+    "size": [
+      384,
+      209
+    ],
+    "anchor": [
+      0.5,
+      0.62
+    ],
+    "worldWidth": 135,
+    "walkable": true,
+    "body": []
+  },
+  {
+    "id": "art_rock_smooth_river_boulder",
+    "name": "Smooth river boulder",
+    "kind": "prop",
+    "zone": "River rocks",
+    "description": "one broad smooth rounded river boulder shaped like an uneven bean, cool grey with soft muted blue-grey shaded facets and a pale warm upper plane, two subtle natural mineral bands, matte stone with slight damp darkening at the base, no water",
+    "image": "/survival/world-rocks-v1/smooth-river-boulder.webp",
+    "size": [
+      512,
+      302
+    ],
+    "anchor": [
+      0.5,
+      0.85
+    ],
+    "worldWidth": 185,
+    "walkable": false,
+    "body": []
+  },
+  {
+    "id": "art_rock_river_stone_trio",
+    "name": "River stone trio",
+    "kind": "prop",
+    "zone": "River rocks",
+    "description": "three touching river stones: one broad low round grey stone, a smaller upright oval stone on the left and a tiny flattened warm grey stone in front; water-worn smooth simple painted planes, subtle cream veins, no water",
+    "image": "/survival/world-rocks-v1/river-stone-trio.webp",
+    "size": [
+      512,
+      306
+    ],
+    "anchor": [
+      0.5,
+      0.86
+    ],
+    "worldWidth": 190,
+    "walkable": false,
+    "body": []
+  },
+  {
+    "id": "art_rock_flat_river_slab",
+    "name": "Flat river slab",
+    "kind": "prop",
+    "zone": "River rocks",
+    "description": "one very flat irregular rounded pentagonal river slab, smooth pale warm grey top crossed by a single thin muted cream mineral seam, cool blue-grey low chipped rim, very shallow stone sitting directly on ground, no water, no stack",
+    "image": "/survival/world-rocks-v1/flat-river-slab.webp",
+    "size": [
+      576,
+      339
+    ],
+    "anchor": [
+      0.5,
+      0.8
+    ],
+    "worldWidth": 230,
+    "walkable": false,
+    "body": []
+  },
+  {
+    "id": "art_rock_river_shingle_patch",
+    "name": "River shingle patch",
+    "kind": "prop",
+    "zone": "River rocks",
+    "description": "a loose elongated asymmetrical patch of twelve small flat oval river pebbles, varied grey, muted slate blue and dull taupe shades, several open transparent gaps, pebbles lie very flat with no large central rock and no water or soil",
+    "image": "/survival/world-rocks-v1/river-shingle-patch.webp",
+    "size": [
+      512,
+      216
+    ],
+    "anchor": [
+      0.5,
+      0.62
+    ],
+    "worldWidth": 200,
+    "walkable": true,
+    "body": []
+  },
+  {
+    "id": "art_rock_eroded_bank_rock",
+    "name": "Eroded bank rock",
+    "kind": "prop",
+    "zone": "River rocks",
+    "description": "one broad low riverbank rock eroded into an irregular wave-shaped shelf with a shallow natural hollow in the front face; grey sandstone with cream worn edges, dark cool cracks and a little olive moss in damp seams, no water or soil base",
+    "image": "/survival/world-rocks-v1/eroded-bank-rock.webp",
+    "size": [
+      768,
+      409
+    ],
+    "anchor": [
+      0.5,
+      0.87
+    ],
+    "worldWidth": 280,
+    "walkable": false,
+    "body": []
+  },
+  {
+    "id": "art_rock_ochre_lone_boulder",
+    "name": "Ochre lone boulder",
+    "kind": "prop",
+    "zone": "Dryland rocks",
+    "description": "one squat broad angular ochre sandstone boulder, unequal five-sided silhouette, muted sandy tan top and warm umber shadow planes, chipped corners and sparse fine natural cracks, bare dry stone with almost no moss",
+    "image": "/survival/world-rocks-v1/ochre-lone-boulder.webp",
+    "size": [
+      512,
+      350
+    ],
+    "anchor": [
+      0.5,
+      0.88
+    ],
+    "worldWidth": 180,
+    "walkable": false,
+    "body": []
+  },
+  {
+    "id": "art_rock_rust_sandstone_fin",
+    "name": "Rust sandstone fin",
+    "kind": "prop",
+    "zone": "Dryland rocks",
+    "description": "one low narrow sideways sandstone fin, broad elongated wedge leaning toward the right, subtle rusty brown and dusty ochre horizontal layers, a broken blunt point at one end, bare weathered rock not a tall spire",
+    "image": "/survival/world-rocks-v1/rust-sandstone-fin.webp",
+    "size": [
+      640,
+      323
+    ],
+    "anchor": [
+      0.5,
+      0.88
+    ],
+    "worldWidth": 270,
+    "walkable": false,
+    "body": []
+  },
+  {
+    "id": "art_rock_chalk_cracked_rock",
+    "name": "Cracked chalk rock",
+    "kind": "prop",
+    "zone": "Dryland rocks",
+    "description": "one uneven squat pale limestone boulder with a few broad connected cracks across the top, dusty ivory and muted cream stone, taupe and slate shadows, gently chipped rounded edges, a small missing corner exposing a warmer interior, no moss",
+    "image": "/survival/world-rocks-v1/chalk-cracked-rock.webp",
+    "size": [
+      576,
+      428
+    ],
+    "anchor": [
+      0.5,
+      0.88
+    ],
+    "worldWidth": 210,
+    "walkable": false,
+    "body": []
+  },
+  {
+    "id": "art_rock_dry_scree_scatter",
+    "name": "Dry scree scatter",
+    "kind": "prop",
+    "zone": "Dryland rocks",
+    "description": "a small loose asymmetrical scatter of nine low angular broken sandstone fragments, dusty ochre, beige and muted rust shades, largest fragment is flat and broad rather than a boulder, open transparent gaps, ground dressing with no soil platform",
+    "image": "/survival/world-rocks-v1/dry-scree-scatter.webp",
+    "size": [
+      512,
+      311
+    ],
+    "anchor": [
+      0.5,
+      0.65
+    ],
+    "worldWidth": 190,
+    "walkable": true,
+    "body": []
+  },
+  {
+    "id": "art_rock_layered_sandstone_shelf",
+    "name": "Layered sandstone shelf",
+    "kind": "prop",
+    "zone": "Dryland rocks",
+    "description": "a broad low asymmetrical sandstone shelf with three uneven eroded horizontal ledges, one shallow hump on the left and a lower broken lip to the right, restrained warm tan and ochre bands with cool taupe crevices, no plateau scenery or background",
+    "image": "/survival/world-rocks-v1/layered-sandstone-shelf.webp",
+    "size": [
+      768,
+      451
+    ],
+    "anchor": [
+      0.5,
+      0.89
+    ],
+    "worldWidth": 330,
+    "walkable": false,
+    "body": []
+  },
+  {
+    "id": "art_rock_dark_basalt_blocks",
+    "name": "Dark basalt blocks",
+    "kind": "prop",
+    "zone": "Exposed rocks",
+    "description": "a connected cluster of three low blunt basalt blocks, irregular chunky angular forms of unequal size rather than geometric perfect columns, dark charcoal blue-grey stone, warm grey lit planes and thin weathered cracks, no glow or crystals",
+    "image": "/survival/world-rocks-v1/dark-basalt-blocks.webp",
+    "size": [
+      640,
+      440
+    ],
+    "anchor": [
+      0.5,
+      0.88
+    ],
+    "worldWidth": 245,
+    "walkable": false,
+    "body": []
+  },
+  {
+    "id": "art_rock_blue_grey_split_crag",
+    "name": "Blue-grey split crag",
+    "kind": "prop",
+    "zone": "Exposed rocks",
+    "description": "a squat broad double-peaked crag of weathered blue-grey stone, left peak much lower than right, deep diagonal split between them, distinct angular chipped planes with warm pale grey highlights and small muted sage lichen patches; low local obstacle",
+    "image": "/survival/world-rocks-v1/blue-grey-split-crag.webp",
+    "size": [
+      768,
+      505
+    ],
+    "anchor": [
+      0.5,
+      0.9
+    ],
+    "worldWidth": 320,
+    "walkable": false,
+    "body": []
+  },
+  {
+    "id": "art_rock_slanted_schist_slab",
+    "name": "Slanted schist slab",
+    "kind": "prop",
+    "zone": "Exposed rocks",
+    "description": "one low slanted broad schist slab lying partly on its side, asymmetric parallelogram silhouette with visibly peeling thin stone layers on the front edge, muted slate green-grey top and charcoal creases, small ochre mineral streaks, no moss",
+    "image": "/survival/world-rocks-v1/slanted-schist-slab.webp",
+    "size": [
+      640,
+      375
+    ],
+    "anchor": [
+      0.5,
+      0.85
+    ],
+    "worldWidth": 255,
+    "walkable": false,
+    "body": []
+  },
+  {
+    "id": "art_rock_weathered_standing_stone",
+    "name": "Weathered standing stone",
+    "kind": "prop",
+    "zone": "Exposed rocks",
+    "description": "one naturally upright weathered granite stone, an irregular broad blunt wedge about as tall as it is wide, no carved runes and no monument styling, warm grey and slate shadow faces, broken slanted summit and a narrow olive lichen seam, heavy grounded base",
+    "image": "/survival/world-rocks-v1/weathered-standing-stone.webp",
+    "size": [
+      576,
+      511
+    ],
+    "anchor": [
+      0.5,
+      0.91
+    ],
+    "worldWidth": 180,
+    "walkable": false,
+    "body": []
+  },
+  {
+    "id": "art_rock_broad_granite_erratic",
+    "name": "Broad granite erratic",
+    "kind": "prop",
+    "zone": "Exposed rocks",
+    "description": "one broad heavy glacial granite boulder, asymmetrical oval block with a wide flat upper shoulder and a steep broken front face, warm medium grey coarse painted planes, thin cream mineral veins, a few small pale sage lichen patches, massive low silhouette not a mountain",
+    "image": "/survival/world-rocks-v1/broad-granite-erratic.webp",
+    "size": [
+      768,
+      491
+    ],
+    "anchor": [
+      0.5,
+      0.89
+    ],
+    "worldWidth": 300,
+    "walkable": false,
+    "body": []
+  }
+]

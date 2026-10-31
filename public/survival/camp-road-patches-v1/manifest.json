@@ -1,0 +1,47 @@
+[
+  {
+    "id": "northwest",
+    "key": "roadTerrainNW",
+    "x": -750,
+    "y": -550,
+    "width": 1536,
+    "height": 1024,
+    "bytes": 646552
+  },
+  {
+    "id": "northeast",
+    "key": "roadTerrainNE",
+    "x": 3900,
+    "y": -700,
+    "width": 1024,
+    "height": 1536,
+    "bytes": 731144
+  },
+  {
+    "id": "west",
+    "key": "roadTerrainW",
+    "x": -950,
+    "y": 2200,
+    "width": 1536,
+    "height": 1024,
+    "bytes": 712346
+  },
+  {
+    "id": "southwest",
+    "key": "roadTerrainSW",
+    "x": -800,
+    "y": 4000,
+    "width": 1536,
+    "height": 1024,
+    "bytes": 733880
+  },
+  {
+    "id": "south",
+    "key": "roadTerrainS",
+    "x": 1800,
+    "y": 4100,
+    "width": 1024,
+    "height": 1536,
+    "bytes": 817056
+  }
+]

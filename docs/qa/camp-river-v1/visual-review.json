@@ -1,0 +1,14 @@
+{
+  "result": "pass",
+  "reviewed": ["before-overview", "after-overview", "stream-bank", "woodland", "bridge-approach", "lower-riverside"],
+  "checks": [
+    "The pictured camp-to-river strip is populated without crossing the main river",
+    "Existing camp artwork and placements remain intact",
+    "The stream, river channel and bridges remain visually readable",
+    "Open ground and path shoulders separate the woodland pockets",
+    "Wetland plants, woodland understory and meadow shades vary with the terrain",
+    "Existing character, trees, rocks and foliage share the approved art style"
+  ],
+  "browserQA": false,
+  "deviceFPSMeasured": false
+}

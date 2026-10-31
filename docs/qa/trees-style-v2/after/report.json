@@ -1,0 +1,54 @@
+{
+  "savedCampRevision": 68,
+  "originalPlacements": 1366,
+  "addedOnlyToDisposableFixture": [
+    {
+      "id": "style-0",
+      "assetId": "art_tree_oak",
+      "x": 1030,
+      "y": 1320,
+      "scale": 1,
+      "solid": true,
+      "roof": "auto",
+      "role": "prop",
+      "allowTransparency": false
+    },
+    {
+      "id": "style-1",
+      "assetId": "art_tree_pine",
+      "x": 1430,
+      "y": 1320,
+      "scale": 1,
+      "solid": true,
+      "roof": "auto",
+      "role": "prop",
+      "allowTransparency": false
+    },
+    {
+      "id": "style-2",
+      "assetId": "art_tree_birch",
+      "x": 2450,
+      "y": 1320,
+      "scale": 1,
+      "solid": true,
+      "roof": "auto",
+      "role": "prop",
+      "allowTransparency": false
+    },
+    {
+      "id": "style-3",
+      "assetId": "art_tree_deadwood",
+      "x": 2870,
+      "y": 1320,
+      "scale": 1,
+      "solid": true,
+      "roof": "auto",
+      "role": "prop",
+      "allowTransparency": false
+    }
+  ],
+  "stages": 3,
+  "missing": [],
+  "renderer": "Production CanvasKit software; not a browser or physical-device test",
+  "liveWrites": false
+}

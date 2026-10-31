@@ -1,0 +1,12 @@
+{
+  "result": "pass",
+  "renderer": "Production CanvasKit software renderer",
+  "savedCampRevision": 68,
+  "captures": [
+    "wetland",
+    "wetland-night"
+  ],
+  "missing": [],
+  "liveWrites": false,
+  "limitations": "No browser GPU or physical-device benchmark. Scenes are temporary art review arrangements."
+}

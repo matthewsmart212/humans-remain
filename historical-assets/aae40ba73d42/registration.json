@@ -1,0 +1,187 @@
+{
+  "size": 1024,
+  "anchor": [
+    512,
+    960
+  ],
+  "frameCount": 8,
+  "fps": 10,
+  "tiers": [
+    {
+      "tier": 1,
+      "sourceBounds": {
+        "left": 105,
+        "top": 566,
+        "width": 1033,
+        "height": 584
+      },
+      "scale": 0.82,
+      "baseRect": {
+        "left": 84,
+        "top": 481,
+        "width": 847,
+        "height": 479
+      },
+      "socket": [
+        512,
+        760
+      ],
+      "flameRect": {
+        "left": 159,
+        "top": 111,
+        "width": 707,
+        "height": 707
+      }
+    },
+    {
+      "tier": 2,
+      "sourceBounds": {
+        "left": 105,
+        "top": 316,
+        "width": 1122,
+        "height": 909
+      },
+      "scale": 0.82,
+      "baseRect": {
+        "left": 84,
+        "top": 215,
+        "width": 920,
+        "height": 745
+      },
+      "socket": [
+        512,
+        760
+      ],
+      "flameRect": {
+        "left": 159,
+        "top": 111,
+        "width": 707,
+        "height": 707
+      }
+    },
+    {
+      "tier": 3,
+      "sourceBounds": {
+        "left": 104,
+        "top": 63,
+        "width": 1093,
+        "height": 1086
+      },
+      "scale": 0.82,
+      "baseRect": {
+        "left": 83,
+        "top": 69,
+        "width": 896,
+        "height": 891
+      },
+      "socket": [
+        512,
+        759
+      ],
+      "flameRect": {
+        "left": 159,
+        "top": 110,
+        "width": 707,
+        "height": 707
+      }
+    }
+  ],
+  "flames": [
+    {
+      "sourceCell": {
+        "left": 0,
+        "top": 0,
+        "width": 443,
+        "height": 443
+      },
+      "sourceRoot": [
+        238.4422904325974,
+        419
+      ]
+    },
+    {
+      "sourceCell": {
+        "left": 443,
+        "top": 0,
+        "width": 444,
+        "height": 443
+      },
+      "sourceRoot": [
+        247.53938262498343,
+        419
+      ]
+    },
+    {
+      "sourceCell": {
+        "left": 887,
+        "top": 0,
+        "width": 443,
+        "height": 443
+      },
+      "sourceRoot": [
+        233.2667370130629,
+        420
+      ]
+    },
+    {
+      "sourceCell": {
+        "left": 1330,
+        "top": 0,
+        "width": 444,
+        "height": 443
+      },
+      "sourceRoot": [
+        227.31127266333027,
+        419
+      ]
+    },
+    {
+      "sourceCell": {
+        "left": 0,
+        "top": 443,
+        "width": 443,
+        "height": 444
+      },
+      "sourceRoot": [
+        237.40439679307713,
+        390
+      ]
+    },
+    {
+      "sourceCell": {
+        "left": 443,
+        "top": 443,
+        "width": 444,
+        "height": 444
+      },
+      "sourceRoot": [
+        229.17965675914374,
+        390
+      ]
+    },
+    {
+      "sourceCell": {
+        "left": 887,
+        "top": 443,
+        "width": 443,
+        "height": 444
+      },
+      "sourceRoot": [
+        229.6745524503411,
+        390
+      ]
+    },
+    {
+      "sourceCell": {
+        "left": 1330,
+        "top": 443,
+        "width": 444,
+        "height": 444
+      },
+      "sourceRoot": [
+        223.20089385430688,
+        390
+      ]
+    }
+  ]
+}

@@ -1,0 +1,956 @@
+[
+  {
+    "id": "art_tree_oak",
+    "name": "Broad woodland oak",
+    "image": "/survival/trees-v2/oak.webp",
+    "size": [
+      1536,
+      1024
+    ],
+    "worldWidth": 310,
+    "hp": 160,
+    "frames": [
+      {
+        "crop": [
+          0,
+          90,
+          588,
+          880
+        ],
+        "anchor": [
+          311,
+          815
+        ]
+      },
+      {
+        "crop": [
+          588,
+          90,
+          578,
+          880
+        ],
+        "anchor": [
+          299,
+          815
+        ]
+      },
+      {
+        "crop": [
+          1140,
+          700,
+          395,
+          270
+        ],
+        "anchor": [
+          187,
+          205
+        ]
+      }
+    ]
+  },
+  {
+    "id": "art_tree_pine",
+    "name": "Tall Scots pine",
+    "image": "/survival/trees-v2/pine.webp",
+    "size": [
+      1536,
+      1024
+    ],
+    "worldWidth": 240,
+    "hp": 120,
+    "frames": [
+      {
+        "crop": [
+          30,
+          0,
+          530,
+          1024
+        ],
+        "anchor": [
+          281,
+          950
+        ]
+      },
+      {
+        "crop": [
+          560,
+          0,
+          535,
+          1024
+        ],
+        "anchor": [
+          278,
+          950
+        ]
+      },
+      {
+        "crop": [
+          1120,
+          745,
+          390,
+          279
+        ],
+        "anchor": [
+          185,
+          205
+        ]
+      }
+    ]
+  },
+  {
+    "id": "art_tree_birch",
+    "name": "Silver birch",
+    "image": "/survival/trees-v2/birch.webp",
+    "size": [
+      1536,
+      1024
+    ],
+    "worldWidth": 250,
+    "hp": 100,
+    "frames": [
+      {
+        "crop": [
+          70,
+          0,
+          500,
+          1024
+        ],
+        "anchor": [
+          254,
+          935
+        ]
+      },
+      {
+        "crop": [
+          640,
+          0,
+          500,
+          1024
+        ],
+        "anchor": [
+          254,
+          935
+        ]
+      },
+      {
+        "crop": [
+          1135,
+          725,
+          401,
+          299
+        ],
+        "anchor": [
+          196,
+          210
+        ]
+      }
+    ]
+  },
+  {
+    "id": "art_tree_deadwood",
+    "name": "Gnarled deadwood",
+    "image": "/survival/trees-v2/deadwood.webp",
+    "size": [
+      1536,
+      1024
+    ],
+    "worldWidth": 270,
+    "hp": 80,
+    "frames": [
+      {
+        "crop": [
+          0,
+          20,
+          545,
+          965
+        ],
+        "anchor": [
+          280,
+          870
+        ]
+      },
+      {
+        "crop": [
+          545,
+          20,
+          550,
+          965
+        ],
+        "anchor": [
+          277,
+          870
+        ]
+      },
+      {
+        "crop": [
+          1095,
+          620,
+          441,
+          365
+        ],
+        "anchor": [
+          228,
+          270
+        ]
+      }
+    ]
+  },
+  {
+    "id": "art_tree_rowan",
+    "name": "Amber woodland rowan",
+    "image": "/survival/trees-world-v1/rowan.webp",
+    "size": [
+      1536,
+      1024
+    ],
+    "worldWidth": 270,
+    "hp": 120,
+    "frames": [
+      {
+        "crop": [
+          0,
+          0,
+          580,
+          1024
+        ],
+        "anchor": [
+          300,
+          905
+        ]
+      },
+      {
+        "crop": [
+          580,
+          0,
+          530,
+          1024
+        ],
+        "anchor": [
+          260,
+          905
+        ]
+      },
+      {
+        "crop": [
+          1110,
+          690,
+          426,
+          334
+        ],
+        "anchor": [
+          217,
+          215
+        ]
+      }
+    ]
+  },
+  {
+    "id": "art_tree_willow",
+    "name": "River willow",
+    "image": "/survival/trees-world-v1/willow.webp",
+    "size": [
+      1536,
+      1024
+    ],
+    "worldWidth": 330,
+    "hp": 160,
+    "frames": [
+      {
+        "crop": [
+          0,
+          0,
+          580,
+          1024
+        ],
+        "anchor": [
+          367,
+          910
+        ]
+      },
+      {
+        "crop": [
+          580,
+          0,
+          574,
+          1024
+        ],
+        "anchor": [
+          326,
+          910
+        ]
+      },
+      {
+        "crop": [
+          1154,
+          690,
+          382,
+          334
+        ],
+        "anchor": [
+          171,
+          220
+        ]
+      }
+    ]
+  },
+  {
+    "id": "art_tree_birch_branching",
+    "name": "Silver birch: branching",
+    "image": "/survival/tree-variants-v1/birch-branching.webp",
+    "size": [
+      534,
+      1294
+    ],
+    "worldWidth": 270,
+    "hp": 100,
+    "frames": [
+      {
+        "crop": [
+          2,
+          2,
+          530,
+          1001
+        ],
+        "anchor": [
+          272,
+          916
+        ]
+      },
+      {
+        "crop": [
+          408,
+          1007,
+          77,
+          88
+        ],
+        "anchor": [
+          19,
+          164
+        ]
+      },
+      {
+        "crop": [
+          2,
+          1007,
+          402,
+          285
+        ],
+        "anchor": [
+          205,
+          200
+        ]
+      }
+    ],
+    "damageRect": [
+      253,
+      752,
+      77,
+      88
+    ]
+  },
+  {
+    "id": "art_tree_birch_bent",
+    "name": "Silver birch: bent",
+    "image": "/survival/tree-variants-v1/birch-bent.webp",
+    "size": [
+      511,
+      1304
+    ],
+    "worldWidth": 257,
+    "hp": 100,
+    "frames": [
+      {
+        "crop": [
+          2,
+          2,
+          507,
+          1011
+        ],
+        "anchor": [
+          267,
+          924
+        ]
+      },
+      {
+        "crop": [
+          413,
+          1017,
+          83,
+          90
+        ],
+        "anchor": [
+          22,
+          163
+        ]
+      },
+      {
+        "crop": [
+          2,
+          1017,
+          407,
+          285
+        ],
+        "anchor": [
+          218,
+          199
+        ]
+      }
+    ],
+    "damageRect": [
+      245,
+      761,
+      83,
+      90
+    ]
+  },
+  {
+    "id": "art_tree_oak_forked",
+    "name": "Broad woodland oak: forked",
+    "image": "/survival/tree-variants-v1/oak-forked.webp",
+    "size": [
+      636,
+      1216
+    ],
+    "worldWidth": 311,
+    "hp": 160,
+    "frames": [
+      {
+        "crop": [
+          2,
+          2,
+          632,
+          935
+        ],
+        "anchor": [
+          332,
+          874
+        ]
+      },
+      {
+        "crop": [
+          385,
+          941,
+          90,
+          115
+        ],
+        "anchor": [
+          8,
+          204
+        ]
+      },
+      {
+        "crop": [
+          2,
+          941,
+          379,
+          273
+        ],
+        "anchor": [
+          198,
+          213
+        ]
+      }
+    ],
+    "damageRect": [
+      324,
+      670,
+      90,
+      115
+    ]
+  },
+  {
+    "id": "art_tree_oak_leaning",
+    "name": "Broad woodland oak: leaning",
+    "image": "/survival/tree-variants-v1/oak-leaning.webp",
+    "size": [
+      650,
+      1129
+    ],
+    "worldWidth": 344,
+    "hp": 160,
+    "frames": [
+      {
+        "crop": [
+          2,
+          2,
+          646,
+          869
+        ],
+        "anchor": [
+          398,
+          808
+        ]
+      },
+      {
+        "crop": [
+          366,
+          875,
+          91,
+          103
+        ],
+        "anchor": [
+          -3,
+          183
+        ]
+      },
+      {
+        "crop": [
+          2,
+          875,
+          360,
+          252
+        ],
+        "anchor": [
+          186,
+          192
+        ]
+      }
+    ],
+    "damageRect": [
+      401,
+      625,
+      91,
+      103
+    ]
+  },
+  {
+    "id": "art_tree_pine_branching",
+    "name": "Tall Scots pine: branching",
+    "image": "/survival/tree-variants-v1/pine-branching.webp",
+    "size": [
+      530,
+      1290
+    ],
+    "worldWidth": 239,
+    "hp": 120,
+    "frames": [
+      {
+        "crop": [
+          2,
+          2,
+          526,
+          1015
+        ],
+        "anchor": [
+          261,
+          945
+        ]
+      },
+      {
+        "crop": [
+          376,
+          1021,
+          80,
+          79
+        ],
+        "anchor": [
+          19,
+          184
+        ]
+      },
+      {
+        "crop": [
+          2,
+          1021,
+          370,
+          267
+        ],
+        "anchor": [
+          188,
+          195
+        ]
+      }
+    ],
+    "damageRect": [
+      242,
+      761,
+      80,
+      79
+    ]
+  },
+  {
+    "id": "art_tree_pine_bent",
+    "name": "Tall Scots pine: bent",
+    "image": "/survival/tree-variants-v1/pine-bent.webp",
+    "size": [
+      538,
+      1299
+    ],
+    "worldWidth": 242,
+    "hp": 120,
+    "frames": [
+      {
+        "crop": [
+          2,
+          2,
+          534,
+          1013
+        ],
+        "anchor": [
+          230,
+          948
+        ]
+      },
+      {
+        "crop": [
+          371,
+          1019,
+          89,
+          89
+        ],
+        "anchor": [
+          33,
+          209
+        ]
+      },
+      {
+        "crop": [
+          2,
+          1019,
+          365,
+          278
+        ],
+        "anchor": [
+          182,
+          213
+        ]
+      }
+    ],
+    "damageRect": [
+      197,
+      739,
+      89,
+      89
+    ]
+  },
+  {
+    "id": "art_tree_deadwood_forked",
+    "name": "Gnarled deadwood: forked",
+    "image": "/survival/tree-variants-v1/deadwood-forked.webp",
+    "size": [
+      613,
+      1295
+    ],
+    "worldWidth": 265,
+    "hp": 80,
+    "frames": [
+      {
+        "crop": [
+          2,
+          2,
+          531,
+          946
+        ],
+        "anchor": [
+          266,
+          865
+        ]
+      },
+      {
+        "crop": [
+          478,
+          952,
+          133,
+          122
+        ],
+        "anchor": [
+          9,
+          228
+        ]
+      },
+      {
+        "crop": [
+          2,
+          952,
+          472,
+          341
+        ],
+        "anchor": [
+          250,
+          261
+        ]
+      }
+    ],
+    "damageRect": [
+      257,
+      637,
+      133,
+      122
+    ]
+  },
+  {
+    "id": "art_tree_deadwood_bent",
+    "name": "Gnarled deadwood: bent",
+    "image": "/survival/tree-variants-v1/deadwood-bent.webp",
+    "size": [
+      589,
+      1264
+    ],
+    "worldWidth": 293,
+    "hp": 80,
+    "frames": [
+      {
+        "crop": [
+          2,
+          2,
+          561,
+          904
+        ],
+        "anchor": [
+          301,
+          824
+        ]
+      },
+      {
+        "crop": [
+          460,
+          910,
+          127,
+          129
+        ],
+        "anchor": [
+          16,
+          241
+        ]
+      },
+      {
+        "crop": [
+          2,
+          910,
+          454,
+          352
+        ],
+        "anchor": [
+          252,
+          272
+        ]
+      }
+    ],
+    "damageRect": [
+      285,
+      583,
+      127,
+      129
+    ]
+  },
+  {
+    "id": "art_tree_rowan_forked",
+    "name": "Amber woodland rowan: forked",
+    "image": "/survival/tree-variants-v1/rowan-forked.webp",
+    "size": [
+      556,
+      1268
+    ],
+    "worldWidth": 260,
+    "hp": 120,
+    "frames": [
+      {
+        "crop": [
+          2,
+          2,
+          552,
+          975
+        ],
+        "anchor": [
+          270,
+          896
+        ]
+      },
+      {
+        "crop": [
+          432,
+          981,
+          87,
+          101
+        ],
+        "anchor": [
+          3,
+          178
+        ]
+      },
+      {
+        "crop": [
+          2,
+          981,
+          426,
+          285
+        ],
+        "anchor": [
+          204,
+          205
+        ]
+      }
+    ],
+    "damageRect": [
+      267,
+      718,
+      87,
+      101
+    ]
+  },
+  {
+    "id": "art_tree_rowan_bent",
+    "name": "Amber woodland rowan: bent",
+    "image": "/survival/tree-variants-v1/rowan-bent.webp",
+    "size": [
+      547,
+      1294
+    ],
+    "worldWidth": 246,
+    "hp": 120,
+    "frames": [
+      {
+        "crop": [
+          2,
+          2,
+          532,
+          991
+        ],
+        "anchor": [
+          279,
+          912
+        ]
+      },
+      {
+        "crop": [
+          457,
+          997,
+          88,
+          100
+        ],
+        "anchor": [
+          11,
+          187
+        ]
+      },
+      {
+        "crop": [
+          2,
+          997,
+          451,
+          295
+        ],
+        "anchor": [
+          225,
+          216
+        ]
+      }
+    ],
+    "damageRect": [
+      268,
+      725,
+      88,
+      100
+    ]
+  },
+  {
+    "id": "art_tree_willow_forked",
+    "name": "River willow: forked",
+    "image": "/survival/tree-variants-v1/willow-forked.webp",
+    "size": [
+      563,
+      1221
+    ],
+    "worldWidth": 329,
+    "hp": 160,
+    "frames": [
+      {
+        "crop": [
+          2,
+          2,
+          559,
+          951
+        ],
+        "anchor": [
+          348,
+          881
+        ]
+      },
+      {
+        "crop": [
+          391,
+          957,
+          108,
+          120
+        ],
+        "anchor": [
+          22,
+          196
+        ]
+      },
+      {
+        "crop": [
+          2,
+          957,
+          385,
+          262
+        ],
+        "anchor": [
+          196,
+          193
+        ]
+      }
+    ],
+    "damageRect": [
+      326,
+      685,
+      108,
+      120
+    ]
+  },
+  {
+    "id": "art_tree_willow_bent",
+    "name": "River willow: bent",
+    "image": "/survival/tree-variants-v1/willow-bent.webp",
+    "size": [
+      596,
+      1177
+    ],
+    "worldWidth": 362,
+    "hp": 160,
+    "frames": [
+      {
+        "crop": [
+          2,
+          2,
+          592,
+          914
+        ],
+        "anchor": [
+          327,
+          846
+        ]
+      },
+      {
+        "crop": [
+          385,
+          920,
+          87,
+          96
+        ],
+        "anchor": [
+          16,
+          185
+        ]
+      },
+      {
+        "crop": [
+          2,
+          920,
+          379,
+          255
+        ],
+        "anchor": [
+          187,
+          187
+        ]
+      }
+    ],
+    "damageRect": [
+      311,
+      661,
+      87,
+      96
+    ]
+  }
+]

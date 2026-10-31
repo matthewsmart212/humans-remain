@@ -1,0 +1,237 @@
+{
+  "sourceRevision": 68,
+  "existing": 1366,
+  "added": 392,
+  "counts": {
+    "tree": 58,
+    "plant": 288,
+    "rock": 42,
+    "log": 4
+  },
+  "groups": [
+    {
+      "id": "northwest-grove",
+      "name": "Northwest oak grove",
+      "sourceCentre": [
+        950,
+        880
+      ],
+      "radius": 430,
+      "biome": "woodland",
+      "counts": {
+        "tree": 3,
+        "plant": 13,
+        "rock": 3,
+        "log": 1
+      }
+    },
+    {
+      "id": "west-near",
+      "name": "West gathering grove",
+      "sourceCentre": [
+        340,
+        2100
+      ],
+      "radius": 390,
+      "biome": "woodland",
+      "counts": {
+        "tree": 5,
+        "plant": 23,
+        "rock": 3,
+        "log": 0
+      }
+    },
+    {
+      "id": "west-lower",
+      "name": "Lower west birches",
+      "sourceCentre": [
+        210,
+        3430
+      ],
+      "radius": 390,
+      "biome": "woodland",
+      "counts": {
+        "tree": 4,
+        "plant": 23,
+        "rock": 3,
+        "log": 1
+      }
+    },
+    {
+      "id": "southwest-near",
+      "name": "Southwest bracken pocket",
+      "sourceCentre": [
+        1260,
+        4200
+      ],
+      "radius": 400,
+      "biome": "dry",
+      "counts": {
+        "tree": 3,
+        "plant": 16,
+        "rock": 3,
+        "log": 0
+      }
+    },
+    {
+      "id": "south-near",
+      "name": "South meadow edge",
+      "sourceCentre": [
+        2080,
+        4480
+      ],
+      "radius": 410,
+      "biome": "meadow",
+      "counts": {
+        "tree": 4,
+        "plant": 23,
+        "rock": 3,
+        "log": 0
+      }
+    },
+    {
+      "id": "southeast-near",
+      "name": "Southeast rowans",
+      "sourceCentre": [
+        3680,
+        4100
+      ],
+      "radius": 420,
+      "biome": "meadow",
+      "counts": {
+        "tree": 3,
+        "plant": 20,
+        "rock": 3,
+        "log": 0
+      }
+    },
+    {
+      "id": "east-near",
+      "name": "Eastern stony pocket",
+      "sourceCentre": [
+        4250,
+        2770
+      ],
+      "radius": 430,
+      "biome": "dry",
+      "counts": {
+        "tree": 4,
+        "plant": 16,
+        "rock": 3,
+        "log": 0
+      }
+    },
+    {
+      "id": "northeast-near",
+      "name": "Northeast woodland",
+      "sourceCentre": [
+        3920,
+        1410
+      ],
+      "radius": 380,
+      "biome": "woodland",
+      "counts": {
+        "tree": 2,
+        "plant": 23,
+        "rock": 3,
+        "log": 0
+      }
+    },
+    {
+      "id": "north-near",
+      "name": "Northern birch grove",
+      "sourceCentre": [
+        2580,
+        370
+      ],
+      "radius": 440,
+      "biome": "woodland",
+      "counts": {
+        "tree": 5,
+        "plant": 23,
+        "rock": 3,
+        "log": 1
+      }
+    },
+    {
+      "id": "northwest-outer",
+      "name": "Outer northwest pines",
+      "sourceCentre": [
+        -400,
+        800
+      ],
+      "radius": 470,
+      "biome": "woodland",
+      "counts": {
+        "tree": 6,
+        "plant": 23,
+        "rock": 3,
+        "log": 0
+      }
+    },
+    {
+      "id": "west-outer",
+      "name": "Outer west oak grove",
+      "sourceCentre": [
+        -1050,
+        3550
+      ],
+      "radius": 470,
+      "biome": "woodland",
+      "counts": {
+        "tree": 5,
+        "plant": 23,
+        "rock": 3,
+        "log": 1
+      }
+    },
+    {
+      "id": "southwest-outer",
+      "name": "Southwest open scrub",
+      "sourceCentre": [
+        -240,
+        4410
+      ],
+      "radius": 430,
+      "biome": "meadow",
+      "counts": {
+        "tree": 4,
+        "plant": 23,
+        "rock": 3,
+        "log": 0
+      }
+    },
+    {
+      "id": "east-outer",
+      "name": "Outer eastern shelves",
+      "sourceCentre": [
+        5270,
+        2550
+      ],
+      "radius": 500,
+      "biome": "dry",
+      "counts": {
+        "tree": 5,
+        "plant": 16,
+        "rock": 3,
+        "log": 0
+      }
+    },
+    {
+      "id": "south-outer",
+      "name": "Southern trail grove",
+      "sourceCentre": [
+        1550,
+        5400
+      ],
+      "radius": 470,
+      "biome": "meadow",
+      "counts": {
+        "tree": 5,
+        "plant": 23,
+        "rock": 3,
+        "log": 0
+      }
+    }
+  ]
+}

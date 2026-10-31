@@ -1,0 +1,31 @@
+{
+  "export_date": "2026-10-31",
+  "project_name": "Humans Remain",
+  "previous_name": "Safety Last",
+  "requested_github_repository": "matthewsmart212/humans-remain",
+  "source_commit": "4fb29e47ef5aac4ba49ee115dae54740a55ea614",
+  "local_head": "4fb29e47ef5aac4ba49ee115dae54740a55ea614",
+  "remote_main": "4fb29e47ef5aac4ba49ee115dae54740a55ea614",
+  "working_tree_status": "clean",
+  "newer_unpublished_source_changes_found": false,
+  "published_version_number": 322,
+  "published_version_id": "appgprj_6ac21a48e5588191a4e2af8602282d8b~appgver_ddffb1828c248191a4024845375e9050",
+  "site_project_id": "appgprj_6ac21a48e5588191a4e2af8602282d8b",
+  "live_url": "https://safety-last.matthew-smart212.chatgpt.site",
+  "deployment_id": "appgdep_6ae5c684aab88191b47caa9569ce0a4a",
+  "deployment_status": "succeeded",
+  "deployment_updated_at": "2026-10-31T10:45:29.811847+00:00",
+  "source_comparison": "Local HEAD and read-only remote main inspection matched the saved source provenance of the succeeded production deployment.",
+  "export_basis": "Actual checked-out source files and original Git asset blobs, plus read-only authored game-data snapshots and original published upload bytes.",
+  "source_checkout_modified": false,
+  "live_game_modified_or_redeployed": false,
+  "github_repository_modified": false,
+  "deliberate_original_file_edits": [
+    "server/edit-access.ts",
+    "scripts/check-editor-access.mjs",
+    "scripts/check-asset-library-cleanup.mjs",
+    ".gitignore"
+  ],
+  "public_safety": "Real owner identifier removed from exported source and tests. No Git metadata, private account/session data, credentials, real .env files, dependencies, caches or generated builds included.",
+  "completeness_notes": "See EXCLUSIONS.json, MIGRATION.md and migration-data/artwork-history.json for exact unavailable upload/configuration and pre-existing historical image defects."
+}

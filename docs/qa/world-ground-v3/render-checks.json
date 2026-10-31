@@ -1,0 +1,254 @@
+{
+  "result": "pass",
+  "renderer": "Production CanvasKit software surface",
+  "captures": [
+    {
+      "name": "camp",
+      "sourcePosition": [
+        2422,
+        2269
+      ],
+      "size": [
+        844,
+        390
+      ],
+      "meanRGB": [
+        187.44,
+        117.23,
+        44.58
+      ]
+    },
+    {
+      "name": "logging-brown",
+      "sourcePosition": [
+        -5300,
+        -2500
+      ],
+      "size": [
+        844,
+        390
+      ],
+      "meanRGB": [
+        117.33,
+        86.48,
+        57.21
+      ]
+    },
+    {
+      "name": "village-earth",
+      "sourcePosition": [
+        4300,
+        -2100
+      ],
+      "size": [
+        844,
+        390
+      ],
+      "meanRGB": [
+        182.39,
+        114.8,
+        47.59
+      ]
+    },
+    {
+      "name": "factory-brown",
+      "sourcePosition": [
+        10000,
+        -2300
+      ],
+      "size": [
+        844,
+        390
+      ],
+      "meanRGB": [
+        122.09,
+        89.32,
+        58.17
+      ]
+    },
+    {
+      "name": "waterworks-earth",
+      "sourcePosition": [
+        -3900,
+        8000
+      ],
+      "size": [
+        844,
+        390
+      ],
+      "meanRGB": [
+        146.49,
+        99.87,
+        53.71
+      ]
+    },
+    {
+      "name": "scrapyard-brown",
+      "sourcePosition": [
+        8100,
+        8400
+      ],
+      "size": [
+        844,
+        390
+      ],
+      "meanRGB": [
+        121.28,
+        88.33,
+        56.72
+      ]
+    },
+    {
+      "name": "southern-meadow-earth",
+      "sourcePosition": [
+        2200,
+        11200
+      ],
+      "size": [
+        844,
+        390
+      ],
+      "meanRGB": [
+        159.76,
+        105.07,
+        50.41
+      ]
+    },
+    {
+      "name": "western-transition",
+      "sourcePosition": [
+        -1500,
+        3200
+      ],
+      "size": [
+        844,
+        390
+      ],
+      "meanRGB": [
+        180.92,
+        113.3,
+        43.62
+      ]
+    },
+    {
+      "name": "southern-transition",
+      "sourcePosition": [
+        2000,
+        6500
+      ],
+      "size": [
+        844,
+        390
+      ],
+      "meanRGB": [
+        177.35,
+        111.14,
+        44.08
+      ]
+    },
+    {
+      "name": "four-square-contact",
+      "sourcePosition": [
+        -2150,
+        3800
+      ],
+      "size": [
+        844,
+        390
+      ],
+      "meanRGB": [
+        161.03,
+        104.92,
+        47.69
+      ]
+    },
+    {
+      "name": "meadow-detail",
+      "sourcePosition": [
+        2200,
+        11200
+      ],
+      "size": [
+        844,
+        390
+      ],
+      "meanRGB": [
+        156.13,
+        102.8,
+        49.61
+      ]
+    },
+    {
+      "name": "brown-detail",
+      "sourcePosition": [
+        -5300,
+        -2500
+      ],
+      "size": [
+        844,
+        390
+      ],
+      "meanRGB": [
+        115.91,
+        85.8,
+        57.61
+      ]
+    },
+    {
+      "name": "camp-edge-detail",
+      "sourcePosition": [
+        200,
+        2750
+      ],
+      "size": [
+        844,
+        390
+      ],
+      "meanRGB": [
+        177.89,
+        106.81,
+        43.2
+      ]
+    },
+    {
+      "name": "meadow-portrait",
+      "sourcePosition": [
+        2200,
+        11200
+      ],
+      "size": [
+        390,
+        844
+      ],
+      "meanRGB": [
+        157.87,
+        105.04,
+        51.7
+      ]
+    },
+    {
+      "name": "meadow-night",
+      "sourcePosition": [
+        2200,
+        11200
+      ],
+      "size": [
+        390,
+        844
+      ],
+      "meanRGB": [
+        22.98,
+        19.8,
+        20.12
+      ]
+    }
+  ],
+  "checks": [
+    "Clear soil and rocky ground rendered in each district",
+    "Former green areas now read as earth",
+    "Deeper brown woodland",
+    "Camp-edge and four-square contacts rendered",
+    "Portrait and night views rendered"
+  ],
+  "limitations": "No browser automation or physical iPhone performance test."
+}

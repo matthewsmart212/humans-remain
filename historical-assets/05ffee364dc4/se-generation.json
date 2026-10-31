@@ -1,0 +1,20 @@
+{
+  "patch": "se",
+  "source": {
+    "width": 1712,
+    "height": 919,
+    "file": "se-generated-original.png"
+  },
+  "registered": {
+    "x": 1534,
+    "y": 770,
+    "width": 1670,
+    "height": 896,
+    "north": 256,
+    "right": 264
+  },
+  "scale": {
+    "x": 0.9754672897196262,
+    "y": 0.9749727965179543
+  }
+}

@@ -1,0 +1,19 @@
+{
+  "result": "pass",
+  "puddles": 20,
+  "variants": 4,
+  "walkContacts": 6,
+  "sprintContacts": 5,
+  "checks": [
+    "migration preserves every existing placement",
+    "migration is idempotent and preserves deletion",
+    "marker round trip and invalid marker rejection",
+    "no navigation blockers",
+    "rotated/scaled/mirrored water contacts",
+    "transparent corners stay dry",
+    "walking versus sprint strength",
+    "idle and blocked movement silent",
+    "effects settle and remain bounded"
+  ],
+  "limitations": "Software rendering; no new physical iPhone performance measurement."
+}

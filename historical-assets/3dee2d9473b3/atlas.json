@@ -1,0 +1,420 @@
+{
+  "format": "source rectangles in pixels; anchors are relative to rectangle",
+  "assets": {
+    "mockup": {
+      "path": "assets/mockup.png",
+      "width": 1672,
+      "height": 941,
+      "mode": "RGB"
+    },
+    "floor": {
+      "path": "assets/floor.png",
+      "width": 1024,
+      "height": 1536,
+      "mode": "RGB"
+    },
+    "machinery": {
+      "path": "assets/machinery.png",
+      "width": 1536,
+      "height": 1024,
+      "mode": "RGBA"
+    },
+    "props": {
+      "path": "assets/props.png",
+      "width": 1536,
+      "height": 1024,
+      "mode": "RGBA"
+    },
+    "worker": {
+      "path": "assets/worker.png",
+      "width": 1774,
+      "height": 887,
+      "mode": "RGBA"
+    },
+    "effects": {
+      "path": "assets/effects.png",
+      "width": 1536,
+      "height": 1024,
+      "mode": "RGBA"
+    }
+  },
+  "frames": {
+    "parcel_small": {
+      "sheet": "props",
+      "rect": [
+        0,
+        0,
+        512,
+        512
+      ],
+      "anchor": [
+        0.5,
+        0.5
+      ]
+    },
+    "parcel_large": {
+      "sheet": "props",
+      "rect": [
+        512,
+        0,
+        512,
+        512
+      ],
+      "anchor": [
+        0.5,
+        0.5
+      ]
+    },
+    "crate": {
+      "sheet": "props",
+      "rect": [
+        1024,
+        0,
+        512,
+        512
+      ],
+      "anchor": [
+        0.5,
+        0.5
+      ]
+    },
+    "barrel": {
+      "sheet": "props",
+      "rect": [
+        0,
+        512,
+        512,
+        512
+      ],
+      "anchor": [
+        0.5,
+        0.5
+      ]
+    },
+    "cone": {
+      "sheet": "props",
+      "rect": [
+        512,
+        512,
+        512,
+        512
+      ],
+      "anchor": [
+        0.5,
+        0.5
+      ]
+    },
+    "debris": {
+      "sheet": "props",
+      "rect": [
+        1024,
+        512,
+        512,
+        512
+      ],
+      "anchor": [
+        0.5,
+        0.5
+      ]
+    },
+    "dust_0": {
+      "sheet": "effects",
+      "rect": [
+        0,
+        0,
+        512,
+        512
+      ],
+      "anchor": [
+        0.5,
+        0.5
+      ]
+    },
+    "dust_1": {
+      "sheet": "effects",
+      "rect": [
+        512,
+        0,
+        512,
+        512
+      ],
+      "anchor": [
+        0.5,
+        0.5
+      ]
+    },
+    "dust_2": {
+      "sheet": "effects",
+      "rect": [
+        1024,
+        0,
+        512,
+        512
+      ],
+      "anchor": [
+        0.5,
+        0.5
+      ]
+    },
+    "impact": {
+      "sheet": "effects",
+      "rect": [
+        0,
+        512,
+        512,
+        512
+      ],
+      "anchor": [
+        0.5,
+        0.5
+      ]
+    },
+    "wind": {
+      "sheet": "effects",
+      "rect": [
+        512,
+        512,
+        512,
+        512
+      ],
+      "anchor": [
+        0.5,
+        0.5
+      ]
+    },
+    "dizzy": {
+      "sheet": "effects",
+      "rect": [
+        1024,
+        512,
+        512,
+        512
+      ],
+      "anchor": [
+        0.5,
+        0.5
+      ]
+    },
+    "walk_down_0": {
+      "sheet": "worker",
+      "rect": [
+        0,
+        0,
+        444,
+        444
+      ],
+      "anchor": [
+        0.5,
+        0.88
+      ]
+    },
+    "walk_right_0": {
+      "sheet": "worker",
+      "rect": [
+        444,
+        0,
+        443,
+        444
+      ],
+      "anchor": [
+        0.5,
+        0.88
+      ]
+    },
+    "walk_up_0": {
+      "sheet": "worker",
+      "rect": [
+        887,
+        0,
+        443,
+        444
+      ],
+      "anchor": [
+        0.5,
+        0.88
+      ]
+    },
+    "walk_left_0": {
+      "sheet": "worker",
+      "rect": [
+        1330,
+        0,
+        444,
+        444
+      ],
+      "anchor": [
+        0.5,
+        0.88
+      ]
+    },
+    "walk_down_1": {
+      "sheet": "worker",
+      "rect": [
+        0,
+        444,
+        444,
+        443
+      ],
+      "anchor": [
+        0.5,
+        0.88
+      ]
+    },
+    "walk_right_1": {
+      "sheet": "worker",
+      "rect": [
+        444,
+        444,
+        443,
+        443
+      ],
+      "anchor": [
+        0.5,
+        0.88
+      ]
+    },
+    "walk_up_1": {
+      "sheet": "worker",
+      "rect": [
+        887,
+        444,
+        443,
+        443
+      ],
+      "anchor": [
+        0.5,
+        0.88
+      ]
+    },
+    "walk_left_1": {
+      "sheet": "worker",
+      "rect": [
+        1330,
+        444,
+        444,
+        443
+      ],
+      "anchor": [
+        0.5,
+        0.88
+      ]
+    },
+    "conveyor": {
+      "sheet": "machinery",
+      "rect": [
+        0,
+        0,
+        545,
+        335
+      ],
+      "anchor": [
+        0.5,
+        0.5
+      ]
+    },
+    "dispenser": {
+      "sheet": "machinery",
+      "rect": [
+        550,
+        0,
+        475,
+        340
+      ],
+      "anchor": [
+        0.5,
+        0.5
+      ]
+    },
+    "receiver": {
+      "sheet": "machinery",
+      "rect": [
+        1060,
+        0,
+        476,
+        335
+      ],
+      "anchor": [
+        0.5,
+        0.5
+      ]
+    },
+    "crusher_housing": {
+      "sheet": "machinery",
+      "rect": [
+        20,
+        340,
+        510,
+        340
+      ],
+      "anchor": [
+        0.5,
+        0.5
+      ]
+    },
+    "crusher_platen": {
+      "sheet": "machinery",
+      "rect": [
+        565,
+        390,
+        470,
+        285
+      ],
+      "anchor": [
+        0.5,
+        0.5
+      ]
+    },
+    "fan_housing": {
+      "sheet": "machinery",
+      "rect": [
+        1090,
+        335,
+        446,
+        375
+      ],
+      "anchor": [
+        0.5,
+        0.5
+      ]
+    },
+    "fan_rotor": {
+      "sheet": "machinery",
+      "rect": [
+        50,
+        680,
+        390,
+        344
+      ],
+      "anchor": [
+        0.5,
+        0.5
+      ]
+    },
+    "swing_arm": {
+      "sheet": "machinery",
+      "rect": [
+        445,
+        710,
+        665,
+        300
+      ],
+      "anchor": [
+        0.105,
+        0.41
+      ]
+    },
+    "guardrail": {
+      "sheet": "machinery",
+      "rect": [
+        1120,
+        730,
+        416,
+        294
+      ],
+      "anchor": [
+        0.5,
+        0.5
+      ]
+    }
+  }
+}

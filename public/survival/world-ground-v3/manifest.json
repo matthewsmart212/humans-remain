@@ -1,0 +1,32 @@
+{
+  "version": "world-ground-v3",
+  "tool": "Built-in image_gen.imagegen",
+  "source": "Centre of the original campfire clearing, extended across a full ground-only texture",
+  "materials": [
+    {
+      "name": "warm",
+      "image": "/survival/world-ground-v2/warm.webp",
+      "width": 1254,
+      "height": 1254,
+      "bytes": 2358584
+    },
+    {
+      "name": "brown",
+      "image": "/survival/world-ground-v2/brown.webp",
+      "width": 1254,
+      "height": 1254,
+      "bytes": 2152472
+    },
+    {
+      "name": "clear",
+      "image": "/survival/world-ground-v3/clear-earth.webp",
+      "width": 1254,
+      "height": 1254,
+      "bytes": 2303466
+    }
+  ],
+  "assembly": "Existing 256 squares and 200px overlaps; continuous world-coordinate mask blends irregular clearings through warm and brown terrain",
+  "green": "Olive material removed from active sources; green colour pass removed",
+  "camp": "Original artwork and saved layouts unchanged",
+  "prompts": "artwork-archive/world-ground-v3/prompts.json"
+}

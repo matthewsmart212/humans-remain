@@ -1,0 +1,67 @@
+{
+  "size": 1024,
+  "anchor": [
+    512,
+    960
+  ],
+  "frameCount": 8,
+  "fps": 10,
+  "tiers": [
+    {
+      "tier": 1,
+      "baseRect": {
+        "left": 114,
+        "top": 433,
+        "width": 806,
+        "height": 526
+      },
+      "socket": [
+        512,
+        805
+      ]
+    },
+    {
+      "tier": 2,
+      "baseRect": {
+        "left": 121,
+        "top": 432,
+        "width": 797,
+        "height": 523
+      },
+      "socket": [
+        512,
+        805
+      ]
+    },
+    {
+      "tier": 3,
+      "baseRect": {
+        "left": 111,
+        "top": 429,
+        "width": 870,
+        "height": 537
+      },
+      "socket": [
+        512,
+        805
+      ]
+    }
+  ],
+  "well": {
+    "sourceBounds": {
+      "left": 208,
+      "top": 82,
+      "width": 835,
+      "height": 1021
+    },
+    "scale": 0.86,
+    "anchor": [
+      471,
+      995
+    ],
+    "size": [
+      1091,
+      1012
+    ]
+  }
+}

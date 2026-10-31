@@ -1,0 +1,17 @@
+{
+  "passed": true,
+  "checks": [
+    "Fresh camp uses real starter supplies and has no metalworking dependency cycle",
+    "Remote, closed, unavailable, dead/downed, night, missing-facility and insufficient-supply actions are atomic",
+    "Mixed backpack/store expansion pays once, persists, and unlocks standard plans without granting buildings, gear or waypoints",
+    "Bellows can be discovered before expansion; camp level grants knowledge while physical construction still costs materials",
+    "Legacy discovered/learned/restored access migrates; malformed levels reject; sandbox remains unlocked",
+    "Read-only family catalogue groups named upgrades and separates non-payable previews from live camp access"
+  ],
+  "camp2Cost": {
+    "pallets": 8,
+    "stone": 4
+  },
+  "browserTested": false,
+  "physicalIPhoneTested": false
+}

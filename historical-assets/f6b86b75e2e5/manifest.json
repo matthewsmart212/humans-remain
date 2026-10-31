@@ -1,0 +1,62 @@
+[
+  {
+    "original": "/survival/camp-ground-v3/centre-3600.webp",
+    "archive": "artwork-archive/retired-runtime/world-expansion/survival/camp-ground-v3/centre-3600.webp",
+    "bytes": 5334960,
+    "sha256": "aa54fb736aaf1d93a0d975ef71330a4ceec6e6146f7126c4dd543c58479b8fc9",
+    "reason": "Unused historical/reference export; active camp textures stay unchanged."
+  },
+  {
+    "original": "/survival/home-terrain.png",
+    "archive": "artwork-archive/retired-runtime/world-expansion/survival/home-terrain.png",
+    "bytes": 3383978,
+    "sha256": "25ee6776995574102f320deca7a472285fe2442d4d3c5feb02505ce35b2600e2",
+    "reason": "Unused historical/reference export; active camp textures stay unchanged."
+  },
+  {
+    "original": "/survival/home-terrain-square-v3.png",
+    "archive": "artwork-archive/retired-runtime/world-expansion/survival/home-terrain-square-v3.png",
+    "bytes": 4175508,
+    "sha256": "cfa3265604c289e0add99658beb42ca134e2fe59d1e31147c20cbd5749ba7e73",
+    "reason": "Unused historical/reference export; active camp textures stay unchanged."
+  },
+  {
+    "original": "/survival/home-ground-empty.png",
+    "archive": "artwork-archive/retired-runtime/world-expansion/survival/home-ground-empty.png",
+    "bytes": 3652027,
+    "sha256": "d773e3700ab1927d1db01e18b87a95b0201003caf4fbfefc7457bba490f21042",
+    "reason": "Identical duplicate of home-buildings-atlas.png; old URL redirected."
+  },
+  {
+    "original": "/survival/home-ground.png",
+    "replacement": "/survival/home-ground-lossless.webp",
+    "archive": "artwork-archive/retired-runtime/world-expansion/survival/home-ground.png",
+    "bytes": 3666213,
+    "sha256": "7e61f5df31ce5f2bf6392eea149f9d596a2709d729eb1795523182dadc43de41",
+    "reason": "Lossless WebP recode, decoded RGBA verified identical; old URL redirects to save runtime package space."
+  },
+  {
+    "original": "/survival/city-ground.png",
+    "replacement": "/survival/city-ground-lossless.webp",
+    "archive": "artwork-archive/retired-runtime/world-expansion/survival/city-ground.png",
+    "bytes": 3043901,
+    "sha256": "6f9b847ba0f744c0e689e002f44e2c72f2195bd83adf48f9412bdaf347453ffb",
+    "reason": "Lossless WebP recode, decoded RGBA verified identical; old URL redirects to save runtime package space."
+  },
+  {
+    "original": "/survival/building-roofs.png",
+    "replacement": "/survival/building-roofs-lossless.webp",
+    "archive": "artwork-archive/retired-runtime/world-expansion/survival/building-roofs.png",
+    "bytes": 3048045,
+    "sha256": "28d45489786d9030ea14d5b94c82f67ea048fdb5688aa2f18bc06448b67c037c",
+    "reason": "Lossless WebP recode, decoded RGBA verified identical; old URL redirects to save runtime package space."
+  },
+  {
+    "original": "/survival/home-buildings-atlas.png",
+    "replacement": "/survival/home-buildings-atlas-lossless.webp",
+    "archive": "artwork-archive/retired-runtime/world-expansion/survival/home-buildings-atlas.png",
+    "bytes": 3652027,
+    "sha256": "d773e3700ab1927d1db01e18b87a95b0201003caf4fbfefc7457bba490f21042",
+    "reason": "Lossless WebP recode, decoded RGBA verified identical; old URL redirects to save runtime package space."
+  }
+]

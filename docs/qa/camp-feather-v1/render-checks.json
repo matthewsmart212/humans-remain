@@ -1,0 +1,15 @@
+{
+  "result": "pass",
+  "renderer": "Production CanvasKit software renderer",
+  "captures": [
+    "after-overview",
+    "north-edge",
+    "south-edge",
+    "east-edge"
+  ],
+  "missing": [],
+  "sourceRevision": 72,
+  "placements": 4465,
+  "liveMapWrites": false,
+  "deviceFPSMeasured": false
+}

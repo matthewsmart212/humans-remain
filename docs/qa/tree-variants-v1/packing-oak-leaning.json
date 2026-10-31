@@ -1,0 +1,134 @@
+{
+  "key": "oak-leaning",
+  "species": "oak",
+  "id": "art_tree_oak_leaning",
+  "name": "Broad woodland oak: leaning",
+  "image": "/survival/tree-variants-v1/oak-leaning.webp",
+  "size": [
+    650,
+    1129
+  ],
+  "worldWidth": 344,
+  "hp": 160,
+  "frames": [
+    {
+      "crop": [
+        2,
+        2,
+        646,
+        869
+      ],
+      "anchor": [
+        398,
+        808
+      ]
+    },
+    {
+      "crop": [
+        366,
+        875,
+        91,
+        103
+      ],
+      "anchor": [
+        -3,
+        183
+      ]
+    },
+    {
+      "crop": [
+        2,
+        875,
+        360,
+        252
+      ],
+      "anchor": [
+        186,
+        192
+      ]
+    }
+  ],
+  "damageRect": [
+    401,
+    625,
+    91,
+    103
+  ],
+  "source": "artwork-archive/tree-variants-v1/oak-leaning.png",
+  "sourceSize": [
+    1536,
+    1024
+  ],
+  "sourceHealthyCrop": [
+    13,
+    97,
+    646,
+    869
+  ],
+  "sourceDamageCrop": [
+    990,
+    722,
+    91,
+    103
+  ],
+  "sourceStumpCrop": [
+    1166,
+    713,
+    360,
+    252
+  ],
+  "sourceRoot": [
+    411,
+    905
+  ],
+  "damagedTranslation": [
+    576,
+    0
+  ],
+  "stumpTranslation": [
+    941,
+    0
+  ],
+  "bytes": 639078,
+  "decodedBytes": 2935400,
+  "extraction": {
+    "visibleBounds": [
+      [
+        21,
+        105,
+        630,
+        853
+      ],
+      [
+        597,
+        105,
+        630,
+        853
+      ],
+      [
+        1174,
+        721,
+        344,
+        236
+      ]
+    ],
+    "separatorMaximumAlpha": [
+      13,
+      0
+    ],
+    "boundsPadding": 8,
+    "alphaThresholdAppliedToPixels": false,
+    "notchOverlapJoin": false
+  },
+  "checks": {
+    "alphaMismatch": 0,
+    "visibleRgbMismatch": 0,
+    "outsideNotchPreserved": true,
+    "rootFanPreserved": true
+  },
+  "notes": [
+    "Healthy pixels are reused unchanged outside the tight notch rectangle.",
+    "Separate generated loose chips are omitted; runtime hit particles supply debris.",
+    "Stump roots are registered to the same ground anchor; no scaling or resampling was applied."
+  ]
+}

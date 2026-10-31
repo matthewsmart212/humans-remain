@@ -1,0 +1,154 @@
+[
+  {
+    "wall": 1,
+    "canvas": [
+      1168,
+      1040
+    ],
+    "sourceBounds": {
+      "left": 14,
+      "top": 90,
+      "width": 1254,
+      "height": 807
+    },
+    "targetBounds": {
+      "left": 50,
+      "top": 80,
+      "width": 888,
+      "height": 570
+    }
+  },
+  {
+    "wall": 2,
+    "canvas": [
+      988,
+      804
+    ],
+    "sourceBounds": {
+      "left": 933,
+      "top": 46,
+      "width": 458,
+      "height": 1038
+    },
+    "targetBounds": {
+      "left": 640,
+      "top": 48,
+      "width": 308,
+      "height": 706
+    }
+  },
+  {
+    "wall": 3,
+    "canvas": [
+      956,
+      916
+    ],
+    "sourceBounds": {
+      "left": 611,
+      "top": 135,
+      "width": 637,
+      "height": 1007
+    },
+    "targetBounds": {
+      "left": 450,
+      "top": 104,
+      "width": 472,
+      "height": 746
+    }
+  },
+  {
+    "wall": 4,
+    "canvas": [
+      878,
+      694
+    ],
+    "sourceBounds": {
+      "left": 82,
+      "top": 267,
+      "width": 1213,
+      "height": 769
+    },
+    "targetBounds": {
+      "left": 46,
+      "top": 248,
+      "width": 642,
+      "height": 412
+    }
+  },
+  {
+    "wall": 5,
+    "canvas": [
+      930,
+      1236
+    ],
+    "sourceBounds": {
+      "left": 90,
+      "top": 658,
+      "width": 944,
+      "height": 587
+    },
+    "targetBounds": {
+      "left": 170,
+      "top": 700,
+      "width": 690,
+      "height": 426
+    }
+  },
+  {
+    "wall": 6,
+    "canvas": [
+      930,
+      1148
+    ],
+    "sourceBounds": {
+      "left": 54,
+      "top": 37,
+      "width": 710,
+      "height": 1182
+    },
+    "targetBounds": {
+      "left": 34,
+      "top": 34,
+      "width": 492,
+      "height": 824
+    }
+  },
+  {
+    "wall": 7,
+    "canvas": [
+      900,
+      934
+    ],
+    "sourceBounds": {
+      "left": 102,
+      "top": 120,
+      "width": 625,
+      "height": 1091
+    },
+    "targetBounds": {
+      "left": 78,
+      "top": 106,
+      "width": 440,
+      "height": 788
+    }
+  },
+  {
+    "wall": 8,
+    "canvas": [
+      842,
+      1138
+    ],
+    "sourceBounds": {
+      "left": 76,
+      "top": 57,
+      "width": 966,
+      "height": 609
+    },
+    "targetBounds": {
+      "left": 86,
+      "top": 34,
+      "width": 706,
+      "height": 450
+    }
+  }
+]

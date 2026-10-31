@@ -1,0 +1,71 @@
+{
+  "name": "Safety Last — Southern works and scrap outskirts",
+  "date": "2026-10-14",
+  "method": "Built-in image_gen outpaint and material-transition edit; deterministic northern registration and lossless cuts",
+  "sourceCommit": "30fc42e8b55140a139b0304a5adcb1a16cf99c05",
+  "nativeGeneration": {
+    "width": 1667,
+    "height": 943,
+    "file": "generated-master-original.png"
+  },
+  "registeredMaster": {
+    "x": 7036,
+    "y": 4540,
+    "width": 2944,
+    "height": 1666,
+    "file": "registered-master.png"
+  },
+  "packaging": "Native generated artwork resampled to existing camp scale; packaged dimensions are not native generation resolution.",
+  "tiles": [
+    {
+      "id": "16-south-works-clearing",
+      "url": "/survival/maps/south-works-v1/16-south-works-clearing.webp",
+      "x": 7036,
+      "y": 4668,
+      "width": 1538,
+      "height": 1538
+    },
+    {
+      "id": "17-scrap-outskirts-trail",
+      "url": "/survival/maps/south-works-v1/17-scrap-outskirts-trail.webp",
+      "x": 8442,
+      "y": 4668,
+      "width": 1538,
+      "height": 1538
+    }
+  ],
+  "contacts": {
+    "north": {
+      "masterPreservedRows": 132,
+      "masterBlendRows": 128,
+      "outputExactRows": 4,
+      "runtimeOverlap": 132,
+      "featherRows": 36,
+      "existingHorizontalContact": "The two original northern neighbours are composited through their existing 36-pixel eastern left feather.",
+      "maxChannelError": 0
+    },
+    "betweenNewTiles": {
+      "sharedColumns": 132,
+      "featherColumns": 36,
+      "maxChannelError": 0
+    }
+  },
+  "scope": "Two adjoining southern ground pieces. The broad western approach opens into worn work ground, while the smaller eastern trail continues south. Central ground remains road-free and freely walkable.",
+  "palette": "Brown and umber compacted earth, muted olive grass and sparse gravel; existing top-left leaves preserved only in the contact, no new red/orange leaves.",
+  "nextExits": {
+    "coordinateStatus": "Approximate source-pixel guides, not navigation geometry.",
+    "south": {
+      "x": 9410,
+      "y": 6206,
+      "road": "small dirt trail"
+    },
+    "west": {
+      "x": 7036,
+      "road": false
+    },
+    "east": {
+      "x": 9980,
+      "road": false
+    }
+  }
+}

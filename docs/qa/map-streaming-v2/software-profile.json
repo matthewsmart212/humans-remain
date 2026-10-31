@@ -1,0 +1,17 @@
+{
+  "scope": "Fixed terrain view in CanvasKit software renderer, 400x320; CPU regression comparison, not device FPS.",
+  "result": [
+    {
+      "version": "v150",
+      "paintAllocationsPerFrame": 9,
+      "medianDrawMs": 113.80657500000052,
+      "p95DrawMs": 175.83357799999976
+    },
+    {
+      "version": "updated",
+      "paintAllocationsPerFrame": 1,
+      "medianDrawMs": 106.88396499999908,
+      "p95DrawMs": 247.16738600000008
+    }
+  ]
+}

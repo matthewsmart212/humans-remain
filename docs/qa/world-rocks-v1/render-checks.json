@@ -1,0 +1,15 @@
+{
+  "result": "pass",
+  "renderer": "Production CanvasKit software renderer",
+  "captures": [
+    "woodland-rocks",
+    "river-rocks",
+    "dryland-rocks",
+    "exposed-rocks"
+  ],
+  "newRockDesigns": 20,
+  "savedRevision": 68,
+  "missing": [],
+  "liveMapWrites": false,
+  "deviceFPSMeasured": false
+}

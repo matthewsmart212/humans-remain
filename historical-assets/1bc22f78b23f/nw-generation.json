@@ -1,0 +1,19 @@
+{
+  "patch": "nw",
+  "source": {
+    "width": 1552,
+    "height": 1013,
+    "file": "nw-generated-original.png"
+  },
+  "registered": {
+    "x": 0,
+    "y": 0,
+    "width": 1670,
+    "height": 1090,
+    "north": 292
+  },
+  "scale": {
+    "x": 1.0760309278350515,
+    "y": 1.0760118460019743
+  }
+}

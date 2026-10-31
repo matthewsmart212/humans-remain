@@ -1,0 +1,19 @@
+{
+  "result": "pass",
+  "previousPlants": 1811,
+  "removedFromInnerCircle": 104,
+  "refinedPlants": 1335,
+  "totalObjects": 1360,
+  "checks": [
+    "inner ring including crown overlap is clear",
+    "non-foliage placements and collisions unchanged",
+    "manual changes outside the clearing preserved",
+    "idempotence and deletion preservation",
+    "migration marker JSON round trip",
+    "varied size and clustered density",
+    "outline only for foreground foliage",
+    "outline suppressed at solid props",
+    "contact motion retained"
+  ],
+  "limitations": "Software Skia visual QA; no new iPhone/browser performance measurement. Four unavailable remote uploaded props omitted only from visual fixtures."
+}

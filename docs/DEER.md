@@ -1,0 +1,31 @@
+# Doe and stag
+
+Three doe and three stag spawn in small pairs beyond the camp perimeter in new authored Play sessions. Spawn selection prefers clear ground and visible gaps in shrubs and tree canopies. They walk, gallop, blink, graze, flee approaching players and settle into idle poses. Both use the existing collision/substep path, a 400-unit normal home leash, 10 Hz decisions, and distant sleeping beyond 1,800 units. Movement is 78 walking / 275 fleeing. Shared eight-direction hysteresis and sustained-turn confirmation apply to all animals, including reversals and collision restarts; direction changes do not reset the gait. Fleeing now follows committed escape legs for 2–2.3 seconds, with a temporary travel radius of up to 1,122 units so deer can run farther in one direction. After four calm seconds the normal home leash applies again and they return continuously without snapping. Local obstacle detours remain collision-aware; see ANIMAL-MOTION.md.
+
+Each animal has 80 generated frames across five views, with three mirrored views supplying eight directions. The total is 160 unique frames in ten 896 × 896 transparent lossless WebP atlases. Every cell is 224 × 224 with a shared [112,204] ground anchor. Atlas storage is 32,112,640 decoded bytes and 4,063,504 compressed bytes; the two food icons total 116,616 bytes. Runtime reuses decoded atlases, draws one sprite plus a simple shadow for each visible animal, culls offscreen deer and uses the existing fixed simulation tick. There are no per-animal React updates, timers or asset requests.
+
+Frames 0–3 walk, 4–7 gallop, 8–9 idle/blink, 10–11 graze, 12–13 flinch/recover, 14–15 fall/downed. Locomotion follows travelled distance. Idle, grazing, hit and fall poses follow simulation time. Bodies fade after two seconds; corpses cannot award another drop.
+
+Doe have 64 HP (four punches or two axe cuts) and yield two venison portions. Stag have 96 HP (six punches or three axe cuts) and yield three. An axe still costs no stamina. Venison drops as a supply bundle, and partial cooking/drop operations preserve bundle capacity. The campfire cooks one portion in six seconds. Default cooking uses available chicken first, rabbit second, then venison. The four-meal pouch is shared by all three foods. Cooked venison restores up to 50 food and 15 health and stays distinct through pickup, backpack use/drop, quick selection, holding/eating and scene travel.
+
+Chickens and rabbits have 32 HP, below both deer types. An unprovoked stag flees as before. A surviving stag that is struck lowers its head for a 0.55-second warning while tracking the attacker's position and facing through the existing direction stabilizer. It locks its aim when the charge launches, then charges at 560 units/second for up to one second. This can catch an ordinary walking retreat or a player walking through the warning, while sprinting away, a post-launch sidestep and a timed dodge remain valid escapes. There is no homing after launch or outlined ground box. The warning pose makes combat/Dodge controls available before contact. A landed hit deals 12 health with collision-safe knockback; standard dodge invulnerability and walls prevent the hit. The stag retreats for at least 2.2 seconds and cannot retaliate again for 4.5 seconds, and only after another fresh hit. Killing it or the player becoming downed cancels the charge. Doe never retaliate. Existing graze/head-lowering and gallop frames supply these poses without new textures, image requests or timers.
+
+Animal health bars show tracked current and maximum health, with distinct hit cues for damage dealt to animals and damage received by the player. See ANIMAL-COMBAT.md for the shared presentation and feedback behaviour.
+
+The Venison quick slot uses one former empty slot. Fists, Axe, Chicken, Rabbit, Venison and one empty slot remain within the existing 292 × 50 bar and 44-pixel touch targets. Keyboard selection for venison is 5.
+
+## Artwork and prompts
+
+The built-in image-generation tool used the approved doe/stag mockup as its design reference. Final runtime assets are saved at:
+
+- `public/survival/deer-v1/doe/{down,down-left,left,up-left,up}.webp`
+- `public/survival/deer-v1/stag/{down,down-left,left,up-left,up}.webp`
+- `public/survival/venison-food-v1/{raw-venison,cooked-venison}.webp`
+
+`docs/qa/camp-deer-v1/generation.json` contains the complete prompt set, source filenames and targeted rear-view corrections. `public/survival/deer-v1/artwork.json` records extraction bounds, uniform per-view scale, frame order and output sizes. `scripts/prepare-deer-art.mjs` mechanically isolates connected silhouettes (including the antialias fringe), aligns and packs them without drawing or recolouring the artwork. Individual masks prevent a neighbouring antler tip from entering a crop. The rear sheets were regenerated to face away clearly and retain complete antlers. All twelve runtime assets are bundled for Expo offline first launch.
+
+## Verification
+
+`check-camp-deer.mjs` checks actual authored-world spawns, isolation from the editor draft, collision/leash/sleeping, walk/run/grazing frames, punch/axe hunting and yields, no duplicate harvest, species-preserving cooking and food actions, bundle conservation, shared meal capacity, scene travel, culling, atlas dimensions and complete padded silhouettes. Chicken, rabbit, backpack, survival and field-kit regression checks pass. Root and native TypeScript pass. The production Skia renderer runs through the CanvasKit software shim for doe/stag, held venison and both pickup icons. The Expo iOS production JavaScript export passes. These are software checks, not a browser or physical iPhone play test.
+
+`check-stag-retaliation.mjs` verifies the actual health hierarchy, peaceful behaviour before provocation, doe fleeing, warning time and combat controls, one contact and retreat, repeat-hit cooldown, walking retreat from maximum axe range, walking through the warning, a real moving axe hit through the gameplay loop, a fresh retreat after stale flee/detour state, sprint/post-launch sidestep/dodge evasion, thin-wall collision/line of sight, and cancellation on death/downing. Production native software pictures cover impact, warning, charge and contact feedback.

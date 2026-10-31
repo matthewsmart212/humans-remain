@@ -1,0 +1,58 @@
+{
+  "passed": true,
+  "placements": 4465,
+  "bundledImages": 1742,
+  "startupDecoded": 308,
+  "portraitAndLandscapePictures": 4,
+  "heldFoodPictures": 2,
+  "chickenPictures": 2,
+  "rabbitPictures": 2,
+  "deerPictures": 2,
+  "stagAttackPictures": 4,
+  "predatorPictures": 16,
+  "predatorSpawns": [
+    {
+      "kind": "boar",
+      "x": -605,
+      "y": 3500
+    },
+    {
+      "kind": "boar",
+      "x": -4500,
+      "y": 8000
+    },
+    {
+      "kind": "wolf",
+      "x": 8595,
+      "y": 7500
+    },
+    {
+      "kind": "wolf",
+      "x": 5000,
+      "y": 4300
+    }
+  ],
+  "zoomRange": [
+    0.7,
+    1
+  ],
+  "checks": [
+    "saved draft rather than retired applied world",
+    "matching approved migrations",
+    "cached and bundled offline fallback",
+    "isolated play snapshot",
+    "all chopping/animation states bundled",
+    "backpack and dropped-item artwork bundled offline",
+    "no retired player textures",
+    "production native renderer via CanvasKit software shim",
+    "held food in production native renderer",
+    "chickens in production native renderer",
+    "rabbits, held rabbit meal and both rabbit pickup sprites in production native renderer",
+    "doe and stag, held venison and both venison pickup sprites in production native renderer",
+    "animal health bars, dealt/received hit markers, and stag warning/charge/contact without a ground box in production native renderer",
+    "representative pair/solitary habitats, separate wolf bite/lunge and boar tusk/charge tells and actual contact poses on streamed terrain",
+    "both zoom limits in both orientations",
+    "safe repeated renderer disposal"
+  ],
+  "physicalIPhoneTested": false
+}

@@ -1,0 +1,19 @@
+# Animal facing and collision stability
+
+The previous heading filter bypassed confirmation for sharp turns and whenever movement restarted. Axis collision and repeated flee decisions could therefore flash opposite or neighbouring atlas views, despite the existing adjacent-angle buffer. Deer additionally recomputed their leash tangent side from a changing cross-product every 100 ms, causing rapid physical reversals. Chicken/rabbit flee targets could collapse at the leash and repeatedly restart without progressing.
+
+All three animal systems now use `src/animal-motion.ts`:
+
+- Every ordinary direction change requires sustained meaningful displacement: 160 ms for adjacent views, 200 ms for sharper turns, at least two world units of movement, and a 260 ms minimum view hold. Eight degrees of angular hysteresis remains. Only the animal's first movement and an explicit committed stag attack can immediately choose a view. Tiny collision displacement cannot choose a pose or advance gait. An idle/blocked gap over 100 ms expires pending evidence without resetting the held direction.
+- Flee decisions commit to a fixed waypoint for 2–2.3 seconds, even if the player zigzags or moves outside the proximity trigger. The target no longer slides around the animal every think tick. Obstacles can still interrupt a leg. A persistent tangent side prevents alternating turns at the travel boundary.
+- A temporary escape radius gives animals room for those longer legs: the normal home leash plus 3.8 times the species' escape lead (712 chicken / 983 rabbit / 1,122 deer world units in total). Four seconds after the last threat decision, normal roaming limits resume. Return movement stays continuous; animals are never snapped back to camp.
+- Poor collision progress chooses a bounded local detour and holds it for at least 900 ms. The animal resumes its original route only when a short footprint-clearance check succeeds; otherwise it continues rounding the obstacle. Enclosed animals pause for 300 ms rather than restarting every frame. Normal travel does not perform detour probes.
+- Movement retains the existing substep collision path and distance-driven animation. Returning from a stag charge or longer escape outside the normal leash is bounded by normal speed, avoiding a clamp teleport. Stag retaliation clears a previous escape/detour course before choosing a fresh retreat away from the attacker.
+
+This uses the existing fixed tick, sprite atlases and culling; no new textures, rendering passes, per-animal timers, React state or global pathfinding were added. Obstacle probes are local and bounded, and run only after failed progress or when an existing detour is due for reassessment.
+
+The outlined stag ground lane was an intentional charge telegraph. It has been removed. The head-lowering warning pose, reaction time, early Dodge controls and one-hit-then-retreat behaviour remain.
+
+`scripts/check-animal-motion.mjs` covers all eight sector boundaries, alternating opposite headings, stop/restart spam, contradictory collision slides, expired pending turns, sustained real turns, actual authored-world chicken/rabbit/doe chase fixtures, fixed escape legs under zigzag pursuit and loss of proximity, solid corners, home boundaries, collision/leash conservation, gait continuity and actual displacement speed. Recorded version-191 chase fixtures had 10, 1 and 182 rapid facing reversals respectively; the patched fixtures have zero. Current metrics are in `docs/qa/animal-motion/checks.json`. These are deterministic software regressions, not physical device measurements.
+
+The species, hunting/venison, stag retaliation, hit-feedback, native-renderer and TypeScript checks also pass. Native software pictures show health bars, dealt/received hit feedback and the stag warning/charge/contact without the ground lane. See `ANIMAL-COMBAT.md` for presentation and rendering bounds. Physical iPhone/browser playtesting is not represented by these checks.

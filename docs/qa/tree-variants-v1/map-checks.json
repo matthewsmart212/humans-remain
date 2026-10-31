@@ -1,0 +1,39 @@
+{
+  "result": "pass",
+  "sourceRevision": 73,
+  "totalTrees": 441,
+  "changedTrees": 293,
+  "designs": 18,
+  "counts": {
+    "art_tree_birch_bent": 26,
+    "art_tree_birch": 26,
+    "art_tree_birch_branching": 26,
+    "art_tree_oak": 48,
+    "art_tree_oak_forked": 47,
+    "art_tree_oak_leaning": 47,
+    "art_tree_rowan_forked": 15,
+    "art_tree_rowan": 15,
+    "art_tree_rowan_bent": 15,
+    "art_tree_pine_bent": 35,
+    "art_tree_pine_branching": 35,
+    "art_tree_pine": 35,
+    "art_tree_willow_bent": 13,
+    "art_tree_willow": 13,
+    "art_tree_willow_forked": 13,
+    "art_tree_deadwood_bent": 10,
+    "art_tree_deadwood_forked": 11,
+    "art_tree_deadwood": 11
+  },
+  "totalPlacements": 4465,
+  "extraCompressedBytes": 8808708,
+  "extraDecodedMiB": 32.757568359375,
+  "checks": [
+    "Species and density preserved",
+    "All trunk positions and collision bodies preserved",
+    "Owner changes and deletions respected",
+    "Saved one-time migration",
+    "441 real timed axe sequences and manual log collections",
+    "No per-frame distribution work"
+  ],
+  "deviceFPSMeasured": false
+}

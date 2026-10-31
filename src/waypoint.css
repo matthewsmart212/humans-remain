@@ -1,0 +1,11 @@
+.kit-waypoint-needle{display:block;width:24px;height:24px;overflow:visible;transition:transform 80ms linear;filter:drop-shadow(0 1px 1px #061e1e)}
+.field-kit[data-waypoint=true]{--kit-toolbar-width:322px}
+@media(orientation:portrait){
+ .field-kit[data-waypoint=true]{--kit-toolbar-width:190px}
+ .field-kit[data-waypoint=true] .kit-utility-buttons{position:relative}
+ .field-kit[data-waypoint=true] .kit-waypoint-toggle{position:relative;right:auto;top:auto}
+ .field-kit[data-waypoint=true] .kit-utilities>.sky-clock{position:absolute;right:0;top:44px}
+ .field-kit[data-waypoint=true] .kit-vitals-toggle[data-expanded=true]{top:calc(var(--kit-top) + 104px)}
+ .field-kit[data-waypoint=true]:has(.kit-vitals-toggle[data-expanded=true]) .kit-notice{top:calc(var(--kit-top) + 211px)}
+}
+@media(prefers-reduced-motion:reduce){.kit-waypoint-needle{transition:none}}

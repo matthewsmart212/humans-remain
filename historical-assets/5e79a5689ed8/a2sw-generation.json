@@ -1,0 +1,20 @@
+{
+  "patch": "a2sw",
+  "source": {
+    "width": 1002,
+    "height": 1569,
+    "file": "a2sw-generated-original.png"
+  },
+  "registered": {
+    "x": -1528,
+    "y": 4500,
+    "width": 1090,
+    "height": 1706,
+    "top": 84,
+    "right": 256
+  },
+  "scale": {
+    "x": 1.0878243512974053,
+    "y": 1.087316762268961
+  }
+}

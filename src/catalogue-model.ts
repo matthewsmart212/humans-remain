@@ -1,0 +1,20 @@
+import {ironworksEntries} from './ironworks-catalogue';
+import {gardenEntries} from './camp-garden-catalogue';
+import {forageEntries} from './forage-catalogue';
+import raw from './base-catalogue.json';
+import {currentArtworkSources} from './artwork-source-policy';
+import {treeEntries} from './tree-catalogue';
+import {sceneryEntries} from './scenery-catalogue';
+export type Mark='concept'|'art'|'exportComplete'|'implemented'|'tested';
+export type CatalogueEntry={id:string;lastUpdatedAt:string;name:string;family:string;category:string;recordType:string;phase:string;priority:string;tier:number|null;group:string;art:boolean|null;conceptApproved:boolean;exportComplete:boolean;implemented:boolean;tested:boolean;presentInPrototype:boolean;purpose:string;improvement:string;appearance?:string;states:string;image?:string;crop?:number[];sourceReferences?:string[];artPreview?:{openFrames?:string[];frames?:string[];animationMode?:import('./asset-animation').AnimationMode;unlit?:string;roof?:string;roofRect?:number[];worldWidth?:number;fps?:number};artworkExports?:string[];artReadiness?:string;evidence?:string;parent?:string;canonicalArt?:string;artLinks:string[];implementationDependencies:string[];blockers:string[];playerUnlock:string;resourceCost:string;inputs:string;outputs:string;capacity:string;buildMenuVisibility:string;physical?:Record<string,string>|null;assetSpec?:{dimensions:string;scale:string;groundAnchor:string;states:{name:string;method:string}[]};previous?:{group:string;batch:string;tier:number|null;name:string}|null;testScope:string|null;linkedBuildings?:string[];availability:string;fixtureRole?:string};
+export type SavedRow={id:string;art:number|null;concept:number|null;export_complete:number|null;implemented:number|null;tested:number|null;updated_at:string};
+export const entries=[...raw as unknown as CatalogueEntry[],...treeEntries,...sceneryEntries,...forageEntries,...ironworksEntries,...gardenEntries].map(entry=>({...entry,sourceReferences:currentArtworkSources(entry.sourceReferences),artworkExports:currentArtworkSources(entry.artworkExports)}));
+export const phases={B0:'Planning and foundations',B1:'First-night playable kit',B2:'Complete the core camp',B3:'Core progression',B4:'Advanced services',B5:'Validated expansion'} as const;
+export const views={build:'Build catalogue',art:'Asset production',system:'Systems and testing'} as const;
+export const buildEntries=entries.filter(e=>e.recordType==='buildable structure'||e.recordType==='upgrade'||e.recordType==='integrated capability'||e.recordType==='attachment'||e.recordType==='movable equipment'||e.recordType==='personal equipment'||e.recordType==='cosmetic'&&e.family==='Achievements'||!!e.canonicalArt);
+export const artEntries=entries.filter(e=>e.art!==null&&!e.canonicalArt&&e.recordType!=='integrated capability'&&e.parent!=='art_camp_planning_board');
+export const systemEntries=entries.filter(e=>e.recordType==='system task');
+export function marks(entry:CatalogueEntry,row?:SavedRow){return{concept:row?.concept==null?entry.conceptApproved:!!row.concept,art:entry.art===null?null:row?.art==null?entry.art:!!row.art,exportComplete:row?.export_complete==null?entry.exportComplete:!!row.export_complete,implemented:row?.implemented==null?entry.implemented:!!row.implemented,tested:row?.tested==null?entry.tested:!!row.tested};}
+export function artStatus(entry:CatalogueEntry,row?:SavedRow){const m=marks(entry,row);if(m.art===null)return'No direct art required';if(!m.art)return entry.artReadiness|| (entry.image?'Reference available; final artwork needed':'Artwork needed');return entry.artReadiness|| (entry.assetSpec?.states.length&&entry.assetSpec.states.some(s=>/overlay|frames/.test(s.method))?'Approved base artwork; state set to verify':'Approved base artwork');}
+export function tierLabel(entry:CatalogueEntry){return entry.tier==null?entry.recordType==='integrated capability'?'Starter capability':'No gameplay tier':entry.tier===0?'Broken':`Tier ${entry.tier}`;}
+export function familiesFor(category:string,list:CatalogueEntry[]){return [...new Set(list.filter(e=>e.category===category).map(e=>e.family))];}

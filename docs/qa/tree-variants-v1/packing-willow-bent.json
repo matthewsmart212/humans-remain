@@ -1,0 +1,134 @@
+{
+  "key": "willow-bent",
+  "species": "willow",
+  "id": "art_tree_willow_bent",
+  "name": "River willow: bent",
+  "image": "/survival/tree-variants-v1/willow-bent.webp",
+  "size": [
+    596,
+    1177
+  ],
+  "worldWidth": 362,
+  "hp": 160,
+  "frames": [
+    {
+      "crop": [
+        2,
+        2,
+        592,
+        914
+      ],
+      "anchor": [
+        327,
+        846
+      ]
+    },
+    {
+      "crop": [
+        385,
+        920,
+        87,
+        96
+      ],
+      "anchor": [
+        16,
+        185
+      ]
+    },
+    {
+      "crop": [
+        2,
+        920,
+        379,
+        255
+      ],
+      "anchor": [
+        187,
+        187
+      ]
+    }
+  ],
+  "damageRect": [
+    311,
+    661,
+    87,
+    96
+  ],
+  "source": "artwork-archive/tree-variants-v1/willow-bent.png",
+  "sourceSize": [
+    1536,
+    1024
+  ],
+  "sourceHealthyCrop": [
+    23,
+    59,
+    592,
+    914
+  ],
+  "sourceDamageCrop": [
+    910,
+    720,
+    87,
+    96
+  ],
+  "sourceStumpCrop": [
+    1153,
+    718,
+    379,
+    255
+  ],
+  "sourceRoot": [
+    350,
+    905
+  ],
+  "damagedTranslation": [
+    576,
+    0
+  ],
+  "stumpTranslation": [
+    990,
+    0
+  ],
+  "bytes": 750934,
+  "decodedBytes": 2805968,
+  "extraction": {
+    "visibleBounds": [
+      [
+        31,
+        67,
+        576,
+        898
+      ],
+      [
+        606,
+        66,
+        577,
+        899
+      ],
+      [
+        1161,
+        726,
+        363,
+        239
+      ]
+    ],
+    "separatorMaximumAlpha": [
+      7,
+      0
+    ],
+    "boundsPadding": 8,
+    "alphaThresholdAppliedToPixels": false,
+    "notchOverlapJoin": false
+  },
+  "checks": {
+    "alphaMismatch": 0,
+    "visibleRgbMismatch": 0,
+    "outsideNotchPreserved": true,
+    "rootFanPreserved": true
+  },
+  "notes": [
+    "Healthy pixels are reused unchanged outside the tight notch rectangle.",
+    "Separate generated loose chips are omitted; runtime hit particles supply debris.",
+    "Stump roots are registered to the same ground anchor; no scaling or resampling was applied."
+  ]
+}

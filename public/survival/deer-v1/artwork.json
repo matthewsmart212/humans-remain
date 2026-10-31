@@ -1,0 +1,1152 @@
+{
+  "version": 1,
+  "artwork": "Built-in image_gen, approved doe/stag mockup",
+  "packing": "True alpha; complete per-cell silhouettes; uniform scale across each view; common baseline; explicit gallop lift; lossless WebP",
+  "cell": 224,
+  "anchor": [
+    112,
+    204
+  ],
+  "frames": [
+    "walk-contact-left",
+    "walk-pass-left",
+    "walk-contact-right",
+    "walk-pass-right",
+    "run-crouch",
+    "run-push",
+    "run-air",
+    "run-land",
+    "idle",
+    "blink",
+    "graze-down",
+    "graze",
+    "hit",
+    "recover",
+    "fall",
+    "downed"
+  ],
+  "records": [
+    {
+      "direction": "doe/down",
+      "source": "exec-045d3456-6966-42df-9f68-9211658bb84d.png",
+      "scale": 0.631578947368421,
+      "frameCount": 16,
+      "sourceBounds": [
+        {
+          "left": 109,
+          "top": 16,
+          "width": 173,
+          "height": 299
+        },
+        {
+          "left": 409,
+          "top": 15,
+          "width": 165,
+          "height": 298
+        },
+        {
+          "left": 712,
+          "top": 13,
+          "width": 164,
+          "height": 301
+        },
+        {
+          "left": 1006,
+          "top": 13,
+          "width": 157,
+          "height": 303
+        },
+        {
+          "left": 99,
+          "top": 342,
+          "width": 187,
+          "height": 240
+        },
+        {
+          "left": 398,
+          "top": 319,
+          "width": 197,
+          "height": 304
+        },
+        {
+          "left": 684,
+          "top": 318,
+          "width": 232,
+          "height": 273
+        },
+        {
+          "left": 1019,
+          "top": 325,
+          "width": 164,
+          "height": 295
+        },
+        {
+          "left": 102,
+          "top": 629,
+          "width": 168,
+          "height": 289
+        },
+        {
+          "left": 408,
+          "top": 630,
+          "width": 168,
+          "height": 289
+        },
+        {
+          "left": 725,
+          "top": 627,
+          "width": 198,
+          "height": 286
+        },
+        {
+          "left": 1030,
+          "top": 631,
+          "width": 171,
+          "height": 286
+        },
+        {
+          "left": 78,
+          "top": 939,
+          "width": 233,
+          "height": 276
+        },
+        {
+          "left": 404,
+          "top": 931,
+          "width": 170,
+          "height": 292
+        },
+        {
+          "left": 636,
+          "top": 982,
+          "width": 270,
+          "height": 213
+        },
+        {
+          "left": 951,
+          "top": 1042,
+          "width": 277,
+          "height": 143
+        }
+      ],
+      "atlas": [
+        896,
+        896
+      ],
+      "webpBytes": 388856
+    },
+    {
+      "direction": "doe/down-left",
+      "source": "exec-d0ca6e6b-b8cc-4d80-b4f9-544db502a70e.png",
+      "scale": 0.6322188449848024,
+      "frameCount": 16,
+      "sourceBounds": [
+        {
+          "left": 59,
+          "top": 36,
+          "width": 221,
+          "height": 281
+        },
+        {
+          "left": 363,
+          "top": 38,
+          "width": 251,
+          "height": 274
+        },
+        {
+          "left": 683,
+          "top": 30,
+          "width": 232,
+          "height": 282
+        },
+        {
+          "left": 993,
+          "top": 36,
+          "width": 226,
+          "height": 276
+        },
+        {
+          "left": 49,
+          "top": 352,
+          "width": 240,
+          "height": 239
+        },
+        {
+          "left": 337,
+          "top": 347,
+          "width": 294,
+          "height": 259
+        },
+        {
+          "left": 641,
+          "top": 349,
+          "width": 329,
+          "height": 231
+        },
+        {
+          "left": 987,
+          "top": 355,
+          "width": 226,
+          "height": 265
+        },
+        {
+          "left": 57,
+          "top": 630,
+          "width": 225,
+          "height": 288
+        },
+        {
+          "left": 369,
+          "top": 632,
+          "width": 223,
+          "height": 284
+        },
+        {
+          "left": 668,
+          "top": 669,
+          "width": 238,
+          "height": 248
+        },
+        {
+          "left": 998,
+          "top": 663,
+          "width": 226,
+          "height": 257
+        },
+        {
+          "left": 48,
+          "top": 942,
+          "width": 257,
+          "height": 241
+        },
+        {
+          "left": 361,
+          "top": 945,
+          "width": 249,
+          "height": 243
+        },
+        {
+          "left": 644,
+          "top": 978,
+          "width": 269,
+          "height": 203
+        },
+        {
+          "left": 924,
+          "top": 1009,
+          "width": 313,
+          "height": 157
+        }
+      ],
+      "atlas": [
+        896,
+        896
+      ],
+      "webpBytes": 444188
+    },
+    {
+      "direction": "doe/left",
+      "source": "exec-980780a6-4334-4f39-8c34-39a42951b4c6.png",
+      "scale": 0.6081871345029239,
+      "frameCount": 16,
+      "sourceBounds": [
+        {
+          "left": 38,
+          "top": 31,
+          "width": 254,
+          "height": 282
+        },
+        {
+          "left": 341,
+          "top": 35,
+          "width": 282,
+          "height": 273
+        },
+        {
+          "left": 658,
+          "top": 33,
+          "width": 262,
+          "height": 276
+        },
+        {
+          "left": 971,
+          "top": 33,
+          "width": 256,
+          "height": 275
+        },
+        {
+          "left": 21,
+          "top": 351,
+          "width": 262,
+          "height": 235
+        },
+        {
+          "left": 320,
+          "top": 342,
+          "width": 321,
+          "height": 265
+        },
+        {
+          "left": 643,
+          "top": 347,
+          "width": 342,
+          "height": 211
+        },
+        {
+          "left": 976,
+          "top": 345,
+          "width": 256,
+          "height": 262
+        },
+        {
+          "left": 41,
+          "top": 628,
+          "width": 253,
+          "height": 286
+        },
+        {
+          "left": 353,
+          "top": 628,
+          "width": 255,
+          "height": 286
+        },
+        {
+          "left": 671,
+          "top": 657,
+          "width": 251,
+          "height": 231
+        },
+        {
+          "left": 987,
+          "top": 657,
+          "width": 228,
+          "height": 249
+        },
+        {
+          "left": 44,
+          "top": 941,
+          "width": 249,
+          "height": 274
+        },
+        {
+          "left": 343,
+          "top": 926,
+          "width": 255,
+          "height": 288
+        },
+        {
+          "left": 619,
+          "top": 1007,
+          "width": 299,
+          "height": 183
+        },
+        {
+          "left": 934,
+          "top": 1057,
+          "width": 306,
+          "height": 128
+        }
+      ],
+      "atlas": [
+        896,
+        896
+      ],
+      "webpBytes": 415756
+    },
+    {
+      "direction": "doe/up-left",
+      "source": "exec-bb640a18-d211-4522-a283-91f2297d3cc5.png",
+      "scale": 0.6688102893890675,
+      "frameCount": 16,
+      "sourceBounds": [
+        {
+          "left": 53,
+          "top": 30,
+          "width": 208,
+          "height": 284
+        },
+        {
+          "left": 366,
+          "top": 25,
+          "width": 229,
+          "height": 280
+        },
+        {
+          "left": 681,
+          "top": 25,
+          "width": 214,
+          "height": 279
+        },
+        {
+          "left": 994,
+          "top": 26,
+          "width": 207,
+          "height": 290
+        },
+        {
+          "left": 52,
+          "top": 343,
+          "width": 217,
+          "height": 243
+        },
+        {
+          "left": 353,
+          "top": 339,
+          "width": 270,
+          "height": 263
+        },
+        {
+          "left": 653,
+          "top": 337,
+          "width": 311,
+          "height": 255
+        },
+        {
+          "left": 984,
+          "top": 349,
+          "width": 250,
+          "height": 264
+        },
+        {
+          "left": 52,
+          "top": 647,
+          "width": 219,
+          "height": 274
+        },
+        {
+          "left": 365,
+          "top": 647,
+          "width": 218,
+          "height": 273
+        },
+        {
+          "left": 657,
+          "top": 711,
+          "width": 233,
+          "height": 205
+        },
+        {
+          "left": 977,
+          "top": 710,
+          "width": 227,
+          "height": 206
+        },
+        {
+          "left": 63,
+          "top": 950,
+          "width": 233,
+          "height": 268
+        },
+        {
+          "left": 365,
+          "top": 944,
+          "width": 233,
+          "height": 273
+        },
+        {
+          "left": 656,
+          "top": 984,
+          "width": 258,
+          "height": 223
+        },
+        {
+          "left": 958,
+          "top": 1046,
+          "width": 268,
+          "height": 145
+        }
+      ],
+      "atlas": [
+        896,
+        896
+      ],
+      "webpBytes": 418518
+    },
+    {
+      "direction": "doe/up",
+      "source": "exec-f29898e4-4389-41a7-906e-8c70c6b31b38.png",
+      "scale": 0.6323024054982818,
+      "frameCount": 16,
+      "sourceBounds": [
+        {
+          "left": 126,
+          "top": 24,
+          "width": 133,
+          "height": 279
+        },
+        {
+          "left": 421,
+          "top": 14,
+          "width": 108,
+          "height": 289
+        },
+        {
+          "left": 720,
+          "top": 17,
+          "width": 104,
+          "height": 286
+        },
+        {
+          "left": 1020,
+          "top": 15,
+          "width": 109,
+          "height": 287
+        },
+        {
+          "left": 116,
+          "top": 333,
+          "width": 133,
+          "height": 217
+        },
+        {
+          "left": 373,
+          "top": 320,
+          "width": 182,
+          "height": 275
+        },
+        {
+          "left": 675,
+          "top": 313,
+          "width": 186,
+          "height": 286
+        },
+        {
+          "left": 1009,
+          "top": 333,
+          "width": 125,
+          "height": 267
+        },
+        {
+          "left": 135,
+          "top": 610,
+          "width": 113,
+          "height": 291
+        },
+        {
+          "left": 414,
+          "top": 612,
+          "width": 114,
+          "height": 289
+        },
+        {
+          "left": 674,
+          "top": 671,
+          "width": 186,
+          "height": 221
+        },
+        {
+          "left": 956,
+          "top": 701,
+          "width": 202,
+          "height": 202
+        },
+        {
+          "left": 95,
+          "top": 933,
+          "width": 186,
+          "height": 275
+        },
+        {
+          "left": 413,
+          "top": 916,
+          "width": 108,
+          "height": 290
+        },
+        {
+          "left": 617,
+          "top": 980,
+          "width": 278,
+          "height": 206
+        },
+        {
+          "left": 922,
+          "top": 1037,
+          "width": 285,
+          "height": 155
+        }
+      ],
+      "atlas": [
+        896,
+        896
+      ],
+      "webpBytes": 290866
+    },
+    {
+      "direction": "stag/down",
+      "source": "exec-9efeb004-7dcf-46b9-adb3-8c24fdc39456.png",
+      "scale": 0.6279863481228669,
+      "frameCount": 16,
+      "sourceBounds": [
+        {
+          "left": 127,
+          "top": 5,
+          "width": 185,
+          "height": 310
+        },
+        {
+          "left": 397,
+          "top": 5,
+          "width": 187,
+          "height": 309
+        },
+        {
+          "left": 684,
+          "top": 8,
+          "width": 188,
+          "height": 301
+        },
+        {
+          "left": 958,
+          "top": 7,
+          "width": 188,
+          "height": 304
+        },
+        {
+          "left": 122,
+          "top": 325,
+          "width": 195,
+          "height": 269
+        },
+        {
+          "left": 395,
+          "top": 316,
+          "width": 187,
+          "height": 300
+        },
+        {
+          "left": 690,
+          "top": 310,
+          "width": 186,
+          "height": 293
+        },
+        {
+          "left": 956,
+          "top": 323,
+          "width": 190,
+          "height": 295
+        },
+        {
+          "left": 118,
+          "top": 610,
+          "width": 186,
+          "height": 289
+        },
+        {
+          "left": 396,
+          "top": 615,
+          "width": 185,
+          "height": 286
+        },
+        {
+          "left": 690,
+          "top": 630,
+          "width": 200,
+          "height": 271
+        },
+        {
+          "left": 998,
+          "top": 632,
+          "width": 173,
+          "height": 268
+        },
+        {
+          "left": 119,
+          "top": 905,
+          "width": 207,
+          "height": 296
+        },
+        {
+          "left": 392,
+          "top": 905,
+          "width": 187,
+          "height": 295
+        },
+        {
+          "left": 622,
+          "top": 953,
+          "width": 315,
+          "height": 215
+        },
+        {
+          "left": 944,
+          "top": 1004,
+          "width": 296,
+          "height": 187
+        }
+      ],
+      "atlas": [
+        896,
+        896
+      ],
+      "webpBytes": 442086
+    },
+    {
+      "direction": "stag/down-left",
+      "source": "exec-5363b8f7-5eb5-45c1-8fa2-4ca898dd0e28.png",
+      "scale": 0.5935483870967742,
+      "frameCount": 16,
+      "sourceBounds": [
+        {
+          "left": 56,
+          "top": 11,
+          "width": 236,
+          "height": 316
+        },
+        {
+          "left": 370,
+          "top": 13,
+          "width": 240,
+          "height": 305
+        },
+        {
+          "left": 680,
+          "top": 13,
+          "width": 230,
+          "height": 318
+        },
+        {
+          "left": 991,
+          "top": 10,
+          "width": 229,
+          "height": 317
+        },
+        {
+          "left": 37,
+          "top": 334,
+          "width": 252,
+          "height": 275
+        },
+        {
+          "left": 326,
+          "top": 324,
+          "width": 297,
+          "height": 290
+        },
+        {
+          "left": 641,
+          "top": 337,
+          "width": 329,
+          "height": 279
+        },
+        {
+          "left": 1002,
+          "top": 338,
+          "width": 223,
+          "height": 293
+        },
+        {
+          "left": 47,
+          "top": 613,
+          "width": 243,
+          "height": 310
+        },
+        {
+          "left": 362,
+          "top": 611,
+          "width": 238,
+          "height": 312
+        },
+        {
+          "left": 629,
+          "top": 686,
+          "width": 270,
+          "height": 219
+        },
+        {
+          "left": 964,
+          "top": 692,
+          "width": 266,
+          "height": 230
+        },
+        {
+          "left": 48,
+          "top": 931,
+          "width": 249,
+          "height": 299
+        },
+        {
+          "left": 350,
+          "top": 919,
+          "width": 246,
+          "height": 297
+        },
+        {
+          "left": 632,
+          "top": 987,
+          "width": 303,
+          "height": 220
+        },
+        {
+          "left": 945,
+          "top": 1031,
+          "width": 300,
+          "height": 168
+        }
+      ],
+      "atlas": [
+        896,
+        896
+      ],
+      "webpBytes": 472108
+    },
+    {
+      "direction": "stag/left",
+      "source": "exec-20e876c3-f0fe-47d2-931a-6bbdeb0ee34e.png",
+      "scale": 0.5841269841269842,
+      "frameCount": 16,
+      "sourceBounds": [
+        {
+          "left": 31,
+          "top": 3,
+          "width": 269,
+          "height": 313
+        },
+        {
+          "left": 337,
+          "top": 2,
+          "width": 275,
+          "height": 308
+        },
+        {
+          "left": 658,
+          "top": 7,
+          "width": 278,
+          "height": 307
+        },
+        {
+          "left": 972,
+          "top": 7,
+          "width": 267,
+          "height": 307
+        },
+        {
+          "left": 23,
+          "top": 338,
+          "width": 268,
+          "height": 285
+        },
+        {
+          "left": 317,
+          "top": 322,
+          "width": 312,
+          "height": 296
+        },
+        {
+          "left": 641,
+          "top": 318,
+          "width": 330,
+          "height": 276
+        },
+        {
+          "left": 962,
+          "top": 325,
+          "width": 275,
+          "height": 307
+        },
+        {
+          "left": 22,
+          "top": 617,
+          "width": 275,
+          "height": 315
+        },
+        {
+          "left": 337,
+          "top": 617,
+          "width": 276,
+          "height": 314
+        },
+        {
+          "left": 637,
+          "top": 662,
+          "width": 294,
+          "height": 260
+        },
+        {
+          "left": 942,
+          "top": 721,
+          "width": 297,
+          "height": 201
+        },
+        {
+          "left": 31,
+          "top": 934,
+          "width": 258,
+          "height": 295
+        },
+        {
+          "left": 324,
+          "top": 928,
+          "width": 288,
+          "height": 304
+        },
+        {
+          "left": 636,
+          "top": 1009,
+          "width": 302,
+          "height": 199
+        },
+        {
+          "left": 948,
+          "top": 1028,
+          "width": 289,
+          "height": 190
+        }
+      ],
+      "atlas": [
+        896,
+        896
+      ],
+      "webpBytes": 448420
+    },
+    {
+      "direction": "stag/up-left",
+      "source": "exec-d66b0844-59f1-49e7-86a7-b69a2267bc2d.png",
+      "scale": 0.6174496644295302,
+      "frameCount": 16,
+      "sourceBounds": [
+        {
+          "left": 63,
+          "top": 20,
+          "width": 214,
+          "height": 302
+        },
+        {
+          "left": 386,
+          "top": 18,
+          "width": 219,
+          "height": 302
+        },
+        {
+          "left": 681,
+          "top": 19,
+          "width": 211,
+          "height": 304
+        },
+        {
+          "left": 999,
+          "top": 22,
+          "width": 218,
+          "height": 300
+        },
+        {
+          "left": 57,
+          "top": 334,
+          "width": 228,
+          "height": 268
+        },
+        {
+          "left": 351,
+          "top": 330,
+          "width": 277,
+          "height": 290
+        },
+        {
+          "left": 661,
+          "top": 335,
+          "width": 268,
+          "height": 261
+        },
+        {
+          "left": 972,
+          "top": 332,
+          "width": 238,
+          "height": 293
+        },
+        {
+          "left": 45,
+          "top": 623,
+          "width": 240,
+          "height": 298
+        },
+        {
+          "left": 373,
+          "top": 624,
+          "width": 225,
+          "height": 295
+        },
+        {
+          "left": 630,
+          "top": 686,
+          "width": 278,
+          "height": 229
+        },
+        {
+          "left": 961,
+          "top": 736,
+          "width": 268,
+          "height": 180
+        },
+        {
+          "left": 33,
+          "top": 927,
+          "width": 248,
+          "height": 292
+        },
+        {
+          "left": 351,
+          "top": 927,
+          "width": 232,
+          "height": 289
+        },
+        {
+          "left": 643,
+          "top": 992,
+          "width": 289,
+          "height": 229
+        },
+        {
+          "left": 950,
+          "top": 1040,
+          "width": 272,
+          "height": 169
+        }
+      ],
+      "atlas": [
+        896,
+        896
+      ],
+      "webpBytes": 381426
+    },
+    {
+      "direction": "stag/up",
+      "source": "exec-6814a7e6-711f-4c9a-b770-829aedb6cc04.png",
+      "scale": 0.6286644951140065,
+      "frameCount": 16,
+      "sourceBounds": [
+        {
+          "left": 117,
+          "top": 9,
+          "width": 179,
+          "height": 300
+        },
+        {
+          "left": 411,
+          "top": 8,
+          "width": 169,
+          "height": 296
+        },
+        {
+          "left": 701,
+          "top": 12,
+          "width": 171,
+          "height": 294
+        },
+        {
+          "left": 994,
+          "top": 10,
+          "width": 167,
+          "height": 299
+        },
+        {
+          "left": 110,
+          "top": 321,
+          "width": 194,
+          "height": 266
+        },
+        {
+          "left": 385,
+          "top": 319,
+          "width": 204,
+          "height": 284
+        },
+        {
+          "left": 696,
+          "top": 310,
+          "width": 181,
+          "height": 284
+        },
+        {
+          "left": 985,
+          "top": 321,
+          "width": 180,
+          "height": 292
+        },
+        {
+          "left": 114,
+          "top": 613,
+          "width": 175,
+          "height": 287
+        },
+        {
+          "left": 394,
+          "top": 612,
+          "width": 180,
+          "height": 292
+        },
+        {
+          "left": 677,
+          "top": 655,
+          "width": 234,
+          "height": 248
+        },
+        {
+          "left": 997,
+          "top": 698,
+          "width": 221,
+          "height": 206
+        },
+        {
+          "left": 96,
+          "top": 914,
+          "width": 190,
+          "height": 307
+        },
+        {
+          "left": 379,
+          "top": 916,
+          "width": 173,
+          "height": 306
+        },
+        {
+          "left": 609,
+          "top": 980,
+          "width": 309,
+          "height": 207
+        },
+        {
+          "left": 921,
+          "top": 995,
+          "width": 323,
+          "height": 188
+        }
+      ],
+      "atlas": [
+        896,
+        896
+      ],
+      "webpBytes": 361280
+    }
+  ],
+  "foodRecords": [
+    {
+      "name": "raw",
+      "source": "exec-b582933b-8967-4daa-8c5d-6f69795cba4a.png",
+      "sourceBounds": {
+        "left": 169,
+        "top": 134,
+        "width": 1158,
+        "height": 844
+      },
+      "size": [
+        256,
+        256
+      ],
+      "webpBytes": 51804
+    },
+    {
+      "name": "cooked",
+      "source": "exec-5f1b4d26-7cee-44f1-8754-d06c9ce78421.png",
+      "sourceBounds": {
+        "left": 91,
+        "top": 138,
+        "width": 1209,
+        "height": 888
+      },
+      "size": [
+        256,
+        256
+      ],
+      "webpBytes": 64812
+    }
+  ]
+}

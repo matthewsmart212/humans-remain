@@ -1,0 +1,30 @@
+{
+  "result": "pass",
+  "renderer": "Production CanvasKit software surface",
+  "terrain": "Single outdoor world",
+  "addedTextures": 6,
+  "newThisPass": 2,
+  "decodedBytes": 56746048,
+  "cameraScale": 0.4688888888888889,
+  "views": [
+    "camp",
+    "camp contact",
+    "old camp edge",
+    "tile join",
+    "junction",
+    "portrait",
+    "north-south contact",
+    "north-camp contact",
+    "north tile join",
+    "village trail",
+    "village portrait",
+    "outskirts south contact",
+    "outskirts camp contact",
+    "outskirts tile join",
+    "village outskirts",
+    "outskirts portrait",
+    "whole world",
+    "night"
+  ],
+  "limitations": "No browser automation or physical iPhone test in this environment."
+}

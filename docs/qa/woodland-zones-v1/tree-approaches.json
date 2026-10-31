@@ -1,0 +1,572 @@
+[
+  {
+    "id": "camp-outskirts-v1-northwest-grove-tree-1",
+    "x": 99,
+    "y": 336.4
+  },
+  {
+    "id": "camp-outskirts-v1-northwest-grove-tree-2",
+    "x": 688.5,
+    "y": 60.6
+  },
+  {
+    "id": "camp-outskirts-v1-northwest-grove-tree-3",
+    "x": 286.8,
+    "y": 565.8
+  },
+  {
+    "id": "camp-outskirts-v1-west-near-tree-1",
+    "x": -230.39999999999998,
+    "y": 1478.1
+  },
+  {
+    "id": "camp-outskirts-v1-west-near-tree-2",
+    "x": 117.6,
+    "y": 1240.1
+  },
+  {
+    "id": "camp-outskirts-v1-west-near-tree-3",
+    "x": 100.3,
+    "y": 1558.6
+  },
+  {
+    "id": "camp-outskirts-v1-west-near-tree-4",
+    "x": -223.10000000000002,
+    "y": 1147.3
+  },
+  {
+    "id": "camp-outskirts-v1-west-near-tree-5",
+    "x": -464.79999999999995,
+    "y": 1275.3
+  },
+  {
+    "id": "camp-outskirts-v1-west-lower-tree-1",
+    "x": -144.1,
+    "y": 2880.6
+  },
+  {
+    "id": "camp-outskirts-v1-west-lower-tree-2",
+    "x": 1.9000000000000057,
+    "y": 2604.5
+  },
+  {
+    "id": "camp-outskirts-v1-west-lower-tree-3",
+    "x": -640.1680015377856,
+    "y": 2751.5319984622142
+  },
+  {
+    "id": "camp-outskirts-v1-west-lower-tree-4",
+    "x": -342.1,
+    "y": 2545.1
+  },
+  {
+    "id": "camp-outskirts-v1-southwest-near-tree-1",
+    "x": 583,
+    "y": 3397.6
+  },
+  {
+    "id": "camp-outskirts-v1-southwest-near-tree-2",
+    "x": 843.4,
+    "y": 3642
+  },
+  {
+    "id": "camp-outskirts-v1-southwest-near-tree-3",
+    "x": 984.3,
+    "y": 3252.2
+  },
+  {
+    "id": "camp-outskirts-v1-south-near-tree-1",
+    "x": 1450.6595918486626,
+    "y": 3811.516393533604
+  },
+  {
+    "id": "camp-outskirts-v1-south-near-tree-2",
+    "x": 1200.7,
+    "y": 3841.2
+  },
+  {
+    "id": "camp-outskirts-v1-south-near-tree-3",
+    "x": 1422.2,
+    "y": 3367.6
+  },
+  {
+    "id": "camp-outskirts-v1-south-near-tree-4",
+    "x": 1175.5,
+    "y": 3496.2
+  },
+  {
+    "id": "camp-outskirts-v1-southeast-near-tree-1",
+    "x": 2758.4595918486625,
+    "y": 3249.016393533604
+  },
+  {
+    "id": "camp-outskirts-v1-southeast-near-tree-2",
+    "x": 3122.1,
+    "y": 3513.7
+  },
+  {
+    "id": "camp-outskirts-v1-southeast-near-tree-3",
+    "x": 2827.7,
+    "y": 3554.9
+  },
+  {
+    "id": "camp-outskirts-v1-east-near-tree-1",
+    "x": 3716.8,
+    "y": 1890.2
+  },
+  {
+    "id": "camp-outskirts-v1-east-near-tree-2",
+    "x": 3678,
+    "y": 2334.8
+  },
+  {
+    "id": "camp-outskirts-v1-east-near-tree-3",
+    "x": 3925.9,
+    "y": 2118
+  },
+  {
+    "id": "camp-outskirts-v1-east-near-tree-4",
+    "x": 3494.0595918486624,
+    "y": 2180.516393533604
+  },
+  {
+    "id": "camp-outskirts-v1-northeast-near-tree-1",
+    "x": 3582.4,
+    "y": 745.7
+  },
+  {
+    "id": "camp-outskirts-v1-northeast-near-tree-2",
+    "x": 3288.5,
+    "y": 523.9
+  },
+  {
+    "id": "camp-outskirts-v1-north-near-tree-1",
+    "x": 2092.5,
+    "y": -176.7
+  },
+  {
+    "id": "camp-outskirts-v1-north-near-tree-2",
+    "x": 1833.2,
+    "y": -422.9
+  },
+  {
+    "id": "camp-outskirts-v1-north-near-tree-3",
+    "x": 2147.1,
+    "y": -490
+  },
+  {
+    "id": "camp-outskirts-v1-north-near-tree-4",
+    "x": 1624.3,
+    "y": -246.7
+  },
+  {
+    "id": "camp-outskirts-v1-north-near-tree-5",
+    "x": 2361.9,
+    "y": -280.9
+  },
+  {
+    "id": "camp-outskirts-v1-northwest-outer-tree-1",
+    "x": -672.2,
+    "y": 279.6
+  },
+  {
+    "id": "camp-outskirts-v1-northwest-outer-tree-2",
+    "x": -930.2,
+    "y": 342.4
+  },
+  {
+    "id": "camp-outskirts-v1-northwest-outer-tree-3",
+    "x": -1135.3,
+    "y": -45
+  },
+  {
+    "id": "camp-outskirts-v1-northwest-outer-tree-4",
+    "x": -1166.5,
+    "y": 238.7
+  },
+  {
+    "id": "camp-outskirts-v1-northwest-outer-tree-5",
+    "x": -542.1,
+    "y": -67
+  },
+  {
+    "id": "camp-outskirts-v1-northwest-outer-tree-6",
+    "x": -798.9,
+    "y": 20.8
+  },
+  {
+    "id": "camp-outskirts-v1-west-outer-tree-1",
+    "x": -1692.7,
+    "y": 2847.1
+  },
+  {
+    "id": "camp-outskirts-v1-west-outer-tree-2",
+    "x": -1334.9,
+    "y": 2643
+  },
+  {
+    "id": "camp-outskirts-v1-west-outer-tree-3",
+    "x": -1415.1,
+    "y": 3071.2
+  },
+  {
+    "id": "camp-outskirts-v1-west-outer-tree-4",
+    "x": -1702.7,
+    "y": 2530.6
+  },
+  {
+    "id": "camp-outskirts-v1-west-outer-tree-5",
+    "x": -1047.3,
+    "y": 2855.7
+  },
+  {
+    "id": "camp-outskirts-v1-southwest-outer-tree-1",
+    "x": -388.6,
+    "y": 3401.8
+  },
+  {
+    "id": "camp-outskirts-v1-southwest-outer-tree-2",
+    "x": -814.4,
+    "y": 3443.7
+  },
+  {
+    "id": "camp-outskirts-v1-southwest-outer-tree-3",
+    "x": -682.7,
+    "y": 3762.8
+  },
+  {
+    "id": "camp-outskirts-v1-southwest-outer-tree-4",
+    "x": -1009.3,
+    "y": 3742.1
+  },
+  {
+    "id": "camp-outskirts-v1-east-outer-tree-1",
+    "x": 4408.259591848663,
+    "y": 1579.016393533604
+  },
+  {
+    "id": "camp-outskirts-v1-east-outer-tree-2",
+    "x": 4450.4,
+    "y": 2205.3
+  },
+  {
+    "id": "camp-outskirts-v1-east-outer-tree-3",
+    "x": 4589.2,
+    "y": 1851.6
+  },
+  {
+    "id": "camp-outskirts-v1-east-outer-tree-4",
+    "x": 4136.4,
+    "y": 1961.2
+  },
+  {
+    "id": "camp-outskirts-v1-east-outer-tree-5",
+    "x": 4849.4,
+    "y": 2013.3
+  },
+  {
+    "id": "camp-outskirts-v1-south-outer-tree-1",
+    "x": 1019,
+    "y": 4818.1
+  },
+  {
+    "id": "camp-outskirts-v1-south-outer-tree-2",
+    "x": 1288.3,
+    "y": 4349.4
+  },
+  {
+    "id": "camp-outskirts-v1-south-outer-tree-3",
+    "x": 651.6,
+    "y": 4673.7
+  },
+  {
+    "id": "camp-outskirts-v1-south-outer-tree-4",
+    "x": 950.4,
+    "y": 4256.9
+  },
+  {
+    "id": "camp-outskirts-v1-south-outer-tree-5",
+    "x": 1102.6,
+    "y": 4538
+  },
+  {
+    "id": "camp-river-v1-north-trail-tree-1",
+    "x": -2268.8,
+    "y": -875.7
+  },
+  {
+    "id": "camp-river-v1-north-trail-tree-2",
+    "x": -1847.5,
+    "y": -681.5
+  },
+  {
+    "id": "camp-river-v1-stream-east-tree-1",
+    "x": -1516.2,
+    "y": -79.4
+  },
+  {
+    "id": "camp-river-v1-stream-east-tree-2",
+    "x": -1765.3,
+    "y": -318.4
+  },
+  {
+    "id": "camp-river-v1-stream-east-tree-3",
+    "x": -1425.7,
+    "y": -423.6
+  },
+  {
+    "id": "camp-river-v1-stream-east-tree-4",
+    "x": -1855.3,
+    "y": -32.3
+  },
+  {
+    "id": "camp-river-v1-stream-head-tree-1",
+    "x": -2694.4,
+    "y": -140.8
+  },
+  {
+    "id": "camp-river-v1-stream-meadow-tree-1",
+    "x": -2057.5,
+    "y": 931
+  },
+  {
+    "id": "camp-river-v1-stream-meadow-tree-2",
+    "x": -1767.4,
+    "y": 433.9
+  },
+  {
+    "id": "camp-river-v1-stream-meadow-tree-3",
+    "x": -1627.9,
+    "y": 956.3
+  },
+  {
+    "id": "camp-river-v1-stream-meadow-tree-4",
+    "x": -1504.9,
+    "y": 627.3
+  },
+  {
+    "id": "camp-river-v1-west-upper-tree-1",
+    "x": -3538.5,
+    "y": 388.8
+  },
+  {
+    "id": "camp-river-v1-west-upper-tree-2",
+    "x": -3872.7,
+    "y": 457.8
+  },
+  {
+    "id": "camp-river-v1-west-upper-tree-3",
+    "x": -3446.8,
+    "y": 645.6
+  },
+  {
+    "id": "camp-river-v1-west-upper-tree-4",
+    "x": -3250.9,
+    "y": 428.6
+  },
+  {
+    "id": "camp-river-v1-upper-glade-tree-1",
+    "x": -2809.7,
+    "y": 1123
+  },
+  {
+    "id": "camp-river-v1-upper-glade-tree-2",
+    "x": -2991.1,
+    "y": 751.4
+  },
+  {
+    "id": "camp-river-v1-upper-glade-tree-3",
+    "x": -3204.6,
+    "y": 1014.7
+  },
+  {
+    "id": "camp-river-v1-upper-glade-tree-4",
+    "x": -2723.9,
+    "y": 840.1
+  },
+  {
+    "id": "camp-river-v1-upper-glade-tree-5",
+    "x": -3035.4,
+    "y": 1304.1
+  },
+  {
+    "id": "camp-river-v1-upper-link-tree-1",
+    "x": -1139.8,
+    "y": 1436
+  },
+  {
+    "id": "camp-river-v1-upper-link-tree-2",
+    "x": -880.6,
+    "y": 1031.7
+  },
+  {
+    "id": "camp-river-v1-upper-link-tree-3",
+    "x": -1337.4,
+    "y": 1144.9
+  },
+  {
+    "id": "camp-river-v1-upper-link-tree-4",
+    "x": -1544.1,
+    "y": 1334.1
+  },
+  {
+    "id": "camp-river-v1-river-bend-tree-1",
+    "x": -4166.3,
+    "y": 1349.4
+  },
+  {
+    "id": "camp-river-v1-river-bend-tree-2",
+    "x": -3907.3,
+    "y": 1129.1
+  },
+  {
+    "id": "camp-river-v1-river-bend-tree-3",
+    "x": -4469.4,
+    "y": 1216.9
+  },
+  {
+    "id": "camp-river-v1-river-bend-tree-4",
+    "x": -4352.7,
+    "y": 922.4
+  },
+  {
+    "id": "camp-river-v1-west-trail-north-tree-1",
+    "x": -3704.5,
+    "y": 1629.5
+  },
+  {
+    "id": "camp-river-v1-west-trail-north-tree-2",
+    "x": -3381.8,
+    "y": 1784.6
+  },
+  {
+    "id": "camp-river-v1-west-trail-north-tree-3",
+    "x": -3325.4,
+    "y": 1442.5
+  },
+  {
+    "id": "camp-river-v1-west-trail-north-tree-4",
+    "x": -3552.5,
+    "y": 1305.1
+  },
+  {
+    "id": "camp-river-v1-central-rise-tree-1",
+    "x": -2380.8,
+    "y": 1645.1
+  },
+  {
+    "id": "camp-river-v1-central-rise-tree-2",
+    "x": -2019.883606466396,
+    "y": 1881.5595918486626
+  },
+  {
+    "id": "camp-river-v1-central-rise-tree-3",
+    "x": -2810.8,
+    "y": 1767.1
+  },
+  {
+    "id": "camp-river-v1-central-rise-tree-4",
+    "x": -2695.083606466396,
+    "y": 1414.0595918486626
+  },
+  {
+    "id": "camp-river-v1-central-rise-tree-5",
+    "x": -2468.6,
+    "y": 1954.5
+  },
+  {
+    "id": "camp-river-v1-west-trail-south-tree-1",
+    "x": -3209.4,
+    "y": 2041.6
+  },
+  {
+    "id": "camp-river-v1-middle-meadow-tree-1",
+    "x": -2352.8,
+    "y": 2851.5
+  },
+  {
+    "id": "camp-river-v1-middle-meadow-tree-2",
+    "x": -2059.4,
+    "y": 2691.1
+  },
+  {
+    "id": "camp-river-v1-middle-meadow-tree-3",
+    "x": -2694.7,
+    "y": 2759.3
+  },
+  {
+    "id": "camp-river-v1-lower-link-tree-1",
+    "x": -1502.8,
+    "y": 1752.2
+  },
+  {
+    "id": "camp-river-v1-lower-link-tree-2",
+    "x": -1724.7,
+    "y": 1611
+  },
+  {
+    "id": "camp-river-v1-southern-birches-tree-1",
+    "x": -2642.7404081513378,
+    "y": 3381.3163935336042
+  },
+  {
+    "id": "camp-river-v1-southern-birches-tree-2",
+    "x": -2134.4,
+    "y": 3261
+  },
+  {
+    "id": "camp-river-v1-southern-birches-tree-3",
+    "x": -2416.6,
+    "y": 3194.2
+  },
+  {
+    "id": "camp-river-v1-southern-birches-tree-4",
+    "x": -2339.6,
+    "y": 3558.8
+  },
+  {
+    "id": "camp-river-v1-river-shelf-tree-1",
+    "x": -2903.3,
+    "y": 2995.2
+  },
+  {
+    "id": "camp-river-v1-lower-riverside-tree-1",
+    "x": -1827.6,
+    "y": 3644.3
+  },
+  {
+    "id": "camp-river-v1-lower-riverside-tree-2",
+    "x": -2111.1,
+    "y": 3959.9
+  },
+  {
+    "id": "camp-river-v1-lower-riverside-tree-3",
+    "x": -2157.9,
+    "y": 3714.4
+  },
+  {
+    "id": "camp-river-v1-south-meadow-tree-1",
+    "x": -1482.8,
+    "y": 4116.5
+  },
+  {
+    "id": "camp-river-v1-south-meadow-tree-2",
+    "x": -1277.1,
+    "y": 3926.7
+  },
+  {
+    "id": "camp-river-v1-bridge-scrub-tree-1",
+    "x": -1819.8,
+    "y": 4259.5
+  },
+  {
+    "id": "camp-river-v1-south-link-tree-1",
+    "x": -57.400000000000006,
+    "y": 4127.1
+  },
+  {
+    "id": "camp-river-v1-south-link-tree-2",
+    "x": -421.9,
+    "y": 4275.2
+  }
+]

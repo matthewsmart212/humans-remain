@@ -1,0 +1,134 @@
+{
+  "key": "oak-forked",
+  "species": "oak",
+  "id": "art_tree_oak_forked",
+  "name": "Broad woodland oak: forked",
+  "image": "/survival/tree-variants-v1/oak-forked.webp",
+  "size": [
+    636,
+    1216
+  ],
+  "worldWidth": 311,
+  "hp": 160,
+  "frames": [
+    {
+      "crop": [
+        2,
+        2,
+        632,
+        935
+      ],
+      "anchor": [
+        332,
+        874
+      ]
+    },
+    {
+      "crop": [
+        385,
+        941,
+        90,
+        115
+      ],
+      "anchor": [
+        8,
+        204
+      ]
+    },
+    {
+      "crop": [
+        2,
+        941,
+        379,
+        273
+      ],
+      "anchor": [
+        198,
+        213
+      ]
+    }
+  ],
+  "damageRect": [
+    324,
+    670,
+    90,
+    115
+  ],
+  "source": "artwork-archive/tree-variants-v1/oak-forked.png",
+  "sourceSize": [
+    1536,
+    1024
+  ],
+  "sourceHealthyCrop": [
+    0,
+    31,
+    632,
+    935
+  ],
+  "sourceDamageCrop": [
+    930,
+    701,
+    90,
+    115
+  ],
+  "sourceStumpCrop": [
+    1155,
+    693,
+    379,
+    273
+  ],
+  "sourceRoot": [
+    332,
+    905
+  ],
+  "damagedTranslation": [
+    606,
+    0
+  ],
+  "stumpTranslation": [
+    1021,
+    1
+  ],
+  "bytes": 743972,
+  "decodedBytes": 3093504,
+  "extraction": {
+    "visibleBounds": [
+      [
+        8,
+        39,
+        616,
+        919
+      ],
+      [
+        610,
+        40,
+        625,
+        918
+      ],
+      [
+        1163,
+        701,
+        363,
+        257
+      ]
+    ],
+    "separatorMaximumAlpha": [
+      9,
+      0
+    ],
+    "boundsPadding": 8,
+    "alphaThresholdAppliedToPixels": false,
+    "notchOverlapJoin": false
+  },
+  "checks": {
+    "alphaMismatch": 0,
+    "visibleRgbMismatch": 0,
+    "outsideNotchPreserved": true,
+    "rootFanPreserved": true
+  },
+  "notes": [
+    "Healthy pixels are reused unchanged outside the tight notch rectangle.",
+    "Separate generated loose chips are omitted; runtime hit particles supply debris.",
+    "Stump roots are registered to the same ground anchor; no scaling or resampling was applied."
+  ]
+}

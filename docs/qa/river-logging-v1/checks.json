@@ -1,0 +1,18 @@
+{
+  "result": "pass",
+  "sections": 6,
+  "addedSections": 3,
+  "approvedHeadwatersIdentical": true,
+  "loggingRoadIdentical": true,
+  "sharedMotionAtlas": true,
+  "continuousCropMapping": true,
+  "waterChangedPixels": 167382,
+  "landChangedPixels": 0,
+  "campIdentical": true,
+  "riverEntryImages": 0,
+  "residentLimit": 3,
+  "concurrentLoads": 2,
+  "waterCollision": true,
+  "unbuiltWaterWalkable": true,
+  "browserAndPhoneCheck": "Not available in this environment; real CanvasKit software renderer used."
+}

@@ -1,0 +1,24 @@
+{
+  "result": "pass",
+  "terrainSquares": 256,
+  "districtAreas": 7,
+  "sourceBounds": {
+    "x": -7200,
+    "y": -6200,
+    "width": 20000,
+    "height": 20000
+  },
+  "walkingSteps": 91901,
+  "coverageSamples": 10000,
+  "campPlacements": 1368,
+  "checks": [
+    "physical walking through every square and all seven district centres",
+    "same world, player, inventory, weather and night state; no scene fades",
+    "saved-camp exit and return without changing draft",
+    "all district outlines covered",
+    "missing downloads and world edges block safely",
+    "retry, prefetch and distant image release",
+    "custom terrain bounds preserved"
+  ],
+  "limitations": "Saved camp fixture tested, not a new live database read; no physical iPhone test."
+}

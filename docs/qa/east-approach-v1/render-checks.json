@@ -1,0 +1,17 @@
+{
+  "result": "pass",
+  "renderer": "Production CanvasKit software surface",
+  "textureCount": 2,
+  "decodedBytes": 18898944,
+  "cameraScale": 0.4688888888888889,
+  "views": [
+    "landscape arrival",
+    "landscape shared join",
+    "landscape junction",
+    "portrait junction",
+    "full overview",
+    "night",
+    "fade"
+  ],
+  "limitations": "No browser automation or physical iPhone test in this environment."
+}

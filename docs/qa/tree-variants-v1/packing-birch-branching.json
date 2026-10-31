@@ -1,0 +1,134 @@
+{
+  "key": "birch-branching",
+  "species": "birch",
+  "id": "art_tree_birch_branching",
+  "name": "Silver birch: branching",
+  "image": "/survival/tree-variants-v1/birch-branching.webp",
+  "size": [
+    534,
+    1294
+  ],
+  "worldWidth": 270,
+  "hp": 100,
+  "frames": [
+    {
+      "crop": [
+        2,
+        2,
+        530,
+        1001
+      ],
+      "anchor": [
+        272,
+        916
+      ]
+    },
+    {
+      "crop": [
+        408,
+        1007,
+        77,
+        88
+      ],
+      "anchor": [
+        19,
+        164
+      ]
+    },
+    {
+      "crop": [
+        2,
+        1007,
+        402,
+        285
+      ],
+      "anchor": [
+        205,
+        200
+      ]
+    }
+  ],
+  "damageRect": [
+    253,
+    752,
+    77,
+    88
+  ],
+  "source": "artwork-archive/tree-variants-v1/birch-branching.png",
+  "sourceSize": [
+    1536,
+    1024
+  ],
+  "sourceHealthyCrop": [
+    54,
+    9,
+    530,
+    1001
+  ],
+  "sourceDamageCrop": [
+    839,
+    761,
+    77,
+    88
+  ],
+  "sourceStumpCrop": [
+    1115,
+    726,
+    402,
+    285
+  ],
+  "sourceRoot": [
+    326,
+    925
+  ],
+  "damagedTranslation": [
+    532,
+    0
+  ],
+  "stumpTranslation": [
+    994,
+    1
+  ],
+  "bytes": 725658,
+  "decodedBytes": 2763984,
+  "extraction": {
+    "visibleBounds": [
+      [
+        62,
+        17,
+        514,
+        985
+      ],
+      [
+        595,
+        17,
+        515,
+        986
+      ],
+      [
+        1123,
+        734,
+        386,
+        269
+      ]
+    ],
+    "separatorMaximumAlpha": [
+      1,
+      0
+    ],
+    "boundsPadding": 8,
+    "alphaThresholdAppliedToPixels": false,
+    "notchOverlapJoin": false
+  },
+  "checks": {
+    "alphaMismatch": 0,
+    "visibleRgbMismatch": 0,
+    "outsideNotchPreserved": true,
+    "rootFanPreserved": true
+  },
+  "notes": [
+    "Healthy pixels are reused unchanged outside the tight notch rectangle.",
+    "Separate generated loose chips are omitted; runtime hit particles supply debris.",
+    "Stump roots are registered to the same ground anchor; no scaling or resampling was applied."
+  ]
+}

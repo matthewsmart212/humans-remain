@@ -1,0 +1,177 @@
+{
+  "schema_version": 1,
+  "reviewed_at_utc": "2026-10-31T12:19:20.911811+00:00",
+  "result": "No unresolved findings in the scoped public-export review.",
+  "source_commit": "4fb29e47ef5aac4ba49ee115dae54740a55ea614",
+  "scope": {
+    "regular_stage_files_scanned": 8717,
+    "stage_bytes_scanned": 3701309571,
+    "coverage": "Current project source and assets, downloaded original image files and game-only data snapshots, recovered historical original assets/context, migration/export documents, and every member of retained asset ZIPs.",
+    "scope_timing": "This count covers the frozen staged project before this review file and the subsequently generated SOURCE-COMPARISON.csv, FILE-INVENTORY.csv and INVENTORY-SUMMARY.json. The final inventory provides the final export file count.",
+    "text_files_and_zip_text_members_scanned": 1572,
+    "binary_files_and_zip_binary_members_scanned_for_known_private_identifier": 7484,
+    "original_source_and_live_game_modified_by_review": false,
+    "final_document_follow_up_check": {
+      "files": [
+        "MIGRATION.md",
+        "PUBLIC-EXPORT-REVIEW.json"
+      ],
+      "unresolved_findings": 0,
+      "reason": "MIGRATION.md received a final explanation of historical art-tool input/dependency requirements after the full scan; this review summary was generated after that scan."
+    }
+  },
+  "sensitive_data_checks": {
+    "known_private_owner_identifier_remaining_matches": 0,
+    "credential_pattern_matches": 0,
+    "generic_secret_assignment_review_candidates": 0,
+    "nonexample_email_literal_review_candidates": 0,
+    "checked_patterns": [
+      "private-key blocks",
+      "GitHub access tokens",
+      "AWS access-key identifiers",
+      "OpenAI API keys",
+      "Slack tokens",
+      "Stripe live keys",
+      "SendGrid API keys",
+      "JWT literals",
+      "signed or token-bearing URL queries",
+      "URLs with embedded credentials",
+      "generic quoted secret/password assignments"
+    ],
+    "git_metadata_real_environment_files_dependency_directories_build_outputs_and_caches_present": false,
+    "environment_template": ".env.example contains configuration placeholders; no real environment file is included.",
+    "private_identity_sanitization": "The known private legacy owner identifier was removed from the export copy and related test fixtures. The original live/source project was not edited. Export behavior changes are documented in EXPORT-CHANGES.md."
+  },
+  "image_metadata_checks": {
+    "total_raster_files_checked": 7150,
+    "files_selected_by_image_extension": 7108,
+    "additional_extensionless_downloads_checked": 42,
+    "all_downloaded_asset_directory_files_checked": true,
+    "extensionless_decoded_formats": {
+      "PNG": 41,
+      "JPEG": 1
+    },
+    "downloaded_image_hashes_match_external_asset_manifest": true,
+    "metadata_findings": [],
+    "checked_metadata": [
+      "GPS coordinates",
+      "camera owner and device/lens serial fields",
+      "artist/author/copyright fields requiring review",
+      "email literals",
+      "user home-directory paths"
+    ],
+    "unreadable_original_historical_images": 3,
+    "original_image_bytes_modified": false
+  },
+  "retained_asset_zip_checks": [
+    {
+      "path": "public/survival/predators-v1/sprite-pack.zip",
+      "members": 299,
+      "uncompressed_bytes": 24592718,
+      "crc_verified": true
+    },
+    {
+      "path": "docs/world-rocks-v1-assets.zip",
+      "members": 26,
+      "uncompressed_bytes": 2579957,
+      "crc_verified": true
+    },
+    {
+      "path": "docs/world-scenery-v1-assets.zip",
+      "members": 33,
+      "uncompressed_bytes": 3333001,
+      "crc_verified": true
+    }
+  ],
+  "historical_asset_recovery": {
+    "media_files": 3159,
+    "media_bytes": 2451464519,
+    "artwork_or_map_json_files": 133,
+    "artwork_or_map_json_bytes": 2514305,
+    "artwork_readme_or_prompt_text_files": 28,
+    "artwork_readme_or_prompt_text_bytes": 57774,
+    "total_original_files": 3320,
+    "total_original_bytes": 2454036598,
+    "original_git_blob_ids_and_sha256_checksums_verified": true,
+    "current_head_identical_blobs_omitted_from_historical_copies": true,
+    "original_art_data_and_context_text_files_safety_checked": 161,
+    "art_data_or_context_sensitive_field_email_credential_or_external_url_findings": 0,
+    "obsolete_native_source_package_zips_excluded": 14,
+    "additional_unique_media_in_excluded_source_zips": 0,
+    "full_old_source_packages_or_git_repository_history_included": false
+  },
+  "stage_transfer_temporary_files_removed": [
+    {
+      "path": "public/survival/predators-v1/.sprite-pack.zip.1Ml93N",
+      "bytes": 23592960,
+      "complete_included_companion": "public/survival/predators-v1/sprite-pack.zip",
+      "reason": "Unindexed transfer-style temporary file; exact partial byte prefix of the full included original. The full companion was independently hash-verified before the stage-only temporary file was removed."
+    },
+    {
+      "path": "historical-assets/40bdfd07250d/.full-4800.webp.Aslv37",
+      "bytes": 9699328,
+      "complete_included_companion": "historical-assets/40bdfd07250d/full-4800.webp",
+      "reason": "Unindexed transfer-style temporary file; exact partial byte prefix of the full included original. The full companion was independently hash-verified before the stage-only temporary file was removed."
+    },
+    {
+      "path": "historical-assets/ba24018304e0/.home-terrain-centre-v4.webp.Gdct6j",
+      "bytes": 5767168,
+      "complete_included_companion": "historical-assets/ba24018304e0/home-terrain-centre-v4.webp",
+      "reason": "Unindexed transfer-style temporary file; exact partial byte prefix of the full included original. The full companion was independently hash-verified before the stage-only temporary file was removed."
+    },
+    {
+      "path": "historical-assets/5777a00d23fa/.a1-master.png.TRKfEL",
+      "bytes": 9437184,
+      "complete_included_companion": "historical-assets/5777a00d23fa/a1-master.png",
+      "reason": "Unindexed transfer-style temporary file; exact partial byte prefix of the full included original. The full companion was independently hash-verified before the stage-only temporary file was removed."
+    },
+    {
+      "path": "docs/qa/knives-v1/.woodenKnife-stab-sequence.png.UL6yl0",
+      "bytes": 2359296,
+      "complete_included_companion": "docs/qa/knives-v1/woodenKnife-stab-sequence.png",
+      "reason": "Unindexed transfer-style temporary file; exact partial byte prefix of the full included original. The full companion was independently hash-verified before the stage-only temporary file was removed."
+    }
+  ],
+  "additional_cache_cleanup": {
+    "path": "tools/__pycache__/verify-export.cpython-312.pyc",
+    "bytes": 3096,
+    "reason": "Python bytecode generated during validation; source verification script is retained."
+  },
+  "original_historical_image_limitations": [
+    {
+      "export_path": "historical-assets/0414c2e7b652/registered-master.png",
+      "original_path": "artwork-archive/camp-return-v1/registered-master.png",
+      "bytes": 8688098,
+      "sha256": "84767befe9bf43bdcdf419a700d4a3e748c97d6becec5dfdf64b4511416d2a06",
+      "git_blob_id": "0414c2e7b6520d8d06ad5b8a3717ac2370f03d8c",
+      "condition": "PNG header readable; full verification reports truncated data in the original Git blob. Exact original bytes preserved; no repair or recreation."
+    },
+    {
+      "export_path": "historical-assets/5276ac7065ce/registered-master.png",
+      "original_path": "artwork-archive/camp-return-v2/registered-master.png",
+      "bytes": 14217594,
+      "sha256": "2af2e4a3a0f5a4a11b7ff03c84522c6ea8bf16cc3f55d10754a4ce2673540ae8",
+      "git_blob_id": "5276ac7065ce6c4c040fc6d9face36118fd9fc6a",
+      "condition": "PNG header readable; full verification reports truncated data in the original Git blob. Exact original bytes preserved; no repair or recreation."
+    },
+    {
+      "export_path": "historical-assets/f4be82f70168/registered-master.png",
+      "original_path": "artwork-archive/village-outskirts-v1/registered-master.png",
+      "bytes": 5591040,
+      "sha256": "0c07d8fd9e533d8b5993e839eaa380a931184337068997f1925b9035e5380521",
+      "git_blob_id": "f4be82f70168353cef8c65210995259d7a78723f",
+      "condition": "PNG header readable; full verification reports truncated data in the original Git blob. Exact original bytes preserved; no repair or recreation."
+    }
+  ],
+  "large_file_check": {
+    "individual_files_at_least_50_mib": 0,
+    "files": []
+  },
+  "review_limitations": [
+    "Credential and private-data detection is heuristic. Passing these checks is evidence of the performed review, not a guarantee that every possible unknown or encoded secret can be detected.",
+    "Metadata checks inspect image headers and recognized metadata fields; they do not manually interpret the visible pixels of every artwork or screenshot.",
+    "The three documented historical PNG masters are already truncated in the original Git data and cannot complete full image verification. They are retained byte-for-byte for provenance and are not current runtime assets.",
+    "ZIP checks verify retained inner asset archives. Integrity verification of the final downloadable export archives is recorded separately after those archives are created.",
+    "The final generated file inventories contain paths, sizes, checksums and source-comparison statuses; they are produced after this scoped scan and are included in the final archive verification."
+  ]
+}

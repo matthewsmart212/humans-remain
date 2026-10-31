@@ -1,0 +1,16 @@
+{
+  "passed": true,
+  "checks": [
+    "Camp upgrades combine backpack and shared stores, reject incomplete costs without spending, and charge once",
+    "HQ restores instantly from its menu or its equipped-hammer action, repairs health and defences once, rejects invalid on-site actions without charging, and retains the first-restoration menu exception",
+    "Available catalogue plans precede locked plans, with the familiar starter buildings and equipment first",
+    "Journal and tracked HUD resolve the camp upgrade prerequisite before the furnace without granting progress",
+    "Camp level automatically unlocks standard plans, without a research payment or recovered-note gate",
+    "Furnace repair requires camp access, a held hammer, proximity and full materials; HQ cannot repair it remotely; legacy saves remain valid",
+    "Legacy saves keep working facilities and access; malformed blueprint IDs are rejected",
+    "Optional tracking, next-step map links and completed objectives persist; malformed journal saves reject",
+    "Camp plans and journal tracking survive bunker travel, save reload and returning to camp",
+    "Browsing is read-only, previews cannot charge resources, discoveries contain only known events and navigation is voluntary",
+    "All headquarters, equipment and discovery illustrations resolve on web and in the offline native bundle"
+  ]
+}

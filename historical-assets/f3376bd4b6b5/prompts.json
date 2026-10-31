@@ -1,0 +1,20 @@
+{
+  "mode": "built-in image_gen",
+  "use_case": "precise-object-edit",
+  "sourceBounds": {
+    "x": 4100,
+    "y": 4000,
+    "width": 1536,
+    "height": 1024
+  },
+  "prompts": [
+    "Use case: precise-object-edit. Asset type: native-scale 1536x1024 ground patch for a top-down illustrated survival game, NOT a presentation.\nImage 1 is the edit target and exact road-layout guide. Image 2 is the same actual ground without the faulty extension.\nReplace ONLY the faulty road extension from approximately (390,430) curving through (500,560),(950,540),(1300,440) to the right edge at (1536,395), and its immediately adjacent soil. Create a bespoke integrated cobblestone road painted directly into THIS earth. Preserve the original camp road at top left, its precise position and its irregular angular rounded stones, especially the first 350x350 area. Connect seamlessly from its diagonal direction into the sweeping bend. Match the original camp stones: varied irregular sizes roughly 25–48 image pixels, several stones across a roughly 160–180px-wide path, warm grey and pale earth colours, hand-painted bevels and small rich dark soil gaps. NO scale taper or change of stone size. No stretched or uniformly oval pebble chain. Restore solid crisp stones in the ghosted join; no translucent stones. The road remains solid all the way to the right edge at y395, never dissolves into dirt.\nPaint its earthy shoulders, sparse loose small fragments and subtle contact shading as one coherent surface with the surrounding original ground. Keep all ground beyond the immediate road corridor unchanged, including all four image borders outside the road entrance/exit. Keep exact original top-down perspective, orange-brown palette and ground detail scale. No new foliage, leaves, puddles, buildings, props, text or UI. No blur, strong vignette, grass, green tint or repeating motifs. Full opaque image, same framing and dimensions.",
+    "Use case: precise-object-edit. Edit this 1536x1024 top-down road-and-earth game terrain patch. Preserve the entire left 1100 pixels EXACTLY, especially the camp path at top left and the main sweeping road, and preserve the outer terrain everywhere. Change only the final right-hand section of road: beginning near x1120 y480, make the solid cobblestone pavement gradually become an old worn dirt track through missing stones and soil covering the gaps. All individual stones must remain opaque, sharp, same scale and shading as the left-hand road. Fewer and fewer whole stones, then end the last paving stones by x1390. The remaining rightmost 146 pixels should be a clear compacted earth track at y395 with textured irregular earth shoulders, no cobblestones at the right image edge. The path continues out to the right at y395; keep its route and approximately180pixel width. This is physical wear and broken paving, NOT blur, transparency or fading stones. Do not change the composition, original left road, camp entrance, orange brown palette, ground texture size or lighting. No vegetation, props, text, extra roads. Opaque background."
+  ],
+  "references": [
+    "docs/qa/world-roads-v3/pilot-guide.webp",
+    "docs/qa/world-roads-v3/pilot-ground.webp"
+  ],
+  "source": "artwork-archive/road-pilot-v1/southeast.png",
+  "runtime": "public/survival/road-pilot-v1/southeast.webp"
+}

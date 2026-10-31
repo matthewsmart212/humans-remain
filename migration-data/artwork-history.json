@@ -1,0 +1,438 @@
+{
+  "table": "asset_artwork",
+  "capture_date": "2026-10-31",
+  "source": "Read-only Sites D1 table inspection",
+  "total_rows_observed": 37,
+  "complete_raw_config_rows": 35,
+  "configurations_recovered_from_other_original_sources": 1,
+  "unavailable_full_configurations": 1,
+  "rows": [
+    {
+      "id": "02536344-0c18-4b9e-9b1a-007f5b3c9d96",
+      "entry_id": "misc_2ecc542f-d46f-4370-84dc-1718f1ca2551",
+      "revision": 1,
+      "config_json": "{\"kind\":\"sprite\",\"base\":{\"id\":\"4b56ec52-93e4-425a-bc8a-2657713fe653\",\"url\":\"/api/asset-files/4b56ec52-93e4-425a-bc8a-2657713fe653\",\"name\":\"IMG_9403.png\",\"mime\":\"image/png\",\"width\":2304,\"height\":1231,\"bytes\":1039824},\"frames\":[],\"fps\":8,\"worldWidth\":150,\"anchor\":[0.5,0.94],\"solid\":true,\"allowTransparency\":true,\"footprint\":{\"width\":0.6,\"depth\":0.2}}",
+      "created_at": "2026-10-07T07:36:13.156Z"
+    },
+    {
+      "id": "03253815-f033-4216-9019-62df9a46435f",
+      "entry_id": "misc_c3a6521e-5a81-424d-a25c-c102891355a2",
+      "revision": 2,
+      "config_json": "{\"kind\":\"sprite\",\"base\":{\"id\":\"a6c5b4fb-5f6e-4eca-9574-f15e274dd051\",\"url\":\"/api/asset-files/a6c5b4fb-5f6e-4eca-9574-f15e274dd051\",\"name\":\"02_east_upper.png\",\"mime\":\"image/png\",\"width\":494,\"height\":402,\"bytes\":99286},\"frames\":[],\"fps\":8,\"worldWidth\":494,\"anchor\":[0.5,0.94],\"solid\":true,\"allowTransparency\":false,\"footprint\":{\"width\":0.6,\"depth\":0.2},\"collision\":{\"lineWidth\":0.012,\"paths\":[]}}",
+      "created_at": "2026-10-07T16:19:35.995Z"
+    },
+    {
+      "id": "045dee49-6863-462f-a723-ebfa270ef930",
+      "entry_id": "misc_839757e5-8646-448a-9c44-ab90dd109082",
+      "revision": 2,
+      "config_json": "{\"kind\":\"sprite\",\"base\":{\"id\":\"3c8aabfe-2a70-48ab-848c-ed5809622c78\",\"url\":\"/api/asset-files/3c8aabfe-2a70-48ab-848c-ed5809622c78\",\"name\":\"03_east_lower.png\",\"mime\":\"image/png\",\"width\":478,\"height\":458,\"bytes\":124779},\"frames\":[],\"fps\":8,\"worldWidth\":478,\"anchor\":[0.5,0.94],\"solid\":true,\"allowTransparency\":false,\"footprint\":{\"width\":0.6,\"depth\":0.2},\"collision\":{\"lineWidth\":0.012,\"paths\":[]}}",
+      "created_at": "2026-10-07T16:21:03.504Z"
+    },
+    {
+      "id": "049084e0-e94e-4f83-98a1-c4ee22a721fa",
+      "entry_id": "misc_0c17a859-9e4a-4145-bfde-29cab029d69a",
+      "revision": 1,
+      "config_json": "{\"kind\":\"sprite\",\"base\":{\"id\":\"bc46c6e7-bcd5-405e-9f57-a0eb1ed93978\",\"url\":\"/api/asset-files/bc46c6e7-bcd5-405e-9f57-a0eb1ed93978\",\"name\":\"IMG_9409.png\",\"mime\":\"image/png\",\"width\":1292,\"height\":3292,\"bytes\":1655462},\"frames\":[],\"fps\":8,\"worldWidth\":1000,\"anchor\":[0.5,0.94],\"solid\":true,\"allowTransparency\":true,\"footprint\":{\"width\":0.6,\"depth\":0.2}}",
+      "created_at": "2026-10-07T07:53:08.327Z"
+    },
+    {
+      "id": "08ec2248-5b6a-476c-af91-8a3a804f8f93",
+      "entry_id": "misc_839757e5-8646-448a-9c44-ab90dd109082",
+      "revision": 1,
+      "config_json": "{\"kind\":\"sprite\",\"base\":{\"id\":\"a17e47de-972f-4ad6-8d83-8a89b5b682e8\",\"url\":\"/api/asset-files/a17e47de-972f-4ad6-8d83-8a89b5b682e8\",\"name\":\"IMG_9405.png\",\"mime\":\"image/png\",\"width\":1044,\"height\":2304,\"bytes\":943266},\"frames\":[],\"fps\":8,\"worldWidth\":1000,\"anchor\":[0.5,0.94],\"solid\":true,\"allowTransparency\":true,\"footprint\":{\"width\":0.6,\"depth\":0.2}}",
+      "created_at": "2026-10-07T07:50:14.854Z"
+    },
+    {
+      "id": "1a637411-5274-438a-887c-12614a81c78a",
+      "entry_id": "misc_ceaf1a05-5426-45df-8a51-d3e2e07c6f9f",
+      "revision": 1,
+      "config_json": "{\"kind\":\"sprite\",\"base\":{\"id\":\"511df250-f10f-4b4e-8b9d-f091fe490070\",\"url\":\"/api/asset-files/511df250-f10f-4b4e-8b9d-f091fe490070\",\"name\":\"028AD6E0-B342-406A-A516-1F40147CD39E.png\",\"mime\":\"image/png\",\"width\":1254,\"height\":1254,\"bytes\":2770437},\"frames\":[],\"fps\":8,\"worldWidth\":1254,\"anchor\":[0.5,0.94],\"solid\":true,\"allowTransparency\":true,\"footprint\":{\"width\":0.6,\"depth\":0.2},\"collision\":{\"lineWidth\":0.012,\"paths\":[{\"closed\":true,\"points\":[[0.09943181818181818,0.5492424242424241],[0.12878787878787878,0.45170454545454547],[0.32007575757575757,0.29640151515151514],[0.9195075757575756,0.6496212121212119],[0.9053030303030302,0.7357954545454546],[0.5861742424242423,0.9583333333333329],[0.35795454545454547,0.8267045454545454],[0.3939393939393939,0.75]]}]}}",
+      "created_at": "2026-10-12T10:44:14.275Z"
+    },
+    {
+      "id": "20df0d0d-a5d2-4adc-ad95-7bfa999e538b",
+      "entry_id": "base_shelter_t1",
+      "revision": 2,
+      "config_json": "{\"kind\":\"building\",\"base\":{\"id\":\"7ba592ff-8095-4403-9e98-a6d751e01047\",\"url\":\"/api/asset-files/7ba592ff-8095-4403-9e98-a6d751e01047\",\"name\":\"E31BEAE8-921D-4E47-8CC7-875B1C8EAE1C.png\",\"mime\":\"image/png\",\"width\":1536,\"height\":1024,\"bytes\":2439088},\"frames\":[],\"roof\":{\"id\":\"41a20cf1-b06d-42ef-84ef-4ede311a14ad\",\"url\":\"/api/asset-files/41a20cf1-b06d-42ef-84ef-4ede311a14ad\",\"name\":\"76070E1A-DAF7-430D-9125-978C845D0274.png\",\"mime\":\"image/png\",\"width\":1536,\"height\":1024,\"bytes\":3639802},\"fps\":8,\"worldWidth\":672,\"anchor\":[0.5,0.9399999999999998],\"solid\":true,\"allowTransparency\":true,\"footprint\":{\"width\":0.6,\"depth\":0.2},\"collision\":{\"lineWidth\":0.012,\"paths\":[]},\"building\":{\"left\":0.0713266761768902,\"top\":0.2718360071301248,\"right\":0.927246790299572,\"bottom\":0.8627450980392156,\"doorSide\":\"south\",\"doorStart\":0.36,\"doorEnd\":0.64}}",
+      "created_at": "2026-10-08T06:24:52.982Z"
+    },
+    {
+      "id": "2bc26400-8c40-4953-a3e2-fe9553841dd6",
+      "entry_id": "misc_2ecc542f-d46f-4370-84dc-1718f1ca2551",
+      "revision": 2,
+      "config_json": "{\"kind\":\"sprite\",\"base\":{\"id\":\"4b56ec52-93e4-425a-bc8a-2657713fe653\",\"url\":\"/api/asset-files/4b56ec52-93e4-425a-bc8a-2657713fe653\",\"name\":\"IMG_9403.png\",\"mime\":\"image/png\",\"width\":2304,\"height\":1231,\"bytes\":1039824},\"frames\":[],\"fps\":8,\"worldWidth\":1000,\"anchor\":[0.5,0.94],\"solid\":true,\"allowTransparency\":true,\"footprint\":{\"width\":0.6,\"depth\":0.2},\"collision\":{\"lineWidth\":0.012,\"paths\":[{\"closed\":true,\"points\":[[0.2,0.74],[0.8,0.74],[0.8,0.94],[0.2,0.94]]}]}}",
+      "created_at": "2026-10-07T07:39:17.044Z"
+    },
+    {
+      "id": "343314f9-90cd-4db0-88fc-ed2e7c652774",
+      "entry_id": "base_well_t1",
+      "revision": 1,
+      "config_json": "{\"kind\":\"sprite\",\"base\":{\"id\":\"0f5d7810-ce86-4fbc-837b-e5f2ad8aac9f\",\"url\":\"/api/asset-files/0f5d7810-ce86-4fbc-837b-e5f2ad8aac9f\",\"name\":\"camp-well-t1.png\",\"mime\":\"image/png\",\"width\":1091,\"height\":1012,\"bytes\":1843358},\"frames\":[],\"fps\":8,\"worldWidth\":138,\"anchor\":[0.4317140238313474,0.983201581027668],\"solid\":true,\"footprint\":{\"width\":0.6,\"depth\":0.2},\"collision\":{\"lineWidth\":0.012,\"paths\":[{\"closed\":false,\"points\":[[0.09263899376057784,0.42165356105354795],[0.02544356680354676,0.5523622085083657],[0.01813971362456611,0.7208660949461579],[0.07949203574882176,0.8515748024749474],[0.27377457488888957,0.9602362121712035],[0.4928901702583097,0.9807087008701996],[0.4695178623751625,0.5618111534205458],[0.8274065566972605,0.5224409551191046],[0.7806619409309662,0.43425200408485876],[0.4782824639003484,0.41062995719276013],[0.21534374945704413,0.42007875192001093],[0.09409974210678305,0.4216535310165621],[0.04881587468669393,0.4562992118064343]]}]}}",
+      "created_at": "2026-10-06T19:02:53.703Z"
+    },
+    {
+      "id": "373e7125-aeb9-4f9d-b38e-e56ed5ceb3a6",
+      "entry_id": "exp_research_planning_t2",
+      "revision": 2,
+      "config_json": "{\"kind\":\"sprite\",\"base\":{\"id\":\"8caea3c8-c9b1-4f32-9a99-24004a9e5c99\",\"url\":\"/api/asset-files/8caea3c8-c9b1-4f32-9a99-24004a9e5c99\",\"name\":\"032B27DF-CF0D-4728-BE67-5FA659CFD1C1.png\",\"mime\":\"image/png\",\"width\":1536,\"height\":1024,\"bytes\":1315112},\"frames\":[],\"fps\":8,\"worldWidth\":1536,\"anchor\":[0.5,0.94],\"solid\":true,\"allowTransparency\":true,\"footprint\":{\"width\":0.6,\"depth\":0.2}}",
+      "created_at": "2026-10-08T12:05:10.542Z"
+    },
+    {
+      "id": "56c2ee13-aa35-4cac-a347-e8f4264e9119",
+      "entry_id": "exp_research_planning_t2",
+      "revision": 1,
+      "config_json": "{\"kind\":\"sprite\",\"base\":{\"id\":\"8caea3c8-c9b1-4f32-9a99-24004a9e5c99\",\"url\":\"/api/asset-files/8caea3c8-c9b1-4f32-9a99-24004a9e5c99\",\"name\":\"032B27DF-CF0D-4728-BE67-5FA659CFD1C1.png\",\"mime\":\"image/png\",\"width\":1536,\"height\":1024,\"bytes\":1315112},\"frames\":[],\"fps\":8,\"worldWidth\":1536,\"anchor\":[0.5,0.94],\"solid\":true,\"allowTransparency\":true,\"footprint\":{\"width\":0.6,\"depth\":0.2}}",
+      "created_at": "2026-10-08T12:05:03.263Z"
+    },
+    {
+      "id": "62ebf780-2cc4-4598-98f1-2fc229b09310",
+      "entry_id": "misc_d9795b56-b7cc-4e3a-84e2-3140912e5d0d",
+      "revision": 1,
+      "config_json": "{\"kind\":\"sprite\",\"base\":{\"id\":\"53b14b13-4089-4f5d-ab53-400e5b242ff7\",\"url\":\"/api/asset-files/53b14b13-4089-4f5d-ab53-400e5b242ff7\",\"name\":\"1B2573AA-9536-4961-A5D7-1D28BB88CFA2.png\",\"mime\":\"image/png\",\"width\":1254,\"height\":1254,\"bytes\":3360469},\"frames\":[],\"fps\":8,\"worldWidth\":1254,\"anchor\":[0.5,0.94],\"solid\":false,\"allowTransparency\":false,\"footprint\":{\"width\":0.6,\"depth\":0.2}}",
+      "created_at": "2026-10-10T15:14:00.269Z"
+    },
+    {
+      "id": "6f59f4f0-e362-4663-923a-6084a0c8533f",
+      "entry_id": "misc_2dd09bb8-883b-42e3-b765-c2a1c735b016",
+      "revision": 6,
+      "config_json": "{\"kind\":\"sprite\",\"base\":{\"id\":\"087cf6ea-0a94-4a4f-a83d-f19d7e8d54dc\",\"url\":\"/api/asset-files/087cf6ea-0a94-4a4f-a83d-f19d7e8d54dc\",\"name\":\"0CFDD479-4C10-49F7-8CC6-8A0F8515BDF2.png\",\"mime\":\"image/png\",\"width\":1312,\"height\":1199,\"bytes\":3009814},\"frames\":[],\"fps\":8,\"worldWidth\":1312,\"anchor\":[0.5,0.94],\"solid\":true,\"allowTransparency\":true,\"footprint\":{\"width\":0.6,\"depth\":0.2},\"collision\":{\"lineWidth\":0.012,\"paths\":[]}}",
+      "created_at": "2026-10-11T08:55:51.859Z"
+    },
+    {
+      "id": "716f3899-5b31-46d6-966c-afaaf1fd8844",
+      "entry_id": "misc_2dd09bb8-883b-42e3-b765-c2a1c735b016",
+      "revision": 2,
+      "config_json": "{\"kind\":\"sprite\",\"base\":{\"id\":\"098c0941-5567-4a28-9a93-a7fbf8132b8f\",\"url\":\"/api/asset-files/098c0941-5567-4a28-9a93-a7fbf8132b8f\",\"name\":\"9D78D190-B24D-4D1D-932B-639E656E1ED8.png\",\"mime\":\"image/png\",\"width\":1312,\"height\":1199,\"bytes\":3006427},\"frames\":[],\"fps\":8,\"worldWidth\":1312,\"anchor\":[0.5,0.94],\"solid\":true,\"allowTransparency\":true,\"footprint\":{\"width\":0.6,\"depth\":0.2},\"collision\":{\"lineWidth\":0.012,\"paths\":[{\"closed\":true,\"points\":[[0.2,0.74],[0.8,0.74],[0.8,0.94],[0.2,0.94]]}]}}",
+      "created_at": "2026-10-10T17:34:14.810Z"
+    },
+    {
+      "id": "7590946f-1826-4c80-bb82-eafedd3f8c08",
+      "entry_id": "misc_b4f79cef-2bfe-4c2e-8e5e-6dbbcec7e645",
+      "revision": 2,
+      "config_json": "{\"kind\":\"sprite\",\"base\":{\"id\":\"fff5b1da-c975-4be4-971f-e1a88f444467\",\"url\":\"/api/asset-files/fff5b1da-c975-4be4-971f-e1a88f444467\",\"name\":\"06_west_lower.png\",\"mime\":\"image/png\",\"width\":465,\"height\":574,\"bytes\":160301},\"frames\":[],\"fps\":8,\"worldWidth\":465,\"anchor\":[0.5,0.94],\"solid\":false,\"allowTransparency\":false,\"footprint\":{\"width\":0.6,\"depth\":0.2},\"collision\":{\"lineWidth\":0.012,\"paths\":[{\"closed\":true,\"points\":[[0.2,0.74],[0.8,0.74],[0.8,0.94],[0.2,0.94]]}]}}",
+      "created_at": "2026-10-07T16:24:46.249Z"
+    },
+    {
+      "id": "7b41d9d7-0bdb-4901-817a-f72bf6b19850",
+      "entry_id": "misc_2ecc542f-d46f-4370-84dc-1718f1ca2551",
+      "revision": 4,
+      "config_json": "{\"kind\":\"sprite\",\"base\":{\"id\":\"4b56ec52-93e4-425a-bc8a-2657713fe653\",\"url\":\"/api/asset-files/4b56ec52-93e4-425a-bc8a-2657713fe653\",\"name\":\"IMG_9403.png\",\"mime\":\"image/png\",\"width\":2304,\"height\":1231,\"bytes\":1039824},\"frames\":[],\"fps\":8,\"worldWidth\":1000,\"anchor\":[0.5,0.94],\"solid\":true,\"allowTransparency\":true,\"footprint\":{\"width\":0.6,\"depth\":0.2},\"collision\":{\"lineWidth\":0.012,\"paths\":[]}}",
+      "created_at": "2026-10-07T07:39:25.849Z"
+    },
+    {
+      "id": "83d90fc7-faea-4ff8-90c5-f2cc4019f98d",
+      "entry_id": "misc_0c17a859-9e4a-4145-bfde-29cab029d69a",
+      "revision": 2,
+      "config_json": "{\"kind\":\"sprite\",\"base\":{\"id\":\"d1c68ca0-df31-41a2-abd7-022e5dae7b1a\",\"url\":\"/api/asset-files/d1c68ca0-df31-41a2-abd7-022e5dae7b1a\",\"name\":\"07_west_upper.png\",\"mime\":\"image/png\",\"width\":450,\"height\":467,\"bytes\":130064},\"frames\":[],\"fps\":8,\"worldWidth\":450,\"anchor\":[0.5,0.94],\"solid\":false,\"allowTransparency\":false,\"footprint\":{\"width\":0.6,\"depth\":0.2},\"collision\":{\"lineWidth\":0.012,\"paths\":[{\"closed\":true,\"points\":[[0.2,0.74],[0.8,0.74],[0.8,0.9400000000000001],[0.2,0.9400000000000001]]}]}}",
+      "created_at": "2026-10-07T16:25:18.074Z"
+    },
+    {
+      "id": "859bfe00-bba5-4940-9612-4510b4ddce85",
+      "entry_id": "misc_2dd09bb8-883b-42e3-b765-c2a1c735b016",
+      "revision": 3,
+      "config_json": "{\"kind\":\"sprite\",\"base\":{\"id\":\"1fc5a141-5a36-40dc-b8c2-403ec4c2ae92\",\"url\":\"/api/asset-files/1fc5a141-5a36-40dc-b8c2-403ec4c2ae92\",\"name\":\"0CFDD479-4C10-49F7-8CC6-8A0F8515BDF2.png\",\"mime\":\"image/png\",\"width\":1312,\"height\":1199,\"bytes\":3009814},\"frames\":[],\"fps\":8,\"worldWidth\":1312,\"anchor\":[0.5,0.94],\"solid\":true,\"allowTransparency\":true,\"footprint\":{\"width\":0.6,\"depth\":0.2},\"collision\":{\"lineWidth\":0.012,\"paths\":[{\"closed\":true,\"points\":[[0.2,0.74],[0.8,0.74],[0.8,0.94],[0.2,0.94]]}]}}",
+      "created_at": "2026-10-10T18:36:59.933Z"
+    },
+    {
+      "id": "87f72510-545f-4a3f-a84c-a05fa88b05cc",
+      "entry_id": "misc_2dd09bb8-883b-42e3-b765-c2a1c735b016",
+      "revision": 8,
+      "config_json": "{\"kind\":\"sprite\",\"base\":{\"id\":\"2401745e-7f2d-4a8c-b6da-7351bc248ca7\",\"url\":\"/api/asset-files/2401745e-7f2d-4a8c-b6da-7351bc248ca7\",\"name\":\"IMG_9479.png\",\"mime\":\"image/png\",\"width\":1312,\"height\":1199,\"bytes\":2133217},\"frames\":[{\"id\":\"2401745e-7f2d-4a8c-b6da-7351bc248ca7\",\"url\":\"/api/asset-files/2401745e-7f2d-4a8c-b6da-7351bc248ca7\",\"name\":\"IMG_9479.png\",\"mime\":\"image/png\",\"width\":1312,\"height\":1199,\"bytes\":2133217},{\"id\":\"c3ca8339-9c06-46f9-bbdd-ffe6b58d5376\",\"url\":\"/api/asset-files/c3ca8339-9c06-46f9-bbdd-ffe6b58d5376\",\"name\":\"IMG_9478.png\",\"mime\":\"image/png\",\"width\":1312,\"height\":1199,\"bytes\":2124551},{\"id\":\"588cd1b0-8ac3-4283-a358-e6e86bd2ba10\",\"url\":\"/api/asset-files/588cd1b0-8ac3-4283-a358-e6e86bd2ba10\",\"name\":\"IMG_9477.png\",\"mime\":\"image/png\",\"width\":1312,\"height\":1199,\"bytes\":2114147}],\"fps\":3,\"worldWidth\":1312,\"anchor\":[0.5,0.94],\"solid\":true,\"allowTransparency\":true,\"footprint\":{\"width\":0.6,\"depth\":0.2},\"collision\":{\"lineWidth\":0.012,\"paths\":[{\"closed\":true,\"points\":[[0.17974212881716561,0.6054950751684808],[0.272597962118889,0.4022809745982371],[0.521792698428616,0.14618973561430793],[0.8970060656478246,0.32763089683773955],[0.9102711846909279,0.5629860031104198],[0.6023309211903148,0.9445308449974078],[0.5085275793855126,0.9061689994815963],[0.740667162639821,0.6189735614307931],[0.5227402069316948,0.4883359253499223],[0.28207304714967696,0.7071021254536025]]}]}}",
+      "created_at": "2026-10-11T19:33:50.372Z"
+    },
+    {
+      "id": "91df0318-4d20-4b66-9c10-3da4c99b310f",
+      "entry_id": "misc_dc6dcbec-1730-4540-9f18-81e93654dfd1",
+      "revision": 1,
+      "config_json": "{\"kind\":\"sprite\",\"base\":{\"id\":\"b254d3fa-7200-44f4-8418-5f452126ade6\",\"url\":\"/api/asset-files/b254d3fa-7200-44f4-8418-5f452126ade6\",\"name\":\"05_south_west.png\",\"mime\":\"image/png\",\"width\":465,\"height\":618,\"bytes\":130835},\"frames\":[],\"fps\":8,\"worldWidth\":465,\"anchor\":[0.5,0.94],\"solid\":false,\"allowTransparency\":false,\"footprint\":{\"width\":0.6,\"depth\":0.2}}",
+      "created_at": "2026-10-07T16:24:11.267Z"
+    },
+    {
+      "id": "a1c47dfd-6b8b-449b-b853-7ff22891ee30",
+      "entry_id": "misc_2dd09bb8-883b-42e3-b765-c2a1c735b016",
+      "revision": 5,
+      "config_json": "{\"kind\":\"sprite\",\"base\":{\"id\":\"40ce552d-d6d2-4fdd-ba08-179a603f7677\",\"url\":\"/api/asset-files/40ce552d-d6d2-4fdd-ba08-179a603f7677\",\"name\":\"B851038C-7730-426E-86D3-380AE85DB0B3.png\",\"mime\":\"image/png\",\"width\":1312,\"height\":1199,\"bytes\":3166131},\"frames\":[],\"fps\":8,\"worldWidth\":1312,\"anchor\":[0.5,0.94],\"solid\":true,\"allowTransparency\":true,\"footprint\":{\"width\":0.6,\"depth\":0.2},\"collision\":{\"lineWidth\":0.012,\"paths\":[]}}",
+      "created_at": "2026-10-10T18:43:16.297Z"
+    },
+    {
+      "id": "aea2460a-7e33-41c6-9cab-e22377de6428",
+      "entry_id": "misc_2dd09bb8-883b-42e3-b765-c2a1c735b016",
+      "revision": 1,
+      "config_json": "{\"kind\":\"sprite\",\"base\":{\"id\":\"098c0941-5567-4a28-9a93-a7fbf8132b8f\",\"url\":\"/api/asset-files/098c0941-5567-4a28-9a93-a7fbf8132b8f\",\"name\":\"9D78D190-B24D-4D1D-932B-639E656E1ED8.png\",\"mime\":\"image/png\",\"width\":1312,\"height\":1199,\"bytes\":3006427},\"frames\":[],\"fps\":8,\"worldWidth\":150,\"anchor\":[0.5,0.94],\"solid\":true,\"allowTransparency\":true,\"footprint\":{\"width\":0.6,\"depth\":0.2}}",
+      "created_at": "2026-10-10T17:30:43.118Z"
+    },
+    {
+      "id": "b203729c-2c34-402f-92ec-ddf33ccec5b1",
+      "entry_id": "misc_d0d1ee51-fe35-4ff1-981f-200188f0acc2",
+      "revision": 1,
+      "config_json": "{\"kind\":\"sprite\",\"base\":{\"id\":\"13262a0a-5be2-4f1a-b2a2-a951aecf0047\",\"url\":\"/api/asset-files/13262a0a-5be2-4f1a-b2a2-a951aecf0047\",\"name\":\"IMG_9406.png\",\"mime\":\"image/png\",\"width\":2304,\"height\":2067,\"bytes\":1511956},\"frames\":[],\"fps\":8,\"worldWidth\":1000,\"anchor\":[0.5,0.94],\"solid\":true,\"allowTransparency\":true,\"footprint\":{\"width\":0.6,\"depth\":0.2}}",
+      "created_at": "2026-10-07T07:51:02.462Z"
+    },
+    {
+      "id": "b5216306-373b-4228-9f0d-0ab29dcf8574",
+      "entry_id": "misc_2dd09bb8-883b-42e3-b765-c2a1c735b016",
+      "revision": 4,
+      "config_json": "{\"kind\":\"sprite\",\"base\":{\"id\":\"1fc5a141-5a36-40dc-b8c2-403ec4c2ae92\",\"url\":\"/api/asset-files/1fc5a141-5a36-40dc-b8c2-403ec4c2ae92\",\"name\":\"0CFDD479-4C10-49F7-8CC6-8A0F8515BDF2.png\",\"mime\":\"image/png\",\"width\":1312,\"height\":1199,\"bytes\":3009814},\"frames\":[],\"fps\":8,\"worldWidth\":1312,\"anchor\":[0.5,0.94],\"solid\":true,\"allowTransparency\":true,\"footprint\":{\"width\":0.6,\"depth\":0.2},\"collision\":{\"lineWidth\":0.012,\"paths\":[]}}",
+      "created_at": "2026-10-10T18:37:02.908Z"
+    },
+    {
+      "id": "b57f314f-cb46-42b3-b14b-4bec87b74c9e",
+      "entry_id": "base_shelter_t1",
+      "revision": 3,
+      "config_json": "{\"kind\":\"building\",\"base\":{\"id\":\"7ba592ff-8095-4403-9e98-a6d751e01047\",\"url\":\"/api/asset-files/7ba592ff-8095-4403-9e98-a6d751e01047\",\"name\":\"E31BEAE8-921D-4E47-8CC7-875B1C8EAE1C.png\",\"mime\":\"image/png\",\"width\":1536,\"height\":1024,\"bytes\":2439088},\"frames\":[],\"roof\":{\"id\":\"bd4018a3-fc58-4310-962f-151df151ff73\",\"url\":\"/api/asset-files/bd4018a3-fc58-4310-962f-151df151ff73\",\"name\":\"3D544FD2-EB23-499A-A557-733BF10C81A0.png\",\"mime\":\"image/png\",\"width\":1536,\"height\":1024,\"bytes\":2109395},\"fps\":8,\"worldWidth\":672,\"anchor\":[0.5,0.9399999999999998],\"solid\":true,\"allowTransparency\":true,\"footprint\":{\"width\":0.6,\"depth\":0.2},\"collision\":{\"lineWidth\":0.012,\"paths\":[]},\"building\":{\"left\":0.0713266761768902,\"top\":0.2718360071301248,\"right\":0.927246790299572,\"bottom\":0.8627450980392156,\"doorSide\":\"south\",\"doorStart\":0.36,\"doorEnd\":0.64}}",
+      "created_at": "2026-10-08T06:32:27.872Z"
+    },
+    {
+      "id": "bfb3e9dd-5ca6-4669-825e-376d117c81a5",
+      "entry_id": "base_shelter_t1",
+      "revision": 1,
+      "config_json": "{\"kind\":\"building\",\"base\":{\"id\":\"ee7e97a4-6c7d-4562-acc0-50e6ee415345\",\"url\":\"/api/asset-files/ee7e97a4-6c7d-4562-acc0-50e6ee415345\",\"name\":\"A2CA9F0A-8741-4CC0-BF41-049C8D78633A.png\",\"mime\":\"image/png\",\"width\":1448,\"height\":1086,\"bytes\":1568193},\"frames\":[],\"roof\":{\"id\":\"3a6815d0-ed60-416f-b015-3f894afe2215\",\"url\":\"/api/asset-files/3a6815d0-ed60-416f-b015-3f894afe2215\",\"name\":\"4259386F-CF74-43EF-9A1E-F9A391305A75.png\",\"mime\":\"image/png\",\"width\":1448,\"height\":1086,\"bytes\":2829131},\"fps\":8,\"worldWidth\":672,\"anchor\":[0.5,0.9399999999999998],\"solid\":true,\"allowTransparency\":true,\"footprint\":{\"width\":0.6,\"depth\":0.2},\"collision\":{\"lineWidth\":0.012,\"paths\":[]},\"building\":{\"left\":0.0713266761768902,\"top\":0.2718360071301248,\"right\":0.927246790299572,\"bottom\":0.8627450980392156,\"doorSide\":\"south\",\"doorStart\":0.36,\"doorEnd\":0.64}}",
+      "created_at": "2026-10-08T04:58:20.510Z"
+    },
+    {
+      "id": "c2eb3831-4795-456f-86a0-1e861f0bb06a",
+      "entry_id": "misc_c3a6521e-5a81-424d-a25c-c102891355a2",
+      "revision": 1,
+      "config_json": "{\"kind\":\"sprite\",\"base\":{\"id\":\"6a5f2fe4-90f4-4d29-bd8b-95ee6904b75b\",\"url\":\"/api/asset-files/6a5f2fe4-90f4-4d29-bd8b-95ee6904b75b\",\"name\":\"IMG_9404.png\",\"mime\":\"image/png\",\"width\":2304,\"height\":2160,\"bytes\":1610890},\"frames\":[],\"fps\":8,\"worldWidth\":1000,\"anchor\":[0.5,0.94],\"solid\":true,\"allowTransparency\":true,\"footprint\":{\"width\":0.6,\"depth\":0.2}}",
+      "created_at": "2026-10-07T07:45:17.093Z"
+    },
+    {
+      "id": "cfec2171-06ef-454d-aee4-7472748f6ee2",
+      "entry_id": "misc_2ecc542f-d46f-4370-84dc-1718f1ca2551",
+      "revision": 5,
+      "config_json": "{\"kind\":\"sprite\",\"base\":{\"id\":\"643cf52b-1da8-4a08-8c2b-f405dd67aad6\",\"url\":\"/api/asset-files/643cf52b-1da8-4a08-8c2b-f405dd67aad6\",\"name\":\"01_north_east.png\",\"mime\":\"image/png\",\"width\":584,\"height\":520,\"bytes\":190102},\"frames\":[],\"fps\":8,\"worldWidth\":584,\"anchor\":[0.5,0.94],\"solid\":true,\"allowTransparency\":true,\"footprint\":{\"width\":0.6,\"depth\":0.2},\"collision\":{\"lineWidth\":0.012,\"paths\":[]}}",
+      "created_at": "2026-10-07T16:00:14.924Z"
+    },
+    {
+      "id": "d5309c7d-3290-4663-b212-a6195211dff7",
+      "entry_id": "base_shelter_t1",
+      "revision": 4,
+      "config_json": "{\"kind\":\"building\",\"base\":{\"id\":\"93db0d98-1245-4026-a136-6248654149f9\",\"url\":\"/api/asset-files/93db0d98-1245-4026-a136-6248654149f9\",\"name\":\"FB9D088F-3810-4CA4-A34A-6229EC4DC520.png\",\"mime\":\"image/png\",\"width\":1536,\"height\":1024,\"bytes\":2513507},\"frames\":[],\"roof\":{\"id\":\"cc6d2270-1400-486e-a12a-2014ca70f4e3\",\"url\":\"/api/asset-files/cc6d2270-1400-486e-a12a-2014ca70f4e3\",\"name\":\"IMG_9429.png\",\"mime\":\"image/png\",\"width\":1536,\"height\":1024,\"bytes\":2217053},\"fps\":8,\"worldWidth\":672,\"anchor\":[0.5,0.9399999999999998],\"solid\":true,\"allowTransparency\":true,\"footprint\":{\"width\":0.6,\"depth\":0.2},\"collision\":{\"lineWidth\":0.012,\"paths\":[]},\"building\":{\"left\":0.0713266761768902,\"top\":0.2718360071301248,\"right\":0.927246790299572,\"bottom\":0.8627450980392156,\"doorSide\":\"south\",\"doorStart\":0.36,\"doorEnd\":0.64}}",
+      "created_at": "2026-10-08T10:35:42.678Z"
+    },
+    {
+      "id": "d59d6dec-2ffa-46f8-a778-5d81f0484ca1",
+      "entry_id": "misc_b4f79cef-2bfe-4c2e-8e5e-6dbbcec7e645",
+      "revision": 1,
+      "config_json": "{\"kind\":\"sprite\",\"base\":{\"id\":\"5309f0fe-9d69-4395-bbf8-85b11ee5e909\",\"url\":\"/api/asset-files/5309f0fe-9d69-4395-bbf8-85b11ee5e909\",\"name\":\"IMG_9408.png\",\"mime\":\"image/png\",\"width\":2304,\"height\":1705,\"bytes\":1563753},\"frames\":[],\"fps\":8,\"worldWidth\":1000,\"anchor\":[0.5,0.94],\"solid\":true,\"allowTransparency\":true,\"footprint\":{\"width\":0.6,\"depth\":0.2}}",
+      "created_at": "2026-10-07T07:52:18.818Z"
+    },
+    {
+      "id": "d753f595-dcba-4fdf-bb2e-06074519fe15",
+      "entry_id": "misc_2ecc542f-d46f-4370-84dc-1718f1ca2551",
+      "revision": 3,
+      "config_json": "{\"kind\":\"sprite\",\"base\":{\"id\":\"4b56ec52-93e4-425a-bc8a-2657713fe653\",\"url\":\"/api/asset-files/4b56ec52-93e4-425a-bc8a-2657713fe653\",\"name\":\"IMG_9403.png\",\"mime\":\"image/png\",\"width\":2304,\"height\":1231,\"bytes\":1039824},\"frames\":[],\"fps\":8,\"worldWidth\":1000,\"anchor\":[0.5,0.94],\"solid\":true,\"allowTransparency\":true,\"footprint\":{\"width\":0.6,\"depth\":0.2},\"collision\":{\"lineWidth\":0.012,\"paths\":[]}}",
+      "created_at": "2026-10-07T07:39:22.557Z"
+    },
+    {
+      "id": "e260a463-e79d-4bde-ac7f-31c7785452ac",
+      "entry_id": "misc_d0d1ee51-fe35-4ff1-981f-200188f0acc2",
+      "revision": 2,
+      "config_json": "{\"kind\":\"sprite\",\"base\":{\"id\":\"0c959b7a-62c3-4b35-8632-e7a9d71d138d\",\"url\":\"/api/asset-files/0c959b7a-62c3-4b35-8632-e7a9d71d138d\",\"name\":\"04_south_east.png\",\"mime\":\"image/png\",\"width\":439,\"height\":347,\"bytes\":122973},\"frames\":[],\"fps\":8,\"worldWidth\":439,\"anchor\":[0.5,0.94],\"solid\":true,\"allowTransparency\":false,\"footprint\":{\"width\":0.6,\"depth\":0.2},\"collision\":{\"lineWidth\":0.012,\"paths\":[]}}",
+      "created_at": "2026-10-07T16:22:24.835Z"
+    },
+    {
+      "id": "e42f0124-588e-40bc-bf31-4526512fd3f4",
+      "entry_id": "misc_d0d1ee51-fe35-4ff1-981f-200188f0acc2",
+      "revision": 3,
+      "config_json": "{\"kind\":\"sprite\",\"base\":{\"id\":\"0c959b7a-62c3-4b35-8632-e7a9d71d138d\",\"url\":\"/api/asset-files/0c959b7a-62c3-4b35-8632-e7a9d71d138d\",\"name\":\"04_south_east.png\",\"mime\":\"image/png\",\"width\":439,\"height\":347,\"bytes\":122973},\"frames\":[],\"fps\":8,\"worldWidth\":439,\"anchor\":[0.5,0.94],\"solid\":true,\"allowTransparency\":false,\"footprint\":{\"width\":0.6,\"depth\":0.2},\"collision\":{\"lineWidth\":0.012,\"paths\":[]}}",
+      "created_at": "2026-10-07T16:22:48.131Z"
+    },
+    {
+      "id": "ebdf4813-6cf4-4b7e-8da3-0862531368f2",
+      "entry_id": "misc_2dd09bb8-883b-42e3-b765-c2a1c735b016",
+      "revision": 7,
+      "config_json": "{\"kind\":\"sprite\",\"base\":{\"id\":\"2401745e-7f2d-4a8c-b6da-7351bc248ca7\",\"url\":\"/api/asset-files/2401745e-7f2d-4a8c-b6da-7351bc248ca7\",\"name\":\"IMG_9479.png\",\"mime\":\"image/png\",\"width\":1312,\"height\":1199,\"bytes\":2133217},\"frames\":[{\"id\":\"2401745e-7f2d-4a8c-b6da-7351bc248ca7\",\"url\":\"/api/asset-files/2401745e-7f2d-4a8c-b6da-7351bc248ca7\",\"name\":\"IMG_9479.png\",\"mime\":\"image/png\",\"width\":1312,\"height\":1199,\"bytes\":2133217},{\"id\":\"c3ca8339-9c06-46f9-bbdd-ffe6b58d5376\",\"url\":\"/api/asset-files/c3ca8339-9c06-46f9-bbdd-ffe6b58d5376\",\"name\":\"IMG_9478.png\",\"mime\":\"image/png\",\"width\":1312,\"height\":1199,\"bytes\":2124551},{\"id\":\"588cd1b0-8ac3-4283-a358-e6e86bd2ba10\",\"url\":\"/api/asset-files/588cd1b0-8ac3-4283-a358-e6e86bd2ba10\",\"name\":\"IMG_9477.png\",\"mime\":\"image/png\",\"width\":1312,\"height\":1199,\"bytes\":2114147}],\"fps\":3,\"worldWidth\":1312,\"anchor\":[0.5,0.94],\"solid\":true,\"allowTransparency\":true,\"footprint\":{\"width\":0.6,\"depth\":0.2},\"collision\":{\"lineWidth\":0.012,\"paths\":[]}}",
+      "created_at": "2026-10-11T19:32:49.503Z"
+    },
+    {
+      "id": "ec60660b-0ac7-4a4a-866c-5b070f557d43",
+      "entry_id": "misc_ccf51c94-ae61-4c60-8ef5-79df0442c1d0",
+      "revision": 1,
+      "config_json": "{\"kind\":\"sprite\",\"base\":{\"id\":\"8e4808a2-5621-42a7-862d-4fad518e1be4\",\"url\":\"/api/asset-files/8e4808a2-5621-42a7-862d-4fad518e1be4\",\"name\":\"08_north_west.png\",\"mime\":\"image/png\",\"width\":421,\"height\":569,\"bytes\":113115},\"frames\":[],\"fps\":8,\"worldWidth\":421,\"anchor\":[0.5,0.94],\"solid\":false,\"allowTransparency\":false,\"footprint\":{\"width\":0.6,\"depth\":0.2}}",
+      "created_at": "2026-10-07T16:25:57.084Z"
+    }
+  ],
+  "recovered_configurations": [
+    {
+      "id": "3dd4d4af-c963-40b5-af25-1d2a0df24989",
+      "entry_id": "base_hearth_t1",
+      "revision": 2,
+      "created_at": "2026-10-10T15:07:33.754Z",
+      "config": {
+        "kind": "sprite",
+        "base": {
+          "id": "0e6f4385-99d4-4bd1-990e-1f3cb3fa87ea",
+          "url": "/api/asset-files/0e6f4385-99d4-4bd1-990e-1f3cb3fa87ea",
+          "name": "IMG_9459.png",
+          "mime": "image/png",
+          "width": 1254,
+          "height": 1254,
+          "bytes": 1370172
+        },
+        "frames": [
+          {
+            "id": "0e6f4385-99d4-4bd1-990e-1f3cb3fa87ea",
+            "url": "/api/asset-files/0e6f4385-99d4-4bd1-990e-1f3cb3fa87ea",
+            "name": "IMG_9459.png",
+            "mime": "image/png",
+            "width": 1254,
+            "height": 1254,
+            "bytes": 1370172
+          },
+          {
+            "id": "33c670e0-ef26-487e-b46f-230d28a66446",
+            "url": "/api/asset-files/33c670e0-ef26-487e-b46f-230d28a66446",
+            "name": "IMG_9460.png",
+            "mime": "image/png",
+            "width": 1254,
+            "height": 1254,
+            "bytes": 1379387
+          },
+          {
+            "id": "c63dbbf8-c089-49b4-9559-94f40439ab97",
+            "url": "/api/asset-files/c63dbbf8-c089-49b4-9559-94f40439ab97",
+            "name": "IMG_9461.png",
+            "mime": "image/png",
+            "width": 1254,
+            "height": 1254,
+            "bytes": 1379348
+          },
+          {
+            "id": "f24d5a53-da03-4ef1-81c3-84bbfda7f56f",
+            "url": "/api/asset-files/f24d5a53-da03-4ef1-81c3-84bbfda7f56f",
+            "name": "IMG_9462.png",
+            "mime": "image/png",
+            "width": 1254,
+            "height": 1254,
+            "bytes": 1380142
+          },
+          {
+            "id": "71d702cf-d32a-45da-9f28-ef28d1d5dc36",
+            "url": "/api/asset-files/71d702cf-d32a-45da-9f28-ef28d1d5dc36",
+            "name": "IMG_9463.png",
+            "mime": "image/png",
+            "width": 1254,
+            "height": 1254,
+            "bytes": 1382935
+          },
+          {
+            "id": "10f7b0ab-a198-4373-a434-bfe90aacec5d",
+            "url": "/api/asset-files/10f7b0ab-a198-4373-a434-bfe90aacec5d",
+            "name": "IMG_9464.png",
+            "mime": "image/png",
+            "width": 1254,
+            "height": 1254,
+            "bytes": 1383919
+          },
+          {
+            "id": "18bea2f8-1dd6-4d86-b767-89473f47eda6",
+            "url": "/api/asset-files/18bea2f8-1dd6-4d86-b767-89473f47eda6",
+            "name": "IMG_9465.png",
+            "mime": "image/png",
+            "width": 1254,
+            "height": 1254,
+            "bytes": 1382012
+          },
+          {
+            "id": "c9095651-2b46-40dd-8eaf-c73ea3ee5f5b",
+            "url": "/api/asset-files/c9095651-2b46-40dd-8eaf-c73ea3ee5f5b",
+            "name": "IMG_9466.png",
+            "mime": "image/png",
+            "width": 1254,
+            "height": 1254,
+            "bytes": 1377590
+          }
+        ],
+        "unlit": {
+          "id": "646cd6ce-36e6-406f-925a-ecb2c3e091d5",
+          "url": "/api/asset-files/646cd6ce-36e6-406f-925a-ecb2c3e091d5",
+          "name": "7841A1B6-2A0B-40D8-9DDF-45400683B609.png",
+          "mime": "image/png",
+          "width": 1254,
+          "height": 1254,
+          "bytes": 1458128
+        },
+        "fps": 10,
+        "worldWidth": 112,
+        "anchor": [
+          0.5,
+          0.9375
+        ],
+        "solid": true,
+        "allowTransparency": true,
+        "footprint": {
+          "width": 0.6,
+          "depth": 0.2
+        },
+        "collision": {
+          "lineWidth": 0.012,
+          "paths": [
+            {
+              "closed": true,
+              "points": [
+                [
+                  0.11607142857142855,
+                  0.5267857142857143
+                ],
+                [
+                  0.8839285714285714,
+                  0.5267857142857143
+                ],
+                [
+                  0.8839285714285714,
+                  0.9375
+                ],
+                [
+                  0.11607142857142855,
+                  0.9375
+                ]
+              ]
+            }
+          ]
+        }
+      },
+      "provenance": {
+        "source": "artwork.json: exact current public API record, also present unchanged in ten original tracked QA captures",
+        "source_url": "https://safety-last.matthew-smart212.chatgpt.site/api/asset-artwork?scope=world",
+        "source_record_id": "base_hearth_t1",
+        "database_prefix_matches": true,
+        "database_prefix_characters": 1810,
+        "compact_json_characters": 2322,
+        "compact_json_sha256": "0df9cfb1acb2bddc519e4a88e346e928c2758519f6e676e60dbd1dca79ec55ca",
+        "source_transform_check": "server/artwork.ts readArtwork applies source reskin functions; no hearth entry appears in the reskin manifests and animation defaults affect bunker only. This hearth configuration is passed through unchanged.",
+        "limit": "Original raw D1 config_json cell was truncated by the viewer. Complete configuration values are preserved from the public response; this is not a claim to have read the full original serialized database cell."
+      }
+    }
+  ],
+  "unavailable": [
+    {
+      "id": "07822e63-369b-454f-b054-01845a0d7834",
+      "entry_id": "base_hearth_t1",
+      "revision": 1,
+      "config_json": null,
+      "created_at": "2026-10-10T15:06:47.860Z",
+      "config_json_prefix": "{\"kind\":\"sprite\",\"base\":{\"id\":\"0e6f4385-99d4-4bd1-990e-1f3cb3fa87ea\",\"url\":\"/api/asset-files/0e6f4385-99d4-4bd1-990e-1f3cb3fa87ea\",\"name\":\"IMG_9459.png\",\"mime\":\"image/png\",\"width\":1254,\"height\":1254,\"bytes\":1370172},\"frames\":[{\"id\":\"0e6f4385-99d4-4bd1-990e-1f3cb3fa87ea\",\"url\":\"/api/asset-files/0e6f4385-99d4-4bd1-990e-1f3cb3fa87ea\",\"name\":\"IMG_9459.png\",\"mime\":\"image/png\",\"width\":1254,\"height\":1254,\"bytes\":1370172},{\"id\":\"33c670e0-ef26-487e-b46f-230d28a66446\",\"url\":\"/api/asset-files/33c670e0-ef26-487e-b46f-230d28a66446\",\"name\":\"IMG_9460.png\",\"mime\":\"image/png\",\"width\":1254,\"height\":1254,\"bytes\":1379387},{\"id\":\"c63dbbf8-c089-49b4-9559-94f40439ab97\",\"url\":\"/api/asset-files/c63dbbf8-c089-49b4-9559-94f40439ab97\",\"name\":\"IMG_9461.png\",\"mime\":\"image/png\",\"width\":1254,\"height\":1254,\"bytes\":1379348},{\"id\":\"f24d5a53-da03-4ef1-81c3-84bbfda7f56f\",\"url\":\"/api/asset-files/f24d5a53-da03-4ef1-81c3-84bbfda7f56f\",\"name\":\"IMG_9462.png\",\"mime\":\"image/png\",\"width\":1254,\"height\":1254,\"bytes\":1380142},{\"id\":\"71d702cf-d32a-45da-9f28-ef28d1d5dc36\",\"url\":\"/api/asset-files/71d702cf-d32a-45da-9f28-ef28d1d5dc36\",\"name\":\"IMG_9463.png\",\"mime\":\"image/png\",\"width\":1254,\"height\":1254,\"bytes\":1382935},{\"id\":\"10f7b0ab-a198-4373-a434-bfe90aacec5d\",\"url\":\"/api/asset-files/10f7b0ab-a198-4373-a434-bfe90aacec5d\",\"name\":\"IMG_9464.png\",\"mime\":\"image/png\",\"width\":1254,\"height\":1254,\"bytes\":1383919},{\"id\":\"18bea2f8-1dd6-4d86-b767-89473f47eda6\",\"url\":\"/api/asset-files/18bea2f8-1dd6-4d86-b767-89473f47eda6\",\"name\":\"IMG_9465.png\",\"mime\":\"image/png\",\"width\":1254,\"height\":1254,\"bytes\":1382012},{\"id\":\"c9095651-2b46-40dd-8eaf-c73ea3ee5f5b\",\"url\":\"/api/asset-files/c9095651-2b46-40dd-8eaf-c73ea3ee5f5b\",\"name\":\"IMG_9466.png\",\"mime\":\"image/png\",\"width\":1254,\"height\":1254,\"bytes\":1377590}],\"unlit\":{\"id\":\"646cd6ce-36e6-406f-925a-ecb2c3e0… [truncated for model]",
+      "unavailable_reason": "The read-only database tool truncated this cell at its per-value limit. No complete raw config was returned. This prefix is not a restoreable configuration."
+    }
+  ],
+  "projection": [
+    {
+      "offset": 0,
+      "truncated": true,
+      "truncated_values": 2,
+      "omitted_columns": 0,
+      "omitted_rows": 7,
+      "next_offset": 18
+    },
+    {
+      "offset": 18,
+      "truncated": false,
+      "truncated_values": 0,
+      "omitted_columns": 0,
+      "omitted_rows": 0,
+      "next_offset": null
+    }
+  ],
+  "note": "The complete current artwork is separately preserved in artwork.json. This archive preserves 35 complete raw revision rows, one complete configuration recovered from the actual public API, and metadata/prefix only for the remaining unavailable hearth revision1. It is not a complete raw database dump."
+}

@@ -1,0 +1,243 @@
+{
+  "passed": true,
+  "baselineOnly": false,
+  "facingMetrics": [
+    {
+      "sector": "right",
+      "rapidReverseChanges": 0,
+      "restartChanges": 0,
+      "slideBurstChanges": 0,
+      "sustainedResponseSeconds": 0.26666666666666666
+    },
+    {
+      "sector": "down-right",
+      "rapidReverseChanges": 0,
+      "restartChanges": 0,
+      "slideBurstChanges": 0,
+      "sustainedResponseSeconds": 0.26666666666666666
+    },
+    {
+      "sector": "down",
+      "rapidReverseChanges": 0,
+      "restartChanges": 0,
+      "slideBurstChanges": 0,
+      "sustainedResponseSeconds": 0.26666666666666666
+    },
+    {
+      "sector": "down-left",
+      "rapidReverseChanges": 0,
+      "restartChanges": 0,
+      "slideBurstChanges": 0,
+      "sustainedResponseSeconds": 0.26666666666666666
+    },
+    {
+      "sector": "left",
+      "rapidReverseChanges": 0,
+      "restartChanges": 0,
+      "slideBurstChanges": 0,
+      "sustainedResponseSeconds": 0.26666666666666666
+    },
+    {
+      "sector": "up-left",
+      "rapidReverseChanges": 0,
+      "restartChanges": 0,
+      "slideBurstChanges": 0,
+      "sustainedResponseSeconds": 0.26666666666666666
+    },
+    {
+      "sector": "up",
+      "rapidReverseChanges": 0,
+      "restartChanges": 0,
+      "slideBurstChanges": 0,
+      "sustainedResponseSeconds": 0.26666666666666666
+    },
+    {
+      "sector": "up-right",
+      "rapidReverseChanges": 0,
+      "restartChanges": 0,
+      "slideBurstChanges": 0,
+      "sustainedResponseSeconds": 0.26666666666666666
+    }
+  ],
+  "worldMetrics": [
+    {
+      "species": "chicken",
+      "index": 3,
+      "offset": [
+        -30,
+        50
+      ],
+      "before": {
+        "changes": 12,
+        "quickReversals": 10
+      },
+      "after": {
+        "changes": 8,
+        "quickReversals": 0,
+        "movingTicks": 1094,
+        "physicalSharpTurns": 5,
+        "rapidPhysicalTurns": 0,
+        "maxStep": 2.7500000000001967
+      }
+    },
+    {
+      "species": "rabbit",
+      "index": 4,
+      "offset": [
+        50,
+        30
+      ],
+      "before": {
+        "changes": 4,
+        "quickReversals": 1
+      },
+      "after": {
+        "changes": 11,
+        "quickReversals": 0,
+        "movingTicks": 1116,
+        "physicalSharpTurns": 5,
+        "rapidPhysicalTurns": 0,
+        "maxStep": 3.5833333333335924
+      }
+    },
+    {
+      "species": "deer",
+      "index": 0,
+      "offset": [
+        -50,
+        30
+      ],
+      "before": {
+        "changes": 186,
+        "quickReversals": 182
+      },
+      "after": {
+        "changes": 8,
+        "quickReversals": 0,
+        "movingTicks": 1144,
+        "physicalSharpTurns": 4,
+        "rapidPhysicalTurns": 0,
+        "maxStep": 4.583333333333431
+      }
+    }
+  ],
+  "escapeLegs": [
+    {
+      "species": "chicken",
+      "pursuit": "zigzag",
+      "straightSeconds": 1.8333333333333333,
+      "travel": 302.4999999999982
+    },
+    {
+      "species": "chicken",
+      "pursuit": "stationary",
+      "straightSeconds": 1.8333333333333333,
+      "travel": 302.5
+    },
+    {
+      "species": "rabbit",
+      "pursuit": "zigzag",
+      "straightSeconds": 1.8333333333333333,
+      "travel": 394.166666666664
+    },
+    {
+      "species": "rabbit",
+      "pursuit": "stationary",
+      "straightSeconds": 1.8333333333333333,
+      "travel": 394.16666666665833
+    },
+    {
+      "species": "deer",
+      "pursuit": "zigzag",
+      "straightSeconds": 1.8333333333333333,
+      "travel": 504.1666666666658
+    },
+    {
+      "species": "deer",
+      "pursuit": "stationary",
+      "straightSeconds": 1.8333333333333333,
+      "travel": 504.16666666666106
+    }
+  ],
+  "controlled": [
+    {
+      "species": "chicken",
+      "scenario": "leash",
+      "changes": 7,
+      "quickReversals": 0,
+      "movingTicks": 1121,
+      "physicalSharpTurns": 6,
+      "rapidPhysicalTurns": 0,
+      "maxStep": 2.7500000000001172
+    },
+    {
+      "species": "chicken",
+      "scenario": "corner",
+      "changes": 8,
+      "quickReversals": 0,
+      "movingTicks": 1095,
+      "physicalSharpTurns": 5,
+      "rapidPhysicalTurns": 0,
+      "maxStep": 2.750000000000143
+    },
+    {
+      "species": "rabbit",
+      "scenario": "leash",
+      "changes": 7,
+      "quickReversals": 0,
+      "movingTicks": 1121,
+      "physicalSharpTurns": 6,
+      "rapidPhysicalTurns": 0,
+      "maxStep": 3.5833333333335746
+    },
+    {
+      "species": "rabbit",
+      "scenario": "corner",
+      "changes": 8,
+      "quickReversals": 0,
+      "movingTicks": 1115,
+      "physicalSharpTurns": 8,
+      "rapidPhysicalTurns": 0,
+      "maxStep": 3.583333333333563
+    },
+    {
+      "species": "deer",
+      "scenario": "leash",
+      "changes": 8,
+      "quickReversals": 0,
+      "movingTicks": 1061,
+      "physicalSharpTurns": 3,
+      "rapidPhysicalTurns": 0,
+      "maxStep": 4.583333333333555
+    },
+    {
+      "species": "deer",
+      "scenario": "corner",
+      "changes": 9,
+      "quickReversals": 0,
+      "movingTicks": 1103,
+      "physicalSharpTurns": 6,
+      "rapidPhysicalTurns": 0,
+      "maxStep": 4.5833333333334645
+    }
+  ],
+  "chargeReturn": {
+    "leftLeash": true,
+    "retreatSeen": true,
+    "maxChargeStep": 9.333333333333485
+  },
+  "checks": [
+    "all eight neighbouring-sector boundaries",
+    "rapid opposite headings and repeated stop/restart",
+    "short contradictory collision-slide bursts",
+    "pending turns expire across idle/blocked gaps",
+    "real turn responds within 400 ms",
+    "actual authored-world chicken/rabbit/doe regressions",
+    "two-second straight escape commitment despite zigzag pursuit or loss of proximity",
+    "all species at leash limits and solid corners",
+    "actual displacement tracked separately from facing",
+    "collision and leash conservation; no clamp teleport",
+    "continuous return from a stag charge beyond its home leash",
+    "gait distance preserved"
+  ]
+}

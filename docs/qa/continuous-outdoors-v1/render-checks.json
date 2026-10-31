@@ -1,0 +1,19 @@
+{
+  "result": "pass",
+  "renderer": "Production CanvasKit software surface",
+  "terrain": "Single outdoor world",
+  "addedTextures": 2,
+  "decodedBytes": 18898944,
+  "cameraScale": 0.4688888888888889,
+  "views": [
+    "camp",
+    "camp contact",
+    "old camp edge",
+    "tile join",
+    "junction",
+    "portrait",
+    "whole world",
+    "night"
+  ],
+  "limitations": "No browser automation or physical iPhone test in this environment."
+}

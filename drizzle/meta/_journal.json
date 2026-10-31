@@ -1,0 +1,41 @@
+{
+  "version": "7",
+  "dialect": "sqlite",
+  "entries": [
+    {
+      "idx": 0,
+      "version": "6",
+      "when": 1791274700327,
+      "tag": "0000_previous_nightshade",
+      "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "6",
+      "when": 1791283491234,
+      "tag": "0001_sour_abomination",
+      "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "6",
+      "when": 1791304472041,
+      "tag": "0002_lowly_vapor",
+      "breakpoints": true
+    },
+    {
+      "idx": 3,
+      "version": "6",
+      "when": 1791309350283,
+      "tag": "0003_previous_karma",
+      "breakpoints": true
+    },
+    {
+      "idx": 4,
+      "version": "6",
+      "when": 1791358196581,
+      "tag": "0004_hard_junta",
+      "breakpoints": true
+    }
+  ]
+}

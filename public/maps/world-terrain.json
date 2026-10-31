@@ -1,0 +1,30 @@
+{
+  "version": 1,
+  "renderer": "Production drawHomeTerrain / CanvasKit",
+  "image": "/maps/world-terrain.webp",
+  "pixels": {
+    "width": 2048,
+    "height": 2048
+  },
+  "sourceBounds": {
+    "x": -7200,
+    "y": -6200,
+    "width": 20000,
+    "height": 20000
+  },
+  "worldBounds": {
+    "x": -7353.9105243400945,
+    "y": -6411.101482758031,
+    "width": 18856.180831641268,
+    "height": 18856.180831641268
+  },
+  "sourceOriginOffset": 600,
+  "sourceScale": 0.9428090415820634,
+  "terrainTiles": 256,
+  "roadPatches": 86,
+  "riverSections": 26,
+  "sideFeatures": 4,
+  "sourceFiles": 127,
+  "bytes": 1887574,
+  "placements": "Live per-layout overlay; not baked into ground"
+}

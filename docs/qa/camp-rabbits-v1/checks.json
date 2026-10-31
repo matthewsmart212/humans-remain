@@ -1,0 +1,27 @@
+{
+  "passed": true,
+  "rabbits": 18,
+  "chickens": 20,
+  "frames": 80,
+  "directionalViews": 8,
+  "textureAtlases": 5,
+  "decodedBytes": 11796480,
+  "artworkBytes": 1421612,
+  "checks": [
+    "safe separated camp-outskirts spawns",
+    "idempotent seeding and isolated editor draft",
+    "leashed collision-aware roaming, fast fleeing and distant sleeping",
+    "distance-driven hop/run loops and timed idle/graze/hit/fall",
+    "two punches or one axe cut, one raw-rabbit drop",
+    "raw-rabbit drop/recollect conserves weight",
+    "rabbit cooking preserves species through queue and rack",
+    "shared weight budget across food stacks",
+    "hold, eat and inventory use consume correct species",
+    "drop/recollect cooked rabbit and transfer through scenes",
+    "readable correct pickup badges",
+    "one draw per visible rabbit and offscreen culling",
+    "80 complete transparent padded atlas frames",
+    "native/offline-ready asset URLs"
+  ],
+  "physicalIPhoneTested": false
+}

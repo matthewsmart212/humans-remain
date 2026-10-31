@@ -1,0 +1,20 @@
+{
+  "passed": true,
+  "bridgeId": "west-camp-bridge",
+  "waterPixels": 24474,
+  "movingFraction": 0.6350004085968783,
+  "dryPixels": 60428,
+  "dryChanged": 0,
+  "downstreamTravelPixels": {
+    "score": 19.81633254322184,
+    "dx": 2,
+    "dy": 2
+  },
+  "loopMeanChannelDelta": 0.0000034722222222222224,
+  "paintingAndUnderwaterStonesStationary": true,
+  "otherReachesUnchanged": true,
+  "waterfallOverlaysLoaded": 0,
+  "additionalDecodedTextureBytes": 589824,
+  "textureCountAdded": 1,
+  "physicalIPhoneTested": false
+}

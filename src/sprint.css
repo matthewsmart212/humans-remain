@@ -1,0 +1,8 @@
+.sprint-button{display:flex;align-items:center;justify-content:center;gap:6px;min-width:82px;min-height:48px;padding:6px 10px;border:2px solid #a2bfbb;border-radius:12px;background:#123e49ed;color:#ffedc7;box-shadow:0 3px 12px #031b2466;font:800 14px 'Barlow Condensed',sans-serif;touch-action:manipulation;-webkit-touch-callout:none;user-select:none;cursor:pointer}
+.sprint-button span{display:flex;flex-direction:column;line-height:1.05;gap:3px}.sprint-button small{font-size:10px;letter-spacing:1px;color:#b1ccca}
+.sprint-button[aria-pressed=true]{border-color:#ffe1a1;background:#6b5931ed;color:#fff1c6}.sprint-button[aria-pressed=true] small{color:#ffe1a1}
+.sprint-button:focus-visible{outline:3px solid #ffda83;outline-offset:3px}.sprint-button:disabled{opacity:.4;cursor:default}
+.survival-controls .sprint-button{position:absolute;left:0;bottom:102px;pointer-events:auto}
+.is-landscape .survival-controls .sprint-button{bottom:105px}
+.world-editor .we-sprint{position:absolute;right:max(18px,env(safe-area-inset-right));bottom:max(80px,calc(env(safe-area-inset-bottom) + 64px));z-index:2;min-width:92px;min-height:48px}
+@media(orientation:landscape) and (max-height:540px){.world-editor .we-sprint{bottom:max(76px,calc(env(safe-area-inset-bottom) + 62px))}}

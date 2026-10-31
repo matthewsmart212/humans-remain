@@ -1,0 +1,11 @@
+{
+  "total": 1835,
+  "newPlants": 1726,
+  "remotePlacementsOmitted": [
+    "4d468bcc-83b9-4bb7-af01-da4b69a67d9a",
+    "06c42057-0d46-43ef-977b-f183d7c50561",
+    "8cde8ee6-163e-4426-b328-f011b092f148",
+    "974cb8ef-0155-4191-8ca6-77cc7eb8a575"
+  ],
+  "limit": "Software Skia; no browser/iPhone measurement."
+}

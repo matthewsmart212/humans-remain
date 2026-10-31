@@ -1,0 +1,28 @@
+{
+  "passed": true,
+  "animals": [
+    {
+      "kind": "boar",
+      "health": 192,
+      "damage": 24,
+      "warning": 0.65,
+      "meat": 3
+    },
+    {
+      "kind": "wolf",
+      "health": 144,
+      "damage": 18,
+      "warning": 0.5,
+      "meat": 2
+    }
+  ],
+  "checks": [
+    "isolated draft and fourteen collision-clear spawns outside camp",
+    "camp start safety and idempotent seeds",
+    "species combat verified separately by check-wolf-hunt and check-boar-hunt",
+    "punch and axe kills; no axe stamina cost",
+    "one harvest; carry, cook, collect, equip and eat shared wild meat",
+    "one draw per visible animal; viewport culling"
+  ],
+  "physicalIPhoneTested": false
+}

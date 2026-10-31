@@ -1,0 +1,512 @@
+[
+  {
+    "id": "art_foliage_world_silver_sage",
+    "name": "Silver sage clump",
+    "kind": "foliage",
+    "zone": "Dryland",
+    "description": "a low asymmetric clump of thick elongated sage leaves, dusty pale silver-green tops, muted olive undersides, a few curled young leaves",
+    "image": "/survival/world-scenery-v1/silver-sage.webp",
+    "size": [
+      384,
+      261
+    ],
+    "anchor": [
+      0.5,
+      0.78
+    ],
+    "worldWidth": 125,
+    "body": []
+  },
+  {
+    "id": "art_foliage_world_blue_sword_fern",
+    "name": "Blue woodland sword fern",
+    "kind": "foliage",
+    "zone": "Woodland",
+    "description": "an arching radial sword fern with long finely segmented but clearly painted fronds, blue-green shadows and restrained sage tips, NOT rounded paddle leaves",
+    "image": "/survival/world-scenery-v1/blue-sword-fern.webp",
+    "size": [
+      384,
+      338
+    ],
+    "anchor": [
+      0.5,
+      0.8
+    ],
+    "worldWidth": 160,
+    "body": []
+  },
+  {
+    "id": "art_foliage_world_copper_bracken",
+    "name": "Copper bracken fan",
+    "kind": "foliage",
+    "zone": "Dryland",
+    "description": "a spreading bracken fern with triangular branching fronds, dusty rust, tobacco and olive colours, a few green fronds tucked below",
+    "image": "/survival/world-scenery-v1/copper-bracken.webp",
+    "size": [
+      384,
+      334
+    ],
+    "anchor": [
+      0.5,
+      0.8
+    ],
+    "worldWidth": 145,
+    "body": []
+  },
+  {
+    "id": "art_foliage_world_juniper_cushion",
+    "name": "Low juniper cushion",
+    "kind": "foliage",
+    "zone": "Woodland",
+    "description": "a low irregular evergreen juniper mound with sculpted needle sprays, deep blue-grey green foliage and a few muted steel-blue berries, visible short woody branch tips",
+    "image": "/survival/world-scenery-v1/juniper-cushion.webp",
+    "size": [
+      384,
+      294
+    ],
+    "anchor": [
+      0.5,
+      0.82
+    ],
+    "worldWidth": 175,
+    "body": []
+  },
+  {
+    "id": "art_foliage_world_hazel_scrub",
+    "name": "Hazel undergrowth",
+    "kind": "foliage",
+    "zone": "Woodland",
+    "description": "an open waist-high hazel bush, many distinct scalloped almond-shaped leaves on visible arching twigs, rich moss-green with gently bronze upper leaves, uneven silhouette",
+    "image": "/survival/world-scenery-v1/hazel-scrub.webp",
+    "size": [
+      384,
+      320
+    ],
+    "anchor": [
+      0.5,
+      0.86
+    ],
+    "worldWidth": 160,
+    "body": []
+  },
+  {
+    "id": "art_foliage_world_russet_bilberry",
+    "name": "Russet bilberry patch",
+    "kind": "foliage",
+    "zone": "Dryland",
+    "description": "a compact knee-high bilberry shrub with small oval painted leaves, muted burgundy russet and olive mixed together, scattered tiny blue berries; wider than tall",
+    "image": "/survival/world-scenery-v1/russet-bilberry.webp",
+    "size": [
+      384,
+      245
+    ],
+    "anchor": [
+      0.5,
+      0.81
+    ],
+    "worldWidth": 130,
+    "body": []
+  },
+  {
+    "id": "art_foliage_world_willow_scrub",
+    "name": "River willow scrub",
+    "kind": "foliage",
+    "zone": "Wetland",
+    "description": "a loose low spreading willow shrub of thin drooping branches and long narrow leaves, soft sage-green and cool teal undersides, asymmetrical wispy but sharp silhouette",
+    "image": "/survival/world-scenery-v1/willow-scrub.webp",
+    "size": [
+      384,
+      322
+    ],
+    "anchor": [
+      0.5,
+      0.86
+    ],
+    "worldWidth": 175,
+    "body": []
+  },
+  {
+    "id": "art_foliage_world_alder_sapling",
+    "name": "Young alder thicket",
+    "kind": "foliage",
+    "zone": "Wetland",
+    "description": "a small waist-high multi-stem alder thicket with rounded serrated leaves, dark jade and forest green, visible warm brown stems; clearly a bush not a mature tree",
+    "image": "/survival/world-scenery-v1/alder-sapling.webp",
+    "size": [
+      384,
+      335
+    ],
+    "anchor": [
+      0.5,
+      0.87
+    ],
+    "worldWidth": 150,
+    "body": []
+  },
+  {
+    "id": "art_foliage_world_river_sedge",
+    "name": "Blue river sedge",
+    "kind": "foliage",
+    "zone": "Wetland",
+    "description": "a dense low fountain of broad arching sedge blades, blue-green and sage shades, visibly broad ribbons instead of photographic hair, fan-like asymmetric silhouette",
+    "image": "/survival/world-scenery-v1/river-sedge.webp",
+    "size": [
+      384,
+      307
+    ],
+    "anchor": [
+      0.5,
+      0.87
+    ],
+    "worldWidth": 120,
+    "body": []
+  },
+  {
+    "id": "art_foliage_world_reed_cluster",
+    "name": "Ochre river reeds",
+    "kind": "foliage",
+    "zone": "Wetland",
+    "description": "a small irregular clump of tall reeds with broad olive and straw leaves, five brown cattail seedheads at differing heights, gently leaning stems, no water or soil",
+    "image": "/survival/world-scenery-v1/reed-cluster.webp",
+    "size": [
+      376,
+      384
+    ],
+    "anchor": [
+      0.5,
+      0.93
+    ],
+    "worldWidth": 125,
+    "body": []
+  },
+  {
+    "id": "art_foliage_world_golden_tussock",
+    "name": "Dry golden tussock",
+    "kind": "foliage",
+    "zone": "Dryland",
+    "description": "a squat spreading bunchgrass tussock, broad painted curved ochre and straw blades with muted olive at the base, sparse arched seed stems, irregular soft mound",
+    "image": "/survival/world-scenery-v1/golden-tussock.webp",
+    "size": [
+      384,
+      291
+    ],
+    "anchor": [
+      0.5,
+      0.86
+    ],
+    "worldWidth": 115,
+    "body": []
+  },
+  {
+    "id": "art_foliage_world_meadow_fescue",
+    "name": "Meadow fescue clump",
+    "kind": "foliage",
+    "zone": "Meadow",
+    "description": "a fresh low fescue grass clump with clearly grouped medium-width blades, muted meadow-green and pale sage highlights, three bent seed stalks, natural open silhouette",
+    "image": "/survival/world-scenery-v1/meadow-fescue.webp",
+    "size": [
+      384,
+      357
+    ],
+    "anchor": [
+      0.5,
+      0.88
+    ],
+    "worldWidth": 105,
+    "body": []
+  },
+  {
+    "id": "art_foliage_world_dusky_heather",
+    "name": "Dusky heather",
+    "kind": "foliage",
+    "zone": "Dryland",
+    "description": "a low spreading heather bush with tiny painted lilac and dusty mauve flower clusters on olive woody shoots, predominantly foliage, restrained colour not a bright flower bouquet",
+    "image": "/survival/world-scenery-v1/dusky-heather.webp",
+    "size": [
+      384,
+      325
+    ],
+    "anchor": [
+      0.5,
+      0.82
+    ],
+    "worldWidth": 145,
+    "body": []
+  },
+  {
+    "id": "art_foliage_world_meadow_yarrow",
+    "name": "Cream meadow yarrow",
+    "kind": "foliage",
+    "zone": "Meadow",
+    "description": "a knee-high patch of yarrow with fern-like grey green leaves and four flat-topped cream ivory flower clusters at irregular heights, soft warm highlights",
+    "image": "/survival/world-scenery-v1/meadow-yarrow.webp",
+    "size": [
+      384,
+      344
+    ],
+    "anchor": [
+      0.5,
+      0.87
+    ],
+    "worldWidth": 130,
+    "body": []
+  },
+  {
+    "id": "art_foliage_world_bluebell_patch",
+    "name": "Shaded bluebells",
+    "kind": "foliage",
+    "zone": "Woodland",
+    "description": "a low fan of broad deep green strap leaves with sparse drooping muted blue-violet bell flowers on curved stalks, natural woodland plant, no neon or saturated purple",
+    "image": "/survival/world-scenery-v1/bluebell-patch.webp",
+    "size": [
+      384,
+      326
+    ],
+    "anchor": [
+      0.5,
+      0.86
+    ],
+    "worldWidth": 130,
+    "body": []
+  },
+  {
+    "id": "art_foliage_world_dock_rosette",
+    "name": "Russet dock rosette",
+    "kind": "foliage",
+    "zone": "Meadow",
+    "description": "a flattened asymmetric rosette of broad crinkled lance-shaped dock leaves, dark olive centres with occasional muted russet edges and warm golden veins, no flower stalk",
+    "image": "/survival/world-scenery-v1/dock-rosette.webp",
+    "size": [
+      384,
+      318
+    ],
+    "anchor": [
+      0.5,
+      0.75
+    ],
+    "worldWidth": 130,
+    "body": []
+  },
+  {
+    "id": "art_foliage_world_ground_ivy",
+    "name": "Cool creeping ivy",
+    "kind": "foliage",
+    "zone": "Woodland",
+    "description": "a low sprawling oval groundcover of small lobed ivy leaves on a few curved crawling tendrils, cool smoky green and dark forest shadows, open gaps around the irregular perimeter",
+    "image": "/survival/world-scenery-v1/ground-ivy.webp",
+    "size": [
+      384,
+      290
+    ],
+    "anchor": [
+      0.5,
+      0.72
+    ],
+    "worldWidth": 165,
+    "body": []
+  },
+  {
+    "id": "art_foliage_world_moss_cushions",
+    "name": "Woodland moss cushions",
+    "kind": "foliage",
+    "zone": "Woodland",
+    "description": "one connected low irregular cluster of rounded velvety moss cushions, olive and jade with gentle straw-green tips, crisp painted clumps, tiny curled fern sprout off centre, no rocks or soil platform",
+    "image": "/survival/world-scenery-v1/moss-cushions.webp",
+    "size": [
+      384,
+      285
+    ],
+    "anchor": [
+      0.5,
+      0.73
+    ],
+    "worldWidth": 125,
+    "body": []
+  },
+  {
+    "id": "art_foliage_world_wetland_butterbur",
+    "name": "Broad river butterbur",
+    "kind": "foliage",
+    "zone": "Wetland",
+    "description": "a small cluster of very broad scalloped heart-shaped butterbur leaves on short stalks, dusty cool green with clear veins and blue shadow folds, several sizes and one rolled leaf",
+    "image": "/survival/world-scenery-v1/wetland-butterbur.webp",
+    "size": [
+      384,
+      304
+    ],
+    "anchor": [
+      0.5,
+      0.79
+    ],
+    "worldWidth": 170,
+    "body": []
+  },
+  {
+    "id": "art_foliage_world_amber_blackberry",
+    "name": "Amber blackberry bramble",
+    "kind": "foliage",
+    "zone": "Meadow",
+    "description": "a low arching thornless-looking bramble with toothed leaves in restrained amber, olive and moss-green, a handful of dark blackberry clusters, very asymmetric outline and visibly curved canes",
+    "image": "/survival/world-scenery-v1/amber-blackberry.webp",
+    "size": [
+      384,
+      295
+    ],
+    "anchor": [
+      0.5,
+      0.83
+    ],
+    "worldWidth": 175,
+    "body": []
+  },
+  {
+    "id": "art_scenery_mossy_fallen_oak",
+    "name": "Mossy fallen oak",
+    "kind": "prop",
+    "zone": "Fallen wood",
+    "description": "one broad fallen oak log resting horizontally diagonally from lower left to upper right, warm ridged illustrated bark, broken golden end grain facing lower left, moss following the upper ridge, two short broken branch nubs; no loose surrounding props",
+    "image": "/survival/world-scenery-v1/mossy-fallen-oak.webp",
+    "size": [
+      768,
+      649
+    ],
+    "anchor": [
+      0.5,
+      0.7
+    ],
+    "worldWidth": 270,
+    "body": [
+      {
+        "x": 0,
+        "y": -10,
+        "hw": 92,
+        "hh": 28
+      }
+    ]
+  },
+  {
+    "id": "art_scenery_hollow_birch_log",
+    "name": "Hollow birch log",
+    "kind": "prop",
+    "zone": "Fallen wood",
+    "description": "one short fallen hollow birch trunk lying diagonally horizontally, ivory peeling bark with charcoal markings, dark hollow opening at lower right, weathered warm interior wood and restrained moss along the upper surface",
+    "image": "/survival/world-scenery-v1/hollow-birch-log.webp",
+    "size": [
+      640,
+      429
+    ],
+    "anchor": [
+      0.5,
+      0.72
+    ],
+    "worldWidth": 230,
+    "body": [
+      {
+        "x": 0,
+        "y": -10,
+        "hw": 76,
+        "hh": 25
+      }
+    ]
+  },
+  {
+    "id": "art_scenery_twisted_root_log",
+    "name": "Twisted root snag",
+    "kind": "prop",
+    "zone": "Fallen wood",
+    "description": "a weathered fallen broken trunk with a small spreading tangle of thick exposed roots at one end, warm grey-brown carved bark, patches of moss and no canopy, compact wide low silhouette, readable as a natural forest obstacle",
+    "image": "/survival/world-scenery-v1/twisted-root-log.webp",
+    "size": [
+      640,
+      469
+    ],
+    "anchor": [
+      0.5,
+      0.75
+    ],
+    "worldWidth": 250,
+    "body": [
+      {
+        "x": 0,
+        "y": -10,
+        "hw": 80,
+        "hh": 29
+      }
+    ]
+  },
+  {
+    "id": "art_scenery_mossy_boulder_cluster",
+    "name": "Mossy boulder cluster",
+    "kind": "prop",
+    "zone": "Rock outcrops",
+    "description": "one low cluster of three irregular rounded woodland boulders of unequal sizes, muted warm grey stone with slate shadow planes, moss in cracks and over upper ledges, softly chipped edges, squat broad silhouette",
+    "image": "/survival/world-scenery-v1/mossy-boulder-cluster.webp",
+    "size": [
+      768,
+      586
+    ],
+    "anchor": [
+      0.5,
+      0.84
+    ],
+    "worldWidth": 240,
+    "body": [
+      {
+        "x": 0,
+        "y": -17,
+        "hw": 76,
+        "hh": 36
+      }
+    ]
+  },
+  {
+    "id": "art_scenery_slate_ridge",
+    "name": "Low slate ridge",
+    "kind": "prop",
+    "zone": "Rock outcrops",
+    "description": "a low rocky crag, broad weathered layered slate ledge with a small asymmetric peak, grey-olive stone with warm sunlit edges and restrained moss seams, about twice as wide as tall, hand-painted angular strata, no huge mountain or snow",
+    "image": "/survival/world-scenery-v1/slate-ridge.webp",
+    "size": [
+      896,
+      477
+    ],
+    "anchor": [
+      0.5,
+      0.87
+    ],
+    "worldWidth": 380,
+    "body": [
+      {
+        "x": 0,
+        "y": -28,
+        "hw": 130,
+        "hh": 52
+      }
+    ]
+  },
+  {
+    "id": "art_scenery_ochre_crag",
+    "name": "Weathered ochre crag",
+    "kind": "prop",
+    "zone": "Rock outcrops",
+    "description": "a compact low rocky mound of warm grey sandstone, broken rounded angular slabs forming two unequal humps, ochre and umber cracks with muted sage moss on a few ledges, broad and low not a distant mountain, about twice as wide as tall",
+    "image": "/survival/world-scenery-v1/ochre-crag.webp",
+    "size": [
+      896,
+      491
+    ],
+    "anchor": [
+      0.5,
+      0.85
+    ],
+    "worldWidth": 350,
+    "body": [
+      {
+        "x": 0,
+        "y": -24,
+        "hw": 119,
+        "hh": 48
+      }
+    ]
+  }
+]

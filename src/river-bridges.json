@@ -1,0 +1,6 @@
+[
+ {"id":"logging-bridge","from":[-3700,-1124],"to":[-2500,-1124],"width":115},
+ {"id":"west-camp-bridge","from":[-4810,2760],"to":[-3970,2760],"width":115},
+ {"id":"waterworks-bridge","from":[-2890,5785],"to":[-1910,5785],"width":110},
+ {"id":"lower-river-bridge","from":[-3050,8300],"to":[-2100,8900],"width":100}
+]

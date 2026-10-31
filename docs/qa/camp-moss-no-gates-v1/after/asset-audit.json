@@ -1,0 +1,433 @@
+[
+  {
+    "id": "4d468bcc-83b9-4bb7-af01-da4b69a67d9a",
+    "assetId": "base_shelter_t1",
+    "name": "Headquarters",
+    "image": "/api/asset-files/93db0d98-1245-4026-a136-6248654149f9",
+    "x": 2210.977308579538,
+    "y": 742.1057490143437,
+    "width": 1209.6000000000001,
+    "height": 806.4,
+    "ground": {
+      "image": "/survival/camp-foundations-v2/headquarters.webp",
+      "size": [
+        1365,
+        374
+      ],
+      "rect": [
+        0.06640625,
+        0.6337890625,
+        0.888671875,
+        0.365234375
+      ]
+    }
+  },
+  {
+    "id": "06c42057-0d46-43ef-977b-f183d7c50561",
+    "assetId": "base_hearth_t1",
+    "name": "Camp bonfire",
+    "image": "/api/asset-files/0e6f4385-99d4-4bd1-990e-1f3cb3fa87ea",
+    "x": 1718.1675873489273,
+    "y": 1573.5124773329626,
+    "width": 302.40000000000003,
+    "height": 302.40000000000003,
+    "ground": null
+  },
+  {
+    "id": "e8c914ae-d062-4003-a826-43a395bf452e",
+    "assetId": "art_camp_planning_board",
+    "name": "Exploration bench",
+    "image": "/survival/hq-furniture-v2/exploration-bench.webp",
+    "x": 2317.730145150343,
+    "y": 454.3793725549634,
+    "width": 357,
+    "height": 238,
+    "ground": null
+  },
+  {
+    "id": "63081463-b478-4601-8c5e-e8da8206f317",
+    "assetId": "art_hq_storage_chest",
+    "name": "Headquarters storage station",
+    "image": "/survival/hq-furniture-v2/storage-station-0.webp",
+    "x": 2022.9190787747998,
+    "y": 400.82416789819575,
+    "width": 320,
+    "height": 320,
+    "ground": null
+  },
+  {
+    "id": "hq-props-v1-art_hq_peg_rail",
+    "assetId": "art_hq_peg_rail",
+    "name": "Headquarters expedition peg rail",
+    "image": "/survival/hq-support-v1/peg-rail.webp",
+    "x": 1960.1952187600536,
+    "y": 282.56565561188785,
+    "width": 175,
+    "height": 175.19640852974186,
+    "ground": null
+  },
+  {
+    "id": "hq-props-v1-art_hq_supply_bundle",
+    "assetId": "art_hq_supply_bundle",
+    "name": "Headquarters sack and bedrolls",
+    "image": "/survival/hq-support-v1/supply-bundle.webp",
+    "x": 1894.3205697558674,
+    "y": 409.76815642893587,
+    "width": 80,
+    "height": 80.08298755186722,
+    "ground": null
+  },
+  {
+    "id": "hq-props-v1-art_hq_field_shelf",
+    "assetId": "art_hq_field_shelf",
+    "name": "Headquarters field journal shelf",
+    "image": "/survival/hq-support-v1/field-shelf.webp",
+    "x": 2505.073275358641,
+    "y": 349.1577589252562,
+    "width": 106.60000000000001,
+    "height": 80.65560081466396,
+    "ground": null
+  },
+  {
+    "id": "hq-props-v1-art_hq_boots",
+    "assetId": "art_hq_boots",
+    "name": "Headquarters muddy boots",
+    "image": "/survival/hq-support-v1/boots.webp",
+    "x": 2464.834526302191,
+    "y": 437.54844840812086,
+    "width": 58.800000000000004,
+    "height": 51.96531365313653,
+    "ground": null
+  },
+  {
+    "id": "123ef300-94ed-4b01-98ce-c3ef52e3bd36",
+    "assetId": "base_workshop_t1",
+    "name": "Camp workshop",
+    "image": "/survival/camp-workshop-v1/camp-workshop.png",
+    "x": 1306.196156022275,
+    "y": 548.2207610404719,
+    "width": 448,
+    "height": 448,
+    "ground": {
+      "image": "/survival/camp-foundations-v2/workshop.webp",
+      "size": [
+        1079,
+        302
+      ],
+      "rect": [
+        0.06539074960127592,
+        0.6850079744816587,
+        0.8604465709728868,
+        0.24082934609250398
+      ]
+    }
+  },
+  {
+    "id": "4bcdf22f-3b36-42e9-8a3a-3ec21e3e4a99",
+    "assetId": "base_medical_t2",
+    "name": "Treatment centre",
+    "image": "/survival/camp-essentials-v1/treatment-centre.webp",
+    "x": 893.2029576629961,
+    "y": 979.4614530407489,
+    "width": 578,
+    "height": 385.3333333333333,
+    "ground": null
+  },
+  {
+    "id": "camp-centre-v1-oak-well",
+    "assetId": "base_well_t1",
+    "name": "Oak-canopy well",
+    "image": "/survival/camp-well-v2/oak-well.webp",
+    "x": 2386.8412194092534,
+    "y": 1003.9671953217292,
+    "width": 372.6,
+    "height": 345.6197983501375,
+    "ground": null
+  },
+  {
+    "id": "8cde8ee6-163e-4426-b328-f011b092f148",
+    "assetId": "misc_2dd09bb8-883b-42e3-b765-c2a1c735b016",
+    "name": "Bunker",
+    "image": "/survival/camp-structures-v3/bunker-0.webp",
+    "x": 792.4330951250656,
+    "y": 2586.019687864916,
+    "width": 656,
+    "height": 599.5,
+    "ground": null
+  },
+  {
+    "id": "e8fa45f8-d2c4-4ae0-a463-98d4550869a9",
+    "assetId": "misc_d9795b56-b7cc-4e3a-84e2-3140912e5d0d",
+    "name": "Bonfire background",
+    "image": "/survival/camp-ground-v3/bonfire-clearing.webp",
+    "x": 1733.2074750798122,
+    "y": 2117.415200737417,
+    "width": 1254,
+    "height": 1254,
+    "ground": null
+  },
+  {
+    "id": "974cb8ef-0155-4191-8ca6-77cc7eb8a575",
+    "assetId": "misc_ceaf1a05-5426-45df-8a51-d3e2e07c6f9f",
+    "name": "Warehouse",
+    "image": "/survival/camp-structures-v3/warehouse.webp",
+    "x": 2920.6325604632057,
+    "y": 1790.8241148203656,
+    "width": 564.3000000000001,
+    "height": 564.3000000000001,
+    "ground": null
+  },
+  {
+    "id": "905d5a55-a520-4c5d-b1af-2a6fb34faf7f",
+    "assetId": "misc_ccf51c94-ae61-4c60-8ef5-79df0442c1d0",
+    "name": "Base wall 8",
+    "image": "/survival/camp-walls-moss-v1/wall-8.webp",
+    "x": 1219.5328441385595,
+    "y": 1090.3402657166744,
+    "width": 842,
+    "height": 1138,
+    "ground": {
+      "image": "/survival/camp-foundations-v2/wall-8.webp",
+      "size": [
+        677,
+        303
+      ],
+      "rect": [
+        0.12114014251781473,
+        0.13181019332161686,
+        0.8040380047505938,
+        0.2662565905096661
+      ]
+    }
+  },
+  {
+    "id": "38e72554-dc94-4885-a8e6-51b8a059c0b2",
+    "assetId": "misc_c3a6521e-5a81-424d-a25c-c102891355a2",
+    "name": "Base wall 2",
+    "image": "/survival/camp-walls-moss-v1/wall-2.webp",
+    "x": 2724.1835001546356,
+    "y": 1433.6370365355076,
+    "width": 1037.4,
+    "height": 844.2,
+    "ground": {
+      "image": "/survival/camp-foundations-v2/wall-2.webp",
+      "size": [
+        279,
+        539
+      ],
+      "rect": [
+        0.6791497975708503,
+        0.26243781094527363,
+        0.2823886639676113,
+        0.6703980099502488
+      ]
+    }
+  },
+  {
+    "id": "08659b2f-b313-487c-ab4d-ac5c44a342e8",
+    "assetId": "misc_d0d1ee51-fe35-4ff1-981f-200188f0acc2",
+    "name": "Base wall 4",
+    "image": "/survival/camp-walls-moss-v1/wall-4.webp",
+    "x": 2352.300577137489,
+    "y": 2961.3204849477843,
+    "width": 878,
+    "height": 694,
+    "ground": {
+      "image": "/survival/camp-foundations-v2/wall-4.webp",
+      "size": [
+        612,
+        286
+      ],
+      "rect": [
+        0.05808656036446469,
+        0.49855907780979825,
+        0.6970387243735763,
+        0.41210374639769454
+      ]
+    }
+  },
+  {
+    "id": "9967f709-ff78-4aa7-ad45-4e1e807182cd",
+    "assetId": "misc_839757e5-8646-448a-9c44-ab90dd109082",
+    "name": "Base wall 3",
+    "image": "/survival/camp-walls-moss-v1/wall-3.webp",
+    "x": 2830.897886532607,
+    "y": 2561.2277058445634,
+    "width": 956,
+    "height": 916,
+    "ground": {
+      "image": "/survival/camp-foundations-v2/wall-3.webp",
+      "size": [
+        452,
+        612
+      ],
+      "rect": [
+        0.4884937238493724,
+        0.2423580786026201,
+        0.47280334728033474,
+        0.6681222707423581
+      ]
+    }
+  },
+  {
+    "id": "3b2905b2-7ed0-4a43-93eb-6588e47585fc",
+    "assetId": "misc_dc6dcbec-1730-4540-9f18-81e93654dfd1",
+    "name": "Base wall 5",
+    "image": "/survival/camp-walls-moss-v1/wall-5.webp",
+    "x": 1180.7089801215493,
+    "y": 3070.299959905416,
+    "width": 930,
+    "height": 1236,
+    "ground": {
+      "image": "/survival/camp-foundations-v2/wall-5.webp",
+      "size": [
+        644,
+        254
+      ],
+      "rect": [
+        0.21935483870967742,
+        0.6868932038834952,
+        0.6924731182795699,
+        0.20550161812297735
+      ]
+    }
+  },
+  {
+    "id": "41cb9bd2-3f88-4ce7-b84b-d56716320b34",
+    "assetId": "misc_b4f79cef-2bfe-4c2e-8e5e-6dbbcec7e645",
+    "name": "Base wall 6",
+    "image": "/survival/camp-walls-moss-v1/wall-6.webp",
+    "x": 721.3469828954745,
+    "y": 2837.2902511675516,
+    "width": 720.75,
+    "height": 889.7,
+    "ground": {
+      "image": "/survival/camp-foundations-v2/wall-6.webp",
+      "size": [
+        461,
+        668
+      ],
+      "rect": [
+        0.04408602150537634,
+        0.15940766550522648,
+        0.4956989247311828,
+        0.5818815331010453
+      ]
+    }
+  },
+  {
+    "id": "aefcea26-d841-4889-b561-031c49b1779f",
+    "assetId": "misc_0c17a859-9e4a-4145-bfde-29cab029d69a",
+    "name": "Base wall 7",
+    "image": "/survival/camp-walls-moss-v1/wall-7.webp",
+    "x": 742.9835987068477,
+    "y": 1261.1460070621424,
+    "width": 900,
+    "height": 934,
+    "ground": {
+      "image": "/survival/camp-foundations-v2/wall-7.webp",
+      "size": [
+        398,
+        654
+      ],
+      "rect": [
+        0.11666666666666667,
+        0.25160599571734477,
+        0.44222222222222224,
+        0.7002141327623126
+      ]
+    }
+  },
+  {
+    "id": "7bc52221-74a0-4762-9a86-93376594d9bb",
+    "assetId": "misc_c3a6521e-5a81-424d-a25c-c102891355a2",
+    "name": "Base wall 2",
+    "image": "/survival/camp-walls-moss-v1/wall-2.webp",
+    "x": 810.9435556331371,
+    "y": 1773.5565927074906,
+    "width": 1037.4,
+    "height": 844.2,
+    "ground": {
+      "image": "/survival/camp-foundations-v2/wall-2.webp",
+      "size": [
+        279,
+        539
+      ],
+      "rect": [
+        0.6791497975708503,
+        0.26243781094527363,
+        0.2823886639676113,
+        0.6703980099502488
+      ]
+    }
+  },
+  {
+    "id": "75c0c215-ed7b-4f7b-a843-552dbd2213ca",
+    "assetId": "misc_c3a6521e-5a81-424d-a25c-c102891355a2",
+    "name": "Base wall 2",
+    "image": "/survival/camp-walls-moss-v1/wall-2.webp",
+    "x": 2758.3268954103796,
+    "y": 1837.6300947650768,
+    "width": 1037.4,
+    "height": 844.2,
+    "ground": {
+      "image": "/survival/camp-foundations-v2/wall-2.webp",
+      "size": [
+        279,
+        539
+      ],
+      "rect": [
+        0.6791497975708503,
+        0.26243781094527363,
+        0.2823886639676113,
+        0.6703980099502488
+      ]
+    }
+  },
+  {
+    "id": "add3eb26-3581-4bb6-bb1a-1ebb1da1d984",
+    "assetId": "misc_ccf51c94-ae61-4c60-8ef5-79df0442c1d0",
+    "name": "Base wall 8",
+    "image": "/survival/camp-walls-moss-v1/wall-8.webp",
+    "x": 1483.900827991779,
+    "y": 972.006374738672,
+    "width": 842,
+    "height": 1138,
+    "ground": {
+      "image": "/survival/camp-foundations-v2/wall-8.webp",
+      "size": [
+        677,
+        303
+      ],
+      "rect": [
+        0.12114014251781473,
+        0.13181019332161686,
+        0.8040380047505938,
+        0.2662565905096661
+      ]
+    }
+  },
+  {
+    "id": "dd22094b-2bd0-4449-b701-67cb09eb7725",
+    "assetId": "misc_ccf51c94-ae61-4c60-8ef5-79df0442c1d0",
+    "name": "Base wall 8",
+    "image": "/survival/camp-walls-moss-v1/wall-8.webp",
+    "x": 2333.733971843977,
+    "y": 1156.978565380705,
+    "width": 842,
+    "height": 1138,
+    "ground": {
+      "image": "/survival/camp-foundations-v2/wall-8.webp",
+      "size": [
+        677,
+        303
+      ],
+      "rect": [
+        0.12114014251781473,
+        0.13181019332161686,
+        0.8040380047505938,
+        0.2662565905096661
+      ]
+    }
+  }
+]

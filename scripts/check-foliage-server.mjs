@@ -1,0 +1,34 @@
+// Run after build-site: exercise the deployed Worker entrypoint and real SQLite.
+import fs from 'node:fs';
+import assert from 'node:assert/strict';
+import {DatabaseSync} from 'node:sqlite';
+import {pathToFileURL} from 'node:url';
+const worker=(await import(pathToFileURL(process.cwd()+'/dist/server/index.js'))).default;
+const sql=new DatabaseSync(':memory:');for(const f of fs.readdirSync('drizzle').filter(f=>f.endsWith('.sql')).sort())sql.exec(fs.readFileSync('drizzle/'+f,'utf8'));
+const DB={prepare(q){let params=[];return{bind(...p){params=p;return this},async all(){return{results:sql.prepare(q).all(...params)}},async run(){const r=sql.prepare(q).run(...params);return{meta:{changes:Number(r.changes)}}}}}},blobs=new Map();
+const env={DB,SITE_OWNER_EMAIL:'owner@example.test',ARTWORK:{async put(k,v){blobs.set(k,v instanceof ReadableStream?await new Response(v).arrayBuffer():v)},async get(k){return blobs.has(k)?{body:blobs.get(k)}:null},async delete(k){blobs.delete(k)}}};
+const origin='https://test.local',owner={'oai-authenticated-user-id':'site-scoped-owner-subject','oai-authenticated-user-email':'owner@example.test'};
+const call=(p,options={})=>worker.fetch(new Request(origin+p,options),env);
+const layout={version:1,terrain:'home',name:'Foliage API test',spawn:{x:1200,y:1200},foliageTrialVersion:3,terrainFoliageVersion:2,items:['broadleaf','fern','grass','olive_shrub','golden_shrub','copper_fern','pale_flowers','moss_rosette','lime_rosette','flower_leaf_clump','sage_fan','forest_ivy','copper_leaf','blue_fern','berry_bramble','yellow_woodland_flowers','white_woodland_flowers','ochre_meadow_grass'].map((name,i)=>({id:'test-'+i,assetId:'art_foliage_'+name,x:600+i*110,y:600,scale:1,solid:false,role:'prop',roof:'auto'})),updatedAt:new Date().toISOString()};
+const save=(l,revision,headers=owner)=>call('/api/world-layout',{method:'PUT',headers:{Origin:origin,'Content-Type':'application/json',...headers},body:JSON.stringify({layout:l,revision,action:'save'})});
+assert.equal((await save(layout,0,{})).status,403);
+assert.equal((await save({...layout,foliageTrialVersion:4},0)).status,400);
+let response=await save(layout,0);assert.equal(response.status,200,JSON.stringify(await response.json()));
+const saved=await(await call('/api/world-layout')).json();assert.equal(saved.revision,1);assert.equal(saved.draft.foliageTrialVersion,3);assert.equal(saved.draft.terrainFoliageVersion,2);assert.deepEqual(saved.draft.items,layout.items);
+assert.equal((await save(layout,0)).status,409,'Optimistic concurrency remains enforced');
+assert.equal((await save({...layout,items:[]},1)).status,200);const removed=await(await call('/api/world-layout')).json();assert.equal(removed.draft.foliageTrialVersion,3);assert.equal(removed.draft.items.length,0,'Marker survives deleting the test plants');
+// Exercise a payload larger than the old 500 KB limit, including scenery plants.
+const large={...layout,items:Array.from({length:4200},(_,i)=>({...layout.items[i%18],id:'large-plant-'+i,x:i%3===0?-250:500+(i%24)*90,y:300+Math.floor(i/24)%24*100,rotation:i%360,flipX:i%2===0,allowTransparency:false,layer:0}))};
+const largeBytes=Buffer.byteLength(JSON.stringify({layout:large,revision:2,action:'save'}));assert(largeBytes>500000&&largeBytes<2000000);
+response=await save(large,2);assert.equal(response.status,200,JSON.stringify(await response.json()));
+const largeSaved=await(await call('/api/world-layout')).json();assert.equal(largeSaved.draft.items.length,4200);assert.deepEqual(largeSaved.draft.items,large.items);assert.equal(largeSaved.draft.terrainFoliageVersion,2);
+assert.equal((await save({...large,terrainFoliageVersion:3},3)).status,400);
+assert.equal((await save({...large,items:Array.from({length:5001},(_,i)=>({...large.items[0],id:'over-'+i}))},3)).status,400);
+assert.equal((await call('/api/world-layout',{method:'PUT',headers:{...owner,Origin:origin,'Content-Type':'application/json'},body:' '.repeat(2000001)})).status,413);
+const png=fs.readFileSync('artwork-archive/foliage-v1/broadleaf-source.png');
+const upload=await call('/api/asset-files',{method:'POST',headers:{...owner,Origin:origin,'Content-Type':'image/png','X-Asset-Id':'art_foliage_broadleaf','X-File-Name':'leaves.png'},body:png});assert.equal(upload.status,201);const file=await upload.json();
+const config={kind:'sprite',base:file.id,frames:[],fps:8,worldWidth:78,anchor:[.47,.78],solid:false,allowTransparency:false,footprint:{width:.6,depth:.2}};
+response=await call('/api/asset-artwork',{method:'PUT',headers:{...owner,Origin:origin,'Content-Type':'application/json'},body:JSON.stringify({id:'art_foliage_broadleaf',revision:0,config})});assert.equal(response.status,200,JSON.stringify(await response.json()));
+assert.equal((await call(file.url)).status,200,'Approved replacement image publishes through the existing asset workflow');
+const html=await(await call('/checklist.html')).text();for(const name of ['Woodland leaf clump','Woodland fern','Camp grass tuft','Olive woodland shrub','Golden woodland shrub','Copper woodland fern','Pale woodland flowers','Broad moss leaf clump','Golden paddle leaf clump','Flowering woodland groundcover','Sage woodland fan','Deep forest ivy mat','Copper woodland leaves','Blue-green woodland fern','Woodland berry bramble','Golden woodland flowers','White woodland clover','Ochre meadow grass'])assert(html.includes(name),name);
+sql.close();console.log('PASS: built Worker and SQLite save/load all 18 foliage IDs, both migration markers and 4,200 objects above the old payload cap, preserve deletion and reject unauthorized/stale edits; artwork upload/replacement and published asset-library entries work.');

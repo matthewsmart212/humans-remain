@@ -1,0 +1,11 @@
+# Held torch · October 24, 2026
+
+The starting kit includes a teal-and-brass electric torch. Select Torch in the quick bar to equip and illuminate; the primary action switches it off/on when no contextual interaction takes precedence. Equipping another item removes the held prop and light. Existing food, axe and interaction priorities are preserved. No battery drain was introduced.
+
+The shared web/native renderer uses the existing measured fist anchors and body bob for all eight directions, idle and four walking/sprinting frames. The same transform places the light at the lens. A feathered 560-world-unit beam with a wider cone and soft 135-unit nearby spill reveals ground ahead without rebuilding the static camp lightmap. The torch is hidden when downed or the game ends.
+
+Validation: TypeScript, existing camp-lighting and web/native selector checks; scripts/check-torch.mjs checks state, combat exclusion, 8-direction real CanvasKit light pixels and static lightmap reuse through 120 changing beam positions. carry-72-poses.png is rendered by the actual character renderer. Browser QA uses scripts/player-map-preview.html, lighting Night, Torch selection and Facing controls. Native physical-device performance was not measured.
+
+Artwork: built-in imagegen generation mode, transparent background. Runtime asset public/survival/equipment/torch-v1.png; trimmed/resized to 512×160, with a diagonal HUD icon at public/survival/ui-field-kit-v1/torch.png. Prompt:
+
+> One production-ready handheld FLASHLIGHT sprite for a charming hand-painted top-down survival game. A single compact chunky scavenged electric torch, worn dark petrol teal painted metal body, aged brass/copper rings, brown wrapped grip, warm pale amber glass lens. NOT a flaming wooden torch. Orthographic top-down view, long axis exactly horizontal, rear cap on LEFT and broad lamp head on RIGHT, side/top of the barrel visible. Keep silhouette clean, no perspective foreshortening, no handle sticking out, readable at 32 pixels. Painterly rich shaded game inventory art, bold dark brown outline and crisp metal highlights, warm earthy palette. Center the object with transparent padding. No beam, no glow outside silhouette, no cast shadow, no labels, no text, no character, no grid, no background. Transparent background.

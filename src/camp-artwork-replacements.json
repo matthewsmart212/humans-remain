@@ -1,0 +1,20 @@
+[
+  {
+    "entryId": "base_well_t1",
+    "sourceId": "0f5d7810-ce86-4fbc-837b-e5f2ad8aac9f",
+    "url": "/survival/camp-well-v2/oak-well.webp",
+    "name": "oak-canopy-well.webp",
+    "width": 1091,
+    "height": 1012,
+    "bytes": 357680
+  },
+  {
+    "entryId": "misc_d9795b56-b7cc-4e3a-84e2-3140912e5d0d",
+    "sourceId": "53b14b13-4089-4f5d-ab53-400e5b242ff7",
+    "url": "/survival/camp-ground-v3/bonfire-clearing.webp",
+    "name": "bonfire-clearing-dry-ground.webp",
+    "width": 1254,
+    "height": 1254,
+    "bytes": 689768
+  }
+]

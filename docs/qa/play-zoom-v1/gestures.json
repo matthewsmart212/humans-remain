@@ -1,0 +1,37 @@
+{
+  "passed": true,
+  "zoomRange": [
+    0.7,
+    1
+  ],
+  "web": [
+    "touch pinch",
+    "movement + world in either touch order",
+    "two movement-area touches",
+    "movement suppressed until all pinch fingers lift",
+    "movement + action stays independent including Safari events",
+    "trackpad Ctrl+wheel",
+    "Safari gesture fallback",
+    "no double application",
+    "cancel/resize cleanup",
+    "disabled outside Play",
+    "continuous game/atlas round trip with same contacts",
+    "ordinary wheel across boundary in both directions"
+  ],
+  "native": [
+    "registered world and movement touches share a pinch",
+    "action touches excluded",
+    "movement suppressed until all pinch fingers lift",
+    "release/rejoin",
+    "cancellation",
+    "disabled while paused",
+    "continuous game/atlas round trip without disabling input adapter"
+  ],
+  "camera": [
+    "same bounds in portrait and landscape",
+    "editor zoom unchanged",
+    "player follow retained",
+    "map close retains gameplay zoom"
+  ],
+  "physicalIPhoneTested": false
+}

@@ -1,0 +1,78 @@
+{
+  "result": "pass",
+  "boundaryChecks": 1276,
+  "oldWallsRemoved": 11,
+  "walls": 32,
+  "nonWallPlacementsPreserved": 1357,
+  "foliage": 1335,
+  "puddles": 8,
+  "gates": [
+    {
+      "gate": "camp_gate_northeast_v3",
+      "center": [
+        2950,
+        640
+      ],
+      "pathCells": 11,
+      "closedSprintAndDodge": true,
+      "openBothDirections": true,
+      "safeClosing": true
+    },
+    {
+      "gate": "camp_gate_southeast_v3",
+      "center": [
+        2720,
+        2550
+      ],
+      "pathCells": 10,
+      "closedSprintAndDodge": true,
+      "openBothDirections": true,
+      "safeClosing": true
+    },
+    {
+      "gate": "camp_gate_south_v3",
+      "center": [
+        1760,
+        2860
+      ],
+      "pathCells": 9,
+      "closedSprintAndDodge": true,
+      "openBothDirections": true,
+      "safeClosing": true
+    },
+    {
+      "gate": "camp_gate_southwest_v3",
+      "center": [
+        760,
+        2820
+      ],
+      "pathCells": 11,
+      "closedSprintAndDodge": true,
+      "openBothDirections": true,
+      "safeClosing": true
+    },
+    {
+      "gate": "camp_gate_west_v3",
+      "center": [
+        405,
+        2055
+      ],
+      "pathCells": 10,
+      "closedSprintAndDodge": true,
+      "openBothDirections": true,
+      "safeClosing": true
+    },
+    {
+      "gate": "camp_gate_northwest_v3",
+      "center": [
+        825,
+        570
+      ],
+      "pathCells": 11,
+      "closedSprintAndDodge": true,
+      "openBothDirections": true,
+      "safeClosing": true
+    }
+  ],
+  "transformedGateChecks": 6
+}

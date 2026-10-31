@@ -1,0 +1,13 @@
+{
+  "approvedConcept": "exec-7ac536a5-0a8d-4a22-8402-adb971a12310.png",
+  "generationMethod": "Built-in image generation, transparent production assets derived from the user-approved field-kit concept",
+  "productionPrompts": [
+    "Rebuild the approved top-left survivor badge as one transparent wide skin. Preserve the exact black-haired survivor cameo, mended oatmeal canvas, petrol enamel, fine stitching and orange repairs. Leave the entire right-hand plaque empty for live meters and text. No baked labels, values, bars or hanging need tabs.",
+    "Rebuild the approved thin circular attack-button rim as a transparent open ring. Worn oatmeal enamel, dark petrol edging, tiny chips and one terracotta repair stitch. Entire centre and exterior transparent; no icon, label, solid fill, glow or heavy housing.",
+    "Paint a transparent 4x4 atlas of matching field-kit icons: axe, running boot, dodge boot, backpack; pause, heart, stamina bolt, drumstick; water, open chest, cooking fire, collecting hand; fist, logs, gate and close. No text, cell frames or backdrop. Strong readable painted silhouettes matching the approved camp and character."
+  ],
+  "runtimeArtwork": "public/survival/ui-field-kit-v1/",
+  "preparation": "Trim the generated skins and extract complete alpha-connected icon groups before resizing. Do not split long painted handles or disconnected icon marks at assumed grid boundaries.",
+  "textAndData": "All words, values, meter fills, toggle/cooldown state and context are live UI elements. No screenshot used as a runtime HUD.",
+  "verificationLimits": "No browser-control skill or physical iPhone was available in this session. See checks.json and APP-RUNTIME.md."
+}

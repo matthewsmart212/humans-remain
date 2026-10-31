@@ -1,0 +1,14 @@
+{
+  "result": "pass",
+  "pilotWaterfalls": 1,
+  "frames": 12,
+  "periodSeconds": 1.5,
+  "changedWhitewaterPixels": 15937,
+  "totalChangedPixels": 51696,
+  "protectedPixelsChanged": 0,
+  "loopExact": true,
+  "missingFramesFallback": true,
+  "otherRiverUnchanged": true,
+  "entryImagesAdded": 0,
+  "browserAndPhoneCheck": "Unavailable; actual CanvasKit software rendering used."
+}

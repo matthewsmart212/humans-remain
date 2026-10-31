@@ -1,0 +1,6 @@
+{
+  "capturedAt": "2026-10-06",
+  "table": "base_checklist",
+  "rows": [],
+  "note": "The live checklist table contained zero saved override rows before this migration. Original catalogue defaults and all IDs are backed up separately."
+}

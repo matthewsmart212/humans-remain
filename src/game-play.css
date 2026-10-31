@@ -1,0 +1,50 @@
+/* Play owns the entire viewport at every desktop, touch and orientation breakpoint. */
+.camp-studio[data-mode=play] .we-world>canvas{touch-action:none}
+.camp-studio[data-mode=play],.camp-studio[data-mode=play][data-mobile=true]{
+ --studio-head:0px;--studio-tools:0px;--studio-left:0px;--studio-right:0px;
+ grid-template-columns:minmax(0,1fr)!important;grid-template-rows:minmax(0,1fr)!important;
+ padding:0;min-height:0;
+}
+.camp-studio[data-mode=play] .we-world{grid-column:1!important;grid-row:1!important}
+.camp-studio[data-mode=play] .studio-play-hud{top:max(14px,env(safe-area-inset-top));left:max(14px,env(safe-area-inset-left));max-width:calc(100% - max(14px,env(safe-area-inset-left)) - max(14px,env(safe-area-inset-right)) - 64px)}
+.camp-studio[data-mode=play] .studio-play-hud>div{gap:8px 15px;background:#122c32dc;backdrop-filter:blur(8px)}
+.camp-studio[data-mode=play] .studio-play-hud button{min-height:44px}
+.camp-studio .game-pause-button{position:absolute;top:max(14px,env(safe-area-inset-top));right:max(14px,env(safe-area-inset-right));width:48px;height:48px;min-height:48px;padding:0;border:1px solid #899b8480;border-radius:12px;background:#122c32dc;color:#f6e6c6;z-index:6;backdrop-filter:blur(8px);box-shadow:0 4px 16px #07131940}
+.game-pause-menu{position:fixed;inset:0;margin:auto;width:min(340px,calc(100% - 40px));max-height:calc(100dvh - 32px);padding:0;border:1px solid #84958580;border-radius:18px;background:#173036;color:#f6e6c6;box-shadow:0 24px 100px #0008;overflow:auto}
+.game-pause-menu::backdrop{background:#071718c9;backdrop-filter:blur(5px)}
+.game-performance-overlay{position:absolute;z-index:20;top:calc(env(safe-area-inset-top,0px) + 116px);left:calc(env(safe-area-inset-left,0px) + 16px);display:flex;flex-direction:column;gap:2px;padding:7px 10px;border:1px solid #aa96638c;border-radius:8px;background:#102d30dd;color:#eadcb8;font:12px/1.25 ui-monospace,monospace;pointer-events:none;font-variant-numeric:tabular-nums}
+.game-performance-overlay strong{color:#c0dfa5;font-size:15px}.game-performance-overlay b{color:#ffd194;font-size:11px}
+.game-pause-menu.performance-open{width:min(720px,calc(100% - 40px))}
+.performance-panel{padding:24px}.performance-panel header h1{font-size:32px;margin:0}.performance-panel header{text-align:center}.performance-panel header p{margin:6px 0 16px;font-size:14px;color:#d1cfb3}
+.performance-layout{display:grid;grid-template-columns:1fr 1fr;gap:22px}.performance-actions{display:flex;flex-direction:column;gap:9px}.performance-toggle{margin-left:auto;font-size:12px;color:#e9c38a}
+.performance-session{display:flex;flex-direction:column;gap:4px;padding:13px;border:1px solid #84754f;border-radius:10px;background:#0d2427}.performance-session>b{font-size:11px;letter-spacing:1px;color:#efc583}.performance-session>strong{font-size:28px;font-variant-numeric:tabular-nums}.performance-session>span{font-size:12px;color:#c1c8af}
+.performance-results{margin:12px 0}.performance-results>div{display:flex;gap:10px;justify-content:space-between;padding:7px 0;border-bottom:1px solid #a88d4e33;font-size:12px}.performance-results dd{margin:0;text-align:right;font-variant-numeric:tabular-nums;color:#f2d496}.performance-note{font-size:12px!important;line-height:1.5;color:#c2cab7;margin:7px 0}
+.camp-studio .game-pause-menu .performance-stop{border-color:#d2a061;background:#674435}.camp-studio .game-pause-menu button:disabled{opacity:.5;cursor:default}
+@media(max-width:540px){.performance-layout{grid-template-columns:1fr;gap:10px}.performance-panel{padding:18px}}
+@media(max-height:440px){.performance-panel{padding:14px 20px}.performance-panel header p{margin-bottom:10px}.performance-panel header h1{font-size:26px}.performance-note{line-height:1.35}.performance-actions{gap:6px}}
+.game-pause-menu>section{display:flex;flex-direction:column;gap:10px;padding:28px}
+.game-pause-menu small{font:700 11px Barlow,sans-serif;letter-spacing:3px;color:#b5bd9f;text-align:center}
+.game-pause-menu h1{font:800 42px 'Barlow Condensed',sans-serif;text-align:center;margin:0 0 12px;color:#f4d49c}
+.camp-studio .game-pause-menu button{width:100%;min-height:48px;justify-content:flex-start;gap:12px;padding:12px 16px;border-color:#59736c;background:#24433f;border-radius:9px;font-size:15px}
+.camp-studio .game-pause-menu .game-resume{background:#edbf73;border-color:#edbf73;color:#172c30;font-weight:700}
+.camp-studio .game-pause-menu .game-return{margin-top:10px;background:transparent;border-color:transparent;color:#bdc9b8}
+.camp-studio .game-pause-menu button:focus-visible,.camp-studio .game-pause-button:focus-visible{outline:3px solid #f3cf8d;outline-offset:3px}
+.game-play-feedback{position:absolute;top:max(80px,calc(env(safe-area-inset-top) + 68px));left:50%;transform:translateX(-50%);width:max-content;max-width:calc(100% - 32px);z-index:5;display:flex;flex-direction:column;gap:8px;pointer-events:none}
+.game-play-feedback>div{display:flex;align-items:center;gap:12px;padding:10px 14px;border:1px solid #899b8480;border-radius:9px;background:#122c32e8;color:#f6e6c6;font-size:13px;pointer-events:auto}
+.camp-studio .game-play-feedback button{min-height:40px;background:transparent;border-color:#899b8480;padding:7px 10px;flex:none}
+@media(max-height:440px){.game-pause-menu>section{padding:16px 24px;gap:6px}.game-pause-menu h1{font-size:30px;margin-bottom:4px}.camp-studio .game-pause-menu button{min-height:44px;padding:8px 12px}.camp-studio .game-pause-menu .game-return{margin-top:2px}}
+@media(max-width:600px){.camp-studio[data-mode=play] .studio-play-hud>div{padding:8px 10px;gap:6px 10px}.camp-studio[data-mode=play] .studio-play-hud span{font-size:12px;gap:4px}}
+
+.game-combat-test{border:1px solid #59736c;border-radius:9px;padding:10px 12px;background:#122c30}.game-combat-test summary{cursor:pointer;font-weight:700;min-height:28px;display:list-item;margin-left:16px}.game-combat-test[open] summary{margin-bottom:10px}.game-combat-test button+button{margin-top:8px}.game-combat-test p{font-size:12px;line-height:1.45;margin:10px 0 0;color:#d8d4b7}
+
+.game-menu-tools{display:grid;grid-template-columns:minmax(0,1.55fr) minmax(0,1fr);gap:8px}.camp-studio .game-menu-tools button{font-size:13px;padding:10px;gap:7px}.game-spawn-panel{padding:22px;display:flex;flex-direction:column;gap:12px}.game-spawn-panel header{text-align:center}.game-spawn-panel header p,.game-spawn-panel>p{margin:0;font-size:13px;line-height:1.4;color:#d6d5bd}.game-spawn-panel h1{margin:2px 0 6px}.game-spawn-filters,.game-spawn-count{display:flex;gap:8px}.camp-studio .game-spawn-filters button,.camp-studio .game-spawn-count button{width:auto;flex:1;justify-content:center;min-height:40px;padding:8px}.game-spawn-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}.camp-studio .game-spawn-card{display:flex;min-height:82px;gap:10px;padding:9px;text-align:left}.game-spawn-card img{width:64px;height:64px;object-fit:contain;flex:none}.game-spawn-card span{display:flex;min-width:0;flex-direction:column;gap:4px}.game-spawn-card strong{font-size:15px}.game-spawn-card small{font-size:11px;letter-spacing:0;font-weight:500;text-align:left}.camp-studio .game-spawn-panel [aria-pressed=true]{border-color:#edbf73;background:#46533d}.game-spawn-count{border:0;padding:0;margin:0}.game-spawn-count legend{font-size:12px;margin-bottom:6px;color:#ddd3b4}.game-spawn-utilities{display:grid;grid-template-columns:1fr 1fr;gap:8px}.camp-studio .game-spawn-utilities button{font-size:13px;padding:10px;gap:7px}@media(max-width:450px){.game-spawn-panel{padding:16px}.camp-studio .game-spawn-card{min-height:75px;gap:7px;padding:7px}.game-spawn-card img{width:44px;height:50px}.game-spawn-card strong{font-size:13px}}
+@media(max-height:520px) and (min-width:600px){
+ .game-spawn-panel{display:grid;grid-template-columns:minmax(0,1fr) 220px;gap:7px 14px;padding:12px 16px}
+ .game-spawn-panel header{grid-column:1 / 3}.game-spawn-panel header small,.game-spawn-panel header p{display:none}.game-spawn-panel h1{font-size:26px;margin:0}
+ .game-spawn-filters{grid-column:1;grid-row:2}.game-spawn-grid{grid-column:1;grid-row:3 / 7;max-height:224px;overflow:auto;align-content:start}
+ .game-spawn-count{grid-column:2;grid-row:2}.game-spawn-count legend{display:none}
+ .game-spawn-panel>.game-resume{grid-column:2;grid-row:3}.game-spawn-panel>p{grid-column:2;grid-row:4}
+ .game-spawn-utilities{grid-column:2;grid-row:5}.game-spawn-panel>button:last-child{grid-column:2;grid-row:6}
+ .camp-studio .game-spawn-card{min-height:63px;padding:6px;gap:5px}.game-spawn-card img{width:42px;height:42px}.game-spawn-card small{display:none}.game-spawn-card strong{font-size:13px}
+ .camp-studio .game-spawn-utilities button{padding:8px 5px;gap:4px;font-size:11px}
+}

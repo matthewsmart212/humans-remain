@@ -1,0 +1,36 @@
+{
+  "passed": true,
+  "health": {
+    "chicken": 32,
+    "rabbit": 32,
+    "doe": 64,
+    "stag": 96
+  },
+  "charge": {
+    "windup": 0.55,
+    "duration": 1,
+    "speed": 560,
+    "reach": 54,
+    "damage": 12,
+    "cooldown": 4.5,
+    "retreat": 2.2
+  },
+  "checks": [
+    "actual authored-world health hierarchy",
+    "peaceful unless hit; doe remain prey",
+    "walking retreat from maximum axe range can be caught",
+    "walking through windup updates aim at launch",
+    "actual moving axe gameplay triggers and lands retaliation",
+    "post-contact retreat discards stale flee goals, detours and retry waits",
+    "sprinting away, post-launch sidestep and dodge remain valid escapes",
+    "head-lowering warning without ground box and early Dodge controls",
+    "one twelve-damage contact followed by retreat",
+    "cooldown prevents immediate repeat retaliation",
+    "committed direction permits sidestep evasion",
+    "standard dodge invulnerability applies",
+    "thin-wall collision and line-of-sight protection",
+    "death cancels charge without duplicate loot",
+    "downed-player guard"
+  ],
+  "physicalIPhoneTested": false
+}

@@ -1,0 +1,20 @@
+{
+  "result": "pass",
+  "preservedPlacements": 85,
+  "addedPlants": 24,
+  "totalPlants": 84,
+  "newDesigns": 3,
+  "newRuntimeBytes": 269114,
+  "fixture": "Version 99 layout reconstructed by its deterministic v2 migration from the previously verified revision 58 snapshot. Live D1 read confirms marker 2 at revision 59; the bounded row reader truncates the full layout.",
+  "checks": [
+    "existing placements unchanged",
+    "moved/deleted plants retained",
+    "all migration versions idempotent",
+    "new blockers respected",
+    "identical collision map",
+    "south approach clear",
+    "transparent borders",
+    "fixed roots and directional contact"
+  ],
+  "limits": "Software Skia rendering and automated checks; browser/iPhone QA unavailable."
+}

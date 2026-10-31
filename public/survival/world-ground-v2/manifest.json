@@ -1,0 +1,41 @@
+{
+  "version": "world-ground-v2",
+  "tool": "Built-in image_gen.imagegen",
+  "source": "Original camp native-scale ground crop at (1500,150), 1438x1438 source pixels",
+  "detail": "Camp-sized painted earth fragments; calmer bare soil; roads and vegetation removed from the extension material",
+  "bounds": {
+    "x": -7200,
+    "y": -6200,
+    "width": 20000,
+    "height": 20000
+  },
+  "tileCount": 256,
+  "tileSize": 1437.5,
+  "overlap": 200,
+  "assembly": "Existing rotations, mirrors, edge feathers and broad world-coordinate regional colour fields retained. Three shared 1254px textures; no per-sector downloads.",
+  "materials": [
+    {
+      "name": "warm",
+      "image": "/survival/world-ground-v2/warm.webp",
+      "nativeWidth": 1254,
+      "nativeHeight": 1254,
+      "bytes": 2358584
+    },
+    {
+      "name": "brown",
+      "image": "/survival/world-ground-v2/brown.webp",
+      "nativeWidth": 1254,
+      "nativeHeight": 1254,
+      "bytes": 2152472
+    },
+    {
+      "name": "olive",
+      "image": "/survival/world-ground-v2/olive.webp",
+      "nativeWidth": 1254,
+      "nativeHeight": 1254,
+      "bytes": 2280002
+    }
+  ],
+  "camp": "Original camp files and coordinates unchanged",
+  "prompts": "artwork-archive/world-ground-v2/prompts.json"
+}

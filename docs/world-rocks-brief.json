@@ -1,0 +1,249 @@
+{
+  "pack": "world-rocks-v1",
+  "mode": "built-in image generation",
+  "rocks": [
+    {
+      "key": "moss-capped-boulder",
+      "name": "Moss-capped boulder",
+      "zone": "Woodland rocks",
+      "subject": "one squat broad solitary woodland boulder, an irregular domed silhouette with a deep notch on the right, grey-taupe stone and a thick muted olive moss cap flowing over the left shoulder; no separate stones",
+      "width": 170,
+      "maxSize": 512,
+      "anchor": [
+        0.5,
+        0.87
+      ]
+    },
+    {
+      "key": "lichen-twin-stones",
+      "name": "Lichen twin stones",
+      "zone": "Woodland rocks",
+      "subject": "two touching woodland granite stones, one tall blunt slanted block behind a much lower rounded stone to its right; thin pale sage and warm cream lichen patches rather than thick moss; asymmetrical stepped silhouette",
+      "width": 220,
+      "maxSize": 640,
+      "anchor": [
+        0.5,
+        0.88
+      ]
+    },
+    {
+      "key": "split-forest-rock",
+      "name": "Split forest rock",
+      "zone": "Woodland rocks",
+      "subject": "one rounded wide forest rock split by a deep diagonal fissure, two connected unequal halves, muted olive-grey stone with small moss seams and warm ochre chips in the split, low grounded silhouette",
+      "width": 200,
+      "maxSize": 576,
+      "anchor": [
+        0.5,
+        0.87
+      ]
+    },
+    {
+      "key": "mossy-flat-shelf",
+      "name": "Mossy flat shelf",
+      "zone": "Woodland rocks",
+      "subject": "one very low broad flat irregular rock shelf with a thin chipped layered rim, warm slate-grey horizontal top, thin velvety moss following one back edge and a tiny fern in a crack; shallow saucer-like footprint, no pedestal",
+      "width": 260,
+      "maxSize": 640,
+      "anchor": [
+        0.5,
+        0.83
+      ]
+    },
+    {
+      "key": "forest-pebble-patch",
+      "name": "Forest pebble patch",
+      "zone": "Woodland rocks",
+      "subject": "a compact asymmetrical scatter of eight small low rounded forest pebbles of mixed unequal sizes, warm grey and olive tones with a little sage lichen, open transparent gaps between them, no central large boulder; loose natural oval arrangement, very low ground detail",
+      "width": 135,
+      "maxSize": 384,
+      "anchor": [
+        0.5,
+        0.62
+      ],
+      "walkable": true
+    },
+    {
+      "key": "smooth-river-boulder",
+      "name": "Smooth river boulder",
+      "zone": "River rocks",
+      "subject": "one broad smooth rounded river boulder shaped like an uneven bean, cool grey with soft muted blue-grey shaded facets and a pale warm upper plane, two subtle natural mineral bands, matte stone with slight damp darkening at the base, no water",
+      "width": 185,
+      "maxSize": 512,
+      "anchor": [
+        0.5,
+        0.85
+      ]
+    },
+    {
+      "key": "river-stone-trio",
+      "name": "River stone trio",
+      "zone": "River rocks",
+      "subject": "three touching river stones: one broad low round grey stone, a smaller upright oval stone on the left and a tiny flattened warm grey stone in front; water-worn smooth simple painted planes, subtle cream veins, no water",
+      "width": 190,
+      "maxSize": 512,
+      "anchor": [
+        0.5,
+        0.86
+      ]
+    },
+    {
+      "key": "flat-river-slab",
+      "name": "Flat river slab",
+      "zone": "River rocks",
+      "subject": "one very flat irregular rounded pentagonal river slab, smooth pale warm grey top crossed by a single thin muted cream mineral seam, cool blue-grey low chipped rim, very shallow stone sitting directly on ground, no water, no stack",
+      "width": 230,
+      "maxSize": 576,
+      "anchor": [
+        0.5,
+        0.8
+      ]
+    },
+    {
+      "key": "river-shingle-patch",
+      "name": "River shingle patch",
+      "zone": "River rocks",
+      "subject": "a loose elongated asymmetrical patch of twelve small flat oval river pebbles, varied grey, muted slate blue and dull taupe shades, several open transparent gaps, pebbles lie very flat with no large central rock and no water or soil",
+      "width": 200,
+      "maxSize": 512,
+      "anchor": [
+        0.5,
+        0.62
+      ],
+      "walkable": true
+    },
+    {
+      "key": "eroded-bank-rock",
+      "name": "Eroded bank rock",
+      "zone": "River rocks",
+      "subject": "one broad low riverbank rock eroded into an irregular wave-shaped shelf with a shallow natural hollow in the front face; grey sandstone with cream worn edges, dark cool cracks and a little olive moss in damp seams, no water or soil base",
+      "width": 280,
+      "maxSize": 768,
+      "anchor": [
+        0.5,
+        0.87
+      ]
+    },
+    {
+      "key": "ochre-lone-boulder",
+      "name": "Ochre lone boulder",
+      "zone": "Dryland rocks",
+      "subject": "one squat broad angular ochre sandstone boulder, unequal five-sided silhouette, muted sandy tan top and warm umber shadow planes, chipped corners and sparse fine natural cracks, bare dry stone with almost no moss",
+      "width": 180,
+      "maxSize": 512,
+      "anchor": [
+        0.5,
+        0.88
+      ]
+    },
+    {
+      "key": "rust-sandstone-fin",
+      "name": "Rust sandstone fin",
+      "zone": "Dryland rocks",
+      "subject": "one low narrow sideways sandstone fin, broad elongated wedge leaning toward the right, subtle rusty brown and dusty ochre horizontal layers, a broken blunt point at one end, bare weathered rock not a tall spire",
+      "width": 270,
+      "maxSize": 640,
+      "anchor": [
+        0.5,
+        0.88
+      ]
+    },
+    {
+      "key": "chalk-cracked-rock",
+      "name": "Cracked chalk rock",
+      "zone": "Dryland rocks",
+      "subject": "one uneven squat pale limestone boulder with a few broad connected cracks across the top, dusty ivory and muted cream stone, taupe and slate shadows, gently chipped rounded edges, a small missing corner exposing a warmer interior, no moss",
+      "width": 210,
+      "maxSize": 576,
+      "anchor": [
+        0.5,
+        0.88
+      ]
+    },
+    {
+      "key": "dry-scree-scatter",
+      "name": "Dry scree scatter",
+      "zone": "Dryland rocks",
+      "subject": "a small loose asymmetrical scatter of nine low angular broken sandstone fragments, dusty ochre, beige and muted rust shades, largest fragment is flat and broad rather than a boulder, open transparent gaps, ground dressing with no soil platform",
+      "width": 190,
+      "maxSize": 512,
+      "anchor": [
+        0.5,
+        0.65
+      ],
+      "walkable": true
+    },
+    {
+      "key": "layered-sandstone-shelf",
+      "name": "Layered sandstone shelf",
+      "zone": "Dryland rocks",
+      "subject": "a broad low asymmetrical sandstone shelf with three uneven eroded horizontal ledges, one shallow hump on the left and a lower broken lip to the right, restrained warm tan and ochre bands with cool taupe crevices, no plateau scenery or background",
+      "width": 330,
+      "maxSize": 768,
+      "anchor": [
+        0.5,
+        0.89
+      ]
+    },
+    {
+      "key": "dark-basalt-blocks",
+      "name": "Dark basalt blocks",
+      "zone": "Exposed rocks",
+      "subject": "a connected cluster of three low blunt basalt blocks, irregular chunky angular forms of unequal size rather than geometric perfect columns, dark charcoal blue-grey stone, warm grey lit planes and thin weathered cracks, no glow or crystals",
+      "width": 245,
+      "maxSize": 640,
+      "anchor": [
+        0.5,
+        0.88
+      ]
+    },
+    {
+      "key": "blue-grey-split-crag",
+      "name": "Blue-grey split crag",
+      "zone": "Exposed rocks",
+      "subject": "a squat broad double-peaked crag of weathered blue-grey stone, left peak much lower than right, deep diagonal split between them, distinct angular chipped planes with warm pale grey highlights and small muted sage lichen patches; low local obstacle",
+      "width": 320,
+      "maxSize": 768,
+      "anchor": [
+        0.5,
+        0.9
+      ]
+    },
+    {
+      "key": "slanted-schist-slab",
+      "name": "Slanted schist slab",
+      "zone": "Exposed rocks",
+      "subject": "one low slanted broad schist slab lying partly on its side, asymmetric parallelogram silhouette with visibly peeling thin stone layers on the front edge, muted slate green-grey top and charcoal creases, small ochre mineral streaks, no moss",
+      "width": 255,
+      "maxSize": 640,
+      "anchor": [
+        0.5,
+        0.85
+      ]
+    },
+    {
+      "key": "weathered-standing-stone",
+      "name": "Weathered standing stone",
+      "zone": "Exposed rocks",
+      "subject": "one naturally upright weathered granite stone, an irregular broad blunt wedge about as tall as it is wide, no carved runes and no monument styling, warm grey and slate shadow faces, broken slanted summit and a narrow olive lichen seam, heavy grounded base",
+      "width": 180,
+      "maxSize": 576,
+      "anchor": [
+        0.5,
+        0.91
+      ]
+    },
+    {
+      "key": "broad-granite-erratic",
+      "name": "Broad granite erratic",
+      "zone": "Exposed rocks",
+      "subject": "one broad heavy glacial granite boulder, asymmetrical oval block with a wide flat upper shoulder and a steep broken front face, warm medium grey coarse painted planes, thin cream mineral veins, a few small pale sage lichen patches, massive low silhouette not a mountain",
+      "width": 300,
+      "maxSize": 768,
+      "anchor": [
+        0.5,
+        0.89
+      ]
+    }
+  ]
+}

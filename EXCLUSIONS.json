@@ -1,0 +1,98 @@
+{
+  "intentional_exclusions": [
+    {
+      "scope": "all node_modules directories",
+      "reason": "Dependency installs are reproducible from the preserved root and native lockfiles."
+    },
+    {
+      "scope": ".git",
+      "reason": "Repository metadata/history, remotes and credential-bearing configuration are not public export payload. Original source commit and standalone historical asset provenance are supplied."
+    },
+    {
+      "scope": "dist, native/dist, .sites-runtime, .expo, .qa, .openai/qa, .local-preview and temporary validation data",
+      "reason": "Generated builds, caches and session-local data; original source docs/qa media are retained."
+    },
+    {
+      "scope": "real .env variants, private credentials, tokens, signing material, account/session/private user data",
+      "reason": "Excluded for the public repository. .env.example contains placeholders only."
+    },
+    {
+      "scope": "14 historical public/downloads/safety-last-native.zip versions",
+      "reason": "Obsolete source/dependency package copies. Every media member was checked; none was unique beyond current or recovered original assets."
+    }
+  ],
+  "tracked_files_excluded": [
+    {
+      "path": "public/survival/river-detail-v5/.riverHD5_1024_0.webp.PcX5aX",
+      "reason": "Temporary file; identical to included riverHD5_1024_0.webp."
+    },
+    {
+      "path": "docs/qa/waterfall-pilot-v1/.frame-10.png.zJWbA8",
+      "bytes": 786432,
+      "reason": "Temporary incomplete PNG. The project contains the regular original/other QA media separately."
+    }
+  ],
+  "unavailable_remote_files": [
+    {
+      "upload_id": "b98a8a25-3e01-4ead-842a-a131ef19b7a0",
+      "entry_id": "world-terrain",
+      "filename": "IMG_9396.jpg",
+      "mime": "image/jpeg",
+      "width": 3600,
+      "height": 3600,
+      "bytes": 10348001,
+      "created_at": "2026-10-07T04:56:17.106Z",
+      "published": 0,
+      "object_key": "catalogue/world-terrain/b98a8a25-3e01-4ead-842a-a131ef19b7a0",
+      "public_get_status": 404,
+      "metadata_included": true,
+      "original_bytes_included": false,
+      "referenced_by_current_game": false,
+      "reason": "Unpublished upload is unavailable through accessible read-only/public byte access; no authorization was forged and no live state was changed."
+    }
+  ],
+  "unavailable_database_values": [
+    {
+      "table": "asset_artwork",
+      "entry_id": "base_hearth_t1",
+      "revision": 1,
+      "created_at": "2026-10-10T15:06:47.860Z",
+      "record_id": "07822e63-369b-454f-b054-01845a0d7834",
+      "field": "config_json",
+      "reason": "Database viewer returned a truncated cell; no full original copy was found in current or inspected historical artwork/world snapshots.",
+      "included": "Original row metadata and returned prefix in migration-data/artwork-history.json."
+    }
+  ],
+  "database_recovery_notes": [
+    {
+      "table": "asset_artwork",
+      "entry_id": "base_hearth_t1",
+      "revision": 2,
+      "reason": "D1 tool cell was truncated, but complete unchanged configuration values were recovered from the actual public response and verified against the original returned prefix and existing source snapshots. Full original serialized D1 bytes were not directly read.",
+      "included": "migration-data/artwork-history.json recovered_configurations and artwork.json."
+    }
+  ],
+  "original_asset_defects_preserved": [
+    {
+      "path": "historical-assets/0414c2e7b652/registered-master.png",
+      "original_path": "artwork-archive/camp-return-v1/registered-master.png",
+      "condition": "Original Git blob contains truncated PNG data; exact original bytes preserved."
+    },
+    {
+      "path": "historical-assets/5276ac7065ce/registered-master.png",
+      "original_path": "artwork-archive/camp-return-v2/registered-master.png",
+      "condition": "Original Git blob contains truncated PNG data; exact original bytes preserved."
+    },
+    {
+      "path": "historical-assets/f4be82f70168/registered-master.png",
+      "original_path": "artwork-archive/village-outskirts-v1/registered-master.png",
+      "condition": "Original Git blob contains truncated PNG data; exact original bytes preserved."
+    }
+  ],
+  "not_available_in_source_workspace": [
+    "Pre-existing native iOS/Android platform projects or Xcode workspace",
+    "EAS configuration and signed IPA/build/signing artifacts",
+    "Direct object-store listing/export of unregistered or orphaned objects"
+  ],
+  "hosted_service_dependencies": "Production database/object storage/authentication and hosting must be provisioned separately; the supplied loopback-only local preview uses exported data without live changes."
+}

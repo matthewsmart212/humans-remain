@@ -1,0 +1,25 @@
+{
+  "passed": true,
+  "worldPlacements": 4465,
+  "idleFoliage": {
+    "tested": 600,
+    "deformingMeshes": 0,
+    "oneContactMeshes": 1
+  },
+  "spriteDraws": 1200,
+  "paintAllocationsBefore": 1200,
+  "paintAllocationsAfter": 2,
+  "pixelsIdenticalToPrevious": true,
+  "recordedPicturePixelsIdentical": true,
+  "cullingViewsCompared": 100,
+  "deviceFPSMeasured": false,
+  "checks": [
+    "moving player/enemy/animal contact only",
+    "stationary contact sleeps",
+    "fixed roots and reduced motion",
+    "native simulation contact",
+    "bounded visibility cache and invalidation",
+    "ground/depth ordering preserved",
+    "no artwork files changed"
+  ]
+}

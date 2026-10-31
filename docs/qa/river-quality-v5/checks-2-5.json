@@ -1,0 +1,26 @@
+{
+  "passed": true,
+  "riverAreas": 6,
+  "tiles": 170,
+  "lossless": true,
+  "geometryAndCrossingsUnchanged": true,
+  "peakGameplayRiverBytes": 20804288,
+  "chunkBytesMax": 1115136,
+  "motion": [
+    {
+      "batch": 2,
+      "visibleChunks": 3,
+      "waterPixels": 29069,
+      "movingFraction": 0.6306030479204651,
+      "dryChanged": 0
+    },
+    {
+      "batch": 5,
+      "visibleChunks": 6,
+      "waterPixels": 16726,
+      "movingFraction": 0.6370321654908526,
+      "dryChanged": 0
+    }
+  ],
+  "physicalIPhoneTested": false
+}

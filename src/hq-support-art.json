@@ -1,0 +1,72 @@
+[
+  {
+    "id": "art_hq_peg_rail",
+    "image": "/survival/hq-support-v1/peg-rail.webp",
+    "size": [
+      891,
+      892
+    ],
+    "width": 175,
+    "anchor": [
+      0.5,
+      0.92
+    ],
+    "floorDecal": false
+  },
+  {
+    "id": "art_hq_supply_bundle",
+    "image": "/survival/hq-support-v1/supply-bundle.webp",
+    "size": [
+      964,
+      965
+    ],
+    "width": 80,
+    "anchor": [
+      0.5,
+      0.94
+    ],
+    "floorDecal": false
+  },
+  {
+    "id": "art_hq_field_shelf",
+    "image": "/survival/hq-support-v1/field-shelf.webp",
+    "size": [
+      982,
+      743
+    ],
+    "width": 82,
+    "anchor": [
+      0.5,
+      0.92
+    ],
+    "floorDecal": false
+  },
+  {
+    "id": "art_hq_woven_rug",
+    "image": "/survival/hq-support-v1/woven-rug.webp",
+    "size": [
+      1597,
+      788
+    ],
+    "width": 250,
+    "anchor": [
+      0.5,
+      0.5
+    ],
+    "floorDecal": true
+  },
+  {
+    "id": "art_hq_boots",
+    "image": "/survival/hq-support-v1/boots.webp",
+    "size": [
+      1084,
+      958
+    ],
+    "width": 56,
+    "anchor": [
+      0.5,
+      0.94
+    ],
+    "floorDecal": false
+  }
+]

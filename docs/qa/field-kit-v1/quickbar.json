@@ -1,0 +1,32 @@
+{
+  "passed": true,
+  "quickItems": [
+    "fists",
+    "axe",
+    "meal",
+    "rabbitMeal",
+    "venisonMeal",
+    "canteen"
+  ],
+  "emptySlots": 0,
+  "heldFoodFrames": 72,
+  "proof": ".qa/field-kit/held-meal-all-directions.png",
+  "checks": [
+    "inventory-backed selection",
+    "empty slots disabled",
+    "stations stay accessible and held food stays usable in combat",
+    "one meal per press and stale quantity rejection",
+    "last meal returns to fists",
+    "full needs do not waste food",
+    "healing at full food",
+    "no attacks while holding food",
+    "switching respects active attack and downed state",
+    "backpack actions update selection",
+    "old run callback rejected",
+    "web pointer and keyboard activation",
+    "native touch and assistive activation",
+    "food held in all eight directions and walk/run frames",
+    "front/back depth ordering"
+  ],
+  "physicalDeviceTested": false
+}

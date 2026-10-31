@@ -1,0 +1,23 @@
+{
+  "result": "pass",
+  "foliage": 20,
+  "staticProps": 6,
+  "compressedBytes": 2250988,
+  "maxDecodedMiB": 18.29931640625,
+  "uniqueTexturesFor2600Instances": 26,
+  "extraStartupImagesWhenUnplaced": 0,
+  "checks": [
+    "catalogue visibility and unique IDs",
+    "transparent exports",
+    "correct image metadata",
+    "shared textures",
+    "no unused startup requests",
+    "walk-through foliage",
+    "contact bending",
+    "reduced motion",
+    "offscreen foliage culling",
+    "ground-only prop collision",
+    "draft immutability"
+  ],
+  "limits": "Software checks only; no physical iPhone or browser GPU measurement. No automatic map population."
+}

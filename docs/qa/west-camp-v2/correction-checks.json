@@ -1,0 +1,12 @@
+{
+  "result": "pass",
+  "correctedTextures": 5,
+  "newLand": 0,
+  "unchangedRuntimeRectangles": 5,
+  "archivedOriginalsByteIdentical": 5,
+  "oldUrlGetHeadRedirects": 12,
+  "campArtworkAndLayoutSourceUnchanged": true,
+  "contactChecks": 9,
+  "maximumEnlargement": 1.0887337986041874,
+  "saveHandlerVerification": "Passed in-memory SQLite using revision 68; retained all 1366 original camp placements."
+}

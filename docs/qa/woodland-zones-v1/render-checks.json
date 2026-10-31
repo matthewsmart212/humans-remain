@@ -1,0 +1,19 @@
+{
+  "result": "pass",
+  "renderer": "Production CanvasKit software renderer",
+  "captures": [
+    "before-overview",
+    "after-overview",
+    "camp-overview",
+    "northern-birch",
+    "western-oak",
+    "eastern-pine",
+    "southern-rowan",
+    "riverside-willow"
+  ],
+  "missing": [],
+  "sourceRevision": 70,
+  "placements": 2299,
+  "liveMapWrites": false,
+  "deviceFPSMeasured": false
+}

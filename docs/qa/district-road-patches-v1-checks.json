@@ -1,0 +1,12 @@
+{
+  "result": "pass",
+  "newSections": 6,
+  "renderedSelection": "village-approach",
+  "campInteriorPixelIdentical": true,
+  "approvedSoutheastCorePixelIdentical": true,
+  "addedEntryImages": 0,
+  "roadSections": 42,
+  "bridgeReservations": 6,
+  "quietAreas": 5,
+  "limitations": "Renderer validation only; no browser or physical iPhone test. Outer exit feathering intentionally blends into the new extensions."
+}

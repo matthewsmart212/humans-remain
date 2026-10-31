@@ -1,0 +1,72 @@
+{
+  "name": "Safety Last — Eastern works grounds",
+  "date": "2026-10-14",
+  "method": "Built-in image_gen outpaint; deterministic contact registration and lossless cuts",
+  "sourceCommit": "22bfef9247ce234ec53d396500f218d56d9b4eac",
+  "nativeGeneration": {
+    "width": 990,
+    "height": 1589,
+    "file": "generated-master-original.png"
+  },
+  "registeredMaster": {
+    "x": 8314,
+    "y": 2124,
+    "width": 1666,
+    "height": 2676,
+    "file": "registered-master.png"
+  },
+  "packaging": "Native generated artwork resampled to existing camp scale; packaged dimensions are not native generation resolution.",
+  "tiles": [
+    {
+      "id": "11-works-yard",
+      "url": "/survival/maps/works-grounds-v1/11-works-yard.webp",
+      "x": 8442,
+      "y": 2124,
+      "width": 1538,
+      "height": 1274,
+      "paintTop": 0,
+      "paintHeight": 1272
+    },
+    {
+      "id": "12-works-dirt-lane",
+      "url": "/survival/maps/works-grounds-v1/12-works-dirt-lane.webp",
+      "x": 8442,
+      "y": 3264,
+      "width": 1538,
+      "height": 1536,
+      "paintTop": 132,
+      "paintHeight": 1404
+    }
+  ],
+  "contacts": {
+    "west": {
+      "masterPreservedColumns": 132,
+      "masterBlendColumns": 128,
+      "outputExactColumns": 4,
+      "runtimeOverlap": 132,
+      "maxChannelError": 0
+    },
+    "betweenNewTiles": {
+      "sharedRows": 134,
+      "paintBoundaryY": 3396,
+      "maxChannelError": 0
+    }
+  },
+  "palette": "Brown and umber compacted soil, muted olive grass and dusty taupe dirt tracks; quieter open clearings and no added red/orange leaves.",
+  "scope": "Ground and paths only. Buildings, water, resources and foliage remain separate assets.",
+  "nextExits": {
+    "coordinateStatus": "Approximate source-pixel guides for later outpainting, not navigation geometry.",
+    "north": {
+      "x": 9510,
+      "y": 2124
+    },
+    "east": {
+      "x": 9980,
+      "y": 3220
+    },
+    "south": {
+      "x": 9480,
+      "y": 4800
+    }
+  }
+}

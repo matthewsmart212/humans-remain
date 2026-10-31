@@ -1,0 +1,19 @@
+{
+  "patch": "sw",
+  "source": {
+    "width": 1553,
+    "height": 1013,
+    "file": "sw-generated-original.png"
+  },
+  "registered": {
+    "x": 0,
+    "y": 834,
+    "width": 1670,
+    "height": 1088,
+    "north": 256
+  },
+  "scale": {
+    "x": 1.0753380553766902,
+    "y": 1.0740375123395853
+  }
+}

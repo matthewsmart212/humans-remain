@@ -1,0 +1,25 @@
+{
+  "mode": "built-in imagegen",
+  "prompts": [
+    [
+      "wall-horizontal",
+      "Create one new transparent game sprite: a straight 8-log stockade wall module running exactly HORIZONTALLY left to right on the ground, elevated 3/4 overhead camera matching the reference game. New design, much sturdier continuous barrier: close-set thick aged oak logs, uneven broken blunt/chipped tops (few subdued points), grey umber bark, warm ochre wear, horizontal salvaged braces and one irregular diagonal brace, a LOW rubble-and-earth footing touching the bottoms, small moss tufts. Closed between every log, no passage gap. Left and right endpoint ground line exactly same height, wall entirely straight. No outward buttress legs, no detached debris, no tall poles. Wide module, width about 3x height. Top-left warm daylight. Intricate hand-painted storybook survival RPG sprite like reference, crisp wood grain. Isolated on TRUE transparent background, no platform or broad ground halo; fine earthy contact edge only. No text."
+    ],
+    [
+      "wall-diagonal",
+      "Create one new transparent game sprite: a straight 8-log stockade wall module on a ground line descending from UPPER LEFT to LOWER RIGHT at 45 degrees, elevated 3/4 overhead camera matching reference. New design, sturdy continuous barrier of close-set thick aged oak logs with irregular broken blunt/chipped tops (few subdued points), grey umber bark and warm ochre wear. Horizontal salvaged braces, irregular diagonal reinforcement, LOW rubble/earth footing at bottoms with small moss tufts. NO passage gap between logs. Wall straight, no corner or bend, no buttress legs, no detached debris. Every upright log is vertical in image, NOT diagonal. Endpoint ground line at 45degrees. Top-left warm daylight. Intricate hand-painted storybook survival RPG sprite, crisp wood grain. TRUE transparent background, no platform/broad halo, narrow earthy contact edge only. No text."
+    ],
+    [
+      "wall-vertical",
+      "Create one new transparent game sprite: a straight stockade wall module receding VERTICALLY up the image on the ground, a narrow north-south wall seen from elevated top-down 3/4 camera. Sturdy continuous close-set thick aged oak logs, worn blunt chipped uneven tops, grey umber bark with warm ochre wear, salvaged bracing, low earth and rubble footing with tiny moss. Every upright timber vertical. The visible timber tops step upward along wall line; side face has narrow thickness. Straight no bends or corners, no gap, no buttress legs, no detached debris. About 7 logs, thin long module with ground endpoints one directly above other, matching reference game angle/material/shading. Top-left light. Intricate hand-painted survival RPG asset, crisp wood grain. TRUE transparent background, no broad ground halo or platform. No text."
+    ],
+    [
+      "gate-leaf",
+      "Create one new transparent game sprite: a single weathered timber gate LEAF/panel, front-facing with perfectly horizontal top and bottom rails, slightly elevated view revealing narrow top edges. No gateposts, no ground, no hinges extending past panel. Rectangular stout grey-brown reclaimed oak planks, irregular chipped top, two dark rusty iron strap hinges on LEFT edge, rough diagonal Z brace, small dark iron ring latch near RIGHT edge. Fully closed solid planks, no hole or gap. Warm ochre scuffs, moss only at bottom corners, matching intricate painted survival camp reference. Width about 1.25 times height. This will be rigged and animated, so vertical side edges should be straight and bottom exactly level. Isolated on TRUE transparency, no shadow on background, no text. Keep outer silhouette crisp."
+    ],
+    [
+      "joint-post",
+      "Create one new transparent game sprite: ONE stout old timber stockade gatepost, standing upright, seen elevated 3/4 overhead camera matching game reference. Aged grey-brown oak, chipped blunt cap with narrow golden exposed heartwood, dark bark crevices, two old rusty iron bands, low uneven sandstone and earth socket with tiny moss and ochre leaf litter. Top-left daylight. Strong but worn, no long outward support struts. Width about 1/3 of height, full object uncropped. Painted survival RPG crisp detailed illustration. TRUE transparent background, only narrow ragged contact edge, no broad ground patch, no text."
+    ]
+  ]
+}

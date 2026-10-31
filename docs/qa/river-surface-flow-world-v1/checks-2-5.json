@@ -1,0 +1,79 @@
+{
+  "passed": true,
+  "batches": [
+    2,
+    5
+  ],
+  "locations": [
+    {
+      "id": "reach-2",
+      "batch": 2,
+      "waterPixels": 12428,
+      "movingFraction": 0.6219826198905697,
+      "dryPixels": 12794,
+      "dryChanged": 0,
+      "shorelineBlendPixels": 0,
+      "loopMeanChannelDelta": 0.000011022927689594357,
+      "paintingStationary": true
+    },
+    {
+      "id": "western-stream",
+      "batch": 2,
+      "waterPixels": 5818,
+      "movingFraction": 0.6445513922310072,
+      "dryPixels": 9185,
+      "dryChanged": 0,
+      "shorelineBlendPixels": 0,
+      "loopMeanChannelDelta": 0,
+      "paintingStationary": true
+    },
+    {
+      "id": "join-2",
+      "batch": 2,
+      "waterPixels": 14589,
+      "movingFraction": 0.6577558434436904,
+      "dryPixels": 14662,
+      "dryChanged": 0,
+      "shorelineBlendPixels": 8,
+      "loopMeanChannelDelta": 0.0000055114638447971785,
+      "paintingStationary": true
+    },
+    {
+      "id": "reach-5",
+      "batch": 5,
+      "waterPixels": 16431,
+      "movingFraction": 0.6202300529486945,
+      "dryPixels": 11684,
+      "dryChanged": 0,
+      "shorelineBlendPixels": 0,
+      "loopMeanChannelDelta": 0.00002755731922398589,
+      "paintingStationary": true
+    },
+    {
+      "id": "southern-stream",
+      "batch": 5,
+      "waterPixels": 3920,
+      "movingFraction": 0.5505102040816326,
+      "dryPixels": 5749,
+      "dryChanged": 0,
+      "shorelineBlendPixels": 0,
+      "loopMeanChannelDelta": 0,
+      "paintingStationary": true
+    },
+    {
+      "id": "join-5",
+      "batch": 5,
+      "waterPixels": 10891,
+      "movingFraction": 0.6550362684785602,
+      "dryPixels": 14459,
+      "dryChanged": 0,
+      "shorelineBlendPixels": 0,
+      "loopMeanChannelDelta": 0.0000055114638447971785,
+      "paintingStationary": true
+    }
+  ],
+  "waterfallOverlaysLoaded": 0,
+  "sharedSurfaceTextureBytes": 589824,
+  "newTexturesBeyondApprovedTrial": 0,
+  "physicalIPhoneTested": false
+}

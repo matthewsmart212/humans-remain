@@ -1,0 +1,42 @@
+[
+  {
+    "id": "logging-stream",
+    "tiles": 3,
+    "nativeSize": [
+      1254,
+      1254
+    ],
+    "waterPixels": 90354,
+    "splitRows": 97
+  },
+  {
+    "id": "western-stream",
+    "tiles": 5,
+    "nativeSize": [
+      1330,
+      1182
+    ],
+    "waterPixels": 41920,
+    "splitRows": 80
+  },
+  {
+    "id": "lower-lake",
+    "tiles": 5,
+    "nativeSize": [
+      1330,
+      1182
+    ],
+    "waterPixels": 186217,
+    "splitRows": 172
+  },
+  {
+    "id": "southern-stream",
+    "tiles": 5,
+    "nativeSize": [
+      1269,
+      1240
+    ],
+    "waterPixels": 59747,
+    "splitRows": 82
+  }
+]

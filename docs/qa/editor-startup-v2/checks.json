@@ -1,0 +1,26 @@
+{
+  "result": "pass",
+  "fixture": "Saved camp with 1,368 placements",
+  "before": {
+    "images": 82,
+    "bytes": 63634496
+  },
+  "entry": {
+    "images": 53,
+    "bytes": 24813616
+  },
+  "deferredBytes": 38820880,
+  "reductionPercent": 61,
+  "checks": [
+    "Foreground promotion without duplicate fetches",
+    "Bounded shared loader queue",
+    "Custom terrain required at entry",
+    "Camp draws before optional downloads",
+    "Every object stays visible through missing animation frames",
+    "Failed detail and animation loads leave editor usable",
+    "Play preparation retries and warms textures",
+    "Final image pixels equal full upfront load",
+    "Saved placement data unchanged"
+  ],
+  "limitations": "Software CanvasKit rendering and deterministic delayed downloads; not a browser or physical iPhone timing measurement. Byte totals cover artwork only, excluding JavaScript, graphics WASM, fonts and metadata."
+}

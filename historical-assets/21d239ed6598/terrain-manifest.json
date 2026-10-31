@@ -1,0 +1,80 @@
+{
+  "name": "Safety Last — Northern works connection",
+  "date": "2026-10-14",
+  "method": "Built-in image_gen; deterministic contact registration and lossless cuts",
+  "sourceCommit": "f7ec0b83b01b314b513eb4a017927ec75afc61b1",
+  "nativeGeneration": {
+    "width": 1209,
+    "height": 1300,
+    "file": "generated-master-original.png"
+  },
+  "registeredMaster": {
+    "x": 6908,
+    "y": 456,
+    "width": 1666,
+    "height": 1792,
+    "file": "registered-master.png"
+  },
+  "packaging": "Native generated artwork resampled to existing camp scale; packaged dimensions are not native generation resolution.",
+  "tiles": [
+    {
+      "id": "09-north-works-clearing",
+      "url": "/survival/maps/northern-works-v1/09-north-works-clearing.webp",
+      "x": 7036,
+      "y": 456,
+      "width": 1538,
+      "height": 1538,
+      "paintTop": 0,
+      "paintHeight": 1536
+    },
+    {
+      "id": "10-works-trail-connector",
+      "url": "/survival/maps/northern-works-v1/10-works-trail-connector.webp",
+      "x": 7036,
+      "y": 1860,
+      "width": 1538,
+      "height": 266,
+      "paintTop": 132,
+      "paintHeight": 132
+    }
+  ],
+  "contacts": {
+    "west": {
+      "masterPreservedColumns": 132,
+      "masterBlendColumns": 128,
+      "outputExactColumns": 4,
+      "runtimeOverlap": 132,
+      "featherColumns": 36,
+      "maxChannelError": 0
+    },
+    "betweenNewTiles": {
+      "sharedRows": 134,
+      "paintBoundaryY": 1992,
+      "maxChannelError": 0
+    },
+    "existingWorks": {
+      "sharedSourceRows": [
+        128,
+        134
+      ],
+      "newConnectorRows": [
+        260,
+        266
+      ],
+      "paintBoundaryY": 2124,
+      "maxChannelError": 0
+    }
+  },
+  "scope": "Ground and dirt paths only. The main clearing closes the northern corner; the shorter connector registers its southern contact without changing existing textures.",
+  "nextExits": {
+    "coordinateStatus": "Approximate source-pixel guides, not navigation geometry.",
+    "north": {
+      "x": 8000,
+      "y": 456
+    },
+    "east": {
+      "x": 8574,
+      "y": 1360
+    }
+  }
+}

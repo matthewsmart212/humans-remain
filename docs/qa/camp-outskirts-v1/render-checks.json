@@ -1,0 +1,19 @@
+{
+  "result": "pass",
+  "renderer": "Production CanvasKit software renderer",
+  "captures": [
+    "before-overview",
+    "after-overview",
+    "west-near",
+    "north-near",
+    "east-outer",
+    "south-outer",
+    "tree-standing",
+    "tree-felled-with-logs"
+  ],
+  "missing": [],
+  "sourceRevision": 68,
+  "placements": 1758,
+  "liveMapWrites": false,
+  "deviceFPSMeasured": false
+}

@@ -1,0 +1,20 @@
+/* Simplified station screens keep their catalog and action visible together. */
+.camp-studio .field-kit .station-menu.station-menu--simplified{padding:9px 11px;gap:6px}
+.station-menu--simplified .station-menu-header{padding-bottom:3px;gap:8px}
+.station-menu--simplified .station-menu-header>img{width:31px;height:31px}
+.station-menu--simplified .station-menu-header h2{margin:0;font-size:25px}
+.station-menu--simplified .station-menu-content{position:relative;gap:6px}
+.station-menu--simplified .station-menu-footer{padding-top:4px}
+.station-menu--simplified.station-menu--fit .station-menu-content{flex:0 1 auto}
+.station-menu--simplified .station-menu-load>span:empty{display:none}
+.station-menu--simplified .station-menu-load>div[role=progressbar]{order:0;min-width:24px}
+.station-menu-footer-action{display:flex;align-items:center;flex:none;margin-left:auto}
+.camp-studio .field-kit .station-menu--simplified .station-menu-footer-action button{min-height:28px;padding:4px 5px;font-size:11px;background:transparent;border-color:transparent;box-shadow:none}
+.station-menu--simplified[data-short=true] .station-menu-header h2{font-size:23px}
+.station-menu--simplified[data-short=true] .station-menu-header{height:44px;min-height:44px;padding-bottom:2px}
+.camp-studio .field-kit .station-menu--simplified[data-short=true] button.station-menu-close{width:40px;height:40px;min-width:40px;min-height:40px;padding:9px}
+.station-menu--simplified[data-short=true] .station-menu-content{gap:4px}
+.camp-studio .field-kit .station-menu--simplified[data-short=true]{padding:7px 9px;gap:4px}
+.station-menu--simplified[data-short=true] .station-menu-footer{padding-top:3px}
+.station-menu--simplified[data-short=true] .station-menu-load{gap:5px;font-size:10px}
+.station-menu--simplified[data-short=true] .station-menu-load>img{width:16px;height:16px}

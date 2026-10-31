@@ -1,0 +1,125 @@
+{
+  "result": "pass",
+  "waterfallAreas": 10,
+  "waterfallOverlaysLoaded": 0,
+  "checks": [
+    {
+      "reach": "headwaters",
+      "mode": "detail",
+      "waterPixels": 77852,
+      "movingPixels": 69890,
+      "meanDelta": 17.02,
+      "dryPixels": 111942,
+      "dryChanged": 0
+    },
+    {
+      "reach": "headwaters",
+      "mode": "without-atlas",
+      "waterPixels": 77746,
+      "movingPixels": 69058,
+      "meanDelta": 15.93,
+      "dryPixels": 111942,
+      "dryChanged": 0
+    },
+    {
+      "reach": "headwaters",
+      "mode": "preview",
+      "waterPixels": 75092,
+      "movingPixels": 51588,
+      "meanDelta": 8.58,
+      "dryPixels": 111174,
+      "dryChanged": 0
+    },
+    {
+      "reach": "logging",
+      "mode": "detail",
+      "waterPixels": 83352,
+      "movingPixels": 68729,
+      "meanDelta": 14.14,
+      "dryPixels": 89312,
+      "dryChanged": 0
+    },
+    {
+      "reach": "logging",
+      "mode": "without-atlas",
+      "waterPixels": 83310,
+      "movingPixels": 67215,
+      "meanDelta": 12.8,
+      "dryPixels": 89312,
+      "dryChanged": 0
+    },
+    {
+      "reach": "western",
+      "mode": "detail",
+      "waterPixels": 92126,
+      "movingPixels": 73804,
+      "meanDelta": 12.2,
+      "dryPixels": 87748,
+      "dryChanged": 0
+    },
+    {
+      "reach": "western",
+      "mode": "without-atlas",
+      "waterPixels": 92054,
+      "movingPixels": 71061,
+      "meanDelta": 10.86,
+      "dryPixels": 87748,
+      "dryChanged": 0
+    },
+    {
+      "reach": "waterworks",
+      "mode": "detail",
+      "waterPixels": 76614,
+      "movingPixels": 52939,
+      "meanDelta": 9.05,
+      "dryPixels": 104038,
+      "dryChanged": 0
+    },
+    {
+      "reach": "waterworks",
+      "mode": "without-atlas",
+      "waterPixels": 76559,
+      "movingPixels": 50603,
+      "meanDelta": 7.82,
+      "dryPixels": 104038,
+      "dryChanged": 0
+    },
+    {
+      "reach": "lower",
+      "mode": "detail",
+      "waterPixels": 99851,
+      "movingPixels": 71943,
+      "meanDelta": 9.73,
+      "dryPixels": 80590,
+      "dryChanged": 0
+    },
+    {
+      "reach": "lower",
+      "mode": "without-atlas",
+      "waterPixels": 99827,
+      "movingPixels": 67405,
+      "meanDelta": 8.18,
+      "dryPixels": 80590,
+      "dryChanged": 0
+    },
+    {
+      "reach": "southern",
+      "mode": "detail",
+      "waterPixels": 91984,
+      "movingPixels": 61723,
+      "meanDelta": 8.5,
+      "dryPixels": 78449,
+      "dryChanged": 0
+    },
+    {
+      "reach": "southern",
+      "mode": "without-atlas",
+      "waterPixels": 91878,
+      "movingPixels": 57246,
+      "meanDelta": 6.9,
+      "dryPixels": 78449,
+      "dryChanged": 0
+    }
+  ],
+  "browserAndPhone": "Unavailable; actual CanvasKit software rendering used."
+}

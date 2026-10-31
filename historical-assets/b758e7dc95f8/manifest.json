@@ -1,0 +1,298 @@
+{
+  "version": "consistent-terrain-v1",
+  "tool": "Built-in image_gen.imagegen",
+  "scope": "All 26 post-camp terrain segments, unchanged geometry and saved placements",
+  "materials": [
+    {
+      "file": "artwork-archive/consistent-terrain-v1/warm-generated-original.png",
+      "sourcePixels": [
+        650,
+        600
+      ]
+    },
+    {
+      "file": "artwork-archive/consistent-terrain-v1/olive-generated-original.png",
+      "sourcePixels": [
+        650,
+        600
+      ]
+    },
+    {
+      "file": "artwork-archive/consistent-terrain-v1/brown-generated-original.png",
+      "sourcePixels": [
+        650,
+        600
+      ]
+    }
+  ],
+  "assembly": "One global material quilt at original camp scale; minimum-error joins; existing painted path pixels preserved; original camp contacts retained; lossless runtime cuts",
+  "bounds": {
+    "x": -1528,
+    "y": 0,
+    "width": 11508,
+    "height": 6206
+  },
+  "pieces": [
+    {
+      "oldImage": "/survival/maps/camp-return-v2/18-camp-southeast-meadow.webp",
+      "image": "/survival/maps/consistent-terrain-v1/18-camp-southeast-meadow.webp",
+      "key": "outdoor:camp-return:meadow:v2",
+      "x": 4096,
+      "y": 4668,
+      "width": 1666,
+      "height": 1538,
+      "bytes": 3091538
+    },
+    {
+      "oldImage": "/survival/maps/camp-return-v2/19-camp-works-open-ground.webp",
+      "image": "/survival/maps/consistent-terrain-v1/19-camp-works-open-ground.webp",
+      "key": "outdoor:camp-return:open-ground:v2",
+      "x": 5630,
+      "y": 4668,
+      "width": 1538,
+      "height": 1538,
+      "bytes": 2754024
+    },
+    {
+      "oldImage": "/survival/maps/east-approach-v1/01-camp-approach.webp",
+      "image": "/survival/maps/consistent-terrain-v1/01-camp-approach.webp",
+      "key": "outdoor:east-approach:west:v1",
+      "x": 4096,
+      "y": 3264,
+      "width": 1538,
+      "height": 1536,
+      "bytes": 3065928
+    },
+    {
+      "oldImage": "/survival/maps/east-approach-v1/02-woodland-junction.webp",
+      "image": "/survival/maps/consistent-terrain-v1/02-woodland-junction.webp",
+      "key": "outdoor:east-approach:east:v1",
+      "x": 5630,
+      "y": 3264,
+      "width": 1538,
+      "height": 1536,
+      "bytes": 3029104
+    },
+    {
+      "oldImage": "/survival/maps/eastern-works-v1/07-works-footpath.webp",
+      "image": "/survival/maps/consistent-terrain-v1/07-works-footpath.webp",
+      "key": "outdoor:eastern-works:north:v1",
+      "x": 7036,
+      "y": 1992,
+      "width": 1538,
+      "height": 1406,
+      "bytes": 2327648
+    },
+    {
+      "oldImage": "/survival/maps/eastern-works-v1/08-works-service-track.webp",
+      "image": "/survival/maps/consistent-terrain-v1/08-works-service-track.webp",
+      "key": "outdoor:eastern-works:south:v1",
+      "x": 7036,
+      "y": 3264,
+      "width": 1538,
+      "height": 1536,
+      "bytes": 2822918
+    },
+    {
+      "oldImage": "/survival/maps/northern-works-v1/09-north-works-clearing.webp",
+      "image": "/survival/maps/consistent-terrain-v1/09-north-works-clearing.webp",
+      "key": "outdoor:northern-works:clearing:v1",
+      "x": 7036,
+      "y": 456,
+      "width": 1538,
+      "height": 1538,
+      "bytes": 2928952
+    },
+    {
+      "oldImage": "/survival/maps/northern-works-v1/10-works-trail-connector.webp",
+      "image": "/survival/maps/consistent-terrain-v1/10-works-trail-connector.webp",
+      "key": "outdoor:northern-works:connector:v1",
+      "x": 7036,
+      "y": 1860,
+      "width": 1538,
+      "height": 266,
+      "bytes": 544394
+    },
+    {
+      "oldImage": "/survival/maps/south-camp-v1/20-camp-south-clearing.webp",
+      "image": "/survival/maps/consistent-terrain-v1/20-camp-south-clearing.webp",
+      "key": "outdoor:south-camp:clearing:v1",
+      "x": 2690,
+      "y": 4412,
+      "width": 1538,
+      "height": 1794,
+      "bytes": 3541054
+    },
+    {
+      "oldImage": "/survival/maps/south-camp-v1/21-camp-south-trail.webp",
+      "image": "/survival/maps/consistent-terrain-v1/21-camp-south-trail.webp",
+      "key": "outdoor:south-camp:trail:v1",
+      "x": 1284,
+      "y": 4412,
+      "width": 1538,
+      "height": 1794,
+      "bytes": 3559774
+    },
+    {
+      "oldImage": "/survival/maps/south-works-v1/16-south-works-clearing.webp",
+      "image": "/survival/maps/consistent-terrain-v1/16-south-works-clearing.webp",
+      "key": "outdoor:south-works:clearing:v1",
+      "x": 7036,
+      "y": 4668,
+      "width": 1538,
+      "height": 1538,
+      "bytes": 2603110
+    },
+    {
+      "oldImage": "/survival/maps/south-works-v1/17-scrap-outskirts-trail.webp",
+      "image": "/survival/maps/consistent-terrain-v1/17-scrap-outskirts-trail.webp",
+      "key": "outdoor:south-works:trail:v1",
+      "x": 8442,
+      "y": 4668,
+      "width": 1538,
+      "height": 1538,
+      "bytes": 2647578
+    },
+    {
+      "oldImage": "/survival/maps/village-approach-v2/03-camp-east-clearing.webp",
+      "image": "/survival/maps/consistent-terrain-v1/03-camp-east-clearing.webp",
+      "key": "outdoor:village-approach:west:v2",
+      "x": 4096,
+      "y": 1860,
+      "width": 1538,
+      "height": 1538,
+      "bytes": 3006666
+    },
+    {
+      "oldImage": "/survival/maps/village-approach-v2/04-village-trail.webp",
+      "image": "/survival/maps/consistent-terrain-v1/04-village-trail.webp",
+      "key": "outdoor:village-approach:east:v2",
+      "x": 5630,
+      "y": 1860,
+      "width": 1538,
+      "height": 1538,
+      "bytes": 2947944
+    },
+    {
+      "oldImage": "/survival/maps/village-outskirts-v1/05-camp-northeast-clearing.webp",
+      "image": "/survival/maps/consistent-terrain-v1/05-camp-northeast-clearing.webp",
+      "key": "outdoor:village-outskirts:west:v1",
+      "x": 4096,
+      "y": 456,
+      "width": 1538,
+      "height": 1538,
+      "bytes": 2927794
+    },
+    {
+      "oldImage": "/survival/maps/village-outskirts-v1/06-village-outskirts.webp",
+      "image": "/survival/maps/consistent-terrain-v1/06-village-outskirts.webp",
+      "key": "outdoor:village-outskirts:east:v1",
+      "x": 5630,
+      "y": 456,
+      "width": 1538,
+      "height": 1538,
+      "bytes": 2828522
+    },
+    {
+      "oldImage": "/survival/maps/west-camp-v2/22-southwest-camp-corner.webp",
+      "image": "/survival/maps/consistent-terrain-v1/22-southwest-camp-corner.webp",
+      "key": "outdoor:west-camp:corner:v2",
+      "x": -122,
+      "y": 4412,
+      "width": 1538,
+      "height": 1794,
+      "bytes": 3317970
+    },
+    {
+      "oldImage": "/survival/maps/west-camp-v2/23-west-camp-lower.webp",
+      "image": "/survival/maps/consistent-terrain-v1/23-west-camp-lower.webp",
+      "key": "outdoor:west-camp:lower:v2",
+      "x": -1528,
+      "y": 3006,
+      "width": 1794,
+      "height": 1666,
+      "bytes": 3650512
+    },
+    {
+      "oldImage": "/survival/maps/west-camp-v2/24-southwest-woodland-trail.webp",
+      "image": "/survival/maps/consistent-terrain-v1/24-southwest-woodland-trail.webp",
+      "key": "outdoor:west-camp:southwest-trail:v2",
+      "x": -1528,
+      "y": 4540,
+      "width": 1794,
+      "height": 1666,
+      "bytes": 3869512
+    },
+    {
+      "oldImage": "/survival/maps/west-camp-v2/25-west-camp-exit.webp",
+      "image": "/survival/maps/consistent-terrain-v1/25-west-camp-exit.webp",
+      "key": "outdoor:west-camp:exit:v2",
+      "x": -1528,
+      "y": 1598,
+      "width": 1794,
+      "height": 1540,
+      "bytes": 3670280
+    },
+    {
+      "oldImage": "/survival/maps/west-camp-v2/26-west-camp-upper-ground.webp",
+      "image": "/survival/maps/consistent-terrain-v1/26-west-camp-upper-ground.webp",
+      "key": "outdoor:west-camp:upper:v2",
+      "x": -1528,
+      "y": 190,
+      "width": 1794,
+      "height": 1540,
+      "bytes": 3498144
+    },
+    {
+      "oldImage": "/survival/maps/works-grounds-v1/11-works-yard.webp",
+      "image": "/survival/maps/consistent-terrain-v1/11-works-yard.webp",
+      "key": "outdoor:works-grounds:yard:v1",
+      "x": 8442,
+      "y": 2124,
+      "width": 1538,
+      "height": 1274,
+      "bytes": 2268076
+    },
+    {
+      "oldImage": "/survival/maps/works-grounds-v1/12-works-dirt-lane.webp",
+      "image": "/survival/maps/consistent-terrain-v1/12-works-dirt-lane.webp",
+      "key": "outdoor:works-grounds:lane:v1",
+      "x": 8442,
+      "y": 3264,
+      "width": 1538,
+      "height": 1536,
+      "bytes": 2960090
+    },
+    {
+      "oldImage": "/survival/maps/works-meadow-v1/13-works-meadow.webp",
+      "image": "/survival/maps/consistent-terrain-v1/13-works-meadow.webp",
+      "key": "outdoor:works-meadow:main:v1",
+      "x": 8442,
+      "y": 456,
+      "width": 1538,
+      "height": 1538,
+      "bytes": 2814504
+    },
+    {
+      "oldImage": "/survival/maps/works-meadow-v1/14-meadow-south-contact.webp",
+      "image": "/survival/maps/consistent-terrain-v1/14-meadow-south-contact.webp",
+      "key": "outdoor:works-meadow:south:v1",
+      "x": 8442,
+      "y": 1860,
+      "width": 1538,
+      "height": 266,
+      "bytes": 545058
+    },
+    {
+      "oldImage": "/survival/maps/works-meadow-v1/15-meadow-yard-contact.webp",
+      "image": "/survival/maps/consistent-terrain-v1/15-meadow-yard-contact.webp",
+      "key": "outdoor:works-meadow:yard:v1",
+      "x": 8442,
+      "y": 1992,
+      "width": 1538,
+      "height": 266,
+      "bytes": 542824
+    }
+  ],
+  "prompts": "artwork-archive/consistent-terrain-v1/prompts.json"
+}

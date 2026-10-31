@@ -1,0 +1,26 @@
+{
+  "mode": "built-in image_gen",
+  "shared_prompt": "Use case: identity-preserve. Asset type: production 2D game animation sprite sheet.\nInput images 1 and 2 are the exact character identity/style references. Reauthor this same character into new whole-body animation poses. Preserve character design, rendering, palette, line weight and EXACT chunky two-head-tall proportions: oversized dark tousled hair with the same locks, warm tan face with simple black oval eyes and no mouth or nose, cream short jacket with rust/coral sleeve accent, dark olive trousers, chunky rounded brown boots, diagonal dark satchel strap and satchel. Keep the head model and costume extremely consistent across all 16 cells.\nCreate ONE square high-resolution 2048x2048 RGBA image, or highest square resolution available, on genuinely transparent alpha. EXACTLY FOUR COLUMNS and FOUR ROWS, precisely sixteen separated full-body sprites, centered in equal invisible cells. Transparent padding around every sprite; entire hair, hands and BOTH complete boots stay inside their own cell. No clipping or overlap. Same fixed character scale, same local horizontal center and floor anchor for every cell, natural small body bob permitted. Same 3/4 overhead game camera as references. Facing stays constant across all sixteen cells.\nRead frame order left to right across each row. Top two rows = eight WALK keyframes forming one complete seamless gait cycle. Row 1: left-foot contact, left-foot compression, right foot passing, right knee lift. Row 2: right-foot contact, right-foot compression, left foot passing, left knee lift. Deliberate distinct authored poses, short knees bend, feet lift, opposing relaxed arms swing. Both boots completely drawn with coherent anatomy.\nBottom two rows = eight SPRINT keyframes forming one complete seamless running cycle. Row 3: left-foot forward contact with right leg back; left-leg compression with right knee tucking; powerful left-foot push-off with right knee driving forward; airborne passing with right knee forward and left leg tucked. Row 4: right-foot forward contact with left leg back; right-leg compression with left knee tucking; powerful right-foot push-off with left knee driving forward; airborne passing with left knee forward and right leg tucked. Sprint has visible forward whole-body lean, elbows visibly bent about ninety degrees throughout, fists raised near chest with clear alternate forward/back arm pumping and proper shoulder/elbow anatomy. Rear knee tucks with toe lifted toward seat, distinct flight/push/contact poses. Not straight outstretched arms. Chunky SHORT legs and boots never elongate.\nThis is premium smooth coherent hand-authored cartoon cel animation. Each frame advances the gait, NOT eight copies of one pose. Author whole bodies naturally; never stretch, smear, morph, warp or distort limbs. Never flat rectangular trouser stubs. No labels, numbers, grid lines, motion streaks, ground, cast shadows, scenery, extra characters, or background color. All sixteen cells are the same sole character.",
+  "directions": [
+    {
+      "key": "down",
+      "facing": "DOWN: directly toward the viewer / bottom edge of the canvas. Front face, both oval eyes visible. Match the front-facing character in the top row of reference image 1."
+    },
+    {
+      "key": "down-right",
+      "facing": "DOWN-RIGHT: 45-degree diagonal toward the viewer and screen-right. Front-right three-quarter face, both eyes visible. Match the character in the second row of reference image 1."
+    },
+    {
+      "key": "right",
+      "facing": "RIGHT: directly toward the right edge of the canvas. Right-facing profile with one visible eye. Match the character in the third row of reference image 1."
+    },
+    {
+      "key": "up-right",
+      "facing": "UP-RIGHT: 45-degree diagonal away from the viewer and toward screen-right. Rear-right three-quarter view, back of hair and jacket dominant with only tiny far facial edge. Match the character in the fourth row of reference image 1."
+    },
+    {
+      "key": "up",
+      "facing": "UP: directly away from the viewer toward the top edge of the canvas. Full rear view, back of hair, back of jacket and strap, no facial features. Match the character in the first row of reference image 2."
+    }
+  ]
+}

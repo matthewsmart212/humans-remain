@@ -1,0 +1,12 @@
+import {isProvision,PROVISIONS} from './food-provisions-data';
+import type {World} from './survival-engine';
+export type FoodSpecies='chicken'|'rabbit'|'venison';
+export const FOOD_RECIPES={chicken:{name:'Chicken',raw:'rawMeat',cooked:'cookedMeat',seconds:12,food:35,health:8},rabbit:{name:'Rabbit',raw:'rawRabbit',cooked:'cookedRabbit',seconds:8,food:25,health:6},venison:{name:'Meat',raw:'rawVenison',cooked:'cookedVenison',seconds:18,food:50,health:12}} as const;
+export const RABBIT_FOOD_IMAGES={rabbitRaw:'/survival/rabbit-food-v1/raw-rabbit.webp',rabbitCooked:'/survival/rabbit-food-v1/cooked-rabbit.webp'};
+export const VENISON_FOOD_IMAGES={venisonRaw:'/survival/venison-food-v1/raw-venison.webp',venisonCooked:'/survival/venison-food-v1/cooked-venison.webp'};
+export const isCookedFood=(kind:string):kind is 'cookedMeat'|'cookedRabbit'|'cookedVenison'=>kind==='cookedMeat'||kind==='cookedRabbit'||kind==='cookedVenison';
+export const totalCooked=(w:World)=>w.cooked+(w.cookedRabbit||0)+(w.cookedVenison||0);
+export const nextRawFood=(w:World)=>w.bag.rawMeat>0?'rawMeat' as const:w.bag.rawRabbit>0?'rawRabbit' as const:w.bag.rawVenison>0?'rawVenison' as const:null;
+export const foodName=(kind:string)=>isProvision(kind)?PROVISIONS[kind].name:kind==='rawVenison'?'Raw meat':kind==='cookedVenison'?'Cooked meat':kind==='rawRabbit'?'Raw rabbit':kind==='cookedRabbit'?'Cooked rabbit':kind==='rawMeat'?'Raw chicken':kind==='cookedMeat'?'Cooked chicken':null;
+export const heldMeal=(w:World)=>w.player.equipped==='venisonMeal'?(w.cookedVenison>0?'venison' as const:null):w.player.equipped==='rabbitMeal'?(w.cookedRabbit>0?'rabbit' as const:null):w.player.equipped==='meal'&&w.cooked>0?'chicken' as const:null;
+export const cookedCount=(w:World,species:FoodSpecies)=>species==='venison'?(w.cookedVenison||0):species==='rabbit'?(w.cookedRabbit||0):w.cooked;

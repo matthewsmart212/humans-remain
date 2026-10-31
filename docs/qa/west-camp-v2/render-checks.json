@@ -1,0 +1,37 @@
+{
+  "result": "pass",
+  "renderer": "Production CanvasKit software surface",
+  "addedTextures": 26,
+  "newThisPass": 0,
+  "replacedThisPass": 5,
+  "correction": "Remove baked foliage from western ground; preserve camp and footprint",
+  "sourceBounds": {
+    "x": -1528,
+    "y": 0,
+    "width": 11508,
+    "height": 6206
+  },
+  "views": [
+    "southwest-camp-contact",
+    "southwest-stone-to-dirt",
+    "southwest-east-contact",
+    "western-trail",
+    "lower-tile-join",
+    "west-camp-exit",
+    "western-trail-detail-context",
+    "west-upper-join",
+    "road-free-west",
+    "northwest-unfinished-edge",
+    "detail-camp-contact",
+    "detail-trail",
+    "detail-grass-and-soil",
+    "detail-middle-join",
+    "detail-southwest-join",
+    "detail-generation-join",
+    "west-portrait",
+    "west-night",
+    "whole-outdoor-world",
+    "southern-neighbour-unavailable"
+  ],
+  "limitations": "No browser automation or physical iPhone test available."
+}

@@ -1,0 +1,102 @@
+{
+  "result": "pass",
+  "additionalLocations": 10,
+  "existingPilot": 1,
+  "frames": 12,
+  "periodSeconds": 1.5,
+  "entryImagesAdded": 0,
+  "offscreenDraws": 0,
+  "locations": [
+    {
+      "id": "headwater-entry",
+      "changedWhitewaterPixels": 8450,
+      "totalChangedPixels": 32290,
+      "protectedPixelsChanged": 0,
+      "maxLoopDelta": 0,
+      "previewFallback": true,
+      "missingFramesFallback": true
+    },
+    {
+      "id": "boulder-step",
+      "changedWhitewaterPixels": 6572,
+      "totalChangedPixels": 22292,
+      "protectedPixelsChanged": 0,
+      "maxLoopDelta": 0,
+      "previewFallback": true,
+      "missingFramesFallback": true
+    },
+    {
+      "id": "mid-boulder",
+      "changedWhitewaterPixels": 3993,
+      "totalChangedPixels": 16337,
+      "protectedPixelsChanged": 0,
+      "maxLoopDelta": 1,
+      "previewFallback": true,
+      "missingFramesFallback": true
+    },
+    {
+      "id": "bend-rapids",
+      "changedWhitewaterPixels": 3894,
+      "totalChangedPixels": 18358,
+      "protectedPixelsChanged": 0,
+      "maxLoopDelta": 1,
+      "previewFallback": true,
+      "missingFramesFallback": true
+    },
+    {
+      "id": "south-chute",
+      "changedWhitewaterPixels": 13477,
+      "totalChangedPixels": 36529,
+      "protectedPixelsChanged": 0,
+      "maxLoopDelta": 1,
+      "previewFallback": true,
+      "missingFramesFallback": true
+    },
+    {
+      "id": "pool-entry",
+      "changedWhitewaterPixels": 15419,
+      "totalChangedPixels": 76899,
+      "protectedPixelsChanged": 0,
+      "maxLoopDelta": 1,
+      "previewFallback": true,
+      "missingFramesFallback": true
+    },
+    {
+      "id": "pool-outlet",
+      "changedWhitewaterPixels": 17828,
+      "totalChangedPixels": 48324,
+      "protectedPixelsChanged": 0,
+      "maxLoopDelta": 0,
+      "previewFallback": true,
+      "missingFramesFallback": true
+    },
+    {
+      "id": "logging-upper",
+      "changedWhitewaterPixels": 13634,
+      "totalChangedPixels": 47842,
+      "protectedPixelsChanged": 0,
+      "maxLoopDelta": 0,
+      "previewFallback": true,
+      "missingFramesFallback": true
+    },
+    {
+      "id": "logging-bend",
+      "changedWhitewaterPixels": 8420,
+      "totalChangedPixels": 34525,
+      "protectedPixelsChanged": 0,
+      "maxLoopDelta": 0,
+      "previewFallback": true,
+      "missingFramesFallback": true
+    },
+    {
+      "id": "crossing-drop",
+      "changedWhitewaterPixels": 16220,
+      "totalChangedPixels": 51439,
+      "protectedPixelsChanged": 0,
+      "maxLoopDelta": 0,
+      "previewFallback": true,
+      "missingFramesFallback": true
+    }
+  ],
+  "browserAndPhoneCheck": "Unavailable; actual CanvasKit software rendering used."
+}

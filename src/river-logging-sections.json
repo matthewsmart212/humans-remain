@@ -1,0 +1,32 @@
+[
+  {
+    "id": "pool-outlet",
+    "key": "riverPoolOutlet",
+    "name": "Pool outlet",
+    "x": -5376,
+    "y": -4096,
+    "width": 2816,
+    "height": 1024,
+    "sourceY": 0
+  },
+  {
+    "id": "logging-rapids",
+    "key": "riverLoggingRapids",
+    "name": "Logging rapids",
+    "x": -5376,
+    "y": -3200,
+    "width": 2816,
+    "height": 1024,
+    "sourceY": 896
+  },
+  {
+    "id": "crossing-pool",
+    "key": "riverCrossingPool",
+    "name": "Crossing approach pool",
+    "x": -5376,
+    "y": -2304,
+    "width": 2816,
+    "height": 1024,
+    "sourceY": 1792
+  }
+]

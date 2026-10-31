@@ -1,0 +1,28 @@
+// Focused visual checks using the production CanvasKit renderer and streaming.
+import assert from 'node:assert/strict';import fs from 'node:fs';import os from 'node:os';import path from 'node:path';import {createRequire} from 'node:module';import {build} from 'esbuild';
+const dir='docs/qa/world-ground-v1',temp=fs.mkdtempSync(path.join(os.tmpdir(),'west-skia-')),require=createRequire(import.meta.url),sharp=require('sharp');fs.mkdirSync(dir,{recursive:true});
+const oldFetch=globalThis.fetch,oldWindow=globalThis.window,oldType=process.type;
+try{
+ await build({stdin:{contents:"export * from './src/world-assets';export * from './src/skia-web';export * from './src/east-approach';export * from './src/west-camp';export * from './src/outdoor-terrain';export * from './src/outdoor-streaming';export * from './src/world-layout';export * from './src/world-bounds';export * from './src/survival-engine';export * from './src/placed-world-renderer';export * from './src/editor-image-sources';",resolveDir:process.cwd()},bundle:true,platform:'node',format:'cjs',outfile:path.join(temp,'model.cjs')});
+ const m=require(path.join(temp,'model.cjs')),s=m.EAST_TERRAIN_SCALE,requests=[],releases=[],messages=[];
+ delete globalThis.CanvasKit;globalThis.window={};process.type='renderer';globalThis.devicePixelRatio=1;
+ globalThis.fetch=async url=>{if(String(url).startsWith('blob:'))return oldFetch(url);requests.push(String(url));return new Response(fs.readFileSync(path.resolve('public'+String(url))))};
+ let surface;const canvas={width:0,height:0,clientWidth:844,clientHeight:390,dataset:{}},view={x:0,y:0,zoom:1,follow:true,grid:false,collision:false,selected:null,ghost:null,placingSpawn:false,playing:true},world=m.createWorld(m.emptyLayout());world.editorPreview=true;
+ const renderer=await m.createWebWorld(canvas,(ctx,atlas,imgs,w)=>m.drawWorldEditor(ctx,atlas,imgs,w,view,0),m.editorTerrainDetail(),{sources:m.EDITOR_IMAGE_SOURCES});
+ globalThis.CanvasKit.MakeSWCanvasSurface=c=>(surface=globalThis.CanvasKit.MakeSurface(c.width,c.height));
+ const stream=new m.OutdoorTerrainStream(images=>renderer.warmImages(images),keys=>{releases.push(...keys);renderer.releaseImages(keys)},msg=>messages.push(msg));world.outdoorReady=stream.ready;
+ const at=(x,y)=>Object.assign(world.player,{x:(x-600)*s,y:(y-600)*s});
+ const load=async()=>{const c=m.editorCamera(canvas.clientWidth,canvas.clientHeight,world,view);stream.update({x:c.x,y:c.y,width:canvas.clientWidth/c.scale,height:canvas.clientHeight/c.scale},world.player);let done=false;const pending=stream.settled().then(()=>done=true);for(let i=0;i<800&&!done;i++){renderer.draw(world);await new Promise(r=>setTimeout(r,0))}assert(done,'Terrain warm-up did not settle');await pending;assert(!stream.error)};
+ const shots=[];const shot=async name=>{renderer.draw(world);const image=surface.makeImageSnapshot();await sharp(Buffer.from(image.encodeToBytes())).webp({quality:95}).toFile(path.join(dir,name+'.webp'));image.delete();shots.push(name)};
+ for(const [name,x,y]of [['southwest-camp-contact',200,4480],['southwest-stone-to-dirt',-150,4775],['southwest-east-contact',1380,5400],['western-trail',-900,5200],['lower-tile-join',-800,4590],['west-camp-exit',190,2750],['western-trail-detail-context',-700,2700],['west-upper-join',-700,1660],['road-free-west',-800,850],['northwest-unfinished-edge',-300,250]]){at(x,y);await load();await shot(name)}
+ for(const t of m.OUTDOOR_SOURCE_TILES.filter((_,i)=>i%4===0)){at(t.x+t.width/2,t.y+t.height/2);await load();await shot('segment-'+t.key.replaceAll(':','-'))}
+ view.zoom=1/(s*Math.max(844/1800,390/900));
+ for(const [name,x,y]of [['detail-camp-contact',200,2750],['detail-trail',-800,2760],['detail-grass-and-soil',-900,900],['detail-middle-join',-700,3050],['detail-southwest-join',200,4600],['detail-generation-join',-550,5150]]){at(x,y);await load();await shot(name)}
+ canvas.clientWidth=390;canvas.clientHeight=844;view.zoom=1;at(-800,2200);await load();await shot('west-portrait');world.nightAmount=1;world.phase='night';await shot('west-night');world.nightAmount=0;world.phase='prep';
+ canvas.clientWidth=1726;canvas.clientHeight=1726;const b=m.campBounds();Object.assign(view,{follow:false,x:b.left+b.width/2,y:b.top+b.height/2,zoom:(canvas.clientWidth/b.width)/Math.max(canvas.clientWidth/1800,canvas.clientHeight/900)});await load();await shot('whole-outdoor-world');assert.equal(stream.ready.size,m.OUTDOOR_TILES.length);
+ // A north neighbour can fail after this square is ready. The current square
+ // must remain opaque in the overlap rather than expose a transparent stripe.
+ const current=m.OUTDOOR_SOURCE_TILES[3*16+3],north=m.OUTDOOR_SOURCE_TILES.find(t=>t.key===current.northBlendKey);
+ canvas.clientWidth=844;canvas.clientHeight=390;Object.assign(view,{follow:true,zoom:1});at(current.x+current.width/2,current.y+100);await load();renderer.releaseImages([north.key]);stream.ready.delete(north.key);await shot('northern-neighbour-unavailable');
+ stream.dispose();renderer.dispose();const result={result:'pass',renderer:'Production CanvasKit software surface',uniqueGroundMaterials:3,replacedThisPass:26,largeGroundSquares:m.OUTDOOR_TILES.length,correction:'Full planned world ground only, roads removed beyond original camp',sourceBounds:m.OUTDOOR_SOURCE_BOUNDS,views:shots,limitations:'64 representative square-centre views plus contact, portrait, night and whole-world views. No browser automation or physical iPhone test available.'};fs.writeFileSync(path.join(dir,'render-checks.json'),JSON.stringify(result,null,2)+'\n');console.log(JSON.stringify({result:result.result,views:shots.length}));
+}finally{globalThis.fetch=oldFetch;globalThis.window=oldWindow;process.type=oldType;fs.rmSync(temp,{recursive:true,force:true})}

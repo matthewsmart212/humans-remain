@@ -1,0 +1,36 @@
+import assert from 'node:assert/strict';
+import fs from 'node:fs';
+import os from 'node:os';
+import path from 'node:path';
+import {createRequire} from 'node:module';
+import {build} from 'esbuild';
+const temp=fs.mkdtempSync(path.join(os.tmpdir(),'gameplay-art-'));
+const tick=()=>new Promise(resolve=>setImmediate(resolve));
+try{
+ await build({stdin:{contents:`export * from './src/gameplay-artwork';export * from './src/editor-image-sources';export * from './src/play-spawns';export * from './src/studio-play';export * from './src/imported-art';export * from './src/authored-world';export * from './src/ironworks-data';`,resolveDir:process.cwd()},bundle:true,platform:'node',format:'cjs',outfile:path.join(temp,'model.cjs'),logLevel:'error'});
+ const m=createRequire(import.meta.url)(path.join(temp,'model.cjs'));
+ const snapshot=JSON.parse(fs.readFileSync('native/assets/world-snapshot.json'));m.installImportedArt(snapshot.records);
+ const w=m.createCampPlaySession(m.prepareAuthoredWorld(snapshot.layout),undefined,'survival');w.animals=[];
+ const initial=JSON.stringify(w),first=m.gameplayImageSources(w);
+ assert.equal(JSON.stringify(w),initial,'Reading artwork needs must not mutate a run');
+ for(const key of Object.keys(m.spawnImages('scrap-walker')))assert(key in first,'First wave is prepared before spawning');
+ for(const kind of ['scrap-hound','scrap-bomber','skitter','iron-brute'])for(const key of Object.keys(m.spawnImages(kind)))assert(!(key in first),'Absent enemy family must not preload');
+ assert(first.woodenPickaxe);assert(Object.keys(first).some(k=>k.startsWith('runnerWoodenAxe-')));assert(!first.metalSword);assert(!first['runnerBow-up']);assert(!first.furnaceFire0);
+ w.round=2;const second=m.gameplayImageSources(w);assert(second['hound-down']);assert(!second['bomber-down']);
+ w.round=3;assert(m.gameplayImageSources(w)['bomber-down']);
+ w.scene={id:'test'};w.gear.bag.bow=1;w.animals=[{x:w.player.x,y:w.player.y,chicken:{}},{x:w.player.x+4000,y:w.player.y,predator:{kind:'wolf'}}];
+ const interior=m.gameplayImageSources(w);assert(interior['runnerBow-up']);assert(interior.chickenUp);assert(!interior.wolfUp);assert(!interior['walker3-down']);
+ w.ironworks={stations:{test:{level:1,fuel:30,queue:[{}],ready:0}}};assert(m.gameplayImageSources(w).furnaceFire0);
+ const loaded={},prepared=m.prepareEditorMovement({loadImages:async()=>{},warmImages:async s=>Object.assign(loaded,s)},{items:[]});await prepared;
+ assert(loaded.runnerCycleDown);assert(!loaded['hound-down']);assert(!loaded['runnerBow-up']);assert(!loaded.furnaceFire0,'Movement preparation must not warm unrelated animation families');
+ const releases=[],loads=[],finish=new Map();
+ const stream=new m.GameplayArtwork(s=>{const key=Object.keys(s)[0];loads.push(key);return new Promise((resolve,reject)=>finish.set(key,{resolve,reject}))},keys=>releases.push(...keys),new Set(['core']),100);
+ const pending=stream.update({core:'/core',a:'/a'},0);const duplicate=stream.update({a:'/a'},10);assert.deepEqual(loads,['a']);finish.get('a').resolve();await Promise.all([pending,duplicate]);assert.equal(stream.stats().resident,1);
+ await stream.update({},50);assert(!releases.length,'Short absences retain warmed art');await stream.update({},111);assert.deepEqual(releases,['a']);
+ const old=stream.update({b:'/b'},200);await stream.update({},201);finish.get('b').resolve();await old;assert(releases.includes('b'),'A late completion cannot resurrect unwanted artwork');
+ const changing=stream.update({c:'/c'},300);stream.clear();finish.get('c').resolve();await changing;assert(releases.includes('c'),'Hidden tabs release in-flight artwork when it completes');
+ const failing=stream.update({d:'/d'},400);finish.get('d').reject(Error('offline'));await assert.rejects(failing,/offline/);await stream.update({d:'/d'},401);assert.equal(loads.filter(k=>k==='d').length,1,'Automatic retry backs off');
+ const retry=stream.update({d:'/d'},402,true);finish.get('d').resolve();await retry;assert.equal(stream.stats().resident,1);
+ const close=stream.update({e:'/e'},500);stream.dispose();stream.dispose();finish.get('e').resolve();await close;assert.equal(stream.stats().resident,0);assert(releases.includes('d'));assert(releases.includes('e'));
+ console.log('PASS: current-wave prefetch, nearby animals, carried equipment, core-only movement startup, no run mutation, coalesced loads, grace-period eviction, failed-load retry, hidden-tab and late/disposed cleanup.');
+}finally{fs.rmSync(temp,{recursive:true,force:true})}

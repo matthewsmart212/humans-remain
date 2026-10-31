@@ -1,0 +1,9 @@
+{
+  "passed": true,
+  "checks": [
+    "web: owned items only; final drop/eat selection fallback; exact meal benefits; dynamic quick bar",
+    "native: owned items only; final drop/eat selection fallback; exact meal benefits; dynamic quick bar"
+  ],
+  "browserTested": false,
+  "physicalDeviceTested": false
+}

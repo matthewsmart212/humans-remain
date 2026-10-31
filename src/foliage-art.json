@@ -1,0 +1,254 @@
+[
+  {
+    "id": "art_foliage_broadleaf",
+    "name": "Woodland broadleaf",
+    "image": "/survival/foliage-v1/broadleaf.webp",
+    "size": [
+      384,
+      236
+    ],
+    "anchor": [
+      0.4735,
+      0.7823
+    ],
+    "worldWidth": 78
+  },
+  {
+    "id": "art_foliage_fern",
+    "name": "Low woodland fern",
+    "image": "/survival/foliage-v1/fern.webp",
+    "size": [
+      384,
+      247
+    ],
+    "anchor": [
+      0.5004,
+      0.8878
+    ],
+    "worldWidth": 92
+  },
+  {
+    "id": "art_foliage_grass",
+    "name": "Meadow grass tuft",
+    "image": "/survival/foliage-v1/grass.webp",
+    "size": [
+      256,
+      214
+    ],
+    "anchor": [
+      0.5083,
+      0.889
+    ],
+    "worldWidth": 58
+  },
+  {
+    "id": "art_foliage_olive_shrub",
+    "name": "Olive woodland shrub",
+    "image": "/survival/foliage-v2/olive-shrub.webp",
+    "size": [
+      320,
+      351
+    ],
+    "anchor": [
+      0.5363,
+      0.966
+    ],
+    "worldWidth": 49.23
+  },
+  {
+    "id": "art_foliage_golden_shrub",
+    "name": "Golden woodland shrub",
+    "image": "/survival/foliage-v2/golden-shrub.webp",
+    "size": [
+      320,
+      272
+    ],
+    "anchor": [
+      0.5155,
+      0.9577
+    ],
+    "worldWidth": 68.24
+  },
+  {
+    "id": "art_foliage_copper_fern",
+    "name": "Copper woodland fern",
+    "image": "/survival/foliage-v2/copper-fern.webp",
+    "size": [
+      320,
+      305
+    ],
+    "anchor": [
+      0.5004,
+      0.8565
+    ],
+    "worldWidth": 56.66
+  },
+  {
+    "id": "art_foliage_pale_flowers",
+    "name": "Pale woodland flowers",
+    "image": "/survival/foliage-v2/pale-flowers.webp",
+    "size": [
+      320,
+      349
+    ],
+    "anchor": [
+      0.4864,
+      0.8339
+    ],
+    "worldWidth": 44.01
+  },
+  {
+    "id": "art_foliage_moss_rosette",
+    "name": "Broad moss leaf clump",
+    "image": "/survival/foliage-v3/moss-rosette.webp",
+    "size": [
+      384,
+      243
+    ],
+    "anchor": [
+      0.52,
+      0.76
+    ],
+    "worldWidth": 165
+  },
+  {
+    "id": "art_foliage_lime_rosette",
+    "name": "Golden paddle leaf clump",
+    "image": "/survival/foliage-v3/lime-rosette.webp",
+    "size": [
+      384,
+      249
+    ],
+    "anchor": [
+      0.52,
+      0.76
+    ],
+    "worldWidth": 150
+  },
+  {
+    "id": "art_foliage_flower_leaf_clump",
+    "name": "Flowering woodland groundcover",
+    "image": "/survival/foliage-v3/flower-leaf-clump.webp",
+    "size": [
+      384,
+      210
+    ],
+    "anchor": [
+      0.5,
+      0.73
+    ],
+    "worldWidth": 205
+  },
+  {
+    "id": "art_foliage_sage_fan",
+    "name": "Sage woodland fan",
+    "image": "/survival/foliage-v4/sage-fan.webp",
+    "size": [
+      384,
+      232
+    ],
+    "anchor": [
+      0.5,
+      0.77
+    ],
+    "worldWidth": 150
+  },
+  {
+    "id": "art_foliage_forest_ivy",
+    "name": "Deep forest ivy mat",
+    "image": "/survival/foliage-v4/forest-ivy.webp",
+    "size": [
+      384,
+      220
+    ],
+    "anchor": [
+      0.5,
+      0.77
+    ],
+    "worldWidth": 185
+  },
+  {
+    "id": "art_foliage_copper_leaf",
+    "name": "Copper woodland leaves",
+    "image": "/survival/foliage-v4/copper-leaf.webp",
+    "size": [
+      384,
+      226
+    ],
+    "anchor": [
+      0.5,
+      0.77
+    ],
+    "worldWidth": 145
+  },
+  {
+    "id": "art_foliage_blue_fern",
+    "name": "Blue-green woodland fern",
+    "image": "/survival/foliage-v4/blue-fern.webp",
+    "size": [
+      384,
+      232
+    ],
+    "anchor": [
+      0.5,
+      0.77
+    ],
+    "worldWidth": 170
+  },
+  {
+    "id": "art_foliage_berry_bramble",
+    "name": "Woodland berry bramble",
+    "image": "/survival/foliage-v4/berry-bramble.webp",
+    "size": [
+      384,
+      210
+    ],
+    "anchor": [
+      0.5,
+      0.77
+    ],
+    "worldWidth": 185
+  },
+  {
+    "id": "art_foliage_yellow_woodland_flowers",
+    "name": "Golden woodland flowers",
+    "image": "/survival/foliage-v4/yellow-woodland-flowers.webp",
+    "size": [
+      384,
+      217
+    ],
+    "anchor": [
+      0.5,
+      0.77
+    ],
+    "worldWidth": 145
+  },
+  {
+    "id": "art_foliage_white_woodland_flowers",
+    "name": "White woodland clover",
+    "image": "/survival/foliage-v4/white-woodland-flowers.webp",
+    "size": [
+      384,
+      213
+    ],
+    "anchor": [
+      0.5,
+      0.77
+    ],
+    "worldWidth": 180
+  },
+  {
+    "id": "art_foliage_ochre_meadow_grass",
+    "name": "Ochre meadow grass",
+    "image": "/survival/foliage-v4/ochre-meadow-grass.webp",
+    "size": [
+      384,
+      222
+    ],
+    "anchor": [
+      0.5,
+      0.77
+    ],
+    "worldWidth": 120
+  }
+]

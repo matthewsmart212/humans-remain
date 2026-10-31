@@ -1,0 +1,146 @@
+[
+  {
+    "asset": "/survival/equipment/metal-pickaxe-v1.png",
+    "width": 1024,
+    "height": 1536,
+    "pngBytes": 1530039,
+    "webpBytes": 556416,
+    "visiblePixelsIdentical": true,
+    "alphaIdentical": true
+  },
+  {
+    "asset": "/survival/equipment/metal-spear-v1.png",
+    "width": 1024,
+    "height": 1536,
+    "pngBytes": 991812,
+    "webpBytes": 171420,
+    "visiblePixelsIdentical": true,
+    "alphaIdentical": true
+  },
+  {
+    "asset": "/survival/equipment/metal-sword-v1.png",
+    "width": 1024,
+    "height": 1536,
+    "pngBytes": 1453651,
+    "webpBytes": 494124,
+    "visiblePixelsIdentical": true,
+    "alphaIdentical": true
+  },
+  {
+    "asset": "/survival/equipment/scrap-knife-v1.png",
+    "width": 1024,
+    "height": 1536,
+    "pngBytes": 1586555,
+    "webpBytes": 603824,
+    "visiblePixelsIdentical": true,
+    "alphaIdentical": true
+  },
+  {
+    "asset": "/survival/equipment/wooden-knife-v1.png",
+    "width": 1024,
+    "height": 1536,
+    "pngBytes": 1465967,
+    "webpBytes": 522394,
+    "visiblePixelsIdentical": true,
+    "alphaIdentical": true
+  },
+  {
+    "asset": "/survival/equipment/wooden-pickaxe-v1.png",
+    "width": 1024,
+    "height": 1536,
+    "pngBytes": 1561917,
+    "webpBytes": 574898,
+    "visiblePixelsIdentical": true,
+    "alphaIdentical": true
+  },
+  {
+    "asset": "/survival/equipment/wooden-spear-v1.png",
+    "width": 1024,
+    "height": 1536,
+    "pngBytes": 965486,
+    "webpBytes": 158280,
+    "visiblePixelsIdentical": true,
+    "alphaIdentical": true
+  },
+  {
+    "asset": "/survival/equipment/wooden-sword-v1.png",
+    "width": 1024,
+    "height": 1536,
+    "pngBytes": 1385513,
+    "webpBytes": 452122,
+    "visiblePixelsIdentical": true,
+    "alphaIdentical": true
+  },
+  {
+    "asset": "/survival/forage-v1/apple-tree.png",
+    "width": 1254,
+    "height": 1254,
+    "pngBytes": 2289729,
+    "webpBytes": 1625474,
+    "visiblePixelsIdentical": true,
+    "alphaIdentical": true
+  },
+  {
+    "asset": "/survival/forage-v1/berry-bush.png",
+    "width": 1254,
+    "height": 1254,
+    "pngBytes": 1625964,
+    "webpBytes": 1158658,
+    "visiblePixelsIdentical": true,
+    "alphaIdentical": true
+  },
+  {
+    "asset": "/survival/ironworks-v1/camp-furnace.png",
+    "width": 1254,
+    "height": 1254,
+    "pngBytes": 2007777,
+    "webpBytes": 1369712,
+    "visiblePixelsIdentical": true,
+    "alphaIdentical": true
+  },
+  {
+    "asset": "/survival/ironworks-v1/iron-boulder.png",
+    "width": 1485,
+    "height": 1059,
+    "pngBytes": 2540469,
+    "webpBytes": 1712676,
+    "visiblePixelsIdentical": true,
+    "alphaIdentical": true
+  },
+  {
+    "asset": "/survival/ironworks-v1/iron-ingot.png",
+    "width": 1254,
+    "height": 1254,
+    "pngBytes": 1374539,
+    "webpBytes": 944292,
+    "visiblePixelsIdentical": true,
+    "alphaIdentical": true
+  },
+  {
+    "asset": "/survival/ironworks-v1/iron-ore.png",
+    "width": 1372,
+    "height": 1147,
+    "pngBytes": 2031203,
+    "webpBytes": 1349410,
+    "visiblePixelsIdentical": true,
+    "alphaIdentical": true
+  },
+  {
+    "asset": "/survival/scrapling.png",
+    "width": 808,
+    "height": 854,
+    "pngBytes": 683175,
+    "webpBytes": 495616,
+    "visiblePixelsIdentical": true,
+    "alphaIdentical": true
+  },
+  {
+    "asset": "/survival/ui-field-kit-v1/vitals.png",
+    "width": 834,
+    "height": 210,
+    "pngBytes": 340619,
+    "webpBytes": 213074,
+    "visiblePixelsIdentical": true,
+    "alphaIdentical": true
+  }
+]

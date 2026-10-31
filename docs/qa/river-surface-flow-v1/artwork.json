@@ -1,0 +1,13 @@
+{
+  "mode": "built-in image_gen",
+  "prompt": "Use case: stylized-concept. Asset type: seamless transparent water-surface ripple texture for a painterly top-down survival game. Input image is STYLE REFERENCE ONLY; do not reproduce its river, bridge, rocks, ground or layout. Create one square flat texture containing ONLY many fine broken wavy water-highlight strokes: softly painted pale turquoise and silver-blue narrow ripples, varied short lengths, mostly horizontal wavelets, irregular spacing with transparent gaps, delicate tapering ends and gentle uneven brush edges. Calm flowing freshwater surface, matching the hand-painted detailed game reference. Distributed evenly over the complete square with no central object or vignette. Must tile seamlessly on all four sides. True transparent background, no filled blue water plane. No rocks, stones, terrain, plants, banks, bridge, foam blobs, splashes, bubbles, reflections of objects, checkerboard, text or grid. This is a reusable surface highlight overlay, not a scene. Keep strokes subtle, slim and clean.",
+  "sourceImage": "/workspace/scratch/721c0d4dc4ac/generated_images/exec-79b95518-c663-45c6-804f-d9695a45615a.png",
+  "referenceRole": "Style reference only",
+  "reference": "West camp bridge uses the same river painting style as the logging bridge reference.",
+  "runtimeAsset": "public/survival/river-surface-flow-v1/ripples.webp",
+  "runtimeSize": [
+    384,
+    384
+  ],
+  "animation": "Two continuously advected and blended phases of one transparent tile; no alternate scenery paintings."
+}

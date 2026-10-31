@@ -1,0 +1,134 @@
+{
+  "key": "birch-bent",
+  "species": "birch",
+  "id": "art_tree_birch_bent",
+  "name": "Silver birch: bent",
+  "image": "/survival/tree-variants-v1/birch-bent.webp",
+  "size": [
+    511,
+    1304
+  ],
+  "worldWidth": 257,
+  "hp": 100,
+  "frames": [
+    {
+      "crop": [
+        2,
+        2,
+        507,
+        1011
+      ],
+      "anchor": [
+        267,
+        924
+      ]
+    },
+    {
+      "crop": [
+        413,
+        1017,
+        83,
+        90
+      ],
+      "anchor": [
+        22,
+        163
+      ]
+    },
+    {
+      "crop": [
+        2,
+        1017,
+        407,
+        285
+      ],
+      "anchor": [
+        218,
+        199
+      ]
+    }
+  ],
+  "damageRect": [
+    245,
+    761,
+    83,
+    90
+  ],
+  "source": "artwork-archive/tree-variants-v1/birch-bent.png",
+  "sourceSize": [
+    1536,
+    1024
+  ],
+  "sourceHealthyCrop": [
+    66,
+    1,
+    507,
+    1011
+  ],
+  "sourceDamageCrop": [
+    834,
+    762,
+    83,
+    90
+  ],
+  "sourceStumpCrop": [
+    1108,
+    726,
+    407,
+    285
+  ],
+  "sourceRoot": [
+    333,
+    925
+  ],
+  "damagedTranslation": [
+    523,
+    0
+  ],
+  "stumpTranslation": [
+    993,
+    0
+  ],
+  "bytes": 700252,
+  "decodedBytes": 2665376,
+  "extraction": {
+    "visibleBounds": [
+      [
+        74,
+        9,
+        491,
+        995
+      ],
+      [
+        597,
+        9,
+        491,
+        994
+      ],
+      [
+        1116,
+        734,
+        391,
+        269
+      ]
+    ],
+    "separatorMaximumAlpha": [
+      0,
+      0
+    ],
+    "boundsPadding": 8,
+    "alphaThresholdAppliedToPixels": false,
+    "notchOverlapJoin": false
+  },
+  "checks": {
+    "alphaMismatch": 0,
+    "visibleRgbMismatch": 0,
+    "outsideNotchPreserved": true,
+    "rootFanPreserved": true
+  },
+  "notes": [
+    "Healthy pixels are reused unchanged outside the tight notch rectangle.",
+    "Separate generated loose chips are omitted; runtime hit particles supply debris.",
+    "Stump roots are registered to the same ground anchor; no scaling or resampling was applied."
+  ]
+}

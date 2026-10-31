@@ -1,0 +1,29 @@
+{
+  "passed": true,
+  "uniqueFrames": 240,
+  "views": 10,
+  "directionsPerAnimal": 8,
+  "atlas": [
+    896,
+    1344
+  ],
+  "decodedBytes": 48168960,
+  "artworkBytes": 5140800,
+  "checks": [
+    "24 complete silhouettes in every source",
+    "genuine alpha background",
+    "all silhouettes padded inside224px cells",
+    "single scale per view; no per-frame zoom",
+    "common ground anchor with controlled airborne lift",
+    "five authored views plus three mirrored directions",
+    "separate anticipation/contact/recovery and hit/death poses",
+    "actual packed-frame walk/run/attack previews",
+    "Actual exported atlas pixel bounds and distinct frames",
+    "All eight directional lookups and mirroring",
+    "Real attack timeline phase boundaries, loop wrapping and non-looping death hold",
+    "Actual exported atlas pixel bounds and distinct frames",
+    "All eight directional lookups and mirroring",
+    "Real attack timeline phase boundaries, loop wrapping and non-looping death hold"
+  ],
+  "gameplayEnabled": false
+}

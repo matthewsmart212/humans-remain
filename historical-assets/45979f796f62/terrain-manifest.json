@@ -1,0 +1,82 @@
+{
+  "name": "Safety Last — Village approach 01",
+  "date": "2026-10-14",
+  "method": "Built-in image_gen; deterministic edge registration and lossless texture cuts",
+  "sourceCommit": "6f2b4b9d717d6a35e467a60304b1ec1acc6627a8",
+  "nativeGeneration": {
+    "width": 1706,
+    "height": 922,
+    "file": "generated-master-original.png"
+  },
+  "registeredMaster": {
+    "x": 4096,
+    "y": 1860,
+    "width": 3072,
+    "height": 1660,
+    "file": "registered-master.png"
+  },
+  "packaging": "Native generated artwork resampled to the existing camp pixel scale; packaged dimensions are not native generation resolution.",
+  "tiles": [
+    {
+      "id": "03-camp-east-clearing",
+      "url": "/survival/maps/village-approach-v1/03-camp-east-clearing.webp",
+      "x": 4096,
+      "y": 1860,
+      "width": 1538,
+      "height": 1538,
+      "paintHeight": 1536
+    },
+    {
+      "id": "04-village-trail",
+      "url": "/survival/maps/village-approach-v1/04-village-trail.webp",
+      "x": 5630,
+      "y": 1860,
+      "width": 1538,
+      "height": 1538,
+      "paintHeight": 1536
+    }
+  ],
+  "contacts": {
+    "camp": {
+      "preservedColumns": 128,
+      "blendColumns": 128
+    },
+    "betweenNewTiles": {
+      "overlapColumns": 4,
+      "maxChannelError": 0
+    },
+    "existingJunction": {
+      "sharedSourceRows": [
+        128,
+        134
+      ],
+      "newSourceRows": [
+        1532,
+        1538
+      ],
+      "paintBoundaryY": 3396,
+      "maxChannelError": 0
+    },
+    "campContactMaxChannelError": 0
+  },
+  "nextExits": {
+    "north": {
+      "x": 6093,
+      "y": 1860,
+      "destination": "Village outskirts",
+      "note": "Approximate centre; use the actual edge strip for the next outpaint."
+    },
+    "east": {
+      "x": 7168,
+      "y": 2430,
+      "destination": "Eastern works approach",
+      "note": "Approximate centre; use the actual edge strip for the next outpaint."
+    }
+  },
+  "scope": "Ground and paths only; separately placed buildings, foliage, rocks, water and resources are added later.",
+  "palette": "Camp ochre gradually changes to chestnut, umber and muted olive moss toward the north.",
+  "integration": {
+    "terrain": "Continuous outdoor world, two new sections",
+    "verification": "Pixel joins, physical walking, save/read handlers, stream retry/release, software renderer portrait/night and TypeScript passed. No browser or physical phone test."
+  }
+}

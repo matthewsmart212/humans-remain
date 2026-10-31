@@ -1,0 +1,37 @@
+{
+  "result": "pass",
+  "fixture": "Version 100 reconstruction plus one simulated owner addition; live layout is migrated at runtime, never overwritten by this fixture.",
+  "preservedPlacements": 110,
+  "newPlants": 1726,
+  "totalPlants": 1811,
+  "totalObjects": 1836,
+  "designs": 18,
+  "newDesigns": 8,
+  "newRuntimeBytes": 738360,
+  "formattedExportBytes": 643715,
+  "visibleObjects": 166,
+  "nearbyMeshDraws": 141,
+  "checks": [
+    "all existing placements and metadata retained",
+    "idempotence and deletion",
+    "outer scenery bounds",
+    "unchanged collision map",
+    "exact conservative viewport query",
+    "rooted contact motion",
+    "reduced motion",
+    "whole-map static detail level",
+    "JSON round trip and limit enforcement"
+  ],
+  "limitations": "Software renderer only; live uploaded building textures and iPhone browser/device QA unavailable.",
+  "serverChecks": {
+    "result": "pass",
+    "builtWorker": true,
+    "database": "real SQLite",
+    "savedObjects": 4200,
+    "legacy500KBCapExceeded": true,
+    "maxItemLimitEnforced": 5000,
+    "maxPayloadBytesEnforced": 2000000,
+    "unauthorizedAndStaleEditsRejected": true
+  },
+  "build": "Production build and TypeScript passed"
+}

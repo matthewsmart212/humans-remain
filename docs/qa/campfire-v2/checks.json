@@ -1,0 +1,16 @@
+{
+  "passed": true,
+  "checks": [
+    "real chicken harvest → cold spit → authored tree chopped → log pickup → throw → ignition → roasting → ready meal → collection → eating",
+    "cold cooking retains progress",
+    "rapid refuelling reserves capacity",
+    "delayed updates conserve fuel",
+    "individual and partial meal collection",
+    "actual web and native inventory-first quantity, add, return and collect handlers",
+    "owned-food-only and empty-pack views, full-spit and full-fire states",
+    "optional item details and prepared meals",
+    "selection, last-unit, stale-action and external-depletion safety"
+  ],
+  "browserTested": false,
+  "physicalDeviceTested": false
+}

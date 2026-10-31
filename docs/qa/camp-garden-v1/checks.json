@@ -1,0 +1,19 @@
+{
+  "passed": true,
+  "placement": {
+    "x": 753.2029576629961,
+    "y": 1344.461453040749
+  },
+  "states": 4,
+  "checks": [
+    "Transparent artwork registered",
+    "One outer-strip placement; all existing objects retained",
+    "Idempotent addition; owner moves/removals and occupied lots respected",
+    "Four tiers share dimensions, anchor and ground collision",
+    "Spawn, smithy, furnace and warehouse routes remain open at every tier",
+    "Old survival saves gain artwork without trapping or moving the player"
+  ],
+  "browserTested": true,
+  "iosExportPassed": true,
+  "physicalIPhoneTested": false
+}

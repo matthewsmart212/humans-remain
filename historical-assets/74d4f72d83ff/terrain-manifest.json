@@ -1,0 +1,136 @@
+{
+  "name": "Safety Last — Ground below the main camp",
+  "date": "2026-10-14",
+  "method": "Four close-up built-in image_gen edits; registered contacts and lossless cuts",
+  "sourceCommit": "7f67bb22ed3d21c56bc2cd6adf83a4a2f179e5f8",
+  "registeredMaster": {
+    "x": 1284,
+    "y": 4284,
+    "width": 3076,
+    "height": 1922,
+    "file": "registered-master.png"
+  },
+  "nativeGeneration": {
+    "patches": [
+      {
+        "patch": "ne",
+        "source": {
+          "width": 1552,
+          "height": 1013,
+          "file": "ne-generated-original.png"
+        },
+        "registered": {
+          "x": 1406,
+          "y": 0,
+          "width": 1670,
+          "height": 1090,
+          "north": 292
+        },
+        "scale": {
+          "x": 1.0760309278350515,
+          "y": 1.0760118460019743
+        }
+      },
+      {
+        "patch": "nw",
+        "source": {
+          "width": 1552,
+          "height": 1013,
+          "file": "nw-generated-original.png"
+        },
+        "registered": {
+          "x": 0,
+          "y": 0,
+          "width": 1670,
+          "height": 1090,
+          "north": 292
+        },
+        "scale": {
+          "x": 1.0760309278350515,
+          "y": 1.0760118460019743
+        }
+      },
+      {
+        "patch": "se",
+        "source": {
+          "width": 1553,
+          "height": 1013,
+          "file": "se-generated-original.png"
+        },
+        "registered": {
+          "x": 1406,
+          "y": 834,
+          "width": 1670,
+          "height": 1088,
+          "north": 256
+        },
+        "scale": {
+          "x": 1.0753380553766902,
+          "y": 1.0740375123395853
+        }
+      },
+      {
+        "patch": "sw",
+        "source": {
+          "width": 1553,
+          "height": 1013,
+          "file": "sw-generated-original.png"
+        },
+        "registered": {
+          "x": 0,
+          "y": 834,
+          "width": 1670,
+          "height": 1088,
+          "north": 256
+        },
+        "scale": {
+          "x": 1.0753380553766902,
+          "y": 1.0740375123395853
+        }
+      }
+    ],
+    "maxPixelEnlargement": 1.0760309278350515,
+    "totalSourcePixels": 6290730
+  },
+  "tiles": [
+    {
+      "id": "21-camp-south-trail",
+      "url": "/survival/maps/south-camp-v1/21-camp-south-trail.webp",
+      "x": 1284,
+      "y": 4412,
+      "width": 1538,
+      "height": 1794,
+      "bytes": 4018302
+    },
+    {
+      "id": "20-camp-south-clearing",
+      "url": "/survival/maps/south-camp-v1/20-camp-south-clearing.webp",
+      "x": 2690,
+      "y": 4412,
+      "width": 1538,
+      "height": 1794,
+      "bytes": 3884944
+    }
+  ],
+  "contacts": {
+    "north": {
+      "campOverlapRows": 388,
+      "exactTopRows": 36,
+      "featherRows": 36,
+      "maxChannelError": 0,
+      "note": "The new image is opaque before the old camp baked bottom fade begins."
+    },
+    "east": {
+      "overlapColumns": 132,
+      "exactFeatherColumns": 36,
+      "maxChannelError": 0,
+      "note": "Uses the existing east approach above Y4668 and camp-return v2 below, including their 36-row top composite."
+    },
+    "betweenNewTiles": {
+      "sharedColumns": 132,
+      "maxChannelError": 0
+    }
+  },
+  "scope": "Two pieces directly below the central camp, with one stone-to-dirt southern exit and broad road-free ground.",
+  "next": "Continue west into the southwest camp corner, then around the western and northern edges."
+}

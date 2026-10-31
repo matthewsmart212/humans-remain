@@ -1,0 +1,49 @@
+{
+  "asset": "Scrap Walker v3 humanoid",
+  "created": "2026-10-26",
+  "generator": "Built-in image_gen.imagegen",
+  "transparentBackground": true,
+  "reference": "reference.jpeg: only the humanoid robot at upper right, not the quadruped Scrap Bomber at left.",
+  "identityReference": "down.png. Every subsequent directional sheet used both reference.jpeg and the approved down.png.",
+  "promptSet": {
+    "shared": "Production game sprite atlas, genuinely transparent alpha; exactly12 full-body robot sprites in strict4columns x3rows grid, landscape4:3. Chunky chipped yellow-orange helmet and shoulder caps, dark heavy torso front buckle, round ear discs, huge fists one teal one burnt-orange, short TWO legs broad dark boots. Thick black edges warm autumn woodland handpainted game art. Same anatomy, same head/body proportions and same scale in every frame, no squash/stretch. No labels, separators, floor, circles, shadows, VFX,text,weapons,beacon.32px gutters; align feet to same baseline; elevated fixed game camera. Row0: planted neutral idle,left-foot-forward walk,passing opposite leg,right-foot-forward walk, counter-swing fists. Row1:orange-fist windup,punch contact,punch followthrough,recovery. Row2:hit recoil,standing hit settle,disabled collapse,disabled crumpled rest. Fists punch along heading. No light outside lens discs.",
+    "down": "Face straight DOWN toward viewer throughout. Two separated red eyes in black horizontal visor. This first sheet establishes identity for further views.",
+    "down-left": "Face DOWN-LEFT toward bottom-left. Three-quarter FRONT view. Both separated red lens eyes visible in black visor. Every boot and punch points down-left.",
+    "right": "Face RIGHT. Side/profile view, one red lens eye or narrow second visible visor edge. Helmet,boots,punch face right.",
+    "up-right": "Face UP-RIGHT toward top-right,three-quarter REAR. Show BACK of helmet and torso. Visor and eyes hidden,zero red luminous eyes. Boots and punch up-right.",
+    "up": "Face UP straight REAR. Back helmet,ear disks/neck,rear torso plating,backs of shoulders/arms/boots. No face,visor,red eyes. Punch away from viewer."
+  },
+  "sources": [
+    {
+      "view": "down",
+      "file": "down.png",
+      "generatedOriginal": "exec-c3725523-fd58-4434-86fb-d862a1c1a2ce.png",
+      "sha256": "612db8d9bfc0f515d7d62b71d3aec22ff316c4b0bca3a41a9f73bd0f5b9e8714"
+    },
+    {
+      "view": "down-left",
+      "file": "down-left.png",
+      "generatedOriginal": "exec-fd14dad5-1e14-4b80-9502-275dda895fe4.png",
+      "sha256": "43fc1aae622180503607d50e9b53f270878649a7a50bd51326e79df5b61ba7bd"
+    },
+    {
+      "view": "right",
+      "file": "right.png",
+      "generatedOriginal": "exec-40d357d1-1487-46a6-a598-a58bbaccd0f8.png",
+      "sha256": "ca4fc9aaf76d3df7b5e16b63e96db942cbc6dd8b74feff52cbee8f7a52ad061b"
+    },
+    {
+      "view": "up-right",
+      "file": "up-right.png",
+      "generatedOriginal": "exec-e530a7ae-1786-4f4e-9732-acadc3c06079.png",
+      "sha256": "2b61a1416b2d56d43ea1426a0102829b95385d9fbad4c4d06cfe59dc773bad34"
+    },
+    {
+      "view": "up",
+      "file": "up.png",
+      "generatedOriginal": "exec-753fee74-fe8a-4938-a027-0e2ef7600fb0.png",
+      "sha256": "d512cc414b80431a31624df9f2bd89fa1db82275cb4bd0cff19224f26194de43"
+    }
+  ],
+  "postProcessing": "Only segmentation, uniform .76 resampling and translation into384px cells, alpha-preserving WebP compression, metadata and thumbnail extraction. No hand-painted replacement art, no pose fitting, no runtime changes."
+}

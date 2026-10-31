@@ -1,0 +1,15 @@
+{
+  "result": "pass",
+  "preservedPlacements": 25,
+  "plants": 12,
+  "sharedTextures": 3,
+  "runtimeTextureBytes": 233808,
+  "simulationStress": {
+    "plants": 600,
+    "steps": 1200,
+    "totalMilliseconds": 4.65,
+    "note": "Container CPU microbenchmark, not iPhone FPS"
+  },
+  "renderer": "Fixed-root mesh with 35 vertices/48 triangles; viewport culled; automatic feet-depth sorting",
+  "limits": "No real iPhone or browser QA in this environment"
+}

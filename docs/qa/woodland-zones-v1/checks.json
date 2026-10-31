@@ -1,0 +1,34 @@
+{
+  "result": "pass",
+  "sourceRevision": 70,
+  "totalPlacements": 2299,
+  "changedPlacements": 408,
+  "existingUnchanged": 1891,
+  "added": 0,
+  "trees": 114,
+  "reachableTrees": 114,
+  "groves": 33,
+  "zoneTrees": {
+    "birch": 29,
+    "oak": 45,
+    "pine": 14,
+    "rowan": 21,
+    "willow": 5
+  },
+  "roadSamples": 4408,
+  "reachableNavigationCells": 35509,
+  "sharedNewImages": 0,
+  "peakVisibleBefore": 299,
+  "peakVisibleAfter": 297,
+  "checks": [
+    "Single-species groves within five larger woodland zones",
+    "Original camp, rocks, logs and placement positions preserved",
+    "All 114 trees reachable from camp",
+    "Real axe contacts yield collectible logs once",
+    "Owner edits and deleted placements preserved",
+    "Roads and bridge approaches remain clear",
+    "Existing image sources reused; no new objects or per-frame work"
+  ],
+  "browserQA": false,
+  "deviceFPSMeasured": false
+}

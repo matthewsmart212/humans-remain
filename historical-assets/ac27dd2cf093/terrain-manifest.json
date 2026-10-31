@@ -1,0 +1,72 @@
+{
+  "name": "Safety Last — Eastern works approach",
+  "date": "2026-10-14",
+  "method": "Built-in image_gen outpaint and palette edit; deterministic registration and lossless cuts",
+  "sourceCommit": "996415c119b167280ef569109d0a92a60aa919a0",
+  "nativeGeneration": {
+    "width": 966,
+    "height": 1628,
+    "file": "generated-master-original.png"
+  },
+  "registeredMaster": {
+    "x": 6908,
+    "y": 1992,
+    "width": 1666,
+    "height": 2808,
+    "file": "registered-master.png"
+  },
+  "packaging": "Native generated artwork resampled to existing camp scale; packaged dimensions are not native generation resolution.",
+  "tiles": [
+    {
+      "id": "07-works-footpath",
+      "url": "/survival/maps/eastern-works-v1/07-works-footpath.webp",
+      "x": 7036,
+      "y": 1992,
+      "width": 1538,
+      "height": 1406,
+      "paintTop": 0,
+      "paintHeight": 1404
+    },
+    {
+      "id": "08-works-service-track",
+      "url": "/survival/maps/eastern-works-v1/08-works-service-track.webp",
+      "x": 7036,
+      "y": 3264,
+      "width": 1538,
+      "height": 1536,
+      "paintTop": 132,
+      "paintHeight": 1404
+    }
+  ],
+  "contacts": {
+    "west": {
+      "masterPreservedColumns": 132,
+      "masterBlendColumns": 128,
+      "outputExactColumns": 4,
+      "runtimeOverlap": 132,
+      "maxChannelError": 0
+    },
+    "betweenNewTiles": {
+      "sharedRows": 134,
+      "paintBoundaryY": 3396,
+      "maxChannelError": 0
+    }
+  },
+  "palette": "Cool grey-brown and umber soil, muted olive grass, dusty dirt tracks; warm existing western contact retained. Sparse leaves outside the existing contact.",
+  "scope": "Ground and paths only. Buildings, water, resources and foliage remain separate assets.",
+  "nextExits": {
+    "coordinateStatus": "Approximate source-pixel guides for later outpainting, not navigation geometry.",
+    "north": {
+      "x": 8020,
+      "y": 1992
+    },
+    "east": {
+      "x": 8574,
+      "y": 3890
+    },
+    "south": {
+      "x": 7820,
+      "y": 4800
+    }
+  }
+}

@@ -1,0 +1,9 @@
+# Shared camp menus
+
+Campfire, furnace, smithy, supply chest, warehouse and backpack use the same frame on web and native. Landscape leaves a smaller live scene on the left and gives the right menu roughly 62% of the usable width. Portrait leaves the character above a bottom menu. The shared layout includes safe-area insets, a compact title/status/close header and one backpack-weight footer. The live building replaces large menu illustrations.
+
+The shared renderer pans over 240 ms without changing the player's zoom or authored positions. Closing returns to the previous framing, including interrupted transitions. A wall-time presentation clock supports the paused backpack. Native redraws only during that transition, or after an interface revision, while paused. At map edges, the camera may reveal the faded edge behind a menu to keep the character visible. Reduced motion frames immediately.
+
+Crafting keeps material costs and the Craft action visible. Inventory descriptions are available under Item info; quantities, item facts and transfer/use controls remain available. Smelting shows banked heat, fuel, output and recipes before its queue; the bellows upgrade is an optional disclosure. Cooking keeps the spit, ready meals and raw supplies. Feedback uses the subtitle so successful actions do not shrink the available controls.
+
+Checks: `check-station-menus.mjs` covers 108 menu/device/zoom combinations, safe areas, retina parity, character clearance, paused timing, transitions, world edges and unchanged world/zoom. The real web/native handler checks for cooking, storage and backpack pass, alongside smithy, smelting, warehouse, food and play-zoom regressions. Browser QA uses `scripts/station-menus-qa.html` and the actual shared world renderer. A physical iPhone/Expo run remains unverified.

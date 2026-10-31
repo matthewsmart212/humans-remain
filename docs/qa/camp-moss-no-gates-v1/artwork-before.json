@@ -1,0 +1,967 @@
+{
+  "records": [
+    {
+      "id": "base_well_t1",
+      "revision": 1,
+      "updatedAt": "2026-10-06T19:02:53.703Z",
+      "config": {
+        "kind": "sprite",
+        "base": {
+          "id": "0f5d7810-ce86-4fbc-837b-e5f2ad8aac9f",
+          "url": "/survival/camp-well-v2/oak-well.webp",
+          "name": "oak-canopy-well.webp",
+          "mime": "image/webp",
+          "width": 1091,
+          "height": 1012,
+          "bytes": 357680
+        },
+        "frames": [],
+        "fps": 8,
+        "worldWidth": 138,
+        "anchor": [
+          0.4317140238313474,
+          0.983201581027668
+        ],
+        "solid": true,
+        "footprint": {
+          "width": 0.6,
+          "depth": 0.2
+        },
+        "collision": {
+          "lineWidth": 0.012,
+          "paths": [
+            {
+              "closed": false,
+              "points": [
+                [
+                  0.09263899376057784,
+                  0.42165356105354795
+                ],
+                [
+                  0.02544356680354676,
+                  0.5523622085083657
+                ],
+                [
+                  0.01813971362456611,
+                  0.7208660949461579
+                ],
+                [
+                  0.07949203574882176,
+                  0.8515748024749474
+                ],
+                [
+                  0.27377457488888957,
+                  0.9602362121712035
+                ],
+                [
+                  0.4928901702583097,
+                  0.9807087008701996
+                ],
+                [
+                  0.4695178623751625,
+                  0.5618111534205458
+                ],
+                [
+                  0.8274065566972605,
+                  0.5224409551191046
+                ],
+                [
+                  0.7806619409309662,
+                  0.43425200408485876
+                ],
+                [
+                  0.4782824639003484,
+                  0.41062995719276013
+                ],
+                [
+                  0.21534374945704413,
+                  0.42007875192001093
+                ],
+                [
+                  0.09409974210678305,
+                  0.4216535310165621
+                ],
+                [
+                  0.04881587468669393,
+                  0.4562992118064343
+                ]
+              ]
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "misc_2ecc542f-d46f-4370-84dc-1718f1ca2551",
+      "revision": 5,
+      "updatedAt": "2026-10-07T16:00:14.924Z",
+      "config": {
+        "kind": "sprite",
+        "base": {
+          "id": "643cf52b-1da8-4a08-8c2b-f405dd67aad6",
+          "url": "/survival/camp-walls-v2/wall-1.webp",
+          "name": "painted-oak-wall-1.webp",
+          "mime": "image/webp",
+          "width": 1168,
+          "height": 1040,
+          "bytes": 140736
+        },
+        "frames": [],
+        "fps": 8,
+        "worldWidth": 584,
+        "anchor": [
+          0.5,
+          0.94
+        ],
+        "solid": true,
+        "allowTransparency": true,
+        "footprint": {
+          "width": 0.6,
+          "depth": 0.2
+        },
+        "collision": {
+          "lineWidth": 0.012,
+          "paths": []
+        }
+      },
+      "customAsset": {
+        "id": "misc_2ecc542f-d46f-4370-84dc-1718f1ca2551",
+        "name": "Base wall 1",
+        "createdAt": "2026-10-07T07:35:25.862Z"
+      }
+    },
+    {
+      "id": "misc_c3a6521e-5a81-424d-a25c-c102891355a2",
+      "revision": 2,
+      "updatedAt": "2026-10-07T16:19:35.995Z",
+      "config": {
+        "kind": "sprite",
+        "base": {
+          "id": "a6c5b4fb-5f6e-4eca-9574-f15e274dd051",
+          "url": "/survival/camp-walls-v2/wall-2.webp",
+          "name": "painted-oak-wall-2.webp",
+          "mime": "image/webp",
+          "width": 988,
+          "height": 804,
+          "bytes": 88526
+        },
+        "frames": [],
+        "fps": 8,
+        "worldWidth": 494,
+        "anchor": [
+          0.5,
+          0.94
+        ],
+        "solid": true,
+        "allowTransparency": false,
+        "footprint": {
+          "width": 0.6,
+          "depth": 0.2
+        },
+        "collision": {
+          "lineWidth": 0.012,
+          "paths": []
+        }
+      },
+      "customAsset": {
+        "id": "misc_c3a6521e-5a81-424d-a25c-c102891355a2",
+        "name": "Base wall 2",
+        "createdAt": "2026-10-07T07:44:18.899Z"
+      }
+    },
+    {
+      "id": "misc_839757e5-8646-448a-9c44-ab90dd109082",
+      "revision": 2,
+      "updatedAt": "2026-10-07T16:21:03.504Z",
+      "config": {
+        "kind": "sprite",
+        "base": {
+          "id": "3c8aabfe-2a70-48ab-848c-ed5809622c78",
+          "url": "/survival/camp-walls-v2/wall-3.webp",
+          "name": "painted-oak-wall-3.webp",
+          "mime": "image/webp",
+          "width": 956,
+          "height": 916,
+          "bytes": 117218
+        },
+        "frames": [],
+        "fps": 8,
+        "worldWidth": 478,
+        "anchor": [
+          0.5,
+          0.94
+        ],
+        "solid": true,
+        "allowTransparency": false,
+        "footprint": {
+          "width": 0.6,
+          "depth": 0.2
+        },
+        "collision": {
+          "lineWidth": 0.012,
+          "paths": []
+        }
+      },
+      "customAsset": {
+        "id": "misc_839757e5-8646-448a-9c44-ab90dd109082",
+        "name": "Base wall 3",
+        "createdAt": "2026-10-07T07:49:36.951Z"
+      }
+    },
+    {
+      "id": "misc_d0d1ee51-fe35-4ff1-981f-200188f0acc2",
+      "revision": 3,
+      "updatedAt": "2026-10-07T16:22:48.131Z",
+      "config": {
+        "kind": "sprite",
+        "base": {
+          "id": "0c959b7a-62c3-4b35-8632-e7a9d71d138d",
+          "url": "/survival/camp-walls-v2/wall-4.webp",
+          "name": "painted-oak-wall-4.webp",
+          "mime": "image/webp",
+          "width": 878,
+          "height": 694,
+          "bytes": 104494
+        },
+        "frames": [],
+        "fps": 8,
+        "worldWidth": 439,
+        "anchor": [
+          0.5,
+          0.94
+        ],
+        "solid": true,
+        "allowTransparency": false,
+        "footprint": {
+          "width": 0.6,
+          "depth": 0.2
+        },
+        "collision": {
+          "lineWidth": 0.012,
+          "paths": []
+        }
+      },
+      "customAsset": {
+        "id": "misc_d0d1ee51-fe35-4ff1-981f-200188f0acc2",
+        "name": "Base wall 4",
+        "createdAt": "2026-10-07T07:50:36.465Z"
+      }
+    },
+    {
+      "id": "misc_dc6dcbec-1730-4540-9f18-81e93654dfd1",
+      "revision": 1,
+      "updatedAt": "2026-10-07T16:24:11.267Z",
+      "config": {
+        "kind": "sprite",
+        "base": {
+          "id": "b254d3fa-7200-44f4-8418-5f452126ade6",
+          "url": "/survival/camp-walls-v2/wall-5.webp",
+          "name": "painted-oak-wall-5.webp",
+          "mime": "image/webp",
+          "width": 930,
+          "height": 1236,
+          "bytes": 106654
+        },
+        "frames": [],
+        "fps": 8,
+        "worldWidth": 465,
+        "anchor": [
+          0.5,
+          0.94
+        ],
+        "solid": false,
+        "allowTransparency": false,
+        "footprint": {
+          "width": 0.6,
+          "depth": 0.2
+        }
+      },
+      "customAsset": {
+        "id": "misc_dc6dcbec-1730-4540-9f18-81e93654dfd1",
+        "name": "Base wall 5",
+        "createdAt": "2026-10-07T07:51:18.241Z"
+      }
+    },
+    {
+      "id": "misc_b4f79cef-2bfe-4c2e-8e5e-6dbbcec7e645",
+      "revision": 2,
+      "updatedAt": "2026-10-07T16:24:46.249Z",
+      "config": {
+        "kind": "sprite",
+        "base": {
+          "id": "fff5b1da-c975-4be4-971f-e1a88f444467",
+          "url": "/survival/camp-walls-v2/wall-6.webp",
+          "name": "painted-oak-wall-6.webp",
+          "mime": "image/webp",
+          "width": 930,
+          "height": 1148,
+          "bytes": 116486
+        },
+        "frames": [],
+        "fps": 8,
+        "worldWidth": 465,
+        "anchor": [
+          0.5,
+          0.94
+        ],
+        "solid": false,
+        "allowTransparency": false,
+        "footprint": {
+          "width": 0.6,
+          "depth": 0.2
+        },
+        "collision": {
+          "lineWidth": 0.012,
+          "paths": [
+            {
+              "closed": true,
+              "points": [
+                [
+                  0.2,
+                  0.74
+                ],
+                [
+                  0.8,
+                  0.74
+                ],
+                [
+                  0.8,
+                  0.94
+                ],
+                [
+                  0.2,
+                  0.94
+                ]
+              ]
+            }
+          ]
+        }
+      },
+      "customAsset": {
+        "id": "misc_b4f79cef-2bfe-4c2e-8e5e-6dbbcec7e645",
+        "name": "Base wall 6",
+        "createdAt": "2026-10-07T07:51:53.205Z"
+      }
+    },
+    {
+      "id": "misc_0c17a859-9e4a-4145-bfde-29cab029d69a",
+      "revision": 2,
+      "updatedAt": "2026-10-07T16:25:18.074Z",
+      "config": {
+        "kind": "sprite",
+        "base": {
+          "id": "d1c68ca0-df31-41a2-abd7-022e5dae7b1a",
+          "url": "/survival/camp-walls-v2/wall-7.webp",
+          "name": "painted-oak-wall-7.webp",
+          "mime": "image/webp",
+          "width": 900,
+          "height": 934,
+          "bytes": 111196
+        },
+        "frames": [],
+        "fps": 8,
+        "worldWidth": 450,
+        "anchor": [
+          0.5,
+          0.94
+        ],
+        "solid": false,
+        "allowTransparency": false,
+        "footprint": {
+          "width": 0.6,
+          "depth": 0.2
+        },
+        "collision": {
+          "lineWidth": 0.012,
+          "paths": [
+            {
+              "closed": true,
+              "points": [
+                [
+                  0.2,
+                  0.74
+                ],
+                [
+                  0.8,
+                  0.74
+                ],
+                [
+                  0.8,
+                  0.9400000000000001
+                ],
+                [
+                  0.2,
+                  0.9400000000000001
+                ]
+              ]
+            }
+          ]
+        }
+      },
+      "customAsset": {
+        "id": "misc_0c17a859-9e4a-4145-bfde-29cab029d69a",
+        "name": "Base wall 7",
+        "createdAt": "2026-10-07T07:52:31.345Z"
+      }
+    },
+    {
+      "id": "misc_ccf51c94-ae61-4c60-8ef5-79df0442c1d0",
+      "revision": 1,
+      "updatedAt": "2026-10-07T16:25:57.084Z",
+      "config": {
+        "kind": "sprite",
+        "base": {
+          "id": "8e4808a2-5621-42a7-862d-4fad518e1be4",
+          "url": "/survival/camp-walls-v2/wall-8.webp",
+          "name": "painted-oak-wall-8.webp",
+          "mime": "image/webp",
+          "width": 842,
+          "height": 1138,
+          "bytes": 114056
+        },
+        "frames": [],
+        "fps": 8,
+        "worldWidth": 421,
+        "anchor": [
+          0.5,
+          0.94
+        ],
+        "solid": false,
+        "allowTransparency": false,
+        "footprint": {
+          "width": 0.6,
+          "depth": 0.2
+        }
+      },
+      "customAsset": {
+        "id": "misc_ccf51c94-ae61-4c60-8ef5-79df0442c1d0",
+        "name": "Base wall 8",
+        "createdAt": "2026-10-07T16:25:32.664Z"
+      }
+    },
+    {
+      "id": "base_shelter_t1",
+      "revision": 4,
+      "updatedAt": "2026-10-08T10:35:42.678Z",
+      "config": {
+        "kind": "building",
+        "base": {
+          "id": "93db0d98-1245-4026-a136-6248654149f9",
+          "url": "/api/asset-files/93db0d98-1245-4026-a136-6248654149f9",
+          "name": "FB9D088F-3810-4CA4-A34A-6229EC4DC520.png",
+          "mime": "image/png",
+          "width": 1536,
+          "height": 1024,
+          "bytes": 2513507
+        },
+        "frames": [],
+        "roof": {
+          "id": "cc6d2270-1400-486e-a12a-2014ca70f4e3",
+          "url": "/api/asset-files/cc6d2270-1400-486e-a12a-2014ca70f4e3",
+          "name": "IMG_9429.png",
+          "mime": "image/png",
+          "width": 1536,
+          "height": 1024,
+          "bytes": 2217053
+        },
+        "fps": 8,
+        "worldWidth": 672,
+        "anchor": [
+          0.5,
+          0.9399999999999998
+        ],
+        "solid": true,
+        "allowTransparency": true,
+        "footprint": {
+          "width": 0.6,
+          "depth": 0.2
+        },
+        "collision": {
+          "lineWidth": 0.012,
+          "paths": []
+        },
+        "building": {
+          "left": 0.0713266761768902,
+          "top": 0.2718360071301248,
+          "right": 0.927246790299572,
+          "bottom": 0.8627450980392156,
+          "doorSide": "south",
+          "doorStart": 0.36,
+          "doorEnd": 0.64
+        }
+      }
+    },
+    {
+      "id": "exp_research_planning_t2",
+      "revision": 2,
+      "updatedAt": "2026-10-08T12:05:10.542Z",
+      "config": {
+        "kind": "sprite",
+        "base": {
+          "id": "8caea3c8-c9b1-4f32-9a99-24004a9e5c99",
+          "url": "/api/asset-files/8caea3c8-c9b1-4f32-9a99-24004a9e5c99",
+          "name": "032B27DF-CF0D-4728-BE67-5FA659CFD1C1.png",
+          "mime": "image/png",
+          "width": 1536,
+          "height": 1024,
+          "bytes": 1315112
+        },
+        "frames": [],
+        "fps": 8,
+        "worldWidth": 1536,
+        "anchor": [
+          0.5,
+          0.94
+        ],
+        "solid": true,
+        "allowTransparency": true,
+        "footprint": {
+          "width": 0.6,
+          "depth": 0.2
+        }
+      }
+    },
+    {
+      "id": "base_hearth_t1",
+      "revision": 2,
+      "updatedAt": "2026-10-10T15:07:33.754Z",
+      "config": {
+        "kind": "sprite",
+        "base": {
+          "id": "0e6f4385-99d4-4bd1-990e-1f3cb3fa87ea",
+          "url": "/api/asset-files/0e6f4385-99d4-4bd1-990e-1f3cb3fa87ea",
+          "name": "IMG_9459.png",
+          "mime": "image/png",
+          "width": 1254,
+          "height": 1254,
+          "bytes": 1370172
+        },
+        "frames": [
+          {
+            "id": "0e6f4385-99d4-4bd1-990e-1f3cb3fa87ea",
+            "url": "/api/asset-files/0e6f4385-99d4-4bd1-990e-1f3cb3fa87ea",
+            "name": "IMG_9459.png",
+            "mime": "image/png",
+            "width": 1254,
+            "height": 1254,
+            "bytes": 1370172
+          },
+          {
+            "id": "33c670e0-ef26-487e-b46f-230d28a66446",
+            "url": "/api/asset-files/33c670e0-ef26-487e-b46f-230d28a66446",
+            "name": "IMG_9460.png",
+            "mime": "image/png",
+            "width": 1254,
+            "height": 1254,
+            "bytes": 1379387
+          },
+          {
+            "id": "c63dbbf8-c089-49b4-9559-94f40439ab97",
+            "url": "/api/asset-files/c63dbbf8-c089-49b4-9559-94f40439ab97",
+            "name": "IMG_9461.png",
+            "mime": "image/png",
+            "width": 1254,
+            "height": 1254,
+            "bytes": 1379348
+          },
+          {
+            "id": "f24d5a53-da03-4ef1-81c3-84bbfda7f56f",
+            "url": "/api/asset-files/f24d5a53-da03-4ef1-81c3-84bbfda7f56f",
+            "name": "IMG_9462.png",
+            "mime": "image/png",
+            "width": 1254,
+            "height": 1254,
+            "bytes": 1380142
+          },
+          {
+            "id": "71d702cf-d32a-45da-9f28-ef28d1d5dc36",
+            "url": "/api/asset-files/71d702cf-d32a-45da-9f28-ef28d1d5dc36",
+            "name": "IMG_9463.png",
+            "mime": "image/png",
+            "width": 1254,
+            "height": 1254,
+            "bytes": 1382935
+          },
+          {
+            "id": "10f7b0ab-a198-4373-a434-bfe90aacec5d",
+            "url": "/api/asset-files/10f7b0ab-a198-4373-a434-bfe90aacec5d",
+            "name": "IMG_9464.png",
+            "mime": "image/png",
+            "width": 1254,
+            "height": 1254,
+            "bytes": 1383919
+          },
+          {
+            "id": "18bea2f8-1dd6-4d86-b767-89473f47eda6",
+            "url": "/api/asset-files/18bea2f8-1dd6-4d86-b767-89473f47eda6",
+            "name": "IMG_9465.png",
+            "mime": "image/png",
+            "width": 1254,
+            "height": 1254,
+            "bytes": 1382012
+          },
+          {
+            "id": "c9095651-2b46-40dd-8eaf-c73ea3ee5f5b",
+            "url": "/api/asset-files/c9095651-2b46-40dd-8eaf-c73ea3ee5f5b",
+            "name": "IMG_9466.png",
+            "mime": "image/png",
+            "width": 1254,
+            "height": 1254,
+            "bytes": 1377590
+          }
+        ],
+        "unlit": {
+          "id": "646cd6ce-36e6-406f-925a-ecb2c3e091d5",
+          "url": "/api/asset-files/646cd6ce-36e6-406f-925a-ecb2c3e091d5",
+          "name": "7841A1B6-2A0B-40D8-9DDF-45400683B609.png",
+          "mime": "image/png",
+          "width": 1254,
+          "height": 1254,
+          "bytes": 1458128
+        },
+        "fps": 10,
+        "worldWidth": 112,
+        "anchor": [
+          0.5,
+          0.9375
+        ],
+        "solid": true,
+        "allowTransparency": true,
+        "footprint": {
+          "width": 0.6,
+          "depth": 0.2
+        },
+        "collision": {
+          "lineWidth": 0.012,
+          "paths": [
+            {
+              "closed": true,
+              "points": [
+                [
+                  0.11607142857142855,
+                  0.5267857142857143
+                ],
+                [
+                  0.8839285714285714,
+                  0.5267857142857143
+                ],
+                [
+                  0.8839285714285714,
+                  0.9375
+                ],
+                [
+                  0.11607142857142855,
+                  0.9375
+                ]
+              ]
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "misc_d9795b56-b7cc-4e3a-84e2-3140912e5d0d",
+      "revision": 1,
+      "updatedAt": "2026-10-10T15:14:00.269Z",
+      "config": {
+        "kind": "sprite",
+        "base": {
+          "id": "53b14b13-4089-4f5d-ab53-400e5b242ff7",
+          "url": "/survival/camp-ground-v3/bonfire-clearing.webp",
+          "name": "bonfire-clearing-dry-ground.webp",
+          "mime": "image/webp",
+          "width": 1254,
+          "height": 1254,
+          "bytes": 689768
+        },
+        "frames": [],
+        "fps": 8,
+        "worldWidth": 1254,
+        "anchor": [
+          0.5,
+          0.94
+        ],
+        "solid": false,
+        "allowTransparency": false,
+        "footprint": {
+          "width": 0.6,
+          "depth": 0.2
+        }
+      },
+      "customAsset": {
+        "id": "misc_d9795b56-b7cc-4e3a-84e2-3140912e5d0d",
+        "name": "Bonfire background",
+        "createdAt": "2026-10-10T15:13:17.583Z"
+      }
+    },
+    {
+      "id": "misc_2dd09bb8-883b-42e3-b765-c2a1c735b016",
+      "revision": 8,
+      "updatedAt": "2026-10-11T19:33:50.372Z",
+      "config": {
+        "kind": "sprite",
+        "base": {
+          "id": "2401745e-7f2d-4a8c-b6da-7351bc248ca7",
+          "url": "/survival/camp-structures-v3/bunker-0.webp",
+          "name": "bunker-0.webp",
+          "mime": "image/webp",
+          "width": 1312,
+          "height": 1199,
+          "bytes": 1520152
+        },
+        "frames": [
+          {
+            "id": "2401745e-7f2d-4a8c-b6da-7351bc248ca7",
+            "url": "/survival/camp-structures-v3/bunker-0.webp",
+            "name": "bunker-0.webp",
+            "mime": "image/webp",
+            "width": 1312,
+            "height": 1199,
+            "bytes": 1520152
+          },
+          {
+            "id": "c3ca8339-9c06-46f9-bbdd-ffe6b58d5376",
+            "url": "/survival/camp-structures-v3/bunker-1.webp",
+            "name": "bunker-1.webp",
+            "mime": "image/webp",
+            "width": 1312,
+            "height": 1199,
+            "bytes": 1512280
+          },
+          {
+            "id": "588cd1b0-8ac3-4283-a358-e6e86bd2ba10",
+            "url": "/survival/camp-structures-v3/bunker-2.webp",
+            "name": "bunker-2.webp",
+            "mime": "image/webp",
+            "width": 1312,
+            "height": 1199,
+            "bytes": 1503248
+          }
+        ],
+        "fps": 3,
+        "worldWidth": 1312,
+        "anchor": [
+          0.5,
+          0.94
+        ],
+        "solid": true,
+        "allowTransparency": true,
+        "footprint": {
+          "width": 0.6,
+          "depth": 0.2
+        },
+        "collision": {
+          "lineWidth": 0.012,
+          "paths": [
+            {
+              "closed": true,
+              "points": [
+                [
+                  0.17974212881716561,
+                  0.6054950751684808
+                ],
+                [
+                  0.272597962118889,
+                  0.4022809745982371
+                ],
+                [
+                  0.521792698428616,
+                  0.14618973561430793
+                ],
+                [
+                  0.8970060656478246,
+                  0.32763089683773955
+                ],
+                [
+                  0.9102711846909279,
+                  0.5629860031104198
+                ],
+                [
+                  0.6023309211903148,
+                  0.9445308449974078
+                ],
+                [
+                  0.5085275793855126,
+                  0.9061689994815963
+                ],
+                [
+                  0.740667162639821,
+                  0.6189735614307931
+                ],
+                [
+                  0.5227402069316948,
+                  0.4883359253499223
+                ],
+                [
+                  0.28207304714967696,
+                  0.7071021254536025
+                ]
+              ]
+            }
+          ]
+        },
+        "animationMode": "step-on",
+        "animationArea": {
+          "points": [
+            [
+              0.29,
+              0.7
+            ],
+            [
+              0.53,
+              0.51
+            ],
+            [
+              0.74,
+              0.6
+            ],
+            [
+              0.49,
+              0.86
+            ]
+          ]
+        }
+      },
+      "customAsset": {
+        "id": "misc_2dd09bb8-883b-42e3-b765-c2a1c735b016",
+        "name": "Bunker",
+        "createdAt": "2026-10-10T17:26:59.789Z"
+      }
+    },
+    {
+      "id": "misc_ceaf1a05-5426-45df-8a51-d3e2e07c6f9f",
+      "revision": 1,
+      "updatedAt": "2026-10-12T10:44:14.275Z",
+      "config": {
+        "kind": "sprite",
+        "base": {
+          "id": "511df250-f10f-4b4e-8b9d-f091fe490070",
+          "url": "/survival/camp-structures-v3/warehouse.webp",
+          "name": "warehouse.webp",
+          "mime": "image/webp",
+          "width": 1254,
+          "height": 1254,
+          "bytes": 1540246
+        },
+        "frames": [],
+        "fps": 8,
+        "worldWidth": 1254,
+        "anchor": [
+          0.5,
+          0.94
+        ],
+        "solid": true,
+        "allowTransparency": true,
+        "footprint": {
+          "width": 0.6,
+          "depth": 0.2
+        },
+        "collision": {
+          "lineWidth": 0.012,
+          "paths": [
+            {
+              "closed": true,
+              "points": [
+                [
+                  0.09943181818181818,
+                  0.5492424242424241
+                ],
+                [
+                  0.12878787878787878,
+                  0.45170454545454547
+                ],
+                [
+                  0.32007575757575757,
+                  0.29640151515151514
+                ],
+                [
+                  0.9195075757575756,
+                  0.6496212121212119
+                ],
+                [
+                  0.9053030303030302,
+                  0.7357954545454546
+                ],
+                [
+                  0.5861742424242423,
+                  0.9583333333333329
+                ],
+                [
+                  0.35795454545454547,
+                  0.8267045454545454
+                ],
+                [
+                  0.3939393939393939,
+                  0.75
+                ]
+              ]
+            }
+          ]
+        }
+      },
+      "customAsset": {
+        "id": "misc_ceaf1a05-5426-45df-8a51-d3e2e07c6f9f",
+        "name": "Warehouse",
+        "createdAt": "2026-10-12T10:43:26.700Z"
+      }
+    }
+  ],
+  "customAssets": [
+    {
+      "id": "misc_2ecc542f-d46f-4370-84dc-1718f1ca2551",
+      "name": "Base wall 1",
+      "createdAt": "2026-10-07T07:35:25.862Z"
+    },
+    {
+      "id": "misc_c3a6521e-5a81-424d-a25c-c102891355a2",
+      "name": "Base wall 2",
+      "createdAt": "2026-10-07T07:44:18.899Z"
+    },
+    {
+      "id": "misc_839757e5-8646-448a-9c44-ab90dd109082",
+      "name": "Base wall 3",
+      "createdAt": "2026-10-07T07:49:36.951Z"
+    },
+    {
+      "id": "misc_d0d1ee51-fe35-4ff1-981f-200188f0acc2",
+      "name": "Base wall 4",
+      "createdAt": "2026-10-07T07:50:36.465Z"
+    },
+    {
+      "id": "misc_dc6dcbec-1730-4540-9f18-81e93654dfd1",
+      "name": "Base wall 5",
+      "createdAt": "2026-10-07T07:51:18.241Z"
+    },
+    {
+      "id": "misc_b4f79cef-2bfe-4c2e-8e5e-6dbbcec7e645",
+      "name": "Base wall 6",
+      "createdAt": "2026-10-07T07:51:53.205Z"
+    },
+    {
+      "id": "misc_0c17a859-9e4a-4145-bfde-29cab029d69a",
+      "name": "Base wall 7",
+      "createdAt": "2026-10-07T07:52:31.345Z"
+    },
+    {
+      "id": "misc_ccf51c94-ae61-4c60-8ef5-79df0442c1d0",
+      "name": "Base wall 8",
+      "createdAt": "2026-10-07T16:25:32.664Z"
+    },
+    {
+      "id": "misc_d9795b56-b7cc-4e3a-84e2-3140912e5d0d",
+      "name": "Bonfire background",
+      "createdAt": "2026-10-10T15:13:17.583Z"
+    },
+    {
+      "id": "misc_2dd09bb8-883b-42e3-b765-c2a1c735b016",
+      "name": "Bunker",
+      "createdAt": "2026-10-10T17:26:59.789Z"
+    },
+    {
+      "id": "misc_ceaf1a05-5426-45df-8a51-d3e2e07c6f9f",
+      "name": "Warehouse",
+      "createdAt": "2026-10-12T10:43:26.700Z"
+    }
+  ],
+  "canEdit": false
+}

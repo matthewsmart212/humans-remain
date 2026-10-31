@@ -1,0 +1,122 @@
+{
+  "result": "pass",
+  "stage": "black-layout",
+  "roadSections": 42,
+  "districtsConnected": 7,
+  "bridgeReservations": 6,
+  "quietAreas": 5,
+  "campInteriorPixelIdentical": true,
+  "addedImageDownloads": 0,
+  "renderer": "Production CanvasKit software surface",
+  "captures": [
+    {
+      "name": "world-overview",
+      "sourceBounds": {
+        "x": -7200,
+        "y": -6200,
+        "width": 20000,
+        "height": 20000
+      }
+    },
+    {
+      "name": "camp-northwest",
+      "sourceBounds": {
+        "x": -370,
+        "y": -210,
+        "width": 1200,
+        "height": 600
+      }
+    },
+    {
+      "name": "camp-northeast",
+      "sourceBounds": {
+        "x": 3840,
+        "y": -190,
+        "width": 1200,
+        "height": 600
+      }
+    },
+    {
+      "name": "camp-west",
+      "sourceBounds": {
+        "x": -480,
+        "y": 2420,
+        "width": 1200,
+        "height": 600
+      }
+    },
+    {
+      "name": "camp-southwest",
+      "sourceBounds": {
+        "x": -490,
+        "y": 4230,
+        "width": 1200,
+        "height": 600
+      }
+    },
+    {
+      "name": "camp-south",
+      "sourceBounds": {
+        "x": 2020,
+        "y": 4350,
+        "width": 1200,
+        "height": 600
+      }
+    },
+    {
+      "name": "camp-southeast",
+      "sourceBounds": {
+        "x": 3990,
+        "y": 4260,
+        "width": 1200,
+        "height": 600
+      }
+    },
+    {
+      "name": "village-junction",
+      "sourceBounds": {
+        "x": 4500,
+        "y": -800,
+        "width": 1200,
+        "height": 600
+      }
+    },
+    {
+      "name": "east-junction",
+      "sourceBounds": {
+        "x": 6000,
+        "y": 3940,
+        "width": 1200,
+        "height": 600
+      }
+    },
+    {
+      "name": "logging-crossing",
+      "sourceBounds": {
+        "x": -3700,
+        "y": -1400,
+        "width": 1200,
+        "height": 600
+      }
+    },
+    {
+      "name": "southern-trail",
+      "sourceBounds": {
+        "x": 1800,
+        "y": 9800,
+        "width": 1200,
+        "height": 600
+      }
+    },
+    {
+      "name": "camp-preserved",
+      "sourceBounds": {
+        "x": 350,
+        "y": 350,
+        "width": 4100,
+        "height": 4100
+      }
+    }
+  ],
+  "limitations": "No browser automation or physical iPhone test. Water, bridge artwork, district buildings and finished road textures remain future work."
+}

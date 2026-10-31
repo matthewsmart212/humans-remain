@@ -1,0 +1,13 @@
+{
+  "tool": "Built-in image_gen",
+  "transparentBackground": true,
+  "assets": {
+    "scrap": "public/survival/ui-backpack-v1/scrap.png",
+    "fuel": "public/survival/ui-backpack-v1/fuel.png"
+  },
+  "preparation": "Trim transparent padding, fit within 112px, add 8px transparent padding. Original generated images remain unchanged.",
+  "prompts": {
+    "scrap": "Use case: stylized-concept. Asset type: one transparent RPG inventory item icon for a hand-painted top-down survival game. Subject: a small coherent bundle of salvaged steel scrap: two bent teal-grey metal plates, a bronze bolt and nut, a little rust orange wear. Rich warm painterly shading, clean dark brown ink contour, chunky readable shapes, whimsical crafted mobile RPG game art. Three-quarter view, centered entire item, generous transparent padding around all edges. Object only, no tile, no frame, no ground, no text, no letters, no UI, no hand, no glow, transparent background. Designed to read at 40 pixels.",
+    "fuel": "Use case: stylized-concept. Asset type: one transparent RPG inventory item icon for a hand-painted top-down survival game. Subject: a small squat olive petrol fuel jerrycan with carry handle and dark bronze screw cap, one subtle orange diagonal painted stripe, scuffs and rusty warm edges. Rich warm painterly shading, clean dark brown ink contour, chunky readable shapes, whimsical crafted mobile RPG game art. Three-quarter view, centered entire item, generous transparent padding around all edges. Object only, no tile, no frame, no ground, no text, no letters, no UI, no flame, no glow, transparent background. Designed to read at 40 pixels."
+  }
+}

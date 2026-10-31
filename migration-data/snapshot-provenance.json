@@ -1,0 +1,104 @@
+{
+  "capturedAt": "2026-10-31T12:01:03.199951+00:00",
+  "sourceOrigin": "https://safety-last.matthew-smart212.chatgpt.site",
+  "notes": [
+    "The public API projection is preserved, except the session-dependent canEdit flag has been removed.",
+    "These snapshots are game-authoring data, not database dumps.",
+    "Native bundled snapshot remains revision76; live world snapshot is revision77. All4543 item records are identical; only revision and update time differ.",
+    "The scope=world artwork snapshot includes one older retired record absent from native bundled data: exp_research_planning_t2 revision2. Existing14 records are identical.",
+    "The complete original asset_art_files metadata table was captured separately; all 42 published files are included. One unpublished terrain image returned HTTP 404 and is listed as unavailable."
+  ],
+  "snapshots": [
+    {
+      "file": "world-layout.json",
+      "url": "https://safety-last.matthew-smart212.chatgpt.site/api/world-layout",
+      "bytes": 1601712,
+      "sha256": "09cd59fe10eb5ecc452c0a7764f56f9898dd8186a3d4eb611bd717e5c606cdee"
+    },
+    {
+      "file": "artwork.json",
+      "url": "https://safety-last.matthew-smart212.chatgpt.site/api/asset-artwork?scope=world",
+      "bytes": 25716,
+      "sha256": "375a9b7a8c745c3613ee2b7574099ecdee4be936e7cc7da93ba117ac2fed626c"
+    },
+    {
+      "file": "checklist.json",
+      "url": "https://safety-last.matthew-smart212.chatgpt.site/api/base-checklist",
+      "bytes": 17,
+      "sha256": "fb2989323b717f2e869a06272d8ee4b35b4e516d6a555f4ce3d19f9ee3606ff0"
+    },
+    {
+      "file": "asset-art-files.json",
+      "source": "Read-only metadata inventory and public assetGET capture",
+      "bytes": 18670,
+      "sha256": "bf4d3be9b3be652578245afb9885cfb7cad647760cbab97ae010c59b900491d8"
+    },
+    {
+      "file": "external-assets.json",
+      "source": "Read-only metadata inventory and public assetGET capture",
+      "bytes": 58253,
+      "sha256": "0e1f3fd2eb6acf8dc03e5b2da878c799fd26fae1f100675966e7ef1314ff1ca1"
+    },
+    {
+      "file": "custom-assets.json",
+      "source": "Read-only Sites D1 inspection; artwork-history.json also documents direct public-API recovery of one configuration",
+      "bytes": 1799,
+      "sha256": "4b1dfe52e822a10ff4acc88bdd29dec245f9fa51c301a37a95e5d75818352c4d"
+    },
+    {
+      "file": "checklist-rows.json",
+      "source": "Read-only Sites D1 inspection; artwork-history.json also documents direct public-API recovery of one configuration",
+      "bytes": 46,
+      "sha256": "d0c887608f4e5a6ed81d14cbfedcbf23424eebc2f41cc267525b53297922e3c6"
+    },
+    {
+      "file": "artwork-history.json",
+      "source": "Read-only Sites D1 inspection; artwork-history.json also documents direct public-API recovery of one configuration",
+      "bytes": 36510,
+      "sha256": "9469eda30c3eecc6c238651be76291da0847aae7ecb7819d9615e5f99b809f56"
+    }
+  ],
+  "uploadInventory": {
+    "metadataFile": "asset-art-files.json",
+    "totalRows": 43,
+    "publishedRows": 42,
+    "unpublishedRows": 1,
+    "availableOriginalFiles": 42,
+    "availableOriginalBytes": 72606551,
+    "unavailableFiles": [
+      {
+        "id": "b98a8a25-3e01-4ead-842a-a131ef19b7a0",
+        "url": "https://safety-last.matthew-smart212.chatgpt.site/api/asset-files/b98a8a25-3e01-4ead-842a-a131ef19b7a0",
+        "status": 404,
+        "reason": "Unpublished upload: the public asset route returns HTTP404; owner-authenticated bytes are unavailable through the current read-only export capabilities.",
+        "databaseMetadata": {
+          "id": "b98a8a25-3e01-4ead-842a-a131ef19b7a0",
+          "entry_id": "world-terrain",
+          "object_key": "catalogue/world-terrain/b98a8a25-3e01-4ead-842a-a131ef19b7a0",
+          "name": "IMG_9396.jpg",
+          "mime": "image/jpeg",
+          "width": 3600,
+          "height": 3600,
+          "bytes": 10348001,
+          "published": 0,
+          "created_at": "2026-10-07T04:56:17.106Z"
+        },
+        "checkedAt": "2026-10-31T12:07:14.747868+00:00"
+      }
+    ]
+  },
+  "databaseHistory": {
+    "custom_asset_rows": 12,
+    "base_checklist_rows": 0,
+    "artwork_revision_rows": 37,
+    "complete_raw_artwork_configs": 35,
+    "complete_configs_recovered_from_public_response": 1,
+    "unavailable_configs": [
+      {
+        "entry_id": "base_hearth_t1",
+        "revision": 1,
+        "reason": "D1 viewer truncates cell; no complete copy found in existing source/history."
+      }
+    ]
+  }
+}

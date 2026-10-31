@@ -1,0 +1,32 @@
+[
+  {
+    "id": "headwater",
+    "key": "riverHeadwater",
+    "name": "Rocky headwater",
+    "x": -6256,
+    "y": -6200,
+    "width": 2048,
+    "height": 1024.8707482993198,
+    "sourceY": 0
+  },
+  {
+    "id": "cascade",
+    "key": "riverCascade",
+    "name": "Cascade pools",
+    "x": -6256,
+    "y": -5303.477551020408,
+    "width": 2048,
+    "height": 1024.8707482993198,
+    "sourceY": 896.5224489795918
+  },
+  {
+    "id": "south-bend",
+    "key": "riverSouthBend",
+    "name": "Southern bend",
+    "x": -6256,
+    "y": -4408.8707482993195,
+    "width": 2048,
+    "height": 1024.8707482993198,
+    "sourceY": 1791.1292517006802
+  }
+]

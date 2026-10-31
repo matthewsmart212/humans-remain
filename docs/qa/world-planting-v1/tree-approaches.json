@@ -1,0 +1,2207 @@
+[
+  {
+    "id": "camp-outskirts-v1-northwest-grove-tree-1",
+    "x": 99,
+    "y": 336.4
+  },
+  {
+    "id": "camp-outskirts-v1-northwest-grove-tree-2",
+    "x": 688.5,
+    "y": 60.6
+  },
+  {
+    "id": "camp-outskirts-v1-northwest-grove-tree-3",
+    "x": 286.8,
+    "y": 565.8
+  },
+  {
+    "id": "camp-outskirts-v1-west-near-tree-1",
+    "x": -230.39999999999998,
+    "y": 1478.1
+  },
+  {
+    "id": "camp-outskirts-v1-west-near-tree-2",
+    "x": 117.6,
+    "y": 1240.1
+  },
+  {
+    "id": "camp-outskirts-v1-west-near-tree-3",
+    "x": 100.3,
+    "y": 1558.6
+  },
+  {
+    "id": "camp-outskirts-v1-west-near-tree-4",
+    "x": -223.10000000000002,
+    "y": 1147.3
+  },
+  {
+    "id": "camp-outskirts-v1-west-near-tree-5",
+    "x": -464.79999999999995,
+    "y": 1275.3
+  },
+  {
+    "id": "camp-outskirts-v1-west-lower-tree-1",
+    "x": -144.1,
+    "y": 2880.6
+  },
+  {
+    "id": "camp-outskirts-v1-west-lower-tree-2",
+    "x": 1.9000000000000057,
+    "y": 2604.5
+  },
+  {
+    "id": "camp-outskirts-v1-west-lower-tree-3",
+    "x": -640.1680015377856,
+    "y": 2751.5319984622142
+  },
+  {
+    "id": "camp-outskirts-v1-west-lower-tree-4",
+    "x": -342.1,
+    "y": 2545.1
+  },
+  {
+    "id": "camp-outskirts-v1-southwest-near-tree-1",
+    "x": 583,
+    "y": 3397.6
+  },
+  {
+    "id": "camp-outskirts-v1-southwest-near-tree-2",
+    "x": 843.4,
+    "y": 3642
+  },
+  {
+    "id": "camp-outskirts-v1-southwest-near-tree-3",
+    "x": 984.3,
+    "y": 3252.2
+  },
+  {
+    "id": "camp-outskirts-v1-south-near-tree-1",
+    "x": 1450.6595918486626,
+    "y": 3811.516393533604
+  },
+  {
+    "id": "camp-outskirts-v1-south-near-tree-2",
+    "x": 1200.7,
+    "y": 3841.2
+  },
+  {
+    "id": "camp-outskirts-v1-south-near-tree-3",
+    "x": 1422.2,
+    "y": 3367.6
+  },
+  {
+    "id": "camp-outskirts-v1-south-near-tree-4",
+    "x": 1175.5,
+    "y": 3496.2
+  },
+  {
+    "id": "camp-outskirts-v1-southeast-near-tree-1",
+    "x": 2758.4595918486625,
+    "y": 3249.016393533604
+  },
+  {
+    "id": "camp-outskirts-v1-southeast-near-tree-2",
+    "x": 3122.1,
+    "y": 3513.7
+  },
+  {
+    "id": "camp-outskirts-v1-southeast-near-tree-3",
+    "x": 2827.7,
+    "y": 3554.9
+  },
+  {
+    "id": "camp-outskirts-v1-east-near-tree-1",
+    "x": 3716.8,
+    "y": 1890.2
+  },
+  {
+    "id": "camp-outskirts-v1-east-near-tree-2",
+    "x": 3678,
+    "y": 2334.8
+  },
+  {
+    "id": "camp-outskirts-v1-east-near-tree-3",
+    "x": 3925.9,
+    "y": 2118
+  },
+  {
+    "id": "camp-outskirts-v1-east-near-tree-4",
+    "x": 3494.0595918486624,
+    "y": 2180.516393533604
+  },
+  {
+    "id": "camp-outskirts-v1-northeast-near-tree-1",
+    "x": 3582.4,
+    "y": 745.7
+  },
+  {
+    "id": "camp-outskirts-v1-northeast-near-tree-2",
+    "x": 3288.5,
+    "y": 523.9
+  },
+  {
+    "id": "camp-outskirts-v1-north-near-tree-1",
+    "x": 2092.5,
+    "y": -176.7
+  },
+  {
+    "id": "camp-outskirts-v1-north-near-tree-2",
+    "x": 1833.2,
+    "y": -422.9
+  },
+  {
+    "id": "camp-outskirts-v1-north-near-tree-3",
+    "x": 2147.1,
+    "y": -490
+  },
+  {
+    "id": "camp-outskirts-v1-north-near-tree-4",
+    "x": 1624.3,
+    "y": -246.7
+  },
+  {
+    "id": "camp-outskirts-v1-north-near-tree-5",
+    "x": 2361.9,
+    "y": -280.9
+  },
+  {
+    "id": "camp-outskirts-v1-northwest-outer-tree-1",
+    "x": -672.2,
+    "y": 279.6
+  },
+  {
+    "id": "camp-outskirts-v1-northwest-outer-tree-2",
+    "x": -930.2,
+    "y": 342.4
+  },
+  {
+    "id": "camp-outskirts-v1-northwest-outer-tree-3",
+    "x": -1135.3,
+    "y": -45
+  },
+  {
+    "id": "camp-outskirts-v1-northwest-outer-tree-4",
+    "x": -1166.5,
+    "y": 238.7
+  },
+  {
+    "id": "camp-outskirts-v1-northwest-outer-tree-5",
+    "x": -542.1,
+    "y": -67
+  },
+  {
+    "id": "camp-outskirts-v1-northwest-outer-tree-6",
+    "x": -798.9,
+    "y": 20.8
+  },
+  {
+    "id": "camp-outskirts-v1-west-outer-tree-1",
+    "x": -1692.7,
+    "y": 2847.1
+  },
+  {
+    "id": "camp-outskirts-v1-west-outer-tree-2",
+    "x": -1334.9,
+    "y": 2643
+  },
+  {
+    "id": "camp-outskirts-v1-west-outer-tree-3",
+    "x": -1415.1,
+    "y": 3071.2
+  },
+  {
+    "id": "camp-outskirts-v1-west-outer-tree-4",
+    "x": -1702.7,
+    "y": 2530.6
+  },
+  {
+    "id": "camp-outskirts-v1-west-outer-tree-5",
+    "x": -1047.3,
+    "y": 2855.7
+  },
+  {
+    "id": "camp-outskirts-v1-southwest-outer-tree-1",
+    "x": -388.6,
+    "y": 3401.8
+  },
+  {
+    "id": "camp-outskirts-v1-southwest-outer-tree-2",
+    "x": -814.4,
+    "y": 3443.7
+  },
+  {
+    "id": "camp-outskirts-v1-southwest-outer-tree-3",
+    "x": -682.7,
+    "y": 3762.8
+  },
+  {
+    "id": "camp-outskirts-v1-southwest-outer-tree-4",
+    "x": -1009.3,
+    "y": 3742.1
+  },
+  {
+    "id": "camp-outskirts-v1-east-outer-tree-1",
+    "x": 4408.259591848663,
+    "y": 1579.016393533604
+  },
+  {
+    "id": "camp-outskirts-v1-east-outer-tree-2",
+    "x": 4450.4,
+    "y": 2205.3
+  },
+  {
+    "id": "camp-outskirts-v1-east-outer-tree-3",
+    "x": 4589.2,
+    "y": 1851.6
+  },
+  {
+    "id": "camp-outskirts-v1-east-outer-tree-4",
+    "x": 4136.4,
+    "y": 1961.2
+  },
+  {
+    "id": "camp-outskirts-v1-east-outer-tree-5",
+    "x": 4849.4,
+    "y": 2013.3
+  },
+  {
+    "id": "camp-outskirts-v1-south-outer-tree-1",
+    "x": 1019,
+    "y": 4818.1
+  },
+  {
+    "id": "camp-outskirts-v1-south-outer-tree-2",
+    "x": 1288.3,
+    "y": 4349.4
+  },
+  {
+    "id": "camp-outskirts-v1-south-outer-tree-3",
+    "x": 651.6,
+    "y": 4673.7
+  },
+  {
+    "id": "camp-outskirts-v1-south-outer-tree-4",
+    "x": 950.4,
+    "y": 4256.9
+  },
+  {
+    "id": "camp-outskirts-v1-south-outer-tree-5",
+    "x": 1102.6,
+    "y": 4538
+  },
+  {
+    "id": "camp-river-v1-north-trail-tree-1",
+    "x": -2268.8,
+    "y": -875.7
+  },
+  {
+    "id": "camp-river-v1-north-trail-tree-2",
+    "x": -1847.5,
+    "y": -681.5
+  },
+  {
+    "id": "camp-river-v1-stream-east-tree-1",
+    "x": -1516.2,
+    "y": -79.4
+  },
+  {
+    "id": "camp-river-v1-stream-east-tree-2",
+    "x": -1765.3,
+    "y": -318.4
+  },
+  {
+    "id": "camp-river-v1-stream-east-tree-3",
+    "x": -1425.7,
+    "y": -423.6
+  },
+  {
+    "id": "camp-river-v1-stream-east-tree-4",
+    "x": -1855.3,
+    "y": -32.3
+  },
+  {
+    "id": "camp-river-v1-stream-head-tree-1",
+    "x": -2694.4,
+    "y": -140.8
+  },
+  {
+    "id": "camp-river-v1-stream-meadow-tree-1",
+    "x": -2057.5,
+    "y": 931
+  },
+  {
+    "id": "camp-river-v1-stream-meadow-tree-2",
+    "x": -1767.4,
+    "y": 433.9
+  },
+  {
+    "id": "camp-river-v1-stream-meadow-tree-3",
+    "x": -1627.9,
+    "y": 956.3
+  },
+  {
+    "id": "camp-river-v1-stream-meadow-tree-4",
+    "x": -1504.9,
+    "y": 627.3
+  },
+  {
+    "id": "camp-river-v1-west-upper-tree-1",
+    "x": -3538.5,
+    "y": 388.8
+  },
+  {
+    "id": "camp-river-v1-west-upper-tree-2",
+    "x": -3872.7,
+    "y": 457.8
+  },
+  {
+    "id": "camp-river-v1-west-upper-tree-3",
+    "x": -3446.8,
+    "y": 645.6
+  },
+  {
+    "id": "camp-river-v1-west-upper-tree-4",
+    "x": -3250.9,
+    "y": 428.6
+  },
+  {
+    "id": "camp-river-v1-upper-glade-tree-1",
+    "x": -2809.7,
+    "y": 1123
+  },
+  {
+    "id": "camp-river-v1-upper-glade-tree-2",
+    "x": -2991.1,
+    "y": 751.4
+  },
+  {
+    "id": "camp-river-v1-upper-glade-tree-3",
+    "x": -3204.6,
+    "y": 1014.7
+  },
+  {
+    "id": "camp-river-v1-upper-glade-tree-4",
+    "x": -2723.9,
+    "y": 840.1
+  },
+  {
+    "id": "camp-river-v1-upper-glade-tree-5",
+    "x": -3035.4,
+    "y": 1304.1
+  },
+  {
+    "id": "camp-river-v1-upper-link-tree-1",
+    "x": -1139.8,
+    "y": 1436
+  },
+  {
+    "id": "camp-river-v1-upper-link-tree-2",
+    "x": -880.6,
+    "y": 1031.7
+  },
+  {
+    "id": "camp-river-v1-upper-link-tree-3",
+    "x": -1337.4,
+    "y": 1144.9
+  },
+  {
+    "id": "camp-river-v1-upper-link-tree-4",
+    "x": -1544.1,
+    "y": 1334.1
+  },
+  {
+    "id": "camp-river-v1-river-bend-tree-1",
+    "x": -4166.3,
+    "y": 1349.4
+  },
+  {
+    "id": "camp-river-v1-river-bend-tree-2",
+    "x": -3907.3,
+    "y": 1129.1
+  },
+  {
+    "id": "camp-river-v1-river-bend-tree-3",
+    "x": -4469.4,
+    "y": 1216.9
+  },
+  {
+    "id": "camp-river-v1-river-bend-tree-4",
+    "x": -4352.7,
+    "y": 922.4
+  },
+  {
+    "id": "camp-river-v1-west-trail-north-tree-1",
+    "x": -3704.5,
+    "y": 1629.5
+  },
+  {
+    "id": "camp-river-v1-west-trail-north-tree-2",
+    "x": -3381.8,
+    "y": 1784.6
+  },
+  {
+    "id": "camp-river-v1-west-trail-north-tree-3",
+    "x": -3325.4,
+    "y": 1442.5
+  },
+  {
+    "id": "camp-river-v1-west-trail-north-tree-4",
+    "x": -3552.5,
+    "y": 1305.1
+  },
+  {
+    "id": "camp-river-v1-central-rise-tree-1",
+    "x": -2380.8,
+    "y": 1645.1
+  },
+  {
+    "id": "camp-river-v1-central-rise-tree-2",
+    "x": -2019.883606466396,
+    "y": 1881.5595918486626
+  },
+  {
+    "id": "camp-river-v1-central-rise-tree-3",
+    "x": -2810.8,
+    "y": 1767.1
+  },
+  {
+    "id": "camp-river-v1-central-rise-tree-4",
+    "x": -2695.083606466396,
+    "y": 1414.0595918486626
+  },
+  {
+    "id": "camp-river-v1-central-rise-tree-5",
+    "x": -2468.6,
+    "y": 1954.5
+  },
+  {
+    "id": "camp-river-v1-west-trail-south-tree-1",
+    "x": -3209.4,
+    "y": 2041.6
+  },
+  {
+    "id": "camp-river-v1-middle-meadow-tree-1",
+    "x": -2352.8,
+    "y": 2851.5
+  },
+  {
+    "id": "camp-river-v1-middle-meadow-tree-2",
+    "x": -2059.4,
+    "y": 2691.1
+  },
+  {
+    "id": "camp-river-v1-middle-meadow-tree-3",
+    "x": -2694.7,
+    "y": 2759.3
+  },
+  {
+    "id": "camp-river-v1-lower-link-tree-1",
+    "x": -1502.8,
+    "y": 1752.2
+  },
+  {
+    "id": "camp-river-v1-lower-link-tree-2",
+    "x": -1724.7,
+    "y": 1611
+  },
+  {
+    "id": "camp-river-v1-southern-birches-tree-1",
+    "x": -2665.0680015377857,
+    "y": 3414.7319984622145
+  },
+  {
+    "id": "camp-river-v1-southern-birches-tree-2",
+    "x": -2134.4,
+    "y": 3261
+  },
+  {
+    "id": "camp-river-v1-southern-birches-tree-3",
+    "x": -2416.6,
+    "y": 3194.2
+  },
+  {
+    "id": "camp-river-v1-southern-birches-tree-4",
+    "x": -2339.6,
+    "y": 3558.8
+  },
+  {
+    "id": "camp-river-v1-river-shelf-tree-1",
+    "x": -2903.3,
+    "y": 2995.2
+  },
+  {
+    "id": "camp-river-v1-lower-riverside-tree-1",
+    "x": -1827.6,
+    "y": 3644.3
+  },
+  {
+    "id": "camp-river-v1-lower-riverside-tree-2",
+    "x": -2111.1,
+    "y": 3959.9
+  },
+  {
+    "id": "camp-river-v1-lower-riverside-tree-3",
+    "x": -2157.9,
+    "y": 3714.4
+  },
+  {
+    "id": "camp-river-v1-south-meadow-tree-1",
+    "x": -1482.8,
+    "y": 4116.5
+  },
+  {
+    "id": "camp-river-v1-south-meadow-tree-2",
+    "x": -1277.1,
+    "y": 3926.7
+  },
+  {
+    "id": "camp-river-v1-bridge-scrub-tree-1",
+    "x": -1819.8,
+    "y": 4259.5
+  },
+  {
+    "id": "camp-river-v1-south-link-tree-1",
+    "x": -57.400000000000006,
+    "y": 4127.1
+  },
+  {
+    "id": "camp-river-v1-south-link-tree-2",
+    "x": -421.9,
+    "y": 4275.2
+  },
+  {
+    "id": "world-plant-v1-river-willows-1-tree-1",
+    "x": -6280.1,
+    "y": -5512.1
+  },
+  {
+    "id": "world-plant-v1-river-willows-1-tree-2",
+    "x": -6223.9,
+    "y": -5945.3
+  },
+  {
+    "id": "world-plant-v1-river-willows-2-tree-1",
+    "x": -5198.5,
+    "y": -5703.8
+  },
+  {
+    "id": "world-plant-v1-river-willows-2-tree-2",
+    "x": -5165.3,
+    "y": -6066.5
+  },
+  {
+    "id": "world-plant-v1-river-willows-3-tree-1",
+    "x": -5403.4,
+    "y": -4560.6
+  },
+  {
+    "id": "world-plant-v1-river-willows-3-tree-2",
+    "x": -5761.8,
+    "y": -4005.8
+  },
+  {
+    "id": "world-plant-v1-river-willows-4-tree-1",
+    "x": -4213.2,
+    "y": -4839
+  },
+  {
+    "id": "world-plant-v1-river-willows-4-tree-2",
+    "x": -4513.2,
+    "y": -4409.5
+  },
+  {
+    "id": "world-plant-v1-river-willows-5-tree-1",
+    "x": -3147.4,
+    "y": -3423.3
+  },
+  {
+    "id": "world-plant-v1-river-willows-5-tree-2",
+    "x": -2906.4,
+    "y": -3163.3
+  },
+  {
+    "id": "world-plant-v1-river-willows-6-tree-1",
+    "x": -3833.5,
+    "y": -1973.5
+  },
+  {
+    "id": "world-plant-v1-river-willows-7-tree-1",
+    "x": -4023.8999999999996,
+    "y": -708.8
+  },
+  {
+    "id": "world-plant-v1-river-willows-7-tree-2",
+    "x": -4418.240408151337,
+    "y": -532.6836064663958
+  },
+  {
+    "id": "world-plant-v1-river-willows-8-tree-1",
+    "x": -5559.8,
+    "y": 1095.8
+  },
+  {
+    "id": "world-plant-v1-river-willows-8-tree-2",
+    "x": -5413.9,
+    "y": 725.5
+  },
+  {
+    "id": "world-plant-v1-river-willows-9-tree-1",
+    "x": -4057.8,
+    "y": 3652.5
+  },
+  {
+    "id": "world-plant-v1-river-willows-9-tree-2",
+    "x": -3685.5680015377857,
+    "y": 3727.3319984622144
+  },
+  {
+    "id": "world-plant-v1-river-willows-10-tree-1",
+    "x": -3794.2,
+    "y": 5971
+  },
+  {
+    "id": "world-plant-v1-river-willows-10-tree-2",
+    "x": -3494.7,
+    "y": 6359.6
+  },
+  {
+    "id": "world-plant-v1-river-willows-11-tree-1",
+    "x": -1315,
+    "y": 5840.3
+  },
+  {
+    "id": "world-plant-v1-river-willows-11-tree-2",
+    "x": -1380.6,
+    "y": 6159
+  },
+  {
+    "id": "world-plant-v1-river-willows-12-tree-1",
+    "x": -1857.4,
+    "y": 7937.7
+  },
+  {
+    "id": "world-plant-v1-river-willows-12-tree-2",
+    "x": -2143.2,
+    "y": 7734.1
+  },
+  {
+    "id": "world-plant-v1-river-willows-13-tree-1",
+    "x": -5018.9,
+    "y": 8777.8
+  },
+  {
+    "id": "world-plant-v1-river-willows-13-tree-2",
+    "x": -4749.8,
+    "y": 8562.2
+  },
+  {
+    "id": "world-plant-v1-river-willows-14-tree-1",
+    "x": -3636.2,
+    "y": 8931.3
+  },
+  {
+    "id": "world-plant-v1-river-willows-14-tree-2",
+    "x": -3343.7,
+    "y": 8578.6
+  },
+  {
+    "id": "world-plant-v1-river-willows-15-tree-1",
+    "x": -4902.9,
+    "y": 9834.2
+  },
+  {
+    "id": "world-plant-v1-river-willows-15-tree-2",
+    "x": -4829.1,
+    "y": 9421.2
+  },
+  {
+    "id": "world-plant-v1-river-willows-16-tree-1",
+    "x": -3235.7,
+    "y": 10095.2
+  },
+  {
+    "id": "world-plant-v1-river-willows-17-tree-1",
+    "x": -3842.9,
+    "y": 10988.2
+  },
+  {
+    "id": "world-plant-v1-river-willows-17-tree-2",
+    "x": -3776.5,
+    "y": 11525.5
+  },
+  {
+    "id": "world-plant-v1-river-willows-18-tree-1",
+    "x": -2437.1,
+    "y": 11421.8
+  },
+  {
+    "id": "world-plant-v1-river-willows-18-tree-2",
+    "x": -2255.4,
+    "y": 10873.4
+  },
+  {
+    "id": "world-plant-v1-logging-pines-1-tree-1",
+    "x": -6707.3,
+    "y": -1893.6
+  },
+  {
+    "id": "world-plant-v1-logging-pines-1-tree-2",
+    "x": -6932.6,
+    "y": -2211.9
+  },
+  {
+    "id": "world-plant-v1-logging-pines-1-tree-3",
+    "x": -6452.2,
+    "y": -2167.6
+  },
+  {
+    "id": "world-plant-v1-logging-pines-1-tree-4",
+    "x": -6788.8,
+    "y": -2644.5
+  },
+  {
+    "id": "world-plant-v1-logging-pines-1-tree-5",
+    "x": -6403.2,
+    "y": -2545.9
+  },
+  {
+    "id": "world-plant-v1-northern-birches-1-tree-1",
+    "x": 948.4,
+    "y": -3360.2
+  },
+  {
+    "id": "world-plant-v1-northern-birches-1-tree-2",
+    "x": 1277.4,
+    "y": -3144.6
+  },
+  {
+    "id": "world-plant-v1-northern-birches-1-tree-3",
+    "x": 988.8,
+    "y": -3685.2
+  },
+  {
+    "id": "world-plant-v1-northern-birches-1-tree-4",
+    "x": 1221.2319984622145,
+    "y": -3352.8680015377854
+  },
+  {
+    "id": "world-plant-v1-village-oaks-1-tree-1",
+    "x": 2246.7595918486622,
+    "y": -1403.283606466396
+  },
+  {
+    "id": "world-plant-v1-village-oaks-1-tree-2",
+    "x": 1878.7,
+    "y": -1567.4
+  },
+  {
+    "id": "world-plant-v1-village-oaks-1-tree-3",
+    "x": 2659.6,
+    "y": -1494
+  },
+  {
+    "id": "world-plant-v1-village-oaks-1-tree-4",
+    "x": 2411.4,
+    "y": -1706.4
+  },
+  {
+    "id": "world-plant-v1-factory-ridge-1-tree-1",
+    "x": 5931.1,
+    "y": -1228.1
+  },
+  {
+    "id": "world-plant-v1-factory-ridge-1-tree-2",
+    "x": 6007.4,
+    "y": -917.2
+  },
+  {
+    "id": "world-plant-v1-western-oaks-1-tree-1",
+    "x": -5830.1,
+    "y": 2641.5
+  },
+  {
+    "id": "world-plant-v1-western-oaks-1-tree-2",
+    "x": -6395.4,
+    "y": 2736
+  },
+  {
+    "id": "world-plant-v1-western-oaks-1-tree-3",
+    "x": -6165,
+    "y": 2429.9
+  },
+  {
+    "id": "world-plant-v1-western-oaks-1-tree-4",
+    "x": -6101.7,
+    "y": 2854.6
+  },
+  {
+    "id": "world-plant-v1-north-passage-1-tree-1",
+    "x": 4984,
+    "y": -1134.7
+  },
+  {
+    "id": "world-plant-v1-north-passage-1-tree-2",
+    "x": 4848.8,
+    "y": -1444.9
+  },
+  {
+    "id": "world-plant-v1-north-passage-1-tree-3",
+    "x": 4555.4,
+    "y": -1280
+  },
+  {
+    "id": "world-plant-v1-eastern-pines-1-tree-1",
+    "x": 4696.2,
+    "y": 4626.6
+  },
+  {
+    "id": "world-plant-v1-eastern-pines-1-tree-2",
+    "x": 5098.5,
+    "y": 4464.9
+  },
+  {
+    "id": "world-plant-v1-eastern-pines-1-tree-3",
+    "x": 4866.1,
+    "y": 4213.9
+  },
+  {
+    "id": "world-plant-v1-eastern-pines-1-tree-4",
+    "x": 4370.3,
+    "y": 4390.8
+  },
+  {
+    "id": "world-plant-v1-eastern-hollows-1-tree-1",
+    "x": 8849.2,
+    "y": 2586.5
+  },
+  {
+    "id": "world-plant-v1-eastern-hollows-1-tree-2",
+    "x": 8707.7,
+    "y": 2862.7
+  },
+  {
+    "id": "world-plant-v1-waterworks-woods-1-tree-1",
+    "x": -5418.6,
+    "y": 7309.8
+  },
+  {
+    "id": "world-plant-v1-waterworks-woods-1-tree-2",
+    "x": -5839.6,
+    "y": 7214.2
+  },
+  {
+    "id": "world-plant-v1-waterworks-woods-1-tree-3",
+    "x": -5125.5,
+    "y": 7541.8
+  },
+  {
+    "id": "world-plant-v1-waterworks-woods-1-tree-4",
+    "x": -5704.2,
+    "y": 7535.6
+  },
+  {
+    "id": "world-plant-v1-lake-meadows-1-tree-1",
+    "x": 54.6,
+    "y": 5005.7
+  },
+  {
+    "id": "world-plant-v1-southwest-heath-1-tree-1",
+    "x": -5904.1,
+    "y": 9759.1
+  },
+  {
+    "id": "world-plant-v1-southwest-heath-1-tree-2",
+    "x": -5581,
+    "y": 9979.4
+  },
+  {
+    "id": "world-plant-v1-southern-meadows-1-tree-1",
+    "x": -209.8,
+    "y": 9443.9
+  },
+  {
+    "id": "world-plant-v1-scrapyard-scrub-1-tree-1",
+    "x": 7497.3,
+    "y": 5688.5
+  },
+  {
+    "id": "world-plant-v1-scrapyard-scrub-1-tree-2",
+    "x": 7240.8,
+    "y": 5955.9
+  },
+  {
+    "id": "world-plant-v1-southeast-rowans-1-tree-1",
+    "x": 4056.5,
+    "y": 10964.9
+  },
+  {
+    "id": "world-plant-v1-logging-pines-2-tree-1",
+    "x": -6164.1,
+    "y": -3785.5
+  },
+  {
+    "id": "world-plant-v1-logging-pines-2-tree-2",
+    "x": -6371.2,
+    "y": -4086
+  },
+  {
+    "id": "world-plant-v1-logging-pines-2-tree-3",
+    "x": -6825.9,
+    "y": -4281.6
+  },
+  {
+    "id": "world-plant-v1-logging-pines-2-tree-4",
+    "x": -6475.6,
+    "y": -3802.2
+  },
+  {
+    "id": "world-plant-v1-logging-pines-2-tree-5",
+    "x": -6680,
+    "y": -3987.5
+  },
+  {
+    "id": "world-plant-v1-northern-birches-2-tree-1",
+    "x": 120.3,
+    "y": -3444.7
+  },
+  {
+    "id": "world-plant-v1-northern-birches-2-tree-2",
+    "x": -348.3,
+    "y": -3093.3
+  },
+  {
+    "id": "world-plant-v1-northern-birches-2-tree-3",
+    "x": 240.7,
+    "y": -2933.2
+  },
+  {
+    "id": "world-plant-v1-northern-birches-2-tree-4",
+    "x": -114.4,
+    "y": -3001.1
+  },
+  {
+    "id": "world-plant-v1-village-oaks-2-tree-1",
+    "x": 5063.8,
+    "y": -3086.1
+  },
+  {
+    "id": "world-plant-v1-village-oaks-2-tree-2",
+    "x": 5160.4,
+    "y": -2705.1
+  },
+  {
+    "id": "world-plant-v1-village-oaks-2-tree-3",
+    "x": 5388.6,
+    "y": -3008.4
+  },
+  {
+    "id": "world-plant-v1-village-oaks-2-tree-4",
+    "x": 5441.8,
+    "y": -2465.7
+  },
+  {
+    "id": "world-plant-v1-factory-ridge-2-tree-1",
+    "x": 8742.7,
+    "y": -1100
+  },
+  {
+    "id": "world-plant-v1-factory-ridge-2-tree-2",
+    "x": 8438.4,
+    "y": -1161.7
+  },
+  {
+    "id": "world-plant-v1-western-oaks-2-tree-1",
+    "x": -5390,
+    "y": 4254.3
+  },
+  {
+    "id": "world-plant-v1-western-oaks-2-tree-2",
+    "x": -5784,
+    "y": 4049.7
+  },
+  {
+    "id": "world-plant-v1-western-oaks-2-tree-3",
+    "x": -5103.3,
+    "y": 4430.2
+  },
+  {
+    "id": "world-plant-v1-western-oaks-2-tree-4",
+    "x": -5615.1,
+    "y": 3792.1
+  },
+  {
+    "id": "world-plant-v1-western-oaks-2-tree-5",
+    "x": -5669.6,
+    "y": 4429.5
+  },
+  {
+    "id": "world-plant-v1-north-passage-2-tree-1",
+    "x": 3223,
+    "y": -958.1
+  },
+  {
+    "id": "world-plant-v1-north-passage-2-tree-2",
+    "x": 3493,
+    "y": -816.8
+  },
+  {
+    "id": "world-plant-v1-north-passage-2-tree-3",
+    "x": 3513.3,
+    "y": -1077.4
+  },
+  {
+    "id": "world-plant-v1-eastern-pines-2-tree-1",
+    "x": 7674.4,
+    "y": 1736
+  },
+  {
+    "id": "world-plant-v1-eastern-pines-2-tree-2",
+    "x": 7480.1,
+    "y": 974.2
+  },
+  {
+    "id": "world-plant-v1-eastern-pines-2-tree-3",
+    "x": 7922.4,
+    "y": 1657.2
+  },
+  {
+    "id": "world-plant-v1-eastern-pines-2-tree-4",
+    "x": 7763.6,
+    "y": 1377.6
+  },
+  {
+    "id": "world-plant-v1-eastern-hollows-2-tree-1",
+    "x": 10083.1,
+    "y": 3747.7
+  },
+  {
+    "id": "world-plant-v1-eastern-hollows-2-tree-2",
+    "x": 9660.5,
+    "y": 4088.4
+  },
+  {
+    "id": "world-plant-v1-waterworks-woods-2-tree-1",
+    "x": -4755.2,
+    "y": 4854.7
+  },
+  {
+    "id": "world-plant-v1-waterworks-woods-2-tree-2",
+    "x": -4408.9,
+    "y": 5037.7
+  },
+  {
+    "id": "world-plant-v1-waterworks-woods-2-tree-3",
+    "x": -4753.2,
+    "y": 5173.2
+  },
+  {
+    "id": "world-plant-v1-waterworks-woods-2-tree-4",
+    "x": -5104.5,
+    "y": 4772.4
+  },
+  {
+    "id": "world-plant-v1-lake-meadows-2-tree-1",
+    "x": 187.2,
+    "y": 7851.9
+  },
+  {
+    "id": "world-plant-v1-southwest-heath-2-tree-1",
+    "x": -6632.7,
+    "y": 11361.7
+  },
+  {
+    "id": "world-plant-v1-southwest-heath-2-tree-2",
+    "x": -6630.1,
+    "y": 11686.2
+  },
+  {
+    "id": "world-plant-v1-southern-meadows-2-tree-1",
+    "x": 2066.5,
+    "y": 10466.6
+  },
+  {
+    "id": "world-plant-v1-scrapyard-scrub-2-tree-1",
+    "x": 7118.1,
+    "y": 8933.5
+  },
+  {
+    "id": "world-plant-v1-scrapyard-scrub-2-tree-2",
+    "x": 6715.8,
+    "y": 8953.3
+  },
+  {
+    "id": "world-plant-v1-southeast-rowans-2-tree-1",
+    "x": 6275.4,
+    "y": 9905.3
+  },
+  {
+    "id": "world-plant-v1-logging-pines-3-tree-1",
+    "x": -4800.8,
+    "y": -1540.7
+  },
+  {
+    "id": "world-plant-v1-logging-pines-3-tree-2",
+    "x": -4976.1,
+    "y": -1863.1
+  },
+  {
+    "id": "world-plant-v1-logging-pines-3-tree-3",
+    "x": -5108.7,
+    "y": -1556.9
+  },
+  {
+    "id": "world-plant-v1-logging-pines-3-tree-4",
+    "x": -4514,
+    "y": -1428.7
+  },
+  {
+    "id": "world-plant-v1-northern-birches-3-tree-1",
+    "x": -1871.9,
+    "y": -2035.8
+  },
+  {
+    "id": "world-plant-v1-northern-birches-3-tree-2",
+    "x": -1503.7,
+    "y": -1914.6
+  },
+  {
+    "id": "world-plant-v1-northern-birches-3-tree-3",
+    "x": -1981.4,
+    "y": -2294.5
+  },
+  {
+    "id": "world-plant-v1-village-oaks-3-tree-1",
+    "x": 4349,
+    "y": -4660.9
+  },
+  {
+    "id": "world-plant-v1-village-oaks-3-tree-2",
+    "x": 4126.259591848662,
+    "y": -4371.183606466396
+  },
+  {
+    "id": "world-plant-v1-village-oaks-3-tree-3",
+    "x": 4556.3,
+    "y": -4407.2
+  },
+  {
+    "id": "world-plant-v1-village-oaks-3-tree-4",
+    "x": 4092.2,
+    "y": -4995.7
+  },
+  {
+    "id": "world-plant-v1-factory-ridge-3-tree-1",
+    "x": 10834.1,
+    "y": -5262.5
+  },
+  {
+    "id": "world-plant-v1-factory-ridge-3-tree-2",
+    "x": 11198.5,
+    "y": -5372
+  },
+  {
+    "id": "world-plant-v1-western-oaks-3-tree-1",
+    "x": -6500,
+    "y": 1294.5
+  },
+  {
+    "id": "world-plant-v1-western-oaks-3-tree-2",
+    "x": -6419.7,
+    "y": 1809.2
+  },
+  {
+    "id": "world-plant-v1-western-oaks-3-tree-3",
+    "x": -5985.6,
+    "y": 1633.8
+  },
+  {
+    "id": "world-plant-v1-western-oaks-3-tree-4",
+    "x": -6177.5,
+    "y": 1295.1
+  },
+  {
+    "id": "world-plant-v1-western-oaks-3-tree-5",
+    "x": -5917.1,
+    "y": 1990.1
+  },
+  {
+    "id": "world-plant-v1-north-passage-3-tree-1",
+    "x": 1139.3,
+    "y": -1474.2
+  },
+  {
+    "id": "world-plant-v1-north-passage-3-tree-2",
+    "x": 831.7,
+    "y": -1495.4
+  },
+  {
+    "id": "world-plant-v1-north-passage-3-tree-3",
+    "x": 698.4,
+    "y": -970.2
+  },
+  {
+    "id": "world-plant-v1-north-passage-3-tree-4",
+    "x": 520.4,
+    "y": -1222.8
+  },
+  {
+    "id": "world-plant-v1-eastern-pines-3-tree-1",
+    "x": 7509.2,
+    "y": 4036.1
+  },
+  {
+    "id": "world-plant-v1-eastern-pines-3-tree-2",
+    "x": 7819.7,
+    "y": 4502.9
+  },
+  {
+    "id": "world-plant-v1-eastern-pines-3-tree-3",
+    "x": 7627.1,
+    "y": 4708.1
+  },
+  {
+    "id": "world-plant-v1-eastern-pines-3-tree-4",
+    "x": 7456.4,
+    "y": 4431.3
+  },
+  {
+    "id": "world-plant-v1-eastern-hollows-3-tree-1",
+    "x": 10250,
+    "y": 2500.6
+  },
+  {
+    "id": "world-plant-v1-eastern-hollows-3-tree-2",
+    "x": 10466.8,
+    "y": 2877.2
+  },
+  {
+    "id": "world-plant-v1-waterworks-woods-3-tree-1",
+    "x": -6292.1,
+    "y": 6181
+  },
+  {
+    "id": "world-plant-v1-waterworks-woods-3-tree-2",
+    "x": -6135.8,
+    "y": 5759.8
+  },
+  {
+    "id": "world-plant-v1-waterworks-woods-3-tree-3",
+    "x": -6489,
+    "y": 5386
+  },
+  {
+    "id": "world-plant-v1-waterworks-woods-3-tree-4",
+    "x": -6531.4,
+    "y": 5886.1
+  },
+  {
+    "id": "world-plant-v1-lake-meadows-3-tree-1",
+    "x": -860.3404081513374,
+    "y": 7431.116393533604
+  },
+  {
+    "id": "world-plant-v1-southwest-heath-3-tree-1",
+    "x": -4943.2,
+    "y": 10919.1
+  },
+  {
+    "id": "world-plant-v1-southwest-heath-3-tree-2",
+    "x": -5216.8,
+    "y": 11512.8
+  },
+  {
+    "id": "world-plant-v1-southern-meadows-3-tree-1",
+    "x": -995.3,
+    "y": 11647.4
+  },
+  {
+    "id": "world-plant-v1-scrapyard-scrub-3-tree-1",
+    "x": 4670.1,
+    "y": 7670.2
+  },
+  {
+    "id": "world-plant-v1-scrapyard-scrub-3-tree-2",
+    "x": 4246.3,
+    "y": 7579.3
+  },
+  {
+    "id": "world-plant-v1-southeast-rowans-3-tree-1",
+    "x": 5054.2,
+    "y": 11100
+  },
+  {
+    "id": "world-plant-v1-logging-pines-4-tree-1",
+    "x": -6159.9,
+    "y": -1640.1
+  },
+  {
+    "id": "world-plant-v1-logging-pines-4-tree-2",
+    "x": -5862.7,
+    "y": -1431.7
+  },
+  {
+    "id": "world-plant-v1-logging-pines-4-tree-3",
+    "x": -5751.7,
+    "y": -1677.9
+  },
+  {
+    "id": "world-plant-v1-logging-pines-4-tree-4",
+    "x": -6067.1,
+    "y": -1913.9
+  },
+  {
+    "id": "world-plant-v1-northern-birches-4-tree-1",
+    "x": -1485.4,
+    "y": -3536.1
+  },
+  {
+    "id": "world-plant-v1-northern-birches-4-tree-2",
+    "x": -1545.6,
+    "y": -3042.1
+  },
+  {
+    "id": "world-plant-v1-northern-birches-4-tree-3",
+    "x": -1379.9,
+    "y": -3300.6
+  },
+  {
+    "id": "world-plant-v1-northern-birches-4-tree-4",
+    "x": -1374.5,
+    "y": -3794.9
+  },
+  {
+    "id": "world-plant-v1-village-oaks-4-tree-1",
+    "x": 2305.1,
+    "y": -3468.5
+  },
+  {
+    "id": "world-plant-v1-village-oaks-4-tree-2",
+    "x": 2678.6,
+    "y": -3680.5
+  },
+  {
+    "id": "world-plant-v1-village-oaks-4-tree-3",
+    "x": 2745.3,
+    "y": -4118.6
+  },
+  {
+    "id": "world-plant-v1-village-oaks-4-tree-4",
+    "x": 2393.2,
+    "y": -3896.1
+  },
+  {
+    "id": "world-plant-v1-factory-ridge-4-tree-1",
+    "x": 7020.5,
+    "y": -2532.8
+  },
+  {
+    "id": "world-plant-v1-factory-ridge-4-tree-2",
+    "x": 7362.4,
+    "y": -2584.2
+  },
+  {
+    "id": "world-plant-v1-western-oaks-4-tree-1",
+    "x": -6161.2,
+    "y": -470.9
+  },
+  {
+    "id": "world-plant-v1-western-oaks-4-tree-2",
+    "x": -6506,
+    "y": 58.2
+  },
+  {
+    "id": "world-plant-v1-western-oaks-4-tree-3",
+    "x": -6753.340408151337,
+    "y": -157.48360646639577
+  },
+  {
+    "id": "world-plant-v1-western-oaks-4-tree-4",
+    "x": -6487.9,
+    "y": -529.5
+  },
+  {
+    "id": "world-plant-v1-western-oaks-4-tree-5",
+    "x": -6367.6,
+    "y": -220.8
+  },
+  {
+    "id": "world-plant-v1-eastern-pines-4-tree-1",
+    "x": 6153.6,
+    "y": 4701.4
+  },
+  {
+    "id": "world-plant-v1-eastern-pines-4-tree-2",
+    "x": 5603.5,
+    "y": 4345
+  },
+  {
+    "id": "world-plant-v1-eastern-pines-4-tree-3",
+    "x": 5763.6,
+    "y": 4631.3
+  },
+  {
+    "id": "world-plant-v1-eastern-pines-4-tree-4",
+    "x": 6178.2,
+    "y": 4985.8
+  },
+  {
+    "id": "world-plant-v1-eastern-hollows-4-tree-1",
+    "x": 8610.316393533603,
+    "y": 3743.359591848662
+  },
+  {
+    "id": "world-plant-v1-eastern-hollows-4-tree-2",
+    "x": 9043.2,
+    "y": 3881.7
+  },
+  {
+    "id": "world-plant-v1-waterworks-woods-4-tree-1",
+    "x": -5848.5,
+    "y": 6472
+  },
+  {
+    "id": "world-plant-v1-waterworks-woods-4-tree-2",
+    "x": -5484.7,
+    "y": 6565.5
+  },
+  {
+    "id": "world-plant-v1-waterworks-woods-4-tree-3",
+    "x": -5166.8,
+    "y": 6339.3
+  },
+  {
+    "id": "world-plant-v1-waterworks-woods-4-tree-4",
+    "x": -5558.7,
+    "y": 6213.6
+  },
+  {
+    "id": "world-plant-v1-lake-meadows-4-tree-1",
+    "x": 2220.3,
+    "y": 8493.8
+  },
+  {
+    "id": "world-plant-v1-southern-meadows-4-tree-1",
+    "x": 1183.3,
+    "y": 9881.3
+  },
+  {
+    "id": "world-plant-v1-scrapyard-scrub-4-tree-1",
+    "x": 5242.2,
+    "y": 8206.1
+  },
+  {
+    "id": "world-plant-v1-scrapyard-scrub-4-tree-2",
+    "x": 5553.9,
+    "y": 7713.2
+  },
+  {
+    "id": "world-plant-v1-southeast-rowans-4-tree-1",
+    "x": 4368.3,
+    "y": 9796
+  },
+  {
+    "id": "world-plant-v1-logging-pines-5-tree-1",
+    "x": -3790,
+    "y": -4972.8
+  },
+  {
+    "id": "world-plant-v1-logging-pines-5-tree-2",
+    "x": -3376.5,
+    "y": -4930
+  },
+  {
+    "id": "world-plant-v1-logging-pines-5-tree-3",
+    "x": -3132.9,
+    "y": -5198.9
+  },
+  {
+    "id": "world-plant-v1-logging-pines-5-tree-4",
+    "x": -3574.7,
+    "y": -5190.1
+  },
+  {
+    "id": "world-plant-v1-logging-pines-5-tree-5",
+    "x": -3025.8,
+    "y": -4944.8
+  },
+  {
+    "id": "world-plant-v1-northern-birches-5-tree-1",
+    "x": 953.1,
+    "y": -2567.8
+  },
+  {
+    "id": "world-plant-v1-northern-birches-5-tree-2",
+    "x": 1068.2,
+    "y": -2307.6
+  },
+  {
+    "id": "world-plant-v1-northern-birches-5-tree-3",
+    "x": 481.5,
+    "y": -2339.6
+  },
+  {
+    "id": "world-plant-v1-northern-birches-5-tree-4",
+    "x": 817.5,
+    "y": -2296.6
+  },
+  {
+    "id": "world-plant-v1-village-oaks-5-tree-1",
+    "x": 4504.3,
+    "y": -3910.3
+  },
+  {
+    "id": "world-plant-v1-village-oaks-5-tree-2",
+    "x": 4789.6,
+    "y": -3218.5
+  },
+  {
+    "id": "world-plant-v1-village-oaks-5-tree-3",
+    "x": 4605.4,
+    "y": -3558.3
+  },
+  {
+    "id": "world-plant-v1-factory-ridge-5-tree-1",
+    "x": 6229.7,
+    "y": -2043.1
+  },
+  {
+    "id": "world-plant-v1-factory-ridge-5-tree-2",
+    "x": 6410.5,
+    "y": -2325.3
+  },
+  {
+    "id": "world-plant-v1-western-oaks-5-tree-1",
+    "x": -5129,
+    "y": 3223.4
+  },
+  {
+    "id": "world-plant-v1-western-oaks-5-tree-2",
+    "x": -4635.1,
+    "y": 2976.3
+  },
+  {
+    "id": "world-plant-v1-western-oaks-5-tree-3",
+    "x": -4817.3,
+    "y": 3427.8
+  },
+  {
+    "id": "world-plant-v1-western-oaks-5-tree-4",
+    "x": -4927.8,
+    "y": 2670.6
+  },
+  {
+    "id": "world-plant-v1-eastern-pines-5-tree-1",
+    "x": 6096.3,
+    "y": 169.4
+  },
+  {
+    "id": "world-plant-v1-eastern-pines-5-tree-2",
+    "x": 6303.8,
+    "y": 510.6
+  },
+  {
+    "id": "world-plant-v1-eastern-pines-5-tree-3",
+    "x": 6340.3,
+    "y": -25.5
+  },
+  {
+    "id": "world-plant-v1-eastern-pines-5-tree-4",
+    "x": 6084.3,
+    "y": -315.4
+  },
+  {
+    "id": "world-plant-v1-eastern-hollows-5-tree-1",
+    "x": 8577.859591848663,
+    "y": 4688.816393533604
+  },
+  {
+    "id": "world-plant-v1-eastern-hollows-5-tree-2",
+    "x": 8947.3,
+    "y": 4806.7
+  },
+  {
+    "id": "world-plant-v1-waterworks-woods-5-tree-1",
+    "x": -4878.6,
+    "y": 5747.3
+  },
+  {
+    "id": "world-plant-v1-waterworks-woods-5-tree-2",
+    "x": -4404.3,
+    "y": 5895.4
+  },
+  {
+    "id": "world-plant-v1-waterworks-woods-5-tree-3",
+    "x": -4837.6,
+    "y": 6078.1
+  },
+  {
+    "id": "world-plant-v1-waterworks-woods-5-tree-4",
+    "x": -4555.3,
+    "y": 5622.3
+  },
+  {
+    "id": "world-plant-v1-lake-meadows-5-tree-1",
+    "x": 3082.3,
+    "y": 6979
+  },
+  {
+    "id": "world-plant-v1-southern-meadows-5-tree-1",
+    "x": 912.7,
+    "y": 8784.7
+  },
+  {
+    "id": "world-plant-v1-scrapyard-scrub-5-tree-1",
+    "x": 8918.5,
+    "y": 5840.8
+  },
+  {
+    "id": "world-plant-v1-scrapyard-scrub-5-tree-2",
+    "x": 9011.2,
+    "y": 5418.5
+  },
+  {
+    "id": "world-plant-v1-southeast-rowans-5-tree-1",
+    "x": 9428.1,
+    "y": 9615.6
+  },
+  {
+    "id": "world-plant-v1-logging-pines-6-tree-1",
+    "x": -3854.1,
+    "y": -5348.5
+  },
+  {
+    "id": "world-plant-v1-logging-pines-6-tree-2",
+    "x": -4287,
+    "y": -5258.9
+  },
+  {
+    "id": "world-plant-v1-logging-pines-6-tree-3",
+    "x": -4003.2,
+    "y": -5733.8
+  },
+  {
+    "id": "world-plant-v1-logging-pines-6-tree-4",
+    "x": -4267.8,
+    "y": -5863.7
+  },
+  {
+    "id": "world-plant-v1-logging-pines-6-tree-5",
+    "x": -4631.3,
+    "y": -5404.7
+  },
+  {
+    "id": "world-plant-v1-logging-pines-6-tree-6",
+    "x": -4450.8,
+    "y": -5664.5
+  },
+  {
+    "id": "world-plant-v1-northern-birches-6-tree-1",
+    "x": 1513.9,
+    "y": -5079.4
+  },
+  {
+    "id": "world-plant-v1-northern-birches-6-tree-2",
+    "x": 1272.6,
+    "y": -4905.9
+  },
+  {
+    "id": "world-plant-v1-northern-birches-6-tree-3",
+    "x": 974.3595918486626,
+    "y": -4621.883606466396
+  },
+  {
+    "id": "world-plant-v1-northern-birches-6-tree-4",
+    "x": 1775.7,
+    "y": -4928
+  },
+  {
+    "id": "world-plant-v1-village-oaks-6-tree-1",
+    "x": 5755.4,
+    "y": -4036.8
+  },
+  {
+    "id": "world-plant-v1-village-oaks-6-tree-2",
+    "x": 5289.6,
+    "y": -3912.3
+  },
+  {
+    "id": "world-plant-v1-village-oaks-6-tree-3",
+    "x": 6013.5,
+    "y": -4275.2
+  },
+  {
+    "id": "world-plant-v1-village-oaks-6-tree-4",
+    "x": 5628,
+    "y": -3695.5
+  },
+  {
+    "id": "world-plant-v1-factory-ridge-6-tree-1",
+    "x": 7748.3,
+    "y": -5278.4
+  },
+  {
+    "id": "world-plant-v1-factory-ridge-6-tree-2",
+    "x": 7767.9,
+    "y": -5812.2
+  },
+  {
+    "id": "world-plant-v1-western-oaks-6-tree-1",
+    "x": -6045.7,
+    "y": 3772.9
+  },
+  {
+    "id": "world-plant-v1-western-oaks-6-tree-2",
+    "x": -6760.6,
+    "y": 3811.6
+  },
+  {
+    "id": "world-plant-v1-western-oaks-6-tree-3",
+    "x": -6392,
+    "y": 3403.4
+  },
+  {
+    "id": "world-plant-v1-western-oaks-6-tree-4",
+    "x": -5843.2,
+    "y": 3398.9
+  },
+  {
+    "id": "world-plant-v1-western-oaks-6-tree-5",
+    "x": -6395.2,
+    "y": 3846.6
+  },
+  {
+    "id": "world-plant-v1-eastern-pines-6-tree-1",
+    "x": 5813.4,
+    "y": 1257.3
+  },
+  {
+    "id": "world-plant-v1-eastern-pines-6-tree-2",
+    "x": 5803.4,
+    "y": 971.9
+  },
+  {
+    "id": "world-plant-v1-eastern-pines-6-tree-3",
+    "x": 6041.7,
+    "y": 1102.1
+  },
+  {
+    "id": "world-plant-v1-eastern-pines-6-tree-4",
+    "x": 5528.7,
+    "y": 839.8
+  },
+  {
+    "id": "world-plant-v1-eastern-hollows-6-tree-1",
+    "x": 9693.7,
+    "y": 1291.6
+  },
+  {
+    "id": "world-plant-v1-eastern-hollows-6-tree-2",
+    "x": 9701.059591848662,
+    "y": 968.1163935336043
+  },
+  {
+    "id": "world-plant-v1-waterworks-woods-6-tree-1",
+    "x": -6625.5,
+    "y": 8352.5
+  },
+  {
+    "id": "world-plant-v1-waterworks-woods-6-tree-2",
+    "x": -6352,
+    "y": 7923.2
+  },
+  {
+    "id": "world-plant-v1-waterworks-woods-6-tree-3",
+    "x": -6670.1,
+    "y": 8053.4
+  },
+  {
+    "id": "world-plant-v1-waterworks-woods-6-tree-4",
+    "x": -6273.9,
+    "y": 8253.4
+  },
+  {
+    "id": "world-plant-v1-lake-meadows-6-tree-1",
+    "x": 1922.5,
+    "y": 5702.8
+  },
+  {
+    "id": "world-plant-v1-southern-meadows-6-tree-1",
+    "x": 3073.3,
+    "y": 10115.3
+  },
+  {
+    "id": "world-plant-v1-scrapyard-scrub-6-tree-1",
+    "x": 5539,
+    "y": 6191.5
+  },
+  {
+    "id": "world-plant-v1-scrapyard-scrub-6-tree-2",
+    "x": 5465.9,
+    "y": 6567.5
+  },
+  {
+    "id": "world-plant-v1-southeast-rowans-6-tree-1",
+    "x": 7624.4,
+    "y": 10541.2
+  },
+  {
+    "id": "world-plant-v1-northern-birches-7-tree-1",
+    "x": -169.8,
+    "y": -1500.5
+  },
+  {
+    "id": "world-plant-v1-northern-birches-7-tree-2",
+    "x": 199.4,
+    "y": -1464
+  },
+  {
+    "id": "world-plant-v1-northern-birches-7-tree-3",
+    "x": -520.6,
+    "y": -1582.1
+  },
+  {
+    "id": "world-plant-v1-northern-birches-7-tree-4",
+    "x": -462.34040815133744,
+    "y": -1281.0836064663958
+  },
+  {
+    "id": "world-plant-v1-village-oaks-7-tree-1",
+    "x": 2003.5,
+    "y": -2703
+  },
+  {
+    "id": "world-plant-v1-village-oaks-7-tree-2",
+    "x": 1894.3,
+    "y": -2322.6
+  },
+  {
+    "id": "world-plant-v1-village-oaks-7-tree-3",
+    "x": 2285.7,
+    "y": -2982.6
+  },
+  {
+    "id": "world-plant-v1-village-oaks-7-tree-4",
+    "x": 2223.5,
+    "y": -2446.9
+  },
+  {
+    "id": "world-plant-v1-factory-ridge-7-tree-1",
+    "x": 9918.7,
+    "y": -3746
+  },
+  {
+    "id": "world-plant-v1-factory-ridge-7-tree-2",
+    "x": 9645.6,
+    "y": -3794.1
+  },
+  {
+    "id": "world-plant-v1-western-oaks-7-tree-1",
+    "x": -5567.2,
+    "y": -322.5
+  },
+  {
+    "id": "world-plant-v1-western-oaks-7-tree-2",
+    "x": -5179.5,
+    "y": -733.4
+  },
+  {
+    "id": "world-plant-v1-western-oaks-7-tree-3",
+    "x": -5146.1,
+    "y": -450.7
+  },
+  {
+    "id": "world-plant-v1-western-oaks-7-tree-4",
+    "x": -4874.5,
+    "y": -582.8
+  },
+  {
+    "id": "world-plant-v1-western-oaks-7-tree-5",
+    "x": -5287.8,
+    "y": -150.5
+  },
+  {
+    "id": "world-plant-v1-eastern-pines-7-tree-1",
+    "x": 7138.6,
+    "y": 3276.7
+  },
+  {
+    "id": "world-plant-v1-eastern-pines-7-tree-2",
+    "x": 7484.4,
+    "y": 3527.1
+  },
+  {
+    "id": "world-plant-v1-eastern-pines-7-tree-3",
+    "x": 7406.4,
+    "y": 3250.4
+  },
+  {
+    "id": "world-plant-v1-eastern-pines-7-tree-4",
+    "x": 7344.9,
+    "y": 2968.6
+  },
+  {
+    "id": "world-plant-v1-eastern-hollows-7-tree-1",
+    "x": 8586.5,
+    "y": -194.2
+  },
+  {
+    "id": "world-plant-v1-eastern-hollows-7-tree-2",
+    "x": 8257,
+    "y": -143.8
+  },
+  {
+    "id": "world-plant-v1-waterworks-woods-7-tree-1",
+    "x": -5917.6,
+    "y": 5329.3
+  },
+  {
+    "id": "world-plant-v1-waterworks-woods-7-tree-2",
+    "x": -5568.1,
+    "y": 4951.6
+  },
+  {
+    "id": "world-plant-v1-waterworks-woods-7-tree-3",
+    "x": -5573.9,
+    "y": 5390.2
+  },
+  {
+    "id": "world-plant-v1-waterworks-woods-7-tree-4",
+    "x": -5900.6,
+    "y": 5035.2
+  },
+  {
+    "id": "world-plant-v1-lake-meadows-7-tree-1",
+    "x": 2086.4,
+    "y": 5215.9
+  },
+  {
+    "id": "world-plant-v1-southern-meadows-7-tree-1",
+    "x": 134.3,
+    "y": 10437.1
+  },
+  {
+    "id": "world-plant-v1-scrapyard-scrub-7-tree-1",
+    "x": 8635.4,
+    "y": 6719.9
+  },
+  {
+    "id": "world-plant-v1-scrapyard-scrub-7-tree-2",
+    "x": 8614.6,
+    "y": 6375.8
+  },
+  {
+    "id": "world-plant-v1-southeast-rowans-7-tree-1",
+    "x": 7446.7,
+    "y": 11756.9
+  },
+  {
+    "id": "world-plant-v1-northern-birches-8-tree-1",
+    "x": -1370.4,
+    "y": -5497.5
+  },
+  {
+    "id": "world-plant-v1-northern-birches-8-tree-2",
+    "x": -1458.8,
+    "y": -5775.4
+  },
+  {
+    "id": "world-plant-v1-northern-birches-8-tree-3",
+    "x": -1578.4,
+    "y": -5220.2
+  },
+  {
+    "id": "world-plant-v1-northern-birches-8-tree-4",
+    "x": -1771.7,
+    "y": -5460.8
+  },
+  {
+    "id": "world-plant-v1-village-oaks-8-tree-1",
+    "x": 5853.4,
+    "y": -5459.7
+  },
+  {
+    "id": "world-plant-v1-village-oaks-8-tree-2",
+    "x": 5515.2,
+    "y": -5043.3
+  },
+  {
+    "id": "world-plant-v1-village-oaks-8-tree-3",
+    "x": 5473.3,
+    "y": -4686.2
+  },
+  {
+    "id": "world-plant-v1-village-oaks-8-tree-4",
+    "x": 5562.8,
+    "y": -5398.6
+  },
+  {
+    "id": "world-plant-v1-factory-ridge-8-tree-1",
+    "x": 10394,
+    "y": -2363.4
+  },
+  {
+    "id": "world-plant-v1-factory-ridge-8-tree-2",
+    "x": 10206.3,
+    "y": -2664.9
+  },
+  {
+    "id": "world-plant-v1-western-oaks-8-tree-1",
+    "x": -6841.2,
+    "y": 886.4
+  },
+  {
+    "id": "world-plant-v1-western-oaks-8-tree-2",
+    "x": -6191.1,
+    "y": 763.8
+  },
+  {
+    "id": "world-plant-v1-western-oaks-8-tree-3",
+    "x": -6525.6,
+    "y": 501.3
+  },
+  {
+    "id": "world-plant-v1-western-oaks-8-tree-4",
+    "x": -6862.1,
+    "y": 450.2
+  },
+  {
+    "id": "world-plant-v1-western-oaks-8-tree-5",
+    "x": -6476.368001537786,
+    "y": 1043.3319984622144
+  },
+  {
+    "id": "world-plant-v1-eastern-pines-8-tree-1",
+    "x": 4427,
+    "y": 338.9
+  },
+  {
+    "id": "world-plant-v1-eastern-pines-8-tree-2",
+    "x": 4717,
+    "y": 324.6
+  },
+  {
+    "id": "world-plant-v1-eastern-pines-8-tree-3",
+    "x": 4352.6,
+    "y": -34.5
+  },
+  {
+    "id": "world-plant-v1-eastern-pines-8-tree-4",
+    "x": 4580.9,
+    "y": -424.7
+  },
+  {
+    "id": "world-plant-v1-eastern-hollows-8-tree-1",
+    "x": 8743.559591848662,
+    "y": 1350.016393533604
+  },
+  {
+    "id": "world-plant-v1-eastern-hollows-8-tree-2",
+    "x": 8942.7,
+    "y": 1557
+  },
+  {
+    "id": "world-plant-v1-lake-meadows-8-tree-1",
+    "x": 777.5,
+    "y": 6236.8
+  },
+  {
+    "id": "world-plant-v1-southern-meadows-8-tree-1",
+    "x": 1158.6,
+    "y": 11065
+  },
+  {
+    "id": "world-plant-v1-scrapyard-scrub-8-tree-1",
+    "x": 5846.4,
+    "y": 7008.4
+  },
+  {
+    "id": "world-plant-v1-scrapyard-scrub-8-tree-2",
+    "x": 5662.2,
+    "y": 7321.4
+  },
+  {
+    "id": "world-plant-v1-southeast-rowans-8-tree-1",
+    "x": 9253.3,
+    "y": 10711.6
+  },
+  {
+    "id": "world-plant-v1-northern-birches-9-tree-1",
+    "x": 183.3,
+    "y": -5145.2
+  },
+  {
+    "id": "world-plant-v1-northern-birches-9-tree-2",
+    "x": -485.70000000000005,
+    "y": -5341.5
+  },
+  {
+    "id": "world-plant-v1-northern-birches-9-tree-3",
+    "x": -99.6,
+    "y": -5082.7
+  },
+  {
+    "id": "world-plant-v1-northern-birches-9-tree-4",
+    "x": 274.8,
+    "y": -5493.2
+  },
+  {
+    "id": "world-plant-v1-eastern-pines-9-tree-1",
+    "x": 4997.5,
+    "y": 3296.4
+  },
+  {
+    "id": "world-plant-v1-eastern-pines-9-tree-2",
+    "x": 4301.9,
+    "y": 2889.2
+  },
+  {
+    "id": "world-plant-v1-eastern-pines-9-tree-3",
+    "x": 4986.5,
+    "y": 2857.1
+  },
+  {
+    "id": "world-plant-v1-eastern-pines-9-tree-4",
+    "x": 4335.931998462214,
+    "y": 3258.7319984622145
+  },
+  {
+    "id": "world-plant-v1-northern-birches-10-tree-1",
+    "x": -2825.6,
+    "y": -3771.6
+  },
+  {
+    "id": "world-plant-v1-northern-birches-10-tree-2",
+    "x": -2392.7,
+    "y": -4256.7
+  },
+  {
+    "id": "world-plant-v1-northern-birches-10-tree-3",
+    "x": -2459.4,
+    "y": -3902.8
+  },
+  {
+    "id": "world-plant-v1-northern-birches-10-tree-4",
+    "x": -2249.3,
+    "y": -3666.8
+  },
+  {
+    "id": "world-plant-v1-eastern-pines-10-tree-1",
+    "x": 6374.4,
+    "y": 1775.9
+  },
+  {
+    "id": "world-plant-v1-eastern-pines-10-tree-2",
+    "x": 6444.8,
+    "y": 2233.2
+  },
+  {
+    "id": "world-plant-v1-eastern-pines-10-tree-3",
+    "x": 6342.6,
+    "y": 1418.1
+  },
+  {
+    "id": "world-plant-v1-eastern-pines-10-tree-4",
+    "x": 6561,
+    "y": 1590.6
+  }
+]

@@ -1,0 +1,341 @@
+{
+  "method": "Built-in image generation; registered material-detail compositing; lossless streamed chunks",
+  "batches": [
+    {
+      "name": "headwaters",
+      "batch": 0,
+      "previousNative": [
+        1070,
+        1470
+      ],
+      "detailNative": [
+        2140,
+        2940
+      ],
+      "generatedTiles": 3,
+      "minNativeScale": 1.8782608695652174,
+      "boundaryProtected": 40642,
+      "shoreClassificationChanged": 0
+    },
+    {
+      "name": "logging",
+      "batch": 1,
+      "previousNative": [
+        1254,
+        1254
+      ],
+      "detailNative": [
+        2508,
+        2508
+      ],
+      "generatedTiles": 4,
+      "minNativeScale": 1.8800599700149925,
+      "boundaryProtected": 32335,
+      "shoreClassificationChanged": 0
+    },
+    {
+      "name": "western",
+      "batch": 2,
+      "previousNative": [
+        1330,
+        1182
+      ],
+      "detailNative": [
+        2660,
+        2364
+      ],
+      "generatedTiles": 3,
+      "minNativeScale": 1.879556259904913,
+      "boundaryProtected": 26527,
+      "shoreClassificationChanged": 0
+    },
+    {
+      "name": "waterworks",
+      "batch": 3,
+      "previousNative": [
+        1330,
+        1182
+      ],
+      "detailNative": [
+        2660,
+        2364
+      ],
+      "generatedTiles": 3,
+      "minNativeScale": 1.879556259904913,
+      "boundaryProtected": 20364,
+      "shoreClassificationChanged": 0
+    },
+    {
+      "name": "lower",
+      "batch": 4,
+      "previousNative": [
+        1330,
+        1182
+      ],
+      "detailNative": [
+        2660,
+        2364
+      ],
+      "generatedTiles": 4,
+      "minNativeScale": 1.879556259904913,
+      "boundaryProtected": 29944,
+      "shoreClassificationChanged": 0
+    },
+    {
+      "name": "southern",
+      "batch": 5,
+      "previousNative": [
+        1269,
+        1240
+      ],
+      "detailNative": [
+        2538,
+        2480
+      ],
+      "generatedTiles": 4,
+      "minNativeScale": 1.878787878787879,
+      "boundaryProtected": 24236,
+      "shoreClassificationChanged": 0
+    }
+  ],
+  "chunkCount": 170,
+  "maximumChunkBytes": 1115136,
+  "riverBudget": 20971520,
+  "prompts": [
+    {
+      "id": "headwaters-0-0",
+      "prompt": "Use case: precise-object-edit. EDIT THIS CROPPED TERRAIN TILE ONLY; do not zoom out or show a larger map. Enlarge and restore this tile with much finer native painted detail, at the highest available output resolution, approximately 1536 pixels across. This is a close-up detail restoration for Safety Last's overhead 2D game. Match the crop's framing and ALL existing riverbank contours, rock shapes, bridges, paths, streams and waterfall positions exactly. Preserve the warm ochre/brown dirt, slate grey stones, blue/teal clear water and finely hand-painted old-school game style. Add fine rock grain and small chipped facets, clear small bank pebbles/contact shadows, delicate shallow-water stones and narrow irregular highlights in the existing water. Avoid smooth plastic cartoon boulders, soft enlarged-image blur, excessive halos and repetitive zigzags. Fine details belong INSIDE the existing forms; do not add or move large objects or change any shoreline or crossing. Calm water remains calm; no new rapids, trees, foliage, props or paths. All four edges must align with the reference. No text, borders, panels, labels, crop or perspective change. Return only this same tightly cropped tile at higher detail.",
+      "builtIn": true
+    },
+    {
+      "id": "headwaters-0-1",
+      "prompt": "Use case: precise-object-edit. EDIT THIS CROPPED TERRAIN TILE ONLY; do not zoom out or show a larger map. Enlarge and restore this tile with much finer native painted detail, at the highest available output resolution, approximately 1536 pixels across. This is a close-up detail restoration for Safety Last's overhead 2D game. Match the crop's framing and ALL existing riverbank contours, rock shapes, bridges, paths, streams and waterfall positions exactly. Preserve the warm ochre/brown dirt, slate grey stones, blue/teal clear water and finely hand-painted old-school game style. Add fine rock grain and small chipped facets, clear small bank pebbles/contact shadows, delicate shallow-water stones and narrow irregular highlights in the existing water. Avoid smooth plastic cartoon boulders, soft enlarged-image blur, excessive halos and repetitive zigzags. Fine details belong INSIDE the existing forms; do not add or move large objects or change any shoreline or crossing. Calm water remains calm; no new rapids, trees, foliage, props or paths. All four edges must align with the reference. No text, borders, panels, labels, crop or perspective change. Return only this same tightly cropped tile at higher detail.",
+      "builtIn": true
+    },
+    {
+      "id": "headwaters-1-1",
+      "prompt": "Use case: precise-object-edit. EDIT THIS CROPPED TERRAIN TILE ONLY; do not zoom out or show a larger map. Enlarge and restore this tile with much finer native painted detail, at the highest available output resolution, approximately 1536 pixels across. This is a close-up detail restoration for Safety Last's overhead 2D game. Match the crop's framing and ALL existing riverbank contours, rock shapes, bridges, paths, streams and waterfall positions exactly. Preserve the warm ochre/brown dirt, slate grey stones, blue/teal clear water and finely hand-painted old-school game style. Add fine rock grain and small chipped facets, clear small bank pebbles/contact shadows, delicate shallow-water stones and narrow irregular highlights in the existing water. Avoid smooth plastic cartoon boulders, soft enlarged-image blur, excessive halos and repetitive zigzags. Fine details belong INSIDE the existing forms; do not add or move large objects or change any shoreline or crossing. Calm water remains calm; no new rapids, trees, foliage, props or paths. All four edges must align with the reference. No text, borders, panels, labels, crop or perspective change. Return only this same tightly cropped tile at higher detail.",
+      "builtIn": true
+    },
+    {
+      "id": "logging-0-0",
+      "prompt": "Use case: precise-object-edit. EDIT THIS CROPPED TERRAIN TILE ONLY; do not zoom out or show a larger map. Enlarge and restore this tile with much finer native painted detail, at the highest available output resolution, approximately 1536 pixels across. This is a close-up detail restoration for Safety Last's overhead 2D game. Match the crop's framing and ALL existing riverbank contours, rock shapes, bridges, paths, streams and waterfall positions exactly. Preserve the warm ochre/brown dirt, slate grey stones, blue/teal clear water and finely hand-painted old-school game style. Add fine rock grain and small chipped facets, clear small bank pebbles/contact shadows, delicate shallow-water stones and narrow irregular highlights in the existing water. Avoid smooth plastic cartoon boulders, soft enlarged-image blur, excessive halos and repetitive zigzags. Fine details belong INSIDE the existing forms; do not add or move large objects or change any shoreline or crossing. Calm water remains calm; no new rapids, trees, foliage, props or paths. All four edges must align with the reference. No text, borders, panels, labels, crop or perspective change. Return only this same tightly cropped tile at higher detail.",
+      "builtIn": true
+    },
+    {
+      "id": "logging-0-1",
+      "prompt": "Use case: precise-object-edit. EDIT THIS CROPPED TERRAIN TILE ONLY; do not zoom out or show a larger map. Enlarge and restore this tile with much finer native painted detail, at the highest available output resolution, approximately 1536 pixels across. This is a close-up detail restoration for Safety Last's overhead 2D game. Match the crop's framing and ALL existing riverbank contours, rock shapes, bridges, paths, streams and waterfall positions exactly. Preserve the warm ochre/brown dirt, slate grey stones, blue/teal clear water and finely hand-painted old-school game style. Add fine rock grain and small chipped facets, clear small bank pebbles/contact shadows, delicate shallow-water stones and narrow irregular highlights in the existing water. Avoid smooth plastic cartoon boulders, soft enlarged-image blur, excessive halos and repetitive zigzags. Fine details belong INSIDE the existing forms; do not add or move large objects or change any shoreline or crossing. Calm water remains calm; no new rapids, trees, foliage, props or paths. All four edges must align with the reference. No text, borders, panels, labels, crop or perspective change. Return only this same tightly cropped tile at higher detail.",
+      "builtIn": true
+    },
+    {
+      "id": "logging-1-0",
+      "prompt": "Use case: precise-object-edit. EDIT THIS CROPPED TERRAIN TILE ONLY; do not zoom out or show a larger map. Enlarge and restore this tile with much finer native painted detail, at the highest available output resolution, approximately 1536 pixels across. This is a close-up detail restoration for Safety Last's overhead 2D game. Match the crop's framing and ALL existing riverbank contours, rock shapes, bridges, paths, streams and waterfall positions exactly. Preserve the warm ochre/brown dirt, slate grey stones, blue/teal clear water and finely hand-painted old-school game style. Add fine rock grain and small chipped facets, clear small bank pebbles/contact shadows, delicate shallow-water stones and narrow irregular highlights in the existing water. Avoid smooth plastic cartoon boulders, soft enlarged-image blur, excessive halos and repetitive zigzags. Fine details belong INSIDE the existing forms; do not add or move large objects or change any shoreline or crossing. Calm water remains calm; no new rapids, trees, foliage, props or paths. All four edges must align with the reference. No text, borders, panels, labels, crop or perspective change. Return only this same tightly cropped tile at higher detail.",
+      "builtIn": true
+    },
+    {
+      "id": "logging-1-1",
+      "prompt": "Use case: precise-object-edit. EDIT THIS CROPPED TERRAIN TILE ONLY; do not zoom out or show a larger map. Enlarge and restore this tile with much finer native painted detail, at the highest available output resolution, approximately 1536 pixels across. This is a close-up detail restoration for Safety Last's overhead 2D game. Match the crop's framing and ALL existing riverbank contours, rock shapes, bridges, paths, streams and waterfall positions exactly. Preserve the warm ochre/brown dirt, slate grey stones, blue/teal clear water and finely hand-painted old-school game style. Add fine rock grain and small chipped facets, clear small bank pebbles/contact shadows, delicate shallow-water stones and narrow irregular highlights in the existing water. Avoid smooth plastic cartoon boulders, soft enlarged-image blur, excessive halos and repetitive zigzags. Fine details belong INSIDE the existing forms; do not add or move large objects or change any shoreline or crossing. Calm water remains calm; no new rapids, trees, foliage, props or paths. All four edges must align with the reference. No text, borders, panels, labels, crop or perspective change. Return only this same tightly cropped tile at higher detail.",
+      "builtIn": true
+    },
+    {
+      "id": "western-0-1",
+      "prompt": "Use case: precise-object-edit. EDIT THIS CROPPED TERRAIN TILE ONLY; do not zoom out or show a larger map. Enlarge and restore this tile with much finer native painted detail, at the highest available output resolution, approximately 1536 pixels across. This is a close-up detail restoration for Safety Last's overhead 2D game. Match the crop's framing and ALL existing riverbank contours, rock shapes, bridges, paths, streams and waterfall positions exactly. Preserve the warm ochre/brown dirt, slate grey stones, blue/teal clear water and finely hand-painted old-school game style. Add fine rock grain and small chipped facets, clear small bank pebbles/contact shadows, delicate shallow-water stones and narrow irregular highlights in the existing water. Avoid smooth plastic cartoon boulders, soft enlarged-image blur, excessive halos and repetitive zigzags. Fine details belong INSIDE the existing forms; do not add or move large objects or change any shoreline or crossing. Calm water remains calm; no new rapids, trees, foliage, props or paths. All four edges must align with the reference. No text, borders, panels, labels, crop or perspective change. Return only this same tightly cropped tile at higher detail.",
+      "builtIn": true
+    },
+    {
+      "id": "western-1-0",
+      "prompt": "Use case: precise-object-edit. EDIT THIS CROPPED TERRAIN TILE ONLY; do not zoom out or show a larger map. Enlarge and restore this tile with much finer native painted detail, at the highest available output resolution, approximately 1536 pixels across. This is a close-up detail restoration for Safety Last's overhead 2D game. Match the crop's framing and ALL existing riverbank contours, rock shapes, bridges, paths, streams and waterfall positions exactly. Preserve the warm ochre/brown dirt, slate grey stones, blue/teal clear water and finely hand-painted old-school game style. Add fine rock grain and small chipped facets, clear small bank pebbles/contact shadows, delicate shallow-water stones and narrow irregular highlights in the existing water. Avoid smooth plastic cartoon boulders, soft enlarged-image blur, excessive halos and repetitive zigzags. Fine details belong INSIDE the existing forms; do not add or move large objects or change any shoreline or crossing. Calm water remains calm; no new rapids, trees, foliage, props or paths. All four edges must align with the reference. No text, borders, panels, labels, crop or perspective change. Return only this same tightly cropped tile at higher detail.",
+      "builtIn": true
+    },
+    {
+      "id": "western-1-1",
+      "prompt": "Use case: precise-object-edit. EDIT THIS CROPPED TERRAIN TILE ONLY; do not zoom out or show a larger map. Enlarge and restore this tile with much finer native painted detail, at the highest available output resolution, approximately 1536 pixels across. This is a close-up detail restoration for Safety Last's overhead 2D game. Match the crop's framing and ALL existing riverbank contours, rock shapes, bridges, paths, streams and waterfall positions exactly. Preserve the warm ochre/brown dirt, slate grey stones, blue/teal clear water and finely hand-painted old-school game style. Add fine rock grain and small chipped facets, clear small bank pebbles/contact shadows, delicate shallow-water stones and narrow irregular highlights in the existing water. Avoid smooth plastic cartoon boulders, soft enlarged-image blur, excessive halos and repetitive zigzags. Fine details belong INSIDE the existing forms; do not add or move large objects or change any shoreline or crossing. Calm water remains calm; no new rapids, trees, foliage, props or paths. All four edges must align with the reference. No text, borders, panels, labels, crop or perspective change. Return only this same tightly cropped tile at higher detail.",
+      "builtIn": true
+    },
+    {
+      "id": "waterworks-0-0",
+      "prompt": "Use case: precise-object-edit. EDIT THIS CROPPED TERRAIN TILE ONLY; do not zoom out or show a larger map. Enlarge and restore this tile with much finer native painted detail, at the highest available output resolution, approximately 1536 pixels across. This is a close-up detail restoration for Safety Last's overhead 2D game. Match the crop's framing and ALL existing riverbank contours, rock shapes, bridges, paths, streams and waterfall positions exactly. Preserve the warm ochre/brown dirt, slate grey stones, blue/teal clear water and finely hand-painted old-school game style. Add fine rock grain and small chipped facets, clear small bank pebbles/contact shadows, delicate shallow-water stones and narrow irregular highlights in the existing water. Avoid smooth plastic cartoon boulders, soft enlarged-image blur, excessive halos and repetitive zigzags. Fine details belong INSIDE the existing forms; do not add or move large objects or change any shoreline or crossing. Calm water remains calm; no new rapids, trees, foliage, props or paths. All four edges must align with the reference. No text, borders, panels, labels, crop or perspective change. Return only this same tightly cropped tile at higher detail.",
+      "builtIn": true
+    },
+    {
+      "id": "waterworks-0-1",
+      "prompt": "Use case: precise-object-edit. EDIT THIS CROPPED TERRAIN TILE ONLY; do not zoom out or show a larger map. Enlarge and restore this tile with much finer native painted detail, at the highest available output resolution, approximately 1536 pixels across. This is a close-up detail restoration for Safety Last's overhead 2D game. Match the crop's framing and ALL existing riverbank contours, rock shapes, bridges, paths, streams and waterfall positions exactly. Preserve the warm ochre/brown dirt, slate grey stones, blue/teal clear water and finely hand-painted old-school game style. Add fine rock grain and small chipped facets, clear small bank pebbles/contact shadows, delicate shallow-water stones and narrow irregular highlights in the existing water. Avoid smooth plastic cartoon boulders, soft enlarged-image blur, excessive halos and repetitive zigzags. Fine details belong INSIDE the existing forms; do not add or move large objects or change any shoreline or crossing. Calm water remains calm; no new rapids, trees, foliage, props or paths. All four edges must align with the reference. No text, borders, panels, labels, crop or perspective change. Return only this same tightly cropped tile at higher detail.",
+      "builtIn": true
+    },
+    {
+      "id": "waterworks-1-1",
+      "prompt": "Use case: precise-object-edit. EDIT THIS CROPPED TERRAIN TILE ONLY; do not zoom out or show a larger map. Enlarge and restore this tile with much finer native painted detail, at the highest available output resolution, approximately 1536 pixels across. This is a close-up detail restoration for Safety Last's overhead 2D game. Match the crop's framing and ALL existing riverbank contours, rock shapes, bridges, paths, streams and waterfall positions exactly. Preserve the warm ochre/brown dirt, slate grey stones, blue/teal clear water and finely hand-painted old-school game style. Add fine rock grain and small chipped facets, clear small bank pebbles/contact shadows, delicate shallow-water stones and narrow irregular highlights in the existing water. Avoid smooth plastic cartoon boulders, soft enlarged-image blur, excessive halos and repetitive zigzags. Fine details belong INSIDE the existing forms; do not add or move large objects or change any shoreline or crossing. Calm water remains calm; no new rapids, trees, foliage, props or paths. All four edges must align with the reference. No text, borders, panels, labels, crop or perspective change. Return only this same tightly cropped tile at higher detail.",
+      "builtIn": true
+    },
+    {
+      "id": "lower-0-0",
+      "prompt": "Use case: precise-object-edit. EDIT THIS CROPPED TERRAIN TILE ONLY; do not zoom out or show a larger map. Enlarge and restore this tile with much finer native painted detail, at the highest available output resolution, approximately 1536 pixels across. This is a close-up detail restoration for Safety Last's overhead 2D game. Match the crop's framing and ALL existing riverbank contours, rock shapes, bridges, paths, streams and waterfall positions exactly. Preserve the warm ochre/brown dirt, slate grey stones, blue/teal clear water and finely hand-painted old-school game style. Add fine rock grain and small chipped facets, clear small bank pebbles/contact shadows, delicate shallow-water stones and narrow irregular highlights in the existing water. Avoid smooth plastic cartoon boulders, soft enlarged-image blur, excessive halos and repetitive zigzags. Fine details belong INSIDE the existing forms; do not add or move large objects or change any shoreline or crossing. Calm water remains calm; no new rapids, trees, foliage, props or paths. All four edges must align with the reference. No text, borders, panels, labels, crop or perspective change. Return only this same tightly cropped tile at higher detail.",
+      "builtIn": true
+    },
+    {
+      "id": "lower-0-1",
+      "prompt": "Use case: precise-object-edit. EDIT THIS CROPPED TERRAIN TILE ONLY; do not zoom out or show a larger map. Enlarge and restore this tile with much finer native painted detail, at the highest available output resolution, approximately 1536 pixels across. This is a close-up detail restoration for Safety Last's overhead 2D game. Match the crop's framing and ALL existing riverbank contours, rock shapes, bridges, paths, streams and waterfall positions exactly. Preserve the warm ochre/brown dirt, slate grey stones, blue/teal clear water and finely hand-painted old-school game style. Add fine rock grain and small chipped facets, clear small bank pebbles/contact shadows, delicate shallow-water stones and narrow irregular highlights in the existing water. Avoid smooth plastic cartoon boulders, soft enlarged-image blur, excessive halos and repetitive zigzags. Fine details belong INSIDE the existing forms; do not add or move large objects or change any shoreline or crossing. Calm water remains calm; no new rapids, trees, foliage, props or paths. All four edges must align with the reference. No text, borders, panels, labels, crop or perspective change. Return only this same tightly cropped tile at higher detail.",
+      "builtIn": true
+    },
+    {
+      "id": "lower-1-0",
+      "prompt": "Use case: precise-object-edit. EDIT THIS CROPPED TERRAIN TILE ONLY; do not zoom out or show a larger map. Enlarge and restore this tile with much finer native painted detail, at the highest available output resolution, approximately 1536 pixels across. This is a close-up detail restoration for Safety Last's overhead 2D game. Match the crop's framing and ALL existing riverbank contours, rock shapes, bridges, paths, streams and waterfall positions exactly. Preserve the warm ochre/brown dirt, slate grey stones, blue/teal clear water and finely hand-painted old-school game style. Add fine rock grain and small chipped facets, clear small bank pebbles/contact shadows, delicate shallow-water stones and narrow irregular highlights in the existing water. Avoid smooth plastic cartoon boulders, soft enlarged-image blur, excessive halos and repetitive zigzags. Fine details belong INSIDE the existing forms; do not add or move large objects or change any shoreline or crossing. Calm water remains calm; no new rapids, trees, foliage, props or paths. All four edges must align with the reference. No text, borders, panels, labels, crop or perspective change. Return only this same tightly cropped tile at higher detail.",
+      "builtIn": true
+    },
+    {
+      "id": "lower-1-1",
+      "prompt": "Use case: precise-object-edit. EDIT THIS CROPPED TERRAIN TILE ONLY; do not zoom out or show a larger map. Enlarge and restore this tile with much finer native painted detail, at the highest available output resolution, approximately 1536 pixels across. This is a close-up detail restoration for Safety Last's overhead 2D game. Match the crop's framing and ALL existing riverbank contours, rock shapes, bridges, paths, streams and waterfall positions exactly. Preserve the warm ochre/brown dirt, slate grey stones, blue/teal clear water and finely hand-painted old-school game style. Add fine rock grain and small chipped facets, clear small bank pebbles/contact shadows, delicate shallow-water stones and narrow irregular highlights in the existing water. Avoid smooth plastic cartoon boulders, soft enlarged-image blur, excessive halos and repetitive zigzags. Fine details belong INSIDE the existing forms; do not add or move large objects or change any shoreline or crossing. Calm water remains calm; no new rapids, trees, foliage, props or paths. All four edges must align with the reference. No text, borders, panels, labels, crop or perspective change. Return only this same tightly cropped tile at higher detail.",
+      "builtIn": true
+    },
+    {
+      "id": "southern-0-0",
+      "prompt": "Use case: precise-object-edit. EDIT THIS CROPPED TERRAIN TILE ONLY; do not zoom out or show a larger map. Enlarge and restore this tile with much finer native painted detail, at the highest available output resolution, approximately 1536 pixels across. This is a close-up detail restoration for Safety Last's overhead 2D game. Match the crop's framing and ALL existing riverbank contours, rock shapes, bridges, paths, streams and waterfall positions exactly. Preserve the warm ochre/brown dirt, slate grey stones, blue/teal clear water and finely hand-painted old-school game style. Add fine rock grain and small chipped facets, clear small bank pebbles/contact shadows, delicate shallow-water stones and narrow irregular highlights in the existing water. Avoid smooth plastic cartoon boulders, soft enlarged-image blur, excessive halos and repetitive zigzags. Fine details belong INSIDE the existing forms; do not add or move large objects or change any shoreline or crossing. Calm water remains calm; no new rapids, trees, foliage, props or paths. All four edges must align with the reference. No text, borders, panels, labels, crop or perspective change. Return only this same tightly cropped tile at higher detail.",
+      "builtIn": true
+    },
+    {
+      "id": "southern-0-1",
+      "prompt": "Use case: precise-object-edit. EDIT THIS CROPPED TERRAIN TILE ONLY; do not zoom out or show a larger map. Enlarge and restore this tile with much finer native painted detail, at the highest available output resolution, approximately 1536 pixels across. This is a close-up detail restoration for Safety Last's overhead 2D game. Match the crop's framing and ALL existing riverbank contours, rock shapes, bridges, paths, streams and waterfall positions exactly. Preserve the warm ochre/brown dirt, slate grey stones, blue/teal clear water and finely hand-painted old-school game style. Add fine rock grain and small chipped facets, clear small bank pebbles/contact shadows, delicate shallow-water stones and narrow irregular highlights in the existing water. Avoid smooth plastic cartoon boulders, soft enlarged-image blur, excessive halos and repetitive zigzags. Fine details belong INSIDE the existing forms; do not add or move large objects or change any shoreline or crossing. Calm water remains calm; no new rapids, trees, foliage, props or paths. All four edges must align with the reference. No text, borders, panels, labels, crop or perspective change. Return only this same tightly cropped tile at higher detail.",
+      "builtIn": true
+    },
+    {
+      "id": "southern-1-0",
+      "prompt": "Use case: precise-object-edit. EDIT THIS CROPPED TERRAIN TILE ONLY; do not zoom out or show a larger map. Enlarge and restore this tile with much finer native painted detail, at the highest available output resolution, approximately 1536 pixels across. This is a close-up detail restoration for Safety Last's overhead 2D game. Match the crop's framing and ALL existing riverbank contours, rock shapes, bridges, paths, streams and waterfall positions exactly. Preserve the warm ochre/brown dirt, slate grey stones, blue/teal clear water and finely hand-painted old-school game style. Add fine rock grain and small chipped facets, clear small bank pebbles/contact shadows, delicate shallow-water stones and narrow irregular highlights in the existing water. Avoid smooth plastic cartoon boulders, soft enlarged-image blur, excessive halos and repetitive zigzags. Fine details belong INSIDE the existing forms; do not add or move large objects or change any shoreline or crossing. Calm water remains calm; no new rapids, trees, foliage, props or paths. All four edges must align with the reference. No text, borders, panels, labels, crop or perspective change. Return only this same tightly cropped tile at higher detail.",
+      "builtIn": true
+    },
+    {
+      "id": "southern-1-1",
+      "prompt": "Use case: precise-object-edit. EDIT THIS CROPPED TERRAIN TILE ONLY; do not zoom out or show a larger map. Enlarge and restore this tile with much finer native painted detail, at the highest available output resolution, approximately 1536 pixels across. This is a close-up detail restoration for Safety Last's overhead 2D game. Match the crop's framing and ALL existing riverbank contours, rock shapes, bridges, paths, streams and waterfall positions exactly. Preserve the warm ochre/brown dirt, slate grey stones, blue/teal clear water and finely hand-painted old-school game style. Add fine rock grain and small chipped facets, clear small bank pebbles/contact shadows, delicate shallow-water stones and narrow irregular highlights in the existing water. Avoid smooth plastic cartoon boulders, soft enlarged-image blur, excessive halos and repetitive zigzags. Fine details belong INSIDE the existing forms; do not add or move large objects or change any shoreline or crossing. Calm water remains calm; no new rapids, trees, foliage, props or paths. All four edges must align with the reference. No text, borders, panels, labels, crop or perspective change. Return only this same tightly cropped tile at higher detail.",
+      "builtIn": true
+    }
+  ],
+  "assetDirectory": "public/survival/river-detail-v5",
+  "manifest": "src/river-detail-manifest.json",
+  "registration": [
+    {
+      "id": "lower-0-1",
+      "before": 0.0579697384270392,
+      "after": 0.03820911630338812,
+      "ratio": 0.6591217649097757
+    },
+    {
+      "id": "logging-0-0",
+      "before": 0.05521041094520549,
+      "after": 0.04372252526420011,
+      "ratio": 0.7919253726909092
+    },
+    {
+      "id": "headwaters-1-1",
+      "before": 0.04008361882463599,
+      "after": 0.03425476162711359,
+      "ratio": 0.8545825609453231
+    },
+    {
+      "id": "western-1-1",
+      "before": 0.04755476582762812,
+      "after": 0.035529990005792635,
+      "ratio": 0.7471383653654878
+    },
+    {
+      "id": "waterworks-0-0",
+      "before": 0.04085190896661707,
+      "after": 0.0320186518560358,
+      "ratio": 0.7837737003232936
+    },
+    {
+      "id": "logging-1-1",
+      "before": 0.04726269384391128,
+      "after": 0.033640157705230475,
+      "ratio": 0.7117697907006678
+    },
+    {
+      "id": "southern-1-1",
+      "before": 0.06990661754074692,
+      "after": 0.0367200007577774,
+      "ratio": 0.5252721709267963
+    },
+    {
+      "id": "western-0-1",
+      "before": 0.04772616073408991,
+      "after": 0.02922097758579331,
+      "ratio": 0.6122633192433036
+    },
+    {
+      "id": "southern-0-1",
+      "before": 0.06670154354930505,
+      "after": 0.03678383032710191,
+      "ratio": 0.5514689521376924
+    },
+    {
+      "id": "southern-0-0",
+      "before": 0.0626021073235221,
+      "after": 0.03459427412818282,
+      "ratio": 0.5526055848152635
+    },
+    {
+      "id": "waterworks-1-1",
+      "before": 0.048118992212105825,
+      "after": 0.03977470389733356,
+      "ratio": 0.8265905429192884
+    },
+    {
+      "id": "lower-1-0",
+      "before": 0.07404901100830326,
+      "after": 0.0415691575459103,
+      "ratio": 0.5613735683957894
+    },
+    {
+      "id": "headwaters-0-0",
+      "before": 0.04619138995480095,
+      "after": 0.03913395608752126,
+      "ratio": 0.8472132171345025
+    },
+    {
+      "id": "lower-1-1",
+      "before": 0.029854211811620117,
+      "after": 0.02469646036421535,
+      "ratio": 0.8272353837391472
+    },
+    {
+      "id": "headwaters-0-1",
+      "before": 0.04941569580735108,
+      "after": 0.037417888909972205,
+      "ratio": 0.7572065575247029
+    },
+    {
+      "id": "lower-0-0",
+      "before": 0.03726933127984116,
+      "after": 0.029778383303586117,
+      "ratio": 0.7990050339243175
+    },
+    {
+      "id": "southern-1-0",
+      "before": 0.05065666401018262,
+      "after": 0.030818127961349254,
+      "ratio": 0.6083726309958829
+    },
+    {
+      "id": "western-1-0",
+      "before": 0.055099184927596086,
+      "after": 0.0327799499572387,
+      "ratio": 0.5949262225986408
+    },
+    {
+      "id": "logging-1-0",
+      "before": 0.04598453931390335,
+      "after": 0.038645580214461024,
+      "ratio": 0.8404037702901722
+    },
+    {
+      "id": "logging-0-1",
+      "before": 0.050719205503255003,
+      "after": 0.036020209874202666,
+      "ratio": 0.710188764133756
+    },
+    {
+      "id": "waterworks-0-1",
+      "before": 0.07487053339808743,
+      "after": 0.03484488409719685,
+      "ratio": 0.46540184122806
+    }
+  ]
+}

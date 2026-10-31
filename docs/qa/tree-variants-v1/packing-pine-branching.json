@@ -1,0 +1,134 @@
+{
+  "key": "pine-branching",
+  "species": "pine",
+  "id": "art_tree_pine_branching",
+  "name": "Tall Scots pine: branching",
+  "image": "/survival/tree-variants-v1/pine-branching.webp",
+  "size": [
+    530,
+    1290
+  ],
+  "worldWidth": 239,
+  "hp": 120,
+  "frames": [
+    {
+      "crop": [
+        2,
+        2,
+        526,
+        1015
+      ],
+      "anchor": [
+        261,
+        945
+      ]
+    },
+    {
+      "crop": [
+        376,
+        1021,
+        80,
+        79
+      ],
+      "anchor": [
+        19,
+        184
+      ]
+    },
+    {
+      "crop": [
+        2,
+        1021,
+        370,
+        267
+      ],
+      "anchor": [
+        188,
+        195
+      ]
+    }
+  ],
+  "damageRect": [
+    242,
+    761,
+    80,
+    79
+  ],
+  "source": "artwork-archive/tree-variants-v1/pine-branching.png",
+  "sourceSize": [
+    1536,
+    1024
+  ],
+  "sourceHealthyCrop": [
+    39,
+    5,
+    526,
+    1015
+  ],
+  "sourceDamageCrop": [
+    826,
+    766,
+    80,
+    79
+  ],
+  "sourceStumpCrop": [
+    1126,
+    753,
+    370,
+    267
+  ],
+  "sourceRoot": [
+    300,
+    950
+  ],
+  "damagedTranslation": [
+    545,
+    0
+  ],
+  "stumpTranslation": [
+    1014,
+    -2
+  ],
+  "bytes": 757782,
+  "decodedBytes": 2734800,
+  "extraction": {
+    "visibleBounds": [
+      [
+        47,
+        13,
+        510,
+        999
+      ],
+      [
+        593,
+        13,
+        508,
+        999
+      ],
+      [
+        1134,
+        761,
+        354,
+        251
+      ]
+    ],
+    "separatorMaximumAlpha": [
+      0,
+      0
+    ],
+    "boundsPadding": 8,
+    "alphaThresholdAppliedToPixels": false,
+    "notchOverlapJoin": false
+  },
+  "checks": {
+    "alphaMismatch": 0,
+    "visibleRgbMismatch": 0,
+    "outsideNotchPreserved": true,
+    "rootFanPreserved": true
+  },
+  "notes": [
+    "Healthy pixels are reused unchanged outside the tight notch rectangle.",
+    "Separate generated loose chips are omitted; runtime hit particles supply debris.",
+    "Stump roots are registered to the same ground anchor; no scaling or resampling was applied."
+  ]
+}

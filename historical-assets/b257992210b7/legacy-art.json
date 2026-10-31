@@ -1,0 +1,809 @@
+[
+  {
+    "id": "camp_stockade_post_v3",
+    "name": "Weathered stockade joint",
+    "image": "/survival/camp-perimeter-v3/joint-post.webp",
+    "size": [
+      427,
+      640
+    ],
+    "width": 114.75625000000001,
+    "height": 172,
+    "anchor": [
+      0.51,
+      0.92
+    ],
+    "kind": "post",
+    "segments": []
+  },
+  {
+    "id": "camp_stockade_run_0_v3",
+    "name": "Worn stockade · section 1",
+    "image": "/survival/camp-perimeter-v3/stockade-run-0.webp",
+    "size": [
+      894,
+      1161
+    ],
+    "width": 447,
+    "height": 580.5,
+    "anchor": [
+      0.5001589222625641,
+      0.6106974816679566
+    ],
+    "kind": "wall",
+    "segments": [
+      {
+        "x": -132.5,
+        "y": 150,
+        "ex": 132.5,
+        "ey": -150,
+        "r": 14
+      }
+    ]
+  },
+  {
+    "id": "camp_stockade_run_1_v3",
+    "name": "Worn stockade · section 2",
+    "image": "/survival/camp-perimeter-v3/stockade-run-1.webp",
+    "size": [
+      760,
+      753
+    ],
+    "width": 380,
+    "height": 376.5,
+    "anchor": [
+      0.49993528904227785,
+      0.6709519282571337
+    ],
+    "kind": "wall",
+    "segments": [
+      {
+        "x": -112.5,
+        "y": 55,
+        "ex": 112.5,
+        "ey": -55,
+        "r": 14
+      }
+    ]
+  },
+  {
+    "id": "camp_stockade_run_2_v3",
+    "name": "Worn stockade · section 3",
+    "image": "/survival/camp-perimeter-v3/stockade-run-2.webp",
+    "size": [
+      1093,
+      519
+    ],
+    "width": 546.5,
+    "height": 259.5,
+    "anchor": [
+      0.4982676269814518,
+      0.7435475559253212
+    ],
+    "kind": "wall",
+    "segments": [
+      {
+        "x": -250,
+        "y": 30,
+        "ex": 250,
+        "ey": -30,
+        "r": 14
+      }
+    ]
+  },
+  {
+    "id": "camp_stockade_run_3_v3",
+    "name": "Worn stockade · section 4",
+    "image": "/survival/camp-perimeter-v3/stockade-run-3.webp",
+    "size": [
+      1159,
+      519
+    ],
+    "width": 579.5,
+    "height": 259.5,
+    "anchor": [
+      0.49798352654717026,
+      0.742736279178541
+    ],
+    "kind": "wall",
+    "segments": [
+      {
+        "x": -265,
+        "y": -30,
+        "ex": 265,
+        "ey": 30,
+        "r": 14
+      }
+    ]
+  },
+  {
+    "id": "camp_stockade_run_4_v3",
+    "name": "Worn stockade · section 5",
+    "image": "/survival/camp-perimeter-v3/stockade-run-4.webp",
+    "size": [
+      390,
+      760
+    ],
+    "width": 195,
+    "height": 380,
+    "anchor": [
+      0.5,
+      0.6842105263157895
+    ],
+    "kind": "wall",
+    "segments": [
+      {
+        "x": -32.5,
+        "y": -90,
+        "ex": 32.5,
+        "ey": 90,
+        "r": 14
+      }
+    ]
+  },
+  {
+    "id": "camp_stockade_run_5_v3",
+    "name": "Worn stockade · section 6",
+    "image": "/survival/camp-perimeter-v3/stockade-run-5.webp",
+    "size": [
+      280,
+      640
+    ],
+    "width": 140,
+    "height": 320,
+    "anchor": [
+      0.5,
+      0.71875
+    ],
+    "kind": "wall",
+    "segments": [
+      {
+        "x": -5,
+        "y": -60,
+        "ex": 5,
+        "ey": 60,
+        "r": 14
+      }
+    ]
+  },
+  {
+    "id": "camp_gate_northeast_v3",
+    "name": "Northeast camp gate",
+    "image": "/survival/camp-perimeter-v3/gate-northeast.webp",
+    "size": [
+      1240,
+      1160
+    ],
+    "width": 620,
+    "height": 580,
+    "anchor": [
+      0.5,
+      0.5
+    ],
+    "kind": "gate",
+    "segments": [],
+    "gate": {
+      "a": [
+        0.3064516129032258,
+        0.3275862068965517
+      ],
+      "b": [
+        0.6935483870967742,
+        0.6724137931034483
+      ],
+      "height": 120,
+      "leaf": "/survival/camp-perimeter-v3/gate-leaf.webp",
+      "leafSize": [
+        640,
+        446
+      ],
+      "post": "/survival/camp-perimeter-v3/joint-post.webp",
+      "postSize": [
+        427,
+        640
+      ],
+      "postWidth": 114.75625000000001,
+      "postHeight": 172
+    }
+  },
+  {
+    "id": "camp_stockade_run_7_v3",
+    "name": "Worn stockade · section 8",
+    "image": "/survival/camp-perimeter-v3/stockade-run-7.webp",
+    "size": [
+      400,
+      760
+    ],
+    "width": 200,
+    "height": 380,
+    "anchor": [
+      0.5,
+      0.6842105263157895
+    ],
+    "kind": "wall",
+    "segments": [
+      {
+        "x": -35,
+        "y": -90,
+        "ex": 35,
+        "ey": 90,
+        "r": 14
+      }
+    ]
+  },
+  {
+    "id": "camp_stockade_run_8_v3",
+    "name": "Worn stockade · section 9",
+    "image": "/survival/camp-perimeter-v3/stockade-run-8.webp",
+    "size": [
+      320,
+      750
+    ],
+    "width": 160,
+    "height": 375,
+    "anchor": [
+      0.5,
+      0.6866666666666666
+    ],
+    "kind": "wall",
+    "segments": [
+      {
+        "x": -15,
+        "y": -87.5,
+        "ex": 15,
+        "ey": 87.5,
+        "r": 14
+      }
+    ]
+  },
+  {
+    "id": "camp_stockade_run_9_v3",
+    "name": "Worn stockade · section 10",
+    "image": "/survival/camp-perimeter-v3/stockade-run-9.webp",
+    "size": [
+      320,
+      780
+    ],
+    "width": 160,
+    "height": 390,
+    "anchor": [
+      0.5,
+      0.6794871794871795
+    ],
+    "kind": "wall",
+    "segments": [
+      {
+        "x": -15,
+        "y": -95,
+        "ex": 15,
+        "ey": 95,
+        "r": 14
+      }
+    ]
+  },
+  {
+    "id": "camp_stockade_run_10_v3",
+    "name": "Worn stockade · section 11",
+    "image": "/survival/camp-perimeter-v3/stockade-run-10.webp",
+    "size": [
+      676,
+      1296
+    ],
+    "width": 338,
+    "height": 648,
+    "anchor": [
+      0.49993533158728626,
+      0.5988608035132018
+    ],
+    "kind": "wall",
+    "segments": [
+      {
+        "x": -100,
+        "y": 170,
+        "ex": 100,
+        "ey": -170,
+        "r": 14
+      }
+    ]
+  },
+  {
+    "id": "camp_stockade_run_11_v3",
+    "name": "Worn stockade · section 12",
+    "image": "/survival/camp-perimeter-v3/stockade-run-11.webp",
+    "size": [
+      978,
+      1027
+    ],
+    "width": 489,
+    "height": 513.5,
+    "anchor": [
+      0.5001396850939243,
+      0.6250398744692166
+    ],
+    "kind": "wall",
+    "segments": [
+      {
+        "x": -145,
+        "y": 130,
+        "ex": 145,
+        "ey": -130,
+        "r": 14
+      }
+    ]
+  },
+  {
+    "id": "camp_gate_southeast_v3",
+    "name": "Southeast camp gate",
+    "image": "/survival/camp-perimeter-v3/gate-southeast.webp",
+    "size": [
+      1240,
+      1240
+    ],
+    "width": 620,
+    "height": 620,
+    "anchor": [
+      0.5,
+      0.5
+    ],
+    "kind": "gate",
+    "segments": [],
+    "gate": {
+      "a": [
+        0.6935483870967742,
+        0.3064516129032258
+      ],
+      "b": [
+        0.3064516129032258,
+        0.6935483870967742
+      ],
+      "height": 120,
+      "leaf": "/survival/camp-perimeter-v3/gate-leaf.webp",
+      "leafSize": [
+        640,
+        446
+      ],
+      "post": "/survival/camp-perimeter-v3/joint-post.webp",
+      "postSize": [
+        427,
+        640
+      ],
+      "postWidth": 114.75625000000001,
+      "postHeight": 172
+    }
+  },
+  {
+    "id": "camp_stockade_run_13_v3",
+    "name": "Worn stockade · section 14",
+    "image": "/survival/camp-perimeter-v3/stockade-run-13.webp",
+    "size": [
+      1079,
+      725
+    ],
+    "width": 539.5,
+    "height": 362.5,
+    "anchor": [
+      0.500027854165717,
+      0.6771480614103564
+    ],
+    "kind": "wall",
+    "segments": [
+      {
+        "x": -160,
+        "y": 85,
+        "ex": 160,
+        "ey": -85,
+        "r": 14
+      }
+    ]
+  },
+  {
+    "id": "camp_stockade_run_14_v3",
+    "name": "Worn stockade · section 15",
+    "image": "/survival/camp-perimeter-v3/stockade-run-14.webp",
+    "size": [
+      810,
+      465
+    ],
+    "width": 405,
+    "height": 232.5,
+    "anchor": [
+      0.498183730932269,
+      0.771172940030568
+    ],
+    "kind": "wall",
+    "segments": [
+      {
+        "x": -185,
+        "y": 17.5,
+        "ex": 185,
+        "ey": -17.5,
+        "r": 14
+      }
+    ]
+  },
+  {
+    "id": "camp_gate_south_v3",
+    "name": "South camp gate",
+    "image": "/survival/camp-perimeter-v3/gate-south.webp",
+    "size": [
+      1360,
+      820
+    ],
+    "width": 680,
+    "height": 410,
+    "anchor": [
+      0.5,
+      0.5
+    ],
+    "kind": "gate",
+    "segments": [],
+    "gate": {
+      "a": [
+        0.7205882352941176,
+        0.5365853658536586
+      ],
+      "b": [
+        0.27941176470588236,
+        0.4634146341463415
+      ],
+      "height": 120,
+      "leaf": "/survival/camp-perimeter-v3/gate-leaf.webp",
+      "leafSize": [
+        640,
+        446
+      ],
+      "post": "/survival/camp-perimeter-v3/joint-post.webp",
+      "postSize": [
+        427,
+        640
+      ],
+      "postWidth": 114.75625000000001,
+      "postHeight": 172
+    }
+  },
+  {
+    "id": "camp_stockade_run_16_v3",
+    "name": "Worn stockade · section 17",
+    "image": "/survival/camp-perimeter-v3/stockade-run-16.webp",
+    "size": [
+      1146,
+      675
+    ],
+    "width": 573,
+    "height": 337.5,
+    "anchor": [
+      0.5001096710821198,
+      0.6900272742167096
+    ],
+    "kind": "wall",
+    "segments": [
+      {
+        "x": -170,
+        "y": 77.5,
+        "ex": 170,
+        "ey": -77.5,
+        "r": 14
+      }
+    ]
+  },
+  {
+    "id": "camp_stockade_run_17_v3",
+    "name": "Worn stockade · section 18",
+    "image": "/survival/camp-perimeter-v3/stockade-run-17.webp",
+    "size": [
+      854,
+      563
+    ],
+    "width": 427,
+    "height": 281.5,
+    "anchor": [
+      0.49793101019527747,
+      0.7232404787660601
+    ],
+    "kind": "wall",
+    "segments": [
+      {
+        "x": -195,
+        "y": -40,
+        "ex": 195,
+        "ey": 40,
+        "r": 14
+      }
+    ]
+  },
+  {
+    "id": "camp_gate_southwest_v3",
+    "name": "Southwest camp gate",
+    "image": "/survival/camp-perimeter-v3/gate-southwest.webp",
+    "size": [
+      1240,
+      1160
+    ],
+    "width": 620,
+    "height": 580,
+    "anchor": [
+      0.5,
+      0.5
+    ],
+    "kind": "gate",
+    "segments": [],
+    "gate": {
+      "a": [
+        0.6935483870967742,
+        0.6724137931034483
+      ],
+      "b": [
+        0.3064516129032258,
+        0.3275862068965517
+      ],
+      "height": 120,
+      "leaf": "/survival/camp-perimeter-v3/gate-leaf.webp",
+      "leafSize": [
+        640,
+        446
+      ],
+      "post": "/survival/camp-perimeter-v3/joint-post.webp",
+      "postSize": [
+        427,
+        640
+      ],
+      "postWidth": 114.75625000000001,
+      "postHeight": 172
+    }
+  },
+  {
+    "id": "camp_stockade_run_19_v3",
+    "name": "Worn stockade · section 20",
+    "image": "/survival/camp-perimeter-v3/stockade-run-19.webp",
+    "size": [
+      676,
+      658
+    ],
+    "width": 338,
+    "height": 329,
+    "anchor": [
+      0.4992886474601481,
+      0.6951070394440767
+    ],
+    "kind": "wall",
+    "segments": [
+      {
+        "x": -100,
+        "y": -75,
+        "ex": 100,
+        "ey": 75,
+        "r": 14
+      }
+    ]
+  },
+  {
+    "id": "camp_stockade_run_20_v3",
+    "name": "Worn stockade · section 21",
+    "image": "/survival/camp-perimeter-v3/stockade-run-20.webp",
+    "size": [
+      374,
+      725
+    ],
+    "width": 187,
+    "height": 362.5,
+    "anchor": [
+      0.4987580725285643,
+      0.6771480614103564
+    ],
+    "kind": "wall",
+    "segments": [
+      {
+        "x": -55,
+        "y": -85,
+        "ex": 55,
+        "ey": 85,
+        "r": 14
+      }
+    ]
+  },
+  {
+    "id": "camp_stockade_run_21_v3",
+    "name": "Worn stockade · section 22",
+    "image": "/survival/camp-perimeter-v3/stockade-run-21.webp",
+    "size": [
+      441,
+      809
+    ],
+    "width": 220.5,
+    "height": 404.5,
+    "anchor": [
+      0.4997088088422983,
+      0.6586801424386787
+    ],
+    "kind": "wall",
+    "segments": [
+      {
+        "x": -65,
+        "y": 97.5,
+        "ex": 65,
+        "ey": -97.5,
+        "r": 14
+      }
+    ]
+  },
+  {
+    "id": "camp_gate_west_v3",
+    "name": "West camp gate",
+    "image": "/survival/camp-perimeter-v3/gate-west.webp",
+    "size": [
+      980,
+      1360
+    ],
+    "width": 490,
+    "height": 680,
+    "anchor": [
+      0.5,
+      0.5
+    ],
+    "kind": "gate",
+    "segments": [],
+    "gate": {
+      "a": [
+        0.6122448979591837,
+        0.7205882352941176
+      ],
+      "b": [
+        0.3877551020408163,
+        0.27941176470588236
+      ],
+      "height": 120,
+      "leaf": "/survival/camp-perimeter-v3/gate-leaf.webp",
+      "leafSize": [
+        640,
+        446
+      ],
+      "post": "/survival/camp-perimeter-v3/joint-post.webp",
+      "postSize": [
+        427,
+        640
+      ],
+      "postWidth": 114.75625000000001,
+      "postHeight": 172
+    }
+  },
+  {
+    "id": "camp_stockade_run_23_v3",
+    "name": "Worn stockade · section 24",
+    "image": "/survival/camp-perimeter-v3/stockade-run-23.webp",
+    "size": [
+      276,
+      746
+    ],
+    "width": 138,
+    "height": 373,
+    "anchor": [
+      0.49818840579710144,
+      0.6869973190348525
+    ],
+    "kind": "wall",
+    "segments": [
+      {
+        "x": -3.75,
+        "y": 86.25,
+        "ex": 3.75,
+        "ey": -86.25,
+        "r": 14
+      }
+    ]
+  },
+  {
+    "id": "camp_stockade_run_24_v3",
+    "name": "Worn stockade · section 25",
+    "image": "/survival/camp-perimeter-v3/stockade-run-24.webp",
+    "size": [
+      338,
+      688
+    ],
+    "width": 169,
+    "height": 344,
+    "anchor": [
+      0.49802761341222884,
+      0.7025193798449613
+    ],
+    "kind": "wall",
+    "segments": [
+      {
+        "x": -19.166666666666668,
+        "y": 71.66666666666667,
+        "ex": 19.166666666666668,
+        "ey": -71.66666666666667,
+        "r": 14
+      }
+    ]
+  },
+  {
+    "id": "camp_stockade_run_25_v3",
+    "name": "Worn stockade · section 26",
+    "image": "/survival/camp-perimeter-v3/stockade-run-25.webp",
+    "size": [
+      360,
+      640
+    ],
+    "width": 180,
+    "height": 320,
+    "anchor": [
+      0.5,
+      0.71875
+    ],
+    "kind": "wall",
+    "segments": [
+      {
+        "x": -25,
+        "y": 60,
+        "ex": 25,
+        "ey": -60,
+        "r": 14
+      }
+    ]
+  },
+  {
+    "id": "camp_stockade_run_26_v3",
+    "name": "Worn stockade · section 27",
+    "image": "/survival/camp-perimeter-v3/stockade-run-26.webp",
+    "size": [
+      458,
+      859
+    ],
+    "width": 229,
+    "height": 429.5,
+    "anchor": [
+      0.49949889040017176,
+      0.6496346561805826
+    ],
+    "kind": "wall",
+    "segments": [
+      {
+        "x": -67.5,
+        "y": 105,
+        "ex": 67.5,
+        "ey": -105,
+        "r": 14
+      }
+    ]
+  },
+  {
+    "id": "camp_gate_northwest_v3",
+    "name": "Northwest camp gate",
+    "image": "/survival/camp-perimeter-v3/gate-northwest.webp",
+    "size": [
+      1200,
+      1200
+    ],
+    "width": 600,
+    "height": 600,
+    "anchor": [
+      0.5,
+      0.5
+    ],
+    "kind": "gate",
+    "segments": [],
+    "gate": {
+      "a": [
+        0.31666666666666665,
+        0.6833333333333333
+      ],
+      "b": [
+        0.6833333333333333,
+        0.31666666666666665
+      ],
+      "height": 120,
+      "leaf": "/survival/camp-perimeter-v3/gate-leaf.webp",
+      "leafSize": [
+        640,
+        446
+      ],
+      "post": "/survival/camp-perimeter-v3/joint-post.webp",
+      "postSize": [
+        427,
+        640
+      ],
+      "postWidth": 114.75625000000001,
+      "postHeight": 172
+    }
+  }
+]

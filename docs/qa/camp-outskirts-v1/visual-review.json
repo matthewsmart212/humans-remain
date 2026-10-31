@@ -1,0 +1,19 @@
+{
+  "result": "pass",
+  "reviewed": [
+    "Current saved camp overview",
+    "First outskirts pass overview",
+    "West gathering grove",
+    "Northern birches",
+    "Eastern dry-ground pocket",
+    "Southern trail grove"
+  ],
+  "checks": [
+    "Existing character, camp and foliage style retained",
+    "Routes remain readable through the planting",
+    "Open gaps between groves",
+    "Foliage grouped around trunks and stone",
+    "Different species and sizes without an even grid"
+  ],
+  "deviceFPSMeasured": false
+}

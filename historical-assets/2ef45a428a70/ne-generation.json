@@ -1,0 +1,20 @@
+{
+  "patch": "ne",
+  "source": {
+    "width": 1599,
+    "height": 984,
+    "file": "ne-generated-original.png"
+  },
+  "registered": {
+    "x": 1534,
+    "y": 0,
+    "width": 1670,
+    "height": 1026,
+    "north": 260,
+    "right": 264
+  },
+  "scale": {
+    "x": 1.0444027517198249,
+    "y": 1.0426829268292683
+  }
+}

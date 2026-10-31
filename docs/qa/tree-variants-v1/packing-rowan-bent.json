@@ -1,0 +1,134 @@
+{
+  "key": "rowan-bent",
+  "species": "rowan",
+  "id": "art_tree_rowan_bent",
+  "name": "Amber woodland rowan: bent",
+  "image": "/survival/tree-variants-v1/rowan-bent.webp",
+  "size": [
+    547,
+    1294
+  ],
+  "worldWidth": 246,
+  "hp": 120,
+  "frames": [
+    {
+      "crop": [
+        2,
+        2,
+        532,
+        991
+      ],
+      "anchor": [
+        279,
+        912
+      ]
+    },
+    {
+      "crop": [
+        457,
+        997,
+        88,
+        100
+      ],
+      "anchor": [
+        11,
+        187
+      ]
+    },
+    {
+      "crop": [
+        2,
+        997,
+        451,
+        295
+      ],
+      "anchor": [
+        225,
+        216
+      ]
+    }
+  ],
+  "damageRect": [
+    268,
+    725,
+    88,
+    100
+  ],
+  "source": "artwork-archive/tree-variants-v1/rowan-bent.png",
+  "sourceSize": [
+    1536,
+    1024
+  ],
+  "sourceHealthyCrop": [
+    46,
+    8,
+    532,
+    991
+  ],
+  "sourceDamageCrop": [
+    806,
+    733,
+    88,
+    100
+  ],
+  "sourceStumpCrop": [
+    1082,
+    703,
+    451,
+    295
+  ],
+  "sourceRoot": [
+    325,
+    920
+  ],
+  "damagedTranslation": [
+    492,
+    0
+  ],
+  "stumpTranslation": [
+    982,
+    -1
+  ],
+  "bytes": 805898,
+  "decodedBytes": 2831272,
+  "extraction": {
+    "visibleBounds": [
+      [
+        54,
+        16,
+        516,
+        975
+      ],
+      [
+        545,
+        16,
+        518,
+        974
+      ],
+      [
+        1090,
+        711,
+        435,
+        279
+      ]
+    ],
+    "separatorMaximumAlpha": [
+      2,
+      0
+    ],
+    "boundsPadding": 8,
+    "alphaThresholdAppliedToPixels": false,
+    "notchOverlapJoin": false
+  },
+  "checks": {
+    "alphaMismatch": 0,
+    "visibleRgbMismatch": 0,
+    "outsideNotchPreserved": true,
+    "rootFanPreserved": true
+  },
+  "notes": [
+    "Healthy pixels are reused unchanged outside the tight notch rectangle.",
+    "Separate generated loose chips are omitted; runtime hit particles supply debris.",
+    "Stump roots are registered to the same ground anchor; no scaling or resampling was applied."
+  ]
+}

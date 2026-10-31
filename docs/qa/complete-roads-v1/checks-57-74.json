@@ -1,0 +1,14 @@
+{
+  "result": "pass",
+  "range": [
+    57,
+    74
+  ],
+  "captures": 17,
+  "campInteriorPixelIdentical": true,
+  "routes": 42,
+  "bridgeReservations": 6,
+  "quietAreas": 5,
+  "coverageSamples": 10173,
+  "uncovered": 0
+}

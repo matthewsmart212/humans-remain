@@ -1,0 +1,21 @@
+{
+  "mode": "built-in image_gen",
+  "useCase": "precise-object-edit",
+  "bunker": {
+    "prompt": "Use case: precise-object-edit.\nAsset type: registered transparent sprite for a hand-painted isometric survival game.\nImage 1 is the edit target: the stone bunker stairwell. Image 2 is a palette and environmental reference only: the existing ochre camp terrain.\nKeep the target image's exact canvas aspect ratio, camera angle, scale, door position, stone wall outlines, stair geometry and all structural details. Do not redraw or move the doorway, walls or stairs.\nChange ONLY the earth bordering the stairwell. Remove the broad smooth olive-green opaque oval halo that currently makes this look like a sticker. Replace it with a much narrower, beautifully irregular transition of warm orange-ochre compacted earth, tiny tan gravel, sparse dry ochre leaves, small touches of moss close to the stone, and short naturally broken contact shadows hugging the masonry. Tiny details should match the second image’s crisp hand-painted camp texture, colour and lighting. The ground transition must become genuinely transparent unevenly between tiny soil flecks at its outer edge. No smooth oval outline, no broad smooth green or brown blanket, no large rocks, no paving slabs, no new objects. Preserve enough transparent margin so nothing is clipped. The actual stone architecture, plants climbing the walls, metal door and stairs remain pixel-aligned and visually unchanged. The goal is that the bunker appears excavated into the golden camp earth instead of sitting on a green island. Transparent background.",
+    "generated": "bunker-ground-edit.png",
+    "referenceSources": [
+      "2401745e-7f2d-4a8c-b6da-7351bc248ca7",
+      "IMG_9499.jpeg"
+    ]
+  },
+  "warehouse": {
+    "prompt": "Use case: precise-object-edit.\nAsset type: registered transparent sprite for a hand-painted isometric survival game.\nImage 1 is the edit target: the open-sided wooden warehouse with logs, metal scraps and a patched corrugated roof. Image 2 is the environment colour and detail reference only.\nKeep the target image's exact square canvas, camera angle, scale, roof outline, support-post locations, foundation blocks, log stack and scrap crate. All architectural parts and their alignment must remain unchanged.\nChange ONLY the ground immediately touching the warehouse. Remove its smooth green/gold oval ground-island rim. Make the contact with the ground look excavated, settled and natural using a narrow irregular belt of warm orange-ochre compacted soil matching the second image, tiny tan gravel, dry orange leaves and modest moss at the bases of posts. Keep dark contact shadows tight beneath the foundation blocks and crate. The outer soil edge must break into fine scattered flecks and become genuinely transparent, avoiding any smooth outlined island. Very crisp hand-painted terrain detail and warm diffuse daylight, not a broad painted shadow or large blurred patch. Do not add large stones, paving, new furniture or taller plants. Keep the rest of the sprite pixel-aligned and visually unchanged. Transparent background with no clipping, no text or watermarks.",
+    "generated": "warehouse-ground-edit.png",
+    "referenceSources": [
+      "511df250-f10f-4b4e-8b9d-f091fe490070",
+      "IMG_9500.jpeg"
+    ]
+  },
+  "packaging": "Generated footprint edits retain original dimensions. Mechanical alpha registration locks original architecture, animated doorway, stairs and storage contents; generated pixels supply only the surrounding soil transition. No procedural painting or recoloring."
+}

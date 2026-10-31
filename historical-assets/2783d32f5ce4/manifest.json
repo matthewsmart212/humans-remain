@@ -1,0 +1,38 @@
+{
+  "version": "world-ground-v1",
+  "tool": "Built-in image_gen.imagegen",
+  "source": "Large full-frame camp-style variants; not small-sample quilting",
+  "bounds": {
+    "x": -7200,
+    "y": -6200,
+    "width": 20000,
+    "height": 20000
+  },
+  "tileCount": 256,
+  "tileSize": 1437.5,
+  "overlap": 200,
+  "assembly": "Rotated and mirrored warm squares. Brown and olive material blends follow broad world-coordinate gradients, never square boundaries. Each source is decoded once and reused.",
+  "materials": [
+    {
+      "name": "warm",
+      "image": "/survival/world-ground-v1/warm.webp",
+      "nativeWidth": 1254,
+      "nativeHeight": 1254
+    },
+    {
+      "name": "brown",
+      "image": "/survival/world-ground-v1/brown.webp",
+      "nativeWidth": 1254,
+      "nativeHeight": 1254
+    },
+    {
+      "name": "olive",
+      "image": "/survival/world-ground-v1/olive.webp",
+      "nativeWidth": 1254,
+      "nativeHeight": 1254
+    }
+  ],
+  "camp": "Original camp images unchanged; outer 120–340px feathered into surrounding ground",
+  "roads": "Only original camp paths retained. All extension roads removed; overlays to follow.",
+  "prompts": "artwork-archive/world-ground-v1/prompts.json"
+}

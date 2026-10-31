@@ -1,0 +1,911 @@
+{
+  "version": 2,
+  "cell": [
+    384,
+    384
+  ],
+  "anchor": [
+    192,
+    300
+  ],
+  "columns": 4,
+  "rows": 2,
+  "walkFrames": [
+    0,
+    1,
+    2,
+    3
+  ],
+  "attackFrames": [
+    4,
+    5,
+    6,
+    7
+  ],
+  "idleFrame": 3,
+  "directions": {
+    "down": {
+      "image": "/survival/scrap-walker-v2/down.webp",
+      "mirror": false
+    },
+    "down-right": {
+      "image": "/survival/scrap-walker-v2/down-left.webp",
+      "mirror": true
+    },
+    "right": {
+      "image": "/survival/scrap-walker-v2/right.webp",
+      "mirror": false
+    },
+    "up-right": {
+      "image": "/survival/scrap-walker-v2/up-right.webp",
+      "mirror": false
+    },
+    "up": {
+      "image": "/survival/scrap-walker-v2/up.webp",
+      "mirror": false
+    },
+    "up-left": {
+      "image": "/survival/scrap-walker-v2/up-right.webp",
+      "mirror": true
+    },
+    "left": {
+      "image": "/survival/scrap-walker-v2/right.webp",
+      "mirror": true
+    },
+    "down-left": {
+      "image": "/survival/scrap-walker-v2/down-left.webp",
+      "mirror": false
+    }
+  },
+  "packing": {
+    "scale": 0.68,
+    "sourceOrigin": [
+      235,
+      365
+    ],
+    "perFrameScale": false,
+    "framePositions": "Translation-only registration using the orange torso plate; each column correction also applies to the attack row to preserve attack displacement. Complete alpha-connected artwork extracted before packing."
+  },
+  "sources": [
+    {
+      "direction": "down-left",
+      "source": "exec-680d08dc-1b9c-4594-9a20-92bb6156c24f.png",
+      "filename": "down-left.webp",
+      "bytes": 297232,
+      "frames": [
+        {
+          "frame": 0,
+          "sourceBounds": [
+            35,
+            42,
+            401,
+            407
+          ],
+          "contentBounds": [
+            47,
+            81,
+            273,
+            277
+          ],
+          "registrationOffset": [
+            -12.645,
+            1.511
+          ],
+          "alphaPixels": 104009
+        },
+        {
+          "frame": 1,
+          "sourceBounds": [
+            457,
+            41,
+            420,
+            380
+          ],
+          "contentBounds": [
+            41,
+            80,
+            286,
+            258
+          ],
+          "registrationOffset": [
+            0.163,
+            0.567
+          ],
+          "alphaPixels": 110031
+        },
+        {
+          "frame": 2,
+          "sourceBounds": [
+            906,
+            44,
+            403,
+            408
+          ],
+          "contentBounds": [
+            45,
+            81,
+            274,
+            277
+          ],
+          "registrationOffset": [
+            -0.13,
+            -0.898
+          ],
+          "alphaPixels": 103812
+        },
+        {
+          "frame": 3,
+          "sourceBounds": [
+            1328,
+            36,
+            419,
+            383
+          ],
+          "contentBounds": [
+            39,
+            75,
+            285,
+            260
+          ],
+          "registrationOffset": [
+            12.613,
+            -1.181
+          ],
+          "alphaPixels": 103769
+        },
+        {
+          "frame": 4,
+          "sourceBounds": [
+            33,
+            466,
+            397,
+            342
+          ],
+          "contentBounds": [
+            46,
+            68,
+            270,
+            233
+          ],
+          "registrationOffset": [
+            -12.645,
+            1.511
+          ],
+          "alphaPixels": 97439
+        },
+        {
+          "frame": 5,
+          "sourceBounds": [
+            457,
+            484,
+            433,
+            374
+          ],
+          "contentBounds": [
+            41,
+            80,
+            294,
+            254
+          ],
+          "registrationOffset": [
+            0.163,
+            0.567
+          ],
+          "alphaPixels": 100746
+        },
+        {
+          "frame": 6,
+          "sourceBounds": [
+            876,
+            494,
+            458,
+            341
+          ],
+          "contentBounds": [
+            25,
+            86,
+            311,
+            232
+          ],
+          "registrationOffset": [
+            -0.13,
+            -0.898
+          ],
+          "alphaPixels": 95270
+        },
+        {
+          "frame": 7,
+          "sourceBounds": [
+            1339,
+            457,
+            408,
+            403
+          ],
+          "contentBounds": [
+            47,
+            60,
+            277,
+            274
+          ],
+          "registrationOffset": [
+            12.613,
+            -1.181
+          ],
+          "alphaPixels": 105184
+        }
+      ]
+    },
+    {
+      "direction": "down",
+      "source": "exec-16c49fd3-6e44-4296-b078-8aa07c12d3d2.png",
+      "filename": "down.webp",
+      "bytes": 295088,
+      "frames": [
+        {
+          "frame": 0,
+          "sourceBounds": [
+            29,
+            38,
+            419,
+            424
+          ],
+          "contentBounds": [
+            39,
+            79,
+            285,
+            288
+          ],
+          "registrationOffset": [
+            -19.201,
+            2.378
+          ],
+          "alphaPixels": 113867
+        },
+        {
+          "frame": 1,
+          "sourceBounds": [
+            467,
+            37,
+            412,
+            390
+          ],
+          "contentBounds": [
+            50,
+            78,
+            280,
+            265
+          ],
+          "registrationOffset": [
+            2.281,
+            1.262
+          ],
+          "alphaPixels": 104316
+        },
+        {
+          "frame": 2,
+          "sourceBounds": [
+            901,
+            42,
+            403,
+            420
+          ],
+          "contentBounds": [
+            46,
+            79,
+            274,
+            286
+          ],
+          "registrationOffset": [
+            6.696,
+            -1.721
+          ],
+          "alphaPixels": 106082
+        },
+        {
+          "frame": 3,
+          "sourceBounds": [
+            1336,
+            37,
+            409,
+            401
+          ],
+          "contentBounds": [
+            43,
+            76,
+            278,
+            273
+          ],
+          "registrationOffset": [
+            10.224,
+            -1.919
+          ],
+          "alphaPixels": 106837
+        },
+        {
+          "frame": 4,
+          "sourceBounds": [
+            36,
+            480,
+            406,
+            331
+          ],
+          "contentBounds": [
+            44,
+            78,
+            276,
+            225
+          ],
+          "registrationOffset": [
+            -19.201,
+            2.378
+          ],
+          "alphaPixels": 100246
+        },
+        {
+          "frame": 5,
+          "sourceBounds": [
+            472,
+            471,
+            414,
+            387
+          ],
+          "contentBounds": [
+            53,
+            71,
+            282,
+            263
+          ],
+          "registrationOffset": [
+            2.281,
+            1.262
+          ],
+          "alphaPixels": 103682
+        },
+        {
+          "frame": 6,
+          "sourceBounds": [
+            869,
+            485,
+            464,
+            363
+          ],
+          "contentBounds": [
+            25,
+            79,
+            316,
+            247
+          ],
+          "registrationOffset": [
+            6.696,
+            -1.721
+          ],
+          "alphaPixels": 108370
+        },
+        {
+          "frame": 7,
+          "sourceBounds": [
+            1342,
+            471,
+            403,
+            389
+          ],
+          "contentBounds": [
+            47,
+            69,
+            274,
+            265
+          ],
+          "registrationOffset": [
+            10.224,
+            -1.919
+          ],
+          "alphaPixels": 106709
+        }
+      ]
+    },
+    {
+      "direction": "right",
+      "source": "exec-5b1e80e3-c132-4111-9ad3-2566d196f252.png",
+      "filename": "right.webp",
+      "bytes": 255626,
+      "frames": [
+        {
+          "frame": 0,
+          "sourceBounds": [
+            49,
+            81,
+            381,
+            353
+          ],
+          "contentBounds": [
+            53,
+            106,
+            259,
+            240
+          ],
+          "registrationOffset": [
+            -18.163,
+            -1.33
+          ],
+          "alphaPixels": 86907
+        },
+        {
+          "frame": 1,
+          "sourceBounds": [
+            482,
+            81,
+            378,
+            344
+          ],
+          "contentBounds": [
+            57,
+            107,
+            257,
+            234
+          ],
+          "registrationOffset": [
+            -1.476,
+            0.397
+          ],
+          "alphaPixels": 86077
+        },
+        {
+          "frame": 2,
+          "sourceBounds": [
+            900,
+            80,
+            402,
+            354
+          ],
+          "contentBounds": [
+            45,
+            105,
+            273,
+            241
+          ],
+          "registrationOffset": [
+            5.279,
+            -1.74
+          ],
+          "alphaPixels": 86797
+        },
+        {
+          "frame": 3,
+          "sourceBounds": [
+            1344,
+            78,
+            392,
+            347
+          ],
+          "contentBounds": [
+            51,
+            107,
+            267,
+            236
+          ],
+          "registrationOffset": [
+            14.36,
+            2.673
+          ],
+          "alphaPixels": 89325
+        },
+        {
+          "frame": 4,
+          "sourceBounds": [
+            52,
+            497,
+            394,
+            330
+          ],
+          "contentBounds": [
+            55,
+            87,
+            268,
+            224
+          ],
+          "registrationOffset": [
+            -18.163,
+            -1.33
+          ],
+          "alphaPixels": 82862
+        },
+        {
+          "frame": 5,
+          "sourceBounds": [
+            460,
+            501,
+            429,
+            328
+          ],
+          "contentBounds": [
+            42,
+            91,
+            292,
+            223
+          ],
+          "registrationOffset": [
+            -1.476,
+            0.397
+          ],
+          "alphaPixels": 85009
+        },
+        {
+          "frame": 6,
+          "sourceBounds": [
+            891,
+            531,
+            464,
+            292
+          ],
+          "contentBounds": [
+            39,
+            110,
+            316,
+            199
+          ],
+          "registrationOffset": [
+            5.279,
+            -1.74
+          ],
+          "alphaPixels": 82699
+        },
+        {
+          "frame": 7,
+          "sourceBounds": [
+            1384,
+            490,
+            355,
+            349
+          ],
+          "contentBounds": [
+            78,
+            85,
+            241,
+            237
+          ],
+          "registrationOffset": [
+            14.36,
+            2.673
+          ],
+          "alphaPixels": 84589
+        }
+      ]
+    },
+    {
+      "direction": "up-right",
+      "source": "exec-6bd59b16-2f86-4eec-9c09-53a8dac4771c.png",
+      "filename": "up-right.webp",
+      "bytes": 264648,
+      "frames": [
+        {
+          "frame": 0,
+          "sourceBounds": [
+            27,
+            54,
+            411,
+            380
+          ],
+          "contentBounds": [
+            49,
+            90,
+            279,
+            258
+          ],
+          "registrationOffset": [
+            -2.499,
+            2.451
+          ],
+          "alphaPixels": 89995
+        },
+        {
+          "frame": 1,
+          "sourceBounds": [
+            477,
+            55,
+            410,
+            377
+          ],
+          "contentBounds": [
+            54,
+            91,
+            279,
+            256
+          ],
+          "registrationOffset": [
+            -1.829,
+            2.007
+          ],
+          "alphaPixels": 89054
+        },
+        {
+          "frame": 2,
+          "sourceBounds": [
+            927,
+            52,
+            398,
+            391
+          ],
+          "contentBounds": [
+            59,
+            88,
+            271,
+            266
+          ],
+          "registrationOffset": [
+            -0.288,
+            1.524
+          ],
+          "alphaPixels": 86654
+        },
+        {
+          "frame": 3,
+          "sourceBounds": [
+            1350,
+            54,
+            411,
+            369
+          ],
+          "contentBounds": [
+            49,
+            84,
+            279,
+            251
+          ],
+          "registrationOffset": [
+            4.616,
+            -5.981
+          ],
+          "alphaPixels": 86697
+        },
+        {
+          "frame": 4,
+          "sourceBounds": [
+            19,
+            486,
+            436,
+            365
+          ],
+          "contentBounds": [
+            43,
+            82,
+            296,
+            248
+          ],
+          "registrationOffset": [
+            -2.499,
+            2.451
+          ],
+          "alphaPixels": 90796
+        },
+        {
+          "frame": 5,
+          "sourceBounds": [
+            453,
+            473,
+            483,
+            394
+          ],
+          "contentBounds": [
+            37,
+            73,
+            328,
+            268
+          ],
+          "registrationOffset": [
+            -1.829,
+            2.007
+          ],
+          "alphaPixels": 101009
+        },
+        {
+          "frame": 6,
+          "sourceBounds": [
+            888,
+            505,
+            485,
+            350
+          ],
+          "contentBounds": [
+            33,
+            95,
+            330,
+            238
+          ],
+          "registrationOffset": [
+            -0.288,
+            1.524
+          ],
+          "alphaPixels": 94118
+        },
+        {
+          "frame": 7,
+          "sourceBounds": [
+            1359,
+            481,
+            405,
+            370
+          ],
+          "contentBounds": [
+            55,
+            73,
+            275,
+            252
+          ],
+          "registrationOffset": [
+            4.616,
+            -5.981
+          ],
+          "alphaPixels": 88323
+        }
+      ]
+    },
+    {
+      "direction": "up",
+      "source": "exec-39ee22f0-1099-44e9-89fe-575eb4705dbf.png",
+      "filename": "up.webp",
+      "bytes": 277222,
+      "frames": [
+        {
+          "frame": 0,
+          "sourceBounds": [
+            26,
+            31,
+            373,
+            401
+          ],
+          "contentBounds": [
+            50,
+            72,
+            254,
+            273
+          ],
+          "registrationOffset": [
+            0.673,
+            -1.3
+          ],
+          "alphaPixels": 92063
+        },
+        {
+          "frame": 1,
+          "sourceBounds": [
+            480,
+            33,
+            377,
+            390
+          ],
+          "contentBounds": [
+            59,
+            76,
+            256,
+            265
+          ],
+          "registrationOffset": [
+            3.121,
+            2.94
+          ],
+          "alphaPixels": 91299
+        },
+        {
+          "frame": 2,
+          "sourceBounds": [
+            930,
+            35,
+            377,
+            384
+          ],
+          "contentBounds": [
+            62,
+            75,
+            256,
+            261
+          ],
+          "registrationOffset": [
+            0.162,
+            -0.181
+          ],
+          "alphaPixels": 93270
+        },
+        {
+          "frame": 3,
+          "sourceBounds": [
+            1380,
+            32,
+            361,
+            401
+          ],
+          "contentBounds": [
+            63,
+            73,
+            245,
+            273
+          ],
+          "registrationOffset": [
+            -3.956,
+            -1.459
+          ],
+          "alphaPixels": 93413
+        },
+        {
+          "frame": 4,
+          "sourceBounds": [
+            40,
+            465,
+            379,
+            390
+          ],
+          "contentBounds": [
+            60,
+            66,
+            258,
+            265
+          ],
+          "registrationOffset": [
+            0.673,
+            -1.3
+          ],
+          "alphaPixels": 95680
+        },
+        {
+          "frame": 5,
+          "sourceBounds": [
+            474,
+            435,
+            394,
+            425
+          ],
+          "contentBounds": [
+            55,
+            48,
+            268,
+            289
+          ],
+          "registrationOffset": [
+            3.121,
+            2.94
+          ],
+          "alphaPixels": 99296
+        },
+        {
+          "frame": 6,
+          "sourceBounds": [
+            890,
+            493,
+            455,
+            358
+          ],
+          "contentBounds": [
+            34,
+            85,
+            309,
+            243
+          ],
+          "registrationOffset": [
+            0.162,
+            -0.181
+          ],
+          "alphaPixels": 96809
+        },
+        {
+          "frame": 7,
+          "sourceBounds": [
+            1371,
+            499,
+            379,
+            359
+          ],
+          "contentBounds": [
+            57,
+            89,
+            258,
+            244
+          ],
+          "registrationOffset": [
+            -3.956,
+            -1.459
+          ],
+          "alphaPixels": 89191
+        }
+      ]
+    }
+  ]
+}

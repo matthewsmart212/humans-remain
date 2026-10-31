@@ -1,0 +1,33 @@
+{
+  "result": "pass",
+  "size": [
+    1024,
+    1024
+  ],
+  "anchor": [
+    512,
+    960
+  ],
+  "fps": 10,
+  "tiers": [
+    {
+      "tier": 1,
+      "protectedPixels": 171324,
+      "frames": 8
+    },
+    {
+      "tier": 2,
+      "protectedPixels": 221645,
+      "frames": 8
+    },
+    {
+      "tier": 3,
+      "protectedPixels": 343972,
+      "frames": 8
+    }
+  ],
+  "placement": "unchanged",
+  "collision": "unchanged",
+  "legacyAliases": "preserved",
+  "renderer": "actual CanvasKit placed-world renderer"
+}

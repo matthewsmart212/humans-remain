@@ -1,0 +1,19 @@
+{
+  "method": "Built-in image_gen",
+  "date": "2026-10-14",
+  "prompts": [
+    {
+      "stage": "North and east constrained westward outpaint",
+      "prompt": "Use case: compositing.\nAsset type: seamless top-down terrain extension for the existing Safety Last open-world game.\nImage 1 is the EDIT TARGET: a wide 3204 by 1666 layout with existing terrain along the top and right, and a large WHITE missing area. Image 2 is an adjacent terrain STYLE REFERENCE. Keep image 1's canvas orientation, composition, scale, and all existing top/right terrain contact shapes exactly in place. Fill the white area with continuous ground that connects BOTH existing sides. Produce one uninterrupted landscape, not a tile sheet or overview map.\nThis section fills the gap WESTWARD back towards camp. It is mostly quiet open ground: natural brown and umber earth, low muted olive grassy patches, small ground-level gravel and worn bare soil. Match the close-up hand-painted game texture and small pebble scale of the references, with crisp individual details and consistent overhead lighting. Broad irregular areas of bare earth are welcome. Gradually transition out of the warm northern orange ground towards brown and olive below; the material changes must wander naturally across the join, never form a straight horizontal strip, blur band or rectangular colour boundary.\nThe existing orange/red leaves at the top are already there; preserve those contact details but taper them away quickly and do NOT populate the new ground with red leaves. New ground should be overwhelmingly dirt and low grass. No new roads are needed here: the player can roam across the open ground between the existing routes above and to the right. Do not add a ring path, perimeter road, crossroad, stone road, trail grid or forced connecting trail.\nNo trees, bushes, standing rocks, buildings, walls, props, resources, water, people, text, labels, grid, borders or shadows from objects. These are separate game assets. Extend the ground all the way to the left and bottom canvas edges; no new vignette or dark border. Preserve the exact visible contact geometry on the top and right. The result must read as adjacent ground at the SAME game scale, not a zoomed-out world."
+    },
+    {
+      "method": "Built-in image_gen",
+      "stage": "Material continuity at northern and eastern contacts",
+      "prompt": "Use case: precise-object-edit.\nEdit the supplied Safety Last terrain master. Keep its exact landscape framing, ground scale, overhead light, road-free layout and all pebble locations outside the transition areas.\nChange only the material transitions in two areas: the band between 8% and 35% down the image, and the strip between 80% and 95% across the image. The topmost 8% and the outermost right 5% are fixed contact pixels and must remain visually identical.\nIn the upper transition the old orange leaf ground ends in a conspicuously straight horizontal edge, especially at the upper right. Make its change into the lower brown earth and olive grass follow irregular, interlocking patches of soil and low grass. Bring some brown earth openings upward into that transition; do not spread red leaves downwards. Match the grain size and crispness between the old and new ground. In the right-side transition, make the grain and grass density meet naturally without a vertical boundary or a fuzzy strip. Use crisp natural material shapes, not blur or an overall tint.\nKeep the lower open ground essentially unchanged. No paths, roads, vegetation props, trees, rocks, buildings, objects, text, grid, border, new leaves or vignette. This is one continuous terrain background that must join exact existing neighbours."
+    }
+  ],
+  "references": {
+    "editTarget": "camp-return-edit-target.png",
+    "style": "public/survival/maps/south-works-v1/16-south-works-clearing.webp"
+  }
+}

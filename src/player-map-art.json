@@ -1,0 +1,60 @@
+{
+  "width": 1024,
+  "height": 1024,
+  "sprites": {
+    "headquarters": {
+      "x": 4,
+      "y": 4,
+      "width": 504,
+      "height": 286
+    },
+    "well": {
+      "x": 516,
+      "y": 4,
+      "width": 225,
+      "height": 248
+    },
+    "workshop": {
+      "x": 772,
+      "y": 4,
+      "width": 248,
+      "height": 190
+    },
+    "medical-tent": {
+      "x": 516,
+      "y": 260,
+      "width": 248,
+      "height": 162
+    },
+    "warehouse": {
+      "x": 772,
+      "y": 260,
+      "width": 248,
+      "height": 135
+    },
+    "bunker": {
+      "x": 4,
+      "y": 516,
+      "width": 248,
+      "height": 114
+    },
+    "camp": {
+      "x": 260,
+      "y": 516,
+      "width": 248,
+      "height": 222
+    },
+    "storage": {
+      "x": 4,
+      "y": 772,
+      "width": 248,
+      "height": 175
+    },
+    "palisade": {
+      "x": 516,
+      "y": 516,
+      "width": 504,
+      "height": 126
+    }
+  }
+}

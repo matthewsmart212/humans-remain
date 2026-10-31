@@ -1,0 +1,116 @@
+/* Shared panel refinements. Keep the desktop workspace in its existing docks. */
+.studio-play-tab-row{display:flex;align-items:center;flex:none;border-bottom:1px solid #3c5962}
+.studio-play-tab-row .studio-play-tabs{flex:1;border-bottom:0}
+.studio-mobile-monitor-close{display:none!important}
+.studio-options>strong{display:flex;align-items:center;justify-content:space-between;gap:12px}
+.camp-studio .studio-options .studio-options-close{width:36px;min-height:36px;padding:5px;justify-content:center;background:none}
+.studio-combat-picker{display:flex;align-items:center;gap:10px;margin-bottom:12px}
+.studio-combat-picker>img{width:42px;height:54px;object-fit:contain;flex:none}
+.studio-combat-picker .studio-combat-field{min-width:0;flex:1}
+.studio-combat-spawn-row{display:flex;flex-direction:column;gap:8px}
+.studio-combat-spawn-row .studio-combat-count{margin:0}
+.studio-combat-details{margin-top:10px;border-top:1px solid #3c5962}
+.studio-combat-details>summary{cursor:pointer;min-height:44px;padding:14px 0;color:#bad0c5;font-size:12px}
+
+/* Touch workspace: one 52px header, one optional dock, and the game screen.
+   The docks are grid siblings of the canvas, never game-view overlays. */
+.camp-studio[data-mobile=true]{--studio-head:52px;--studio-tools:0px;--we-header:52px;--mobile-dock:0px;grid-template-columns:var(--mobile-dock) minmax(0,1fr)!important;grid-template-rows:var(--studio-head) 0 auto minmax(0,1fr);min-height:0}
+.camp-studio[data-mobile=true][data-mobile-dock=true]{--mobile-dock:min(42vw,calc(248px + env(safe-area-inset-left)))}
+.camp-studio[data-mobile=true] .studio-top{min-width:0;padding-block:3px;gap:6px}
+.camp-studio[data-mobile=true] .studio-modes{gap:2px;min-width:0}
+.camp-studio[data-mobile=true] .studio-modes button{min-width:68px;padding:6px 9px;font-size:13px;gap:5px}
+.camp-studio[data-mobile=true] .studio-top-actions{gap:5px;min-width:0}
+.camp-studio[data-mobile=true] .studio-top-actions>button{flex:none;width:44px;min-width:44px;padding:7px!important}
+.camp-studio[data-mobile=true] .studio-top-actions .studio-tools-toggle{width:auto;min-width:68px;gap:5px;font-size:13px;background:#29464c;border-color:#547273}
+.camp-studio[data-mobile=true] .studio-tools-toggle>span{display:inline}
+.camp-studio[data-mobile=true] .studio-tools-toggle[aria-expanded=true],.camp-studio[data-mobile=true] .studio-panel-toggle[aria-expanded=true]{background:#405e57;border-color:#8fa88b;color:#ffe2a6}
+.camp-studio[data-mobile=true] .studio-tools-toggle[data-paused=true]{color:#ffe2a6;border-color:#d1ad70}
+.camp-studio[data-mobile=true] .studio-top .studio-save,.camp-studio[data-mobile=true] .studio-top .studio-inspector-toggle{display:none}
+.camp-studio[data-mobile=true] .studio-library-button>span{display:none}
+.camp-studio[data-mobile=true] .studio-panel-toggle{width:44px;min-width:44px}
+.camp-studio[data-mobile=true] .we-world{grid-column:2;grid-row:4}
+.camp-studio[data-mobile=true] .studio-sidebar,.camp-studio[data-mobile=true] .studio-inspector-dock,.camp-studio[data-mobile=true] .studio-play-monitor,.camp-studio[data-mobile=true] .studio-mobile-tools{grid-column:1;grid-row:4;position:relative;inset:auto;width:auto;height:auto;max-height:none;min-width:0;min-height:0;display:flex;flex-direction:column;overflow:hidden;padding:0 0 env(safe-area-inset-bottom) env(safe-area-inset-left);border:0;border-right:1px solid #476265;border-radius:0;box-shadow:none;background:#172f38;z-index:5}
+.camp-studio[data-mobile=true] .studio-inspector-dock .we-inspector{min-height:0}
+.camp-studio[data-mobile=true] :is(input,select,textarea){font-size:16px}
+.camp-studio[data-mobile=true] .studio-inspector-dock .we-inspector>header>button{width:44px!important;height:44px!important;min-height:44px!important}
+.camp-studio[data-mobile=true] .studio-panel-tabs{padding:4px;gap:0;height:52px;flex:none}
+.camp-studio[data-mobile=true] .studio-panel-tabs>button{font-size:12px;padding:5px;min-width:0}
+.camp-studio[data-mobile=true] .studio-panel-tabs>button>svg{display:none}
+.camp-studio[data-mobile=true] .studio-panel-tabs>.studio-close-panel{width:44px;flex:none}
+.camp-studio[data-mobile=true] .studio-panel-tabs>.studio-close-panel>svg{display:block}
+.camp-studio[data-mobile=true] .studio-play-monitor>header{display:none}
+.camp-studio[data-mobile=true] .studio-play-tab-row,.studio-mobile-dock-heading{display:flex;align-items:center;gap:2px;flex:none;padding:4px;border-bottom:1px solid #486366;background:#1e3941;min-height:52px}
+.camp-studio[data-mobile=true] .studio-play-tabs{padding:0;gap:3px;min-width:0}
+.camp-studio[data-mobile=true] .studio-play-tabs>button{min-height:44px;font-size:12px;gap:5px}
+.camp-studio[data-mobile=true] .studio-mobile-monitor-close{display:inline-flex!important}
+.camp-studio[data-mobile=true] .studio-dock-close{width:44px;min-width:44px;height:44px;min-height:44px;flex:none;justify-content:center;padding:7px;border:0;background:transparent;color:#b8ccc4}
+.studio-mobile-tool-tabs{display:flex;flex:1;min-width:0;gap:2px}
+.camp-studio .studio-mobile-tool-tabs>button{flex:1;min-width:0;min-height:44px;padding:6px 4px;font-size:12px;background:transparent;border:1px solid transparent;color:#b3c9c1}
+.camp-studio .studio-mobile-tool-tabs>button[aria-selected=true]{color:#ffe1a0;background:#3b5a59;border-color:#7f9c87}
+.studio-mobile-tool-content{min-height:0;overflow:auto;overscroll-behavior:contain;-webkit-overflow-scrolling:touch;padding:10px;scrollbar-width:thin;scrollbar-color:#617e76 transparent}
+.camp-studio .studio-mobile-tool-content button{min-height:44px;min-width:44px;padding:8px;font-size:12px;gap:6px;white-space:normal;background:#233f48;border:1px solid #4d6b6d}
+.camp-studio .studio-mobile-tool-content button[aria-pressed=true]{border-color:#96a983;background:#405c4f;color:#ffe4ae}
+.camp-studio .studio-mobile-tool-content button>span{display:inline!important}
+.studio-mobile-tool-content .studio-tool-group{display:contents}
+.studio-mobile-tool-mode,.studio-mobile-tool-weather{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:7px;align-content:start}
+.studio-mobile-tool-content .studio-session-label,.studio-mobile-tool-content .studio-toolbar-note,.studio-mobile-tool-content .studio-location{grid-column:1/-1;display:flex;white-space:normal;border:0;padding:2px 0;margin:0;min-height:22px;font-size:12px}
+.studio-mobile-tool-content .studio-toolbar-note{display:block;line-height:1.45;color:#a4bcb6}
+.studio-mobile-tool-weather .studio-location{margin-bottom:2px}
+.camp-studio .studio-mobile-tool-weather .studio-heavy-rain-mark{display:none}
+.studio-mobile-tool-camera .studio-camera{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:7px;padding:0;border:0;white-space:normal}
+.studio-mobile-tool-camera .studio-camera>button,.studio-mobile-tool-camera .studio-camera>output{grid-column:span 2}
+.studio-mobile-tool-camera .studio-camera>output{min-height:44px;display:flex;align-items:center;justify-content:center;font-size:16px;min-width:0}
+.studio-mobile-tool-camera .studio-camera>button:nth-last-child(-n+2){grid-column:span 3}
+.studio-mobile-tool-camera .studio-camera>i{display:none}
+.camp-studio .studio-mobile-tool-camera>.studio-help-button{width:100%;margin:10px 0 0}
+.camp-studio .studio-mobile-tool-camera>.studio-world-plan{width:100%;margin:10px 0 0;min-height:44px;display:flex;align-items:center;justify-content:center;gap:8px}
+.camp-studio[data-mobile=true] .studio-combat-body{padding:10px;display:block}
+.camp-studio[data-mobile=true] .studio-combat-picker{gap:8px;margin-bottom:8px}
+.camp-studio[data-mobile=true] .studio-combat-picker>img{width:36px;height:48px}
+.camp-studio[data-mobile=true] .studio-combat-field{gap:4px}
+.camp-studio[data-mobile=true] .studio-combat-spawn-row{display:grid;grid-template-columns:minmax(128px,1.3fr) minmax(76px,1fr);gap:8px;align-items:end}
+.camp-studio[data-mobile=true] .studio-combat-count{min-width:0;gap:3px}
+.camp-studio[data-mobile=true] .studio-combat-count legend{margin-bottom:5px}
+.camp-studio[data-mobile=true] .studio-combat-count button{min-width:40px;padding:6px;min-height:44px}
+.camp-studio[data-mobile=true] .studio-combat-spawn{min-width:0;min-height:44px;padding:6px;font-size:13px;gap:4px}
+.camp-studio[data-mobile=true] .studio-combat-spawn-hint{margin:8px 0 10px;font-size:11px}
+.camp-studio[data-mobile=true] .studio-combat-actions{grid-template-columns:1fr 1fr;gap:6px}
+.camp-studio[data-mobile=true] .studio-combat-actions button{justify-content:center;padding:7px 5px;font-size:11px;gap:4px;min-width:0}
+.camp-studio[data-mobile=true] .studio-combat-actions button>svg{flex:none;width:14px}
+.camp-studio[data-mobile=true] .studio-workspace-feedback>.studio-options{position:static;inset:auto;transform:none;width:100%;min-width:0;max-width:none;margin:0;max-height:min(44dvh,300px);overflow:auto;overscroll-behavior:contain;display:grid!important;grid-template-columns:repeat(2,minmax(0,1fr));gap:6px;padding:6px max(10px,env(safe-area-inset-right)) 10px max(10px,env(safe-area-inset-left));border:0;border-bottom:1px solid #607b74;border-radius:0;box-shadow:none;background:#1b3740}
+.camp-studio[data-mobile=true] .studio-options>strong{grid-column:1/-1;padding:0 3px;font-size:11px}
+.camp-studio[data-mobile=true] .studio-options button{min-height:44px;font-size:13px;padding:8px;white-space:normal}
+.camp-studio[data-mobile=true] .studio-options>button:last-child{display:none}
+.camp-studio[data-mobile=true] :is(.studio-mobile-tools,.studio-play-monitor,.studio-sidebar,.studio-options) button:focus-visible{outline:2px solid #f3cf8d;outline-offset:-3px}
+
+/* Portrait docks stay shallow and scroll internally, so the world stays visible. */
+@media(orientation:portrait){
+ .camp-studio[data-mobile=true]{grid-template-columns:minmax(0,1fr)!important;grid-template-rows:var(--studio-head) 0 auto auto minmax(0,1fr)}
+ .camp-studio[data-mobile=true] .we-world{grid-column:1;grid-row:5}
+ .camp-studio[data-mobile=true] .studio-sidebar,.camp-studio[data-mobile=true] .studio-inspector-dock,.camp-studio[data-mobile=true] .studio-play-monitor,.camp-studio[data-mobile=true] .studio-mobile-tools{grid-column:1;grid-row:4;height:min(270px,calc(var(--studio-viewport-height,100dvh)*.36));max-height:min(270px,calc(var(--studio-viewport-height,100dvh)*.36));padding:0 max(0px,env(safe-area-inset-right)) 0 max(0px,env(safe-area-inset-left));border-right:0;border-bottom:1px solid #607b74}
+ .camp-studio[data-mobile=true] .studio-sidebar,.camp-studio[data-mobile=true] .studio-inspector-dock{height:min(320px,calc(var(--studio-viewport-height,100dvh)*.42));max-height:min(320px,calc(var(--studio-viewport-height,100dvh)*.42))}
+ .camp-studio[data-mobile=true] .studio-monitor-body{display:grid;grid-template-columns:1fr 1fr;gap:0 18px}
+ .camp-studio[data-mobile=true] .studio-mobile-tool-mode{grid-template-columns:repeat(3,minmax(0,1fr))}
+ .camp-studio[data-mobile=true] .studio-mobile-tool-mode>button{min-height:44px}
+ .camp-studio[data-mobile=true] .studio-scene{gap:7px;padding:8px 10px}
+ .camp-studio[data-mobile=true] .studio-panel-heading,.camp-studio[data-mobile=true] .studio-panel-hint{display:none}
+ .camp-studio[data-mobile=true] .studio-scene-list{min-height:64px}
+ .camp-studio[data-mobile=true] .studio-sidebar .we-asset-browser{overflow:auto;flex:1;padding:10px}
+ .camp-studio[data-mobile=true] .studio-sidebar .we-assets{flex:none;overflow:visible;grid-template-columns:repeat(3,minmax(0,1fr))}
+ .camp-studio[data-mobile=true] .studio-sidebar .we-asset{min-height:122px}
+ .camp-studio[data-mobile=true] .studio-sidebar .we-asset strong{font-size:12px}
+ .camp-studio[data-mobile=true] .studio-sidebar .we-asset small{font-size:10px}
+ .camp-studio[data-mobile=true] .studio-sidebar .we-thumb{height:64px;flex-basis:64px}
+ .camp-studio[data-mobile=true] .studio-sidebar .we-thumb svg{height:64px}
+}
+@media(max-width:420px){
+ .camp-studio[data-mobile=true] .studio-top{gap:4px;padding-inline:6px}
+ .camp-studio[data-mobile=true] .studio-top-actions{gap:4px}
+ .camp-studio[data-mobile=true] .studio-modes button{min-width:59px;padding:7px;font-size:13px}
+ .camp-studio[data-mobile=true] .studio-modes button>svg{display:none}
+ .camp-studio[data-mobile=true] .studio-top-actions .studio-tools-toggle{min-width:64px;gap:4px}
+}
+@media(max-width:360px){
+ .camp-studio[data-mobile=true] .studio-top .studio-library-button{display:none}
+}
+.camp-studio .studio-mobile-tool-camera>.studio-foliage-toggle{width:100%;margin:10px 0 0;min-height:44px;display:flex;align-items:center;justify-content:center;gap:8px}

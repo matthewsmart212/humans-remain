@@ -1,0 +1,76 @@
+{
+  "name": "Safety Last — Village outskirts 01",
+  "date": "2026-10-14",
+  "method": "Built-in image_gen; deterministic edge registration and lossless texture cuts",
+  "sourceCommit": "bb30b27b50732be39b4162a09b7a0065370785c1",
+  "nativeGeneration": {
+    "width": 1706,
+    "height": 922,
+    "file": "generated-master-original.png"
+  },
+  "registeredMaster": {
+    "x": 4096,
+    "y": 456,
+    "width": 3072,
+    "height": 1660,
+    "file": "registered-master.png"
+  },
+  "packaging": "Native generated artwork resampled to the existing camp pixel scale; packaged dimensions are not native generation resolution.",
+  "tiles": [
+    {
+      "id": "05-camp-northeast-clearing",
+      "url": "/survival/maps/village-outskirts-v1/05-camp-northeast-clearing.webp",
+      "x": 4096,
+      "y": 456,
+      "width": 1538,
+      "height": 1538,
+      "paintHeight": 1536
+    },
+    {
+      "id": "06-village-outskirts",
+      "url": "/survival/maps/village-outskirts-v1/06-village-outskirts.webp",
+      "x": 5630,
+      "y": 456,
+      "width": 1538,
+      "height": 1538,
+      "paintHeight": 1536
+    }
+  ],
+  "contacts": {
+    "camp": {
+      "preservedColumns": 128,
+      "blendColumns": 128
+    },
+    "betweenNewTiles": {
+      "overlapColumns": 4,
+      "maxChannelError": 0
+    },
+    "existingVillageTrail": {
+      "sharedSourceRows": [
+        128,
+        134
+      ],
+      "newSourceRows": [
+        1532,
+        1538
+      ],
+      "paintBoundaryY": 1992,
+      "maxChannelError": 0
+    },
+    "campContactMaxChannelError": 0
+  },
+  "nextExits": {
+    "north": {
+      "x": 5736,
+      "y": 456,
+      "destination": "Northern village ground"
+    },
+    "east": {
+      "x": 7168,
+      "y": 816,
+      "destination": "Eastern district lane"
+    }
+  },
+  "scope": "Ground and paths only; separately placed buildings, foliage, rocks, water and resources are added later.",
+  "nextExitCoordinates": "Approximate guides for later outpainting, not collision or navigation geometry."
+}

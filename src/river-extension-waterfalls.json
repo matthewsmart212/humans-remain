@@ -1,0 +1,442 @@
+[
+  {
+    "id": "riverExtension0_0Flow",
+    "name": "Western bends 1 rapids",
+    "tile": "riverExtension0_0",
+    "batch": 2,
+    "masterWidth": 1330,
+    "masterHeight": 1182,
+    "crop": [
+      811,
+      111,
+      195,
+      118
+    ],
+    "tileTop": 0,
+    "tileHeight": 266,
+    "direction": [
+      0,
+      1
+    ],
+    "phase": 0.34,
+    "maskPath": "/survival/river-extension-motion-v1/riverExtension0_0Flow-mask.png"
+  },
+  {
+    "id": "riverExtension0_1Flow",
+    "name": "Western bends 2 rapids",
+    "tile": "riverExtension0_1",
+    "batch": 2,
+    "masterWidth": 1330,
+    "masterHeight": 1182,
+    "crop": [
+      848,
+      229,
+      255,
+      229
+    ],
+    "tileTop": 229,
+    "tileHeight": 266,
+    "direction": [
+      -0.7071067811865475,
+      0.7071067811865475
+    ],
+    "phase": 0.5337394247038918,
+    "maskPath": "/survival/river-extension-motion-v1/riverExtension0_1Flow-mask.png"
+  },
+  {
+    "id": "riverExtension0_2Flow",
+    "name": "Western bends 3 rapids",
+    "tile": "riverExtension0_2",
+    "batch": 2,
+    "masterWidth": 1330,
+    "masterHeight": 1182,
+    "crop": [
+      530,
+      458,
+      527,
+      229
+    ],
+    "tileTop": 458,
+    "tileHeight": 266,
+    "direction": [
+      -0.7071067811865475,
+      0.7071067811865475
+    ],
+    "phase": 0.7274788494077835,
+    "maskPath": "/survival/river-extension-motion-v1/riverExtension0_2Flow-mask.png"
+  },
+  {
+    "id": "riverExtension0_3Flow",
+    "name": "Western bends 4 rapids",
+    "tile": "riverExtension0_3",
+    "batch": 2,
+    "masterWidth": 1330,
+    "masterHeight": 1182,
+    "crop": [
+      271,
+      687,
+      486,
+      229
+    ],
+    "tileTop": 687,
+    "tileHeight": 266,
+    "direction": [
+      -0.8516583167045438,
+      0.5240974256643346
+    ],
+    "phase": 0.9212182741116752,
+    "maskPath": "/survival/river-extension-motion-v1/riverExtension0_3Flow-mask.png"
+  },
+  {
+    "id": "riverExtension0_4Flow",
+    "name": "Western bends 5 rapids",
+    "tile": "riverExtension0_4",
+    "batch": 2,
+    "masterWidth": 1330,
+    "masterHeight": 1182,
+    "crop": [
+      238,
+      916,
+      240,
+      238
+    ],
+    "tileTop": 916,
+    "tileHeight": 266,
+    "direction": [
+      -0.4472135954999579,
+      0.8944271909999159
+    ],
+    "phase": 1.114957698815567,
+    "maskPath": "/survival/river-extension-motion-v1/riverExtension0_4Flow-mask.png"
+  },
+  {
+    "id": "riverExtension1_0Flow",
+    "name": "Waterworks approach 1 rapids",
+    "tile": "riverExtension1_0",
+    "batch": 3,
+    "masterWidth": 1330,
+    "masterHeight": 1182,
+    "crop": [
+      250,
+      111,
+      240,
+      118
+    ],
+    "tileTop": 0,
+    "tileHeight": 266,
+    "direction": [
+      0.6643638388299198,
+      0.7474093186836598
+    ],
+    "phase": 0.51,
+    "maskPath": "/survival/river-extension-motion-v1/riverExtension1_0Flow-mask.png"
+  },
+  {
+    "id": "riverExtension1_1Flow",
+    "name": "Waterworks approach 2 rapids",
+    "tile": "riverExtension1_1",
+    "batch": 3,
+    "masterWidth": 1330,
+    "masterHeight": 1182,
+    "crop": [
+      387,
+      229,
+      415,
+      229
+    ],
+    "tileTop": 229,
+    "tileHeight": 266,
+    "direction": [
+      0.8320502943378437,
+      0.5547001962252291
+    ],
+    "phase": 0.7037394247038917,
+    "maskPath": "/survival/river-extension-motion-v1/riverExtension1_1Flow-mask.png"
+  },
+  {
+    "id": "riverExtension1_2Flow",
+    "name": "Waterworks approach 3 rapids",
+    "tile": "riverExtension1_2",
+    "batch": 3,
+    "masterWidth": 1330,
+    "masterHeight": 1182,
+    "crop": [
+      585,
+      458,
+      386,
+      229
+    ],
+    "tileTop": 458,
+    "tileHeight": 266,
+    "direction": [
+      0.52999894000318,
+      0.847998304005088
+    ],
+    "phase": 0.8974788494077834,
+    "maskPath": "/survival/river-extension-motion-v1/riverExtension1_2Flow-mask.png"
+  },
+  {
+    "id": "riverExtension1_3Flow",
+    "name": "Waterworks approach 4 rapids",
+    "tile": "riverExtension1_3",
+    "batch": 3,
+    "masterWidth": 1330,
+    "masterHeight": 1182,
+    "crop": [
+      795,
+      687,
+      397,
+      229
+    ],
+    "tileTop": 687,
+    "tileHeight": 266,
+    "direction": [
+      0.8,
+      0.6
+    ],
+    "phase": 1.0912182741116752,
+    "maskPath": "/survival/river-extension-motion-v1/riverExtension1_3Flow-mask.png"
+  },
+  {
+    "id": "riverExtension1_4Flow",
+    "name": "Waterworks approach 5 rapids",
+    "tile": "riverExtension1_4",
+    "batch": 3,
+    "masterWidth": 1330,
+    "masterHeight": 1182,
+    "crop": [
+      916,
+      916,
+      278,
+      238
+    ],
+    "tileTop": 916,
+    "tileHeight": 266,
+    "direction": [
+      -0.4856429311786321,
+      0.8741572761215378
+    ],
+    "phase": 1.2849576988155669,
+    "maskPath": "/survival/river-extension-motion-v1/riverExtension1_4Flow-mask.png"
+  },
+  {
+    "id": "riverExtension2_0Flow",
+    "name": "Lower river pools 1 rapids",
+    "tile": "riverExtension2_0",
+    "batch": 4,
+    "masterWidth": 1330,
+    "masterHeight": 1182,
+    "crop": [
+      504,
+      111,
+      361,
+      118
+    ],
+    "tileTop": 0,
+    "tileHeight": 266,
+    "direction": [
+      -0.554700196225229,
+      0.8320502943378436
+    ],
+    "phase": 0.68,
+    "maskPath": "/survival/river-extension-motion-v1/riverExtension2_0Flow-mask.png"
+  },
+  {
+    "id": "riverExtension2_1Flow",
+    "name": "Lower river pools 2 rapids",
+    "tile": "riverExtension2_1",
+    "batch": 4,
+    "masterWidth": 1330,
+    "masterHeight": 1182,
+    "crop": [
+      498,
+      229,
+      323,
+      229
+    ],
+    "tileTop": 229,
+    "tileHeight": 266,
+    "direction": [
+      -0.554700196225229,
+      0.8320502943378436
+    ],
+    "phase": 0.8737394247038918,
+    "maskPath": "/survival/river-extension-motion-v1/riverExtension2_1Flow-mask.png"
+  },
+  {
+    "id": "riverExtension2_2Flow",
+    "name": "Lower river pools 3 rapids",
+    "tile": "riverExtension2_2",
+    "batch": 4,
+    "masterWidth": 1330,
+    "masterHeight": 1182,
+    "crop": [
+      624,
+      458,
+      353,
+      229
+    ],
+    "tileTop": 458,
+    "tileHeight": 266,
+    "direction": [
+      0.6689647316224496,
+      0.7432941462471663
+    ],
+    "phase": 1.0674788494077836,
+    "maskPath": "/survival/river-extension-motion-v1/riverExtension2_2Flow-mask.png"
+  },
+  {
+    "id": "riverExtension2_3Flow",
+    "name": "Lower river pools 4 rapids",
+    "tile": "riverExtension2_3",
+    "batch": 4,
+    "masterWidth": 1330,
+    "masterHeight": 1182,
+    "crop": [
+      553,
+      687,
+      407,
+      229
+    ],
+    "tileTop": 687,
+    "tileHeight": 266,
+    "direction": [
+      -0.52999894000318,
+      0.847998304005088
+    ],
+    "phase": 1.261218274111675,
+    "maskPath": "/survival/river-extension-motion-v1/riverExtension2_3Flow-mask.png"
+  },
+  {
+    "id": "riverExtension2_4Flow",
+    "name": "Lower river pools 5 rapids",
+    "tile": "riverExtension2_4",
+    "batch": 4,
+    "masterWidth": 1330,
+    "masterHeight": 1182,
+    "crop": [
+      269,
+      916,
+      509,
+      238
+    ],
+    "tileTop": 916,
+    "tileHeight": 266,
+    "direction": [
+      -0.8574929257125442,
+      0.5144957554275266
+    ],
+    "phase": 1.454957698815567,
+    "maskPath": "/survival/river-extension-motion-v1/riverExtension2_4Flow-mask.png"
+  },
+  {
+    "id": "riverExtension3_0Flow",
+    "name": "Southern river reach 1 rapids",
+    "tile": "riverExtension3_0",
+    "batch": 5,
+    "masterWidth": 1269,
+    "masterHeight": 1240,
+    "crop": [
+      313,
+      106,
+      202,
+      134
+    ],
+    "tileTop": 0,
+    "tileHeight": 276,
+    "direction": [
+      -0.6581999903534858,
+      0.7528431262213072
+    ],
+    "phase": 0.8500000000000001,
+    "maskPath": "/survival/river-extension-motion-v1/riverExtension3_0Flow-mask.png"
+  },
+  {
+    "id": "riverExtension3_1Flow",
+    "name": "Southern river reach 2 rapids",
+    "tile": "riverExtension3_1",
+    "batch": 5,
+    "masterWidth": 1269,
+    "masterHeight": 1240,
+    "crop": [
+      305,
+      240,
+      258,
+      240
+    ],
+    "tileTop": 240,
+    "tileHeight": 276,
+    "direction": [
+      0.19611613513818402,
+      0.98058067569092
+    ],
+    "phase": 1.0435483870967743,
+    "maskPath": "/survival/river-extension-motion-v1/riverExtension3_1Flow-mask.png"
+  },
+  {
+    "id": "riverExtension3_2Flow",
+    "name": "Southern river reach 3 rapids",
+    "tile": "riverExtension3_2",
+    "batch": 5,
+    "masterWidth": 1269,
+    "masterHeight": 1240,
+    "crop": [
+      409,
+      480,
+      377,
+      240
+    ],
+    "tileTop": 480,
+    "tileHeight": 276,
+    "direction": [
+      0.7474093186836598,
+      0.6643638388299198
+    ],
+    "phase": 1.2370967741935486,
+    "maskPath": "/survival/river-extension-motion-v1/riverExtension3_2Flow-mask.png"
+  },
+  {
+    "id": "riverExtension3_3Flow",
+    "name": "Southern river reach 4 rapids",
+    "tile": "riverExtension3_3",
+    "batch": 5,
+    "masterWidth": 1269,
+    "masterHeight": 1240,
+    "crop": [
+      646,
+      720,
+      258,
+      240
+    ],
+    "tileTop": 720,
+    "tileHeight": 276,
+    "direction": [
+      0.2873478855663454,
+      0.9578262852211513
+    ],
+    "phase": 1.4306451612903226,
+    "maskPath": "/survival/river-extension-motion-v1/riverExtension3_3Flow-mask.png"
+  },
+  {
+    "id": "riverExtension3_4Flow",
+    "name": "Southern river reach 5 rapids",
+    "tile": "riverExtension3_4",
+    "batch": 5,
+    "masterWidth": 1269,
+    "masterHeight": 1240,
+    "crop": [
+      751,
+      960,
+      236,
+      253
+    ],
+    "tileTop": 960,
+    "tileHeight": 280,
+    "direction": [
+      0.2873478855663454,
+      0.9578262852211513
+    ],
+    "phase": 1.6241935483870968,
+    "maskPath": "/survival/river-extension-motion-v1/riverExtension3_4Flow-mask.png"
+  }
+]

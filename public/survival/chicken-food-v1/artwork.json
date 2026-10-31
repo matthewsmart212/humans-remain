@@ -1,0 +1,39 @@
+{
+  "version": 1,
+  "generation": "Built-in image_gen; approved character/chicken mockup as style reference",
+  "packing": "Preserved alpha, cropped complete main silhouette, uniform aspect-preserving resize and transparent padding",
+  "records": [
+    {
+      "name": "raw-chicken",
+      "source": "exec-1f35d501-5081-4d07-a9fd-ac67b10322c3.png",
+      "size": [
+        256,
+        256
+      ],
+      "sourceBounds": {
+        "left": 78,
+        "top": 107,
+        "width": 1148,
+        "height": 1052
+      },
+      "alphaPixels": 723609,
+      "webpBytes": 48888
+    },
+    {
+      "name": "cooked-chicken",
+      "source": "exec-702f128f-dd5b-4d8a-a607-c9dd5e5974d8.png",
+      "size": [
+        256,
+        256
+      ],
+      "sourceBounds": {
+        "left": 115,
+        "top": 163,
+        "width": 1086,
+        "height": 927
+      },
+      "alphaPixels": 596638,
+      "webpBytes": 56926
+    }
+  ]
+}

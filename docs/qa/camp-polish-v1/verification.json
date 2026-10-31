@@ -1,0 +1,69 @@
+{
+  "result": "pass",
+  "puddles": 8,
+  "removed": 12,
+  "placementsPreserved": 1368,
+  "foliage": 1335,
+  "groundedProps": 24,
+  "bounds": {
+    "left": -565.685424949238,
+    "top": -565.685424949238,
+    "width": 4525.483399593904,
+    "height": 4525.483399593904,
+    "right": 3959.7979746446663,
+    "bottom": 3959.7979746446663
+  },
+  "extraTerrainPixelsPerSide": 600,
+  "movement": [
+    {
+      "edge": "west",
+      "sprint": false,
+      "position": -546
+    },
+    {
+      "edge": "west",
+      "sprint": true,
+      "position": -546.4931205160685
+    },
+    {
+      "edge": "east",
+      "sprint": false,
+      "position": 3940.1125496954282
+    },
+    {
+      "edge": "east",
+      "sprint": true,
+      "position": 3940.605670211491
+    },
+    {
+      "edge": "north",
+      "sprint": false,
+      "position": -546
+    },
+    {
+      "edge": "north",
+      "sprint": true,
+      "position": -546.4931205160685
+    },
+    {
+      "edge": "south",
+      "sprint": false,
+      "position": 3940.1125496954282
+    },
+    {
+      "edge": "south",
+      "sprint": true,
+      "position": 3940.605670211491
+    }
+  ],
+  "checks": [
+    "walking and sprinting across all four old edges",
+    "dodge stops at all four new edges",
+    "pathfinding detours in negative coordinates",
+    "negative spawn and placement validation",
+    "custom terrain and scene bounds preserved",
+    "portrait and landscape cameras",
+    "terrain registration and surviving placements unchanged",
+    "puddle deletion and owner water preserved"
+  ]
+}

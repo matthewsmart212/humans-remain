@@ -1,0 +1,4107 @@
+{
+  "sourceRevision": 73,
+  "changes": [
+    {
+      "original": {
+        "id": "world-plant-v1-village-oaks-6-tree-3",
+        "assetId": "art_tree_oak",
+        "x": 5910.5,
+        "y": -4275.2,
+        "scale": 0.868,
+        "locked": false,
+        "solid": true,
+        "roof": "auto",
+        "role": "prop"
+      },
+      "assetId": "art_tree_oak_forked"
+    },
+    {
+      "original": {
+        "id": "world-plant-v1-village-oaks-6-tree-1",
+        "assetId": "art_tree_oak",
+        "x": 5652.4,
+        "y": -4036.8,
+        "scale": 0.997,
+        "locked": false,
+        "solid": true,
+        "roof": "auto",
+        "role": "prop"
+      },
+      "assetId": "art_tree_oak_leaning"
+    },
+    {
+      "original": {
+        "id": "world-plant-v1-village-oaks-7-tree-1",
+        "assetId": "art_tree_oak",
+        "x": 1900.5,
+        "y": -2703,
+        "scale": 0.793,
+        "locked": false,
+        "solid": true,
+        "roof": "auto",
+        "role": "prop"
+      },
+      "assetId": "art_tree_oak_forked"
+    },
+    {
+      "original": {
+        "id": "world-plant-v1-village-oaks-7-tree-3",
+        "assetId": "art_tree_oak",
+        "x": 2182.7,
+        "y": -2982.6,
+        "scale": 1.148,
+        "locked": false,
+        "solid": true,
+        "roof": "auto",
+        "role": "prop"
+      },
+      "assetId": "art_tree_oak_leaning"
+    },
+    {
+      "original": {
+        "id": "world-plant-v1-village-oaks-7-tree-4",
+        "assetId": "art_tree_oak",
+        "x": 2120.5,
+        "y": -2446.9,
+        "scale": 1.022,
+        "locked": false,
+        "solid": true,
+        "roof": "auto",
+        "role": "prop"
+      },
+      "assetId": "art_tree_oak_forked"
+    },
+    {
+      "original": {
+        "id": "world-plant-v1-village-oaks-4-tree-4",
+        "assetId": "art_tree_oak",
+        "x": 2290.2,
+        "y": -3896.1,
+        "scale": 0.949,
+        "locked": false,
+        "solid": true,
+        "roof": "auto",
+        "role": "prop"
+      },
+      "assetId": "art_tree_oak_leaning"
+    },
+    {
+      "original": {
+        "id": "world-plant-v1-village-oaks-4-tree-2",
+        "assetId": "art_tree_oak",
+        "x": 2575.6,
+        "y": -3680.5,
+        "scale": 0.99,
+        "locked": false,
+        "solid": true,
+        "roof": "auto",
+        "role": "prop"
+      },
+      "assetId": "art_tree_oak_forked"
+    },
+    {
+      "original": {
+        "id": "world-plant-v1-village-oaks-4-tree-3",
+        "assetId": "art_tree_oak",
+        "x": 2642.3,
+        "y": -4118.6,
+        "scale": 0.961,
+        "locked": false,
+        "solid": true,
+        "roof": "auto",
+        "role": "prop"
+      },
+      "assetId": "art_tree_oak_leaning"
+    },
+    {
+      "original": {
+        "id": "world-plant-v1-village-oaks-5-tree-2",
+        "assetId": "art_tree_oak",
+        "x": 4686.6,
+        "y": -3218.5,
+        "scale": 0.77,
+        "locked": false,
+        "solid": true,
+        "roof": "auto",
+        "role": "prop"
+      },
+      "assetId": "art_tree_oak_forked"
+    },
+    {
+      "original": {
+        "id": "world-plant-v1-village-oaks-5-tree-1",
+        "assetId": "art_tree_oak",
+        "x": 4401.3,
+        "y": -3910.3,
+        "scale": 0.937,
+        "locked": false,
+        "solid": true,
+        "roof": "auto",
+        "role": "prop"
+      },
+      "assetId": "art_tree_oak_leaning"
+    },
+    {
+      "original": {
+        "id": "world-plant-v1-village-oaks-2-tree-2",
+        "assetId": "art_tree_oak",
+        "x": 5057.4,
+        "y": -2705.1,
+        "scale": 0.884,
+        "locked": false,
+        "solid": true,
+        "roof": "auto",
+        "role": "prop"
+      },
+      "assetId": "art_tree_oak_forked"
+    },
+    {
+      "original": {
+        "id": "world-plant-v1-village-oaks-2-tree-3",
+        "assetId": "art_tree_oak",
+        "x": 5285.6,
+        "y": -3008.4,
+        "scale": 1.023,
+        "locked": false,
+        "solid": true,
+        "roof": "auto",
+        "role": "prop"
+      },
+      "assetId": "art_tree_oak_leaning"
+    },
+    {
+      "original": {
+        "id": "camp-outskirts-v1-west-outer-tree-5",
+        "assetId": "art_tree_oak",
+        "x": -1150.3,
+        "y": 2855.7,
+        "scale": 1.043,
+        "locked": false,
+        "solid": true,
+        "roof": "auto",
+        "role": "prop"
+      },
+      "assetId": "art_tree_oak_forked"
+    },
+    {
+      "original": {
+        "id": "camp-outskirts-v1-west-outer-tree-4",
+        "assetId": "art_tree_oak",
+        "x": -1805.7,
+        "y": 2530.6,
+        "scale": 0.936,
+        "locked": false,
+        "solid": true,
+        "roof": "auto",
+        "role": "prop"
+      },
+      "assetId": "art_tree_oak_leaning"
+    },
+    {
+      "original": {
+        "id": "camp-outskirts-v1-west-outer-tree-2",
+        "assetId": "art_tree_oak",
+        "x": -1437.9,
+        "y": 2643,
+        "scale": 0.88,
+        "locked": false,
+        "solid": true,
+        "roof": "auto",
+        "role": "prop"
+      },
+      "assetId": "art_tree_oak_forked"
+    },
+    {
+      "original": {
+        "id": "camp-outskirts-v1-west-outer-tree-1",
+        "assetId": "art_tree_oak",
+        "x": -1795.7,
+        "y": 2847.1,
+        "scale": 0.99,
+        "locked": false,
+        "solid": true,
+        "roof": "auto",
+        "role": "prop"
+      },
+      "assetId": "art_tree_oak_leaning"
+    },
+    {
+      "original": {
+        "id": "world-plant-v1-village-oaks-3-tree-1",
+        "assetId": "art_tree_oak",
+        "x": 4246,
+        "y": -4660.9,
+        "scale": 0.854,
+        "locked": false,
+        "solid": true,
+        "roof": "auto",
+        "role": "prop"
+      },
+      "assetId": "art_tree_oak_forked"
+    },
+    {
+      "original": {
+        "id": "world-plant-v1-village-oaks-3-tree-3",
+        "assetId": "art_tree_oak",
+        "x": 4453.3,
+        "y": -4407.2,
+        "scale": 0.986,
+        "locked": false,
+        "solid": true,
+        "roof": "auto",
+        "role": "prop"
+      },
+      "assetId": "art_tree_oak_leaning"
+    },
+    {
+      "original": {
+        "id": "world-plant-v1-village-oaks-1-tree-4",
+        "assetId": "art_tree_oak",
+        "x": 2308.4,
+        "y": -1706.4,
+        "scale": 0.813,
+        "locked": false,
+        "solid": true,
+        "roof": "auto",
+        "role": "prop"
+      },
+      "assetId": "art_tree_oak_forked"
+    },
+    {
+      "original": {
+        "id": "world-plant-v1-village-oaks-1-tree-3",
+        "assetId": "art_tree_oak",
+        "x": 2556.6,
+        "y": -1494,
+        "scale": 0.923,
+        "locked": false,
+        "solid": true,
+        "roof": "auto",
+        "role": "prop"
+      },
+      "assetId": "art_tree_oak_leaning"
+    },
+    {
+      "original": {
+        "id": "world-plant-v1-village-oaks-1-tree-1",
+        "assetId": "art_tree_oak",
+        "x": 2151.6,
+        "y": -1442.7,
+        "scale": 0.826,
+        "locked": false,
+        "solid": true,
+        "roof": "auto",
+        "role": "prop"
+      },
+      "assetId": "art_tree_oak_forked"
+    },
+    {
+      "original": {
+        "id": "camp-river-v1-river-bend-tree-2",
+        "assetId": "art_tree_oak",
+        "x": -4010.3,
+        "y": 1129.1,
+        "scale": 1.055,
+        "locked": false,
+        "solid": true,
+        "roof": "auto",
+        "role": "prop"
+      },
+      "assetId": "art_tree_oak_leaning"
+    },
+    {
+      "original": {
+        "id": "camp-river-v1-river-bend-tree-1",
+        "assetId": "art_tree_oak",
+        "x": -4269.3,
+        "y": 1349.4,
+        "scale": 1.029,
+        "locked": false,
+        "solid": true,
+        "roof": "auto",
+        "role": "prop"
+      },
+      "assetId": "art_tree_oak_forked"
+    },
+    {
+      "original": {
+        "id": "camp-river-v1-river-bend-tree-4",
+        "assetId": "art_tree_oak",
+        "x": -4455.7,
+        "y": 922.4,
+        "scale": 0.852,
+        "locked": false,
+        "solid": true,
+        "roof": "auto",
+        "role": "prop"
+      },
+      "assetId": "art_tree_oak_leaning"
+    },
+    {
+      "original": {
+        "id": "world-plant-v1-village-oaks-8-tree-2",
+        "assetId": "art_tree_oak",
+        "x": 5412.2,
+        "y": -5043.3,
+        "scale": 0.988,
+        "locked": false,
+        "solid": true,
+        "roof": "auto",
+        "role": "prop"
+      },
+      "assetId": "art_tree_oak_forked"
+    },
+    {
+      "original": {
+        "id": "world-plant-v1-village-oaks-8-tree-3",
+        "assetId": "art_tree_oak",
+        "x": 5370.3,
+        "y": -4686.2,
+        "scale": 0.844,
+        "locked": false,
+        "solid": true,
+        "roof": "auto",
+        "role": "prop"
+      },
+      "assetId": "art_tree_oak_leaning"
+    },
+    {
+      "original": {
+        "id": "camp-outskirts-v1-west-near-tree-2",
+        "assetId": "art_tree_oak",
+        "x": 14.6,
+        "y": 1240.1,
+        "scale": 0.961,
+        "locked": false,
+        "solid": true,
+        "roof": "auto",
+        "role": "prop"
+      },
+      "assetId": "art_tree_oak_forked"
+    },
+    {
+      "original": {
+        "id": "camp-outskirts-v1-west-near-tree-3",
+        "assetId": "art_tree_oak",
+        "x": -2.7,
+        "y": 1558.6,
+        "scale": 1.06,
+        "locked": false,
+        "solid": true,
+        "roof": "auto",
+        "role": "prop"
+      },
+      "assetId": "art_tree_oak_leaning"
+    },
+    {
+      "original": {
+        "id": "camp-outskirts-v1-west-near-tree-4",
+        "assetId": "art_tree_oak",
+        "x": -326.1,
+        "y": 1147.3,
+        "scale": 0.939,
+        "locked": false,
+        "solid": true,
+        "roof": "auto",
+        "role": "prop"
+      },
+      "assetId": "art_tree_oak_forked"
+    },
+    {
+      "original": {
+        "id": "camp-outskirts-v1-west-near-tree-5",
+        "assetId": "art_tree_oak",
+        "x": -567.8,
+        "y": 1275.3,
+        "scale": 0.832,
+        "locked": false,
+        "solid": true,
+        "roof": "auto",
+        "role": "prop"
+      },
+      "assetId": "art_tree_oak_leaning"
+    },
+    {
+      "original": {
+        "id": "world-plant-v1-waterworks-woods-1-tree-3",
+        "assetId": "art_tree_oak",
+        "x": -5228.5,
+        "y": 7541.8,
+        "scale": 0.893,
+        "locked": false,
+        "solid": true,
+        "roof": "auto",
+        "role": "prop"
+      },
+      "assetId": "art_tree_oak_forked"
+    },
+    {
+      "original": {
+        "id": "world-plant-v1-waterworks-woods-1-tree-1",
+        "assetId": "art_tree_oak",
+        "x": -5521.6,
+        "y": 7309.8,
+        "scale": 1.145,
+        "locked": false,
+        "solid": true,
+        "roof": "auto",
+        "role": "prop"
+      },
+      "assetId": "art_tree_oak_leaning"
+    },
+    {
+      "original": {
+        "id": "camp-river-v1-central-rise-tree-5",
+        "assetId": "art_tree_oak",
+        "x": -2571.6,
+        "y": 1954.5,
+        "scale": 0.934,
+        "locked": false,
+        "solid": true,
+        "roof": "auto",
+        "role": "prop"
+      },
+      "assetId": "art_tree_oak_forked"
+    },
+    {
+      "original": {
+        "id": "camp-river-v1-central-rise-tree-4",
+        "assetId": "art_tree_oak",
+        "x": -2734.5,
+        "y": 1318.9,
+        "scale": 0.849,
+        "locked": false,
+        "solid": true,
+        "roof": "auto",
+        "role": "prop"
+      },
+      "assetId": "art_tree_oak_leaning"
+    },
+    {
+      "original": {
+        "id": "camp-river-v1-central-rise-tree-3",
+        "assetId": "art_tree_oak",
+        "x": -2913.8,
+        "y": 1767.1,
+        "scale": 0.795,
+        "locked": false,
+        "solid": true,
+        "roof": "auto",
+        "role": "prop"
+      },
+      "assetId": "art_tree_oak_forked"
+    },
+    {
+      "original": {
+        "id": "camp-river-v1-central-rise-tree-2",
+        "assetId": "art_tree_oak",
+        "x": -2059.3,
+        "y": 1786.4,
+        "scale": 1.047,
+        "locked": false,
+        "solid": true,
+        "roof": "auto",
+        "role": "prop"
+      },
+      "assetId": "art_tree_oak_leaning"
+    },
+    {
+      "original": {
+        "id": "world-plant-v1-waterworks-woods-3-tree-1",
+        "assetId": "art_tree_oak",
+        "x": -6395.1,
+        "y": 6181,
+        "scale": 1.065,
+        "locked": false,
+        "solid": true,
+        "roof": "auto",
+        "role": "prop"
+      },
+      "assetId": "art_tree_oak_forked"
+    },
+    {
+      "original": {
+        "id": "world-plant-v1-waterworks-woods-3-tree-2",
+        "assetId": "art_tree_oak",
+        "x": -6238.8,
+        "y": 5759.8,
+        "scale": 1.06,
+        "locked": false,
+        "solid": true,
+        "roof": "auto",
+        "role": "prop"
+      },
+      "assetId": "art_tree_oak_leaning"
+    },
+    {
+      "original": {
+        "id": "world-plant-v1-waterworks-woods-2-tree-3",
+        "assetId": "art_tree_oak",
+        "x": -4856.2,
+        "y": 5173.2,
+        "scale": 0.833,
+        "locked": false,
+        "solid": true,
+        "roof": "auto",
+        "role": "prop"
+      },
+      "assetId": "art_tree_oak_forked"
+    },
+    {
+      "original": {
+        "id": "world-plant-v1-waterworks-woods-2-tree-2",
+        "assetId": "art_tree_oak",
+        "x": -4511.9,
+        "y": 5037.7,
+        "scale": 0.937,
+        "locked": false,
+        "solid": true,
+        "roof": "auto",
+        "role": "prop"
+      },
+      "assetId": "art_tree_oak_leaning"
+    },
+    {
+      "original": {
+        "id": "world-plant-v1-waterworks-woods-2-tree-4",
+        "assetId": "art_tree_oak",
+        "x": -5207.5,
+        "y": 4772.4,
+        "scale": 0.916,
+        "locked": false,
+        "solid": true,
+        "roof": "auto",
+        "role": "prop"
+      },
+      "assetId": "art_tree_oak_forked"
+    },
+    {
+      "original": {
+        "id": "world-plant-v1-waterworks-woods-5-tree-4",
+        "assetId": "art_tree_oak",
+        "x": -4658.3,
+        "y": 5622.3,
+        "scale": 0.792,
+        "locked": false,
+        "solid": true,
+        "roof": "auto",
+        "role": "prop"
+      },
+      "assetId": "art_tree_oak_leaning"
+    },
+    {
+      "original": {
+        "id": "world-plant-v1-waterworks-woods-5-tree-3",
+        "assetId": "art_tree_oak",
+        "x": -4940.6,
+        "y": 6078.1,
+        "scale": 0.791,
+        "locked": false,
+        "solid": true,
+        "roof": "auto",
+        "role": "prop"
+      },
+      "assetId": "art_tree_oak_forked"
+    },
+    {
+      "original": {
+        "id": "world-plant-v1-waterworks-woods-5-tree-1",
+        "assetId": "art_tree_oak",
+        "x": -4981.6,
+        "y": 5747.3,
+        "scale": 0.929,
+        "locked": false,
+        "solid": true,
+        "roof": "auto",
+        "role": "prop"
+      },
+      "assetId": "art_tree_oak_leaning"
+    },
+    {
+      "original": {
+        "id": "world-plant-v1-waterworks-woods-4-tree-1",
+        "assetId": "art_tree_oak",
+        "x": -5951.5,
+        "y": 6472,
+        "scale": 0.845,
+        "locked": false,
+        "solid": true,
+        "roof": "auto",
+        "role": "prop"
+      },
+      "assetId": "art_tree_oak_forked"
+    },
+    {
+      "original": {
+        "id": "world-plant-v1-waterworks-woods-4-tree-3",
+        "assetId": "art_tree_oak",
+        "x": -5269.8,
+        "y": 6339.3,
+        "scale": 1.051,
+        "locked": false,
+        "solid": true,
+        "roof": "auto",
+        "role": "prop"
+      },
+      "assetId": "art_tree_oak_leaning"
+    },
+    {
+      "original": {
+        "id": "world-plant-v1-waterworks-woods-7-tree-1",
+        "assetId": "art_tree_oak",
+        "x": -6020.6,
+        "y": 5329.3,
+        "scale": 0.791,
+        "locked": false,
+        "solid": true,
+        "roof": "auto",
+        "role": "prop"
+      },
+      "assetId": "art_tree_oak_forked"
+    },
+    {
+      "original": {
+        "id": "world-plant-v1-waterworks-woods-7-tree-2",
+        "assetId": "art_tree_oak",
+        "x": -5671.1,
+        "y": 4951.6,
+        "scale": 1.053,
+        "locked": false,
+        "solid": true,
+        "roof": "auto",
+        "role": "prop"
+      },
+      "assetId": "art_tree_oak_leaning"
+    },
+    {
+      "original": {
+        "id": "world-plant-v1-waterworks-woods-7-tree-4",
+        "assetId": "art_tree_oak",
+        "x": -6003.6,
+        "y": 5035.2,
+        "scale": 0.873,
+        "locked": false,
+        "solid": true,
+        "roof": "auto",
+        "role": "prop"
+      },
+      "assetId": "art_tree_oak_forked"
+    },
+    {
+      "original": {
+        "id": "world-plant-v1-waterworks-woods-6-tree-4",
+        "assetId": "art_tree_oak",
+        "x": -6376.9,
+        "y": 8253.4,
+        "scale": 0.871,
+        "locked": false,
+        "solid": true,
+        "roof": "auto",
+        "role": "prop"
+      },
+      "assetId": "art_tree_oak_leaning"
+    },
+    {
+      "original": {
+        "id": "world-plant-v1-waterworks-woods-6-tree-2",
+        "assetId": "art_tree_oak",
+        "x": -6455,
+        "y": 7923.2,
+        "scale": 0.907,
+        "locked": false,
+        "solid": true,
+        "roof": "auto",
+        "role": "prop"
+      },
+      "assetId": "art_tree_oak_forked"
+    },
+    {
+      "original": {
+        "id": "world-plant-v1-waterworks-woods-6-tree-1",
+        "assetId": "art_tree_oak",
+        "x": -6728.5,
+        "y": 8352.5,
+        "scale": 0.768,
+        "locked": false,
+        "solid": true,
+        "roof": "auto",
+        "role": "prop"
+      },
+      "assetId": "art_tree_oak_leaning"
+    },
+    {
+      "original": {
+        "id": "camp-river-v1-southern-birches-tree-2",
+        "assetId": "art_tree_oak",
+        "x": -2237.4,
+        "y": 3261,
+        "scale": 0.838,
+        "locked": false,
+        "solid": true,
+        "roof": "auto",
+        "role": "prop"
+      },
+      "assetId": "art_tree_oak_forked"
+    },
+    {
+      "original": {
+        "id": "camp-river-v1-southern-birches-tree-1",
+        "assetId": "art_tree_oak",
+        "x": -2737.9,
+        "y": 3341.9,
+        "scale": 0.887,
+        "locked": false,
+        "solid": true,
+        "roof": "auto",
+        "role": "prop"
+      },
+      "assetId": "art_tree_oak_leaning"
+    },
+    {
+      "original": {
+        "id": "camp-outskirts-v1-west-lower-tree-1",
+        "assetId": "art_tree_oak",
+        "x": -247.1,
+        "y": 2880.6,
+        "scale": 0.958,
+        "locked": false,
+        "solid": true,
+        "roof": "auto",
+        "role": "prop"
+      },
+      "assetId": "art_tree_oak_forked"
+    },
+    {
+      "original": {
+        "id": "camp-outskirts-v1-west-lower-tree-3",
+        "assetId": "art_tree_oak",
+        "x": -713,
+        "y": 2678.7,
+        "scale": 1.024,
+        "locked": false,
+        "solid": true,
+        "roof": "auto",
+        "role": "prop"
+      },
+      "assetId": "art_tree_oak_leaning"
+    },
+    {
+      "original": {
+        "id": "camp-outskirts-v1-west-lower-tree-4",
+        "assetId": "art_tree_oak",
+        "x": -445.1,
+        "y": 2545.1,
+        "scale": 0.863,
+        "locked": false,
+        "solid": true,
+        "roof": "auto",
+        "role": "prop"
+      },
+      "assetId": "art_tree_oak_forked"
+    },
+    {
+      "original": {
+        "id": "world-plant-v1-western-oaks-1-tree-1",
+        "assetId": "art_tree_oak",
+        "x": -5933.1,
+        "y": 2641.5,
+        "scale": 0.911,
+        "locked": false,
+        "solid": true,
+        "roof": "auto",
+        "role": "prop"
+      },
+      "assetId": "art_tree_oak_leaning"
+    },
+    {
+      "original": {
+        "id": "world-plant-v1-western-oaks-1-tree-2",
+        "assetId": "art_tree_oak",
+        "x": -6498.4,
+        "y": 2736,
+        "scale": 0.908,
+        "locked": false,
+        "solid": true,
+        "roof": "auto",
+        "role": "prop"
+      },
+      "assetId": "art_tree_oak_forked"
+    },
+    {
+      "original": {
+        "id": "world-plant-v1-western-oaks-1-tree-4",
+        "assetId": "art_tree_oak",
+        "x": -6204.7,
+        "y": 2854.6,
+        "scale": 0.883,
+        "locked": false,
+        "solid": true,
+        "roof": "auto",
+        "role": "prop"
+      },
+      "assetId": "art_tree_oak_leaning"
+    },
+    {
+      "original": {
+        "id": "camp-river-v1-upper-link-tree-3",
+        "assetId": "art_tree_oak",
+        "x": -1440.4,
+        "y": 1144.9,
+        "scale": 1.052,
+        "locked": false,
+        "solid": true,
+        "roof": "auto",
+        "role": "prop"
+      },
+      "assetId": "art_tree_oak_forked"
+    },
+    {
+      "original": {
+        "id": "camp-river-v1-upper-link-tree-2",
+        "assetId": "art_tree_oak",
+        "x": -983.6,
+        "y": 1031.7,
+        "scale": 0.962,
+        "locked": false,
+        "solid": true,
+        "roof": "auto",
+        "role": "prop"
+      },
+      "assetId": "art_tree_oak_leaning"
+    },
+    {
+      "original": {
+        "id": "world-plant-v1-western-oaks-2-tree-4",
+        "assetId": "art_tree_oak",
+        "x": -5718.1,
+        "y": 3792.1,
+        "scale": 0.814,
+        "locked": false,
+        "solid": true,
+        "roof": "auto",
+        "role": "prop"
+      },
+      "assetId": "art_tree_oak_forked"
+    },
+    {
+      "original": {
+        "id": "world-plant-v1-western-oaks-2-tree-5",
+        "assetId": "art_tree_oak",
+        "x": -5772.6,
+        "y": 4429.5,
+        "scale": 0.95,
+        "locked": false,
+        "solid": true,
+        "roof": "auto",
+        "role": "prop"
+      },
+      "assetId": "art_tree_oak_leaning"
+    },
+    {
+      "original": {
+        "id": "world-plant-v1-western-oaks-2-tree-2",
+        "assetId": "art_tree_oak",
+        "x": -5887,
+        "y": 4049.7,
+        "scale": 0.834,
+        "locked": false,
+        "solid": true,
+        "roof": "auto",
+        "role": "prop"
+      },
+      "assetId": "art_tree_oak_forked"
+    },
+    {
+      "original": {
+        "id": "world-plant-v1-western-oaks-2-tree-3",
+        "assetId": "art_tree_oak",
+        "x": -5206.3,
+        "y": 4430.2,
+        "scale": 0.908,
+        "locked": false,
+        "solid": true,
+        "roof": "auto",
+        "role": "prop"
+      },
+      "assetId": "art_tree_oak_leaning"
+    },
+    {
+      "original": {
+        "id": "world-plant-v1-western-oaks-3-tree-2",
+        "assetId": "art_tree_oak",
+        "x": -6522.7,
+        "y": 1809.2,
+        "scale": 0.913,
+        "locked": false,
+        "solid": true,
+        "roof": "auto",
+        "role": "prop"
+      },
+      "assetId": "art_tree_oak_forked"
+    },
+    {
+      "original": {
+        "id": "world-plant-v1-western-oaks-3-tree-1",
+        "assetId": "art_tree_oak",
+        "x": -6603,
+        "y": 1294.5,
+        "scale": 0.785,
+        "locked": false,
+        "solid": true,
+        "roof": "auto",
+        "role": "prop"
+      },
+      "assetId": "art_tree_oak_leaning"
+    },
+    {
+      "original": {
+        "id": "world-plant-v1-western-oaks-3-tree-4",
+        "assetId": "art_tree_oak",
+        "x": -6280.5,
+        "y": 1295.1,
+        "scale": 1.005,
+        "locked": false,
+        "solid": true,
+        "roof": "auto",
+        "role": "prop"
+      },
+      "assetId": "art_tree_oak_forked"
+    },
+    {
+      "original": {
+        "id": "world-plant-v1-western-oaks-4-tree-4",
+        "assetId": "art_tree_oak",
+        "x": -6590.9,
+        "y": -529.5,
+        "scale": 0.946,
+        "locked": false,
+        "solid": true,
+        "roof": "auto",
+        "role": "prop"
+      },
+      "assetId": "art_tree_oak_leaning"
+    },
+    {
+      "original": {
+        "id": "world-plant-v1-western-oaks-4-tree-2",
+        "assetId": "art_tree_oak",
+        "x": -6609,
+        "y": 58.2,
+        "scale": 0.857,
+        "locked": false,
+        "solid": true,
+        "roof": "auto",
+        "role": "prop"
+      },
+      "assetId": "art_tree_oak_forked"
+    },
+    {
+      "original": {
+        "id": "world-plant-v1-western-oaks-4-tree-3",
+        "assetId": "art_tree_oak",
+        "x": -6848.5,
+        "y": -196.9,
+        "scale": 1.059,
+        "locked": false,
+        "solid": true,
+        "roof": "auto",
+        "role": "prop"
+      },
+      "assetId": "art_tree_oak_leaning"
+    },
+    {
+      "original": {
+        "id": "world-plant-v1-western-oaks-5-tree-4",
+        "assetId": "art_tree_oak",
+        "x": -5030.8,
+        "y": 2670.6,
+        "scale": 0.989,
+        "locked": false,
+        "solid": true,
+        "roof": "auto",
+        "role": "prop"
+      },
+      "assetId": "art_tree_oak_forked"
+    },
+    {
+      "original": {
+        "id": "world-plant-v1-western-oaks-5-tree-1",
+        "assetId": "art_tree_oak",
+        "x": -5232,
+        "y": 3223.4,
+        "scale": 0.783,
+        "locked": false,
+        "solid": true,
+        "roof": "auto",
+        "role": "prop"
+      },
+      "assetId": "art_tree_oak_leaning"
+    },
+    {
+      "original": {
+        "id": "world-plant-v1-western-oaks-5-tree-2",
+        "assetId": "art_tree_oak",
+        "x": -4738.1,
+        "y": 2976.3,
+        "scale": 1.076,
+        "locked": false,
+        "solid": true,
+        "roof": "auto",
+        "role": "prop"
+      },
+      "assetId": "art_tree_oak_forked"
+    },
+    {
+      "original": {
+        "id": "world-plant-v1-western-oaks-6-tree-1",
+        "assetId": "art_tree_oak",
+        "x": -6148.7,
+        "y": 3772.9,
+        "scale": 1.098,
+        "locked": false,
+        "solid": true,
+        "roof": "auto",
+        "role": "prop"
+      },
+      "assetId": "art_tree_oak_leaning"
+    },
+    {
+      "original": {
+        "id": "world-plant-v1-western-oaks-6-tree-3",
+        "assetId": "art_tree_oak",
+        "x": -6495,
+        "y": 3403.4,
+        "scale": 1.043,
+        "locked": false,
+        "solid": true,
+        "roof": "auto",
+        "role": "prop"
+      },
+      "assetId": "art_tree_oak_forked"
+    },
+    {
+      "original": {
+        "id": "world-plant-v1-western-oaks-6-tree-4",
+        "assetId": "art_tree_oak",
+        "x": -5946.2,
+        "y": 3398.9,
+        "scale": 0.814,
+        "locked": false,
+        "solid": true,
+        "roof": "auto",
+        "role": "prop"
+      },
+      "assetId": "art_tree_oak_leaning"
+    },
+    {
+      "original": {
+        "id": "world-plant-v1-western-oaks-7-tree-5",
+        "assetId": "art_tree_oak",
+        "x": -5390.8,
+        "y": -150.5,
+        "scale": 0.761,
+        "locked": false,
+        "solid": true,
+        "roof": "auto",
+        "role": "prop"
+      },
+      "assetId": "art_tree_oak_forked"
+    },
+    {
+      "original": {
+        "id": "world-plant-v1-western-oaks-7-tree-4",
+        "assetId": "art_tree_oak",
+        "x": -4977.5,
+        "y": -582.8,
+        "scale": 0.773,
+        "locked": false,
+        "solid": true,
+        "roof": "auto",
+        "role": "prop"
+      },
+      "assetId": "art_tree_oak_leaning"
+    },
+    {
+      "original": {
+        "id": "world-plant-v1-western-oaks-7-tree-2",
+        "assetId": "art_tree_oak",
+        "x": -5282.5,
+        "y": -733.4,
+        "scale": 0.808,
+        "locked": false,
+        "solid": true,
+        "roof": "auto",
+        "role": "prop"
+      },
+      "assetId": "art_tree_oak_forked"
+    },
+    {
+      "original": {
+        "id": "world-plant-v1-western-oaks-7-tree-1",
+        "assetId": "art_tree_oak",
+        "x": -5670.2,
+        "y": -322.5,
+        "scale": 1.025,
+        "locked": false,
+        "solid": true,
+        "roof": "auto",
+        "role": "prop"
+      },
+      "assetId": "art_tree_oak_leaning"
+    },
+    {
+      "original": {
+        "id": "world-plant-v1-western-oaks-8-tree-3",
+        "assetId": "art_tree_oak",
+        "x": -6628.6,
+        "y": 501.3,
+        "scale": 0.87,
+        "locked": false,
+        "solid": true,
+        "roof": "auto",
+        "role": "prop"
+      },
+      "assetId": "art_tree_oak_forked"
+    },
+    {
+      "original": {
+        "id": "world-plant-v1-western-oaks-8-tree-1",
+        "assetId": "art_tree_oak",
+        "x": -6944.2,
+        "y": 886.4,
+        "scale": 0.953,
+        "locked": false,
+        "solid": true,
+        "roof": "auto",
+        "role": "prop"
+      },
+      "assetId": "art_tree_oak_leaning"
+    },
+    {
+      "original": {
+        "id": "world-plant-v1-western-oaks-8-tree-5",
+        "assetId": "art_tree_oak",
+        "x": -6549.2,
+        "y": 970.5,
+        "scale": 0.878,
+        "locked": false,
+        "solid": true,
+        "roof": "auto",
+        "role": "prop"
+      },
+      "assetId": "art_tree_oak_forked"
+    },
+    {
+      "original": {
+        "id": "camp-river-v1-lower-link-tree-1",
+        "assetId": "art_tree_oak",
+        "x": -1605.8,
+        "y": 1752.2,
+        "scale": 0.88,
+        "locked": false,
+        "solid": true,
+        "roof": "auto",
+        "role": "prop"
+      },
+      "assetId": "art_tree_oak_leaning"
+    },
+    {
+      "original": {
+        "id": "camp-river-v1-west-trail-north-tree-4",
+        "assetId": "art_tree_oak",
+        "x": -3655.5,
+        "y": 1305.1,
+        "scale": 0.784,
+        "locked": false,
+        "solid": true,
+        "roof": "auto",
+        "role": "prop"
+      },
+      "assetId": "art_tree_oak_forked"
+    },
+    {
+      "original": {
+        "id": "camp-river-v1-west-trail-north-tree-1",
+        "assetId": "art_tree_oak",
+        "x": -3807.5,
+        "y": 1629.5,
+        "scale": 0.987,
+        "locked": false,
+        "solid": true,
+        "roof": "auto",
+        "role": "prop"
+      },
+      "assetId": "art_tree_oak_leaning"
+    },
+    {
+      "original": {
+        "id": "camp-river-v1-west-trail-north-tree-3",
+        "assetId": "art_tree_oak",
+        "x": -3428.4,
+        "y": 1442.5,
+        "scale": 0.841,
+        "locked": false,
+        "solid": true,
+        "roof": "auto",
+        "role": "prop"
+      },
+      "assetId": "art_tree_oak_forked"
+    },
+    {
+      "original": {
+        "id": "camp-river-v1-upper-glade-tree-4",
+        "assetId": "art_tree_oak",
+        "x": -2826.9,
+        "y": 840.1,
+        "scale": 0.826,
+        "locked": false,
+        "solid": true,
+        "roof": "auto",
+        "role": "prop"
+      },
+      "assetId": "art_tree_oak_leaning"
+    },
+    {
+      "original": {
+        "id": "camp-river-v1-upper-glade-tree-1",
+        "assetId": "art_tree_oak",
+        "x": -2912.7,
+        "y": 1123,
+        "scale": 0.814,
+        "locked": false,
+        "solid": true,
+        "roof": "auto",
+        "role": "prop"
+      },
+      "assetId": "art_tree_oak_forked"
+    },
+    {
+      "original": {
+        "id": "camp-river-v1-upper-glade-tree-2",
+        "assetId": "art_tree_oak",
+        "x": -3094.1,
+        "y": 751.4,
+        "scale": 0.835,
+        "locked": false,
+        "solid": true,
+        "roof": "auto",
+        "role": "prop"
+      },
+      "assetId": "art_tree_oak_leaning"
+    },
+    {
+      "original": {
+        "id": "camp-river-v1-middle-meadow-tree-1",
+        "assetId": "art_tree_oak",
+        "x": -2455.8,
+        "y": 2851.5,
+        "scale": 1.069,
+        "locked": false,
+        "solid": true,
+        "roof": "auto",
+        "role": "prop"
+      },
+      "assetId": "art_tree_oak_forked"
+    },
+    {
+      "original": {
+        "id": "camp-river-v1-middle-meadow-tree-3",
+        "assetId": "art_tree_oak",
+        "x": -2797.7,
+        "y": 2759.3,
+        "scale": 0.887,
+        "locked": false,
+        "solid": true,
+        "roof": "auto",
+        "role": "prop"
+      },
+      "assetId": "art_tree_oak_leaning"
+    },
+    {
+      "original": {
+        "id": "world-plant-v1-logging-pines-5-tree-4",
+        "assetId": "art_tree_pine",
+        "x": -3677.7,
+        "y": -5190.1,
+        "scale": 1.148,
+        "locked": false,
+        "solid": true,
+        "roof": "auto",
+        "role": "prop"
+      },
+      "assetId": "art_tree_pine_branching"
+    },
+    {
+      "original": {
+        "id": "world-plant-v1-logging-pines-5-tree-1",
+        "assetId": "art_tree_pine",
+        "x": -3893,
+        "y": -4972.8,
+        "scale": 0.855,
+        "locked": false,
+        "solid": true,
+        "roof": "auto",
+        "role": "prop"
+      },
+      "assetId": "art_tree_pine_bent"
+    },
+    {
+      "original": {
+        "id": "world-plant-v1-logging-pines-5-tree-2",
+        "assetId": "art_tree_pine",
+        "x": -3479.5,
+        "y": -4930,
+        "scale": 1.066,
+        "locked": false,
+        "solid": true,
+        "roof": "auto",
+        "role": "prop"
+      },
+      "assetId": "art_tree_pine_branching"
+    },
+    {
+      "original": {
+        "id": "camp-outskirts-v1-east-near-tree-1",
+        "assetId": "art_tree_pine",
+        "x": 3613.8,
+        "y": 1890.2,
+        "scale": 1.036,
+        "locked": false,
+        "solid": true,
+        "roof": "auto",
+        "role": "prop"
+      },
+      "assetId": "art_tree_pine_bent"
+    },
+    {
+      "original": {
+        "id": "camp-outskirts-v1-east-near-tree-3",
+        "assetId": "art_tree_pine",
+        "x": 3822.9,
+        "y": 2118,
+        "scale": 0.935,
+        "locked": false,
+        "solid": true,
+        "roof": "auto",
+        "role": "prop"
+      },
+      "assetId": "art_tree_pine_branching"
+    },
+    {
+      "original": {
+        "id": "camp-outskirts-v1-east-near-tree-4",
+        "assetId": "art_tree_pine",
+        "x": 3398.9,
+        "y": 2141.1,
+        "scale": 1.02,
+        "locked": false,
+        "solid": true,
+        "roof": "auto",
+        "role": "prop"
+      },
+      "assetId": "art_tree_pine_bent"
+    },
+    {
+      "original": {
+        "id": "world-plant-v1-logging-pines-6-tree-4",
+        "assetId": "art_tree_pine",
+        "x": -4370.8,
+        "y": -5863.7,
+        "scale": 1.074,
+        "locked": false,
+        "solid": true,
+        "roof": "auto",
+        "role": "prop"
+      },
+      "assetId": "art_tree_pine_branching"
+    },
+    {
+      "original": {
+        "id": "world-plant-v1-logging-pines-6-tree-5",
+        "assetId": "art_tree_pine",
+        "x": -4734.3,
+        "y": -5404.7,
+        "scale": 1.005,
+        "locked": false,
+        "solid": true,
+        "roof": "auto",
+        "role": "prop"
+      },
+      "assetId": "art_tree_pine_bent"
+    },
+    {
+      "original": {
+        "id": "world-plant-v1-logging-pines-6-tree-1",
+        "assetId": "art_tree_pine",
+        "x": -3957.1,
+        "y": -5348.5,
+        "scale": 0.994,
+        "locked": false,
+        "solid": true,
+        "roof": "auto",
+        "role": "prop"
+      },
+      "assetId": "art_tree_pine_branching"
+    },
+    {
+      "original": {
+        "id": "world-plant-v1-logging-pines-6-tree-2",
+        "assetId": "art_tree_pine",
+        "x": -4390,
+        "y": -5258.9,
+        "scale": 1.044,
+        "locked": false,
+        "solid": true,
+        "roof": "auto",
+        "role": "prop"
+      },
+      "assetId": "art_tree_pine_bent"
+    },
+    {
+      "original": {
+        "id": "world-plant-v1-factory-ridge-5-tree-1",
+        "assetId": "art_tree_pine",
+        "x": 6126.7,
+        "y": -2043.1,
+        "scale": 0.848,
+        "locked": false,
+        "solid": true,
+        "roof": "auto",
+        "role": "prop"
+      },
+      "assetId": "art_tree_pine_branching"
+    },
+    {
+      "original": {
+        "id": "world-plant-v1-factory-ridge-4-tree-1",
+        "assetId": "art_tree_pine",
+        "x": 6917.5,
+        "y": -2532.8,
+        "scale": 0.9,
+        "locked": false,
+        "solid": true,
+        "roof": "auto",
+        "role": "prop"
+      },
+      "assetId": "art_tree_pine_bent"
+    },
+    {
+      "original": {
+        "id": "world-plant-v1-factory-ridge-7-tree-1",
+        "assetId": "art_tree_pine",
+        "x": 9815.7,
+        "y": -3746,
+        "scale": 0.89,
+        "locked": false,
+        "solid": true,
+        "roof": "auto",
+        "role": "prop"
+      },
+      "assetId": "art_tree_pine_branching"
+    },
+    {
+      "original": {
+        "id": "world-plant-v1-factory-ridge-7-tree-2",
+        "assetId": "art_tree_pine",
+        "x": 9542.6,
+        "y": -3794.1,
+        "scale": 0.986,
+        "locked": false,
+        "solid": true,
+        "roof": "auto",
+        "role": "prop"
+      },
+      "assetId": "art_tree_pine_bent"
+    },
+    {
+      "original": {
+        "id": "world-plant-v1-factory-ridge-6-tree-1",
+        "assetId": "art_tree_pine",
+        "x": 7645.3,
+        "y": -5278.4,
+        "scale": 0.829,
+        "locked": false,
+        "solid": true,
+        "roof": "auto",
+        "role": "prop"
+      },
+      "assetId": "art_tree_pine_branching"
+    },
+    {
+      "original": {
+        "id": "world-plant-v1-factory-ridge-1-tree-2",
+        "assetId": "art_tree_pine",
+        "x": 5904.4,
+        "y": -917.2,
+        "scale": 1.135,
+        "locked": false,
+        "solid": true,
+        "roof": "auto",
+        "role": "prop"
+      },
+      "assetId": "art_tree_pine_bent"
+    },
+    {
+      "original": {
+        "id": "world-plant-v1-factory-ridge-3-tree-1",
+        "assetId": "art_tree_pine",
+        "x": 10731.1,
+        "y": -5262.5,
+        "scale": 0.784,
+        "locked": false,
+        "solid": true,
+        "roof": "auto",
+        "role": "prop"
+      },
+      "assetId": "art_tree_pine_branching"
+    },
+    {
+      "original": {
+        "id": "world-plant-v1-factory-ridge-3-tree-2",
+        "assetId": "art_tree_pine",
+        "x": 11095.5,
+        "y": -5372,
+        "scale": 1.123,
+        "locked": false,
+        "solid": true,
+        "roof": "auto",
+        "role": "prop"
+      },
+      "assetId": "art_tree_pine_bent"
+    },
+    {
+      "original": {
+        "id": "world-plant-v1-factory-ridge-2-tree-1",
+        "assetId": "art_tree_pine",
+        "x": 8639.7,
+        "y": -1100,
+        "scale": 0.966,
+        "locked": false,
+        "solid": true,
+        "roof": "auto",
+        "role": "prop"
+      },
+      "assetId": "art_tree_pine_branching"
+    },
+    {
+      "original": {
+        "id": "world-plant-v1-factory-ridge-8-tree-1",
+        "assetId": "art_tree_pine",
+        "x": 10291,
+        "y": -2363.4,
+        "scale": 0.858,
+        "locked": false,
+        "solid": true,
+        "roof": "auto",
+        "role": "prop"
+      },
+      "assetId": "art_tree_pine_bent"
+    },
+    {
+      "original": {
+        "id": "world-plant-v1-eastern-pines-7-tree-2",
+        "assetId": "art_tree_pine",
+        "x": 7381.4,
+        "y": 3527.1,
+        "scale": 0.923,
+        "locked": false,
+        "solid": true,
+        "roof": "auto",
+        "role": "prop"
+      },
+      "assetId": "art_tree_pine_branching"
+    },
+    {
+      "original": {
+        "id": "world-plant-v1-eastern-pines-7-tree-3",
+        "assetId": "art_tree_pine",
+        "x": 7303.4,
+        "y": 3250.4,
+        "scale": 0.768,
+        "locked": false,
+        "solid": true,
+        "roof": "auto",
+        "role": "prop"
+      },
+      "assetId": "art_tree_pine_bent"
+    },
+    {
+      "original": {
+        "id": "world-plant-v1-eastern-pines-7-tree-4",
+        "assetId": "art_tree_pine",
+        "x": 7241.9,
+        "y": 2968.6,
+        "scale": 0.772,
+        "locked": false,
+        "solid": true,
+        "roof": "auto",
+        "role": "prop"
+      },
+      "assetId": "art_tree_pine_branching"
+    },
+    {
+      "original": {
+        "id": "world-plant-v1-eastern-pines-6-tree-1",
+        "assetId": "art_tree_pine",
+        "x": 5710.4,
+        "y": 1257.3,
+        "scale": 1.099,
+        "locked": false,
+        "solid": true,
+        "roof": "auto",
+        "role": "prop"
+      },
+      "assetId": "art_tree_pine_bent"
+    },
+    {
+      "original": {
+        "id": "world-plant-v1-eastern-pines-6-tree-2",
+        "assetId": "art_tree_pine",
+        "x": 5700.4,
+        "y": 971.9,
+        "scale": 0.827,
+        "locked": false,
+        "solid": true,
+        "roof": "auto",
+        "role": "prop"
+      },
+      "assetId": "art_tree_pine_branching"
+    },
+    {
+      "original": {
+        "id": "world-plant-v1-eastern-pines-6-tree-4",
+        "assetId": "art_tree_pine",
+        "x": 5425.7,
+        "y": 839.8,
+        "scale": 0.96,
+        "locked": false,
+        "solid": true,
+        "roof": "auto",
+        "role": "prop"
+      },
+      "assetId": "art_tree_pine_bent"
+    },
+    {
+      "original": {
+        "id": "world-plant-v1-eastern-pines-5-tree-1",
+        "assetId": "art_tree_pine",
+        "x": 5993.3,
+        "y": 169.4,
+        "scale": 0.851,
+        "locked": false,
+        "solid": true,
+        "roof": "auto",
+        "role": "prop"
+      },
+      "assetId": "art_tree_pine_branching"
+    },
+    {
+      "original": {
+        "id": "world-plant-v1-eastern-pines-5-tree-2",
+        "assetId": "art_tree_pine",
+        "x": 6200.8,
+        "y": 510.6,
+        "scale": 1.152,
+        "locked": false,
+        "solid": true,
+        "roof": "auto",
+        "role": "prop"
+      },
+      "assetId": "art_tree_pine_bent"
+    },
+    {
+      "original": {
+        "id": "world-plant-v1-eastern-pines-4-tree-3",
+        "assetId": "art_tree_pine",
+        "x": 5660.6,
+        "y": 4631.3,
+        "scale": 0.783,
+        "locked": false,
+        "solid": true,
+        "roof": "auto",
+        "role": "prop"
+      },
+      "assetId": "art_tree_pine_branching"
+    },
+    {
+      "original": {
+        "id": "world-plant-v1-eastern-pines-4-tree-2",
+        "assetId": "art_tree_pine",
+        "x": 5500.5,
+        "y": 4345,
+        "scale": 0.942,
+        "locked": false,
+        "solid": true,
+        "roof": "auto",
+        "role": "prop"
+      },
+      "assetId": "art_tree_pine_bent"
+    },
+    {
+      "original": {
+        "id": "world-plant-v1-eastern-pines-4-tree-4",
+        "assetId": "art_tree_pine",
+        "x": 6075.2,
+        "y": 4985.8,
+        "scale": 1.061,
+        "locked": false,
+        "solid": true,
+        "roof": "auto",
+        "role": "prop"
+      },
+      "assetId": "art_tree_pine_branching"
+    },
+    {
+      "original": {
+        "id": "world-plant-v1-eastern-pines-3-tree-4",
+        "assetId": "art_tree_pine",
+        "x": 7353.4,
+        "y": 4431.3,
+        "scale": 1.1,
+        "locked": false,
+        "solid": true,
+        "roof": "auto",
+        "role": "prop"
+      },
+      "assetId": "art_tree_pine_bent"
+    },
+    {
+      "original": {
+        "id": "world-plant-v1-eastern-pines-3-tree-3",
+        "assetId": "art_tree_pine",
+        "x": 7524.1,
+        "y": 4708.1,
+        "scale": 1.055,
+        "locked": false,
+        "solid": true,
+        "roof": "auto",
+        "role": "prop"
+      },
+      "assetId": "art_tree_pine_branching"
+    },
+    {
+      "original": {
+        "id": "world-plant-v1-eastern-pines-3-tree-1",
+        "assetId": "art_tree_pine",
+        "x": 7406.2,
+        "y": 4036.1,
+        "scale": 0.918,
+        "locked": false,
+        "solid": true,
+        "roof": "auto",
+        "role": "prop"
+      },
+      "assetId": "art_tree_pine_bent"
+    },
+    {
+      "original": {
+        "id": "world-plant-v1-eastern-pines-2-tree-1",
+        "assetId": "art_tree_pine",
+        "x": 7571.4,
+        "y": 1736,
+        "scale": 0.926,
+        "locked": false,
+        "solid": true,
+        "roof": "auto",
+        "role": "prop"
+      },
+      "assetId": "art_tree_pine_branching"
+    },
+    {
+      "original": {
+        "id": "world-plant-v1-eastern-pines-2-tree-3",
+        "assetId": "art_tree_pine",
+        "x": 7819.4,
+        "y": 1657.2,
+        "scale": 0.949,
+        "locked": false,
+        "solid": true,
+        "roof": "auto",
+        "role": "prop"
+      },
+      "assetId": "art_tree_pine_bent"
+    },
+    {
+      "original": {
+        "id": "world-plant-v1-eastern-pines-1-tree-1",
+        "assetId": "art_tree_pine",
+        "x": 4593.2,
+        "y": 4626.6,
+        "scale": 0.953,
+        "locked": false,
+        "solid": true,
+        "roof": "auto",
+        "role": "prop"
+      },
+      "assetId": "art_tree_pine_branching"
+    },
+    {
+      "original": {
+        "id": "world-plant-v1-eastern-pines-1-tree-2",
+        "assetId": "art_tree_pine",
+        "x": 4995.5,
+        "y": 4464.9,
+        "scale": 1.131,
+        "locked": false,
+        "solid": true,
+        "roof": "auto",
+        "role": "prop"
+      },
+      "assetId": "art_tree_pine_bent"
+    },
+    {
+      "original": {
+        "id": "world-plant-v1-eastern-pines-1-tree-4",
+        "assetId": "art_tree_pine",
+        "x": 4267.3,
+        "y": 4390.8,
+        "scale": 0.843,
+        "locked": false,
+        "solid": true,
+        "roof": "auto",
+        "role": "prop"
+      },
+      "assetId": "art_tree_pine_branching"
+    },
+    {
+      "original": {
+        "id": "world-plant-v1-eastern-pines-9-tree-1",
+        "assetId": "art_tree_pine",
+        "x": 4894.5,
+        "y": 3296.4,
+        "scale": 1.019,
+        "locked": false,
+        "solid": true,
+        "roof": "auto",
+        "role": "prop"
+      },
+      "assetId": "art_tree_pine_bent"
+    },
+    {
+      "original": {
+        "id": "world-plant-v1-eastern-pines-9-tree-3",
+        "assetId": "art_tree_pine",
+        "x": 4883.5,
+        "y": 2857.1,
+        "scale": 1.016,
+        "locked": false,
+        "solid": true,
+        "roof": "auto",
+        "role": "prop"
+      },
+      "assetId": "art_tree_pine_branching"
+    },
+    {
+      "original": {
+        "id": "world-plant-v1-eastern-pines-9-tree-4",
+        "assetId": "art_tree_pine",
+        "x": 4263.1,
+        "y": 3185.9,
+        "scale": 0.848,
+        "locked": false,
+        "solid": true,
+        "roof": "auto",
+        "role": "prop"
+      },
+      "assetId": "art_tree_pine_bent"
+    },
+    {
+      "original": {
+        "id": "world-plant-v1-eastern-pines-8-tree-3",
+        "assetId": "art_tree_pine",
+        "x": 4249.6,
+        "y": -34.5,
+        "scale": 1.064,
+        "locked": false,
+        "solid": true,
+        "roof": "auto",
+        "role": "prop"
+      },
+      "assetId": "art_tree_pine_branching"
+    },
+    {
+      "original": {
+        "id": "world-plant-v1-eastern-pines-8-tree-2",
+        "assetId": "art_tree_pine",
+        "x": 4614,
+        "y": 324.6,
+        "scale": 0.892,
+        "locked": false,
+        "solid": true,
+        "roof": "auto",
+        "role": "prop"
+      },
+      "assetId": "art_tree_pine_bent"
+    },
+    {
+      "original": {
+        "id": "camp-outskirts-v1-east-outer-tree-1",
+        "assetId": "art_tree_pine",
+        "x": 4313.1,
+        "y": 1539.6,
+        "scale": 0.955,
+        "locked": false,
+        "solid": true,
+        "roof": "auto",
+        "role": "prop"
+      },
+      "assetId": "art_tree_pine_branching"
+    },
+    {
+      "original": {
+        "id": "camp-outskirts-v1-east-outer-tree-3",
+        "assetId": "art_tree_pine",
+        "x": 4486.2,
+        "y": 1851.6,
+        "scale": 0.853,
+        "locked": false,
+        "solid": true,
+        "roof": "auto",
+        "role": "prop"
+      },
+      "assetId": "art_tree_pine_bent"
+    },
+    {
+      "original": {
+        "id": "camp-outskirts-v1-east-outer-tree-5",
+        "assetId": "art_tree_pine",
+        "x": 4746.4,
+        "y": 2013.3,
+        "scale": 0.844,
+        "locked": false,
+        "solid": true,
+        "roof": "auto",
+        "role": "prop"
+      },
+      "assetId": "art_tree_pine_branching"
+    },
+    {
+      "original": {
+        "id": "camp-outskirts-v1-east-outer-tree-4",
+        "assetId": "art_tree_pine",
+        "x": 4033.4,
+        "y": 1961.2,
+        "scale": 1.022,
+        "locked": false,
+        "solid": true,
+        "roof": "auto",
+        "role": "prop"
+      },
+      "assetId": "art_tree_pine_bent"
+    },
+    {
+      "original": {
+        "id": "camp-outskirts-v1-southeast-near-tree-2",
+        "assetId": "art_tree_pine",
+        "x": 3019.1,
+        "y": 3513.7,
+        "scale": 0.712,
+        "locked": false,
+        "solid": true,
+        "roof": "auto",
+        "role": "prop"
+      },
+      "assetId": "art_tree_pine_branching"
+    },
+    {
+      "original": {
+        "id": "camp-outskirts-v1-southeast-near-tree-1",
+        "assetId": "art_tree_pine",
+        "x": 2663.3,
+        "y": 3209.6,
+        "scale": 0.95,
+        "locked": false,
+        "solid": true,
+        "roof": "auto",
+        "role": "prop"
+      },
+      "assetId": "art_tree_pine_bent"
+    },
+    {
+      "original": {
+        "id": "camp-outskirts-v1-northeast-near-tree-2",
+        "assetId": "art_tree_pine",
+        "x": 3185.5,
+        "y": 523.9,
+        "scale": 0.906,
+        "locked": false,
+        "solid": true,
+        "roof": "auto",
+        "role": "prop"
+      },
+      "assetId": "art_tree_pine_branching"
+    },
+    {
+      "original": {
+        "id": "world-plant-v1-southwest-heath-2-tree-2",
+        "assetId": "art_tree_pine",
+        "x": -6733.1,
+        "y": 11686.2,
+        "scale": 1.007,
+        "locked": false,
+        "solid": true,
+        "roof": "auto",
+        "role": "prop"
+      },
+      "assetId": "art_tree_pine_bent"
+    },
+    {
+      "original": {
+        "id": "world-plant-v1-southwest-heath-3-tree-1",
+        "assetId": "art_tree_pine",
+        "x": -5046.2,
+        "y": 10919.1,
+        "scale": 0.939,
+        "locked": false,
+        "solid": true,
+        "roof": "auto",
+        "role": "prop"
+      },
+      "assetId": "art_tree_pine_branching"
+    },
+    {
+      "original": {
+        "id": "world-plant-v1-southwest-heath-3-tree-2",
+        "assetId": "art_tree_pine",
+        "x": -5319.8,
+        "y": 11512.8,
+        "scale": 1.111,
+        "locked": false,
+        "solid": true,
+        "roof": "auto",
+        "role": "prop"
+      },
+      "assetId": "art_tree_pine_bent"
+    },
+    {
+      "original": {
+        "id": "world-plant-v1-southwest-heath-1-tree-1",
+        "assetId": "art_tree_pine",
+        "x": -6007.1,
+        "y": 9759.1,
+        "scale": 0.984,
+        "locked": false,
+        "solid": true,
+        "roof": "auto",
+        "role": "prop"
+      },
+      "assetId": "art_tree_pine_branching"
+    },
+    {
+      "original": {
+        "id": "world-plant-v1-eastern-pines-10-tree-4",
+        "assetId": "art_tree_pine",
+        "x": 6458,
+        "y": 1590.6,
+        "scale": 0.875,
+        "locked": false,
+        "solid": true,
+        "roof": "auto",
+        "role": "prop"
+      },
+      "assetId": "art_tree_pine_bent"
+    },
+    {
+      "original": {
+        "id": "world-plant-v1-eastern-pines-10-tree-2",
+        "assetId": "art_tree_pine",
+        "x": 6341.8,
+        "y": 2233.2,
+        "scale": 0.76,
+        "locked": false,
+        "solid": true,
+        "roof": "auto",
+        "role": "prop"
+      },
+      "assetId": "art_tree_pine_branching"
+    },
+    {
+      "original": {
+        "id": "world-plant-v1-eastern-pines-10-tree-3",
+        "assetId": "art_tree_pine",
+        "x": 6239.6,
+        "y": 1418.1,
+        "scale": 1.006,
+        "locked": false,
+        "solid": true,
+        "roof": "auto",
+        "role": "prop"
+      },
+      "assetId": "art_tree_pine_bent"
+    },
+    {
+      "original": {
+        "id": "world-plant-v1-logging-pines-1-tree-3",
+        "assetId": "art_tree_pine",
+        "x": -6555.2,
+        "y": -2167.6,
+        "scale": 0.801,
+        "locked": false,
+        "solid": true,
+        "roof": "auto",
+        "role": "prop"
+      },
+      "assetId": "art_tree_pine_branching"
+    },
+    {
+      "original": {
+        "id": "world-plant-v1-logging-pines-1-tree-2",
+        "assetId": "art_tree_pine",
+        "x": -7035.6,
+        "y": -2211.9,
+        "scale": 0.861,
+        "locked": false,
+        "solid": true,
+        "roof": "auto",
+        "role": "prop"
+      },
+      "assetId": "art_tree_pine_bent"
+    },
+    {
+      "original": {
+        "id": "world-plant-v1-logging-pines-1-tree-4",
+        "assetId": "art_tree_pine",
+        "x": -6891.8,
+        "y": -2644.5,
+        "scale": 0.797,
+        "locked": false,
+        "solid": true,
+        "roof": "auto",
+        "role": "prop"
+      },
+      "assetId": "art_tree_pine_branching"
+    },
+    {
+      "original": {
+        "id": "world-plant-v1-logging-pines-2-tree-4",
+        "assetId": "art_tree_pine",
+        "x": -6578.6,
+        "y": -3802.2,
+        "scale": 0.965,
+        "locked": false,
+        "solid": true,
+        "roof": "auto",
+        "role": "prop"
+      },
+      "assetId": "art_tree_pine_bent"
+    },
+    {
+      "original": {
+        "id": "world-plant-v1-logging-pines-2-tree-1",
+        "assetId": "art_tree_pine",
+        "x": -6267.1,
+        "y": -3785.5,
+        "scale": 0.764,
+        "locked": false,
+        "solid": true,
+        "roof": "auto",
+        "role": "prop"
+      },
+      "assetId": "art_tree_pine_branching"
+    },
+    {
+      "original": {
+        "id": "world-plant-v1-logging-pines-2-tree-2",
+        "assetId": "art_tree_pine",
+        "x": -6474.2,
+        "y": -4086,
+        "scale": 1.007,
+        "locked": false,
+        "solid": true,
+        "roof": "auto",
+        "role": "prop"
+      },
+      "assetId": "art_tree_pine_bent"
+    },
+    {
+      "original": {
+        "id": "world-plant-v1-logging-pines-3-tree-3",
+        "assetId": "art_tree_pine",
+        "x": -5211.7,
+        "y": -1556.9,
+        "scale": 0.832,
+        "locked": false,
+        "solid": true,
+        "roof": "auto",
+        "role": "prop"
+      },
+      "assetId": "art_tree_pine_branching"
+    },
+    {
+      "original": {
+        "id": "world-plant-v1-logging-pines-3-tree-2",
+        "assetId": "art_tree_pine",
+        "x": -5079.1,
+        "y": -1863.1,
+        "scale": 0.814,
+        "locked": false,
+        "solid": true,
+        "roof": "auto",
+        "role": "prop"
+      },
+      "assetId": "art_tree_pine_bent"
+    },
+    {
+      "original": {
+        "id": "world-plant-v1-logging-pines-3-tree-4",
+        "assetId": "art_tree_pine",
+        "x": -4617,
+        "y": -1428.7,
+        "scale": 1.01,
+        "locked": false,
+        "solid": true,
+        "roof": "auto",
+        "role": "prop"
+      },
+      "assetId": "art_tree_pine_branching"
+    },
+    {
+      "original": {
+        "id": "world-plant-v1-logging-pines-4-tree-4",
+        "assetId": "art_tree_pine",
+        "x": -6170.1,
+        "y": -1913.9,
+        "scale": 0.852,
+        "locked": false,
+        "solid": true,
+        "roof": "auto",
+        "role": "prop"
+      },
+      "assetId": "art_tree_pine_bent"
+    },
+    {
+      "original": {
+        "id": "world-plant-v1-logging-pines-4-tree-3",
+        "assetId": "art_tree_pine",
+        "x": -5854.7,
+        "y": -1677.9,
+        "scale": 0.86,
+        "locked": false,
+        "solid": true,
+        "roof": "auto",
+        "role": "prop"
+      },
+      "assetId": "art_tree_pine_branching"
+    },
+    {
+      "original": {
+        "id": "world-plant-v1-logging-pines-4-tree-1",
+        "assetId": "art_tree_pine",
+        "x": -6262.9,
+        "y": -1640.1,
+        "scale": 1.053,
+        "locked": false,
+        "solid": true,
+        "roof": "auto",
+        "role": "prop"
+      },
+      "assetId": "art_tree_pine_bent"
+    },
+    {
+      "original": {
+        "id": "world-plant-v1-northern-birches-10-tree-3",
+        "assetId": "art_tree_birch",
+        "x": -2562.4,
+        "y": -3902.8,
+        "scale": 0.925,
+        "locked": false,
+        "solid": true,
+        "roof": "auto",
+        "role": "prop"
+      },
+      "assetId": "art_tree_birch_branching"
+    },
+    {
+      "original": {
+        "id": "world-plant-v1-northern-birches-10-tree-2",
+        "assetId": "art_tree_birch",
+        "x": -2495.7,
+        "y": -4256.7,
+        "scale": 1.084,
+        "locked": false,
+        "solid": true,
+        "roof": "auto",
+        "role": "prop"
+      },
+      "assetId": "art_tree_birch_bent"
+    },
+    {
+      "original": {
+        "id": "world-plant-v1-north-passage-3-tree-4",
+        "assetId": "art_tree_birch",
+        "x": 417.4,
+        "y": -1222.8,
+        "scale": 0.907,
+        "locked": false,
+        "solid": true,
+        "roof": "auto",
+        "role": "prop"
+      },
+      "assetId": "art_tree_birch_branching"
+    },
+    {
+      "original": {
+        "id": "world-plant-v1-north-passage-3-tree-2",
+        "assetId": "art_tree_birch",
+        "x": 728.7,
+        "y": -1495.4,
+        "scale": 1.1,
+        "locked": false,
+        "solid": true,
+        "roof": "auto",
+        "role": "prop"
+      },
+      "assetId": "art_tree_birch_bent"
+    },
+    {
+      "original": {
+        "id": "world-plant-v1-north-passage-3-tree-1",
+        "assetId": "art_tree_birch",
+        "x": 1036.3,
+        "y": -1474.2,
+        "scale": 0.797,
+        "locked": false,
+        "solid": true,
+        "roof": "auto",
+        "role": "prop"
+      },
+      "assetId": "art_tree_birch_branching"
+    },
+    {
+      "original": {
+        "id": "world-plant-v1-north-passage-2-tree-1",
+        "assetId": "art_tree_birch",
+        "x": 3120,
+        "y": -958.1,
+        "scale": 0.965,
+        "locked": false,
+        "solid": true,
+        "roof": "auto",
+        "role": "prop"
+      },
+      "assetId": "art_tree_birch_bent"
+    },
+    {
+      "original": {
+        "id": "world-plant-v1-north-passage-2-tree-2",
+        "assetId": "art_tree_birch",
+        "x": 3390,
+        "y": -816.8,
+        "scale": 0.845,
+        "locked": false,
+        "solid": true,
+        "roof": "auto",
+        "role": "prop"
+      },
+      "assetId": "art_tree_birch_branching"
+    },
+    {
+      "original": {
+        "id": "world-plant-v1-north-passage-1-tree-1",
+        "assetId": "art_tree_birch",
+        "x": 4881,
+        "y": -1134.7,
+        "scale": 1.122,
+        "locked": false,
+        "solid": true,
+        "roof": "auto",
+        "role": "prop"
+      },
+      "assetId": "art_tree_birch_bent"
+    },
+    {
+      "original": {
+        "id": "world-plant-v1-north-passage-1-tree-3",
+        "assetId": "art_tree_birch",
+        "x": 4452.4,
+        "y": -1280,
+        "scale": 1.104,
+        "locked": false,
+        "solid": true,
+        "roof": "auto",
+        "role": "prop"
+      },
+      "assetId": "art_tree_birch_branching"
+    },
+    {
+      "original": {
+        "id": "camp-outskirts-v1-northwest-grove-tree-1",
+        "assetId": "art_tree_birch",
+        "x": -4,
+        "y": 336.4,
+        "scale": 0.705,
+        "locked": false,
+        "solid": true,
+        "roof": "auto",
+        "role": "prop"
+      },
+      "assetId": "art_tree_birch_bent"
+    },
+    {
+      "original": {
+        "id": "camp-outskirts-v1-northwest-grove-tree-3",
+        "assetId": "art_tree_birch",
+        "x": 183.8,
+        "y": 565.8,
+        "scale": 0.836,
+        "locked": false,
+        "solid": true,
+        "roof": "auto",
+        "role": "prop"
+      },
+      "assetId": "art_tree_birch_branching"
+    },
+    {
+      "original": {
+        "id": "camp-river-v1-west-upper-tree-2",
+        "assetId": "art_tree_birch",
+        "x": -3975.7,
+        "y": 457.8,
+        "scale": 0.674,
+        "locked": false,
+        "solid": true,
+        "roof": "auto",
+        "role": "prop"
+      },
+      "assetId": "art_tree_birch_bent"
+    },
+    {
+      "original": {
+        "id": "camp-river-v1-west-upper-tree-1",
+        "assetId": "art_tree_birch",
+        "x": -3641.5,
+        "y": 388.8,
+        "scale": 0.872,
+        "locked": false,
+        "solid": true,
+        "roof": "auto",
+        "role": "prop"
+      },
+      "assetId": "art_tree_birch_branching"
+    },
+    {
+      "original": {
+        "id": "camp-river-v1-west-upper-tree-4",
+        "assetId": "art_tree_birch",
+        "x": -3353.9,
+        "y": 428.6,
+        "scale": 1.039,
+        "locked": false,
+        "solid": true,
+        "roof": "auto",
+        "role": "prop"
+      },
+      "assetId": "art_tree_birch_bent"
+    },
+    {
+      "original": {
+        "id": "camp-outskirts-v1-northwest-outer-tree-5",
+        "assetId": "art_tree_birch",
+        "x": -645.1,
+        "y": -67,
+        "scale": 0.751,
+        "locked": false,
+        "solid": true,
+        "roof": "auto",
+        "role": "prop"
+      },
+      "assetId": "art_tree_birch_branching"
+    },
+    {
+      "original": {
+        "id": "camp-outskirts-v1-northwest-outer-tree-6",
+        "assetId": "art_tree_birch",
+        "x": -901.9,
+        "y": 20.8,
+        "scale": 0.94,
+        "locked": false,
+        "solid": true,
+        "roof": "auto",
+        "role": "prop"
+      },
+      "assetId": "art_tree_birch_bent"
+    },
+    {
+      "original": {
+        "id": "camp-outskirts-v1-northwest-outer-tree-2",
+        "assetId": "art_tree_birch",
+        "x": -1033.2,
+        "y": 342.4,
+        "scale": 0.797,
+        "locked": false,
+        "solid": true,
+        "roof": "auto",
+        "role": "prop"
+      },
+      "assetId": "art_tree_birch_branching"
+    },
+    {
+      "original": {
+        "id": "camp-outskirts-v1-northwest-outer-tree-3",
+        "assetId": "art_tree_birch",
+        "x": -1238.3,
+        "y": -45,
+        "scale": 0.759,
+        "locked": false,
+        "solid": true,
+        "roof": "auto",
+        "role": "prop"
+      },
+      "assetId": "art_tree_birch_bent"
+    },
+    {
+      "original": {
+        "id": "camp-river-v1-north-trail-tree-1",
+        "assetId": "art_tree_birch",
+        "x": -2371.8,
+        "y": -875.7,
+        "scale": 0.85,
+        "locked": false,
+        "solid": true,
+        "roof": "auto",
+        "role": "prop"
+      },
+      "assetId": "art_tree_birch_branching"
+    },
+    {
+      "original": {
+        "id": "camp-outskirts-v1-north-near-tree-4",
+        "assetId": "art_tree_birch",
+        "x": 1521.3,
+        "y": -246.7,
+        "scale": 0.947,
+        "locked": false,
+        "solid": true,
+        "roof": "auto",
+        "role": "prop"
+      },
+      "assetId": "art_tree_birch_bent"
+    },
+    {
+      "original": {
+        "id": "camp-outskirts-v1-north-near-tree-2",
+        "assetId": "art_tree_birch",
+        "x": 1730.2,
+        "y": -422.9,
+        "scale": 0.999,
+        "locked": false,
+        "solid": true,
+        "roof": "auto",
+        "role": "prop"
+      },
+      "assetId": "art_tree_birch_branching"
+    },
+    {
+      "original": {
+        "id": "camp-outskirts-v1-north-near-tree-3",
+        "assetId": "art_tree_birch",
+        "x": 2044.1,
+        "y": -490,
+        "scale": 0.952,
+        "locked": false,
+        "solid": true,
+        "roof": "auto",
+        "role": "prop"
+      },
+      "assetId": "art_tree_birch_bent"
+    },
+    {
+      "original": {
+        "id": "camp-river-v1-stream-east-tree-4",
+        "assetId": "art_tree_birch",
+        "x": -1958.3,
+        "y": -32.3,
+        "scale": 0.957,
+        "locked": false,
+        "solid": true,
+        "roof": "auto",
+        "role": "prop"
+      },
+      "assetId": "art_tree_birch_branching"
+    },
+    {
+      "original": {
+        "id": "camp-river-v1-stream-east-tree-2",
+        "assetId": "art_tree_birch",
+        "x": -1868.3,
+        "y": -318.4,
+        "scale": 0.918,
+        "locked": false,
+        "solid": true,
+        "roof": "auto",
+        "role": "prop"
+      },
+      "assetId": "art_tree_birch_bent"
+    },
+    {
+      "original": {
+        "id": "camp-river-v1-stream-east-tree-1",
+        "assetId": "art_tree_birch",
+        "x": -1619.2,
+        "y": -79.4,
+        "scale": 0.728,
+        "locked": false,
+        "solid": true,
+        "roof": "auto",
+        "role": "prop"
+      },
+      "assetId": "art_tree_birch_branching"
+    },
+    {
+      "original": {
+        "id": "world-plant-v1-northern-birches-2-tree-2",
+        "assetId": "art_tree_birch",
+        "x": -451.3,
+        "y": -3093.3,
+        "scale": 0.963,
+        "locked": false,
+        "solid": true,
+        "roof": "auto",
+        "role": "prop"
+      },
+      "assetId": "art_tree_birch_bent"
+    },
+    {
+      "original": {
+        "id": "world-plant-v1-northern-birches-2-tree-1",
+        "assetId": "art_tree_birch",
+        "x": 17.3,
+        "y": -3444.7,
+        "scale": 1.111,
+        "locked": false,
+        "solid": true,
+        "roof": "auto",
+        "role": "prop"
+      },
+      "assetId": "art_tree_birch_branching"
+    },
+    {
+      "original": {
+        "id": "world-plant-v1-northern-birches-2-tree-4",
+        "assetId": "art_tree_birch",
+        "x": -217.4,
+        "y": -3001.1,
+        "scale": 0.764,
+        "locked": false,
+        "solid": true,
+        "roof": "auto",
+        "role": "prop"
+      },
+      "assetId": "art_tree_birch_bent"
+    },
+    {
+      "original": {
+        "id": "world-plant-v1-northern-birches-3-tree-3",
+        "assetId": "art_tree_birch",
+        "x": -2084.4,
+        "y": -2294.5,
+        "scale": 1.084,
+        "locked": false,
+        "solid": true,
+        "roof": "auto",
+        "role": "prop"
+      },
+      "assetId": "art_tree_birch_branching"
+    },
+    {
+      "original": {
+        "id": "world-plant-v1-northern-birches-3-tree-2",
+        "assetId": "art_tree_birch",
+        "x": -1606.7,
+        "y": -1914.6,
+        "scale": 0.869,
+        "locked": false,
+        "solid": true,
+        "roof": "auto",
+        "role": "prop"
+      },
+      "assetId": "art_tree_birch_bent"
+    },
+    {
+      "original": {
+        "id": "world-plant-v1-northern-birches-1-tree-2",
+        "assetId": "art_tree_birch",
+        "x": 1174.4,
+        "y": -3144.6,
+        "scale": 1.027,
+        "locked": false,
+        "solid": true,
+        "roof": "auto",
+        "role": "prop"
+      },
+      "assetId": "art_tree_birch_branching"
+    },
+    {
+      "original": {
+        "id": "world-plant-v1-northern-birches-1-tree-1",
+        "assetId": "art_tree_birch",
+        "x": 845.4,
+        "y": -3360.2,
+        "scale": 1.003,
+        "locked": false,
+        "solid": true,
+        "roof": "auto",
+        "role": "prop"
+      },
+      "assetId": "art_tree_birch_bent"
+    },
+    {
+      "original": {
+        "id": "world-plant-v1-northern-birches-6-tree-4",
+        "assetId": "art_tree_birch",
+        "x": 1672.7,
+        "y": -4928,
+        "scale": 0.891,
+        "locked": false,
+        "solid": true,
+        "roof": "auto",
+        "role": "prop"
+      },
+      "assetId": "art_tree_birch_branching"
+    },
+    {
+      "original": {
+        "id": "world-plant-v1-northern-birches-6-tree-2",
+        "assetId": "art_tree_birch",
+        "x": 1169.6,
+        "y": -4905.9,
+        "scale": 1.05,
+        "locked": false,
+        "solid": true,
+        "roof": "auto",
+        "role": "prop"
+      },
+      "assetId": "art_tree_birch_bent"
+    },
+    {
+      "original": {
+        "id": "world-plant-v1-northern-birches-6-tree-1",
+        "assetId": "art_tree_birch",
+        "x": 1410.9,
+        "y": -5079.4,
+        "scale": 0.984,
+        "locked": false,
+        "solid": true,
+        "roof": "auto",
+        "role": "prop"
+      },
+      "assetId": "art_tree_birch_branching"
+    },
+    {
+      "original": {
+        "id": "world-plant-v1-northern-birches-7-tree-4",
+        "assetId": "art_tree_birch",
+        "x": -557.5,
+        "y": -1320.5,
+        "scale": 0.764,
+        "locked": false,
+        "solid": true,
+        "roof": "auto",
+        "role": "prop"
+      },
+      "assetId": "art_tree_birch_bent"
+    },
+    {
+      "original": {
+        "id": "world-plant-v1-northern-birches-7-tree-3",
+        "assetId": "art_tree_birch",
+        "x": -623.6,
+        "y": -1582.1,
+        "scale": 0.805,
+        "locked": false,
+        "solid": true,
+        "roof": "auto",
+        "role": "prop"
+      },
+      "assetId": "art_tree_birch_branching"
+    },
+    {
+      "original": {
+        "id": "world-plant-v1-northern-birches-7-tree-2",
+        "assetId": "art_tree_birch",
+        "x": 96.4,
+        "y": -1464,
+        "scale": 1.084,
+        "locked": false,
+        "solid": true,
+        "roof": "auto",
+        "role": "prop"
+      },
+      "assetId": "art_tree_birch_bent"
+    },
+    {
+      "original": {
+        "id": "world-plant-v1-northern-birches-4-tree-3",
+        "assetId": "art_tree_birch",
+        "x": -1482.9,
+        "y": -3300.6,
+        "scale": 0.87,
+        "locked": false,
+        "solid": true,
+        "roof": "auto",
+        "role": "prop"
+      },
+      "assetId": "art_tree_birch_branching"
+    },
+    {
+      "original": {
+        "id": "world-plant-v1-northern-birches-4-tree-4",
+        "assetId": "art_tree_birch",
+        "x": -1477.5,
+        "y": -3794.9,
+        "scale": 0.825,
+        "locked": false,
+        "solid": true,
+        "roof": "auto",
+        "role": "prop"
+      },
+      "assetId": "art_tree_birch_bent"
+    },
+    {
+      "original": {
+        "id": "world-plant-v1-northern-birches-5-tree-4",
+        "assetId": "art_tree_birch",
+        "x": 714.5,
+        "y": -2296.6,
+        "scale": 0.785,
+        "locked": false,
+        "solid": true,
+        "roof": "auto",
+        "role": "prop"
+      },
+      "assetId": "art_tree_birch_branching"
+    },
+    {
+      "original": {
+        "id": "world-plant-v1-northern-birches-5-tree-3",
+        "assetId": "art_tree_birch",
+        "x": 378.5,
+        "y": -2339.6,
+        "scale": 1.029,
+        "locked": false,
+        "solid": true,
+        "roof": "auto",
+        "role": "prop"
+      },
+      "assetId": "art_tree_birch_bent"
+    },
+    {
+      "original": {
+        "id": "world-plant-v1-northern-birches-5-tree-1",
+        "assetId": "art_tree_birch",
+        "x": 850.1,
+        "y": -2567.8,
+        "scale": 0.955,
+        "locked": false,
+        "solid": true,
+        "roof": "auto",
+        "role": "prop"
+      },
+      "assetId": "art_tree_birch_branching"
+    },
+    {
+      "original": {
+        "id": "world-plant-v1-northern-birches-8-tree-4",
+        "assetId": "art_tree_birch",
+        "x": -1874.7,
+        "y": -5460.8,
+        "scale": 0.96,
+        "locked": false,
+        "solid": true,
+        "roof": "auto",
+        "role": "prop"
+      },
+      "assetId": "art_tree_birch_bent"
+    },
+    {
+      "original": {
+        "id": "world-plant-v1-northern-birches-8-tree-2",
+        "assetId": "art_tree_birch",
+        "x": -1561.8,
+        "y": -5775.4,
+        "scale": 0.984,
+        "locked": false,
+        "solid": true,
+        "roof": "auto",
+        "role": "prop"
+      },
+      "assetId": "art_tree_birch_branching"
+    },
+    {
+      "original": {
+        "id": "world-plant-v1-northern-birches-8-tree-3",
+        "assetId": "art_tree_birch",
+        "x": -1681.4,
+        "y": -5220.2,
+        "scale": 1.034,
+        "locked": false,
+        "solid": true,
+        "roof": "auto",
+        "role": "prop"
+      },
+      "assetId": "art_tree_birch_bent"
+    },
+    {
+      "original": {
+        "id": "world-plant-v1-northern-birches-9-tree-2",
+        "assetId": "art_tree_birch",
+        "x": -588.7,
+        "y": -5341.5,
+        "scale": 1.125,
+        "locked": false,
+        "solid": true,
+        "roof": "auto",
+        "role": "prop"
+      },
+      "assetId": "art_tree_birch_branching"
+    },
+    {
+      "original": {
+        "id": "world-plant-v1-northern-birches-9-tree-1",
+        "assetId": "art_tree_birch",
+        "x": 80.3,
+        "y": -5145.2,
+        "scale": 1.023,
+        "locked": false,
+        "solid": true,
+        "roof": "auto",
+        "role": "prop"
+      },
+      "assetId": "art_tree_birch_bent"
+    },
+    {
+      "original": {
+        "id": "camp-river-v1-stream-meadow-tree-2",
+        "assetId": "art_tree_birch",
+        "x": -1870.4,
+        "y": 433.9,
+        "scale": 0.847,
+        "locked": false,
+        "solid": true,
+        "roof": "auto",
+        "role": "prop"
+      },
+      "assetId": "art_tree_birch_branching"
+    },
+    {
+      "original": {
+        "id": "camp-river-v1-stream-meadow-tree-3",
+        "assetId": "art_tree_birch",
+        "x": -1730.9,
+        "y": 956.3,
+        "scale": 1.05,
+        "locked": false,
+        "solid": true,
+        "roof": "auto",
+        "role": "prop"
+      },
+      "assetId": "art_tree_birch_bent"
+    },
+    {
+      "original": {
+        "id": "camp-river-v1-stream-meadow-tree-4",
+        "assetId": "art_tree_birch",
+        "x": -1607.9,
+        "y": 627.3,
+        "scale": 0.788,
+        "locked": false,
+        "solid": true,
+        "roof": "auto",
+        "role": "prop"
+      },
+      "assetId": "art_tree_birch_branching"
+    },
+    {
+      "original": {
+        "id": "camp-river-v1-stream-head-tree-1",
+        "assetId": "art_tree_birch",
+        "x": -2797.4,
+        "y": -140.8,
+        "scale": 0.819,
+        "locked": false,
+        "solid": true,
+        "roof": "auto",
+        "role": "prop"
+      },
+      "assetId": "art_tree_birch_bent"
+    },
+    {
+      "original": {
+        "id": "world-plant-v1-eastern-hollows-7-tree-2",
+        "assetId": "art_tree_deadwood",
+        "x": 8154,
+        "y": -143.8,
+        "scale": 1.055,
+        "locked": false,
+        "solid": true,
+        "roof": "auto",
+        "role": "prop"
+      },
+      "assetId": "art_tree_deadwood_forked"
+    },
+    {
+      "original": {
+        "id": "world-plant-v1-eastern-hollows-4-tree-1",
+        "assetId": "art_tree_deadwood",
+        "x": 8570.9,
+        "y": 3648.2,
+        "scale": 1.04,
+        "locked": false,
+        "solid": true,
+        "roof": "auto",
+        "role": "prop"
+      },
+      "assetId": "art_tree_deadwood_bent"
+    },
+    {
+      "original": {
+        "id": "world-plant-v1-eastern-hollows-5-tree-2",
+        "assetId": "art_tree_deadwood",
+        "x": 8844.3,
+        "y": 4806.7,
+        "scale": 0.919,
+        "locked": false,
+        "solid": true,
+        "roof": "auto",
+        "role": "prop"
+      },
+      "assetId": "art_tree_deadwood_forked"
+    },
+    {
+      "original": {
+        "id": "world-plant-v1-eastern-hollows-5-tree-1",
+        "assetId": "art_tree_deadwood",
+        "x": 8482.7,
+        "y": 4649.4,
+        "scale": 1.041,
+        "locked": false,
+        "solid": true,
+        "roof": "auto",
+        "role": "prop"
+      },
+      "assetId": "art_tree_deadwood_bent"
+    },
+    {
+      "original": {
+        "id": "world-plant-v1-eastern-hollows-2-tree-1",
+        "assetId": "art_tree_deadwood",
+        "x": 9980.1,
+        "y": 3747.7,
+        "scale": 1.086,
+        "locked": false,
+        "solid": true,
+        "roof": "auto",
+        "role": "prop"
+      },
+      "assetId": "art_tree_deadwood_forked"
+    },
+    {
+      "original": {
+        "id": "world-plant-v1-eastern-hollows-3-tree-1",
+        "assetId": "art_tree_deadwood",
+        "x": 10147,
+        "y": 2500.6,
+        "scale": 1.155,
+        "locked": false,
+        "solid": true,
+        "roof": "auto",
+        "role": "prop"
+      },
+      "assetId": "art_tree_deadwood_bent"
+    },
+    {
+      "original": {
+        "id": "world-plant-v1-eastern-hollows-1-tree-2",
+        "assetId": "art_tree_deadwood",
+        "x": 8604.7,
+        "y": 2862.7,
+        "scale": 0.775,
+        "locked": false,
+        "solid": true,
+        "roof": "auto",
+        "role": "prop"
+      },
+      "assetId": "art_tree_deadwood_forked"
+    },
+    {
+      "original": {
+        "id": "world-plant-v1-eastern-hollows-1-tree-1",
+        "assetId": "art_tree_deadwood",
+        "x": 8746.2,
+        "y": 2586.5,
+        "scale": 1.026,
+        "locked": false,
+        "solid": true,
+        "roof": "auto",
+        "role": "prop"
+      },
+      "assetId": "art_tree_deadwood_bent"
+    },
+    {
+      "original": {
+        "id": "world-plant-v1-scrapyard-scrub-1-tree-2",
+        "assetId": "art_tree_deadwood",
+        "x": 7137.8,
+        "y": 5955.9,
+        "scale": 1.145,
+        "locked": false,
+        "solid": true,
+        "roof": "auto",
+        "role": "prop"
+      },
+      "assetId": "art_tree_deadwood_forked"
+    },
+    {
+      "original": {
+        "id": "world-plant-v1-scrapyard-scrub-2-tree-1",
+        "assetId": "art_tree_deadwood",
+        "x": 7015.1,
+        "y": 8933.5,
+        "scale": 1.014,
+        "locked": false,
+        "solid": true,
+        "roof": "auto",
+        "role": "prop"
+      },
+      "assetId": "art_tree_deadwood_bent"
+    },
+    {
+      "original": {
+        "id": "world-plant-v1-scrapyard-scrub-3-tree-2",
+        "assetId": "art_tree_deadwood",
+        "x": 4143.3,
+        "y": 7579.3,
+        "scale": 0.863,
+        "locked": false,
+        "solid": true,
+        "roof": "auto",
+        "role": "prop"
+      },
+      "assetId": "art_tree_deadwood_forked"
+    },
+    {
+      "original": {
+        "id": "world-plant-v1-scrapyard-scrub-3-tree-1",
+        "assetId": "art_tree_deadwood",
+        "x": 4567.1,
+        "y": 7670.2,
+        "scale": 1.072,
+        "locked": false,
+        "solid": true,
+        "roof": "auto",
+        "role": "prop"
+      },
+      "assetId": "art_tree_deadwood_bent"
+    },
+    {
+      "original": {
+        "id": "world-plant-v1-scrapyard-scrub-4-tree-1",
+        "assetId": "art_tree_deadwood",
+        "x": 5139.2,
+        "y": 8206.1,
+        "scale": 0.889,
+        "locked": false,
+        "solid": true,
+        "roof": "auto",
+        "role": "prop"
+      },
+      "assetId": "art_tree_deadwood_forked"
+    },
+    {
+      "original": {
+        "id": "world-plant-v1-scrapyard-scrub-5-tree-1",
+        "assetId": "art_tree_deadwood",
+        "x": 8815.5,
+        "y": 5840.8,
+        "scale": 0.821,
+        "locked": false,
+        "solid": true,
+        "roof": "auto",
+        "role": "prop"
+      },
+      "assetId": "art_tree_deadwood_bent"
+    },
+    {
+      "original": {
+        "id": "world-plant-v1-scrapyard-scrub-6-tree-1",
+        "assetId": "art_tree_deadwood",
+        "x": 5436,
+        "y": 6191.5,
+        "scale": 0.887,
+        "locked": false,
+        "solid": true,
+        "roof": "auto",
+        "role": "prop"
+      },
+      "assetId": "art_tree_deadwood_forked"
+    },
+    {
+      "original": {
+        "id": "world-plant-v1-scrapyard-scrub-6-tree-2",
+        "assetId": "art_tree_deadwood",
+        "x": 5362.9,
+        "y": 6567.5,
+        "scale": 0.936,
+        "locked": false,
+        "solid": true,
+        "roof": "auto",
+        "role": "prop"
+      },
+      "assetId": "art_tree_deadwood_bent"
+    },
+    {
+      "original": {
+        "id": "world-plant-v1-scrapyard-scrub-7-tree-1",
+        "assetId": "art_tree_deadwood",
+        "x": 8532.4,
+        "y": 6719.9,
+        "scale": 0.858,
+        "locked": false,
+        "solid": true,
+        "roof": "auto",
+        "role": "prop"
+      },
+      "assetId": "art_tree_deadwood_forked"
+    },
+    {
+      "original": {
+        "id": "world-plant-v1-scrapyard-scrub-8-tree-2",
+        "assetId": "art_tree_deadwood",
+        "x": 5559.2,
+        "y": 7321.4,
+        "scale": 1.1,
+        "locked": false,
+        "solid": true,
+        "roof": "auto",
+        "role": "prop"
+      },
+      "assetId": "art_tree_deadwood_bent"
+    },
+    {
+      "original": {
+        "id": "world-plant-v1-eastern-hollows-8-tree-1",
+        "assetId": "art_tree_deadwood",
+        "x": 8648.4,
+        "y": 1310.6,
+        "scale": 0.905,
+        "locked": false,
+        "solid": true,
+        "roof": "auto",
+        "role": "prop"
+      },
+      "assetId": "art_tree_deadwood_forked"
+    },
+    {
+      "original": {
+        "id": "world-plant-v1-eastern-hollows-8-tree-2",
+        "assetId": "art_tree_deadwood",
+        "x": 8839.7,
+        "y": 1557,
+        "scale": 1.003,
+        "locked": false,
+        "solid": true,
+        "roof": "auto",
+        "role": "prop"
+      },
+      "assetId": "art_tree_deadwood_bent"
+    },
+    {
+      "original": {
+        "id": "world-plant-v1-eastern-hollows-6-tree-1",
+        "assetId": "art_tree_deadwood",
+        "x": 9590.7,
+        "y": 1291.6,
+        "scale": 1.029,
+        "locked": false,
+        "solid": true,
+        "roof": "auto",
+        "role": "prop"
+      },
+      "assetId": "art_tree_deadwood_forked"
+    },
+    {
+      "original": {
+        "id": "camp-outskirts-v1-south-outer-tree-4",
+        "assetId": "art_tree_rowan",
+        "x": 847.4,
+        "y": 4256.9,
+        "scale": 1.055,
+        "locked": false,
+        "solid": true,
+        "roof": "auto",
+        "role": "prop"
+      },
+      "assetId": "art_tree_rowan_forked"
+    },
+    {
+      "original": {
+        "id": "camp-outskirts-v1-south-outer-tree-1",
+        "assetId": "art_tree_rowan",
+        "x": 916,
+        "y": 4818.1,
+        "scale": 1.032,
+        "locked": false,
+        "solid": true,
+        "roof": "auto",
+        "role": "prop"
+      },
+      "assetId": "art_tree_rowan_bent"
+    },
+    {
+      "original": {
+        "id": "camp-outskirts-v1-south-outer-tree-2",
+        "assetId": "art_tree_rowan",
+        "x": 1185.3,
+        "y": 4349.4,
+        "scale": 0.861,
+        "locked": false,
+        "solid": true,
+        "roof": "auto",
+        "role": "prop"
+      },
+      "assetId": "art_tree_rowan_forked"
+    },
+    {
+      "original": {
+        "id": "camp-outskirts-v1-southwest-outer-tree-4",
+        "assetId": "art_tree_rowan",
+        "x": -1112.3,
+        "y": 3742.1,
+        "scale": 1.066,
+        "locked": false,
+        "solid": true,
+        "roof": "auto",
+        "role": "prop"
+      },
+      "assetId": "art_tree_rowan_bent"
+    },
+    {
+      "original": {
+        "id": "camp-outskirts-v1-southwest-outer-tree-3",
+        "assetId": "art_tree_rowan",
+        "x": -785.7,
+        "y": 3762.8,
+        "scale": 0.859,
+        "locked": false,
+        "solid": true,
+        "roof": "auto",
+        "role": "prop"
+      },
+      "assetId": "art_tree_rowan_forked"
+    },
+    {
+      "original": {
+        "id": "camp-outskirts-v1-southwest-outer-tree-1",
+        "assetId": "art_tree_rowan",
+        "x": -491.6,
+        "y": 3401.8,
+        "scale": 0.923,
+        "locked": false,
+        "solid": true,
+        "roof": "auto",
+        "role": "prop"
+      },
+      "assetId": "art_tree_rowan_bent"
+    },
+    {
+      "original": {
+        "id": "world-plant-v1-southern-meadows-2-tree-1",
+        "assetId": "art_tree_rowan",
+        "x": 1963.5,
+        "y": 10466.6,
+        "scale": 0.792,
+        "locked": false,
+        "solid": true,
+        "roof": "auto",
+        "role": "prop"
+      },
+      "assetId": "art_tree_rowan_forked"
+    },
+    {
+      "original": {
+        "id": "world-plant-v1-southern-meadows-3-tree-1",
+        "assetId": "art_tree_rowan",
+        "x": -1098.3,
+        "y": 11647.4,
+        "scale": 0.98,
+        "locked": false,
+        "solid": true,
+        "roof": "auto",
+        "role": "prop"
+      },
+      "assetId": "art_tree_rowan_bent"
+    },
+    {
+      "original": {
+        "id": "world-plant-v1-southern-meadows-5-tree-1",
+        "assetId": "art_tree_rowan",
+        "x": 809.7,
+        "y": 8784.7,
+        "scale": 1.094,
+        "locked": false,
+        "solid": true,
+        "roof": "auto",
+        "role": "prop"
+      },
+      "assetId": "art_tree_rowan_forked"
+    },
+    {
+      "original": {
+        "id": "world-plant-v1-southern-meadows-6-tree-1",
+        "assetId": "art_tree_rowan",
+        "x": 2970.3,
+        "y": 10115.3,
+        "scale": 1.084,
+        "locked": false,
+        "solid": true,
+        "roof": "auto",
+        "role": "prop"
+      },
+      "assetId": "art_tree_rowan_bent"
+    },
+    {
+      "original": {
+        "id": "world-plant-v1-southern-meadows-8-tree-1",
+        "assetId": "art_tree_rowan",
+        "x": 1055.6,
+        "y": 11065,
+        "scale": 1.135,
+        "locked": false,
+        "solid": true,
+        "roof": "auto",
+        "role": "prop"
+      },
+      "assetId": "art_tree_rowan_forked"
+    },
+    {
+      "original": {
+        "id": "camp-outskirts-v1-south-near-tree-4",
+        "assetId": "art_tree_rowan",
+        "x": 1072.5,
+        "y": 3496.2,
+        "scale": 0.913,
+        "locked": false,
+        "solid": true,
+        "roof": "auto",
+        "role": "prop"
+      },
+      "assetId": "art_tree_rowan_bent"
+    },
+    {
+      "original": {
+        "id": "camp-outskirts-v1-south-near-tree-2",
+        "assetId": "art_tree_rowan",
+        "x": 1097.7,
+        "y": 3841.2,
+        "scale": 1.051,
+        "locked": false,
+        "solid": true,
+        "roof": "auto",
+        "role": "prop"
+      },
+      "assetId": "art_tree_rowan_forked"
+    },
+    {
+      "original": {
+        "id": "camp-outskirts-v1-south-near-tree-3",
+        "assetId": "art_tree_rowan",
+        "x": 1319.2,
+        "y": 3367.6,
+        "scale": 0.924,
+        "locked": false,
+        "solid": true,
+        "roof": "auto",
+        "role": "prop"
+      },
+      "assetId": "art_tree_rowan_bent"
+    },
+    {
+      "original": {
+        "id": "camp-river-v1-south-link-tree-2",
+        "assetId": "art_tree_rowan",
+        "x": -524.9,
+        "y": 4275.2,
+        "scale": 0.796,
+        "locked": false,
+        "solid": true,
+        "roof": "auto",
+        "role": "prop"
+      },
+      "assetId": "art_tree_rowan_forked"
+    },
+    {
+      "original": {
+        "id": "camp-river-v1-south-meadow-tree-1",
+        "assetId": "art_tree_rowan",
+        "x": -1585.8,
+        "y": 4116.5,
+        "scale": 0.854,
+        "locked": false,
+        "solid": true,
+        "roof": "auto",
+        "role": "prop"
+      },
+      "assetId": "art_tree_rowan_bent"
+    },
+    {
+      "original": {
+        "id": "world-plant-v1-lake-meadows-5-tree-1",
+        "assetId": "art_tree_rowan",
+        "x": 2979.3,
+        "y": 6979,
+        "scale": 1.082,
+        "locked": false,
+        "solid": true,
+        "roof": "auto",
+        "role": "prop"
+      },
+      "assetId": "art_tree_rowan_forked"
+    },
+    {
+      "original": {
+        "id": "world-plant-v1-lake-meadows-4-tree-1",
+        "assetId": "art_tree_rowan",
+        "x": 2117.3,
+        "y": 8493.8,
+        "scale": 0.842,
+        "locked": false,
+        "solid": true,
+        "roof": "auto",
+        "role": "prop"
+      },
+      "assetId": "art_tree_rowan_bent"
+    },
+    {
+      "original": {
+        "id": "world-plant-v1-lake-meadows-6-tree-1",
+        "assetId": "art_tree_rowan",
+        "x": 1819.5,
+        "y": 5702.8,
+        "scale": 1.073,
+        "locked": false,
+        "solid": true,
+        "roof": "auto",
+        "role": "prop"
+      },
+      "assetId": "art_tree_rowan_forked"
+    },
+    {
+      "original": {
+        "id": "world-plant-v1-lake-meadows-1-tree-1",
+        "assetId": "art_tree_rowan",
+        "x": -48.4,
+        "y": 5005.7,
+        "scale": 1.068,
+        "locked": false,
+        "solid": true,
+        "roof": "auto",
+        "role": "prop"
+      },
+      "assetId": "art_tree_rowan_bent"
+    },
+    {
+      "original": {
+        "id": "world-plant-v1-lake-meadows-2-tree-1",
+        "assetId": "art_tree_rowan",
+        "x": 84.2,
+        "y": 7851.9,
+        "scale": 0.817,
+        "locked": false,
+        "solid": true,
+        "roof": "auto",
+        "role": "prop"
+      },
+      "assetId": "art_tree_rowan_forked"
+    },
+    {
+      "original": {
+        "id": "world-plant-v1-lake-meadows-8-tree-1",
+        "assetId": "art_tree_rowan",
+        "x": 674.5,
+        "y": 6236.8,
+        "scale": 1.055,
+        "locked": false,
+        "solid": true,
+        "roof": "auto",
+        "role": "prop"
+      },
+      "assetId": "art_tree_rowan_bent"
+    },
+    {
+      "original": {
+        "id": "camp-outskirts-v1-southwest-near-tree-1",
+        "assetId": "art_tree_rowan",
+        "x": 480,
+        "y": 3397.6,
+        "scale": 0.759,
+        "locked": false,
+        "solid": true,
+        "roof": "auto",
+        "role": "prop"
+      },
+      "assetId": "art_tree_rowan_forked"
+    },
+    {
+      "original": {
+        "id": "camp-outskirts-v1-southwest-near-tree-3",
+        "assetId": "art_tree_rowan",
+        "x": 881.3,
+        "y": 3252.2,
+        "scale": 0.835,
+        "locked": false,
+        "solid": true,
+        "roof": "auto",
+        "role": "prop"
+      },
+      "assetId": "art_tree_rowan_bent"
+    },
+    {
+      "original": {
+        "id": "world-plant-v1-southeast-rowans-8-tree-1",
+        "assetId": "art_tree_rowan",
+        "x": 9150.3,
+        "y": 10711.6,
+        "scale": 0.893,
+        "locked": false,
+        "solid": true,
+        "roof": "auto",
+        "role": "prop"
+      },
+      "assetId": "art_tree_rowan_forked"
+    },
+    {
+      "original": {
+        "id": "world-plant-v1-southeast-rowans-4-tree-1",
+        "assetId": "art_tree_rowan",
+        "x": 4265.3,
+        "y": 9796,
+        "scale": 0.799,
+        "locked": false,
+        "solid": true,
+        "roof": "auto",
+        "role": "prop"
+      },
+      "assetId": "art_tree_rowan_bent"
+    },
+    {
+      "original": {
+        "id": "world-plant-v1-southeast-rowans-6-tree-1",
+        "assetId": "art_tree_rowan",
+        "x": 7521.4,
+        "y": 10541.2,
+        "scale": 0.849,
+        "locked": false,
+        "solid": true,
+        "roof": "auto",
+        "role": "prop"
+      },
+      "assetId": "art_tree_rowan_forked"
+    },
+    {
+      "original": {
+        "id": "world-plant-v1-southeast-rowans-7-tree-1",
+        "assetId": "art_tree_rowan",
+        "x": 7343.7,
+        "y": 11756.9,
+        "scale": 0.901,
+        "locked": false,
+        "solid": true,
+        "roof": "auto",
+        "role": "prop"
+      },
+      "assetId": "art_tree_rowan_bent"
+    },
+    {
+      "original": {
+        "id": "world-plant-v1-southeast-rowans-2-tree-1",
+        "assetId": "art_tree_rowan",
+        "x": 6172.4,
+        "y": 9905.3,
+        "scale": 0.793,
+        "locked": false,
+        "solid": true,
+        "roof": "auto",
+        "role": "prop"
+      },
+      "assetId": "art_tree_rowan_forked"
+    },
+    {
+      "original": {
+        "id": "world-plant-v1-southeast-rowans-3-tree-1",
+        "assetId": "art_tree_rowan",
+        "x": 4951.2,
+        "y": 11100,
+        "scale": 0.836,
+        "locked": false,
+        "solid": true,
+        "roof": "auto",
+        "role": "prop"
+      },
+      "assetId": "art_tree_rowan_bent"
+    },
+    {
+      "original": {
+        "id": "world-plant-v1-river-willows-18-tree-2",
+        "assetId": "art_tree_willow",
+        "x": -2358.4,
+        "y": 10873.4,
+        "scale": 0.78,
+        "locked": false,
+        "solid": true,
+        "roof": "auto",
+        "role": "prop"
+      },
+      "assetId": "art_tree_willow_forked"
+    },
+    {
+      "original": {
+        "id": "world-plant-v1-river-willows-18-tree-1",
+        "assetId": "art_tree_willow",
+        "x": -2540.1,
+        "y": 11421.8,
+        "scale": 0.981,
+        "locked": false,
+        "solid": true,
+        "roof": "auto",
+        "role": "prop"
+      },
+      "assetId": "art_tree_willow_bent"
+    },
+    {
+      "original": {
+        "id": "camp-river-v1-lower-riverside-tree-3",
+        "assetId": "art_tree_willow",
+        "x": -2260.9,
+        "y": 3714.4,
+        "scale": 0.71,
+        "locked": false,
+        "solid": true,
+        "roof": "auto",
+        "role": "prop"
+      },
+      "assetId": "art_tree_willow_forked"
+    },
+    {
+      "original": {
+        "id": "camp-river-v1-lower-riverside-tree-2",
+        "assetId": "art_tree_willow",
+        "x": -2214.1,
+        "y": 3959.9,
+        "scale": 0.713,
+        "locked": false,
+        "solid": true,
+        "roof": "auto",
+        "role": "prop"
+      },
+      "assetId": "art_tree_willow_bent"
+    },
+    {
+      "original": {
+        "id": "world-plant-v1-river-willows-14-tree-1",
+        "assetId": "art_tree_willow",
+        "x": -3739.2,
+        "y": 8931.3,
+        "scale": 0.967,
+        "locked": false,
+        "solid": true,
+        "roof": "auto",
+        "role": "prop"
+      },
+      "assetId": "art_tree_willow_forked"
+    },
+    {
+      "original": {
+        "id": "world-plant-v1-river-willows-15-tree-1",
+        "assetId": "art_tree_willow",
+        "x": -5005.9,
+        "y": 9834.2,
+        "scale": 1.124,
+        "locked": false,
+        "solid": true,
+        "roof": "auto",
+        "role": "prop"
+      },
+      "assetId": "art_tree_willow_bent"
+    },
+    {
+      "original": {
+        "id": "world-plant-v1-river-willows-16-tree-1",
+        "assetId": "art_tree_willow",
+        "x": -3338.7,
+        "y": 10095.2,
+        "scale": 1.029,
+        "locked": false,
+        "solid": true,
+        "roof": "auto",
+        "role": "prop"
+      },
+      "assetId": "art_tree_willow_forked"
+    },
+    {
+      "original": {
+        "id": "world-plant-v1-river-willows-17-tree-2",
+        "assetId": "art_tree_willow",
+        "x": -3879.5,
+        "y": 11525.5,
+        "scale": 1.001,
+        "locked": false,
+        "solid": true,
+        "roof": "auto",
+        "role": "prop"
+      },
+      "assetId": "art_tree_willow_bent"
+    },
+    {
+      "original": {
+        "id": "world-plant-v1-river-willows-10-tree-2",
+        "assetId": "art_tree_willow",
+        "x": -3597.7,
+        "y": 6359.6,
+        "scale": 0.81,
+        "locked": false,
+        "solid": true,
+        "roof": "auto",
+        "role": "prop"
+      },
+      "assetId": "art_tree_willow_forked"
+    },
+    {
+      "original": {
+        "id": "world-plant-v1-river-willows-10-tree-1",
+        "assetId": "art_tree_willow",
+        "x": -3897.2,
+        "y": 5971,
+        "scale": 0.929,
+        "locked": false,
+        "solid": true,
+        "roof": "auto",
+        "role": "prop"
+      },
+      "assetId": "art_tree_willow_bent"
+    },
+    {
+      "original": {
+        "id": "world-plant-v1-river-willows-11-tree-2",
+        "assetId": "art_tree_willow",
+        "x": -1483.6,
+        "y": 6159,
+        "scale": 0.841,
+        "locked": false,
+        "solid": true,
+        "roof": "auto",
+        "role": "prop"
+      },
+      "assetId": "art_tree_willow_forked"
+    },
+    {
+      "original": {
+        "id": "world-plant-v1-river-willows-12-tree-1",
+        "assetId": "art_tree_willow",
+        "x": -1960.4,
+        "y": 7937.7,
+        "scale": 1.044,
+        "locked": false,
+        "solid": true,
+        "roof": "auto",
+        "role": "prop"
+      },
+      "assetId": "art_tree_willow_bent"
+    },
+    {
+      "original": {
+        "id": "world-plant-v1-river-willows-13-tree-2",
+        "assetId": "art_tree_willow",
+        "x": -4852.8,
+        "y": 8562.2,
+        "scale": 0.821,
+        "locked": false,
+        "solid": true,
+        "roof": "auto",
+        "role": "prop"
+      },
+      "assetId": "art_tree_willow_forked"
+    },
+    {
+      "original": {
+        "id": "world-plant-v1-river-willows-13-tree-1",
+        "assetId": "art_tree_willow",
+        "x": -5121.9,
+        "y": 8777.8,
+        "scale": 0.906,
+        "locked": false,
+        "solid": true,
+        "roof": "auto",
+        "role": "prop"
+      },
+      "assetId": "art_tree_willow_bent"
+    },
+    {
+      "original": {
+        "id": "world-plant-v1-river-willows-5-tree-1",
+        "assetId": "art_tree_willow",
+        "x": -3250.4,
+        "y": -3423.3,
+        "scale": 0.83,
+        "locked": false,
+        "solid": true,
+        "roof": "auto",
+        "role": "prop"
+      },
+      "assetId": "art_tree_willow_forked"
+    },
+    {
+      "original": {
+        "id": "world-plant-v1-river-willows-4-tree-1",
+        "assetId": "art_tree_willow",
+        "x": -4316.2,
+        "y": -4839,
+        "scale": 0.835,
+        "locked": false,
+        "solid": true,
+        "roof": "auto",
+        "role": "prop"
+      },
+      "assetId": "art_tree_willow_bent"
+    },
+    {
+      "original": {
+        "id": "world-plant-v1-river-willows-7-tree-1",
+        "assetId": "art_tree_willow",
+        "x": -4126.9,
+        "y": -708.8,
+        "scale": 0.91,
+        "locked": false,
+        "solid": true,
+        "roof": "auto",
+        "role": "prop"
+      },
+      "assetId": "art_tree_willow_forked"
+    },
+    {
+      "original": {
+        "id": "world-plant-v1-river-willows-7-tree-2",
+        "assetId": "art_tree_willow",
+        "x": -4513.4,
+        "y": -572.1,
+        "scale": 0.999,
+        "locked": false,
+        "solid": true,
+        "roof": "auto",
+        "role": "prop"
+      },
+      "assetId": "art_tree_willow_bent"
+    },
+    {
+      "original": {
+        "id": "world-plant-v1-river-willows-1-tree-2",
+        "assetId": "art_tree_willow",
+        "x": -6326.9,
+        "y": -5945.3,
+        "scale": 1.093,
+        "locked": false,
+        "solid": true,
+        "roof": "auto",
+        "role": "prop"
+      },
+      "assetId": "art_tree_willow_forked"
+    },
+    {
+      "original": {
+        "id": "world-plant-v1-river-willows-1-tree-1",
+        "assetId": "art_tree_willow",
+        "x": -6383.1,
+        "y": -5512.1,
+        "scale": 1.031,
+        "locked": false,
+        "solid": true,
+        "roof": "auto",
+        "role": "prop"
+      },
+      "assetId": "art_tree_willow_bent"
+    },
+    {
+      "original": {
+        "id": "world-plant-v1-river-willows-3-tree-2",
+        "assetId": "art_tree_willow",
+        "x": -5864.8,
+        "y": -4005.8,
+        "scale": 0.937,
+        "locked": false,
+        "solid": true,
+        "roof": "auto",
+        "role": "prop"
+      },
+      "assetId": "art_tree_willow_forked"
+    },
+    {
+      "original": {
+        "id": "world-plant-v1-river-willows-2-tree-2",
+        "assetId": "art_tree_willow",
+        "x": -5268.3,
+        "y": -6066.5,
+        "scale": 0.853,
+        "locked": false,
+        "solid": true,
+        "roof": "auto",
+        "role": "prop"
+      },
+      "assetId": "art_tree_willow_bent"
+    },
+    {
+      "original": {
+        "id": "world-plant-v1-river-willows-9-tree-2",
+        "assetId": "art_tree_willow",
+        "x": -3758.4,
+        "y": 3654.5,
+        "scale": 1.089,
+        "locked": false,
+        "solid": true,
+        "roof": "auto",
+        "role": "prop"
+      },
+      "assetId": "art_tree_willow_forked"
+    },
+    {
+      "original": {
+        "id": "world-plant-v1-river-willows-9-tree-1",
+        "assetId": "art_tree_willow",
+        "x": -4160.8,
+        "y": 3652.5,
+        "scale": 0.891,
+        "locked": false,
+        "solid": true,
+        "roof": "auto",
+        "role": "prop"
+      },
+      "assetId": "art_tree_willow_bent"
+    },
+    {
+      "original": {
+        "id": "world-plant-v1-river-willows-8-tree-2",
+        "assetId": "art_tree_willow",
+        "x": -5516.9,
+        "y": 725.5,
+        "scale": 0.818,
+        "locked": false,
+        "solid": true,
+        "roof": "auto",
+        "role": "prop"
+      },
+      "assetId": "art_tree_willow_forked"
+    },
+    {
+      "original": {
+        "id": "camp-river-v1-west-trail-south-tree-1",
+        "assetId": "art_tree_willow",
+        "x": -3312.4,
+        "y": 2041.6,
+        "scale": 0.799,
+        "locked": false,
+        "solid": true,
+        "roof": "auto",
+        "role": "prop"
+      },
+      "assetId": "art_tree_willow_bent"
+    }
+  ]
+}

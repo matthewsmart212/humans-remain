@@ -1,0 +1,7 @@
+Generated using the built-in image_gen tool, with transparent_background=true.
+Style reference: public/survival/equipment/wooden-axe-v1.webp
+
+Use case: stylized-concept. Asset type: one transparent inventory/tool sprite for the top-down survival game Safety Last. Primary request: a single practical REPAIR HAMMER matching the hand-painted rustic survival equipment style of the reference axe. The reference image is STYLE ONLY, do not draw another axe. Subject: one chunky worn steel claw hammer, broad flat squared striking face, short split curved claw at the rear, a warm aged oak handle, simple dark brown leather grip wrapping at the lower third, small brass rivet, slight rust and scratches, readable strong silhouette. Handle points straight down, hammer head runs left to right at top, subtle three-quarter view showing top and front facets. The grip centre is at about x50%, y78% of the canvas; butt at y92%, head at y18%. Entire hammer visible and centred, about 80% canvas height, generous transparent padding, no cropping. Warm painterly highlights, dark brown outlines, detailed wood grain, same slightly stylized textured game illustration as the reference. Deliver just ONE hammer on genuinely transparent alpha, not a presentation sheet. No text, no hands, no character, no background, no ground shadow, no extra objects, no glow.
+
+Original: art-source/tools/repair-hammer-v1.png (1024 x 1536 RGBA)
+Game asset: public/survival/equipment/repair-hammer-v1.webp (512 x 768, alpha retained)

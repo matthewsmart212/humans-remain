@@ -1,0 +1,19 @@
+{
+  "result": "pass",
+  "preservedPlacements": 37,
+  "addedPlants": 48,
+  "totalPlants": 60,
+  "newDesigns": 4,
+  "newRuntimeBytes": 431984,
+  "checks": [
+    "current saved camp preserved",
+    "moved/deleted plants retained",
+    "v1/v2 deletion persistence",
+    "new blockers respected",
+    "same passability",
+    "south approach clear",
+    "transparent artwork edges",
+    "rooted motion on four new designs"
+  ],
+  "limits": "Software Skia rendering and automated checks; browser/iPhone QA unavailable."
+}

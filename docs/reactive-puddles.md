@@ -1,0 +1,11 @@
+# Terrain polish and reactive puddles
+
+The camp uses 16 registered ImageGen terrain edits, assembled at 4800 × 4800. The old low-resolution overview cross is gone; two-pixel minimum-error joins use equally detailed neighbours. A continuous southern path repair removes the remaining distorted stones. The original 3600-pixel playable footprint and 600-pixel scenery border are unchanged. Large standalone resource-like rocks and painted puddles were removed from the floor and the separate bonfire clearing overlay. Fine gravel, fallen leaves and walkway cobbles remain.
+
+Four transparent painted puddle assets sit at 20 measured former water locations. Their water outlines drive contact detection and clip ripples to the wet surface. Walking gives small ripples; sprinting adds stronger rings and a few short-lived drops. Actual movement and the player's stride phase trigger contacts; idle, blocked and teleported motion do not create splashes. Effects are bounded and discarded after settling. Rotated, mirrored and resized puddles use the same coordinate transform for contact and rendering.
+
+Puddles are movable assets in the Interactive puddles family. They default to a nonblocking ground layer above the camp floor and below foliage/characters. The one-time migration adds them to the current authored camp, preserves every existing placement, and keeps owner deletions after save/reload. Custom terrain is not migrated. Full-detail map textures load before the editor is ready, so the first playable frame has crisp paths.
+
+Validation: TypeScript, interaction/migration tests, production Worker with SQLite, and the actual Skia renderer. `docs/qa/terrain-puddles-v1` includes the overview, clearing, southern path, calm/splash views and walk/sprint clip. Four unavailable remote-upload props are excluded only from that disposable visual fixture; production placements are untouched. No new physical iPhone performance measurement was made.
+
+Original generated images and prompts are in `artwork-archive/camp-ground-v3` and `artwork-archive/puddles-v1`. Packaging scripts perform only registration, trimming, resizing and outline measurement. Old terrain stays in source history and the local artwork workflow, while its unused runtime copies are omitted from deployment.

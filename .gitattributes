@@ -1,0 +1,21 @@
+# Preserve the verified export's exact bytes and line endings.
+* -text
+
+# Original and runtime artwork, media, asset packs, runtime binary and font.
+*.png filter=lfs diff=lfs merge=lfs -text
+*.webp filter=lfs diff=lfs merge=lfs -text
+*.jpg filter=lfs diff=lfs merge=lfs -text
+*.jpeg filter=lfs diff=lfs merge=lfs -text
+*.gif filter=lfs diff=lfs merge=lfs -text
+*.mp4 filter=lfs diff=lfs merge=lfs -text
+*.wav filter=lfs diff=lfs merge=lfs -text
+*.zip filter=lfs diff=lfs merge=lfs -text
+*.wasm filter=lfs diff=lfs merge=lfs -text
+*.ttf filter=lfs diff=lfs merge=lfs -text
+
+# Original uploaded images retain their extensionless asset-ID filenames.
+public/api/asset-files/** filter=lfs diff=lfs merge=lfs -text
+
+# These map SVGs embed substantial raster artwork.
+docs/qa/world-master-plan/master-map.svg filter=lfs diff=lfs merge=lfs -text
+historical-assets/*/master-map.svg filter=lfs diff=lfs merge=lfs -text

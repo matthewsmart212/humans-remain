@@ -1,0 +1,20 @@
+{
+  "patch": "a2se",
+  "source": {
+    "width": 1003,
+    "height": 1568,
+    "file": "a2se-generated-original.png"
+  },
+  "registered": {
+    "x": -694,
+    "y": 4500,
+    "width": 1092,
+    "height": 1706,
+    "top": 84,
+    "right": 264
+  },
+  "scale": {
+    "x": 1.0887337986041874,
+    "y": 1.0880102040816326
+  }
+}

@@ -1,0 +1,134 @@
+{
+  "key": "pine-bent",
+  "species": "pine",
+  "id": "art_tree_pine_bent",
+  "name": "Tall Scots pine: bent",
+  "image": "/survival/tree-variants-v1/pine-bent.webp",
+  "size": [
+    538,
+    1299
+  ],
+  "worldWidth": 242,
+  "hp": 120,
+  "frames": [
+    {
+      "crop": [
+        2,
+        2,
+        534,
+        1013
+      ],
+      "anchor": [
+        230,
+        948
+      ]
+    },
+    {
+      "crop": [
+        371,
+        1019,
+        89,
+        89
+      ],
+      "anchor": [
+        33,
+        209
+      ]
+    },
+    {
+      "crop": [
+        2,
+        1019,
+        365,
+        278
+      ],
+      "anchor": [
+        182,
+        213
+      ]
+    }
+  ],
+  "damageRect": [
+    197,
+    739,
+    89,
+    89
+  ],
+  "source": "artwork-archive/tree-variants-v1/pine-bent.png",
+  "sourceSize": [
+    1536,
+    1024
+  ],
+  "sourceHealthyCrop": [
+    80,
+    2,
+    534,
+    1013
+  ],
+  "sourceDamageCrop": [
+    850,
+    741,
+    89,
+    89
+  ],
+  "sourceStumpCrop": [
+    1119,
+    737,
+    365,
+    278
+  ],
+  "sourceRoot": [
+    310,
+    950
+  ],
+  "damagedTranslation": [
+    573,
+    0
+  ],
+  "stumpTranslation": [
+    991,
+    0
+  ],
+  "bytes": 696044,
+  "decodedBytes": 2795448,
+  "extraction": {
+    "visibleBounds": [
+      [
+        88,
+        10,
+        518,
+        997
+      ],
+      [
+        660,
+        10,
+        517,
+        997
+      ],
+      [
+        1127,
+        745,
+        349,
+        262
+      ]
+    ],
+    "separatorMaximumAlpha": [
+      0,
+      0
+    ],
+    "boundsPadding": 8,
+    "alphaThresholdAppliedToPixels": false,
+    "notchOverlapJoin": false
+  },
+  "checks": {
+    "alphaMismatch": 0,
+    "visibleRgbMismatch": 0,
+    "outsideNotchPreserved": true,
+    "rootFanPreserved": true
+  },
+  "notes": [
+    "Healthy pixels are reused unchanged outside the tight notch rectangle.",
+    "Separate generated loose chips are omitted; runtime hit particles supply debris.",
+    "Stump roots are registered to the same ground anchor; no scaling or resampling was applied."
+  ]
+}

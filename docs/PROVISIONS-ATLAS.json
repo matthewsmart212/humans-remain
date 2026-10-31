@@ -1,0 +1,228 @@
+{
+  "worker": {
+    "path": "public/survival/worker-diagonal.png",
+    "size": [
+      1024,
+      1536
+    ],
+    "sprites": {
+      "se0": {
+        "crop": [
+          184,
+          62,
+          266,
+          337
+        ],
+        "anchorInCrop": [
+          137,
+          328
+        ],
+        "worldScaleFor110pxHeight": 0.3384615384615385
+      },
+      "se1": {
+        "crop": [
+          577,
+          63,
+          267,
+          336
+        ],
+        "anchorInCrop": [
+          137,
+          327
+        ],
+        "worldScaleFor110pxHeight": 0.3395061728395062
+      },
+      "sw0": {
+        "crop": [
+          187,
+          420,
+          266,
+          332
+        ],
+        "anchorInCrop": [
+          133,
+          324
+        ],
+        "worldScaleFor110pxHeight": 0.34375
+      },
+      "sw1": {
+        "crop": [
+          571,
+          420,
+          265,
+          332
+        ],
+        "anchorInCrop": [
+          133,
+          324
+        ],
+        "worldScaleFor110pxHeight": 0.34375
+      },
+      "ne0": {
+        "crop": [
+          195,
+          779,
+          265,
+          331
+        ],
+        "anchorInCrop": [
+          133,
+          323
+        ],
+        "worldScaleFor110pxHeight": 0.3448275862068966
+      },
+      "ne1": {
+        "crop": [
+          586,
+          779,
+          265,
+          335
+        ],
+        "anchorInCrop": [
+          133,
+          327
+        ],
+        "worldScaleFor110pxHeight": 0.34055727554179566
+      },
+      "nw0": {
+        "crop": [
+          181,
+          1130,
+          268,
+          337
+        ],
+        "anchorInCrop": [
+          134,
+          329
+        ],
+        "worldScaleFor110pxHeight": 0.3384615384615385
+      },
+      "nw1": {
+        "crop": [
+          572,
+          1127,
+          268,
+          340
+        ],
+        "anchorInCrop": [
+          134,
+          332
+        ],
+        "worldScaleFor110pxHeight": 0.3353658536585366
+      }
+    },
+    "alpha": {
+      "min": 0,
+      "max": 254,
+      "fullyTransparentPixels": 1130445,
+      "totalPixels": 1572864
+    }
+  },
+  "provisions": {
+    "path": "public/survival/provisions.png",
+    "size": [
+      1536,
+      1024
+    ],
+    "sprites": {
+      "well": {
+        "crop": [
+          57,
+          62,
+          353,
+          498
+        ],
+        "anchorInCrop": [
+          156,
+          477
+        ]
+      },
+      "fireLit": {
+        "crop": [
+          444,
+          186,
+          358,
+          358
+        ],
+        "anchorInCrop": [
+          177,
+          337
+        ]
+      },
+      "fireUnlit": {
+        "crop": [
+          823,
+          305,
+          339,
+          244
+        ],
+        "anchorInCrop": [
+          169,
+          223
+        ]
+      },
+      "rabbit0": {
+        "crop": [
+          1207,
+          233,
+          318,
+          306
+        ],
+        "anchorInCrop": [
+          157,
+          296
+        ]
+      },
+      "rabbit1": {
+        "crop": [
+          34,
+          630,
+          393,
+          289
+        ],
+        "anchorInCrop": [
+          196,
+          279
+        ]
+      },
+      "rawMeat": {
+        "crop": [
+          485,
+          694,
+          299,
+          248
+        ],
+        "anchorInCrop": [
+          150,
+          222
+        ]
+      },
+      "cookedMeat": {
+        "crop": [
+          821,
+          704,
+          317,
+          244
+        ],
+        "anchorInCrop": [
+          157,
+          215
+        ]
+      }
+    },
+    "alpha": {
+      "min": 0,
+      "max": 254,
+      "fullyTransparentPixels": 1150243,
+      "totalPixels": 1572864
+    }
+  },
+  "notes": [
+    "Rects are x,y,width,height with 6px padding beyond alpha>32 object bounding boxes. Anchors are source pixels measured from crop origin.",
+    "Worker render silhouette at 110px height; scale differs minimally per frame. Keep direction-pair baseline consistent using anchor.",
+    "Worker second frames change arms strongly but leg alternation is modest, especially southwest. Character style is close but outlines are slightly cleaner/bolder than original.",
+    "Fire rings differ slightly between lit/unlit generation; scale by ring width (about340 vs327 source pixels) when switching.",
+    "Rabbit is more realistic than worker but consistent with painted salvage. Well low stone base is two stone courses.",
+    "RGBA verified: alpha=0 in gutters; visible image-view dark haze is hidden RGB under fully transparent pixels. Composite preview on flat green confirms no visible broad halos."
+  ]
+}

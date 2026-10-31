@@ -1,0 +1,13 @@
+{
+  "result": "pass",
+  "existingPlacementsPreserved": 21,
+  "well": {
+    "x": 2740,
+    "y": 1330,
+    "scale": 2.7
+  },
+  "walkableClearing": true,
+  "wellApproach": true,
+  "cooking": "Raw meat consumed once; 6-second cook; safe ground drop; no airborne/duplicate pickup; separate meal capacity; edible meal",
+  "renderer": "Actual CanvasKit world renderer with current uploaded headquarters and walls"
+}

@@ -1,0 +1,1617 @@
+{
+  "version": 1,
+  "layout": "healthy, registered notch patch, stump",
+  "lossless": true,
+  "variants": [
+    {
+      "key": "birch-branching",
+      "species": "birch",
+      "id": "art_tree_birch_branching",
+      "name": "Silver birch: branching",
+      "image": "/survival/tree-variants-v1/birch-branching.webp",
+      "size": [
+        534,
+        1294
+      ],
+      "worldWidth": 270,
+      "hp": 100,
+      "frames": [
+        {
+          "crop": [
+            2,
+            2,
+            530,
+            1001
+          ],
+          "anchor": [
+            272,
+            916
+          ]
+        },
+        {
+          "crop": [
+            408,
+            1007,
+            77,
+            88
+          ],
+          "anchor": [
+            19,
+            164
+          ]
+        },
+        {
+          "crop": [
+            2,
+            1007,
+            402,
+            285
+          ],
+          "anchor": [
+            205,
+            200
+          ]
+        }
+      ],
+      "damageRect": [
+        253,
+        752,
+        77,
+        88
+      ],
+      "source": "artwork-archive/tree-variants-v1/birch-branching.png",
+      "sourceSize": [
+        1536,
+        1024
+      ],
+      "sourceHealthyCrop": [
+        54,
+        9,
+        530,
+        1001
+      ],
+      "sourceDamageCrop": [
+        839,
+        761,
+        77,
+        88
+      ],
+      "sourceStumpCrop": [
+        1115,
+        726,
+        402,
+        285
+      ],
+      "sourceRoot": [
+        326,
+        925
+      ],
+      "damagedTranslation": [
+        532,
+        0
+      ],
+      "stumpTranslation": [
+        994,
+        1
+      ],
+      "bytes": 725658,
+      "decodedBytes": 2763984,
+      "extraction": {
+        "visibleBounds": [
+          [
+            62,
+            17,
+            514,
+            985
+          ],
+          [
+            595,
+            17,
+            515,
+            986
+          ],
+          [
+            1123,
+            734,
+            386,
+            269
+          ]
+        ],
+        "separatorMaximumAlpha": [
+          1,
+          0
+        ],
+        "boundsPadding": 8,
+        "alphaThresholdAppliedToPixels": false,
+        "notchOverlapJoin": false
+      },
+      "checks": {
+        "alphaMismatch": 0,
+        "visibleRgbMismatch": 0,
+        "outsideNotchPreserved": true,
+        "rootFanPreserved": true
+      },
+      "notes": [
+        "Healthy pixels are reused unchanged outside the tight notch rectangle.",
+        "Separate generated loose chips are omitted; runtime hit particles supply debris.",
+        "Stump roots are registered to the same ground anchor; no scaling or resampling was applied."
+      ]
+    },
+    {
+      "key": "birch-bent",
+      "species": "birch",
+      "id": "art_tree_birch_bent",
+      "name": "Silver birch: bent",
+      "image": "/survival/tree-variants-v1/birch-bent.webp",
+      "size": [
+        511,
+        1304
+      ],
+      "worldWidth": 257,
+      "hp": 100,
+      "frames": [
+        {
+          "crop": [
+            2,
+            2,
+            507,
+            1011
+          ],
+          "anchor": [
+            267,
+            924
+          ]
+        },
+        {
+          "crop": [
+            413,
+            1017,
+            83,
+            90
+          ],
+          "anchor": [
+            22,
+            163
+          ]
+        },
+        {
+          "crop": [
+            2,
+            1017,
+            407,
+            285
+          ],
+          "anchor": [
+            218,
+            199
+          ]
+        }
+      ],
+      "damageRect": [
+        245,
+        761,
+        83,
+        90
+      ],
+      "source": "artwork-archive/tree-variants-v1/birch-bent.png",
+      "sourceSize": [
+        1536,
+        1024
+      ],
+      "sourceHealthyCrop": [
+        66,
+        1,
+        507,
+        1011
+      ],
+      "sourceDamageCrop": [
+        834,
+        762,
+        83,
+        90
+      ],
+      "sourceStumpCrop": [
+        1108,
+        726,
+        407,
+        285
+      ],
+      "sourceRoot": [
+        333,
+        925
+      ],
+      "damagedTranslation": [
+        523,
+        0
+      ],
+      "stumpTranslation": [
+        993,
+        0
+      ],
+      "bytes": 700252,
+      "decodedBytes": 2665376,
+      "extraction": {
+        "visibleBounds": [
+          [
+            74,
+            9,
+            491,
+            995
+          ],
+          [
+            597,
+            9,
+            491,
+            994
+          ],
+          [
+            1116,
+            734,
+            391,
+            269
+          ]
+        ],
+        "separatorMaximumAlpha": [
+          0,
+          0
+        ],
+        "boundsPadding": 8,
+        "alphaThresholdAppliedToPixels": false,
+        "notchOverlapJoin": false
+      },
+      "checks": {
+        "alphaMismatch": 0,
+        "visibleRgbMismatch": 0,
+        "outsideNotchPreserved": true,
+        "rootFanPreserved": true
+      },
+      "notes": [
+        "Healthy pixels are reused unchanged outside the tight notch rectangle.",
+        "Separate generated loose chips are omitted; runtime hit particles supply debris.",
+        "Stump roots are registered to the same ground anchor; no scaling or resampling was applied."
+      ]
+    },
+    {
+      "key": "oak-forked",
+      "species": "oak",
+      "id": "art_tree_oak_forked",
+      "name": "Broad woodland oak: forked",
+      "image": "/survival/tree-variants-v1/oak-forked.webp",
+      "size": [
+        636,
+        1216
+      ],
+      "worldWidth": 311,
+      "hp": 160,
+      "frames": [
+        {
+          "crop": [
+            2,
+            2,
+            632,
+            935
+          ],
+          "anchor": [
+            332,
+            874
+          ]
+        },
+        {
+          "crop": [
+            385,
+            941,
+            90,
+            115
+          ],
+          "anchor": [
+            8,
+            204
+          ]
+        },
+        {
+          "crop": [
+            2,
+            941,
+            379,
+            273
+          ],
+          "anchor": [
+            198,
+            213
+          ]
+        }
+      ],
+      "damageRect": [
+        324,
+        670,
+        90,
+        115
+      ],
+      "source": "artwork-archive/tree-variants-v1/oak-forked.png",
+      "sourceSize": [
+        1536,
+        1024
+      ],
+      "sourceHealthyCrop": [
+        0,
+        31,
+        632,
+        935
+      ],
+      "sourceDamageCrop": [
+        930,
+        701,
+        90,
+        115
+      ],
+      "sourceStumpCrop": [
+        1155,
+        693,
+        379,
+        273
+      ],
+      "sourceRoot": [
+        332,
+        905
+      ],
+      "damagedTranslation": [
+        606,
+        0
+      ],
+      "stumpTranslation": [
+        1021,
+        1
+      ],
+      "bytes": 743972,
+      "decodedBytes": 3093504,
+      "extraction": {
+        "visibleBounds": [
+          [
+            8,
+            39,
+            616,
+            919
+          ],
+          [
+            610,
+            40,
+            625,
+            918
+          ],
+          [
+            1163,
+            701,
+            363,
+            257
+          ]
+        ],
+        "separatorMaximumAlpha": [
+          9,
+          0
+        ],
+        "boundsPadding": 8,
+        "alphaThresholdAppliedToPixels": false,
+        "notchOverlapJoin": false
+      },
+      "checks": {
+        "alphaMismatch": 0,
+        "visibleRgbMismatch": 0,
+        "outsideNotchPreserved": true,
+        "rootFanPreserved": true
+      },
+      "notes": [
+        "Healthy pixels are reused unchanged outside the tight notch rectangle.",
+        "Separate generated loose chips are omitted; runtime hit particles supply debris.",
+        "Stump roots are registered to the same ground anchor; no scaling or resampling was applied."
+      ]
+    },
+    {
+      "key": "oak-leaning",
+      "species": "oak",
+      "id": "art_tree_oak_leaning",
+      "name": "Broad woodland oak: leaning",
+      "image": "/survival/tree-variants-v1/oak-leaning.webp",
+      "size": [
+        650,
+        1129
+      ],
+      "worldWidth": 344,
+      "hp": 160,
+      "frames": [
+        {
+          "crop": [
+            2,
+            2,
+            646,
+            869
+          ],
+          "anchor": [
+            398,
+            808
+          ]
+        },
+        {
+          "crop": [
+            366,
+            875,
+            91,
+            103
+          ],
+          "anchor": [
+            -3,
+            183
+          ]
+        },
+        {
+          "crop": [
+            2,
+            875,
+            360,
+            252
+          ],
+          "anchor": [
+            186,
+            192
+          ]
+        }
+      ],
+      "damageRect": [
+        401,
+        625,
+        91,
+        103
+      ],
+      "source": "artwork-archive/tree-variants-v1/oak-leaning.png",
+      "sourceSize": [
+        1536,
+        1024
+      ],
+      "sourceHealthyCrop": [
+        13,
+        97,
+        646,
+        869
+      ],
+      "sourceDamageCrop": [
+        990,
+        722,
+        91,
+        103
+      ],
+      "sourceStumpCrop": [
+        1166,
+        713,
+        360,
+        252
+      ],
+      "sourceRoot": [
+        411,
+        905
+      ],
+      "damagedTranslation": [
+        576,
+        0
+      ],
+      "stumpTranslation": [
+        941,
+        0
+      ],
+      "bytes": 639078,
+      "decodedBytes": 2935400,
+      "extraction": {
+        "visibleBounds": [
+          [
+            21,
+            105,
+            630,
+            853
+          ],
+          [
+            597,
+            105,
+            630,
+            853
+          ],
+          [
+            1174,
+            721,
+            344,
+            236
+          ]
+        ],
+        "separatorMaximumAlpha": [
+          13,
+          0
+        ],
+        "boundsPadding": 8,
+        "alphaThresholdAppliedToPixels": false,
+        "notchOverlapJoin": false
+      },
+      "checks": {
+        "alphaMismatch": 0,
+        "visibleRgbMismatch": 0,
+        "outsideNotchPreserved": true,
+        "rootFanPreserved": true
+      },
+      "notes": [
+        "Healthy pixels are reused unchanged outside the tight notch rectangle.",
+        "Separate generated loose chips are omitted; runtime hit particles supply debris.",
+        "Stump roots are registered to the same ground anchor; no scaling or resampling was applied."
+      ]
+    },
+    {
+      "key": "pine-branching",
+      "species": "pine",
+      "id": "art_tree_pine_branching",
+      "name": "Tall Scots pine: branching",
+      "image": "/survival/tree-variants-v1/pine-branching.webp",
+      "size": [
+        530,
+        1290
+      ],
+      "worldWidth": 239,
+      "hp": 120,
+      "frames": [
+        {
+          "crop": [
+            2,
+            2,
+            526,
+            1015
+          ],
+          "anchor": [
+            261,
+            945
+          ]
+        },
+        {
+          "crop": [
+            376,
+            1021,
+            80,
+            79
+          ],
+          "anchor": [
+            19,
+            184
+          ]
+        },
+        {
+          "crop": [
+            2,
+            1021,
+            370,
+            267
+          ],
+          "anchor": [
+            188,
+            195
+          ]
+        }
+      ],
+      "damageRect": [
+        242,
+        761,
+        80,
+        79
+      ],
+      "source": "artwork-archive/tree-variants-v1/pine-branching.png",
+      "sourceSize": [
+        1536,
+        1024
+      ],
+      "sourceHealthyCrop": [
+        39,
+        5,
+        526,
+        1015
+      ],
+      "sourceDamageCrop": [
+        826,
+        766,
+        80,
+        79
+      ],
+      "sourceStumpCrop": [
+        1126,
+        753,
+        370,
+        267
+      ],
+      "sourceRoot": [
+        300,
+        950
+      ],
+      "damagedTranslation": [
+        545,
+        0
+      ],
+      "stumpTranslation": [
+        1014,
+        -2
+      ],
+      "bytes": 757782,
+      "decodedBytes": 2734800,
+      "extraction": {
+        "visibleBounds": [
+          [
+            47,
+            13,
+            510,
+            999
+          ],
+          [
+            593,
+            13,
+            508,
+            999
+          ],
+          [
+            1134,
+            761,
+            354,
+            251
+          ]
+        ],
+        "separatorMaximumAlpha": [
+          0,
+          0
+        ],
+        "boundsPadding": 8,
+        "alphaThresholdAppliedToPixels": false,
+        "notchOverlapJoin": false
+      },
+      "checks": {
+        "alphaMismatch": 0,
+        "visibleRgbMismatch": 0,
+        "outsideNotchPreserved": true,
+        "rootFanPreserved": true
+      },
+      "notes": [
+        "Healthy pixels are reused unchanged outside the tight notch rectangle.",
+        "Separate generated loose chips are omitted; runtime hit particles supply debris.",
+        "Stump roots are registered to the same ground anchor; no scaling or resampling was applied."
+      ]
+    },
+    {
+      "key": "pine-bent",
+      "species": "pine",
+      "id": "art_tree_pine_bent",
+      "name": "Tall Scots pine: bent",
+      "image": "/survival/tree-variants-v1/pine-bent.webp",
+      "size": [
+        538,
+        1299
+      ],
+      "worldWidth": 242,
+      "hp": 120,
+      "frames": [
+        {
+          "crop": [
+            2,
+            2,
+            534,
+            1013
+          ],
+          "anchor": [
+            230,
+            948
+          ]
+        },
+        {
+          "crop": [
+            371,
+            1019,
+            89,
+            89
+          ],
+          "anchor": [
+            33,
+            209
+          ]
+        },
+        {
+          "crop": [
+            2,
+            1019,
+            365,
+            278
+          ],
+          "anchor": [
+            182,
+            213
+          ]
+        }
+      ],
+      "damageRect": [
+        197,
+        739,
+        89,
+        89
+      ],
+      "source": "artwork-archive/tree-variants-v1/pine-bent.png",
+      "sourceSize": [
+        1536,
+        1024
+      ],
+      "sourceHealthyCrop": [
+        80,
+        2,
+        534,
+        1013
+      ],
+      "sourceDamageCrop": [
+        850,
+        741,
+        89,
+        89
+      ],
+      "sourceStumpCrop": [
+        1119,
+        737,
+        365,
+        278
+      ],
+      "sourceRoot": [
+        310,
+        950
+      ],
+      "damagedTranslation": [
+        573,
+        0
+      ],
+      "stumpTranslation": [
+        991,
+        0
+      ],
+      "bytes": 696044,
+      "decodedBytes": 2795448,
+      "extraction": {
+        "visibleBounds": [
+          [
+            88,
+            10,
+            518,
+            997
+          ],
+          [
+            660,
+            10,
+            517,
+            997
+          ],
+          [
+            1127,
+            745,
+            349,
+            262
+          ]
+        ],
+        "separatorMaximumAlpha": [
+          0,
+          0
+        ],
+        "boundsPadding": 8,
+        "alphaThresholdAppliedToPixels": false,
+        "notchOverlapJoin": false
+      },
+      "checks": {
+        "alphaMismatch": 0,
+        "visibleRgbMismatch": 0,
+        "outsideNotchPreserved": true,
+        "rootFanPreserved": true
+      },
+      "notes": [
+        "Healthy pixels are reused unchanged outside the tight notch rectangle.",
+        "Separate generated loose chips are omitted; runtime hit particles supply debris.",
+        "Stump roots are registered to the same ground anchor; no scaling or resampling was applied."
+      ]
+    },
+    {
+      "key": "deadwood-forked",
+      "species": "deadwood",
+      "id": "art_tree_deadwood_forked",
+      "name": "Gnarled deadwood: forked",
+      "image": "/survival/tree-variants-v1/deadwood-forked.webp",
+      "size": [
+        613,
+        1295
+      ],
+      "worldWidth": 265,
+      "hp": 80,
+      "frames": [
+        {
+          "crop": [
+            2,
+            2,
+            531,
+            946
+          ],
+          "anchor": [
+            266,
+            865
+          ]
+        },
+        {
+          "crop": [
+            478,
+            952,
+            133,
+            122
+          ],
+          "anchor": [
+            9,
+            228
+          ]
+        },
+        {
+          "crop": [
+            2,
+            952,
+            472,
+            341
+          ],
+          "anchor": [
+            250,
+            261
+          ]
+        }
+      ],
+      "damageRect": [
+        257,
+        637,
+        133,
+        122
+      ],
+      "source": "artwork-archive/tree-variants-v1/deadwood-forked.png",
+      "sourceSize": [
+        1536,
+        1024
+      ],
+      "sourceHealthyCrop": [
+        13,
+        25,
+        531,
+        946
+      ],
+      "sourceDamageCrop": [
+        778,
+        662,
+        133,
+        122
+      ],
+      "sourceStumpCrop": [
+        1055,
+        630,
+        472,
+        341
+      ],
+      "sourceRoot": [
+        279,
+        890
+      ],
+      "damagedTranslation": [
+        508,
+        0
+      ],
+      "stumpTranslation": [
+        1026,
+        1
+      ],
+      "bytes": 676670,
+      "decodedBytes": 3175340,
+      "extraction": {
+        "visibleBounds": [
+          [
+            21,
+            33,
+            515,
+            930
+          ],
+          [
+            529,
+            33,
+            513,
+            930
+          ],
+          [
+            1063,
+            638,
+            456,
+            325
+          ]
+        ],
+        "separatorMaximumAlpha": [
+          2,
+          0
+        ],
+        "boundsPadding": 8,
+        "alphaThresholdAppliedToPixels": false,
+        "notchOverlapJoin": true
+      },
+      "checks": {
+        "alphaMismatch": 0,
+        "visibleRgbMismatch": 0,
+        "outsideNotchPreserved": true,
+        "rootFanPreserved": true
+      },
+      "notes": [
+        "Healthy pixels are reused unchanged outside the tight notch rectangle.",
+        "Separate generated loose chips are omitted; runtime hit particles supply debris.",
+        "Stump roots are registered to the same ground anchor; no scaling or resampling was applied."
+      ]
+    },
+    {
+      "key": "deadwood-bent",
+      "species": "deadwood",
+      "id": "art_tree_deadwood_bent",
+      "name": "Gnarled deadwood: bent",
+      "image": "/survival/tree-variants-v1/deadwood-bent.webp",
+      "size": [
+        589,
+        1264
+      ],
+      "worldWidth": 293,
+      "hp": 80,
+      "frames": [
+        {
+          "crop": [
+            2,
+            2,
+            561,
+            904
+          ],
+          "anchor": [
+            301,
+            824
+          ]
+        },
+        {
+          "crop": [
+            460,
+            910,
+            127,
+            129
+          ],
+          "anchor": [
+            16,
+            241
+          ]
+        },
+        {
+          "crop": [
+            2,
+            910,
+            454,
+            352
+          ],
+          "anchor": [
+            252,
+            272
+          ]
+        }
+      ],
+      "damageRect": [
+        285,
+        583,
+        127,
+        129
+      ],
+      "source": "artwork-archive/tree-variants-v1/deadwood-bent.png",
+      "sourceSize": [
+        1536,
+        1024
+      ],
+      "sourceHealthyCrop": [
+        4,
+        66,
+        561,
+        904
+      ],
+      "sourceDamageCrop": [
+        833,
+        649,
+        127,
+        129
+      ],
+      "sourceStumpCrop": [
+        1078,
+        619,
+        454,
+        352
+      ],
+      "sourceRoot": [
+        305,
+        890
+      ],
+      "damagedTranslation": [
+        544,
+        0
+      ],
+      "stumpTranslation": [
+        1025,
+        1
+      ],
+      "bytes": 683278,
+      "decodedBytes": 2977984,
+      "extraction": {
+        "visibleBounds": [
+          [
+            12,
+            74,
+            545,
+            888
+          ],
+          [
+            557,
+            74,
+            532,
+            888
+          ],
+          [
+            1086,
+            627,
+            438,
+            336
+          ]
+        ],
+        "separatorMaximumAlpha": [
+          0,
+          1
+        ],
+        "boundsPadding": 8,
+        "alphaThresholdAppliedToPixels": false,
+        "notchOverlapJoin": true
+      },
+      "checks": {
+        "alphaMismatch": 0,
+        "visibleRgbMismatch": 0,
+        "outsideNotchPreserved": true,
+        "rootFanPreserved": true
+      },
+      "notes": [
+        "Healthy pixels are reused unchanged outside the tight notch rectangle.",
+        "Separate generated loose chips are omitted; runtime hit particles supply debris.",
+        "Stump roots are registered to the same ground anchor; no scaling or resampling was applied."
+      ]
+    },
+    {
+      "key": "rowan-forked",
+      "species": "rowan",
+      "id": "art_tree_rowan_forked",
+      "name": "Amber woodland rowan: forked",
+      "image": "/survival/tree-variants-v1/rowan-forked.webp",
+      "size": [
+        556,
+        1268
+      ],
+      "worldWidth": 260,
+      "hp": 120,
+      "frames": [
+        {
+          "crop": [
+            2,
+            2,
+            552,
+            975
+          ],
+          "anchor": [
+            270,
+            896
+          ]
+        },
+        {
+          "crop": [
+            432,
+            981,
+            87,
+            101
+          ],
+          "anchor": [
+            3,
+            178
+          ]
+        },
+        {
+          "crop": [
+            2,
+            981,
+            426,
+            285
+          ],
+          "anchor": [
+            204,
+            205
+          ]
+        }
+      ],
+      "damageRect": [
+        267,
+        718,
+        87,
+        101
+      ],
+      "source": "artwork-archive/tree-variants-v1/rowan-forked.png",
+      "sourceSize": [
+        1536,
+        1024
+      ],
+      "sourceHealthyCrop": [
+        22,
+        9,
+        552,
+        975
+      ],
+      "sourceDamageCrop": [
+        839,
+        727,
+        87,
+        101
+      ],
+      "sourceStumpCrop": [
+        1108,
+        699,
+        426,
+        285
+      ],
+      "sourceRoot": [
+        292,
+        905
+      ],
+      "damagedTranslation": [
+        550,
+        0
+      ],
+      "stumpTranslation": [
+        1020,
+        -1
+      ],
+      "bytes": 794524,
+      "decodedBytes": 2820032,
+      "extraction": {
+        "visibleBounds": [
+          [
+            30,
+            17,
+            536,
+            959
+          ],
+          [
+            580,
+            17,
+            537,
+            959
+          ],
+          [
+            1116,
+            707,
+            410,
+            269
+          ]
+        ],
+        "separatorMaximumAlpha": [
+          0,
+          0
+        ],
+        "boundsPadding": 8,
+        "alphaThresholdAppliedToPixels": false,
+        "notchOverlapJoin": false
+      },
+      "checks": {
+        "alphaMismatch": 0,
+        "visibleRgbMismatch": 0,
+        "outsideNotchPreserved": true,
+        "rootFanPreserved": true
+      },
+      "notes": [
+        "Healthy pixels are reused unchanged outside the tight notch rectangle.",
+        "Separate generated loose chips are omitted; runtime hit particles supply debris.",
+        "Stump roots are registered to the same ground anchor; no scaling or resampling was applied."
+      ]
+    },
+    {
+      "key": "rowan-bent",
+      "species": "rowan",
+      "id": "art_tree_rowan_bent",
+      "name": "Amber woodland rowan: bent",
+      "image": "/survival/tree-variants-v1/rowan-bent.webp",
+      "size": [
+        547,
+        1294
+      ],
+      "worldWidth": 246,
+      "hp": 120,
+      "frames": [
+        {
+          "crop": [
+            2,
+            2,
+            532,
+            991
+          ],
+          "anchor": [
+            279,
+            912
+          ]
+        },
+        {
+          "crop": [
+            457,
+            997,
+            88,
+            100
+          ],
+          "anchor": [
+            11,
+            187
+          ]
+        },
+        {
+          "crop": [
+            2,
+            997,
+            451,
+            295
+          ],
+          "anchor": [
+            225,
+            216
+          ]
+        }
+      ],
+      "damageRect": [
+        268,
+        725,
+        88,
+        100
+      ],
+      "source": "artwork-archive/tree-variants-v1/rowan-bent.png",
+      "sourceSize": [
+        1536,
+        1024
+      ],
+      "sourceHealthyCrop": [
+        46,
+        8,
+        532,
+        991
+      ],
+      "sourceDamageCrop": [
+        806,
+        733,
+        88,
+        100
+      ],
+      "sourceStumpCrop": [
+        1082,
+        703,
+        451,
+        295
+      ],
+      "sourceRoot": [
+        325,
+        920
+      ],
+      "damagedTranslation": [
+        492,
+        0
+      ],
+      "stumpTranslation": [
+        982,
+        -1
+      ],
+      "bytes": 805898,
+      "decodedBytes": 2831272,
+      "extraction": {
+        "visibleBounds": [
+          [
+            54,
+            16,
+            516,
+            975
+          ],
+          [
+            545,
+            16,
+            518,
+            974
+          ],
+          [
+            1090,
+            711,
+            435,
+            279
+          ]
+        ],
+        "separatorMaximumAlpha": [
+          2,
+          0
+        ],
+        "boundsPadding": 8,
+        "alphaThresholdAppliedToPixels": false,
+        "notchOverlapJoin": false
+      },
+      "checks": {
+        "alphaMismatch": 0,
+        "visibleRgbMismatch": 0,
+        "outsideNotchPreserved": true,
+        "rootFanPreserved": true
+      },
+      "notes": [
+        "Healthy pixels are reused unchanged outside the tight notch rectangle.",
+        "Separate generated loose chips are omitted; runtime hit particles supply debris.",
+        "Stump roots are registered to the same ground anchor; no scaling or resampling was applied."
+      ]
+    },
+    {
+      "key": "willow-forked",
+      "species": "willow",
+      "id": "art_tree_willow_forked",
+      "name": "River willow: forked",
+      "image": "/survival/tree-variants-v1/willow-forked.webp",
+      "size": [
+        563,
+        1221
+      ],
+      "worldWidth": 329,
+      "hp": 160,
+      "frames": [
+        {
+          "crop": [
+            2,
+            2,
+            559,
+            951
+          ],
+          "anchor": [
+            348,
+            881
+          ]
+        },
+        {
+          "crop": [
+            391,
+            957,
+            108,
+            120
+          ],
+          "anchor": [
+            22,
+            196
+          ]
+        },
+        {
+          "crop": [
+            2,
+            957,
+            385,
+            262
+          ],
+          "anchor": [
+            196,
+            193
+          ]
+        }
+      ],
+      "damageRect": [
+        326,
+        685,
+        108,
+        120
+      ],
+      "source": "artwork-archive/tree-variants-v1/willow-forked.png",
+      "sourceSize": [
+        1536,
+        1024
+      ],
+      "sourceHealthyCrop": [
+        29,
+        29,
+        559,
+        951
+      ],
+      "sourceDamageCrop": [
+        899,
+        714,
+        108,
+        120
+      ],
+      "sourceStumpCrop": [
+        1146,
+        719,
+        385,
+        262
+      ],
+      "sourceRoot": [
+        377,
+        910
+      ],
+      "damagedTranslation": [
+        544,
+        0
+      ],
+      "stumpTranslation": [
+        965,
+        2
+      ],
+      "bytes": 834618,
+      "decodedBytes": 2749692,
+      "extraction": {
+        "visibleBounds": [
+          [
+            37,
+            37,
+            543,
+            935
+          ],
+          [
+            580,
+            37,
+            544,
+            935
+          ],
+          [
+            1154,
+            727,
+            369,
+            246
+          ]
+        ],
+        "separatorMaximumAlpha": [
+          5,
+          0
+        ],
+        "boundsPadding": 8,
+        "alphaThresholdAppliedToPixels": false,
+        "notchOverlapJoin": true
+      },
+      "checks": {
+        "alphaMismatch": 0,
+        "visibleRgbMismatch": 0,
+        "outsideNotchPreserved": true,
+        "rootFanPreserved": true
+      },
+      "notes": [
+        "Healthy pixels are reused unchanged outside the tight notch rectangle.",
+        "Separate generated loose chips are omitted; runtime hit particles supply debris.",
+        "Stump roots are registered to the same ground anchor; no scaling or resampling was applied."
+      ]
+    },
+    {
+      "key": "willow-bent",
+      "species": "willow",
+      "id": "art_tree_willow_bent",
+      "name": "River willow: bent",
+      "image": "/survival/tree-variants-v1/willow-bent.webp",
+      "size": [
+        596,
+        1177
+      ],
+      "worldWidth": 362,
+      "hp": 160,
+      "frames": [
+        {
+          "crop": [
+            2,
+            2,
+            592,
+            914
+          ],
+          "anchor": [
+            327,
+            846
+          ]
+        },
+        {
+          "crop": [
+            385,
+            920,
+            87,
+            96
+          ],
+          "anchor": [
+            16,
+            185
+          ]
+        },
+        {
+          "crop": [
+            2,
+            920,
+            379,
+            255
+          ],
+          "anchor": [
+            187,
+            187
+          ]
+        }
+      ],
+      "damageRect": [
+        311,
+        661,
+        87,
+        96
+      ],
+      "source": "artwork-archive/tree-variants-v1/willow-bent.png",
+      "sourceSize": [
+        1536,
+        1024
+      ],
+      "sourceHealthyCrop": [
+        23,
+        59,
+        592,
+        914
+      ],
+      "sourceDamageCrop": [
+        910,
+        720,
+        87,
+        96
+      ],
+      "sourceStumpCrop": [
+        1153,
+        718,
+        379,
+        255
+      ],
+      "sourceRoot": [
+        350,
+        905
+      ],
+      "damagedTranslation": [
+        576,
+        0
+      ],
+      "stumpTranslation": [
+        990,
+        0
+      ],
+      "bytes": 750934,
+      "decodedBytes": 2805968,
+      "extraction": {
+        "visibleBounds": [
+          [
+            31,
+            67,
+            576,
+            898
+          ],
+          [
+            606,
+            66,
+            577,
+            899
+          ],
+          [
+            1161,
+            726,
+            363,
+            239
+          ]
+        ],
+        "separatorMaximumAlpha": [
+          7,
+          0
+        ],
+        "boundsPadding": 8,
+        "alphaThresholdAppliedToPixels": false,
+        "notchOverlapJoin": false
+      },
+      "checks": {
+        "alphaMismatch": 0,
+        "visibleRgbMismatch": 0,
+        "outsideNotchPreserved": true,
+        "rootFanPreserved": true
+      },
+      "notes": [
+        "Healthy pixels are reused unchanged outside the tight notch rectangle.",
+        "Separate generated loose chips are omitted; runtime hit particles supply debris.",
+        "Stump roots are registered to the same ground anchor; no scaling or resampling was applied."
+      ]
+    }
+  ],
+  "totalBytes": 8808708,
+  "totalDecodedBytes": 34348800
+}

@@ -1,0 +1,20 @@
+{
+  "districtsConnected": 7,
+  "reservedCrossings": 6,
+  "roadFreeAreas": 5,
+  "adjoiningBatches": 6,
+  "completedBatches": [
+    "A1",
+    "A2",
+    "A3",
+    "A4"
+  ],
+  "campAnchorUnchanged": true,
+  "runtimeSourceBounds": {
+    "x": -1528,
+    "y": 0,
+    "width": 11508,
+    "height": 6206
+  },
+  "futureDistrictsRemainUnbuilt": true
+}

@@ -1,0 +1,136 @@
+{
+  "passed": true,
+  "count": 20,
+  "homes": [
+    {
+      "id": 0,
+      "x": 195,
+      "y": 800
+    },
+    {
+      "id": 1,
+      "x": 30,
+      "y": 864
+    },
+    {
+      "id": 2,
+      "x": 108,
+      "y": 705
+    },
+    {
+      "id": 3,
+      "x": 158,
+      "y": 875
+    },
+    {
+      "id": 4,
+      "x": 3595,
+      "y": 2800
+    },
+    {
+      "id": 5,
+      "x": 3430,
+      "y": 2864
+    },
+    {
+      "id": 6,
+      "x": 3508,
+      "y": 2705
+    },
+    {
+      "id": 7,
+      "x": 3558,
+      "y": 2875
+    },
+    {
+      "id": 8,
+      "x": -2405,
+      "y": -1500
+    },
+    {
+      "id": 9,
+      "x": -2570,
+      "y": -1436
+    },
+    {
+      "id": 10,
+      "x": -2492,
+      "y": -1595
+    },
+    {
+      "id": 11,
+      "x": -2442,
+      "y": -1425
+    },
+    {
+      "id": 12,
+      "x": 7095,
+      "y": -1000
+    },
+    {
+      "id": 13,
+      "x": 6930,
+      "y": -936
+    },
+    {
+      "id": 14,
+      "x": 7008,
+      "y": -1095
+    },
+    {
+      "id": 15,
+      "x": 7058,
+      "y": -925
+    },
+    {
+      "id": 16,
+      "x": 3095,
+      "y": 8000
+    },
+    {
+      "id": 17,
+      "x": 2930,
+      "y": 8064
+    },
+    {
+      "id": 18,
+      "x": 3008,
+      "y": 7905
+    },
+    {
+      "id": 19,
+      "x": 3058,
+      "y": 8075
+    }
+  ],
+  "movementTicks": 11648,
+  "states": [
+    "idle",
+    "blink",
+    "walk",
+    "run",
+    "peck",
+    "hit",
+    "fall",
+    "downed"
+  ],
+  "textureFiles": 5,
+  "checks": [
+    "eight-way boundary chatter reproduced and suppressed from either side",
+    "alternating collision-slide headings stay stable",
+    "all turns confirmed, including reversals and short collision restarts",
+    "facing does not reset animation distance",
+    "twenty clear starts across meadows",
+    "bounded movement with collision",
+    "nearby flee and idle peck",
+    "distant simulation sleeping",
+    "distance-driven gait",
+    "authored Play axe hunting",
+    "one raw-meat drop per animal",
+    "corpse holds downed pose",
+    "offscreen render culling",
+    "one image draw per bird",
+    "no editor draft mutation"
+  ],
+  "physicalIPhoneTested": false
+}

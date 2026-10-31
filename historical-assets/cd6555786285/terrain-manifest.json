@@ -1,0 +1,62 @@
+{
+  "name": "Safety Last — Return towards camp",
+  "date": "2026-10-14",
+  "method": "Built-in image_gen outpaint and material-transition edit; deterministic north/east registration and lossless cuts",
+  "sourceCommit": "37f7a0c596227a4896e078e11ea1a5e65b133eac",
+  "nativeGeneration": {
+    "width": 1740,
+    "height": 904,
+    "file": "generated-master-original.png"
+  },
+  "registeredMaster": {
+    "x": 4096,
+    "y": 4540,
+    "width": 3204,
+    "height": 1666,
+    "file": "registered-master.png"
+  },
+  "packaging": "Generated artwork resampled to existing camp scale; packaged dimensions are not native generation resolution.",
+  "tiles": [
+    {
+      "id": "18-camp-southeast-meadow",
+      "url": "/survival/maps/camp-return-v1/18-camp-southeast-meadow.webp",
+      "x": 4096,
+      "y": 4668,
+      "width": 1666,
+      "height": 1538
+    },
+    {
+      "id": "19-camp-works-open-ground",
+      "url": "/survival/maps/camp-return-v1/19-camp-works-open-ground.webp",
+      "x": 5630,
+      "y": 4668,
+      "width": 1538,
+      "height": 1538
+    }
+  ],
+  "contacts": {
+    "north": {
+      "masterPreservedRows": 132,
+      "masterBlendRows": 128,
+      "outputExactRows": 4,
+      "exactRegion": "Before the eastern 132-pixel overlap",
+      "runtimeOverlap": 132,
+      "featherRows": 36,
+      "maxChannelError": 0
+    },
+    "east": {
+      "runtimeOverlap": 132,
+      "registrationBlendColumns": 96,
+      "exactOutputColumns": 36,
+      "featherColumns": 36,
+      "maxChannelError": 0
+    },
+    "betweenNewTiles": {
+      "sharedColumns": 132,
+      "featherColumns": 36,
+      "maxChannelError": 0
+    }
+  },
+  "scope": "Close the previously empty strip beneath the southeast camp approach back west from the works. Both new pieces remain road-free.",
+  "next": "Continue west directly beneath the main camp, then wrap its western and northern sides before extending distant districts."
+}

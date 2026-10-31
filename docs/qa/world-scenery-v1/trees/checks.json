@@ -1,0 +1,24 @@
+{
+  "result": "pass",
+  "species": 6,
+  "stages": 18,
+  "transformAndArcCases": 162,
+  "sharedTextures": 6,
+  "compressedBytes": 2564342,
+  "maxDecodedMiB": 36,
+  "checks": [
+    "contact timing",
+    "single damage per swing",
+    "health and stump",
+    "reach and facing",
+    "occlusion callback",
+    "rotated/mirrored/scaled roots",
+    "Walk and Play",
+    "draft unchanged",
+    "restart reset",
+    "library visibility",
+    "shared images",
+    "CanvasKit raster output"
+  ],
+  "limits": "No physical device or browser GPU playtest. No wood inventory or regrowth added."
+}

@@ -1,0 +1,121 @@
+{
+  "sourceRevision": 71,
+  "existing": 2299,
+  "added": 1854,
+  "total": 4153,
+  "remainingEditorSlots": 847,
+  "groves": 121,
+  "counts": {
+    "tree": 327,
+    "plant": 1212,
+    "rock": 295,
+    "log": 20
+  },
+  "regions": [
+    {
+      "id": "logging-pines",
+      "name": "Logging pine woods",
+      "tree": "pine",
+      "groves": 6,
+      "placements": 133
+    },
+    {
+      "id": "northern-birches",
+      "name": "Northern birch woods",
+      "tree": "birch",
+      "groves": 10,
+      "placements": 172
+    },
+    {
+      "id": "village-oaks",
+      "name": "Village oak margins",
+      "tree": "oak",
+      "groves": 8,
+      "placements": 137
+    },
+    {
+      "id": "factory-ridge",
+      "name": "Factory pine and stone ridge",
+      "tree": "pine",
+      "groves": 8,
+      "placements": 104
+    },
+    {
+      "id": "western-oaks",
+      "name": "Western deep oak woods",
+      "tree": "oak",
+      "groves": 8,
+      "placements": 178
+    },
+    {
+      "id": "north-passage",
+      "name": "Northern birch passage",
+      "tree": "birch",
+      "groves": 3,
+      "placements": 50
+    },
+    {
+      "id": "eastern-pines",
+      "name": "Eastern pine heath",
+      "tree": "pine",
+      "groves": 10,
+      "placements": 173
+    },
+    {
+      "id": "eastern-hollows",
+      "name": "Weathered eastern hollows",
+      "tree": "deadwood",
+      "groves": 8,
+      "placements": 97
+    },
+    {
+      "id": "waterworks-woods",
+      "name": "Waterworks fern woods",
+      "tree": "oak",
+      "groves": 7,
+      "placements": 121
+    },
+    {
+      "id": "lake-meadows",
+      "name": "Lake and southern clearings",
+      "tree": "rowan",
+      "groves": 8,
+      "placements": 96
+    },
+    {
+      "id": "southwest-heath",
+      "name": "Southwestern rocky heath",
+      "tree": "pine",
+      "groves": 3,
+      "placements": 39
+    },
+    {
+      "id": "southern-meadows",
+      "name": "Open southern meadows",
+      "tree": "rowan",
+      "groves": 8,
+      "placements": 96
+    },
+    {
+      "id": "scrapyard-scrub",
+      "name": "Scrapyard stony scrub",
+      "tree": "deadwood",
+      "groves": 8,
+      "placements": 95
+    },
+    {
+      "id": "southeast-rowans",
+      "name": "Southeastern rowan heath",
+      "tree": "rowan",
+      "groves": 8,
+      "placements": 96
+    },
+    {
+      "id": "river-willows",
+      "name": "River and lake willow banks",
+      "tree": "willow",
+      "groves": 18,
+      "placements": 267
+    }
+  ]
+}

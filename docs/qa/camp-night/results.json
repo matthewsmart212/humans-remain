@@ -1,0 +1,22 @@
+{
+  "result": "pass",
+  "placements": 24,
+  "lightCount": 1,
+  "light": {
+    "x": 1718.1675873489273,
+    "y": 1507.7404773329627,
+    "radius": 756.0000000000001,
+    "strength": 1
+  },
+  "falloffLuminance": [
+    246.69279999999998,
+    236.48019999999997,
+    172.9186,
+    79.361,
+    37.8676,
+    37.8676
+  ],
+  "stableShaderBuilds": 5,
+  "softwareOverlayMilliseconds": 31.218209016666663,
+  "deviceFPSMeasured": false
+}

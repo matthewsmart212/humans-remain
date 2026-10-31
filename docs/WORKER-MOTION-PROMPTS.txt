@@ -1,0 +1,29 @@
+Atlas A
+
+Use case: identity-preserve. Production 2D game sprite animation atlas. Reference image 1 is the REQUIRED character identity/style; reference 2 is diagonal camera reference ONLY, discard its yellow glow and dark background. Create a perfectly regular 4 columns x 4 rows sprite atlas on TRUE TRANSPARENT background. Exactly 16 isolated sprites. Cute chibi construction worker identical to reference: huge glossy yellow hardhat, tiny peach face black oval eyes, teal work uniform with chest pockets and yellow badge, black work boots, thick clean black outline, polished cel shading. Elevated 60-degree top-down game camera as reference; not side-view.
+ROW 1 character facing DOWN (toward camera).
+ROW 2 facing DOWN-RIGHT (southeast).
+ROW 3 facing RIGHT (east).
+ROW 4 facing UP-RIGHT (northeast; back 3/4).
+COLUMN 1 in every row: NEUTRAL IDLE standing STILL, BOTH black boots planted side by side symmetrically on ground, zero knee lift, zero stride, arms relaxed.
+COLUMN 2: WALK A, anatomical LEFT boot clearly extends ahead along facing vector, right boot trails behind; left arm back right arm forward.
+COLUMN 3: WALK B, opposite leg! anatomical RIGHT boot clearly extends ahead along facing vector, left boot trails behind; right arm back left arm forward. Opposite visibly distinct boot silhouette from column 2, not just arm swap.
+COLUMN 4: PUNCH in row's facing direction: one teal-sleeved arm straight and fully extended OUT from torso with clearly visible bare peach clenched fist at farthest tip, other arm tucked. No tools/weapons. ROW1 fist thrusts DOWN below chest; ROW2 fist thrusts down-right; ROW3 fist thrusts far RIGHT; ROW4 fist thrusts UP-RIGHT beyond silhouette.
+Uniform cells, character pelvis anchored at identical relative position across each row, helmet/body identical scale and position between all 4 poses, grounded feet not floating. Character full height approximately 70% cell height. Wide transparent gutters, ample clearance on ALL sides so punches never touch neighboring cells. All 16 helmets same size. Nothing cropped. No text labels, lines, borders, shadows, glow, scenery, checkerboard, background pixels. True alpha transparency.
+
+Atlas B
+
+Use case: identity-preserve. Production 2D game sprite animation atlas. Reference image 1 is REQUIRED character identity/style; reference 2 is diagonal camera reference ONLY, discard its yellow glow and dark background. Create perfectly regular 4 columns x 4 rows sprite atlas on TRUE TRANSPARENT background. Exactly 16 isolated sprites. Cute chibi construction worker identical to reference: huge glossy yellow hardhat, tiny peach face black oval eyes, teal work uniform with chest pockets and yellow badge, black work boots, thick clean black outline, polished cel shading. Elevated 60-degree top-down game camera as reference; not side-view.
+ROW 1 character facing UP (north, back toward camera, no face visible).
+ROW 2 facing UP-LEFT (northwest, back 3/4).
+ROW 3 facing LEFT (west).
+ROW 4 facing DOWN-LEFT (southwest, front 3/4).
+COLUMN 1 in every row: NEUTRAL IDLE standing STILL, BOTH black boots planted side by side symmetrically on ground, zero knee lift, zero stride, arms relaxed.
+COLUMN 2: WALK A, anatomical LEFT boot clearly extends ahead along facing vector, right boot trails behind; left arm back right arm forward.
+COLUMN 3: WALK B, opposite leg! anatomical RIGHT boot clearly extends ahead along facing vector, left boot trails behind; right arm back left arm forward. Opposite visibly distinct boot silhouette from column 2, not just arm swap.
+COLUMN 4: PUNCH in row's facing direction: one teal-sleeved arm straight and fully extended OUT from torso with clearly visible bare peach clenched fist at farthest tip, other arm tucked. No tools/weapons. ROW1 fist thrusts UP and is visible beyond helmet's upper edge; ROW2 fist thrusts UP-LEFT beyond silhouette; ROW3 fist thrusts far LEFT; ROW4 fist thrusts DOWN-LEFT.
+Uniform cells, character pelvis anchored at identical relative position across each row, helmet/body identical scale and position between all 4 poses, grounded feet not floating. Character full height approximately 70% cell height. Wide transparent gutters, ample clearance on ALL sides so punches never touch neighboring cells. All 16 helmets same size. Nothing cropped. No text labels, lines, borders, shadows, glow, scenery, checkerboard, background pixels. True alpha transparency.
+
+Rejected repair A
+
+Edit this sprite sheet. Preserve every sprite, position, scale, character identity, transparency, shading and layout EXACTLY except the following THREE sprites: row2 column3, row3 column3, row4 column3. Those three currently have the SAME boot leading as their neighboring column2 which is WRONG for animation. Change ONLY their legs and boots to the OPPOSITE stride phase. In rows2 and3 column3: the foreground boot currently at lower RIGHT must move backward/up/LEFT under the torso, and the rear boot currently left/up must extend forward/down/RIGHT as the new leading leg. Make visibly distinct leg silhouette with crossed pants connection, not same boot arrangement. In row4 column3: the foreground boot currently at lower LEFT must move backward under the torso while the rear foot must extend UP-RIGHT in walking direction, showing a different stance. The exact same helmet and body stay perfectly aligned; no new sprites, no background, no glow. This is gait correction only. Critically do NOT merely move arms or rotate shoe soles while leaving same leg forward. Alternate the actual hips-to-foot connections and which boot is planted ahead.

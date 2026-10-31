@@ -1,0 +1,87 @@
+{
+  "name": "Safety Last — East Approach 01",
+  "status": "Artwork asset pack; not integrated or published",
+  "sourceCamp": {
+    "siteVersion": 111,
+    "sourceCommit": "184a2dd7cad652a8aa738bc08d6d34142d077fd5",
+    "terrainFile": "public/survival/camp-ground-v3/full-4800.webp",
+    "terrainPixels": [
+      4800,
+      4800
+    ],
+    "originalPlayablePixels": 3600,
+    "originalBorderPixels": 600,
+    "worldUnitsPerTerrainPixel": 0.9428090415820634
+  },
+  "master": {
+    "file": "east-approach-master.webp",
+    "width": 3072,
+    "height": 1536,
+    "terrainOrigin": {
+      "x": 4096,
+      "y": 3264
+    },
+    "worldOrigin": {
+      "x": 3296.0604093708935,
+      "y": 2511.6432867746166
+    },
+    "note": "First 704 px overlap current camp; do not append the full master after the camp edge. The exact preserved 128 px contact band supports registration or scene transition."
+  },
+  "nativeImageGenSources": [
+    {
+      "file": "source/01-camp-approach-original.png",
+      "width": 1254,
+      "height": 1254
+    },
+    {
+      "file": "source/02-woodland-junction-original.png",
+      "width": 1354,
+      "height": 1161
+    }
+  ],
+  "packaging": "Generated artwork was resized to match the existing terrain coordinate scale, registered through narrow overlap joins, then split from a common 3072x1536 master. Packaged dimensions are not native generation resolution.",
+  "tiles": [
+    {
+      "file": "tiles/01-camp-approach.png",
+      "x": 0,
+      "y": 0,
+      "width": 1536,
+      "height": 1536
+    },
+    {
+      "file": "tiles/02-woodland-junction.png",
+      "x": 1536,
+      "y": 0,
+      "width": 1536,
+      "height": 1536
+    }
+  ],
+  "textures": [
+    {
+      "file": "textures/01-camp-approach.webp",
+      "x": 0,
+      "y": 0,
+      "width": 1538,
+      "height": 1536
+    },
+    {
+      "file": "textures/02-woodland-junction.webp",
+      "x": 1534,
+      "y": 0,
+      "width": 1538,
+      "height": 1536
+    }
+  ],
+  "sharedTexturePixels": 4,
+  "checks": {
+    "campContactMaxChannelError": 0,
+    "textureOverlapMaxChannelError": 0,
+    "inGameConnection": "Not tested; no game changes made",
+    "phonePerformance": "Not tested"
+  },
+  "futureConnections": {
+    "east": "Continue toward scrapyard; reuse east edge reference",
+    "north": "Dirt path toward further woodland / northern district",
+    "scope": "Ground only. Trees, bushes, resource rocks, animals, dangers and water are separate later assets."
+  }
+}

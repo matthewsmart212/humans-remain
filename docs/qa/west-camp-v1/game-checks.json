@@ -1,0 +1,21 @@
+{
+  "result": "pass",
+  "campRevision": 68,
+  "campPlacements": 1366,
+  "steps": 7960,
+  "terrainPieces": 5,
+  "sourceBounds": {
+    "x": -1528,
+    "y": 0,
+    "width": 11508,
+    "height": 6206
+  },
+  "checks": [
+    "physical return journeys through southwest, west and road-free upper ground",
+    "same player, world, inventory, weather and night state; no outdoor transition",
+    "saved camp coordinates unchanged",
+    "negative-coordinate placements and spawn validate",
+    "missing terrain, outer edge and northwest notch block",
+    "prefetch, retry and distant texture disposal"
+  ]
+}

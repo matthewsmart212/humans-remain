@@ -1,0 +1,134 @@
+{
+  "key": "willow-forked",
+  "species": "willow",
+  "id": "art_tree_willow_forked",
+  "name": "River willow: forked",
+  "image": "/survival/tree-variants-v1/willow-forked.webp",
+  "size": [
+    563,
+    1221
+  ],
+  "worldWidth": 329,
+  "hp": 160,
+  "frames": [
+    {
+      "crop": [
+        2,
+        2,
+        559,
+        951
+      ],
+      "anchor": [
+        348,
+        881
+      ]
+    },
+    {
+      "crop": [
+        391,
+        957,
+        108,
+        120
+      ],
+      "anchor": [
+        22,
+        196
+      ]
+    },
+    {
+      "crop": [
+        2,
+        957,
+        385,
+        262
+      ],
+      "anchor": [
+        196,
+        193
+      ]
+    }
+  ],
+  "damageRect": [
+    326,
+    685,
+    108,
+    120
+  ],
+  "source": "artwork-archive/tree-variants-v1/willow-forked.png",
+  "sourceSize": [
+    1536,
+    1024
+  ],
+  "sourceHealthyCrop": [
+    29,
+    29,
+    559,
+    951
+  ],
+  "sourceDamageCrop": [
+    899,
+    714,
+    108,
+    120
+  ],
+  "sourceStumpCrop": [
+    1146,
+    719,
+    385,
+    262
+  ],
+  "sourceRoot": [
+    377,
+    910
+  ],
+  "damagedTranslation": [
+    544,
+    0
+  ],
+  "stumpTranslation": [
+    965,
+    2
+  ],
+  "bytes": 834618,
+  "decodedBytes": 2749692,
+  "extraction": {
+    "visibleBounds": [
+      [
+        37,
+        37,
+        543,
+        935
+      ],
+      [
+        580,
+        37,
+        544,
+        935
+      ],
+      [
+        1154,
+        727,
+        369,
+        246
+      ]
+    ],
+    "separatorMaximumAlpha": [
+      5,
+      0
+    ],
+    "boundsPadding": 8,
+    "alphaThresholdAppliedToPixels": false,
+    "notchOverlapJoin": true
+  },
+  "checks": {
+    "alphaMismatch": 0,
+    "visibleRgbMismatch": 0,
+    "outsideNotchPreserved": true,
+    "rootFanPreserved": true
+  },
+  "notes": [
+    "Healthy pixels are reused unchanged outside the tight notch rectangle.",
+    "Separate generated loose chips are omitted; runtime hit particles supply debris.",
+    "Stump roots are registered to the same ground anchor; no scaling or resampling was applied."
+  ]
+}

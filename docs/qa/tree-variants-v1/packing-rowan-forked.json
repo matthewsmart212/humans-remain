@@ -1,0 +1,134 @@
+{
+  "key": "rowan-forked",
+  "species": "rowan",
+  "id": "art_tree_rowan_forked",
+  "name": "Amber woodland rowan: forked",
+  "image": "/survival/tree-variants-v1/rowan-forked.webp",
+  "size": [
+    556,
+    1268
+  ],
+  "worldWidth": 260,
+  "hp": 120,
+  "frames": [
+    {
+      "crop": [
+        2,
+        2,
+        552,
+        975
+      ],
+      "anchor": [
+        270,
+        896
+      ]
+    },
+    {
+      "crop": [
+        432,
+        981,
+        87,
+        101
+      ],
+      "anchor": [
+        3,
+        178
+      ]
+    },
+    {
+      "crop": [
+        2,
+        981,
+        426,
+        285
+      ],
+      "anchor": [
+        204,
+        205
+      ]
+    }
+  ],
+  "damageRect": [
+    267,
+    718,
+    87,
+    101
+  ],
+  "source": "artwork-archive/tree-variants-v1/rowan-forked.png",
+  "sourceSize": [
+    1536,
+    1024
+  ],
+  "sourceHealthyCrop": [
+    22,
+    9,
+    552,
+    975
+  ],
+  "sourceDamageCrop": [
+    839,
+    727,
+    87,
+    101
+  ],
+  "sourceStumpCrop": [
+    1108,
+    699,
+    426,
+    285
+  ],
+  "sourceRoot": [
+    292,
+    905
+  ],
+  "damagedTranslation": [
+    550,
+    0
+  ],
+  "stumpTranslation": [
+    1020,
+    -1
+  ],
+  "bytes": 794524,
+  "decodedBytes": 2820032,
+  "extraction": {
+    "visibleBounds": [
+      [
+        30,
+        17,
+        536,
+        959
+      ],
+      [
+        580,
+        17,
+        537,
+        959
+      ],
+      [
+        1116,
+        707,
+        410,
+        269
+      ]
+    ],
+    "separatorMaximumAlpha": [
+      0,
+      0
+    ],
+    "boundsPadding": 8,
+    "alphaThresholdAppliedToPixels": false,
+    "notchOverlapJoin": false
+  },
+  "checks": {
+    "alphaMismatch": 0,
+    "visibleRgbMismatch": 0,
+    "outsideNotchPreserved": true,
+    "rootFanPreserved": true
+  },
+  "notes": [
+    "Healthy pixels are reused unchanged outside the tight notch rectangle.",
+    "Separate generated loose chips are omitted; runtime hit particles supply debris.",
+    "Stump roots are registered to the same ground anchor; no scaling or resampling was applied."
+  ]
+}

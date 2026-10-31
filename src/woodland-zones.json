@@ -1,0 +1,2770 @@
+{
+  "version": 1,
+  "zones": [
+    {
+      "id": "birch",
+      "name": "Northern birch woodland",
+      "tree": "birch",
+      "trees": 29
+    },
+    {
+      "id": "oak",
+      "name": "Western oak woodland",
+      "tree": "oak",
+      "trees": 45
+    },
+    {
+      "id": "pine",
+      "name": "Eastern pine ridge",
+      "tree": "pine",
+      "trees": 14
+    },
+    {
+      "id": "rowan",
+      "name": "Southern rowan meadow",
+      "tree": "rowan",
+      "trees": 21
+    },
+    {
+      "id": "willow",
+      "name": "Lower riverside willows",
+      "tree": "willow",
+      "trees": 5
+    }
+  ],
+  "groups": [
+    {
+      "id": "camp-outskirts-v1-northwest-grove",
+      "zone": "birch",
+      "sourceCentre": [
+        950,
+        880
+      ],
+      "treeIds": [
+        "camp-outskirts-v1-northwest-grove-tree-1",
+        "camp-outskirts-v1-northwest-grove-tree-2",
+        "camp-outskirts-v1-northwest-grove-tree-3"
+      ],
+      "beforeSpecies": [
+        "art_tree_oak",
+        "art_tree_birch"
+      ],
+      "afterSpecies": [
+        "art_tree_birch"
+      ]
+    },
+    {
+      "id": "camp-outskirts-v1-west-near",
+      "zone": "oak",
+      "sourceCentre": [
+        340,
+        2100
+      ],
+      "treeIds": [
+        "camp-outskirts-v1-west-near-tree-1",
+        "camp-outskirts-v1-west-near-tree-2",
+        "camp-outskirts-v1-west-near-tree-3",
+        "camp-outskirts-v1-west-near-tree-4",
+        "camp-outskirts-v1-west-near-tree-5"
+      ],
+      "beforeSpecies": [
+        "art_tree_oak",
+        "art_tree_birch"
+      ],
+      "afterSpecies": [
+        "art_tree_oak"
+      ]
+    },
+    {
+      "id": "camp-outskirts-v1-west-lower",
+      "zone": "oak",
+      "sourceCentre": [
+        210,
+        3430
+      ],
+      "treeIds": [
+        "camp-outskirts-v1-west-lower-tree-1",
+        "camp-outskirts-v1-west-lower-tree-2",
+        "camp-outskirts-v1-west-lower-tree-3",
+        "camp-outskirts-v1-west-lower-tree-4"
+      ],
+      "beforeSpecies": [
+        "art_tree_birch",
+        "art_tree_pine",
+        "art_tree_oak"
+      ],
+      "afterSpecies": [
+        "art_tree_oak"
+      ]
+    },
+    {
+      "id": "camp-outskirts-v1-southwest-near",
+      "zone": "rowan",
+      "sourceCentre": [
+        1260,
+        4200
+      ],
+      "treeIds": [
+        "camp-outskirts-v1-southwest-near-tree-1",
+        "camp-outskirts-v1-southwest-near-tree-2",
+        "camp-outskirts-v1-southwest-near-tree-3"
+      ],
+      "beforeSpecies": [
+        "art_tree_oak",
+        "art_tree_pine"
+      ],
+      "afterSpecies": [
+        "art_tree_rowan"
+      ]
+    },
+    {
+      "id": "camp-outskirts-v1-south-near",
+      "zone": "rowan",
+      "sourceCentre": [
+        2080,
+        4480
+      ],
+      "treeIds": [
+        "camp-outskirts-v1-south-near-tree-1",
+        "camp-outskirts-v1-south-near-tree-2",
+        "camp-outskirts-v1-south-near-tree-3",
+        "camp-outskirts-v1-south-near-tree-4"
+      ],
+      "beforeSpecies": [
+        "art_tree_birch"
+      ],
+      "afterSpecies": [
+        "art_tree_rowan"
+      ]
+    },
+    {
+      "id": "camp-outskirts-v1-southeast-near",
+      "zone": "pine",
+      "sourceCentre": [
+        3680,
+        4100
+      ],
+      "treeIds": [
+        "camp-outskirts-v1-southeast-near-tree-1",
+        "camp-outskirts-v1-southeast-near-tree-2",
+        "camp-outskirts-v1-southeast-near-tree-3"
+      ],
+      "beforeSpecies": [
+        "art_tree_birch",
+        "art_tree_oak"
+      ],
+      "afterSpecies": [
+        "art_tree_pine"
+      ]
+    },
+    {
+      "id": "camp-outskirts-v1-east-near",
+      "zone": "pine",
+      "sourceCentre": [
+        4250,
+        2770
+      ],
+      "treeIds": [
+        "camp-outskirts-v1-east-near-tree-1",
+        "camp-outskirts-v1-east-near-tree-2",
+        "camp-outskirts-v1-east-near-tree-3",
+        "camp-outskirts-v1-east-near-tree-4"
+      ],
+      "beforeSpecies": [
+        "art_tree_deadwood",
+        "art_tree_pine"
+      ],
+      "afterSpecies": [
+        "art_tree_pine"
+      ]
+    },
+    {
+      "id": "camp-outskirts-v1-northeast-near",
+      "zone": "pine",
+      "sourceCentre": [
+        3920,
+        1410
+      ],
+      "treeIds": [
+        "camp-outskirts-v1-northeast-near-tree-1",
+        "camp-outskirts-v1-northeast-near-tree-2"
+      ],
+      "beforeSpecies": [
+        "art_tree_oak",
+        "art_tree_pine"
+      ],
+      "afterSpecies": [
+        "art_tree_pine"
+      ]
+    },
+    {
+      "id": "camp-outskirts-v1-north-near",
+      "zone": "birch",
+      "sourceCentre": [
+        2580,
+        370
+      ],
+      "treeIds": [
+        "camp-outskirts-v1-north-near-tree-1",
+        "camp-outskirts-v1-north-near-tree-2",
+        "camp-outskirts-v1-north-near-tree-3",
+        "camp-outskirts-v1-north-near-tree-4",
+        "camp-outskirts-v1-north-near-tree-5"
+      ],
+      "beforeSpecies": [
+        "art_tree_rowan",
+        "art_tree_birch",
+        "art_tree_pine"
+      ],
+      "afterSpecies": [
+        "art_tree_birch"
+      ]
+    },
+    {
+      "id": "camp-outskirts-v1-northwest-outer",
+      "zone": "birch",
+      "sourceCentre": [
+        -400,
+        800
+      ],
+      "treeIds": [
+        "camp-outskirts-v1-northwest-outer-tree-1",
+        "camp-outskirts-v1-northwest-outer-tree-2",
+        "camp-outskirts-v1-northwest-outer-tree-3",
+        "camp-outskirts-v1-northwest-outer-tree-4",
+        "camp-outskirts-v1-northwest-outer-tree-5",
+        "camp-outskirts-v1-northwest-outer-tree-6"
+      ],
+      "beforeSpecies": [
+        "art_tree_birch",
+        "art_tree_pine",
+        "art_tree_oak"
+      ],
+      "afterSpecies": [
+        "art_tree_birch"
+      ]
+    },
+    {
+      "id": "camp-outskirts-v1-west-outer",
+      "zone": "oak",
+      "sourceCentre": [
+        -1050,
+        3550
+      ],
+      "treeIds": [
+        "camp-outskirts-v1-west-outer-tree-1",
+        "camp-outskirts-v1-west-outer-tree-2",
+        "camp-outskirts-v1-west-outer-tree-3",
+        "camp-outskirts-v1-west-outer-tree-4",
+        "camp-outskirts-v1-west-outer-tree-5"
+      ],
+      "beforeSpecies": [
+        "art_tree_pine",
+        "art_tree_oak",
+        "art_tree_birch"
+      ],
+      "afterSpecies": [
+        "art_tree_oak"
+      ]
+    },
+    {
+      "id": "camp-outskirts-v1-southwest-outer",
+      "zone": "rowan",
+      "sourceCentre": [
+        -240,
+        4410
+      ],
+      "treeIds": [
+        "camp-outskirts-v1-southwest-outer-tree-1",
+        "camp-outskirts-v1-southwest-outer-tree-2",
+        "camp-outskirts-v1-southwest-outer-tree-3",
+        "camp-outskirts-v1-southwest-outer-tree-4"
+      ],
+      "beforeSpecies": [
+        "art_tree_birch",
+        "art_tree_oak",
+        "art_tree_rowan"
+      ],
+      "afterSpecies": [
+        "art_tree_rowan"
+      ]
+    },
+    {
+      "id": "camp-outskirts-v1-east-outer",
+      "zone": "pine",
+      "sourceCentre": [
+        5270,
+        2550
+      ],
+      "treeIds": [
+        "camp-outskirts-v1-east-outer-tree-1",
+        "camp-outskirts-v1-east-outer-tree-2",
+        "camp-outskirts-v1-east-outer-tree-3",
+        "camp-outskirts-v1-east-outer-tree-4",
+        "camp-outskirts-v1-east-outer-tree-5"
+      ],
+      "beforeSpecies": [
+        "art_tree_oak",
+        "art_tree_pine"
+      ],
+      "afterSpecies": [
+        "art_tree_pine"
+      ]
+    },
+    {
+      "id": "camp-outskirts-v1-south-outer",
+      "zone": "rowan",
+      "sourceCentre": [
+        1550,
+        5400
+      ],
+      "treeIds": [
+        "camp-outskirts-v1-south-outer-tree-1",
+        "camp-outskirts-v1-south-outer-tree-2",
+        "camp-outskirts-v1-south-outer-tree-3",
+        "camp-outskirts-v1-south-outer-tree-4",
+        "camp-outskirts-v1-south-outer-tree-5"
+      ],
+      "beforeSpecies": [
+        "art_tree_rowan",
+        "art_tree_birch"
+      ],
+      "afterSpecies": [
+        "art_tree_rowan"
+      ]
+    },
+    {
+      "id": "camp-river-v1-north-trail",
+      "zone": "birch",
+      "sourceCentre": [
+        -1540,
+        -440
+      ],
+      "treeIds": [
+        "camp-river-v1-north-trail-tree-1",
+        "camp-river-v1-north-trail-tree-2"
+      ],
+      "beforeSpecies": [
+        "art_tree_rowan"
+      ],
+      "afterSpecies": [
+        "art_tree_birch"
+      ]
+    },
+    {
+      "id": "camp-river-v1-stream-east",
+      "zone": "birch",
+      "sourceCentre": [
+        -1120,
+        450
+      ],
+      "treeIds": [
+        "camp-river-v1-stream-east-tree-1",
+        "camp-river-v1-stream-east-tree-2",
+        "camp-river-v1-stream-east-tree-3",
+        "camp-river-v1-stream-east-tree-4"
+      ],
+      "beforeSpecies": [
+        "art_tree_oak",
+        "art_tree_birch",
+        "art_tree_pine"
+      ],
+      "afterSpecies": [
+        "art_tree_birch"
+      ]
+    },
+    {
+      "id": "camp-river-v1-stream-head",
+      "zone": "birch",
+      "sourceCentre": [
+        -2320,
+        350
+      ],
+      "treeIds": [
+        "camp-river-v1-stream-head-tree-1"
+      ],
+      "beforeSpecies": [
+        "art_tree_oak"
+      ],
+      "afterSpecies": [
+        "art_tree_birch"
+      ]
+    },
+    {
+      "id": "camp-river-v1-stream-meadow",
+      "zone": "birch",
+      "sourceCentre": [
+        -1600,
+        1350
+      ],
+      "treeIds": [
+        "camp-river-v1-stream-meadow-tree-1",
+        "camp-river-v1-stream-meadow-tree-2",
+        "camp-river-v1-stream-meadow-tree-3",
+        "camp-river-v1-stream-meadow-tree-4"
+      ],
+      "beforeSpecies": [
+        "art_tree_rowan",
+        "art_tree_oak",
+        "art_tree_birch"
+      ],
+      "afterSpecies": [
+        "art_tree_birch"
+      ]
+    },
+    {
+      "id": "camp-river-v1-west-upper",
+      "zone": "birch",
+      "sourceCentre": [
+        -3340,
+        1050
+      ],
+      "treeIds": [
+        "camp-river-v1-west-upper-tree-1",
+        "camp-river-v1-west-upper-tree-2",
+        "camp-river-v1-west-upper-tree-3",
+        "camp-river-v1-west-upper-tree-4"
+      ],
+      "beforeSpecies": [
+        "art_tree_birch",
+        "art_tree_oak"
+      ],
+      "afterSpecies": [
+        "art_tree_birch"
+      ]
+    },
+    {
+      "id": "camp-river-v1-upper-glade",
+      "zone": "oak",
+      "sourceCentre": [
+        -2640,
+        1660
+      ],
+      "treeIds": [
+        "camp-river-v1-upper-glade-tree-1",
+        "camp-river-v1-upper-glade-tree-2",
+        "camp-river-v1-upper-glade-tree-3",
+        "camp-river-v1-upper-glade-tree-4",
+        "camp-river-v1-upper-glade-tree-5"
+      ],
+      "beforeSpecies": [
+        "art_tree_rowan",
+        "art_tree_oak",
+        "art_tree_pine"
+      ],
+      "afterSpecies": [
+        "art_tree_oak"
+      ]
+    },
+    {
+      "id": "camp-river-v1-upper-link",
+      "zone": "oak",
+      "sourceCentre": [
+        -750,
+        1860
+      ],
+      "treeIds": [
+        "camp-river-v1-upper-link-tree-1",
+        "camp-river-v1-upper-link-tree-2",
+        "camp-river-v1-upper-link-tree-3",
+        "camp-river-v1-upper-link-tree-4"
+      ],
+      "beforeSpecies": [
+        "art_tree_rowan",
+        "art_tree_pine",
+        "art_tree_birch"
+      ],
+      "afterSpecies": [
+        "art_tree_oak"
+      ]
+    },
+    {
+      "id": "camp-river-v1-river-bend",
+      "zone": "oak",
+      "sourceCentre": [
+        -4070,
+        1890
+      ],
+      "treeIds": [
+        "camp-river-v1-river-bend-tree-1",
+        "camp-river-v1-river-bend-tree-2",
+        "camp-river-v1-river-bend-tree-3",
+        "camp-river-v1-river-bend-tree-4"
+      ],
+      "beforeSpecies": [
+        "art_tree_birch",
+        "art_tree_oak"
+      ],
+      "afterSpecies": [
+        "art_tree_oak"
+      ]
+    },
+    {
+      "id": "camp-river-v1-west-trail-north",
+      "zone": "oak",
+      "sourceCentre": [
+        -3400,
+        2280
+      ],
+      "treeIds": [
+        "camp-river-v1-west-trail-north-tree-1",
+        "camp-river-v1-west-trail-north-tree-2",
+        "camp-river-v1-west-trail-north-tree-3",
+        "camp-river-v1-west-trail-north-tree-4"
+      ],
+      "beforeSpecies": [
+        "art_tree_oak",
+        "art_tree_pine",
+        "art_tree_birch"
+      ],
+      "afterSpecies": [
+        "art_tree_oak"
+      ]
+    },
+    {
+      "id": "camp-river-v1-central-rise",
+      "zone": "oak",
+      "sourceCentre": [
+        -2040,
+        2290
+      ],
+      "treeIds": [
+        "camp-river-v1-central-rise-tree-1",
+        "camp-river-v1-central-rise-tree-2",
+        "camp-river-v1-central-rise-tree-3",
+        "camp-river-v1-central-rise-tree-4",
+        "camp-river-v1-central-rise-tree-5"
+      ],
+      "beforeSpecies": [
+        "art_tree_birch",
+        "art_tree_rowan"
+      ],
+      "afterSpecies": [
+        "art_tree_oak"
+      ]
+    },
+    {
+      "id": "camp-river-v1-bridge-glade",
+      "zone": "willow",
+      "sourceCentre": [
+        -3830,
+        3210
+      ],
+      "treeIds": [],
+      "beforeSpecies": [],
+      "afterSpecies": []
+    },
+    {
+      "id": "camp-river-v1-west-trail-south",
+      "zone": "willow",
+      "sourceCentre": [
+        -3030,
+        3070
+      ],
+      "treeIds": [
+        "camp-river-v1-west-trail-south-tree-1"
+      ],
+      "beforeSpecies": [
+        "art_tree_pine"
+      ],
+      "afterSpecies": [
+        "art_tree_willow"
+      ]
+    },
+    {
+      "id": "camp-river-v1-middle-meadow",
+      "zone": "oak",
+      "sourceCentre": [
+        -2020,
+        3350
+      ],
+      "treeIds": [
+        "camp-river-v1-middle-meadow-tree-1",
+        "camp-river-v1-middle-meadow-tree-2",
+        "camp-river-v1-middle-meadow-tree-3"
+      ],
+      "beforeSpecies": [
+        "art_tree_oak",
+        "art_tree_birch",
+        "art_tree_rowan"
+      ],
+      "afterSpecies": [
+        "art_tree_oak"
+      ]
+    },
+    {
+      "id": "camp-river-v1-lower-link",
+      "zone": "oak",
+      "sourceCentre": [
+        -1250,
+        2630
+      ],
+      "treeIds": [
+        "camp-river-v1-lower-link-tree-1",
+        "camp-river-v1-lower-link-tree-2"
+      ],
+      "beforeSpecies": [
+        "art_tree_birch",
+        "art_tree_rowan"
+      ],
+      "afterSpecies": [
+        "art_tree_oak"
+      ]
+    },
+    {
+      "id": "camp-river-v1-southern-birches",
+      "zone": "oak",
+      "sourceCentre": [
+        -1950,
+        4060
+      ],
+      "treeIds": [
+        "camp-river-v1-southern-birches-tree-1",
+        "camp-river-v1-southern-birches-tree-2",
+        "camp-river-v1-southern-birches-tree-3",
+        "camp-river-v1-southern-birches-tree-4"
+      ],
+      "beforeSpecies": [
+        "art_tree_birch",
+        "art_tree_oak",
+        "art_tree_rowan"
+      ],
+      "afterSpecies": [
+        "art_tree_oak"
+      ]
+    },
+    {
+      "id": "camp-river-v1-river-shelf",
+      "zone": "willow",
+      "sourceCentre": [
+        -2330,
+        3900
+      ],
+      "treeIds": [
+        "camp-river-v1-river-shelf-tree-1"
+      ],
+      "beforeSpecies": [
+        "art_tree_willow"
+      ],
+      "afterSpecies": [
+        "art_tree_willow"
+      ]
+    },
+    {
+      "id": "camp-river-v1-lower-riverside",
+      "zone": "willow",
+      "sourceCentre": [
+        -1700,
+        4590
+      ],
+      "treeIds": [
+        "camp-river-v1-lower-riverside-tree-1",
+        "camp-river-v1-lower-riverside-tree-2",
+        "camp-river-v1-lower-riverside-tree-3"
+      ],
+      "beforeSpecies": [
+        "art_tree_oak",
+        "art_tree_birch"
+      ],
+      "afterSpecies": [
+        "art_tree_willow"
+      ]
+    },
+    {
+      "id": "camp-river-v1-south-meadow",
+      "zone": "rowan",
+      "sourceCentre": [
+        -700,
+        5050
+      ],
+      "treeIds": [
+        "camp-river-v1-south-meadow-tree-1",
+        "camp-river-v1-south-meadow-tree-2"
+      ],
+      "beforeSpecies": [
+        "art_tree_birch"
+      ],
+      "afterSpecies": [
+        "art_tree_rowan"
+      ]
+    },
+    {
+      "id": "camp-river-v1-bridge-scrub",
+      "zone": "rowan",
+      "sourceCentre": [
+        -1470,
+        5400
+      ],
+      "treeIds": [
+        "camp-river-v1-bridge-scrub-tree-1"
+      ],
+      "beforeSpecies": [
+        "art_tree_birch"
+      ],
+      "afterSpecies": [
+        "art_tree_rowan"
+      ]
+    },
+    {
+      "id": "camp-river-v1-south-link",
+      "zone": "rowan",
+      "sourceCentre": [
+        120,
+        4920
+      ],
+      "treeIds": [
+        "camp-river-v1-south-link-tree-1",
+        "camp-river-v1-south-link-tree-2"
+      ],
+      "beforeSpecies": [
+        "art_tree_birch",
+        "art_tree_oak"
+      ],
+      "afterSpecies": [
+        "art_tree_rowan"
+      ]
+    }
+  ],
+  "changes": [
+    {
+      "id": "camp-outskirts-v1-northwest-grove-tree-1",
+      "assetId": "art_tree_birch",
+      "scale": 0.705
+    },
+    {
+      "id": "camp-outskirts-v1-northwest-grove-tree-2",
+      "assetId": "art_tree_birch",
+      "scale": 0.956
+    },
+    {
+      "id": "camp-outskirts-v1-northwest-grove-plant-2",
+      "assetId": "art_foliage_world_blue_sword_fern",
+      "scale": 0.583
+    },
+    {
+      "id": "camp-outskirts-v1-northwest-grove-plant-4",
+      "assetId": "art_foliage_world_ground_ivy",
+      "scale": 0.532
+    },
+    {
+      "id": "camp-outskirts-v1-northwest-grove-plant-5",
+      "assetId": "art_foliage_world_meadow_fescue",
+      "scale": 0.689
+    },
+    {
+      "id": "camp-outskirts-v1-northwest-grove-plant-9",
+      "assetId": "art_foliage_world_meadow_fescue",
+      "scale": 0.745
+    },
+    {
+      "id": "camp-outskirts-v1-northwest-grove-plant-11",
+      "assetId": "art_foliage_world_ground_ivy",
+      "scale": 0.494
+    },
+    {
+      "id": "camp-outskirts-v1-west-near-tree-3",
+      "assetId": "art_tree_oak",
+      "scale": 1.06
+    },
+    {
+      "id": "camp-outskirts-v1-west-near-tree-4",
+      "assetId": "art_tree_oak",
+      "scale": 0.939
+    },
+    {
+      "id": "camp-outskirts-v1-west-near-tree-5",
+      "assetId": "art_tree_oak",
+      "scale": 0.832
+    },
+    {
+      "id": "camp-outskirts-v1-west-near-plant-2",
+      "assetId": "art_foliage_world_moss_cushions",
+      "scale": 0.929
+    },
+    {
+      "id": "camp-outskirts-v1-west-near-plant-3",
+      "assetId": "art_foliage_world_copper_bracken",
+      "scale": 0.743
+    },
+    {
+      "id": "camp-outskirts-v1-west-near-plant-8",
+      "assetId": "art_foliage_world_copper_bracken",
+      "scale": 0.497
+    },
+    {
+      "id": "camp-outskirts-v1-west-near-plant-10",
+      "assetId": "art_foliage_world_ground_ivy",
+      "scale": 0.359
+    },
+    {
+      "id": "camp-outskirts-v1-west-near-plant-14",
+      "assetId": "art_foliage_world_blue_sword_fern",
+      "scale": 0.685
+    },
+    {
+      "id": "camp-outskirts-v1-west-near-plant-15",
+      "assetId": "art_foliage_world_hazel_scrub",
+      "scale": 0.976
+    },
+    {
+      "id": "camp-outskirts-v1-west-near-plant-17",
+      "assetId": "art_foliage_world_ground_ivy",
+      "scale": 0.393
+    },
+    {
+      "id": "camp-outskirts-v1-west-near-plant-18",
+      "assetId": "art_foliage_world_hazel_scrub",
+      "scale": 0.53
+    },
+    {
+      "id": "camp-outskirts-v1-west-near-plant-20",
+      "assetId": "art_foliage_world_moss_cushions",
+      "scale": 0.405
+    },
+    {
+      "id": "camp-outskirts-v1-west-near-plant-21",
+      "assetId": "art_foliage_world_copper_bracken",
+      "scale": 0.485
+    },
+    {
+      "id": "camp-outskirts-v1-west-near-plant-23",
+      "assetId": "art_foliage_world_blue_sword_fern",
+      "scale": 0.39
+    },
+    {
+      "id": "camp-outskirts-v1-west-lower-tree-1",
+      "assetId": "art_tree_oak",
+      "scale": 0.958
+    },
+    {
+      "id": "camp-outskirts-v1-west-lower-tree-2",
+      "assetId": "art_tree_oak",
+      "scale": 1.018
+    },
+    {
+      "id": "camp-outskirts-v1-west-lower-tree-3",
+      "assetId": "art_tree_oak",
+      "scale": 1.024
+    },
+    {
+      "id": "camp-outskirts-v1-west-lower-plant-5",
+      "assetId": "art_foliage_world_hazel_scrub",
+      "scale": 0.491
+    },
+    {
+      "id": "camp-outskirts-v1-west-lower-plant-7",
+      "assetId": "art_foliage_world_ground_ivy",
+      "scale": 0.701
+    },
+    {
+      "id": "camp-outskirts-v1-west-lower-plant-10",
+      "assetId": "art_foliage_world_blue_sword_fern",
+      "scale": 0.377
+    },
+    {
+      "id": "camp-outskirts-v1-west-lower-plant-11",
+      "assetId": "art_foliage_world_ground_ivy",
+      "scale": 0.267
+    },
+    {
+      "id": "camp-outskirts-v1-west-lower-plant-19",
+      "assetId": "art_foliage_world_copper_bracken",
+      "scale": 0.41
+    },
+    {
+      "id": "camp-outskirts-v1-west-lower-plant-20",
+      "assetId": "art_foliage_world_hazel_scrub",
+      "scale": 0.989
+    },
+    {
+      "id": "camp-outskirts-v1-southwest-near-tree-1",
+      "assetId": "art_tree_rowan",
+      "scale": 0.759
+    },
+    {
+      "id": "camp-outskirts-v1-southwest-near-tree-2",
+      "assetId": "art_tree_rowan",
+      "scale": 0.928
+    },
+    {
+      "id": "camp-outskirts-v1-southwest-near-tree-3",
+      "assetId": "art_tree_rowan",
+      "scale": 0.835
+    },
+    {
+      "id": "camp-outskirts-v1-southwest-near-plant-2",
+      "assetId": "art_foliage_world_amber_blackberry",
+      "scale": 0.646
+    },
+    {
+      "id": "camp-outskirts-v1-southwest-near-plant-3",
+      "assetId": "art_foliage_world_meadow_fescue",
+      "scale": 0.68
+    },
+    {
+      "id": "camp-outskirts-v1-southwest-near-plant-4",
+      "assetId": "art_foliage_world_meadow_fescue",
+      "scale": 0.95
+    },
+    {
+      "id": "camp-outskirts-v1-southwest-near-plant-6",
+      "assetId": "art_foliage_world_copper_bracken",
+      "scale": 0.529
+    },
+    {
+      "id": "camp-outskirts-v1-southwest-near-plant-7",
+      "assetId": "art_foliage_world_amber_blackberry",
+      "scale": 0.453
+    },
+    {
+      "id": "camp-outskirts-v1-southwest-near-plant-9",
+      "assetId": "art_foliage_world_amber_blackberry",
+      "scale": 0.552
+    },
+    {
+      "id": "camp-outskirts-v1-southwest-near-plant-10",
+      "assetId": "art_foliage_world_dock_rosette",
+      "scale": 0.416
+    },
+    {
+      "id": "camp-outskirts-v1-southwest-near-plant-11",
+      "assetId": "art_foliage_world_meadow_yarrow",
+      "scale": 0.566
+    },
+    {
+      "id": "camp-outskirts-v1-southwest-near-plant-12",
+      "assetId": "art_foliage_world_amber_blackberry",
+      "scale": 0.613
+    },
+    {
+      "id": "camp-outskirts-v1-southwest-near-plant-13",
+      "assetId": "art_foliage_world_copper_bracken",
+      "scale": 0.586
+    },
+    {
+      "id": "camp-outskirts-v1-southwest-near-plant-14",
+      "assetId": "art_foliage_world_meadow_yarrow",
+      "scale": 0.563
+    },
+    {
+      "id": "camp-outskirts-v1-southwest-near-plant-15",
+      "assetId": "art_foliage_world_meadow_fescue",
+      "scale": 0.701
+    },
+    {
+      "id": "camp-outskirts-v1-southwest-near-plant-16",
+      "assetId": "art_foliage_world_copper_bracken",
+      "scale": 0.435
+    },
+    {
+      "id": "camp-outskirts-v1-south-near-tree-1",
+      "assetId": "art_tree_rowan",
+      "scale": 0.844
+    },
+    {
+      "id": "camp-outskirts-v1-south-near-tree-2",
+      "assetId": "art_tree_rowan",
+      "scale": 1.051
+    },
+    {
+      "id": "camp-outskirts-v1-south-near-tree-3",
+      "assetId": "art_tree_rowan",
+      "scale": 0.924
+    },
+    {
+      "id": "camp-outskirts-v1-south-near-tree-4",
+      "assetId": "art_tree_rowan",
+      "scale": 0.913
+    },
+    {
+      "id": "camp-outskirts-v1-south-near-plant-4",
+      "assetId": "art_foliage_world_copper_bracken",
+      "scale": 0.52
+    },
+    {
+      "id": "camp-outskirts-v1-south-near-plant-8",
+      "assetId": "art_foliage_world_meadow_yarrow",
+      "scale": 0.585
+    },
+    {
+      "id": "camp-outskirts-v1-southeast-near-tree-1",
+      "assetId": "art_tree_pine",
+      "scale": 0.95
+    },
+    {
+      "id": "camp-outskirts-v1-southeast-near-tree-2",
+      "assetId": "art_tree_pine",
+      "scale": 0.712
+    },
+    {
+      "id": "camp-outskirts-v1-southeast-near-tree-3",
+      "assetId": "art_tree_pine",
+      "scale": 0.928
+    },
+    {
+      "id": "camp-outskirts-v1-southeast-near-plant-1",
+      "assetId": "art_foliage_world_golden_tussock",
+      "scale": 0.987
+    },
+    {
+      "id": "camp-outskirts-v1-southeast-near-plant-3",
+      "assetId": "art_foliage_world_silver_sage",
+      "scale": 0.624
+    },
+    {
+      "id": "camp-outskirts-v1-southeast-near-plant-4",
+      "assetId": "art_foliage_world_golden_tussock",
+      "scale": 0.82
+    },
+    {
+      "id": "camp-outskirts-v1-southeast-near-plant-6",
+      "assetId": "art_foliage_world_silver_sage",
+      "scale": 0.891
+    },
+    {
+      "id": "camp-outskirts-v1-southeast-near-plant-7",
+      "assetId": "art_foliage_world_juniper_cushion",
+      "scale": 0.461
+    },
+    {
+      "id": "camp-outskirts-v1-southeast-near-plant-8",
+      "assetId": "art_foliage_world_dusky_heather",
+      "scale": 0.652
+    },
+    {
+      "id": "camp-outskirts-v1-southeast-near-plant-10",
+      "assetId": "art_foliage_world_golden_tussock",
+      "scale": 1.012
+    },
+    {
+      "id": "camp-outskirts-v1-southeast-near-plant-11",
+      "assetId": "art_foliage_world_copper_bracken",
+      "scale": 0.453
+    },
+    {
+      "id": "camp-outskirts-v1-southeast-near-plant-12",
+      "assetId": "art_foliage_world_juniper_cushion",
+      "scale": 0.953
+    },
+    {
+      "id": "camp-outskirts-v1-southeast-near-plant-13",
+      "assetId": "art_foliage_world_silver_sage",
+      "scale": 0.808
+    },
+    {
+      "id": "camp-outskirts-v1-southeast-near-plant-15",
+      "assetId": "art_foliage_world_golden_tussock",
+      "scale": 0.826
+    },
+    {
+      "id": "camp-outskirts-v1-southeast-near-plant-16",
+      "assetId": "art_foliage_world_copper_bracken",
+      "scale": 0.346
+    },
+    {
+      "id": "camp-outskirts-v1-southeast-near-plant-17",
+      "assetId": "art_foliage_world_juniper_cushion",
+      "scale": 0.357
+    },
+    {
+      "id": "camp-outskirts-v1-southeast-near-plant-18",
+      "assetId": "art_foliage_world_juniper_cushion",
+      "scale": 0.666
+    },
+    {
+      "id": "camp-outskirts-v1-southeast-near-plant-19",
+      "assetId": "art_foliage_world_silver_sage",
+      "scale": 0.981
+    },
+    {
+      "id": "camp-outskirts-v1-east-near-tree-1",
+      "assetId": "art_tree_pine",
+      "scale": 1.036
+    },
+    {
+      "id": "camp-outskirts-v1-east-near-plant-6",
+      "assetId": "art_foliage_world_dusky_heather",
+      "scale": 0.781
+    },
+    {
+      "id": "camp-outskirts-v1-east-near-plant-12",
+      "assetId": "art_foliage_world_dusky_heather",
+      "scale": 0.686
+    },
+    {
+      "id": "camp-outskirts-v1-northeast-near-tree-1",
+      "assetId": "art_tree_pine",
+      "scale": 0.952
+    },
+    {
+      "id": "camp-outskirts-v1-northeast-near-plant-1",
+      "assetId": "art_foliage_world_juniper_cushion",
+      "scale": 0.605
+    },
+    {
+      "id": "camp-outskirts-v1-northeast-near-plant-2",
+      "assetId": "art_foliage_world_golden_tussock",
+      "scale": 0.717
+    },
+    {
+      "id": "camp-outskirts-v1-northeast-near-plant-3",
+      "assetId": "art_foliage_world_dusky_heather",
+      "scale": 0.679
+    },
+    {
+      "id": "camp-outskirts-v1-northeast-near-plant-4",
+      "assetId": "art_foliage_world_juniper_cushion",
+      "scale": 0.4
+    },
+    {
+      "id": "camp-outskirts-v1-northeast-near-plant-5",
+      "assetId": "art_foliage_world_copper_bracken",
+      "scale": 0.59
+    },
+    {
+      "id": "camp-outskirts-v1-northeast-near-plant-6",
+      "assetId": "art_foliage_world_dusky_heather",
+      "scale": 0.729
+    },
+    {
+      "id": "camp-outskirts-v1-northeast-near-plant-7",
+      "assetId": "art_foliage_world_silver_sage",
+      "scale": 1.073
+    },
+    {
+      "id": "camp-outskirts-v1-northeast-near-plant-8",
+      "assetId": "art_foliage_world_golden_tussock",
+      "scale": 0.671
+    },
+    {
+      "id": "camp-outskirts-v1-northeast-near-plant-9",
+      "assetId": "art_foliage_world_dusky_heather",
+      "scale": 0.744
+    },
+    {
+      "id": "camp-outskirts-v1-northeast-near-plant-10",
+      "assetId": "art_foliage_world_silver_sage",
+      "scale": 0.5
+    },
+    {
+      "id": "camp-outskirts-v1-northeast-near-plant-11",
+      "assetId": "art_foliage_world_dusky_heather",
+      "scale": 0.664
+    },
+    {
+      "id": "camp-outskirts-v1-northeast-near-plant-12",
+      "assetId": "art_foliage_world_copper_bracken",
+      "scale": 0.841
+    },
+    {
+      "id": "camp-outskirts-v1-northeast-near-plant-13",
+      "assetId": "art_foliage_world_juniper_cushion",
+      "scale": 0.665
+    },
+    {
+      "id": "camp-outskirts-v1-northeast-near-plant-14",
+      "assetId": "art_foliage_world_juniper_cushion",
+      "scale": 0.595
+    },
+    {
+      "id": "camp-outskirts-v1-northeast-near-plant-15",
+      "assetId": "art_foliage_world_silver_sage",
+      "scale": 1.032
+    },
+    {
+      "id": "camp-outskirts-v1-northeast-near-plant-16",
+      "assetId": "art_foliage_world_golden_tussock",
+      "scale": 1.002
+    },
+    {
+      "id": "camp-outskirts-v1-northeast-near-plant-18",
+      "assetId": "art_foliage_world_golden_tussock",
+      "scale": 0.746
+    },
+    {
+      "id": "camp-outskirts-v1-northeast-near-plant-19",
+      "assetId": "art_foliage_world_copper_bracken",
+      "scale": 0.919
+    },
+    {
+      "id": "camp-outskirts-v1-northeast-near-plant-20",
+      "assetId": "art_foliage_world_juniper_cushion",
+      "scale": 0.674
+    },
+    {
+      "id": "camp-outskirts-v1-northeast-near-plant-21",
+      "assetId": "art_foliage_world_copper_bracken",
+      "scale": 0.409
+    },
+    {
+      "id": "camp-outskirts-v1-northeast-near-plant-22",
+      "assetId": "art_foliage_world_golden_tussock",
+      "scale": 0.642
+    },
+    {
+      "id": "camp-outskirts-v1-northeast-near-plant-23",
+      "assetId": "art_foliage_world_dusky_heather",
+      "scale": 0.863
+    },
+    {
+      "id": "camp-outskirts-v1-north-near-tree-1",
+      "assetId": "art_tree_birch",
+      "scale": 0.91
+    },
+    {
+      "id": "camp-outskirts-v1-north-near-tree-3",
+      "assetId": "art_tree_birch",
+      "scale": 0.952
+    },
+    {
+      "id": "camp-outskirts-v1-north-near-tree-5",
+      "assetId": "art_tree_birch",
+      "scale": 0.742
+    },
+    {
+      "id": "camp-outskirts-v1-north-near-plant-1",
+      "assetId": "art_foliage_world_bluebell_patch",
+      "scale": 1.04
+    },
+    {
+      "id": "camp-outskirts-v1-north-near-plant-2",
+      "assetId": "art_foliage_world_ground_ivy",
+      "scale": 0.557
+    },
+    {
+      "id": "camp-outskirts-v1-north-near-plant-6",
+      "assetId": "art_foliage_world_ground_ivy",
+      "scale": 0.52
+    },
+    {
+      "id": "camp-outskirts-v1-north-near-plant-7",
+      "assetId": "art_foliage_world_meadow_fescue",
+      "scale": 0.786
+    },
+    {
+      "id": "camp-outskirts-v1-north-near-plant-8",
+      "assetId": "art_foliage_world_blue_sword_fern",
+      "scale": 0.88
+    },
+    {
+      "id": "camp-outskirts-v1-north-near-plant-9",
+      "assetId": "art_foliage_world_bluebell_patch",
+      "scale": 0.542
+    },
+    {
+      "id": "camp-outskirts-v1-north-near-plant-11",
+      "assetId": "art_foliage_world_blue_sword_fern",
+      "scale": 0.444
+    },
+    {
+      "id": "camp-outskirts-v1-north-near-plant-13",
+      "assetId": "art_foliage_world_ground_ivy",
+      "scale": 0.755
+    },
+    {
+      "id": "camp-outskirts-v1-north-near-plant-15",
+      "assetId": "art_foliage_world_blue_sword_fern",
+      "scale": 0.611
+    },
+    {
+      "id": "camp-outskirts-v1-north-near-plant-19",
+      "assetId": "art_foliage_world_blue_sword_fern",
+      "scale": 0.818
+    },
+    {
+      "id": "camp-outskirts-v1-north-near-plant-22",
+      "assetId": "art_foliage_world_ground_ivy",
+      "scale": 0.67
+    },
+    {
+      "id": "camp-outskirts-v1-northwest-outer-tree-2",
+      "assetId": "art_tree_birch",
+      "scale": 0.797
+    },
+    {
+      "id": "camp-outskirts-v1-northwest-outer-tree-3",
+      "assetId": "art_tree_birch",
+      "scale": 0.759
+    },
+    {
+      "id": "camp-outskirts-v1-northwest-outer-tree-5",
+      "assetId": "art_tree_birch",
+      "scale": 0.751
+    },
+    {
+      "id": "camp-outskirts-v1-northwest-outer-plant-1",
+      "assetId": "art_foliage_world_meadow_fescue",
+      "scale": 0.733
+    },
+    {
+      "id": "camp-outskirts-v1-northwest-outer-plant-2",
+      "assetId": "art_foliage_world_blue_sword_fern",
+      "scale": 0.556
+    },
+    {
+      "id": "camp-outskirts-v1-northwest-outer-plant-3",
+      "assetId": "art_foliage_world_bluebell_patch",
+      "scale": 1.006
+    },
+    {
+      "id": "camp-outskirts-v1-northwest-outer-plant-4",
+      "assetId": "art_foliage_world_ground_ivy",
+      "scale": 0.428
+    },
+    {
+      "id": "camp-outskirts-v1-northwest-outer-plant-8",
+      "assetId": "art_foliage_world_ground_ivy",
+      "scale": 0.534
+    },
+    {
+      "id": "camp-outskirts-v1-northwest-outer-plant-11",
+      "assetId": "art_foliage_world_ground_ivy",
+      "scale": 0.573
+    },
+    {
+      "id": "camp-outskirts-v1-northwest-outer-plant-15",
+      "assetId": "art_foliage_world_ground_ivy",
+      "scale": 0.655
+    },
+    {
+      "id": "camp-outskirts-v1-northwest-outer-plant-16",
+      "assetId": "art_foliage_world_bluebell_patch",
+      "scale": 0.755
+    },
+    {
+      "id": "camp-outskirts-v1-northwest-outer-plant-18",
+      "assetId": "art_foliage_world_meadow_fescue",
+      "scale": 0.78
+    },
+    {
+      "id": "camp-outskirts-v1-northwest-outer-plant-19",
+      "assetId": "art_foliage_world_ground_ivy",
+      "scale": 0.381
+    },
+    {
+      "id": "camp-outskirts-v1-northwest-outer-plant-20",
+      "assetId": "art_foliage_world_ground_ivy",
+      "scale": 0.733
+    },
+    {
+      "id": "camp-outskirts-v1-northwest-outer-plant-23",
+      "assetId": "art_foliage_world_bluebell_patch",
+      "scale": 0.597
+    },
+    {
+      "id": "camp-outskirts-v1-west-outer-tree-1",
+      "assetId": "art_tree_oak",
+      "scale": 0.99
+    },
+    {
+      "id": "camp-outskirts-v1-west-outer-tree-3",
+      "assetId": "art_tree_oak",
+      "scale": 0.881
+    },
+    {
+      "id": "camp-outskirts-v1-west-outer-tree-5",
+      "assetId": "art_tree_oak",
+      "scale": 1.043
+    },
+    {
+      "id": "camp-outskirts-v1-west-outer-plant-1",
+      "assetId": "art_foliage_world_moss_cushions",
+      "scale": 0.53
+    },
+    {
+      "id": "camp-outskirts-v1-west-outer-plant-2",
+      "assetId": "art_foliage_world_ground_ivy",
+      "scale": 0.718
+    },
+    {
+      "id": "camp-outskirts-v1-west-outer-plant-7",
+      "assetId": "art_foliage_world_ground_ivy",
+      "scale": 0.55
+    },
+    {
+      "id": "camp-outskirts-v1-west-outer-plant-8",
+      "assetId": "art_foliage_world_blue_sword_fern",
+      "scale": 0.387
+    },
+    {
+      "id": "camp-outskirts-v1-west-outer-plant-9",
+      "assetId": "art_foliage_world_hazel_scrub",
+      "scale": 0.462
+    },
+    {
+      "id": "camp-outskirts-v1-west-outer-plant-11",
+      "assetId": "art_foliage_world_blue_sword_fern",
+      "scale": 0.328
+    },
+    {
+      "id": "camp-outskirts-v1-west-outer-plant-13",
+      "assetId": "art_foliage_world_moss_cushions",
+      "scale": 0.462
+    },
+    {
+      "id": "camp-outskirts-v1-west-outer-plant-14",
+      "assetId": "art_foliage_world_blue_sword_fern",
+      "scale": 0.665
+    },
+    {
+      "id": "camp-outskirts-v1-west-outer-plant-15",
+      "assetId": "art_foliage_world_ground_ivy",
+      "scale": 0.28
+    },
+    {
+      "id": "camp-outskirts-v1-west-outer-plant-18",
+      "assetId": "art_foliage_world_ground_ivy",
+      "scale": 0.25
+    },
+    {
+      "id": "camp-outskirts-v1-west-outer-plant-21",
+      "assetId": "art_foliage_world_moss_cushions",
+      "scale": 0.903
+    },
+    {
+      "id": "camp-outskirts-v1-southwest-outer-tree-1",
+      "assetId": "art_tree_rowan",
+      "scale": 0.923
+    },
+    {
+      "id": "camp-outskirts-v1-southwest-outer-tree-2",
+      "assetId": "art_tree_rowan",
+      "scale": 0.939
+    },
+    {
+      "id": "camp-outskirts-v1-southwest-outer-tree-4",
+      "assetId": "art_tree_rowan",
+      "scale": 1.066
+    },
+    {
+      "id": "camp-outskirts-v1-southwest-outer-plant-4",
+      "assetId": "art_foliage_world_meadow_yarrow",
+      "scale": 0.674
+    },
+    {
+      "id": "camp-outskirts-v1-southwest-outer-plant-5",
+      "assetId": "art_foliage_world_meadow_fescue",
+      "scale": 0.684
+    },
+    {
+      "id": "camp-outskirts-v1-southwest-outer-plant-6",
+      "assetId": "art_foliage_world_amber_blackberry",
+      "scale": 0.419
+    },
+    {
+      "id": "camp-outskirts-v1-southwest-outer-plant-9",
+      "assetId": "art_foliage_world_meadow_yarrow",
+      "scale": 0.791
+    },
+    {
+      "id": "camp-outskirts-v1-southwest-outer-plant-12",
+      "assetId": "art_foliage_world_meadow_yarrow",
+      "scale": 0.566
+    },
+    {
+      "id": "camp-outskirts-v1-southwest-outer-plant-13",
+      "assetId": "art_foliage_world_dock_rosette",
+      "scale": 0.453
+    },
+    {
+      "id": "camp-outskirts-v1-southwest-outer-plant-18",
+      "assetId": "art_foliage_world_meadow_fescue",
+      "scale": 0.72
+    },
+    {
+      "id": "camp-outskirts-v1-southwest-outer-plant-19",
+      "assetId": "art_foliage_world_meadow_yarrow",
+      "scale": 0.781
+    },
+    {
+      "id": "camp-outskirts-v1-east-outer-tree-1",
+      "assetId": "art_tree_pine",
+      "scale": 0.955
+    },
+    {
+      "id": "camp-outskirts-v1-east-outer-tree-3",
+      "assetId": "art_tree_pine",
+      "scale": 0.853
+    },
+    {
+      "id": "camp-outskirts-v1-east-outer-plant-2",
+      "assetId": "art_foliage_world_golden_tussock",
+      "scale": 0.801
+    },
+    {
+      "id": "camp-outskirts-v1-east-outer-plant-3",
+      "assetId": "art_foliage_world_dusky_heather",
+      "scale": 0.686
+    },
+    {
+      "id": "camp-outskirts-v1-east-outer-plant-5",
+      "assetId": "art_foliage_world_copper_bracken",
+      "scale": 0.655
+    },
+    {
+      "id": "camp-outskirts-v1-east-outer-plant-6",
+      "assetId": "art_foliage_world_dusky_heather",
+      "scale": 0.588
+    },
+    {
+      "id": "camp-outskirts-v1-east-outer-plant-8",
+      "assetId": "art_foliage_world_golden_tussock",
+      "scale": 1.027
+    },
+    {
+      "id": "camp-outskirts-v1-east-outer-plant-14",
+      "assetId": "art_foliage_world_dusky_heather",
+      "scale": 0.612
+    },
+    {
+      "id": "camp-outskirts-v1-south-outer-tree-2",
+      "assetId": "art_tree_rowan",
+      "scale": 0.861
+    },
+    {
+      "id": "camp-outskirts-v1-south-outer-tree-3",
+      "assetId": "art_tree_rowan",
+      "scale": 0.993
+    },
+    {
+      "id": "camp-outskirts-v1-south-outer-tree-4",
+      "assetId": "art_tree_rowan",
+      "scale": 1.055
+    },
+    {
+      "id": "camp-outskirts-v1-south-outer-tree-5",
+      "assetId": "art_tree_rowan",
+      "scale": 0.931
+    },
+    {
+      "id": "camp-outskirts-v1-south-outer-plant-5",
+      "assetId": "art_foliage_world_copper_bracken",
+      "scale": 0.396
+    },
+    {
+      "id": "camp-outskirts-v1-south-outer-plant-7",
+      "assetId": "art_foliage_world_meadow_yarrow",
+      "scale": 0.695
+    },
+    {
+      "id": "camp-outskirts-v1-south-outer-plant-10",
+      "assetId": "art_foliage_world_dock_rosette",
+      "scale": 0.471
+    },
+    {
+      "id": "camp-outskirts-v1-south-outer-plant-11",
+      "assetId": "art_foliage_world_meadow_yarrow",
+      "scale": 0.531
+    },
+    {
+      "id": "camp-outskirts-v1-south-outer-plant-23",
+      "assetId": "art_foliage_world_dock_rosette",
+      "scale": 0.406
+    },
+    {
+      "id": "camp-river-v1-north-trail-tree-1",
+      "assetId": "art_tree_birch",
+      "scale": 0.85
+    },
+    {
+      "id": "camp-river-v1-north-trail-tree-2",
+      "assetId": "art_tree_birch",
+      "scale": 0.951
+    },
+    {
+      "id": "camp-river-v1-north-trail-plant-1",
+      "assetId": "art_foliage_world_river_sedge",
+      "scale": 0.681
+    },
+    {
+      "id": "camp-river-v1-north-trail-plant-2",
+      "assetId": "art_foliage_world_ground_ivy",
+      "scale": 0.674
+    },
+    {
+      "id": "camp-river-v1-north-trail-plant-5",
+      "assetId": "art_foliage_world_bluebell_patch",
+      "scale": 0.503
+    },
+    {
+      "id": "camp-river-v1-north-trail-plant-6",
+      "assetId": "art_foliage_world_ground_ivy",
+      "scale": 0.358
+    },
+    {
+      "id": "camp-river-v1-north-trail-plant-7",
+      "assetId": "art_foliage_world_meadow_fescue",
+      "scale": 0.92
+    },
+    {
+      "id": "camp-river-v1-north-trail-plant-12",
+      "assetId": "art_foliage_world_reed_cluster",
+      "scale": 0.673
+    },
+    {
+      "id": "camp-river-v1-north-trail-plant-14",
+      "assetId": "art_foliage_world_bluebell_patch",
+      "scale": 0.676
+    },
+    {
+      "id": "camp-river-v1-north-trail-plant-17",
+      "assetId": "art_foliage_world_reed_cluster",
+      "scale": 0.535
+    },
+    {
+      "id": "camp-river-v1-north-trail-plant-19",
+      "assetId": "art_foliage_world_reed_cluster",
+      "scale": 0.507
+    },
+    {
+      "id": "camp-river-v1-north-trail-plant-20",
+      "assetId": "art_foliage_world_wetland_butterbur",
+      "scale": 0.528
+    },
+    {
+      "id": "camp-river-v1-stream-east-tree-1",
+      "assetId": "art_tree_birch",
+      "scale": 0.728
+    },
+    {
+      "id": "camp-river-v1-stream-east-tree-4",
+      "assetId": "art_tree_birch",
+      "scale": 0.957
+    },
+    {
+      "id": "camp-river-v1-stream-east-plant-2",
+      "assetId": "art_foliage_world_reed_cluster",
+      "scale": 0.432
+    },
+    {
+      "id": "camp-river-v1-stream-east-plant-3",
+      "assetId": "art_foliage_world_river_sedge",
+      "scale": 0.86
+    },
+    {
+      "id": "camp-river-v1-stream-east-plant-7",
+      "assetId": "art_foliage_world_meadow_fescue",
+      "scale": 0.797
+    },
+    {
+      "id": "camp-river-v1-stream-east-plant-8",
+      "assetId": "art_foliage_world_river_sedge",
+      "scale": 0.814
+    },
+    {
+      "id": "camp-river-v1-stream-east-plant-12",
+      "assetId": "art_foliage_world_willow_scrub",
+      "scale": 0.758
+    },
+    {
+      "id": "camp-river-v1-stream-east-plant-14",
+      "assetId": "art_foliage_world_bluebell_patch",
+      "scale": 0.707
+    },
+    {
+      "id": "camp-river-v1-stream-east-plant-15",
+      "assetId": "art_foliage_world_blue_sword_fern",
+      "scale": 0.733
+    },
+    {
+      "id": "camp-river-v1-stream-east-plant-17",
+      "assetId": "art_foliage_world_ground_ivy",
+      "scale": 0.386
+    },
+    {
+      "id": "camp-river-v1-stream-east-plant-18",
+      "assetId": "art_foliage_world_bluebell_patch",
+      "scale": 0.821
+    },
+    {
+      "id": "camp-river-v1-stream-east-plant-19",
+      "assetId": "art_foliage_world_willow_scrub",
+      "scale": 0.76
+    },
+    {
+      "id": "camp-river-v1-stream-east-plant-21",
+      "assetId": "art_foliage_world_willow_scrub",
+      "scale": 0.544
+    },
+    {
+      "id": "camp-river-v1-stream-head-tree-1",
+      "assetId": "art_tree_birch",
+      "scale": 0.819
+    },
+    {
+      "id": "camp-river-v1-stream-head-plant-2",
+      "assetId": "art_foliage_world_wetland_butterbur",
+      "scale": 0.482
+    },
+    {
+      "id": "camp-river-v1-stream-head-plant-3",
+      "assetId": "art_foliage_world_alder_sapling",
+      "scale": 0.69
+    },
+    {
+      "id": "camp-river-v1-stream-head-plant-5",
+      "assetId": "art_foliage_world_reed_cluster",
+      "scale": 0.537
+    },
+    {
+      "id": "camp-river-v1-stream-head-plant-10",
+      "assetId": "art_foliage_world_willow_scrub",
+      "scale": 0.865
+    },
+    {
+      "id": "camp-river-v1-stream-head-plant-12",
+      "assetId": "art_foliage_world_reed_cluster",
+      "scale": 0.588
+    },
+    {
+      "id": "camp-river-v1-stream-head-plant-15",
+      "assetId": "art_foliage_world_willow_scrub",
+      "scale": 0.4
+    },
+    {
+      "id": "camp-river-v1-stream-head-plant-17",
+      "assetId": "art_foliage_world_reed_cluster",
+      "scale": 0.468
+    },
+    {
+      "id": "camp-river-v1-stream-head-plant-18",
+      "assetId": "art_foliage_world_alder_sapling",
+      "scale": 0.583
+    },
+    {
+      "id": "camp-river-v1-stream-head-plant-19",
+      "assetId": "art_foliage_world_reed_cluster",
+      "scale": 0.839
+    },
+    {
+      "id": "camp-river-v1-stream-meadow-tree-1",
+      "assetId": "art_tree_birch",
+      "scale": 0.878
+    },
+    {
+      "id": "camp-river-v1-stream-meadow-tree-2",
+      "assetId": "art_tree_birch",
+      "scale": 0.847
+    },
+    {
+      "id": "camp-river-v1-stream-meadow-tree-4",
+      "assetId": "art_tree_birch",
+      "scale": 0.788
+    },
+    {
+      "id": "camp-river-v1-stream-meadow-plant-1",
+      "assetId": "art_foliage_world_bluebell_patch",
+      "scale": 0.803
+    },
+    {
+      "id": "camp-river-v1-stream-meadow-plant-2",
+      "assetId": "art_foliage_world_wetland_butterbur",
+      "scale": 0.681
+    },
+    {
+      "id": "camp-river-v1-stream-meadow-plant-3",
+      "assetId": "art_foliage_world_reed_cluster",
+      "scale": 0.508
+    },
+    {
+      "id": "camp-river-v1-stream-meadow-plant-4",
+      "assetId": "art_foliage_world_alder_sapling",
+      "scale": 0.661
+    },
+    {
+      "id": "camp-river-v1-stream-meadow-plant-5",
+      "assetId": "art_foliage_world_bluebell_patch",
+      "scale": 0.896
+    },
+    {
+      "id": "camp-river-v1-stream-meadow-plant-6",
+      "assetId": "art_foliage_world_ground_ivy",
+      "scale": 0.287
+    },
+    {
+      "id": "camp-river-v1-stream-meadow-plant-7",
+      "assetId": "art_foliage_world_meadow_fescue",
+      "scale": 0.92
+    },
+    {
+      "id": "camp-river-v1-stream-meadow-plant-8",
+      "assetId": "art_foliage_world_blue_sword_fern",
+      "scale": 0.286
+    },
+    {
+      "id": "camp-river-v1-stream-meadow-plant-9",
+      "assetId": "art_foliage_world_bluebell_patch",
+      "scale": 0.763
+    },
+    {
+      "id": "camp-river-v1-stream-meadow-plant-11",
+      "assetId": "art_foliage_world_blue_sword_fern",
+      "scale": 0.538
+    },
+    {
+      "id": "camp-river-v1-stream-meadow-plant-12",
+      "assetId": "art_foliage_world_meadow_fescue",
+      "scale": 1.02
+    },
+    {
+      "id": "camp-river-v1-stream-meadow-plant-15",
+      "assetId": "art_foliage_world_blue_sword_fern",
+      "scale": 0.373
+    },
+    {
+      "id": "camp-river-v1-stream-meadow-plant-16",
+      "assetId": "art_foliage_world_meadow_fescue",
+      "scale": 0.853
+    },
+    {
+      "id": "camp-river-v1-west-upper-tree-2",
+      "assetId": "art_tree_birch",
+      "scale": 0.674
+    },
+    {
+      "id": "camp-river-v1-west-upper-plant-2",
+      "assetId": "art_foliage_world_ground_ivy",
+      "scale": 0.721
+    },
+    {
+      "id": "camp-river-v1-west-upper-plant-3",
+      "assetId": "art_foliage_world_meadow_fescue",
+      "scale": 0.793
+    },
+    {
+      "id": "camp-river-v1-west-upper-plant-4",
+      "assetId": "art_foliage_world_alder_sapling",
+      "scale": 0.435
+    },
+    {
+      "id": "camp-river-v1-west-upper-plant-5",
+      "assetId": "art_foliage_world_bluebell_patch",
+      "scale": 0.847
+    },
+    {
+      "id": "camp-river-v1-west-upper-plant-6",
+      "assetId": "art_foliage_world_reed_cluster",
+      "scale": 0.577
+    },
+    {
+      "id": "camp-river-v1-west-upper-plant-7",
+      "assetId": "art_foliage_world_meadow_fescue",
+      "scale": 1.004
+    },
+    {
+      "id": "camp-river-v1-west-upper-plant-8",
+      "assetId": "art_foliage_world_blue_sword_fern",
+      "scale": 0.724
+    },
+    {
+      "id": "camp-river-v1-west-upper-plant-10",
+      "assetId": "art_foliage_world_bluebell_patch",
+      "scale": 0.862
+    },
+    {
+      "id": "camp-river-v1-west-upper-plant-12",
+      "assetId": "art_foliage_world_meadow_fescue",
+      "scale": 0.778
+    },
+    {
+      "id": "camp-river-v1-west-upper-plant-13",
+      "assetId": "art_foliage_world_ground_ivy",
+      "scale": 0.385
+    },
+    {
+      "id": "camp-river-v1-west-upper-plant-14",
+      "assetId": "art_foliage_world_bluebell_patch",
+      "scale": 0.735
+    },
+    {
+      "id": "camp-river-v1-west-upper-plant-15",
+      "assetId": "art_foliage_world_blue_sword_fern",
+      "scale": 0.342
+    },
+    {
+      "id": "camp-river-v1-west-upper-plant-16",
+      "assetId": "art_foliage_world_meadow_fescue",
+      "scale": 0.738
+    },
+    {
+      "id": "camp-river-v1-west-upper-plant-18",
+      "assetId": "art_foliage_world_bluebell_patch",
+      "scale": 0.652
+    },
+    {
+      "id": "camp-river-v1-upper-glade-tree-1",
+      "assetId": "art_tree_oak",
+      "scale": 0.814
+    },
+    {
+      "id": "camp-river-v1-upper-glade-tree-3",
+      "assetId": "art_tree_oak",
+      "scale": 0.784
+    },
+    {
+      "id": "camp-river-v1-upper-glade-tree-4",
+      "assetId": "art_tree_oak",
+      "scale": 0.826
+    },
+    {
+      "id": "camp-river-v1-upper-glade-tree-5",
+      "assetId": "art_tree_oak",
+      "scale": 1.046
+    },
+    {
+      "id": "camp-river-v1-upper-glade-plant-2",
+      "assetId": "art_foliage_world_hazel_scrub",
+      "scale": 0.492
+    },
+    {
+      "id": "camp-river-v1-upper-glade-plant-3",
+      "assetId": "art_foliage_world_blue_sword_fern",
+      "scale": 0.766
+    },
+    {
+      "id": "camp-river-v1-upper-glade-plant-8",
+      "assetId": "art_foliage_world_hazel_scrub",
+      "scale": 0.81
+    },
+    {
+      "id": "camp-river-v1-upper-glade-plant-11",
+      "assetId": "art_foliage_world_copper_bracken",
+      "scale": 0.868
+    },
+    {
+      "id": "camp-river-v1-upper-glade-plant-12",
+      "assetId": "art_foliage_world_moss_cushions",
+      "scale": 0.898
+    },
+    {
+      "id": "camp-river-v1-upper-glade-plant-14",
+      "assetId": "art_foliage_world_blue_sword_fern",
+      "scale": 0.881
+    },
+    {
+      "id": "camp-river-v1-upper-glade-plant-17",
+      "assetId": "art_foliage_world_moss_cushions",
+      "scale": 0.631
+    },
+    {
+      "id": "camp-river-v1-upper-glade-plant-19",
+      "assetId": "art_foliage_world_ground_ivy",
+      "scale": 0.432
+    },
+    {
+      "id": "camp-river-v1-upper-glade-plant-21",
+      "assetId": "art_foliage_world_ground_ivy",
+      "scale": 0.25
+    },
+    {
+      "id": "camp-river-v1-upper-link-tree-1",
+      "assetId": "art_tree_oak",
+      "scale": 0.915
+    },
+    {
+      "id": "camp-river-v1-upper-link-tree-2",
+      "assetId": "art_tree_oak",
+      "scale": 0.962
+    },
+    {
+      "id": "camp-river-v1-upper-link-tree-3",
+      "assetId": "art_tree_oak",
+      "scale": 1.052
+    },
+    {
+      "id": "camp-river-v1-upper-link-tree-4",
+      "assetId": "art_tree_oak",
+      "scale": 0.81
+    },
+    {
+      "id": "camp-river-v1-upper-link-plant-2",
+      "assetId": "art_foliage_world_hazel_scrub",
+      "scale": 0.505
+    },
+    {
+      "id": "camp-river-v1-upper-link-plant-6",
+      "assetId": "art_foliage_world_blue_sword_fern",
+      "scale": 0.728
+    },
+    {
+      "id": "camp-river-v1-upper-link-plant-7",
+      "assetId": "art_foliage_world_hazel_scrub",
+      "scale": 0.424
+    },
+    {
+      "id": "camp-river-v1-upper-link-plant-9",
+      "assetId": "art_foliage_world_copper_bracken",
+      "scale": 0.522
+    },
+    {
+      "id": "camp-river-v1-upper-link-plant-11",
+      "assetId": "art_foliage_world_moss_cushions",
+      "scale": 0.51
+    },
+    {
+      "id": "camp-river-v1-upper-link-plant-12",
+      "assetId": "art_foliage_world_copper_bracken",
+      "scale": 0.974
+    },
+    {
+      "id": "camp-river-v1-upper-link-plant-13",
+      "assetId": "art_foliage_world_hazel_scrub",
+      "scale": 0.616
+    },
+    {
+      "id": "camp-river-v1-upper-link-plant-15",
+      "assetId": "art_foliage_world_copper_bracken",
+      "scale": 0.725
+    },
+    {
+      "id": "camp-river-v1-upper-link-plant-18",
+      "assetId": "art_foliage_world_hazel_scrub",
+      "scale": 0.467
+    },
+    {
+      "id": "camp-river-v1-upper-link-plant-20",
+      "assetId": "art_foliage_world_blue_sword_fern",
+      "scale": 0.379
+    },
+    {
+      "id": "camp-river-v1-river-bend-tree-1",
+      "assetId": "art_tree_oak",
+      "scale": 1.029
+    },
+    {
+      "id": "camp-river-v1-river-bend-tree-2",
+      "assetId": "art_tree_oak",
+      "scale": 1.055
+    },
+    {
+      "id": "camp-river-v1-river-bend-tree-3",
+      "assetId": "art_tree_oak",
+      "scale": 1.033
+    },
+    {
+      "id": "camp-river-v1-river-bend-plant-1",
+      "assetId": "art_foliage_world_blue_sword_fern",
+      "scale": 0.398
+    },
+    {
+      "id": "camp-river-v1-river-bend-plant-3",
+      "assetId": "art_foliage_world_moss_cushions",
+      "scale": 0.535
+    },
+    {
+      "id": "camp-river-v1-river-bend-plant-5",
+      "assetId": "art_foliage_world_ground_ivy",
+      "scale": 0.326
+    },
+    {
+      "id": "camp-river-v1-river-bend-plant-6",
+      "assetId": "art_foliage_world_wetland_butterbur",
+      "scale": 0.663
+    },
+    {
+      "id": "camp-river-v1-river-bend-plant-7",
+      "assetId": "art_foliage_world_copper_bracken",
+      "scale": 0.382
+    },
+    {
+      "id": "camp-river-v1-river-bend-plant-8",
+      "assetId": "art_foliage_world_alder_sapling",
+      "scale": 0.917
+    },
+    {
+      "id": "camp-river-v1-river-bend-plant-9",
+      "assetId": "art_foliage_world_moss_cushions",
+      "scale": 0.563
+    },
+    {
+      "id": "camp-river-v1-river-bend-plant-10",
+      "assetId": "art_foliage_world_reed_cluster",
+      "scale": 0.412
+    },
+    {
+      "id": "camp-river-v1-river-bend-plant-11",
+      "assetId": "art_foliage_world_moss_cushions",
+      "scale": 0.48
+    },
+    {
+      "id": "camp-river-v1-river-bend-plant-13",
+      "assetId": "art_foliage_world_hazel_scrub",
+      "scale": 0.73
+    },
+    {
+      "id": "camp-river-v1-river-bend-plant-15",
+      "assetId": "art_foliage_world_ground_ivy",
+      "scale": 0.396
+    },
+    {
+      "id": "camp-river-v1-river-bend-plant-17",
+      "assetId": "art_foliage_world_reed_cluster",
+      "scale": 0.519
+    },
+    {
+      "id": "camp-river-v1-river-bend-plant-18",
+      "assetId": "art_foliage_world_blue_sword_fern",
+      "scale": 0.568
+    },
+    {
+      "id": "camp-river-v1-west-trail-north-tree-2",
+      "assetId": "art_tree_oak",
+      "scale": 1.032
+    },
+    {
+      "id": "camp-river-v1-west-trail-north-tree-3",
+      "assetId": "art_tree_oak",
+      "scale": 0.841
+    },
+    {
+      "id": "camp-river-v1-west-trail-north-tree-4",
+      "assetId": "art_tree_oak",
+      "scale": 0.784
+    },
+    {
+      "id": "camp-river-v1-west-trail-north-plant-8",
+      "assetId": "art_foliage_world_ground_ivy",
+      "scale": 0.521
+    },
+    {
+      "id": "camp-river-v1-west-trail-north-plant-9",
+      "assetId": "art_foliage_world_moss_cushions",
+      "scale": 0.748
+    },
+    {
+      "id": "camp-river-v1-west-trail-north-plant-11",
+      "assetId": "art_foliage_world_moss_cushions",
+      "scale": 0.744
+    },
+    {
+      "id": "camp-river-v1-west-trail-north-plant-12",
+      "assetId": "art_foliage_world_ground_ivy",
+      "scale": 0.321
+    },
+    {
+      "id": "camp-river-v1-west-trail-north-plant-16",
+      "assetId": "art_foliage_world_moss_cushions",
+      "scale": 0.397
+    },
+    {
+      "id": "camp-river-v1-west-trail-north-plant-18",
+      "assetId": "art_foliage_world_ground_ivy",
+      "scale": 0.25
+    },
+    {
+      "id": "camp-river-v1-west-trail-north-plant-19",
+      "assetId": "art_foliage_world_blue_sword_fern",
+      "scale": 0.697
+    },
+    {
+      "id": "camp-river-v1-west-trail-north-plant-21",
+      "assetId": "art_foliage_world_blue_sword_fern",
+      "scale": 0.617
+    },
+    {
+      "id": "camp-river-v1-central-rise-tree-1",
+      "assetId": "art_tree_oak",
+      "scale": 0.942
+    },
+    {
+      "id": "camp-river-v1-central-rise-tree-2",
+      "assetId": "art_tree_oak",
+      "scale": 1.047
+    },
+    {
+      "id": "camp-river-v1-central-rise-tree-3",
+      "assetId": "art_tree_oak",
+      "scale": 0.795
+    },
+    {
+      "id": "camp-river-v1-central-rise-tree-4",
+      "assetId": "art_tree_oak",
+      "scale": 0.849
+    },
+    {
+      "id": "camp-river-v1-central-rise-tree-5",
+      "assetId": "art_tree_oak",
+      "scale": 0.934
+    },
+    {
+      "id": "camp-river-v1-central-rise-plant-3",
+      "assetId": "art_foliage_world_moss_cushions",
+      "scale": 0.647
+    },
+    {
+      "id": "camp-river-v1-central-rise-plant-4",
+      "assetId": "art_foliage_world_moss_cushions",
+      "scale": 0.621
+    },
+    {
+      "id": "camp-river-v1-central-rise-plant-6",
+      "assetId": "art_foliage_world_hazel_scrub",
+      "scale": 0.571
+    },
+    {
+      "id": "camp-river-v1-central-rise-plant-8",
+      "assetId": "art_foliage_world_hazel_scrub",
+      "scale": 0.842
+    },
+    {
+      "id": "camp-river-v1-central-rise-plant-13",
+      "assetId": "art_foliage_world_ground_ivy",
+      "scale": 0.541
+    },
+    {
+      "id": "camp-river-v1-central-rise-plant-14",
+      "assetId": "art_foliage_world_copper_bracken",
+      "scale": 0.654
+    },
+    {
+      "id": "camp-river-v1-central-rise-plant-15",
+      "assetId": "art_foliage_world_hazel_scrub",
+      "scale": 0.657
+    },
+    {
+      "id": "camp-river-v1-central-rise-plant-16",
+      "assetId": "art_foliage_world_ground_ivy",
+      "scale": 0.406
+    },
+    {
+      "id": "camp-river-v1-bridge-glade-plant-1",
+      "assetId": "art_foliage_world_willow_scrub",
+      "scale": 0.499
+    },
+    {
+      "id": "camp-river-v1-bridge-glade-plant-3",
+      "assetId": "art_foliage_world_wetland_butterbur",
+      "scale": 0.513
+    },
+    {
+      "id": "camp-river-v1-bridge-glade-plant-5",
+      "assetId": "art_foliage_world_river_sedge",
+      "scale": 0.767
+    },
+    {
+      "id": "camp-river-v1-bridge-glade-plant-8",
+      "assetId": "art_foliage_world_river_sedge",
+      "scale": 0.701
+    },
+    {
+      "id": "camp-river-v1-bridge-glade-plant-9",
+      "assetId": "art_foliage_world_reed_cluster",
+      "scale": 0.449
+    },
+    {
+      "id": "camp-river-v1-bridge-glade-plant-10",
+      "assetId": "art_foliage_world_alder_sapling",
+      "scale": 0.561
+    },
+    {
+      "id": "camp-river-v1-bridge-glade-plant-13",
+      "assetId": "art_foliage_world_willow_scrub",
+      "scale": 0.68
+    },
+    {
+      "id": "camp-river-v1-bridge-glade-plant-16",
+      "assetId": "art_foliage_world_reed_cluster",
+      "scale": 0.732
+    },
+    {
+      "id": "camp-river-v1-west-trail-south-tree-1",
+      "assetId": "art_tree_willow",
+      "scale": 0.799
+    },
+    {
+      "id": "camp-river-v1-west-trail-south-plant-1",
+      "assetId": "art_foliage_world_wetland_butterbur",
+      "scale": 0.422
+    },
+    {
+      "id": "camp-river-v1-west-trail-south-plant-2",
+      "assetId": "art_foliage_world_alder_sapling",
+      "scale": 0.704
+    },
+    {
+      "id": "camp-river-v1-west-trail-south-plant-4",
+      "assetId": "art_foliage_world_river_sedge",
+      "scale": 1.022
+    },
+    {
+      "id": "camp-river-v1-west-trail-south-plant-5",
+      "assetId": "art_foliage_world_willow_scrub",
+      "scale": 0.876
+    },
+    {
+      "id": "camp-river-v1-west-trail-south-plant-6",
+      "assetId": "art_foliage_world_blue_sword_fern",
+      "scale": 0.55
+    },
+    {
+      "id": "camp-river-v1-west-trail-south-plant-7",
+      "assetId": "art_foliage_world_wetland_butterbur",
+      "scale": 0.593
+    },
+    {
+      "id": "camp-river-v1-west-trail-south-plant-8",
+      "assetId": "art_foliage_world_river_sedge",
+      "scale": 0.963
+    },
+    {
+      "id": "camp-river-v1-west-trail-south-plant-9",
+      "assetId": "art_foliage_world_wetland_butterbur",
+      "scale": 0.398
+    },
+    {
+      "id": "camp-river-v1-west-trail-south-plant-10",
+      "assetId": "art_foliage_world_river_sedge",
+      "scale": 0.666
+    },
+    {
+      "id": "camp-river-v1-west-trail-south-plant-11",
+      "assetId": "art_foliage_world_reed_cluster",
+      "scale": 0.64
+    },
+    {
+      "id": "camp-river-v1-west-trail-south-plant-12",
+      "assetId": "art_foliage_world_willow_scrub",
+      "scale": 0.664
+    },
+    {
+      "id": "camp-river-v1-west-trail-south-plant-13",
+      "assetId": "art_foliage_world_blue_sword_fern",
+      "scale": 0.522
+    },
+    {
+      "id": "camp-river-v1-west-trail-south-plant-14",
+      "assetId": "art_foliage_world_wetland_butterbur",
+      "scale": 0.6
+    },
+    {
+      "id": "camp-river-v1-west-trail-south-plant-15",
+      "assetId": "art_foliage_world_river_sedge",
+      "scale": 0.765
+    },
+    {
+      "id": "camp-river-v1-west-trail-south-plant-16",
+      "assetId": "art_foliage_world_willow_scrub",
+      "scale": 0.799
+    },
+    {
+      "id": "camp-river-v1-west-trail-south-plant-17",
+      "assetId": "art_foliage_world_river_sedge",
+      "scale": 0.718
+    },
+    {
+      "id": "camp-river-v1-west-trail-south-plant-18",
+      "assetId": "art_foliage_world_wetland_butterbur",
+      "scale": 0.538
+    },
+    {
+      "id": "camp-river-v1-west-trail-south-plant-19",
+      "assetId": "art_foliage_world_river_sedge",
+      "scale": 1.029
+    },
+    {
+      "id": "camp-river-v1-west-trail-south-plant-20",
+      "assetId": "art_foliage_world_willow_scrub",
+      "scale": 0.787
+    },
+    {
+      "id": "camp-river-v1-west-trail-south-plant-21",
+      "assetId": "art_foliage_world_wetland_butterbur",
+      "scale": 0.753
+    },
+    {
+      "id": "camp-river-v1-middle-meadow-tree-2",
+      "assetId": "art_tree_oak",
+      "scale": 0.922
+    },
+    {
+      "id": "camp-river-v1-middle-meadow-tree-3",
+      "assetId": "art_tree_oak",
+      "scale": 0.887
+    },
+    {
+      "id": "camp-river-v1-middle-meadow-plant-2",
+      "assetId": "art_foliage_world_ground_ivy",
+      "scale": 0.383
+    },
+    {
+      "id": "camp-river-v1-middle-meadow-plant-3",
+      "assetId": "art_foliage_world_blue_sword_fern",
+      "scale": 0.595
+    },
+    {
+      "id": "camp-river-v1-middle-meadow-plant-4",
+      "assetId": "art_foliage_world_blue_sword_fern",
+      "scale": 0.452
+    },
+    {
+      "id": "camp-river-v1-middle-meadow-plant-5",
+      "assetId": "art_foliage_world_hazel_scrub",
+      "scale": 0.466
+    },
+    {
+      "id": "camp-river-v1-middle-meadow-plant-6",
+      "assetId": "art_foliage_world_moss_cushions",
+      "scale": 0.404
+    },
+    {
+      "id": "camp-river-v1-middle-meadow-plant-7",
+      "assetId": "art_foliage_world_ground_ivy",
+      "scale": 0.397
+    },
+    {
+      "id": "camp-river-v1-middle-meadow-plant-8",
+      "assetId": "art_foliage_world_moss_cushions",
+      "scale": 0.457
+    },
+    {
+      "id": "camp-river-v1-middle-meadow-plant-9",
+      "assetId": "art_foliage_world_ground_ivy",
+      "scale": 0.25
+    },
+    {
+      "id": "camp-river-v1-middle-meadow-plant-10",
+      "assetId": "art_foliage_world_copper_bracken",
+      "scale": 0.449
+    },
+    {
+      "id": "camp-river-v1-middle-meadow-plant-11",
+      "assetId": "art_foliage_world_hazel_scrub",
+      "scale": 0.481
+    },
+    {
+      "id": "camp-river-v1-middle-meadow-plant-12",
+      "assetId": "art_foliage_world_ground_ivy",
+      "scale": 0.25
+    },
+    {
+      "id": "camp-river-v1-middle-meadow-plant-13",
+      "assetId": "art_foliage_world_moss_cushions",
+      "scale": 0.772
+    },
+    {
+      "id": "camp-river-v1-middle-meadow-plant-14",
+      "assetId": "art_foliage_world_river_sedge",
+      "scale": 0.584
+    },
+    {
+      "id": "camp-river-v1-middle-meadow-plant-15",
+      "assetId": "art_foliage_world_blue_sword_fern",
+      "scale": 0.67
+    },
+    {
+      "id": "camp-river-v1-middle-meadow-plant-16",
+      "assetId": "art_foliage_world_moss_cushions",
+      "scale": 0.602
+    },
+    {
+      "id": "camp-river-v1-lower-link-tree-1",
+      "assetId": "art_tree_oak",
+      "scale": 0.88
+    },
+    {
+      "id": "camp-river-v1-lower-link-tree-2",
+      "assetId": "art_tree_oak",
+      "scale": 0.83
+    },
+    {
+      "id": "camp-river-v1-lower-link-plant-1",
+      "assetId": "art_foliage_world_moss_cushions",
+      "scale": 0.36
+    },
+    {
+      "id": "camp-river-v1-lower-link-plant-2",
+      "assetId": "art_foliage_world_hazel_scrub",
+      "scale": 0.854
+    },
+    {
+      "id": "camp-river-v1-lower-link-plant-5",
+      "assetId": "art_foliage_world_copper_bracken",
+      "scale": 0.429
+    },
+    {
+      "id": "camp-river-v1-lower-link-plant-8",
+      "assetId": "art_foliage_world_copper_bracken",
+      "scale": 0.762
+    },
+    {
+      "id": "camp-river-v1-lower-link-plant-10",
+      "assetId": "art_foliage_world_moss_cushions",
+      "scale": 0.768
+    },
+    {
+      "id": "camp-river-v1-lower-link-plant-13",
+      "assetId": "art_foliage_world_hazel_scrub",
+      "scale": 0.808
+    },
+    {
+      "id": "camp-river-v1-lower-link-plant-15",
+      "assetId": "art_foliage_world_moss_cushions",
+      "scale": 0.417
+    },
+    {
+      "id": "camp-river-v1-lower-link-plant-16",
+      "assetId": "art_foliage_world_ground_ivy",
+      "scale": 0.297
+    },
+    {
+      "id": "camp-river-v1-lower-link-plant-19",
+      "assetId": "art_foliage_world_copper_bracken",
+      "scale": 0.388
+    },
+    {
+      "id": "camp-river-v1-southern-birches-tree-1",
+      "assetId": "art_tree_oak",
+      "scale": 0.887
+    },
+    {
+      "id": "camp-river-v1-southern-birches-tree-3",
+      "assetId": "art_tree_oak",
+      "scale": 0.795
+    },
+    {
+      "id": "camp-river-v1-southern-birches-tree-4",
+      "assetId": "art_tree_oak",
+      "scale": 0.78
+    },
+    {
+      "id": "camp-river-v1-southern-birches-plant-1",
+      "assetId": "art_foliage_world_moss_cushions",
+      "scale": 0.38
+    },
+    {
+      "id": "camp-river-v1-southern-birches-plant-4",
+      "assetId": "art_foliage_world_moss_cushions",
+      "scale": 0.953
+    },
+    {
+      "id": "camp-river-v1-southern-birches-plant-5",
+      "assetId": "art_foliage_world_alder_sapling",
+      "scale": 0.922
+    },
+    {
+      "id": "camp-river-v1-southern-birches-plant-8",
+      "assetId": "art_foliage_world_blue_sword_fern",
+      "scale": 0.443
+    },
+    {
+      "id": "camp-river-v1-southern-birches-plant-13",
+      "assetId": "art_foliage_world_wetland_butterbur",
+      "scale": 0.289
+    },
+    {
+      "id": "camp-river-v1-southern-birches-plant-14",
+      "assetId": "art_foliage_world_copper_bracken",
+      "scale": 0.817
+    },
+    {
+      "id": "camp-river-v1-southern-birches-plant-15",
+      "assetId": "art_foliage_world_river_sedge",
+      "scale": 0.939
+    },
+    {
+      "id": "camp-river-v1-southern-birches-plant-16",
+      "assetId": "art_foliage_world_willow_scrub",
+      "scale": 0.612
+    },
+    {
+      "id": "camp-river-v1-southern-birches-plant-17",
+      "assetId": "art_foliage_world_ground_ivy",
+      "scale": 0.66
+    },
+    {
+      "id": "camp-river-v1-southern-birches-plant-19",
+      "assetId": "art_foliage_world_copper_bracken",
+      "scale": 0.393
+    },
+    {
+      "id": "camp-river-v1-southern-birches-plant-20",
+      "assetId": "art_foliage_world_willow_scrub",
+      "scale": 0.468
+    },
+    {
+      "id": "camp-river-v1-southern-birches-plant-21",
+      "assetId": "art_foliage_world_river_sedge",
+      "scale": 0.672
+    },
+    {
+      "id": "camp-river-v1-river-shelf-plant-4",
+      "assetId": "art_foliage_world_wetland_butterbur",
+      "scale": 0.673
+    },
+    {
+      "id": "camp-river-v1-river-shelf-plant-6",
+      "assetId": "art_foliage_world_wetland_butterbur",
+      "scale": 0.606
+    },
+    {
+      "id": "camp-river-v1-river-shelf-plant-7",
+      "assetId": "art_foliage_world_river_sedge",
+      "scale": 0.649
+    },
+    {
+      "id": "camp-river-v1-river-shelf-plant-10",
+      "assetId": "art_foliage_world_alder_sapling",
+      "scale": 0.438
+    },
+    {
+      "id": "camp-river-v1-river-shelf-plant-13",
+      "assetId": "art_foliage_world_river_sedge",
+      "scale": 0.672
+    },
+    {
+      "id": "camp-river-v1-river-shelf-plant-14",
+      "assetId": "art_foliage_world_river_sedge",
+      "scale": 0.951
+    },
+    {
+      "id": "camp-river-v1-river-shelf-plant-18",
+      "assetId": "art_foliage_world_river_sedge",
+      "scale": 0.695
+    },
+    {
+      "id": "camp-river-v1-river-shelf-plant-19",
+      "assetId": "art_foliage_world_wetland_butterbur",
+      "scale": 0.49
+    },
+    {
+      "id": "camp-river-v1-lower-riverside-tree-1",
+      "assetId": "art_tree_willow",
+      "scale": 0.836
+    },
+    {
+      "id": "camp-river-v1-lower-riverside-tree-2",
+      "assetId": "art_tree_willow",
+      "scale": 0.713
+    },
+    {
+      "id": "camp-river-v1-lower-riverside-tree-3",
+      "assetId": "art_tree_willow",
+      "scale": 0.71
+    },
+    {
+      "id": "camp-river-v1-lower-riverside-plant-1",
+      "assetId": "art_foliage_world_reed_cluster",
+      "scale": 0.858
+    },
+    {
+      "id": "camp-river-v1-lower-riverside-plant-2",
+      "assetId": "art_foliage_world_willow_scrub",
+      "scale": 0.504
+    },
+    {
+      "id": "camp-river-v1-lower-riverside-plant-16",
+      "assetId": "art_foliage_world_river_sedge",
+      "scale": 0.76
+    },
+    {
+      "id": "camp-river-v1-lower-riverside-plant-17",
+      "assetId": "art_foliage_world_alder_sapling",
+      "scale": 0.405
+    },
+    {
+      "id": "camp-river-v1-south-meadow-tree-1",
+      "assetId": "art_tree_rowan",
+      "scale": 0.854
+    },
+    {
+      "id": "camp-river-v1-south-meadow-tree-2",
+      "assetId": "art_tree_rowan",
+      "scale": 0.897
+    },
+    {
+      "id": "camp-river-v1-south-meadow-plant-8",
+      "assetId": "art_foliage_world_amber_blackberry",
+      "scale": 0.353
+    },
+    {
+      "id": "camp-river-v1-south-meadow-plant-9",
+      "assetId": "art_foliage_world_meadow_fescue",
+      "scale": 0.876
+    },
+    {
+      "id": "camp-river-v1-south-meadow-plant-15",
+      "assetId": "art_foliage_world_amber_blackberry",
+      "scale": 0.469
+    },
+    {
+      "id": "camp-river-v1-bridge-scrub-tree-1",
+      "assetId": "art_tree_rowan",
+      "scale": 1.076
+    },
+    {
+      "id": "camp-river-v1-bridge-scrub-plant-2",
+      "assetId": "art_foliage_world_alder_sapling",
+      "scale": 0.484
+    },
+    {
+      "id": "camp-river-v1-bridge-scrub-plant-3",
+      "assetId": "art_foliage_world_willow_scrub",
+      "scale": 0.58
+    },
+    {
+      "id": "camp-river-v1-bridge-scrub-plant-4",
+      "assetId": "art_foliage_world_dock_rosette",
+      "scale": 0.347
+    },
+    {
+      "id": "camp-river-v1-bridge-scrub-plant-7",
+      "assetId": "art_foliage_world_river_sedge",
+      "scale": 0.893
+    },
+    {
+      "id": "camp-river-v1-bridge-scrub-plant-8",
+      "assetId": "art_foliage_world_willow_scrub",
+      "scale": 0.653
+    },
+    {
+      "id": "camp-river-v1-bridge-scrub-plant-10",
+      "assetId": "art_foliage_world_alder_sapling",
+      "scale": 0.73
+    },
+    {
+      "id": "camp-river-v1-bridge-scrub-plant-11",
+      "assetId": "art_foliage_world_wetland_butterbur",
+      "scale": 0.712
+    },
+    {
+      "id": "camp-river-v1-bridge-scrub-plant-12",
+      "assetId": "art_foliage_world_reed_cluster",
+      "scale": 0.938
+    },
+    {
+      "id": "camp-river-v1-bridge-scrub-plant-13",
+      "assetId": "art_foliage_world_river_sedge",
+      "scale": 0.897
+    },
+    {
+      "id": "camp-river-v1-bridge-scrub-plant-14",
+      "assetId": "art_foliage_world_amber_blackberry",
+      "scale": 0.449
+    },
+    {
+      "id": "camp-river-v1-bridge-scrub-plant-16",
+      "assetId": "art_foliage_world_wetland_butterbur",
+      "scale": 0.615
+    },
+    {
+      "id": "camp-river-v1-south-link-tree-1",
+      "assetId": "art_tree_rowan",
+      "scale": 0.806
+    },
+    {
+      "id": "camp-river-v1-south-link-tree-2",
+      "assetId": "art_tree_rowan",
+      "scale": 0.796
+    },
+    {
+      "id": "camp-river-v1-south-link-plant-5",
+      "assetId": "art_foliage_world_amber_blackberry",
+      "scale": 0.525
+    },
+    {
+      "id": "camp-river-v1-south-link-plant-7",
+      "assetId": "art_foliage_world_meadow_yarrow",
+      "scale": 0.732
+    }
+  ]
+}

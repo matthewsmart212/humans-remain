@@ -1,0 +1,48 @@
+{
+  "version": 1,
+  "tool": "image_gen",
+  "purpose": "Simplified illustrated camp structures for the live world map.",
+  "sourcePrompts": {
+    "palisade": "Use case: stylized-concept. Production sprite for a warm ochre and olive hand-illustrated game atlas. Genuinely transparent background. Clean dark olive-brown ink contours, muted timber brown and dusty moss green, only 4–5 flat watercolour tones, bold readable silhouette and sparse hand drawn detail. Simplified cartographer's illustration at elevated three-quarter view, suitable at small map scale. No terrain or ground patch, no cast shadow blob, no text, no labels, no icons, no UI, no border. Subject isolated and centered with transparent margins. Match the muted palette and linework of reference 2; reference 1 shows the real world materials. A single straight horizontal section of wooden palisade: EIGHT close-set pointed timber stakes, joined by two slender horizontal rails and two diagonal braces. Posts of slightly varied height, a little moss at their feet. Long low silhouette, approximately 4:1 wide to tall. Viewed slightly from above, front face legible, ends vertical and tileable. Continuous clear fence with all eight stakes joined, not a chunky polygon or ruin. Absolutely no rocks, earth island or plants outside the silhouette.",
+    "warehouse": "Use case: stylized-concept. Production sprite for a warm ochre and olive hand-illustrated game atlas. Genuinely transparent background. Clean dark olive-brown ink contours, muted timber brown and dusty moss green, only 4–5 flat watercolour tones, bold readable silhouette and sparse hand drawn detail. Simplified cartographer's illustration at elevated three-quarter view, suitable at small map scale. No terrain or ground patch, no cast shadow blob, no text, no labels, no icons, no UI, no border. Subject isolated and centered with transparent margins. Match the muted palette and linework of reference 2; reference 1 shows the real world materials. A small open-front wooden storage lean-to, long low corrugated metal sloping roof with muted rust stripe, three timber supports, a neat stack of cut logs and two supply boxes beneath. Compact and readable, simpler than the headquarters. No surroundings.",
+    "bunker": "Use case: stylized-concept. Production sprite for a warm ochre and olive hand-illustrated game atlas. Genuinely transparent background. Clean dark olive-brown ink contours, muted timber brown and dusty moss green, only 4–5 flat watercolour tones, bold readable silhouette and sparse hand drawn detail. Simplified cartographer's illustration at elevated three-quarter view, suitable at small map scale. No terrain or ground patch, no cast shadow blob, no text, no labels, no icons, no UI, no border. Subject isolated and centered with transparent margins. Match the muted palette and linework of reference 2; reference 1 shows the real world materials. A low rounded earth-covered bunker entrance, one small dark arched doorway framed with stout stone blocks and a partly visible iron door, two steps descending into it, a simple moss olive dome above the arch. Compact stylized map landmark, minimal detail, not a large mountain or building.",
+    "storage": "Use case: stylized-concept. Production sprite for a warm ochre and olive hand-illustrated game atlas. Genuinely transparent background. Clean dark olive-brown ink contours, muted timber brown and dusty moss green, only 4–5 flat watercolour tones, bold readable silhouette and sparse hand drawn detail. Simplified cartographer's illustration at elevated three-quarter view, suitable at small map scale. No terrain or ground patch, no cast shadow blob, no text, no labels, no icons, no UI, no border. Subject isolated and centered with transparent margins. Match the muted palette and linework of reference 2; reference 1 shows the real world materials. One low stout wooden supply chest with a flat plank lid, dark iron corner straps and a small central latch. Three-quarter map view. A small separate crate next to it. Bold compact recognizable silhouette, no scenery."
+  },
+  "simplificationPrompt": "Redraw this object as a VERY SIMPLE flat hand-inked pictorial map symbol for a warm parchment atlas. Keep the recognizable overall architecture and viewing angle. Simplify dramatically: FOUR FLAT COLOURS ONLY (olive brown outline, ochre light face, muted olive roof, dark opening). Sparse linework: at most 6 lines on the roof and a few broad stone/wood divisions. No individual tiny shingles, no texture, no wood grain, no realistic lighting, no fine moss leaves, no shading gradients, no shadow, no glow, no background of any kind. Think charming miniature illustration on an old storybook map, readable at 64 pixels. Genuinely TRANSPARENT background, all empty space fully transparent. Do not turn it into a generic geometric outline; keep the lodge/well recognizable. Single centered object.",
+  "assets": [
+    {
+      "name": "headquarters",
+      "source": "headquarters.png"
+    },
+    {
+      "name": "well",
+      "source": "well.png"
+    },
+    {
+      "name": "workshop",
+      "source": "workshop.png"
+    },
+    {
+      "name": "medical-tent",
+      "source": "medical-tent.png"
+    },
+    {
+      "name": "warehouse",
+      "source": "warehouse.png"
+    },
+    {
+      "name": "bunker",
+      "source": "bunker.png"
+    },
+    {
+      "name": "storage",
+      "source": "storage.png"
+    },
+    {
+      "name": "palisade",
+      "source": "palisade.png"
+    }
+  ],
+  "packing": "node scripts/prepare-map-illustrations.mjs",
+  "runtimeTexture": "public/maps/camp-atlas-v1.webp"
+}

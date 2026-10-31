@@ -1,0 +1,336 @@
+{
+  "version": "west-camp-v2",
+  "tool": "Built-in image_gen.imagegen",
+  "completedBatches": [
+    "A1",
+    "A2",
+    "A3",
+    "A4"
+  ],
+  "nextBatches": [
+    "A5",
+    "A6"
+  ],
+  "sourceCoordinates": "Original 4800px camp; no camp translation or rescale",
+  "pieces": [
+    {
+      "file": "22-southwest-camp-corner.webp",
+      "batch": "A1",
+      "master": "a1",
+      "left": 0,
+      "top": 128,
+      "x": -122,
+      "y": 4412,
+      "width": 1538,
+      "height": 1794,
+      "bytes": 4203934
+    },
+    {
+      "file": "23-west-camp-lower.webp",
+      "batch": "A2",
+      "master": "a2",
+      "left": 0,
+      "top": 128,
+      "x": -1528,
+      "y": 3006,
+      "width": 1794,
+      "height": 1666,
+      "bytes": 4164518
+    },
+    {
+      "file": "24-southwest-woodland-trail.webp",
+      "batch": "A2",
+      "master": "a2",
+      "left": 0,
+      "top": 1662,
+      "x": -1528,
+      "y": 4540,
+      "width": 1794,
+      "height": 1666,
+      "bytes": 4332918
+    },
+    {
+      "file": "25-west-camp-exit.webp",
+      "batch": "A3",
+      "master": "a3",
+      "left": 0,
+      "top": 0,
+      "x": -1528,
+      "y": 1598,
+      "width": 1794,
+      "height": 1540,
+      "bytes": 3768488
+    },
+    {
+      "file": "26-west-camp-upper-ground.webp",
+      "batch": "A4",
+      "master": "a4",
+      "left": 0,
+      "top": 0,
+      "x": -1528,
+      "y": 190,
+      "width": 1794,
+      "height": 1540,
+      "bytes": 3764558
+    }
+  ],
+  "generations": [
+    {
+      "patch": "a1n",
+      "source": {
+        "width": 1552,
+        "height": 1013,
+        "file": "a1n-generated-original.png"
+      },
+      "registered": {
+        "x": -122,
+        "y": 4284,
+        "width": 1670,
+        "height": 1090,
+        "top": 292,
+        "right": 264
+      },
+      "scale": {
+        "x": 1.0760309278350515,
+        "y": 1.0760118460019743
+      }
+    },
+    {
+      "patch": "a1s",
+      "source": {
+        "width": 1553,
+        "height": 1013,
+        "file": "a1s-generated-original.png"
+      },
+      "registered": {
+        "x": -122,
+        "y": 5118,
+        "width": 1670,
+        "height": 1088,
+        "top": 256,
+        "right": 264
+      },
+      "scale": {
+        "x": 1.0753380553766902,
+        "y": 1.0740375123395853
+      }
+    },
+    {
+      "patch": "a2ne",
+      "source": {
+        "width": 1003,
+        "height": 1568,
+        "file": "a2ne-generated-original.png"
+      },
+      "registered": {
+        "x": -694,
+        "y": 2878,
+        "width": 1092,
+        "height": 1706,
+        "right": 264
+      },
+      "scale": {
+        "x": 1.0887337986041874,
+        "y": 1.0880102040816326
+      }
+    },
+    {
+      "patch": "a2nw",
+      "source": {
+        "width": 1002,
+        "height": 1569,
+        "file": "a2nw-generated-original.png"
+      },
+      "registered": {
+        "x": -1528,
+        "y": 2878,
+        "width": 1090,
+        "height": 1706,
+        "right": 256
+      },
+      "scale": {
+        "x": 1.0878243512974053,
+        "y": 1.087316762268961
+      }
+    },
+    {
+      "patch": "a2se",
+      "source": {
+        "width": 1003,
+        "height": 1568,
+        "file": "a2se-generated-original.png"
+      },
+      "registered": {
+        "x": -694,
+        "y": 4500,
+        "width": 1092,
+        "height": 1706,
+        "top": 84,
+        "right": 264
+      },
+      "scale": {
+        "x": 1.0887337986041874,
+        "y": 1.0880102040816326
+      }
+    },
+    {
+      "patch": "a2sw",
+      "source": {
+        "width": 1003,
+        "height": 1569,
+        "file": "a2sw-generated-original.png"
+      },
+      "registered": {
+        "x": -1528,
+        "y": 4500,
+        "width": 1090,
+        "height": 1706,
+        "top": 84,
+        "right": 256
+      },
+      "scale": {
+        "x": 1.086739780658026,
+        "y": 1.087316762268961
+      }
+    },
+    {
+      "patch": "a3e",
+      "source": {
+        "width": 1013,
+        "height": 1552,
+        "file": "a3e-generated-original.png"
+      },
+      "registered": {
+        "x": -694,
+        "y": 1598,
+        "width": 1092,
+        "height": 1672,
+        "bottom": 264,
+        "right": 264
+      },
+      "scale": {
+        "x": 1.0779861796643633,
+        "y": 1.077319587628866
+      }
+    },
+    {
+      "patch": "a3w",
+      "source": {
+        "width": 1013,
+        "height": 1553,
+        "file": "a3w-generated-original.png"
+      },
+      "registered": {
+        "x": -1528,
+        "y": 1598,
+        "width": 1090,
+        "height": 1672,
+        "bottom": 264,
+        "right": 256
+      },
+      "scale": {
+        "x": 1.0760118460019743,
+        "y": 1.0766258853831294
+      }
+    },
+    {
+      "patch": "a4e",
+      "source": {
+        "width": 1013,
+        "height": 1552,
+        "file": "a4e-generated-original.png"
+      },
+      "registered": {
+        "x": -694,
+        "y": 190,
+        "width": 1092,
+        "height": 1672,
+        "bottom": 264,
+        "right": 264
+      },
+      "scale": {
+        "x": 1.0779861796643633,
+        "y": 1.077319587628866
+      }
+    },
+    {
+      "patch": "a4w",
+      "source": {
+        "width": 1012,
+        "height": 1554,
+        "file": "a4w-generated-original.png"
+      },
+      "registered": {
+        "x": -1528,
+        "y": 190,
+        "width": 1090,
+        "height": 1672,
+        "bottom": 264,
+        "right": 256
+      },
+      "scale": {
+        "x": 1.0770750988142292,
+        "y": 1.0759330759330759
+      }
+    }
+  ],
+  "maximumEnlargement": 1.0887337986041874,
+  "contactChecks": [
+    {
+      "name": "A1 eastern feather against actual camp/southern-trail composite",
+      "maximumChannelError": 0
+    },
+    {
+      "name": "A1 northern camp contact",
+      "maximumChannelError": 0
+    },
+    {
+      "name": "A2 1 eastern feather against actual camp/A1 composite",
+      "maximumChannelError": 0
+    },
+    {
+      "name": "A2 2 eastern feather against actual camp/A1 composite",
+      "maximumChannelError": 0
+    },
+    {
+      "name": "A2 internal 132-row overlap",
+      "maximumChannelError": 0
+    },
+    {
+      "name": "A3 southern feather matches A2",
+      "maximumChannelError": 0
+    },
+    {
+      "name": "A4 southern feather matches A3",
+      "maximumChannelError": 0
+    },
+    {
+      "name": "A3 eastern camp feather",
+      "maximumChannelError": 0
+    },
+    {
+      "name": "A4 eastern camp feather",
+      "maximumChannelError": 0
+    }
+  ],
+  "prompts": "artwork-archive/west-camp-v2/prompts.json",
+  "routeFrontiers": {
+    "west": [
+      -1528,
+      2860
+    ],
+    "southwest": [
+      -1528,
+      5520
+    ]
+  },
+  "notes": [
+    "Only the southwest and western camp approaches are built in this batch; northern and distant districts remain planned.",
+    "All new creative pixels come from ten close-up ImageGen passes; crops, registered contact restoration and lossless cuts use Sharp.",
+    "A2 is split into two runtime textures to stream independently.",
+    "Road-free ground above the western exit and between the two western routes.",
+    "Ground-only correction of pieces 22–26: remove baked grass clumps, ferns, rosettes and plant shadows; no new land or placed objects.",
+    "Original camp contact strips remain registered and unchanged. This pass does not clean the older 21 extensions.",
+    "Depth and density must come from separately placed foliage assets; regional ground colour and existing paths remain in the background."
+  ]
+}

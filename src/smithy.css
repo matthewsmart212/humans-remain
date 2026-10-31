@@ -1,0 +1,74 @@
+/* The smithy shares the station frame; its catalog stays full width. */
+.smithy-category-tabs{display:flex;flex-shrink:0;gap:3px;padding:2px;border:1px solid #76846355;border-radius:8px;background:#0d2523}
+.camp-studio .field-kit .smithy-menu .smithy-category-tabs button{flex:1;min-width:0;min-height:44px;padding:5px 7px;border:1px solid transparent;background:transparent;color:#b7c4ad;font:800 18px/1.05 'Barlow Condensed',sans-serif;box-shadow:none}
+.camp-studio .field-kit .smithy-menu .smithy-category-tabs button[aria-pressed=true]{border-color:#c5ad73;background:linear-gradient(#45573d,#293f31);color:#ffe8b5}
+
+.smithy-catalog{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));grid-template-rows:repeat(2,minmax(54px,1fr));gap:7px;flex:1;min-height:0;overflow:auto;overscroll-behavior:contain;scrollbar-width:thin;scrollbar-color:#9b9a70 transparent;padding:2px}
+.smithy-catalog[data-category=weapons]{grid-template-columns:repeat(3,minmax(0,1fr))}
+.smithy-catalog[data-category=ranged]{grid-template-rows:minmax(70px,1fr)}
+.camp-studio .field-kit .smithy-menu button.smithy-tile{position:relative;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;min-width:0;min-height:54px;padding:8px;border:1px solid #6c805c75;border-bottom:2px solid #0b211e;border-radius:8px;background:radial-gradient(ellipse at 35% 40%,#64754825,#102e28);text-align:center;overflow:hidden}
+.camp-studio .field-kit .smithy-menu button.smithy-tile[aria-pressed=true]{border-color:#d9be7b;background:radial-gradient(ellipse at 20% 40%,#8b89564d,#344a34);box-shadow:inset 0 0 0 1px #e6c88755,0 0 5px #c4ad6c16}
+.smithy-tile-art{display:block;flex:1;min-height:0;width:80%;height:100%;max-width:106px;max-height:120px;object-fit:contain;filter:drop-shadow(0 4px 2px #071c1c88)}
+.smithy-tile>strong{flex-shrink:0;display:block;max-width:100%;font:800 23px/1.08 'Barlow Condensed',sans-serif;color:#f3e1b5}
+.camp-studio .field-kit .smithy-menu .smithy-catalog[data-category=tools] button.smithy-tile{flex-direction:row;gap:12px;text-align:left}
+.smithy-catalog[data-category=tools] .smithy-tile-art{flex:0 1 42%;width:42%;height:100%;max-width:116px;max-height:128px}
+.smithy-catalog[data-category=tools] .smithy-tile>strong{flex:0 1 45%;max-width:130px}
+.smithy-bag-badge{position:absolute;top:5px;right:5px;display:flex;align-items:center;gap:3px;padding:2px 4px;border-radius:4px;background:#0b2524e8;color:#f0dfb5;font:700 12px/1 Barlow,sans-serif}
+.smithy-bag-badge img{width:18px;height:18px;object-fit:contain}
+
+.smithy-selection{position:relative;flex-shrink:0;display:flex;flex-direction:column;gap:3px;padding-top:4px;border-top:1px solid #bda67955}
+.smithy-selection-heading{display:flex;align-items:center;gap:6px;min-height:44px}
+.smithy-selection-heading>img{width:30px;height:32px;object-fit:contain;flex:none}
+.smithy-selection-heading h3{margin:0;min-width:0;color:#f6e5bf;font:800 24px/1.05 'Barlow Condensed',sans-serif;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.smithy-selection-heading>small{margin-left:auto;flex-shrink:0;color:#b2c3aa;font:500 11px Barlow,sans-serif}
+.camp-studio .field-kit .smithy-menu button.smithy-info-toggle{display:grid;place-items:center;flex-shrink:0;width:44px;height:44px;min-height:44px;padding:0;border:0;background:transparent;box-shadow:none}
+.smithy-info-toggle>span{display:grid;place-items:center;width:21px;height:21px;border-radius:50%;background:#d9c296;color:#17342b;font:bold 16px/1 Georgia,serif}
+.smithy-craft-row{display:grid;grid-template-columns:minmax(0,1.25fr) minmax(115px,1fr);gap:7px;align-items:stretch}
+.smithy-costs{display:flex;gap:5px;min-width:0}
+.smithy-cost{display:flex;flex:1;min-width:0;align-items:center;gap:6px;min-height:44px;box-sizing:border-box;padding:4px 7px;border:1px solid #75845c55;border-radius:6px;background:#1b362a}
+.smithy-cost>img{width:29px;height:29px;object-fit:contain;flex:none}
+.smithy-cost>span{min-width:0;color:#dfd9bd;font:500 12px/1.1 Barlow,sans-serif}
+.smithy-cost>b{margin-left:auto;white-space:nowrap;color:#c9d6a9;font:800 22px/1 'Barlow Condensed',sans-serif}
+.smithy-cost>b>small{color:#c7c5a5;font:500 14px Barlow,sans-serif}
+.smithy-cost[data-enough=false]{border-color:#b1805f70;background:#3c332580}
+.smithy-cost[data-enough=false]>b{color:#e8ac7d}
+.camp-studio .field-kit .smithy-menu button.smithy-craft-action{min-height:44px;padding:6px 8px;font:800 22px/1.1 'Barlow Condensed',sans-serif}
+
+.smithy-info-card{position:absolute;z-index:5;left:0;right:0;bottom:calc(100% + 5px);max-height:min(230px,55vh);overflow:auto;padding:7px 12px 11px;border:1px solid #c6af7b;border-radius:8px;background:#17372ff7;box-shadow:0 -8px 25px #071b1a88;color:#c7d1b8;font:400 12px/1.4 Barlow,sans-serif}
+.smithy-info-heading{display:flex;align-items:center;justify-content:space-between;gap:8px}
+.smithy-info-heading>strong{color:#f5e1b5;font:800 24px/1.1 'Barlow Condensed',sans-serif}
+.camp-studio .field-kit .smithy-menu .smithy-info-heading>button{width:44px;min-height:44px;flex:none;padding:0;border:0;background:transparent;color:#efdcad;font-size:25px;box-shadow:none}
+.smithy-info-card p{margin:3px 0 7px}.smithy-info-stats b,.smithy-info-ownership b{color:#efe0b6}.smithy-info-ownership{display:flex;gap:5px;padding-top:7px;border-top:1px solid #6c805c55}.smithy-info-ownership>span{margin-left:auto}
+
+/* Mobile landscape keeps both recipe rows and the crafting action on screen. */
+.smithy-menu[data-short=true] .smithy-catalog{gap:5px;grid-template-rows:repeat(2,minmax(48px,1fr));padding:1px}
+.smithy-menu[data-short=true] .smithy-catalog[data-category=ranged]{grid-template-rows:minmax(64px,1fr)}
+.camp-studio .field-kit .smithy-menu[data-short=true] button.smithy-tile{min-height:48px;gap:2px;padding:4px 5px}
+.smithy-menu[data-short=true] .smithy-tile>strong{font-size:16px;line-height:1.05}
+.camp-studio .field-kit .smithy-menu[data-short=true] .smithy-catalog[data-category=tools] button.smithy-tile{gap:7px}
+.smithy-menu[data-short=true] .smithy-catalog[data-category=tools] .smithy-tile>strong{font-size:18px}
+.smithy-menu[data-short=true] .smithy-selection{padding-top:2px;gap:1px}
+.smithy-menu[data-short=true] .smithy-selection-heading{gap:3px}
+.smithy-menu[data-short=true] .smithy-selection-heading>img{width:24px;height:27px}
+.smithy-menu[data-short=true] .smithy-selection-heading h3{font-size:21px}
+.smithy-menu[data-short=true] .smithy-selection-heading>small{font-size:9px}
+.smithy-menu[data-short=true] .smithy-bag-badge{top:3px;right:3px;gap:2px;padding:2px 3px;font-size:10px}
+.smithy-menu[data-short=true] .smithy-bag-badge img{width:13px;height:13px}
+.smithy-menu[data-short=true] .smithy-cost{padding:3px 5px;gap:4px}
+.smithy-menu[data-short=true] .smithy-cost>img{width:22px;height:24px}
+.smithy-menu[data-short=true] .smithy-cost>span{font-size:10px}
+.smithy-menu[data-short=true] .smithy-cost>b{font-size:18px}
+.smithy-menu[data-short=true] .smithy-cost>b>small{font-size:11px}
+.camp-studio .field-kit .smithy-menu[data-short=true] button.smithy-craft-action{font-size:19px}
+
+@container(max-width:470px){
+ .smithy-craft-row{grid-template-columns:minmax(0,1.5fr) minmax(100px,.9fr);gap:5px}
+ .smithy-costs{gap:4px}.smithy-cost{padding:4px;gap:3px}.smithy-cost>img{width:22px;height:24px}.smithy-cost>span{font-size:10px}.smithy-cost>b{font-size:18px}.smithy-cost>b>small{font-size:11px}
+ .smithy-tile>strong{font-size:19px}.smithy-selection-heading h3{font-size:22px}.smithy-selection-heading>small{font-size:9px}
+}
+@container(max-width:355px){
+ .smithy-selection-heading>small{font-size:8px}.smithy-selection-heading>img{display:none}.smithy-selection-heading h3{font-size:20px}
+ .smithy-costs:has(>.smithy-cost:nth-child(2)) .smithy-cost>span{display:none}
+ .smithy-tile>strong{font-size:16px}.smithy-catalog[data-category=tools] .smithy-tile{gap:5px}
+ .camp-studio .field-kit .smithy-menu .smithy-category-tabs button{font-size:16px;padding-inline:3px}
+}

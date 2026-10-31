@@ -1,0 +1,15 @@
+{
+  "method": "Built-in image generation; existing wooden axe used only as the style reference.",
+  "assets": [
+    {
+      "id": "woodenPickaxe",
+      "path": "public/survival/equipment/wooden-pickaxe-v1.png",
+      "prompt": "Use case: stylized-concept. Asset type: transparent game equipment sprite and inventory icon. Create ONE wooden PICKAXE for a hand-painted top-down woodland survival game. Reference image shows the existing wooden axe; use ONLY its painted carved-wood texture, bold dark brown outline, leather grip and warm muted colours as style reference. New object must unmistakably be a double-ended MINING PICKAXE, NOT an axe: long straight wooden handle with leather wrapped lower grip; a narrower gently curved horizontal hardwood pick head with pointed ends, rope lashed to the top of the handle. Entire pick head is wood, no metal. Upright centred tool, front three-quarter view with negligible foreshortening, shaft vertical, pick head across upper third, full silhouette visible, no hands or person. Head width about 70 percent of canvas, whole handle and head fill about 88 percent of height. Consistent crisp painterly game-item art readable at 40px, restrained highlights, no glow. Transparent background, no text, no label, no additional objects, no ground shadow, no border. This will be attached to a character's hand and used as the actual mining tool."
+    },
+    {
+      "id": "metalPickaxe",
+      "path": "public/survival/equipment/metal-pickaxe-v1.png",
+      "prompt": "Use case: stylized-concept. Asset type: transparent game equipment sprite and inventory icon. Create ONE metal PICKAXE for a hand-painted top-down woodland survival game. Reference image shows an existing wooden axe; use ONLY its painterly carved timber, leather grip, dark outline and warm muted survival palette as style reference. New object must unmistakably be a double-ended MINING PICKAXE, NOT an axe: straight weathered wooden shaft with brown leather wrapped lower grip and a salvaged dark steel curved pick head, one pointed end and one short chisel tip. Small worn teal binding below the head ties it to an overgrown abandoned industrial world. Upright centred tool, front three-quarter view with negligible foreshortening, shaft vertical, head across upper third; full silhouette visible, no hands or person. Head width about 70 percent of canvas, whole handle and head fill about 88 percent of height. Crisp hand-painted game-item art readable at 40px, textured gunmetal, small worn edge highlights, no glow. Transparent background, no text, no label, no additional objects, no ground shadow, no border. This will be attached to a character's hand and used as the actual mining tool."
+    }
+  ]
+}

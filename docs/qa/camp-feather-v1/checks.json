@@ -1,0 +1,20 @@
+{
+  "result": "pass",
+  "sourceRevision": 72,
+  "existingPreserved": 4153,
+  "added": 312,
+  "totalPlacements": 4465,
+  "remainingEditorSlots": 535,
+  "solidObjectsUnchanged": true,
+  "ownerEditsPreserved": true,
+  "repeatLoadDoesNotRefill": true,
+  "additionalImages": 0,
+  "peakVisibleBefore": 316,
+  "peakVisibleAfter": 338,
+  "peakAddedVisible": 80,
+  "sampledViews": 1764,
+  "layoutBytes": 988320,
+  "browserQA": false,
+  "deviceFPSMeasured": false,
+  "crownSamplesClear": 1248
+}

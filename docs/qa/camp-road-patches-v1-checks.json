@@ -1,0 +1,11 @@
+{
+  "result": "pass",
+  "campExitPatches": 6,
+  "campInteriorPixelIdentical": true,
+  "approvedSoutheastPixelIdentical": true,
+  "addedEntryImages": 0,
+  "roadSections": 42,
+  "bridgeReservations": 6,
+  "quietAreas": 5,
+  "limitations": "Renderer validation only; no browser or physical iPhone test."
+}

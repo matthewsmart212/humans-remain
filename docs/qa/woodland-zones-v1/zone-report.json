@@ -1,0 +1,24 @@
+{
+  "groups": 34,
+  "treeGroves": 33,
+  "trees": 114,
+  "treeCounts": {
+    "birch": 29,
+    "oak": 45,
+    "rowan": 21,
+    "pine": 14,
+    "willow": 5
+  },
+  "foliageCounts": {
+    "birch": 155,
+    "oak": 230,
+    "rowan": 133,
+    "pine": 75,
+    "willow": 77
+  },
+  "changed": 408,
+  "changedTrees": 82,
+  "changedFoliage": 326,
+  "beforeMeanSpeciesPerGrove": 2.1515151515151514,
+  "afterMaxSpeciesPerGrove": 1
+}

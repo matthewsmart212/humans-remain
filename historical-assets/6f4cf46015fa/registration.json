@@ -1,0 +1,229 @@
+{
+  "bunkerCore": [
+    [
+      268,
+      742
+    ],
+    [
+      289,
+      670
+    ],
+    [
+      384,
+      492
+    ],
+    [
+      453,
+      408
+    ],
+    [
+      503,
+      336
+    ],
+    [
+      583,
+      267
+    ],
+    [
+      622,
+      205
+    ],
+    [
+      678,
+      187
+    ],
+    [
+      722,
+      208
+    ],
+    [
+      967,
+      319
+    ],
+    [
+      1186,
+      389
+    ],
+    [
+      1215,
+      531
+    ],
+    [
+      1201,
+      600
+    ],
+    [
+      1086,
+      755
+    ],
+    [
+      967,
+      894
+    ],
+    [
+      823,
+      1089
+    ],
+    [
+      780,
+      1111
+    ],
+    [
+      691,
+      1044
+    ],
+    [
+      592,
+      967
+    ],
+    [
+      420,
+      888
+    ],
+    [
+      324,
+      836
+    ],
+    [
+      270,
+      831
+    ]
+  ],
+  "warehouseCore": [
+    [
+      0,
+      0
+    ],
+    [
+      1254,
+      0
+    ],
+    [
+      1254,
+      550
+    ],
+    [
+      1140,
+      550
+    ],
+    [
+      1140,
+      916
+    ],
+    [
+      1056,
+      960
+    ],
+    [
+      1044,
+      992
+    ],
+    [
+      932,
+      1051
+    ],
+    [
+      881,
+      1057
+    ],
+    [
+      830,
+      1084
+    ],
+    [
+      786,
+      1119
+    ],
+    [
+      746,
+      1138
+    ],
+    [
+      715,
+      1121
+    ],
+    [
+      555,
+      1053
+    ],
+    [
+      527,
+      1027
+    ],
+    [
+      503,
+      977
+    ],
+    [
+      511,
+      917
+    ],
+    [
+      449,
+      902
+    ],
+    [
+      317,
+      843
+    ],
+    [
+      230,
+      798
+    ],
+    [
+      211,
+      749
+    ],
+    [
+      130,
+      716
+    ],
+    [
+      126,
+      550
+    ],
+    [
+      0,
+      550
+    ]
+  ],
+  "transitionPixels": 14,
+  "bunker": [
+    {
+      "url": "/survival/camp-structures-v3/bunker-0.webp",
+      "name": "bunker-0.webp",
+      "width": 1312,
+      "height": 1199,
+      "bytes": 1520152,
+      "preservedPixels": 530252,
+      "generatedPixels": 1002765
+    },
+    {
+      "url": "/survival/camp-structures-v3/bunker-1.webp",
+      "name": "bunker-1.webp",
+      "width": 1312,
+      "height": 1199,
+      "bytes": 1512280,
+      "preservedPixels": 530252,
+      "generatedPixels": 1002765
+    },
+    {
+      "url": "/survival/camp-structures-v3/bunker-2.webp",
+      "name": "bunker-2.webp",
+      "width": 1312,
+      "height": 1199,
+      "bytes": 1503248,
+      "preservedPixels": 530252,
+      "generatedPixels": 1002765
+    }
+  ],
+  "warehouse": {
+    "url": "/survival/camp-structures-v3/warehouse.webp",
+    "name": "warehouse.webp",
+    "width": 1254,
+    "height": 1254,
+    "bytes": 1540246,
+    "preservedPixels": 1112905,
+    "generatedPixels": 431088
+  }
+}

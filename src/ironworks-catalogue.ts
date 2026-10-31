@@ -1,0 +1,9 @@
+import {IRONWORKS_WORLD_ART,FURNACE_ID} from './ironworks-data';
+import type {CatalogueEntry} from './catalogue-model';
+export const ironworksEntries:CatalogueEntry[]=IRONWORKS_WORLD_ART.map(a=>({
+ id:a.id,name:a.name,family:'Ironworks',category:'Camp surroundings',group:'Ironworks',recordType:a.id===FURNACE_ID?'buildable structure':'prop',phase:'B2',priority:'Medium',tier:a.id===FURNACE_ID?1:null,lastUpdatedAt:'2026-10-25T00:00:00.000Z',
+ art:true,conceptApproved:true,exportComplete:true,implemented:true,tested:false,presentInPrototype:true,
+ purpose:a.id===FURNACE_ID?'Smelt ore or recycle scrap into usable iron ingots. Craft equipment at the smithy beside it.':'Guaranteed iron ore from a recognisable mineral deposit.',improvement:'One refined metal connects mining, scavenging and tool crafting.',appearance:'Weathered stone and gunmetal with rusty mineral seams and muted olive details.',
+ states:a.id===FURNACE_ID?'Cold, working embers, waiting for wood, ready ingots; reinforced bellows upgrade.':'Intact, cracked, depleted rubble; requires a metal pickaxe.',image:a.image,crop:[0,0,...a.size],artPreview:{worldWidth:a.worldWidth},artworkExports:[a.image],artReadiness:'Transparent painted sprite; live states share a fixed ground anchor.',
+ artLinks:[],implementationDependencies:[],blockers:[],playerUnlock:a.id===FURNACE_ID?'Approach the camp furnace':'Metal pickaxe',resourceCost:'See recipes in game',inputs:a.id===FURNACE_ID?'2 iron ore or 3 scrap; logs provide heat':'Mine with a metal pickaxe',outputs:a.id===FURNACE_ID?'Iron ingots, metal gear':'3 iron ore and 2 stone',capacity:a.id===FURNACE_ID?'4 queued batches, 8 finished ingots':'One deposit per run',buildMenuVisibility:'World editor',testScope:'Mining, fuel, inventory conservation, forging, capacity, access, native parity.',availability:'Current world asset',
+}));

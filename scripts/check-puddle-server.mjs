@@ -1,0 +1,13 @@
+// Run against the built production Worker and a disposable SQLite database.
+import fs from 'node:fs';
+import assert from 'node:assert/strict';
+import {DatabaseSync} from 'node:sqlite';
+import {pathToFileURL} from 'node:url';
+const worker=(await import(pathToFileURL(process.cwd()+'/dist/server/index.js'))).default,sql=new DatabaseSync(':memory:');
+for(const f of fs.readdirSync('drizzle').filter(f=>f.endsWith('.sql')).sort())sql.exec(fs.readFileSync('drizzle/'+f,'utf8'));
+const DB={prepare(q){let params=[];return{bind(...p){params=p;return this},async all(){return{results:sql.prepare(q).all(...params)}},async run(){const r=sql.prepare(q).run(...params);return{meta:{changes:Number(r.changes)}}}}}},env={DB,SITE_OWNER_EMAIL:'owner@example.test'},origin='https://test.local',owner={'oai-authenticated-user-id':'site-scoped-owner-subject','oai-authenticated-user-email':'owner@example.test'};
+const call=(p,o={})=>worker.fetch(new Request(origin+p,o),env),save=(layout,revision)=>call('/api/world-layout',{method:'PUT',headers:{...owner,Origin:origin,'Content-Type':'application/json'},body:JSON.stringify({layout,revision,action:'save'})});
+const layout={version:1,terrain:'home',name:'Puddle persistence test',spawn:{x:-400,y:-300},terrainPuddleVersion:2,terrainFoliageVersion:2,items:['round','long','wide','lobed'].map((key,i)=>({id:'test-water-'+i,assetId:'art_puddle_'+key,x:-300+i*250,y:3650,scale:1.2,rotation:35,flipX:true,frame:{sourceAssetId:'art_puddle_'+key,width:160,height:120,anchor:[.5,.5]},solid:false,allowTransparency:false,layer:-7,role:'prop',roof:'auto'})),updatedAt:new Date().toISOString()};
+assert.equal((await save({...layout,terrainPuddleVersion:3},0)).status,400);let result=await save(layout,0);assert.equal(result.status,200,JSON.stringify(await result.json()));const saved=await(await call('/api/world-layout')).json();assert.equal(saved.draft.terrainPuddleVersion,2);assert.equal(saved.draft.terrainFoliageVersion,2);assert.deepEqual(saved.draft.spawn,layout.spawn);assert.deepEqual(saved.draft.items,layout.items);assert.equal((await save(layout,0)).status,409);
+assert.equal((await save({...layout,items:[]},1)).status,200);const deleted=await(await call('/api/world-layout')).json();assert.equal(deleted.draft.terrainPuddleVersion,2);assert.equal(deleted.draft.items.length,0);
+const html=await(await call('/checklist.html')).text();for(const name of ['Small woodland puddle','Long woodland puddle','Wide woodland puddle','Joined woodland puddle'])assert(html.includes(name));sql.close();console.log('PASS: built Worker saves/loads all four puddle assets, fixed dimensions, transforms and migration marker; deletion persists and stale updates are rejected. Public catalogue lists all four variants.');

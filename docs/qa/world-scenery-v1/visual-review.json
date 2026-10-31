@@ -1,0 +1,22 @@
+{
+  "result": "pass",
+  "reviewedScenes": [
+    "woodland",
+    "meadow",
+    "dryland",
+    "wetland",
+    "wetland-night"
+  ],
+  "reviewedDesigns": 28,
+  "treeStates": 18,
+  "propTransformCases": 108,
+  "observations": [
+    "Painted edges, palette and detail match the existing illustrated camp and character",
+    "No visible opaque background or coloured fringe",
+    "Ground anchors and blocker polygons checked against exported sprites",
+    "Distinct woodland, meadow, dryland and wetland species",
+    "Tree roots remain aligned across chopping stages"
+  ],
+  "liveMapWrites": false,
+  "deviceFPSMeasured": false
+}

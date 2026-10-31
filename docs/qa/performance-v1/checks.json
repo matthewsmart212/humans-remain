@@ -1,0 +1,27 @@
+{
+  "passed": true,
+  "collectorMedianMsPerFrame": {
+    "baseline": 0.000003513399999999933,
+    "off": 0.000014115189999999984,
+    "overlay": 0.000021541880000000047,
+    "recording": 0.00004270128999999997
+  },
+  "bufferBytes": 2880000,
+  "checks": [
+    "off by default, zero recording buffer and UI polling",
+    "30/60/120Hz cadence",
+    "unclamped hitch and percentiles",
+    "pause, bag and background excluded",
+    "bounded frame buffer, samples and recording duration",
+    "no per-frame React notifications",
+    "export only after Stop",
+    "zero-frame logs, replacement and finite numbers",
+    "web/native menu handlers, toggle, start/stop and export states",
+    "native file/share adapter and web download/share adapters",
+    "44-point native tap targets"
+  ],
+  "limitations": [
+    "No browser UI or physical iPhone session in this environment.",
+    "Benchmark covers collector code only on the build host, not total diagnostics overhead or GPU/display FPS."
+  ]
+}

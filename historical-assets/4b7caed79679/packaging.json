@@ -1,0 +1,226 @@
+[
+  {
+    "key": "sage-fan",
+    "nativeSize": [
+      1586,
+      992
+    ],
+    "crop": {
+      "left": 48,
+      "top": 27,
+      "width": 1500,
+      "height": 907
+    },
+    "entry": {
+      "id": "art_foliage_sage_fan",
+      "name": "Sage woodland fan",
+      "image": "/survival/foliage-v4/sage-fan.webp",
+      "size": [
+        384,
+        232
+      ],
+      "anchor": [
+        0.5,
+        0.77
+      ],
+      "worldWidth": 150
+    },
+    "bytes": 82986
+  },
+  {
+    "key": "forest-ivy",
+    "nativeSize": [
+      1586,
+      992
+    ],
+    "crop": {
+      "left": 1,
+      "top": 53,
+      "width": 1576,
+      "height": 901
+    },
+    "entry": {
+      "id": "art_foliage_forest_ivy",
+      "name": "Deep forest ivy mat",
+      "image": "/survival/foliage-v4/forest-ivy.webp",
+      "size": [
+        384,
+        220
+      ],
+      "anchor": [
+        0.5,
+        0.77
+      ],
+      "worldWidth": 185
+    },
+    "bytes": 83124
+  },
+  {
+    "key": "copper-leaf",
+    "nativeSize": [
+      1586,
+      992
+    ],
+    "crop": {
+      "left": 36,
+      "top": 34,
+      "width": 1514,
+      "height": 893
+    },
+    "entry": {
+      "id": "art_foliage_copper_leaf",
+      "name": "Copper woodland leaves",
+      "image": "/survival/foliage-v4/copper-leaf.webp",
+      "size": [
+        384,
+        226
+      ],
+      "anchor": [
+        0.5,
+        0.77
+      ],
+      "worldWidth": 145
+    },
+    "bytes": 87434
+  },
+  {
+    "key": "blue-fern",
+    "nativeSize": [
+      1586,
+      992
+    ],
+    "crop": {
+      "left": 47,
+      "top": 39,
+      "width": 1522,
+      "height": 918
+    },
+    "entry": {
+      "id": "art_foliage_blue_fern",
+      "name": "Blue-green woodland fern",
+      "image": "/survival/foliage-v4/blue-fern.webp",
+      "size": [
+        384,
+        232
+      ],
+      "anchor": [
+        0.5,
+        0.77
+      ],
+      "worldWidth": 170
+    },
+    "bytes": 81220
+  },
+  {
+    "key": "berry-bramble",
+    "nativeSize": [
+      1586,
+      992
+    ],
+    "crop": {
+      "left": 60,
+      "top": 83,
+      "width": 1471,
+      "height": 806
+    },
+    "entry": {
+      "id": "art_foliage_berry_bramble",
+      "name": "Woodland berry bramble",
+      "image": "/survival/foliage-v4/berry-bramble.webp",
+      "size": [
+        384,
+        210
+      ],
+      "anchor": [
+        0.5,
+        0.77
+      ],
+      "worldWidth": 185
+    },
+    "bytes": 104070
+  },
+  {
+    "key": "yellow-woodland-flowers",
+    "nativeSize": [
+      1586,
+      992
+    ],
+    "crop": {
+      "left": 22,
+      "top": 60,
+      "width": 1558,
+      "height": 880
+    },
+    "entry": {
+      "id": "art_foliage_yellow_woodland_flowers",
+      "name": "Golden woodland flowers",
+      "image": "/survival/foliage-v4/yellow-woodland-flowers.webp",
+      "size": [
+        384,
+        217
+      ],
+      "anchor": [
+        0.5,
+        0.77
+      ],
+      "worldWidth": 145
+    },
+    "bytes": 105512
+  },
+  {
+    "key": "white-woodland-flowers",
+    "nativeSize": [
+      1578,
+      996
+    ],
+    "crop": {
+      "left": 24,
+      "top": 72,
+      "width": 1545,
+      "height": 858
+    },
+    "entry": {
+      "id": "art_foliage_white_woodland_flowers",
+      "name": "White woodland clover",
+      "image": "/survival/foliage-v4/white-woodland-flowers.webp",
+      "size": [
+        384,
+        213
+      ],
+      "anchor": [
+        0.5,
+        0.77
+      ],
+      "worldWidth": 180
+    },
+    "bytes": 101930
+  },
+  {
+    "key": "ochre-meadow-grass",
+    "nativeSize": [
+      1585,
+      992
+    ],
+    "crop": {
+      "left": 42,
+      "top": 46,
+      "width": 1507,
+      "height": 872
+    },
+    "entry": {
+      "id": "art_foliage_ochre_meadow_grass",
+      "name": "Ochre meadow grass",
+      "image": "/survival/foliage-v4/ochre-meadow-grass.webp",
+      "size": [
+        384,
+        222
+      ],
+      "anchor": [
+        0.5,
+        0.77
+      ],
+      "worldWidth": 120
+    },
+    "bytes": 92084
+  }
+]

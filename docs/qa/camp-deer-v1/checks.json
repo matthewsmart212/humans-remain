@@ -1,0 +1,23 @@
+{
+  "passed": true,
+  "doe": 6,
+  "stag": 6,
+  "frames": 160,
+  "directionalViewsPerAnimal": 8,
+  "textureAtlases": 10,
+  "decodedBytes": 32112640,
+  "artworkBytes": 4063504,
+  "checks": [
+    "safe separated clearings outside camp; isolated editor draft",
+    "leashed collision-aware walk and run, grazing, nearby flee, distant sleeping",
+    "distance-driven quadruped gait, timed hit/fall/downed",
+    "doe four punches or two axe cuts; stag six punches or three axe cuts; no axe stamina cost",
+    "two/three venison portions; no duplicate harvest",
+    "raw/cooked venison cooking, collection, hold, use, drop/recollect and scene travel",
+    "stack weight conservation across three foods",
+    "one atlas draw per visible animal and offscreen culling",
+    "160 complete transparent padded frames with intact antlers",
+    "six quick slots including refillable canteen"
+  ],
+  "physicalIPhoneTested": false
+}

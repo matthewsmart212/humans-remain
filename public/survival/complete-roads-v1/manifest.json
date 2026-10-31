@@ -1,0 +1,1106 @@
+[
+  {
+    "id": "route-01",
+    "key": "roadComplete1",
+    "x": 2224,
+    "y": 3696,
+    "width": 1024,
+    "height": 1536,
+    "roads": [
+      "camp-south-painted",
+      "camp-south"
+    ],
+    "material": "camp-stone",
+    "file": "public/survival/complete-roads-v1/route-01.webp",
+    "bytes": 860932
+  },
+  {
+    "id": "route-02",
+    "key": "roadComplete2",
+    "x": -1008,
+    "y": 4416,
+    "width": 1536,
+    "height": 1024,
+    "roads": [
+      "camp-southwest",
+      "southwest-camp-trail"
+    ],
+    "material": "camp-stone",
+    "file": "public/survival/complete-roads-v1/route-02.webp",
+    "bytes": 746432
+  },
+  {
+    "id": "route-03",
+    "key": "roadComplete3",
+    "x": 5072,
+    "y": -448,
+    "width": 1024,
+    "height": 1536,
+    "roads": [
+      "village-approach",
+      "village-arrival"
+    ],
+    "material": "dry-earth",
+    "file": "public/survival/complete-roads-v1/route-03.webp",
+    "bytes": 793574
+  },
+  {
+    "id": "route-04",
+    "key": "roadComplete4",
+    "x": 5488,
+    "y": 288,
+    "width": 1024,
+    "height": 1536,
+    "roads": [
+      "village-approach",
+      "village-arrival"
+    ],
+    "material": "dry-earth",
+    "file": "public/survival/complete-roads-v1/route-04.webp",
+    "bytes": 842008
+  },
+  {
+    "id": "route-05",
+    "key": "roadComplete5",
+    "x": 1632,
+    "y": -2000,
+    "width": 1536,
+    "height": 1024,
+    "roads": [
+      "north-woodland-link"
+    ],
+    "material": "dry-earth",
+    "file": "public/survival/complete-roads-v1/route-05.webp",
+    "bytes": 771264
+  },
+  {
+    "id": "route-06",
+    "key": "roadComplete6",
+    "x": 5904,
+    "y": 1632,
+    "width": 1024,
+    "height": 1536,
+    "roads": [
+      "village-approach"
+    ],
+    "material": "dry-earth",
+    "file": "public/survival/complete-roads-v1/route-06.webp",
+    "bytes": 786330
+  },
+  {
+    "id": "route-07",
+    "key": "roadComplete7",
+    "x": 5904,
+    "y": 1792,
+    "width": 1024,
+    "height": 1536,
+    "roads": [
+      "village-approach"
+    ],
+    "material": "dry-earth",
+    "file": "public/survival/complete-roads-v1/route-07.webp",
+    "bytes": 744772
+  },
+  {
+    "id": "route-08",
+    "key": "roadComplete8",
+    "x": -1328,
+    "y": -976,
+    "width": 1536,
+    "height": 1024,
+    "roads": [
+      "northwest-river-approach"
+    ],
+    "material": "camp-stone",
+    "file": "public/survival/complete-roads-v1/route-08.webp",
+    "bytes": 734666
+  },
+  {
+    "id": "route-09",
+    "key": "roadComplete9",
+    "x": 4032,
+    "y": -1600,
+    "width": 1536,
+    "height": 1024,
+    "roads": [
+      "camp-village",
+      "village-arrival",
+      "village-main"
+    ],
+    "material": "camp-stone",
+    "file": "public/survival/complete-roads-v1/route-09.webp",
+    "bytes": 709730
+  },
+  {
+    "id": "route-10",
+    "key": "roadComplete10",
+    "x": 288,
+    "y": -2192,
+    "width": 1536,
+    "height": 1024,
+    "roads": [
+      "north-woodland-link"
+    ],
+    "material": "dry-earth",
+    "file": "public/survival/complete-roads-v1/route-10.webp",
+    "bytes": 738558
+  },
+  {
+    "id": "route-11",
+    "key": "roadComplete11",
+    "x": 160,
+    "y": -2208,
+    "width": 1536,
+    "height": 1024,
+    "roads": [
+      "north-woodland-link"
+    ],
+    "material": "dry-earth",
+    "file": "public/survival/complete-roads-v1/route-11.webp",
+    "bytes": 756970
+  },
+  {
+    "id": "route-12",
+    "key": "roadComplete12",
+    "x": 6080,
+    "y": 2960,
+    "width": 1024,
+    "height": 1536,
+    "roads": [
+      "camp-southeast",
+      "village-approach",
+      "works-approach"
+    ],
+    "material": "dry-earth",
+    "file": "public/survival/complete-roads-v1/route-12.webp",
+    "bytes": 780736
+  },
+  {
+    "id": "route-13",
+    "key": "roadComplete13",
+    "x": 2880,
+    "y": -2352,
+    "width": 1536,
+    "height": 1024,
+    "roads": [
+      "village-main",
+      "village-factory",
+      "north-woodland-link"
+    ],
+    "material": "camp-stone",
+    "file": "public/survival/complete-roads-v1/route-13.webp",
+    "bytes": 759704
+  },
+  {
+    "id": "route-14",
+    "key": "roadComplete14",
+    "x": 1408,
+    "y": 6080,
+    "width": 1024,
+    "height": 1536,
+    "roads": [
+      "camp-south",
+      "southern-trail"
+    ],
+    "material": "dry-earth",
+    "file": "public/survival/complete-roads-v1/route-14.webp",
+    "bytes": 728964
+  },
+  {
+    "id": "route-15",
+    "key": "roadComplete15",
+    "x": -2928,
+    "y": 2656,
+    "width": 1536,
+    "height": 1024,
+    "roads": [
+      "west-camp-trail",
+      "west-river-approach"
+    ],
+    "material": "dry-earth",
+    "file": "public/survival/complete-roads-v1/route-15.webp",
+    "bytes": 696156
+  },
+  {
+    "id": "route-16",
+    "key": "roadComplete16",
+    "x": 3728,
+    "y": -2320,
+    "width": 1536,
+    "height": 1024,
+    "roads": [
+      "village-main",
+      "village-factory",
+      "north-woodland-link"
+    ],
+    "material": "camp-stone",
+    "file": "public/survival/complete-roads-v1/route-16.webp",
+    "bytes": 714456
+  },
+  {
+    "id": "route-17",
+    "key": "roadComplete17",
+    "x": -1184,
+    "y": -2416,
+    "width": 1536,
+    "height": 1024,
+    "roads": [
+      "north-woodland-link"
+    ],
+    "material": "dry-earth",
+    "file": "public/survival/complete-roads-v1/route-17.webp",
+    "bytes": 787560
+  },
+  {
+    "id": "route-18",
+    "key": "roadComplete18",
+    "x": 4832,
+    "y": -2608,
+    "width": 1024,
+    "height": 1536,
+    "roads": [
+      "village-main",
+      "village-factory"
+    ],
+    "material": "camp-stone",
+    "file": "public/survival/complete-roads-v1/route-18.webp",
+    "bytes": 713350
+  },
+  {
+    "id": "route-19",
+    "key": "roadComplete19",
+    "x": 6592,
+    "y": 3344,
+    "width": 1536,
+    "height": 1024,
+    "roads": [
+      "village-approach",
+      "works-approach"
+    ],
+    "material": "dry-earth",
+    "file": "public/survival/complete-roads-v1/route-19.webp",
+    "bytes": 832286
+  },
+  {
+    "id": "route-20",
+    "key": "roadComplete20",
+    "x": -2576,
+    "y": 5168,
+    "width": 1536,
+    "height": 1024,
+    "roads": [
+      "southwest-camp-trail",
+      "southwest-river-approach",
+      "waterworks-bridge"
+    ],
+    "material": "dry-earth",
+    "file": "public/survival/complete-roads-v1/route-20.webp",
+    "bytes": 784184
+  },
+  {
+    "id": "route-21",
+    "key": "roadComplete21",
+    "x": -2736,
+    "y": -1280,
+    "width": 1536,
+    "height": 1024,
+    "roads": [
+      "northwest-river-approach",
+      "logging-bridge",
+      "north-woodland-link"
+    ],
+    "material": "dark-earth",
+    "file": "public/survival/complete-roads-v1/route-21.webp",
+    "bytes": 677112
+  },
+  {
+    "id": "route-22",
+    "key": "roadComplete22",
+    "x": -3776,
+    "y": 2528,
+    "width": 1536,
+    "height": 1024,
+    "roads": [
+      "west-river-approach"
+    ],
+    "material": "dry-earth",
+    "file": "public/survival/complete-roads-v1/route-22.webp",
+    "bytes": 733104
+  },
+  {
+    "id": "route-23",
+    "key": "roadComplete23",
+    "x": 7328,
+    "y": 2000,
+    "width": 1024,
+    "height": 1536,
+    "roads": [
+      "works-approach"
+    ],
+    "material": "dry-earth",
+    "file": "public/survival/complete-roads-v1/route-23.webp",
+    "bytes": 699568
+  },
+  {
+    "id": "route-24",
+    "key": "roadComplete24",
+    "x": -3888,
+    "y": 2512,
+    "width": 1536,
+    "height": 1024,
+    "roads": [
+      "west-river-approach"
+    ],
+    "material": "dry-earth",
+    "file": "public/survival/complete-roads-v1/route-24.webp",
+    "bytes": 762228
+  },
+  {
+    "id": "route-25",
+    "key": "roadComplete25",
+    "x": 5648,
+    "y": -2144,
+    "width": 1536,
+    "height": 1024,
+    "roads": [
+      "village-factory"
+    ],
+    "material": "dry-earth",
+    "file": "public/survival/complete-roads-v1/route-25.webp",
+    "bytes": 734626
+  },
+  {
+    "id": "route-26",
+    "key": "roadComplete26",
+    "x": 1664,
+    "y": 7328,
+    "width": 1024,
+    "height": 1536,
+    "roads": [
+      "southern-trail",
+      "meadow-north-approach",
+      "meadow-footbridge"
+    ],
+    "material": "dry-earth",
+    "file": "public/survival/complete-roads-v1/route-26.webp",
+    "bytes": 674288
+  },
+  {
+    "id": "route-27",
+    "key": "roadComplete27",
+    "x": 7360,
+    "y": 1184,
+    "width": 1536,
+    "height": 1024,
+    "roads": [
+      "works-approach",
+      "works-north",
+      "works-scrap-trail"
+    ],
+    "material": "dry-earth",
+    "file": "public/survival/complete-roads-v1/route-27.webp",
+    "bytes": 676106
+  },
+  {
+    "id": "route-28",
+    "key": "roadComplete28",
+    "x": 7392,
+    "y": 1056,
+    "width": 1536,
+    "height": 1024,
+    "roads": [
+      "works-approach",
+      "works-north",
+      "works-scrap-trail"
+    ],
+    "material": "dry-earth",
+    "file": "public/survival/complete-roads-v1/route-28.webp",
+    "bytes": 766568
+  },
+  {
+    "id": "route-29",
+    "key": "roadComplete29",
+    "x": 6384,
+    "y": -1584,
+    "width": 1536,
+    "height": 1024,
+    "roads": [
+      "village-factory"
+    ],
+    "material": "dry-earth",
+    "file": "public/survival/complete-roads-v1/route-29.webp",
+    "bytes": 740008
+  },
+  {
+    "id": "route-30",
+    "key": "roadComplete30",
+    "x": 7632,
+    "y": 336,
+    "width": 1024,
+    "height": 1536,
+    "roads": [
+      "works-approach",
+      "works-north",
+      "works-scrap-trail",
+      "factory-arrival"
+    ],
+    "material": "dry-earth",
+    "file": "public/survival/complete-roads-v1/route-30.webp",
+    "bytes": 731062
+  },
+  {
+    "id": "route-31",
+    "key": "roadComplete31",
+    "x": 7808,
+    "y": 464,
+    "width": 1024,
+    "height": 1536,
+    "roads": [
+      "works-approach",
+      "works-north",
+      "works-scrap-trail"
+    ],
+    "material": "dry-earth",
+    "file": "public/survival/complete-roads-v1/route-31.webp",
+    "bytes": 679518
+  },
+  {
+    "id": "route-32",
+    "key": "roadComplete32",
+    "x": -2512,
+    "y": -2560,
+    "width": 1536,
+    "height": 1024,
+    "roads": [
+      "north-woodland-link"
+    ],
+    "material": "dark-earth",
+    "file": "public/survival/complete-roads-v1/route-32.webp",
+    "bytes": 669934
+  },
+  {
+    "id": "route-33",
+    "key": "roadComplete33",
+    "x": -3472,
+    "y": -1728,
+    "width": 1536,
+    "height": 1024,
+    "roads": [
+      "northwest-river-approach",
+      "logging-bridge",
+      "north-woodland-link"
+    ],
+    "material": "dark-earth",
+    "file": "public/survival/complete-roads-v1/route-33.webp",
+    "bytes": 724916
+  },
+  {
+    "id": "route-34",
+    "key": "roadComplete34",
+    "x": 7696,
+    "y": -1008,
+    "width": 1024,
+    "height": 1536,
+    "roads": [
+      "works-north",
+      "factory-arrival",
+      "factory-main",
+      "village-factory"
+    ],
+    "material": "works-gravel",
+    "file": "public/survival/complete-roads-v1/route-34.webp",
+    "bytes": 721388
+  },
+  {
+    "id": "route-35",
+    "key": "roadComplete35",
+    "x": -3920,
+    "y": 5392,
+    "width": 1536,
+    "height": 1024,
+    "roads": [
+      "waterworks-bridge",
+      "waterworks-arrival",
+      "western-bank-link"
+    ],
+    "material": "dark-earth",
+    "file": "public/survival/complete-roads-v1/route-35.webp",
+    "bytes": 771418
+  },
+  {
+    "id": "route-36",
+    "key": "roadComplete36",
+    "x": 8624,
+    "y": 1456,
+    "width": 1024,
+    "height": 1536,
+    "roads": [
+      "works-scrap-trail"
+    ],
+    "material": "dry-earth",
+    "file": "public/survival/complete-roads-v1/route-36.webp",
+    "bytes": 650640
+  },
+  {
+    "id": "route-37",
+    "key": "roadComplete37",
+    "x": 1504,
+    "y": 8416,
+    "width": 1024,
+    "height": 1536,
+    "roads": [
+      "meadow-footbridge",
+      "meadow-arrival",
+      "meadow-west-link"
+    ],
+    "material": "dry-earth",
+    "file": "public/survival/complete-roads-v1/route-37.webp",
+    "bytes": 754454
+  },
+  {
+    "id": "route-38",
+    "key": "roadComplete38",
+    "x": 7728,
+    "y": -1216,
+    "width": 1536,
+    "height": 1024,
+    "roads": [
+      "factory-arrival",
+      "factory-main",
+      "village-factory"
+    ],
+    "material": "works-gravel",
+    "file": "public/survival/complete-roads-v1/route-38.webp",
+    "bytes": 787656
+  },
+  {
+    "id": "route-39",
+    "key": "roadComplete39",
+    "x": -5216,
+    "y": 2400,
+    "width": 1536,
+    "height": 1024,
+    "roads": [
+      "west-river-approach",
+      "west-camp-bridge",
+      "west-logging-link",
+      "western-bank-link"
+    ],
+    "material": "dry-earth",
+    "file": "public/survival/complete-roads-v1/route-39.webp",
+    "bytes": 669756
+  },
+  {
+    "id": "route-40",
+    "key": "roadComplete40",
+    "x": 720,
+    "y": 8816,
+    "width": 1536,
+    "height": 1024,
+    "roads": [
+      "meadow-footbridge",
+      "meadow-arrival",
+      "meadow-west-link"
+    ],
+    "material": "dry-earth",
+    "file": "public/survival/complete-roads-v1/route-40.webp",
+    "bytes": 806116
+  },
+  {
+    "id": "route-41",
+    "key": "roadComplete41",
+    "x": -4112,
+    "y": 5360,
+    "width": 1024,
+    "height": 1536,
+    "roads": [
+      "waterworks-arrival",
+      "western-bank-link"
+    ],
+    "material": "dark-earth",
+    "file": "public/survival/complete-roads-v1/route-41.webp",
+    "bytes": 741694
+  },
+  {
+    "id": "route-42",
+    "key": "roadComplete42",
+    "x": 8992,
+    "y": 2800,
+    "width": 1024,
+    "height": 1536,
+    "roads": [
+      "works-scrap-trail"
+    ],
+    "material": "dry-earth",
+    "file": "public/survival/complete-roads-v1/route-42.webp",
+    "bytes": 708012
+  },
+  {
+    "id": "route-43",
+    "key": "roadComplete43",
+    "x": -5088,
+    "y": 4608,
+    "width": 1536,
+    "height": 1024,
+    "roads": [
+      "western-bank-link"
+    ],
+    "material": "dry-earth",
+    "file": "public/survival/complete-roads-v1/route-43.webp",
+    "bytes": 733044
+  },
+  {
+    "id": "route-44",
+    "key": "roadComplete44",
+    "x": 8848,
+    "y": 3744,
+    "width": 1024,
+    "height": 1536,
+    "roads": [
+      "works-scrap-trail"
+    ],
+    "material": "dry-earth",
+    "file": "public/survival/complete-roads-v1/route-44.webp",
+    "bytes": 669260
+  },
+  {
+    "id": "route-45",
+    "key": "roadComplete45",
+    "x": -4688,
+    "y": -1904,
+    "width": 1536,
+    "height": 1024,
+    "roads": [
+      "logging-bridge",
+      "logging-arrival"
+    ],
+    "material": "dark-earth",
+    "file": "public/survival/complete-roads-v1/route-45.webp",
+    "bytes": 669046
+  },
+  {
+    "id": "route-46",
+    "key": "roadComplete46",
+    "x": -5472,
+    "y": 2032,
+    "width": 1024,
+    "height": 1536,
+    "roads": [
+      "west-camp-bridge",
+      "west-logging-link",
+      "western-bank-link"
+    ],
+    "material": "dry-earth",
+    "file": "public/survival/complete-roads-v1/route-46.webp",
+    "bytes": 694760
+  },
+  {
+    "id": "route-47",
+    "key": "roadComplete47",
+    "x": -624,
+    "y": 9072,
+    "width": 1536,
+    "height": 1024,
+    "roads": [
+      "meadow-west-link"
+    ],
+    "material": "dry-earth",
+    "file": "public/survival/complete-roads-v1/route-47.webp",
+    "bytes": 743222
+  },
+  {
+    "id": "route-48",
+    "key": "roadComplete48",
+    "x": -4720,
+    "y": -2048,
+    "width": 1024,
+    "height": 1536,
+    "roads": [
+      "logging-arrival"
+    ],
+    "material": "dark-earth",
+    "file": "public/survival/complete-roads-v1/route-48.webp",
+    "bytes": 663842
+  },
+  {
+    "id": "route-49",
+    "key": "roadComplete49",
+    "x": -5760,
+    "y": 3232,
+    "width": 1024,
+    "height": 1536,
+    "roads": [
+      "western-bank-link"
+    ],
+    "material": "dry-earth",
+    "file": "public/survival/complete-roads-v1/route-49.webp",
+    "bytes": 848544
+  },
+  {
+    "id": "route-50",
+    "key": "roadComplete50",
+    "x": 8960,
+    "y": 5088,
+    "width": 1024,
+    "height": 1536,
+    "roads": [
+      "works-scrap-trail",
+      "scrap-arrival"
+    ],
+    "material": "salvage-gravel",
+    "file": "public/survival/complete-roads-v1/route-50.webp",
+    "bytes": 635328
+  },
+  {
+    "id": "route-51",
+    "key": "roadComplete51",
+    "x": -6048,
+    "y": 3760,
+    "width": 1536,
+    "height": 1024,
+    "roads": [
+      "western-bank-link"
+    ],
+    "material": "dry-earth",
+    "file": "public/survival/complete-roads-v1/route-51.webp",
+    "bytes": 746298
+  },
+  {
+    "id": "route-52",
+    "key": "roadComplete52",
+    "x": -2208,
+    "y": 8800,
+    "width": 1536,
+    "height": 1024,
+    "roads": [
+      "lower-river-bridge",
+      "meadow-west-link"
+    ],
+    "material": "dry-earth",
+    "file": "public/survival/complete-roads-v1/route-52.webp",
+    "bytes": 773786
+  },
+  {
+    "id": "route-53",
+    "key": "roadComplete53",
+    "x": -1968,
+    "y": 8960,
+    "width": 1536,
+    "height": 1024,
+    "roads": [
+      "meadow-west-link"
+    ],
+    "material": "dry-earth",
+    "file": "public/survival/complete-roads-v1/route-53.webp",
+    "bytes": 668318
+  },
+  {
+    "id": "route-54",
+    "key": "roadComplete54",
+    "x": -3376,
+    "y": 8064,
+    "width": 1536,
+    "height": 1024,
+    "roads": [
+      "waterworks-south-approach",
+      "lower-river-bridge",
+      "meadow-west-link"
+    ],
+    "material": "dark-earth",
+    "file": "public/survival/complete-roads-v1/route-54.webp",
+    "bytes": 750776
+  },
+  {
+    "id": "route-55",
+    "key": "roadComplete55",
+    "x": -3504,
+    "y": 7984,
+    "width": 1536,
+    "height": 1024,
+    "roads": [
+      "waterworks-south-approach",
+      "lower-river-bridge",
+      "meadow-west-link"
+    ],
+    "material": "dark-earth",
+    "file": "public/survival/complete-roads-v1/route-55.webp",
+    "bytes": 809758
+  },
+  {
+    "id": "route-56",
+    "key": "roadComplete56",
+    "x": -4304,
+    "y": 6656,
+    "width": 1024,
+    "height": 1536,
+    "roads": [
+      "waterworks-arrival",
+      "waterworks-south-approach"
+    ],
+    "material": "dark-earth",
+    "file": "public/survival/complete-roads-v1/route-56.webp",
+    "bytes": 797020
+  },
+  {
+    "id": "route-57",
+    "key": "roadComplete57",
+    "x": -6128,
+    "y": 880,
+    "width": 1024,
+    "height": 1536,
+    "roads": [
+      "west-logging-link"
+    ],
+    "material": "dark-earth",
+    "file": "public/survival/complete-roads-v1/route-57.webp",
+    "bytes": 784556
+  },
+  {
+    "id": "route-58",
+    "key": "roadComplete58",
+    "x": 8976,
+    "y": -2208,
+    "width": 1024,
+    "height": 1536,
+    "roads": [
+      "factory-main"
+    ],
+    "material": "works-gravel",
+    "file": "public/survival/complete-roads-v1/route-58.webp",
+    "bytes": 683862
+  },
+  {
+    "id": "route-59",
+    "key": "roadComplete59",
+    "x": 1888,
+    "y": 9760,
+    "width": 1024,
+    "height": 1536,
+    "roads": [
+      "meadow-arrival",
+      "meadow-east-link"
+    ],
+    "material": "dry-earth",
+    "file": "public/survival/complete-roads-v1/route-59.webp",
+    "bytes": 847634
+  },
+  {
+    "id": "route-60",
+    "key": "roadComplete60",
+    "x": -4560,
+    "y": 7168,
+    "width": 1536,
+    "height": 1024,
+    "roads": [
+      "waterworks-arrival",
+      "waterworks-south-approach"
+    ],
+    "material": "dark-earth",
+    "file": "public/survival/complete-roads-v1/route-60.webp",
+    "bytes": 751290
+  },
+  {
+    "id": "route-61",
+    "key": "roadComplete61",
+    "x": 8512,
+    "y": 6448,
+    "width": 1024,
+    "height": 1536,
+    "roads": [
+      "scrap-arrival",
+      "scrap-main"
+    ],
+    "material": "salvage-gravel",
+    "file": "public/survival/complete-roads-v1/route-61.webp",
+    "bytes": 715738
+  },
+  {
+    "id": "route-62",
+    "key": "roadComplete62",
+    "x": 6976,
+    "y": 8224,
+    "width": 1536,
+    "height": 1024,
+    "roads": [
+      "scrap-main",
+      "scrap-meadow-approach"
+    ],
+    "material": "salvage-gravel",
+    "file": "public/survival/complete-roads-v1/route-62.webp",
+    "bytes": 644020
+  },
+  {
+    "id": "route-63",
+    "key": "roadComplete63",
+    "x": -6336,
+    "y": 288,
+    "width": 1024,
+    "height": 1536,
+    "roads": [
+      "west-logging-link"
+    ],
+    "material": "dark-earth",
+    "file": "public/survival/complete-roads-v1/route-63.webp",
+    "bytes": 682616
+  },
+  {
+    "id": "route-64",
+    "key": "roadComplete64",
+    "x": 5696,
+    "y": 9184,
+    "width": 1536,
+    "height": 1024,
+    "roads": [
+      "scrap-meadow-approach"
+    ],
+    "material": "salvage-gravel",
+    "file": "public/survival/complete-roads-v1/route-64.webp",
+    "bytes": 757790
+  },
+  {
+    "id": "route-65",
+    "key": "roadComplete65",
+    "x": 7904,
+    "y": 7440,
+    "width": 1536,
+    "height": 1024,
+    "roads": [
+      "scrap-main",
+      "scrap-meadow-approach"
+    ],
+    "material": "salvage-gravel",
+    "file": "public/survival/complete-roads-v1/route-65.webp",
+    "bytes": 750502
+  },
+  {
+    "id": "route-66",
+    "key": "roadComplete66",
+    "x": 2960,
+    "y": 10160,
+    "width": 1536,
+    "height": 1024,
+    "roads": [
+      "creek-footbridge",
+      "meadow-east-link"
+    ],
+    "material": "dry-earth",
+    "file": "public/survival/complete-roads-v1/route-66.webp",
+    "bytes": 697080
+  },
+  {
+    "id": "route-67",
+    "key": "roadComplete67",
+    "x": 6832,
+    "y": 8464,
+    "width": 1536,
+    "height": 1024,
+    "roads": [
+      "scrap-main",
+      "scrap-meadow-approach"
+    ],
+    "material": "salvage-gravel",
+    "file": "public/survival/complete-roads-v1/route-67.webp",
+    "bytes": 722024
+  },
+  {
+    "id": "route-68",
+    "key": "roadComplete68",
+    "x": 5616,
+    "y": 9312,
+    "width": 1536,
+    "height": 1024,
+    "roads": [
+      "scrap-meadow-approach"
+    ],
+    "material": "salvage-gravel",
+    "file": "public/survival/complete-roads-v1/route-68.webp",
+    "bytes": 709472
+  },
+  {
+    "id": "route-69",
+    "key": "roadComplete69",
+    "x": 4336,
+    "y": 9888,
+    "width": 1536,
+    "height": 1024,
+    "roads": [
+      "scrap-meadow-approach",
+      "creek-footbridge"
+    ],
+    "material": "dry-earth",
+    "file": "public/survival/complete-roads-v1/route-69.webp",
+    "bytes": 747680
+  },
+  {
+    "id": "route-70",
+    "key": "roadComplete70",
+    "x": 9296,
+    "y": -2448,
+    "width": 1024,
+    "height": 1536,
+    "roads": [
+      "factory-main"
+    ],
+    "material": "works-gravel",
+    "file": "public/survival/complete-roads-v1/route-70.webp",
+    "bytes": 760228
+  },
+  {
+    "id": "route-71",
+    "key": "roadComplete71",
+    "x": 2128,
+    "y": 10400,
+    "width": 1536,
+    "height": 1024,
+    "roads": [
+      "meadow-arrival",
+      "meadow-east-link"
+    ],
+    "material": "dry-earth",
+    "file": "public/survival/complete-roads-v1/route-71.webp",
+    "bytes": 777112
+  },
+  {
+    "id": "route-72",
+    "key": "roadComplete72",
+    "x": -5504,
+    "y": -2784,
+    "width": 1024,
+    "height": 1536,
+    "roads": [
+      "logging-arrival",
+      "west-logging-link"
+    ],
+    "material": "dark-earth",
+    "file": "public/survival/complete-roads-v1/route-72.webp",
+    "bytes": 756696
+  },
+  {
+    "id": "route-73",
+    "key": "roadComplete73",
+    "x": -6288,
+    "y": -1072,
+    "width": 1024,
+    "height": 1536,
+    "roads": [
+      "west-logging-link"
+    ],
+    "material": "dark-earth",
+    "file": "public/survival/complete-roads-v1/route-73.webp",
+    "bytes": 644102
+  },
+  {
+    "id": "route-74",
+    "key": "roadComplete74",
+    "x": -6144,
+    "y": -1488,
+    "width": 1024,
+    "height": 1536,
+    "roads": [
+      "west-logging-link"
+    ],
+    "material": "dark-earth",
+    "file": "public/survival/complete-roads-v1/route-74.webp",
+    "bytes": 797248
+  }
+]

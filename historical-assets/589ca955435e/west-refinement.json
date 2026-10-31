@@ -1,0 +1,6 @@
+{
+  "mode": "built-in image_gen",
+  "prompt": "Use case: precise-object-edit. This image is a 1536x1024 registered game terrain. Change ONLY the small ghosted/double-exposed cobblestone area between x1100 and1280, y430 and650, where the horizontal road connects to the camp road on the right. Replace the translucent overlapping stones there with a single layer of solid, sharply painted irregular stones bedded in dark brown earth. Match the ORIGINAL camp path immediately to its right: cream and warm grey irregular stones with small dark edges. There must be no see-through stones and no double contours. Preserve the road centreline, width, scale, ground shoulders and ALL other image pixels as closely as possible, especially the original camp portion x1300..1536 and the whole left1100pixels. Do NOT alter colour, lighting, framing or texture scale elsewhere. No blur, no foliage, no new objects. Same 1536x1024 opaque image.",
+  "source": "west.png",
+  "output": "west-final.png"
+}

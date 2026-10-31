@@ -1,0 +1,10 @@
+{
+  "mode": "Built-in image_gen",
+  "purpose": "Restyle existing tree stages against the actual camp, interactive foliage and Scrap Runner references; keep chopping unchanged.",
+  "references": [
+    "docs/qa/foliage-v5/dense-path-day.webp",
+    "docs/qa/camp-moss-no-gates-v1/after/base_shelter_t1.webp"
+  ],
+  "prompts": {},
+  "finalBirchSpacingEdit": "Use case: precise-object-edit. Edit this transparent game sprite atlas. ONLY make BOTH leafy birch crowns 20 percent NARROWER so there is a clean empty transparent vertical gap of at least50pixels between the first and second tree, and ample gap before the stump. Do not flatten or squash the leaves; carefully redraw outer branches inward. Keep both trees the exact same crown shape, height and foliage pattern as each other. Preserve all other things: painted illustrated style, colors, lighting, white bark, trunk positions, lower trunks, notch, all roots, stump, full canvas dimensions1536x1024. The first tree remains intact; second has the notch; third is the stump. Nothing clipped. True transparent background, no haze, no text."
+}

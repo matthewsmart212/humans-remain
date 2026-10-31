@@ -1,0 +1,22 @@
+{
+  "result": "pass",
+  "newRocks": 20,
+  "solidRocks": 17,
+  "walkablePatches": 3,
+  "transformedCollisionCases": 306,
+  "bytes": 2065360,
+  "decodedMiB": 17.672607421875,
+  "texturesFor2000Instances": 20,
+  "unusedStartupRequests": 0,
+  "checks": [
+    "Catalogue visibility and IDs",
+    "Transparent exports and dimensions",
+    "Placement validation",
+    "Collision polygons",
+    "Scale, rotation and mirroring",
+    "Walkable ground details render below the player",
+    "Shared images",
+    "Saved layout immutability"
+  ],
+  "deviceFPSMeasured": false
+}

@@ -1,0 +1,17 @@
+{
+  "result": "pass",
+  "renderer": "Production CanvasKit software renderer",
+  "captures": [
+    "logging-woods",
+    "northern-birch",
+    "village-edge",
+    "weathered-hollows",
+    "southern-meadows",
+    "river-willows"
+  ],
+  "missing": [],
+  "sourceRevision": 73,
+  "placements": 4465,
+  "liveMapWrites": false,
+  "deviceFPSMeasured": false
+}

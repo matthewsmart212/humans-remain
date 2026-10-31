@@ -1,0 +1,49 @@
+{
+  "version": "road-sections-v2",
+  "generation": "Built-in image_gen.imagegen",
+  "materials": [
+    {
+      "id": "camp-stone",
+      "width": 1024,
+      "height": 1536,
+      "bytes": 540008,
+      "alphaPreserved": true,
+      "path": "/survival/road-sections-v2/camp-stone.webp"
+    },
+    {
+      "id": "dry-earth",
+      "width": 1024,
+      "height": 1536,
+      "bytes": 597546,
+      "alphaPreserved": true,
+      "path": "/survival/road-sections-v2/dry-earth.webp"
+    },
+    {
+      "id": "dark-earth",
+      "width": 1024,
+      "height": 1536,
+      "bytes": 662528,
+      "alphaPreserved": true,
+      "path": "/survival/road-sections-v2/dark-earth.webp"
+    },
+    {
+      "id": "works-gravel",
+      "width": 1024,
+      "height": 1536,
+      "bytes": 622874,
+      "alphaPreserved": true,
+      "path": "/survival/road-sections-v2/works-gravel.webp"
+    },
+    {
+      "id": "salvage-gravel",
+      "width": 1024,
+      "height": 1536,
+      "bytes": 581504,
+      "alphaPreserved": true,
+      "path": "/survival/road-sections-v2/salvage-gravel.webp"
+    }
+  ],
+  "totalBytes": 3004460,
+  "loading": "Optional background detail",
+  "prompts": "artwork-archive/road-sections-v2/prompts.json"
+}

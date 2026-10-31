@@ -1,0 +1,109 @@
+{
+  "result": "pass",
+  "streams": 3,
+  "lakes": 1,
+  "waterfalls": 10,
+  "bridges": 4,
+  "campPreserved": true,
+  "waterAndDryLandCollision": true,
+  "entryAssetsAdded": 0,
+  "motion": [
+    {
+      "id": "logging-stream",
+      "mode": "detail",
+      "water": 26177,
+      "moving": 21727,
+      "dry": 97221,
+      "dryChanged": 0
+    },
+    {
+      "id": "logging-stream",
+      "mode": "without-atlas",
+      "water": 26118,
+      "moving": 20376,
+      "dry": 97221,
+      "dryChanged": 0
+    },
+    {
+      "id": "logging-stream",
+      "mode": "preview",
+      "water": 25623,
+      "moving": 14631,
+      "dry": 96398,
+      "dryChanged": 0
+    },
+    {
+      "id": "western-stream",
+      "mode": "detail",
+      "water": 32776,
+      "moving": 27262,
+      "dry": 65304,
+      "dryChanged": 0
+    },
+    {
+      "id": "western-stream",
+      "mode": "without-atlas",
+      "water": 32731,
+      "moving": 26085,
+      "dry": 65304,
+      "dryChanged": 0
+    },
+    {
+      "id": "western-stream",
+      "mode": "preview",
+      "water": 33453,
+      "moving": 12006,
+      "dry": 63691,
+      "dryChanged": 0
+    },
+    {
+      "id": "lower-lake",
+      "mode": "detail",
+      "water": 201451,
+      "moving": 141161,
+      "dry": 8,
+      "dryChanged": 0
+    },
+    {
+      "id": "lower-lake",
+      "mode": "without-atlas",
+      "water": 201451,
+      "moving": 132675,
+      "dry": 8,
+      "dryChanged": 0
+    },
+    {
+      "id": "lower-lake",
+      "mode": "preview",
+      "water": 201692,
+      "moving": 93504,
+      "dry": 19,
+      "dryChanged": 0
+    },
+    {
+      "id": "southern-stream",
+      "mode": "detail",
+      "water": 45420,
+      "moving": 27453,
+      "dry": 71871,
+      "dryChanged": 0
+    },
+    {
+      "id": "southern-stream",
+      "mode": "without-atlas",
+      "water": 45374,
+      "moving": 25456,
+      "dry": 71871,
+      "dryChanged": 0
+    },
+    {
+      "id": "southern-stream",
+      "mode": "preview",
+      "water": 46159,
+      "moving": 12331,
+      "dry": 69692,
+      "dryChanged": 0
+    }
+  ],
+  "browserAndPhone": "Unavailable; actual CanvasKit software rendering used."
+}

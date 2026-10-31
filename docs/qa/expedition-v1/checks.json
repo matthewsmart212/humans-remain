@@ -1,0 +1,37 @@
+{
+  "passed": true,
+  "capacityKg": 24,
+  "comfortableKg": 18,
+  "wildlife": {
+    "chicken": 20,
+    "rabbit": 18,
+    "deer": 12,
+    "boar": 7,
+    "wolf": 7
+  },
+  "habitats": 31,
+  "range": {
+    "x": 14500,
+    "y": 15500
+  },
+  "checks": [
+    "weight-based partial pickup and conserved stacks",
+    "all foods share backpack capacity",
+    "heavy movement and sprint cost",
+    "FIFO cooking, cold pause and rack backpressure",
+    "atomic cancellation and full-pack collection",
+    "fuel consumption, relighting and no wood waste",
+    "well-only drinking without carried water weight",
+    "meal cooldown and no waste at full vitals",
+    "real chest storage and guarded transfers",
+    "station movement lock and danger escape",
+    "interior travel preserves gear and catches up fire",
+    "map-wide collision-clear populations and safe start",
+    "slow, offscreen, capped respawn without duplicate harvest",
+    "flock alarm and alternating pack attacks",
+    "owned quick items and shared UI models",
+    "authored layout unchanged"
+  ],
+  "browserTested": false,
+  "physicalIPhoneTested": false
+}

@@ -1,0 +1,25 @@
+Safety Last phase B1a — starter courtyard art
+Generation mode: built-in image_gen only. No CLI fallback, no alpha cleanup, no Site changes.
+Style: chunky dark outlined hand-painted rusty industrial salvage, top-down three-quarter camera, upper-left object lighting, readable mobile silhouettes.
+
+SELECTED CLEAN OUTPUTS
+hearth-t1.png — 1428 x 1102 RGBA; alpha 0–255.
+Prompt notes: one cold unlit campfire body; low uneven stone ring, a few short logs on a shallow salvaged steel tray; no flames, glow, hot embers, smoke, terrain or floor patch. Referenced home-salvage.png and provisions.png for style/camera only. Visually clean transparency.
+
+well-t1.png — 1312 x 1199 RGBA; alpha 0–255.
+Prompt notes: low reclaimed brick/stone well; two rough timber uprights, crooked crossbar and rusty rope winch, descending rope and dented bucket; clear front approach, no roof or floor patch. Referenced home-salvage.png and provisions.png. Visually clean transparency.
+
+flame.png — 1263 x 1246 RGBA; alpha 0–255.
+Prompt notes: one connected upward-tapering orange/yellow painted flame cluster only; no logs, stones, coals, smoke, sparks, ground, halo or cast light. Referenced provisions.png flame style. Runtime animation and fuel extinction intended. Visually clean transparency.
+
+CHEST — TRANSPARENCY LIMITATION REMAINS
+storage-t1.png — 1536 x 1024 RGBA; alpha 0–254.
+Initial prompt: horizontal closed-lid rough plank chest, rope handles, teal salvage details, no floor/background/glow. Correct chest but broad warm haze remains around silhouette.
+
+storage-t1-clean.png — 1536 x 1024 RGBA; alpha 0–254.
+Targeted extraction edit prompt: preserve exact chest; remove every surrounding glow, haze, vignette, cast/contact shadow and background pixel; alpha zero outside silhouette and in handle gaps. Tool failed to remove visible halo. Preserve as rejected attempt, not production-clean.
+
+storage-t1-final.png — 1536 x 1024 RGBA; alpha 0–254.
+Fresh generation prompt: one primitive tier-one low wide rough plank supply chest, closed hinged lid with obvious seam, rope handles, tiny chipped teal hinge plates only, simple small latch; no thick metal bands or upright crate; chunky painted camera/style; emphatic crisp transparency, no glow/haze/cast shadow/contact shadow/backdrop/terrain; zero alpha outside exact silhouette.
+References: ONLY home-salvage.png and clean hearth-t1.png, no provisions.png.
+Result: tier-one form and restraint improved; unwanted warm halo STILL persists. This is not verified production-clean despite final filename. Parent informed. No programmatic masking or cleanup performed.

@@ -1,0 +1,254 @@
+{
+  "result": "pass",
+  "renderer": "Production CanvasKit software surface",
+  "captures": [
+    {
+      "name": "camp",
+      "sourcePosition": [
+        2422,
+        2269
+      ],
+      "size": [
+        844,
+        390
+      ],
+      "meanRGB": [
+        187.44,
+        117.23,
+        44.58
+      ]
+    },
+    {
+      "name": "logging-brown",
+      "sourcePosition": [
+        -5300,
+        -2500
+      ],
+      "size": [
+        844,
+        390
+      ],
+      "meanRGB": [
+        104.97,
+        75.31,
+        48.67
+      ]
+    },
+    {
+      "name": "village-green",
+      "sourcePosition": [
+        4300,
+        -2100
+      ],
+      "size": [
+        844,
+        390
+      ],
+      "meanRGB": [
+        99.68,
+        103.84,
+        31.42
+      ]
+    },
+    {
+      "name": "factory-brown",
+      "sourcePosition": [
+        10000,
+        -2300
+      ],
+      "size": [
+        844,
+        390
+      ],
+      "meanRGB": [
+        105.58,
+        75.4,
+        48.31
+      ]
+    },
+    {
+      "name": "waterworks-green",
+      "sourcePosition": [
+        -3900,
+        8000
+      ],
+      "size": [
+        844,
+        390
+      ],
+      "meanRGB": [
+        95.22,
+        102.73,
+        33.48
+      ]
+    },
+    {
+      "name": "scrapyard-brown",
+      "sourcePosition": [
+        8100,
+        8400
+      ],
+      "size": [
+        844,
+        390
+      ],
+      "meanRGB": [
+        110.92,
+        79.52,
+        46.76
+      ]
+    },
+    {
+      "name": "southern-meadow-green",
+      "sourcePosition": [
+        2200,
+        11200
+      ],
+      "size": [
+        844,
+        390
+      ],
+      "meanRGB": [
+        88.25,
+        104.85,
+        34.46
+      ]
+    },
+    {
+      "name": "western-transition",
+      "sourcePosition": [
+        -1500,
+        3200
+      ],
+      "size": [
+        844,
+        390
+      ],
+      "meanRGB": [
+        162.78,
+        102.67,
+        30.95
+      ]
+    },
+    {
+      "name": "southern-transition",
+      "sourcePosition": [
+        2000,
+        6500
+      ],
+      "size": [
+        844,
+        390
+      ],
+      "meanRGB": [
+        154.61,
+        102.46,
+        29.71
+      ]
+    },
+    {
+      "name": "four-square-contact",
+      "sourcePosition": [
+        -2150,
+        3800
+      ],
+      "size": [
+        844,
+        390
+      ],
+      "meanRGB": [
+        131.93,
+        103.23,
+        31.78
+      ]
+    },
+    {
+      "name": "meadow-detail",
+      "sourcePosition": [
+        2200,
+        11200
+      ],
+      "size": [
+        844,
+        390
+      ],
+      "meanRGB": [
+        88.14,
+        104.71,
+        35.17
+      ]
+    },
+    {
+      "name": "brown-detail",
+      "sourcePosition": [
+        -5300,
+        -2500
+      ],
+      "size": [
+        844,
+        390
+      ],
+      "meanRGB": [
+        104.31,
+        74.89,
+        48.63
+      ]
+    },
+    {
+      "name": "camp-edge-detail",
+      "sourcePosition": [
+        200,
+        2750
+      ],
+      "size": [
+        844,
+        390
+      ],
+      "meanRGB": [
+        174.22,
+        101.29,
+        38.09
+      ]
+    },
+    {
+      "name": "meadow-portrait",
+      "sourcePosition": [
+        2200,
+        11200
+      ],
+      "size": [
+        390,
+        844
+      ],
+      "meanRGB": [
+        88.3,
+        105.27,
+        35.11
+      ]
+    },
+    {
+      "name": "meadow-night",
+      "sourcePosition": [
+        2200,
+        11200
+      ],
+      "size": [
+        390,
+        844
+      ],
+      "meanRGB": [
+        14.64,
+        19.83,
+        18.13
+      ]
+    }
+  ],
+  "checks": [
+    "Regional colours visible at gameplay and overview scale",
+    "Green areas differ clearly from warm camp",
+    "Deeper brown woodland",
+    "Camp-edge and four-square contacts rendered",
+    "Portrait and night views rendered"
+  ],
+  "limitations": "No browser automation or physical iPhone performance test."
+}

@@ -1,0 +1,15 @@
+<!doctype html><html lang="en"><meta charset="utf-8"><title>Worker motion check</title>
+<style>body{background:#183c42;color:#ffedc7;font:16px system-ui;margin:24px}main{display:grid;grid-template-columns:repeat(4,250px);gap:12px}section{background:#31545a;border-radius:12px;text-align:center}canvas{width:250px;height:180px}button{padding:12px;margin:0 8px 16px 0;font:inherit}h1{font-size:24px}</style>
+<h1>Scrap Runner · shared game renderer</h1><button id="idle">Planted idle</button><button id="walk">Walk</button><button id="punch">Punch</button><button id="pause">Freeze frame</button><button id="extended">Punch pose</button><button id="stride">Peak stride</button><main></main>
+<script type="module">
+import {drawWorker} from '/src/worker-renderer.ts';
+import {createWorld,DIRECTION_ANGLES} from '/src/survival-engine.ts';
+import {SURVIVOR_IMAGE_SOURCES} from '/src/survivor-art.ts';
+let mode='idle',paused=false,phase=0;const imgs={};
+await Promise.all(Object.entries(SURVIVOR_IMAGE_SOURCES).map(async ([key,url])=>{const im=new Image();im.src=url;await im.decode();imgs[key]=im}));
+const atlas=await fetch('/packaging/atlas.json').then(r=>r.json());const worker=new Image();worker.src='/packaging/worker.webp';await worker.decode();imgs.worker=worker;
+const samples=Object.entries(DIRECTION_ANGLES).map(([direction,angle])=>{const box=document.createElement('section'),label=document.createElement('p'),canvas=document.createElement('canvas');label.textContent=direction;canvas.width=500;canvas.height=360;box.append(label,canvas);document.querySelector('main').append(box);const w=createWorld();Object.assign(w.player,{x:125,y:155,direction});return {w,angle,ctx:canvas.getContext('2d')}});
+for(const m of ['idle','walk','punch'])document.querySelector('#'+m).onclick=()=>{mode=m;phase=0;paused=false};document.querySelector('#pause').onclick=()=>paused=!paused;
+document.querySelector('#extended').onclick=()=>{mode='punch';phase=.1;paused=true};document.querySelector('#stride').onclick=()=>{mode='walk';phase=56/190;paused=true};
+let last=performance.now();function frame(now){if(!paused)phase+=(now-last)/1000;last=now;for(const {w,angle,ctx}of samples){w.tick=Math.floor(phase*60);w.player.moving=mode==='walk';w.player.walkBlend=mode==='walk'?1:0;w.player.walkDistance=phase*190%112;w.attackReady=mode==='punch'?Math.floor(phase)+.52:0;w.attackAngle=angle;ctx.resetTransform();ctx.clearRect(0,0,500,360);ctx.scale(2,2);drawWorker(ctx,imgs,w,atlas)}requestAnimationFrame(frame)}requestAnimationFrame(frame);
+</script></html>

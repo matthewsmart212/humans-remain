@@ -1,0 +1,13 @@
+{
+  "result": "pass",
+  "reviewed": "All 20 delivered sprites on a neutral backing and all four five-design groups in the production renderer",
+  "checks": [
+    "Painterly shapes, warm highlights and muted shadows match approved scenery",
+    "Transparent edges have no opaque backgrounds or fringes",
+    "Character scale and perspective are consistent",
+    "Ground collision overlays reviewed and four footprints tightened",
+    "Three loose-stone patches use ground depth and do not block movement"
+  ],
+  "browserQA": false,
+  "deviceFPSMeasured": false
+}

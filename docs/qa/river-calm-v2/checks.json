@@ -1,0 +1,70 @@
+{
+  "result": "pass",
+  "sections": 26,
+  "retainedWhitewaterAreas": 10,
+  "previousWhitewaterAreas": 31,
+  "animatedSections": 9,
+  "bridges": 4,
+  "collisionSamples": 111,
+  "streamResidentLimit": 3,
+  "concurrentLoads": 2,
+  "entryAssetsAdded": 0,
+  "campPreserved": true,
+  "motion": [
+    {
+      "id": "south-chute",
+      "changed": 13812,
+      "maxLoop": 1,
+      "protectedChanged": 0
+    },
+    {
+      "id": "logging-upper",
+      "changed": 16435,
+      "maxLoop": 0,
+      "protectedChanged": 0
+    },
+    {
+      "id": "riverExtension0_2Flow",
+      "changed": 14237,
+      "maxLoop": 1,
+      "protectedChanged": 0
+    },
+    {
+      "id": "riverExtension0_4Flow",
+      "changed": 12440,
+      "maxLoop": 0,
+      "protectedChanged": 0
+    },
+    {
+      "id": "riverExtension1_2Flow",
+      "changed": 5930,
+      "maxLoop": 0,
+      "protectedChanged": 0
+    },
+    {
+      "id": "riverExtension2_1Flow",
+      "changed": 11008,
+      "maxLoop": 0,
+      "protectedChanged": 0
+    },
+    {
+      "id": "riverExtension2_4Flow",
+      "changed": 8952,
+      "maxLoop": 0,
+      "protectedChanged": 0
+    },
+    {
+      "id": "riverExtension3_0Flow",
+      "changed": 3276,
+      "maxLoop": 0,
+      "protectedChanged": 0
+    },
+    {
+      "id": "riverExtension3_3Flow",
+      "changed": 10906,
+      "maxLoop": 0,
+      "protectedChanged": 0
+    }
+  ],
+  "browserAndPhone": "Unavailable; checked using actual CanvasKit software renderer."
+}

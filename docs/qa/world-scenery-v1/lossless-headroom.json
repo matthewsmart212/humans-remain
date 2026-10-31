@@ -1,0 +1,30 @@
+[
+  {
+    "source": "/survival/survivor/base-motion-v1.png",
+    "webp": "/survival/survivor/base-motion-v1.webp",
+    "oldBytes": 2308250,
+    "newBytes": 1054542,
+    "visiblePixelsIdentical": true
+  },
+  {
+    "source": "/survival/survivor/base-idle-v1.png",
+    "webp": "/survival/survivor/base-idle-v1.webp",
+    "oldBytes": 2222928,
+    "newBytes": 961530,
+    "visiblePixelsIdentical": true
+  },
+  {
+    "source": "/survival/camp-workshop-v1/camp-workshop.png",
+    "webp": "/survival/camp-workshop-v1/camp-workshop.webp",
+    "oldBytes": 2267260,
+    "newBytes": 1493596,
+    "visiblePixelsIdentical": true
+  },
+  {
+    "source": "/survival/camp-well-t1.png",
+    "webp": "/survival/camp-well-t1.webp",
+    "oldBytes": 1612688,
+    "newBytes": 1190218,
+    "visiblePixelsIdentical": true
+  }
+]

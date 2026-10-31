@@ -1,0 +1,16 @@
+{
+  "passed": true,
+  "checks": [
+    "Fresh survival kit, empty camp stores, isolated sandbox and authored draft",
+    "Reachable HQ/cache/stations; working HQ menu; primitive crafting without circular prerequisites",
+    "Atomic furnace restoration, real mining/chopping, mid-smelt save, no duplicate drops/ingots, earned metal weapon",
+    "Daytime repair and one-time paid reinforcement",
+    "Three real day/night cycles, 3/4/5 enemies, mid-raid reload without restart, dawn cleanup and completion",
+    "Collision-aware raid arrival, defence damage and camp defeat",
+    "Bunker local state and return route persist; hiding indoors cannot pause camp attacks",
+    "Corrupt/unsupported saves rejected, ordered native writes and storage-failure reporting"
+  ],
+  "saveBytes": 1050339,
+  "browserTested": false,
+  "physicalIPhoneTested": false
+}

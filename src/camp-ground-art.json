@@ -1,0 +1,255 @@
+[
+  {
+    "sources": [
+      "/survival/bonfire-v3/tier-1-flame-0.webp",
+      "/survival/bonfire-v3/tier-1-flame-1.webp",
+      "/survival/bonfire-v3/tier-1-flame-2.webp",
+      "/survival/bonfire-v3/tier-1-flame-3.webp",
+      "/survival/bonfire-v3/tier-1-flame-4.webp",
+      "/survival/bonfire-v3/tier-1-flame-5.webp",
+      "/survival/bonfire-v3/tier-1-flame-6.webp",
+      "/survival/bonfire-v3/tier-1-flame-7.webp",
+      "/survival/bonfire-v3/tier-1-unlit.webp",
+      "/survival/bonfire-v3/tier-2-flame-0.webp",
+      "/survival/bonfire-v3/tier-2-flame-1.webp",
+      "/survival/bonfire-v3/tier-2-flame-2.webp",
+      "/survival/bonfire-v3/tier-2-flame-3.webp",
+      "/survival/bonfire-v3/tier-2-flame-4.webp",
+      "/survival/bonfire-v3/tier-2-flame-5.webp",
+      "/survival/bonfire-v3/tier-2-flame-6.webp",
+      "/survival/bonfire-v3/tier-2-flame-7.webp",
+      "/survival/bonfire-v3/tier-2-unlit.webp",
+      "/survival/bonfire-v3/tier-3-flame-0.webp",
+      "/survival/bonfire-v3/tier-3-flame-1.webp",
+      "/survival/bonfire-v3/tier-3-flame-2.webp",
+      "/survival/bonfire-v3/tier-3-flame-3.webp",
+      "/survival/bonfire-v3/tier-3-flame-4.webp",
+      "/survival/bonfire-v3/tier-3-flame-5.webp",
+      "/survival/bonfire-v3/tier-3-flame-6.webp",
+      "/survival/bonfire-v3/tier-3-flame-7.webp",
+      "/survival/bonfire-v3/tier-3-unlit.webp"
+    ],
+    "image": "/survival/bonfire-v3/ground.webp",
+    "size": [
+      1774,
+      887
+    ],
+    "rect": [
+      -0.9,
+      0.2375,
+      2.8,
+      1.4
+    ]
+  },
+  {
+    "sources": [
+      "/survival/base-walls-hd/wall-1.webp",
+      "/survival/camp-walls-v2/wall-1.webp",
+      "/survival/wall-tiers-v1/t2-wall-1.webp"
+    ],
+    "image": "/survival/camp-foundations-v2/wall-1.webp",
+    "size": [
+      885,
+      470
+    ],
+    "rect": [
+      0.04965753424657534,
+      0.18557692307692308,
+      0.7577054794520548,
+      0.4519230769230769
+    ]
+  },
+  {
+    "sources": [
+      "/survival/base-walls-hd/wall-2.webp",
+      "/survival/camp-walls-v2/wall-2.webp",
+      "/survival/wall-tiers-v1/t2-wall-2.webp"
+    ],
+    "image": "/survival/camp-foundations-v2/wall-2.webp",
+    "size": [
+      279,
+      539
+    ],
+    "rect": [
+      0.6791497975708503,
+      0.26243781094527363,
+      0.2823886639676113,
+      0.6703980099502488
+    ]
+  },
+  {
+    "sources": [
+      "/survival/base-walls-hd/wall-3.webp",
+      "/survival/camp-walls-v2/wall-3.webp",
+      "/survival/wall-tiers-v1/t2-wall-3.webp"
+    ],
+    "image": "/survival/camp-foundations-v2/wall-3.webp",
+    "size": [
+      452,
+      612
+    ],
+    "rect": [
+      0.4884937238493724,
+      0.2423580786026201,
+      0.47280334728033474,
+      0.6681222707423581
+    ]
+  },
+  {
+    "sources": [
+      "/survival/base-walls-hd/wall-4.webp",
+      "/survival/camp-walls-v2/wall-4.webp",
+      "/survival/wall-tiers-v1/t2-wall-4.webp"
+    ],
+    "image": "/survival/camp-foundations-v2/wall-4.webp",
+    "size": [
+      612,
+      286
+    ],
+    "rect": [
+      0.05808656036446469,
+      0.49855907780979825,
+      0.6970387243735763,
+      0.41210374639769454
+    ]
+  },
+  {
+    "sources": [
+      "/survival/base-walls-hd/wall-5.webp",
+      "/survival/camp-walls-v2/wall-5.webp",
+      "/survival/wall-tiers-v1/t2-wall-5.webp"
+    ],
+    "image": "/survival/camp-foundations-v2/wall-5.webp",
+    "size": [
+      644,
+      254
+    ],
+    "rect": [
+      0.21935483870967742,
+      0.6868932038834952,
+      0.6924731182795699,
+      0.20550161812297735
+    ]
+  },
+  {
+    "sources": [
+      "/survival/base-walls-hd/wall-6.webp",
+      "/survival/camp-walls-v2/wall-6.webp",
+      "/survival/wall-tiers-v1/t2-wall-6.webp"
+    ],
+    "image": "/survival/camp-foundations-v2/wall-6.webp",
+    "size": [
+      461,
+      668
+    ],
+    "rect": [
+      0.04408602150537634,
+      0.15940766550522648,
+      0.4956989247311828,
+      0.5818815331010453
+    ]
+  },
+  {
+    "sources": [
+      "/survival/base-walls-hd/wall-7.webp",
+      "/survival/camp-walls-v2/wall-7.webp",
+      "/survival/wall-tiers-v1/t2-wall-7.webp"
+    ],
+    "image": "/survival/camp-foundations-v2/wall-7.webp",
+    "size": [
+      398,
+      654
+    ],
+    "rect": [
+      0.11666666666666667,
+      0.25160599571734477,
+      0.44222222222222224,
+      0.7002141327623126
+    ]
+  },
+  {
+    "sources": [
+      "/survival/base-walls-hd/wall-8.webp",
+      "/survival/camp-walls-v2/wall-8.webp",
+      "/survival/wall-tiers-v1/t2-wall-8.webp"
+    ],
+    "image": "/survival/camp-foundations-v2/wall-8.webp",
+    "size": [
+      677,
+      303
+    ],
+    "rect": [
+      0.12114014251781473,
+      0.13181019332161686,
+      0.8040380047505938,
+      0.2662565905096661
+    ]
+  },
+  {
+    "sources": [
+      "/api/asset-files/93db0d98-1245-4026-a136-6248654149f9"
+    ],
+    "image": "/survival/camp-foundations-v2/headquarters.webp",
+    "size": [
+      1365,
+      374
+    ],
+    "rect": [
+      0.06640625,
+      0.6337890625,
+      0.888671875,
+      0.365234375
+    ]
+  },
+  {
+    "sources": [
+      "/api/asset-files/2401745e-7f2d-4a8c-b6da-7351bc248ca7",
+      "/api/asset-files/2401745e-7f2d-4a8c-b6da-7351bc248ca7",
+      "/api/asset-files/c3ca8339-9c06-46f9-bbdd-ffe6b58d5376",
+      "/api/asset-files/588cd1b0-8ac3-4283-a358-e6e86bd2ba10"
+    ],
+    "image": "/survival/camp-foundations-v2/bunker.webp",
+    "size": [
+      1029,
+      944
+    ],
+    "rect": [
+      0.10823170731707317,
+      0.18682235195996663,
+      0.7842987804878049,
+      0.7873227689741451
+    ]
+  },
+  {
+    "sources": [
+      "/api/asset-files/511df250-f10f-4b4e-8b9d-f091fe490070"
+    ],
+    "image": "/survival/camp-foundations-v2/warehouse.webp",
+    "size": [
+      1135,
+      540
+    ],
+    "rect": [
+      0.050239234449760764,
+      0.5350877192982456,
+      0.905103668261563,
+      0.430622009569378
+    ]
+  },
+  {
+    "sources": [
+      "/survival/camp-workshop-v1/camp-workshop.png"
+    ],
+    "image": "/survival/camp-foundations-v2/workshop.webp",
+    "size": [
+      1079,
+      302
+    ],
+    "rect": [
+      0.06539074960127592,
+      0.6850079744816587,
+      0.8604465709728868,
+      0.24082934609250398
+    ]
+  }
+]

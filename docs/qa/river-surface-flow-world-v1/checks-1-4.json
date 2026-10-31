@@ -1,0 +1,79 @@
+{
+  "passed": true,
+  "batches": [
+    1,
+    4
+  ],
+  "locations": [
+    {
+      "id": "reach-1",
+      "batch": 1,
+      "waterPixels": 11968,
+      "movingFraction": 0.6417947860962567,
+      "dryPixels": 14131,
+      "dryChanged": 0,
+      "shorelineBlendPixels": 0,
+      "loopMeanChannelDelta": 0.0000055114638447971785,
+      "paintingStationary": true
+    },
+    {
+      "id": "logging-stream",
+      "batch": 1,
+      "waterPixels": 9356,
+      "movingFraction": 0.6384138520735357,
+      "dryPixels": 11221,
+      "dryChanged": 0,
+      "shorelineBlendPixels": 0,
+      "loopMeanChannelDelta": 0,
+      "paintingStationary": true
+    },
+    {
+      "id": "join-1",
+      "batch": 1,
+      "waterPixels": 14700,
+      "movingFraction": 0.6459183673469387,
+      "dryPixels": 16625,
+      "dryChanged": 0,
+      "shorelineBlendPixels": 3,
+      "loopMeanChannelDelta": 0.0000055114638447971785,
+      "paintingStationary": true
+    },
+    {
+      "id": "reach-4",
+      "batch": 4,
+      "waterPixels": 34105,
+      "movingFraction": 0.6418120510189121,
+      "dryPixels": 5043,
+      "dryChanged": 0,
+      "shorelineBlendPixels": 0,
+      "loopMeanChannelDelta": 0.000016534391534391536,
+      "paintingStationary": true
+    },
+    {
+      "id": "lower-lake",
+      "batch": 4,
+      "waterPixels": 38650,
+      "movingFraction": 0.6420439844760673,
+      "dryPixels": 1301,
+      "dryChanged": 0,
+      "shorelineBlendPixels": 0,
+      "loopMeanChannelDelta": 0.000022045855379188714,
+      "paintingStationary": true
+    },
+    {
+      "id": "join-4",
+      "batch": 4,
+      "waterPixels": 14654,
+      "movingFraction": 0.6384604886037942,
+      "dryPixels": 12696,
+      "dryChanged": 0,
+      "shorelineBlendPixels": 6,
+      "loopMeanChannelDelta": 0,
+      "paintingStationary": true
+    }
+  ],
+  "waterfallOverlaysLoaded": 0,
+  "sharedSurfaceTextureBytes": 589824,
+  "newTexturesBeyondApprovedTrial": 0,
+  "physicalIPhoneTested": false
+}

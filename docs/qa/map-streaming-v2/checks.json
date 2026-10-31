@@ -1,0 +1,49 @@
+{
+  "result": "pass",
+  "coverage": [
+    {
+      "layer": "roads",
+      "views": 516,
+      "maxVisible": 125,
+      "peakMiB": 47.89,
+      "visibleLoads": 7837
+    },
+    {
+      "layer": "camp",
+      "views": 66,
+      "maxVisible": 60,
+      "peakMiB": 36.1,
+      "visibleLoads": 482
+    },
+    {
+      "layer": "rivers",
+      "views": 516,
+      "maxVisible": 19,
+      "peakMiB": 28.12,
+      "visibleLoads": 617
+    }
+  ],
+  "textureChunks": 616,
+  "largestChunkMiB": 1.031494140625,
+  "foregroundQueue": true,
+  "cullingCases": 720,
+  "pixels": [
+    {
+      "layer": "road",
+      "meanChannelError": 1.1293553571428572,
+      "maxChannelError": 18,
+      "psnr": 43.02966971278448,
+      "seamRms": 1.6210067001383712,
+      "wholeImageRms": 1.7991057633221699
+    },
+    {
+      "layer": "camp",
+      "meanChannelError": 1.1584160714285714,
+      "maxChannelError": 19,
+      "psnr": 42.788338225626674,
+      "seamRms": 1.9440024959691706,
+      "wholeImageRms": 1.8497935856532235
+    }
+  ],
+  "scope": "Production CanvasKit software rendering; physical iPhone and browser GPU frame rates unverified."
+}

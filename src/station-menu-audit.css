@@ -1,0 +1,119 @@
+/* A small vocabulary of controls shared by all camp stations. */
+.station-menu .station-menu-scroll{flex:1;gap:9px;padding:2px 3px 4px 2px;scroll-padding:6px}
+.station-menu .station-fuel-row,.station-menu .station-ready-row{display:flex;align-items:center;gap:9px;flex-shrink:0;padding:8px;border:1px solid #80915b45;border-radius:8px;background:#112c25}
+.station-fuel-row>img,.station-ready-row>img{width:32px;height:32px;object-fit:contain;flex-shrink:0}
+.station-fuel-row>div,.station-ready-row>div{flex:1;min-width:0}
+.station-fuel-row strong,.station-ready-row strong{display:block;font:700 13px Barlow,sans-serif;color:#efdfb4}
+.station-fuel-row small,.station-ready-row small{font:500 10px Barlow,sans-serif;color:#aebda3}
+.station-fuel-row>div>small,.station-ready-row>div>small{display:block;margin-top:2px}
+.station-fuel-row .fire-fuel,.station-fuel-row .forge-fuel-meter{margin:6px 0 0;height:5px}
+.station-menu .station-ready-row[data-ready=true]{border-color:#bcac6b99;background:#2d4030}
+.station-menu .station-ready-row[data-ready=false]{border:0;background:#132d254d;padding-block:3px}
+.station-menu .menu-section-heading{font-size:17px;gap:8px;min-height:20px}
+.station-menu .menu-section-heading span{font-size:10px;text-align:right}
+.station-menu .station-quiet-empty{font:400 11px/1.4 Barlow,sans-serif;color:#a8b99f;margin:0;padding:9px 0}
+/* Two inventories, one useful set of category filters. */
+.station-item-filters{display:flex;gap:4px;flex-shrink:0;overflow-x:auto;scrollbar-width:none}
+.camp-studio .field-kit .station-item-filters button{flex:1;border-color:transparent;background:#10292466;font:600 11px Barlow,sans-serif;color:#b5c4aa;padding:5px 7px;min-height:44px;white-space:nowrap}
+.camp-studio .field-kit .station-item-filters button[aria-pressed=true]{background:#3b5038;border-color:#b29d6377;color:#f7e4b5}
+.station-menu.chest-menu .supply-detail-copy{flex:1;min-height:0;overflow:auto}
+.station-menu.chest-menu .supply-transfer-route{display:flex;font-size:10px;flex-wrap:wrap;gap:4px}
+.station-menu.chest-menu .supply-transfer-route>span:last-child{margin-left:auto}
+.station-menu.chest-menu .supply-transfer{display:flex;flex-direction:column;gap:5px}
+.station-menu.chest-menu .supply-quantity{justify-content:flex-end}
+.station-menu.chest-menu .supply-facts{gap:6px}
+.station-menu.chest-menu .supply-facts>div{background:transparent;border:0;padding:2px 0}
+.station-menu.chest-menu .supply-facts dd{font-size:11px}
+/* The recipe is the focus. Show shortages once, beside the ingredient. */
+.station-menu.smithy-menu .smithy-detail-scroll{flex:1;min-height:0;overflow:auto}
+.station-menu.smithy-menu .smithy-cost-block{margin-top:9px}
+.station-menu.smithy-menu .smithy-more,.station-menu.smithy-menu .smithy-owned{display:block}
+.station-menu.smithy-menu .smithy-owned>span{float:right}
+.station-menu.smithy-menu .smithy-materials{flex-direction:column}
+.station-menu.smithy-menu .smithy-materials>div{flex:auto;min-height:35px}
+.station-menu.smithy-menu .smithy-materials>div>span:nth-child(2)>small{display:block;font-size:9px;color:#dfb08b}
+.station-menu.smithy-menu .smithy-material-status{display:inline;font-size:12px}
+.station-menu.smithy-menu .smithy-heading{align-items:flex-start}
+.station-menu.smithy-menu .smithy-heading h3{font-size:24px;line-height:1.05}
+.station-menu.smithy-menu .smithy-heading p{font-size:10px;line-height:1.4}
+.station-menu.smithy-menu .smithy-detail{gap:5px;padding:8px}
+.station-menu.smithy-menu .smithy-recipe small{font-size:9px}
+/* One quantity selector and one action; Max selects a quantity. */
+.station-menu.warehouse-menu .warehouse-materials{grid-template-columns:repeat(3,minmax(0,1fr));gap:6px}
+.camp-studio .field-kit .station-menu.warehouse-menu .warehouse-materials button{padding:8px;min-height:68px;gap:7px}
+.station-menu.warehouse-menu .warehouse-materials strong{font:800 19px/1.05 'Barlow Condensed',sans-serif}
+.station-menu.warehouse-menu .warehouse-materials small{font-size:10px;margin-top:3px}
+.station-menu.warehouse-menu .warehouse-materials img{width:32px;height:32px}
+.station-menu.warehouse-menu .warehouse-counts{align-items:center;padding:8px 4px;font-size:12px;gap:6px}
+.station-menu.warehouse-menu .warehouse-counts b{font-size:18px}
+.warehouse-confirm{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+.warehouse-confirm .supply-quantity{justify-content:flex-start}
+.warehouse-confirm>.supply-primary{flex:1;min-width:145px}
+.station-menu.warehouse-menu .warehouse-hint{font-size:11px;line-height:1.4;margin:2px 3px}
+/* Smelting keeps finished output above the recipes; cancellation is explicit. */
+.station-menu.furnace-menu .menu-smelt-recipe{padding:9px;gap:5px}
+.station-menu.furnace-menu .menu-smelt-recipe>small{font-size:10px}
+.station-menu.furnace-menu .menu-smelt-recipe button{margin-top:5px!important}
+.station-menu.furnace-menu .menu-furnace-jobs{grid-template-columns:repeat(2,minmax(0,1fr))}
+.station-menu.furnace-menu .menu-smelt-job{display:flex;align-items:center;gap:6px;border:1px solid #80915b55;border-radius:6px;padding:4px 4px 4px 8px;background:#102b25;min-width:0}
+.menu-smelt-job>div{flex:1;min-width:0}.menu-smelt-job strong{display:block;font-size:11px;color:#e9dcba}.menu-smelt-job span{font-size:10px;color:#bdc99f}.menu-smelt-job .forge-job-meter{margin-top:5px}
+.camp-studio .field-kit .station-menu .menu-smelt-job>button{width:44px;flex:none;padding:5px;font-size:21px;background:transparent;border-color:transparent}
+.station-menu.furnace-menu .menu-furnace-upgrade summary{font-size:11px;min-height:44px;box-sizing:border-box;padding:13px 2px}
+.menu-furnace-upgrade>p{font-size:11px;line-height:1.4;color:#b6c5a9;margin:0 0 7px}
+.station-upgrade-cost{display:flex!important;flex-wrap:wrap;gap:6px!important;padding:0 0 8px!important}
+.station-upgrade-cost>span{display:flex;align-items:center;gap:4px;flex:none!important;font-size:10px;color:#c6d1ac}.station-upgrade-cost img{width:20px;height:20px;object-fit:contain}.station-upgrade-cost [data-enough=false]{color:#dfb08b}
+/* Cooking has compact live status, then four clear recipes. No empty racks. */
+.station-menu.kitchen-menu .station-menu-scroll{gap:9px}
+.kitchen-status{display:grid;grid-template-columns:1fr 1fr;gap:12px;flex-shrink:0;padding:3px 1px 8px;border-bottom:1px solid #87926044}
+.kitchen-status>section{min-width:0}.kitchen-status .menu-section-heading{margin-bottom:4px}
+.kitchen-jobs,.kitchen-ready-items{display:flex;flex-direction:column;gap:5px}
+.camp-studio .field-kit .station-menu button.kitchen-job{display:flex;align-items:center;position:relative;text-align:left;gap:6px;min-height:48px;padding:4px 6px 6px;overflow:hidden;background:#102b25;border:1px solid #80915b55}
+.kitchen-job[data-active=true]{border-color:#c1ac71!important}.kitchen-job>img{width:30px;height:30px;object-fit:contain}.kitchen-job>span{flex:1;font:700 13px 'Barlow Condensed',sans-serif}.kitchen-job small{display:block;font:500 10px Barlow,sans-serif;color:#c4caa8}.kitchen-job>b{font:400 18px Barlow,sans-serif;color:#b9c5aa}
+.camp-studio .field-kit .station-menu .kitchen-ready-items>button{display:flex;align-items:center;gap:5px;text-align:left;padding:4px 6px;background:#2b412e;border:1px solid #8b9a6266;min-height:44px}
+.kitchen-ready-items img{width:30px;height:26px;object-fit:contain}.kitchen-ready-items span{flex:1;font-size:11px}.kitchen-ready-items b{font-size:12px;color:#e2cd8d}.kitchen-take-all{width:100%;margin-top:5px}
+.kitchen-recipes{display:grid;grid-template-columns:1fr 1fr;gap:7px;flex-shrink:0}
+.kitchen-recipe{display:grid;grid-template-columns:38px minmax(0,1fr);gap:5px 7px;align-items:center;padding:8px;border:1px solid #80915b55;border-radius:7px;background:#102b25;min-width:0}
+.kitchen-recipe>img{width:38px;height:38px;object-fit:contain}.kitchen-recipe h4{font:800 18px/1.1 'Barlow Condensed',sans-serif;color:#f4e4bd;margin:0 0 3px}.kitchen-recipe small{font:500 10px/1.3 Barlow,sans-serif;color:#aebe9f}.kitchen-recipe p{font:500 10px/1.4 Barlow,sans-serif;color:#c6cfad;margin:3px 0 0}.kitchen-recipe>button{grid-column:1/-1;width:100%}
+.kitchen-prepared{border-color:#9b965c77}
+/* Compact landscape keeps the selected item's action beside the list. */
+@container(min-width:360px){
+ .station-menu .supply-body,.station-menu .smithy-body{display:grid;grid-template-columns:minmax(0,.9fr) minmax(0,1.1fr);grid-template-rows:1fr;overflow:hidden}
+ .station-menu .supply-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
+ .station-menu .smithy-recipes{grid-template-columns:repeat(2,minmax(0,1fr))}
+ .station-menu.chest-menu .supply-detail{min-height:0;overflow:hidden}
+ .station-menu .supply-detail-copy{display:block}
+}
+@container(min-width:650px){.station-menu .supply-grid{grid-template-columns:repeat(3,minmax(0,1fr))}.station-menu .smithy-recipe>img{width:36px;height:40px}.station-menu .smithy-recipe strong{font-size:18px}.station-menu .supply-slot>span{font-size:11px}}
+@container(max-width:359px){
+ .station-menu .supply-body,.station-menu .smithy-body{display:flex;flex-direction:column;gap:7px;overflow:auto;flex:1;min-height:0;scrollbar-width:thin}
+ .station-menu .supply-inventory,.station-menu .smithy-recipes{flex:none;min-height:76px;max-height:96px;overflow:auto}
+ .station-menu .supply-grid{grid-template-columns:repeat(3,minmax(0,1fr))}
+ .station-menu .supply-detail,.station-menu .smithy-detail{flex:none;min-height:160px;max-height:none;overflow:visible}
+ .station-menu .supply-detail-copy,.station-menu .smithy-detail-scroll{flex:none;overflow:visible}
+ .station-menu.warehouse-menu .warehouse-materials button{flex-direction:column;align-items:flex-start;justify-content:center;gap:3px}
+ .station-menu.warehouse-menu .warehouse-materials strong{font-size:17px}
+ .station-menu.warehouse-menu .warehouse-materials img{width:26px;height:26px}
+ .station-menu.warehouse-menu .warehouse-counts{font-size:10px;padding-inline:0}
+ .warehouse-confirm{flex-direction:column;align-items:stretch}.warehouse-confirm>.supply-primary{min-width:0;width:100%}.warehouse-confirm .supply-quantity{justify-content:center}
+ .station-menu .station-fuel-row{gap:6px;padding:6px}.station-fuel-row>img{width:26px;height:26px}.station-fuel-row strong,.station-ready-row strong{font-size:11px}
+ .kitchen-recipe{grid-template-columns:30px minmax(0,1fr);gap:4px;padding:6px}.kitchen-recipe>img{width:30px;height:30px}.kitchen-recipe h4{font-size:16px}.kitchen-recipe small,.kitchen-recipe p{font-size:9px}
+ .station-menu .menu-section-heading{font-size:15px}.station-menu .menu-section-heading span{font-size:9px}
+ .station-menu.furnace-menu .menu-smelt-recipe{padding:6px}.station-menu.furnace-menu .menu-smelt-recipe h3{font-size:16px}.station-menu.furnace-menu .menu-smelt-recipe img{width:24px;height:24px}
+ .station-menu .menu-furnace-recipes{gap:5px}.station-menu .menu-furnace-jobs{grid-template-columns:1fr}
+}
+.station-menu.kitchen-menu .kitchen-status{padding-bottom:5px;gap:9px}.kitchen-status .kitchen-ready-items{flex-direction:row;flex-wrap:wrap}.kitchen-ready-items>button{flex:1;min-width:90px}
+.camp-studio .field-kit .station-menu button.kitchen-recipe{display:grid;grid-template-columns:34px minmax(0,1fr);gap:4px 6px;min-height:78px;padding:7px;text-align:left;border-color:#80915b66;background:#102b25;align-items:center;align-content:center}
+.kitchen-recipe .kitchen-recipe-action{grid-column:1/-1;font:800 11px 'Barlow Condensed',sans-serif;color:#e5d09b;text-align:center}.kitchen-recipe>img{width:34px;height:34px}
+@container(min-width:440px){.kitchen-recipes{grid-template-columns:repeat(4,minmax(0,1fr))}.camp-studio .field-kit .station-menu button.kitchen-recipe{display:flex;flex-direction:column;justify-content:flex-start;gap:4px;text-align:center;min-height:117px;padding:6px 4px}.kitchen-recipe h4{font-size:16px}.kitchen-recipe p,.kitchen-recipe small{font-size:9px}.kitchen-recipe .kitchen-recipe-action{margin-top:auto}.station-menu.kitchen-menu .station-menu-scroll{gap:7px}.station-menu.kitchen-menu .station-fuel-row{padding:6px 8px}}
+.station-menu-footer>.station-menu-feedback{position:absolute;left:12px;right:12px;bottom:37px;z-index:2;padding:8px 10px;border:1px solid #a9a16c;border-radius:6px;background:#183a30f5;color:#f3e5bc;box-shadow:0 3px 12px #061c2388;pointer-events:none;font-size:11px}
+.station-menu .supply-more summary,.station-menu .smithy-more summary{min-height:44px;box-sizing:border-box;padding:13px 0;line-height:18px}
+.station-menu.chest-menu .supply-inventory{display:flex;flex-direction:column;overflow:hidden;gap:5px}
+.chest-grid-scroll{flex:1;min-height:0;overflow:auto;scrollbar-width:thin;scrollbar-color:#9b9a70 transparent}
+.station-menu.chest-menu .station-item-filters button{font-size:10px;padding-inline:3px}
+@container(min-width:440px){.station-menu.chest-menu .supply-transfer:has(.supply-quantity){display:grid;grid-template-columns:auto minmax(0,1fr);align-items:center;gap:5px}.station-menu.chest-menu .supply-transfer-route,.station-menu.chest-menu .supply-hint{grid-column:1/-1}.station-menu.chest-menu .supply-transfer:has(.supply-quantity) .supply-actions button{padding-inline:5px;font-size:11px}.station-menu.chest-menu .supply-transfer:has(.supply-quantity) .supply-actions img{display:none}.station-menu.chest-menu .supply-quantity{gap:3px}}
+@container(max-width:359px){.station-menu.chest-menu .supply-inventory{max-height:146px;min-height:126px}.station-menu.chest-menu .chest-grid-scroll{min-height:76px}}
+.kitchen-benefits{display:flex;justify-content:center;gap:6px;flex-wrap:wrap}.kitchen-benefits>span{display:inline-flex;align-items:center;gap:2px;white-space:nowrap}.kitchen-benefits img{width:11px;height:11px;object-fit:contain}
+@media(max-height:520px){@container(min-width:440px){.station-menu.kitchen-menu .station-menu-scroll{gap:5px}.station-menu.kitchen-menu .station-fuel-row{padding:2px 7px}.station-menu.kitchen-menu .kitchen-status{padding:0 1px 2px}.station-menu.kitchen-menu .kitchen-status .menu-section-heading{margin-bottom:2px}.camp-studio .field-kit .station-menu button.kitchen-recipe{min-height:96px;padding:4px 3px;gap:2px}.kitchen-recipe>img{width:26px;height:26px}.kitchen-recipe h4{font-size:16px;margin-bottom:1px}.kitchen-recipe small,.kitchen-recipe p{font-size:9px;line-height:11px}.kitchen-recipe p{margin:2px 0 0}.kitchen-recipe .kitchen-recipe-action{font-size:10px}}}
+.station-menu.smithy-menu .smithy-cost-block{margin-top:0;flex-shrink:0}.station-menu.smithy-menu .smithy-detail-scroll{min-height:38px}.station-menu.smithy-menu .smithy-heading h3{font-size:22px}.station-menu.smithy-menu .smithy-materials>div{min-height:31px;padding:4px}.station-menu.smithy-menu .smithy-detail{padding:7px;gap:4px}
+@media(max-height:350px){.station-menu.smithy-menu .smithy-detail{overflow:auto}.station-menu.smithy-menu .smithy-detail-scroll{flex:none;overflow:visible}.station-menu.smithy-menu .smithy-cost-block{flex:none}}
+.kitchen-ready-items span small{display:block;font-size:9px;color:#c5d29e;margin-top:2px}

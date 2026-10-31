@@ -1,0 +1,44 @@
+import assert from 'node:assert/strict';
+import fs from 'node:fs';
+import os from 'node:os';
+import path from 'node:path';
+import {createRequire} from 'node:module';
+import {build} from 'esbuild';
+const require=createRequire(import.meta.url),temp=fs.mkdtempSync(path.join(os.tmpdir(),'backpack-'));
+try{
+ await build({stdin:{contents:"export * from './src/backpack';export * from './src/bag-loads';export {createCampPlaySession} from './src/studio-play';export {FieldKitController} from './src/field-kit';export {installImportedArt} from './src/imported-art';export {pickup,worldBlocked,lineClear,doAction,seedLoot} from './src/survival-engine';export {stationFront} from './src/camp-stations';",resolveDir:process.cwd()},bundle:true,platform:'node',format:'cjs',outfile:path.join(temp,'test.cjs')});
+ const m=require(path.join(temp,'test.cjs')),snapshot=JSON.parse(fs.readFileSync('native/assets/world-snapshot.json'));m.installImportedArt(snapshot.records);
+ const make=()=>{const w=m.createCampPlaySession(snapshot.layout);w.loot=[];w.enemies=[];return w};
+ const w=make(),controller=new m.FieldKitController();
+ assert(m.backpackItems(controller.sample(w)).every(i=>i.count>0),'No empty inventory placeholders');
+ assert(!m.backpackItems(controller.sample(w)).some(i=>i.id==='canteen'),'Canteen removed');
+ assert.equal(m.backpackItems(controller.sample(w)).find(i=>i.id==='raw').count,3);
+ const items=m.backpackItems(controller.sample(w));assert.equal(items.find(i=>i.id==='raw').name,'Raw chicken');assert(!items.some(i=>i.id==='meal'),'Unowned meals are hidden');assert.equal(items.find(i=>i.id==='raw').food,35);assert.equal(items.find(i=>i.id==='raw').health,8);assert.equal(items.find(i=>i.id==='raw').raw,true);assert.deepEqual(items.find(i=>i.id==='axe').facts.find(([key])=>key==='Stamina'),['Stamina','No cost']);assert(m.BAG_IMAGES.raw.includes('/chicken-food-v1/')&&m.BAG_IMAGES.meal.includes('/chicken-food-v1/'));
+ assert(m.useBackpackItem(w,'axe'));assert.equal(w.player.equipped,null);assert(m.useBackpackItem(w,'axe'));assert.equal(w.player.equipped,'axe');
+ w.cooked=2;w.hunger=100;w.player.hp=65;
+ assert(!m.backpackItems(controller.sample(w)).find(i=>i.id==='meal').useDisabled,'Meals can heal when food is full');
+ assert(m.useBackpackItem(w,'meal'));assert.equal(w.cooked,1);assert.equal(w.hunger,100);assert.equal(w.player.hp,73);
+ w.player.hp=100;assert(!m.useBackpackItem(w,'meal'));assert.equal(w.cooked,1,'Full vitals do not waste food');
+ const dropped=m.dropBackpackItem(w,'raw',1);assert(dropped.ok,dropped.message);assert.equal(w.bag.rawMeat,2);assert.equal(w.loads,3);assert.equal(w.loot[0].amount,1);
+ assert(!m.worldBlocked(w,w.loot[0].x,w.loot[0].y,12));assert(m.lineClear(w.player,w.loot[0],w));
+ assert(m.pickup(w));assert.equal(w.bag.rawMeat,3);assert.equal(w.loads,3);
+ assert(m.dropBackpackItem(w,'axe','all').ok===false);assert.equal(w.player.equipped,'axe');
+ // Aggregated stacks retain their total quantity and weight.
+ w.bag={rawMeat:0,rawRabbit:0,rawVenison:0,pallets:0,scrap:0,fuel:0};w.loads=0;w.loot=[];
+ m.addCarriedPickup(w,'pallets',3);m.addCarriedPickup(w,'pallets',4);m.addCarriedPickup(w,'scrap',5);
+ const before={...w.bag},score=w.scrap;
+ assert(m.dropBackpackItem(w,'logs','all').ok);assert.equal(w.loads,2);assert.deepEqual(w.loot.map(l=>l.amount),[7]);
+ assert(m.pickup(w));assert.deepEqual(w.bag,before);assert.equal(w.loads,3);
+ assert(m.dropBackpackItem(w,'scrap','all').ok);assert(m.pickup(w));assert.equal(w.scrap,score,'Recollecting dropped scrap cannot farm the collection score');
+ assert(m.dropBackpackItem(w,'logs',1).ok);assert.equal(w.bag.pallets,6);assert.equal(w.loads,3,'Partial stacks remain in the inventory');
+ w.loot=[];assert(m.dropBackpackItem(w,'meal','all').ok);assert.equal(w.cooked,0);assert(!m.backpackItems(controller.sample(w)).some(i=>i.id==='meal'),'Final dropped item disappears');assert.equal(w.loot.length,1);assert(m.pickup(w));assert.equal(w.cooked,1);
+ const noRoom=make();noRoom.player.x=-99999;noRoom.player.y=-99999;const unchanged=JSON.stringify({bag:noRoom.bag,loads:noRoom.loads,loot:noRoom.loot});
+ assert(!m.dropBackpackItem(noRoom,'raw','all').ok);assert.equal(JSON.stringify({bag:noRoom.bag,loads:noRoom.loads,loot:noRoom.loot}),unchanged,'Failed landing search is atomic');
+ w.player.downedUntil=99;assert(!m.dropBackpackItem(w,'logs',1).ok);assert(!m.useBackpackItem(w,'axe'));w.player.downedUntil=0;
+ const cook=make();Object.assign(cook.player,m.stationFront(cook.camp,'hearth'));assert(m.doAction(cook,'cook'));assert.equal(cook.bag.rawMeat,2);assert.equal(cook.loads,2);
+ const depot=make();m.addCarriedPickup(depot,'pallets',3);Object.assign(depot.player,m.stationFront(depot.camp,'storage'));assert(m.doAction(depot,'deposit'));assert.equal(depot.loads,1);assert.equal(depot.bag.rawMeat,3);assert.equal(depot.bag.pallets,0);
+ const retained=make();assert(m.dropBackpackItem(retained,'raw',1).ok);const id=retained.loot[0].id;m.seedLoot(retained);assert(retained.loot.some(l=>l.id===id),'Dropped loot survives supply refresh');
+ for(const url of Object.values(m.BAG_IMAGES))assert(fs.existsSync('public'+url),'Backpack artwork exists');
+ const report={passed:true,checks:['live inventory and item definitions','equip/stow','eat and capped health/food','drop and recollect','stack quantity and weight conservation','partial stack conservation','no scrap score farming','safe reachable landing positions','atomic failure on blocked ground','downed action guards','cooking and storage capacity regression','dropped loot retained on refresh','current item artwork present']};
+ fs.mkdirSync('docs/qa/field-kit-v1',{recursive:true});fs.writeFileSync('docs/qa/field-kit-v1/backpack.json',JSON.stringify(report,null,2)+'\n');console.log(JSON.stringify(report,null,2));
+}finally{fs.rmSync(temp,{recursive:true,force:true})}

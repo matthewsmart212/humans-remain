@@ -1,0 +1,480 @@
+{
+  "newPatches": 74,
+  "routes": [
+    {
+      "id": "camp-northwest",
+      "kind": "stone",
+      "samples": 216,
+      "uncovered": 0,
+      "patches": []
+    },
+    {
+      "id": "camp-northeast",
+      "kind": "stone",
+      "samples": 207,
+      "uncovered": 0,
+      "patches": []
+    },
+    {
+      "id": "camp-west",
+      "kind": "stone",
+      "samples": 159,
+      "uncovered": 0,
+      "patches": []
+    },
+    {
+      "id": "camp-southwest",
+      "kind": "stone",
+      "samples": 225,
+      "uncovered": 0,
+      "patches": [
+        "route-02"
+      ]
+    },
+    {
+      "id": "camp-south-painted",
+      "kind": "stone",
+      "samples": 240,
+      "uncovered": 0,
+      "patches": [
+        "route-01"
+      ]
+    },
+    {
+      "id": "camp-south",
+      "kind": "trail",
+      "samples": 249,
+      "uncovered": 0,
+      "patches": [
+        "route-01",
+        "route-14"
+      ]
+    },
+    {
+      "id": "camp-southeast",
+      "kind": "stone",
+      "samples": 441,
+      "uncovered": 0,
+      "patches": [
+        "route-12"
+      ]
+    },
+    {
+      "id": "village-approach",
+      "kind": "lane",
+      "samples": 432,
+      "uncovered": 0,
+      "patches": [
+        "route-03",
+        "route-04",
+        "route-06",
+        "route-07",
+        "route-12",
+        "route-19"
+      ]
+    },
+    {
+      "id": "works-approach",
+      "kind": "lane",
+      "samples": 384,
+      "uncovered": 0,
+      "patches": [
+        "route-12",
+        "route-19",
+        "route-23",
+        "route-27",
+        "route-28",
+        "route-30",
+        "route-31"
+      ]
+    },
+    {
+      "id": "works-north",
+      "kind": "lane",
+      "samples": 96,
+      "uncovered": 0,
+      "patches": [
+        "route-27",
+        "route-28",
+        "route-30",
+        "route-31",
+        "route-34"
+      ]
+    },
+    {
+      "id": "works-scrap-trail",
+      "kind": "trail",
+      "samples": 546,
+      "uncovered": 0,
+      "patches": [
+        "route-27",
+        "route-28",
+        "route-30",
+        "route-31",
+        "route-36",
+        "route-42",
+        "route-44",
+        "route-50"
+      ]
+    },
+    {
+      "id": "camp-village",
+      "kind": "trail",
+      "samples": 135,
+      "uncovered": 0,
+      "patches": [
+        "route-09"
+      ]
+    },
+    {
+      "id": "village-arrival",
+      "kind": "lane",
+      "samples": 135,
+      "uncovered": 0,
+      "patches": [
+        "route-03",
+        "route-04",
+        "route-09"
+      ]
+    },
+    {
+      "id": "village-main",
+      "kind": "lane",
+      "samples": 171,
+      "uncovered": 0,
+      "patches": [
+        "route-09",
+        "route-13",
+        "route-16",
+        "route-18"
+      ]
+    },
+    {
+      "id": "factory-arrival",
+      "kind": "lane",
+      "samples": 117,
+      "uncovered": 0,
+      "patches": [
+        "route-30",
+        "route-34",
+        "route-38"
+      ]
+    },
+    {
+      "id": "factory-main",
+      "kind": "lane",
+      "samples": 261,
+      "uncovered": 0,
+      "patches": [
+        "route-34",
+        "route-38",
+        "route-58",
+        "route-70"
+      ]
+    },
+    {
+      "id": "village-factory",
+      "kind": "lane",
+      "samples": 504,
+      "uncovered": 0,
+      "patches": [
+        "route-13",
+        "route-16",
+        "route-18",
+        "route-25",
+        "route-29",
+        "route-34",
+        "route-38"
+      ]
+    },
+    {
+      "id": "scrap-arrival",
+      "kind": "trail",
+      "samples": 72,
+      "uncovered": 0,
+      "patches": [
+        "route-50",
+        "route-61"
+      ]
+    },
+    {
+      "id": "scrap-main",
+      "kind": "lane",
+      "samples": 171,
+      "uncovered": 0,
+      "patches": [
+        "route-61",
+        "route-62",
+        "route-65",
+        "route-67"
+      ]
+    },
+    {
+      "id": "northwest-river-approach",
+      "kind": "trail",
+      "samples": 270,
+      "uncovered": 0,
+      "patches": [
+        "route-08",
+        "route-21",
+        "route-33"
+      ]
+    },
+    {
+      "id": "logging-bridge",
+      "kind": "bridge",
+      "samples": 108,
+      "uncovered": 0,
+      "patches": [
+        "route-21",
+        "route-33",
+        "route-45"
+      ]
+    },
+    {
+      "id": "logging-arrival",
+      "kind": "lane",
+      "samples": 207,
+      "uncovered": 0,
+      "patches": [
+        "route-45",
+        "route-48",
+        "route-72"
+      ]
+    },
+    {
+      "id": "north-woodland-link",
+      "kind": "trail",
+      "samples": 744,
+      "uncovered": 0,
+      "patches": [
+        "route-05",
+        "route-10",
+        "route-11",
+        "route-13",
+        "route-16",
+        "route-17",
+        "route-21",
+        "route-32",
+        "route-33"
+      ]
+    },
+    {
+      "id": "west-camp-trail",
+      "kind": "trail",
+      "samples": 207,
+      "uncovered": 0,
+      "patches": [
+        "route-15"
+      ]
+    },
+    {
+      "id": "west-river-approach",
+      "kind": "trail",
+      "samples": 252,
+      "uncovered": 0,
+      "patches": [
+        "route-15",
+        "route-22",
+        "route-24",
+        "route-39"
+      ]
+    },
+    {
+      "id": "west-camp-bridge",
+      "kind": "bridge",
+      "samples": 81,
+      "uncovered": 0,
+      "patches": [
+        "route-39",
+        "route-46"
+      ]
+    },
+    {
+      "id": "west-logging-link",
+      "kind": "trail",
+      "samples": 603,
+      "uncovered": 0,
+      "patches": [
+        "route-39",
+        "route-46",
+        "route-57",
+        "route-63",
+        "route-72",
+        "route-73",
+        "route-74"
+      ]
+    },
+    {
+      "id": "southwest-camp-trail",
+      "kind": "trail",
+      "samples": 225,
+      "uncovered": 0,
+      "patches": [
+        "route-02",
+        "route-20"
+      ]
+    },
+    {
+      "id": "southwest-river-approach",
+      "kind": "trail",
+      "samples": 72,
+      "uncovered": 0,
+      "patches": [
+        "route-20"
+      ]
+    },
+    {
+      "id": "waterworks-bridge",
+      "kind": "bridge",
+      "samples": 90,
+      "uncovered": 0,
+      "patches": [
+        "route-20",
+        "route-35"
+      ]
+    },
+    {
+      "id": "waterworks-arrival",
+      "kind": "lane",
+      "samples": 255,
+      "uncovered": 0,
+      "patches": [
+        "route-35",
+        "route-41",
+        "route-56",
+        "route-60"
+      ]
+    },
+    {
+      "id": "western-bank-link",
+      "kind": "trail",
+      "samples": 444,
+      "uncovered": 0,
+      "patches": [
+        "route-35",
+        "route-39",
+        "route-41",
+        "route-43",
+        "route-46",
+        "route-49",
+        "route-51"
+      ]
+    },
+    {
+      "id": "southern-trail",
+      "kind": "trail",
+      "samples": 171,
+      "uncovered": 0,
+      "patches": [
+        "route-14",
+        "route-26"
+      ]
+    },
+    {
+      "id": "meadow-north-approach",
+      "kind": "trail",
+      "samples": 36,
+      "uncovered": 0,
+      "patches": [
+        "route-26"
+      ]
+    },
+    {
+      "id": "meadow-footbridge",
+      "kind": "bridge",
+      "samples": 81,
+      "uncovered": 0,
+      "patches": [
+        "route-26",
+        "route-37",
+        "route-40"
+      ]
+    },
+    {
+      "id": "meadow-arrival",
+      "kind": "trail",
+      "samples": 234,
+      "uncovered": 0,
+      "patches": [
+        "route-37",
+        "route-40",
+        "route-59",
+        "route-71"
+      ]
+    },
+    {
+      "id": "waterworks-south-approach",
+      "kind": "trail",
+      "samples": 108,
+      "uncovered": 0,
+      "patches": [
+        "route-54",
+        "route-55",
+        "route-56",
+        "route-60"
+      ]
+    },
+    {
+      "id": "lower-river-bridge",
+      "kind": "bridge",
+      "samples": 108,
+      "uncovered": 0,
+      "patches": [
+        "route-52",
+        "route-54",
+        "route-55"
+      ]
+    },
+    {
+      "id": "meadow-west-link",
+      "kind": "trail",
+      "samples": 450,
+      "uncovered": 0,
+      "patches": [
+        "route-37",
+        "route-40",
+        "route-47",
+        "route-52",
+        "route-53",
+        "route-54",
+        "route-55"
+      ]
+    },
+    {
+      "id": "scrap-meadow-approach",
+      "kind": "trail",
+      "samples": 423,
+      "uncovered": 0,
+      "patches": [
+        "route-62",
+        "route-64",
+        "route-65",
+        "route-67",
+        "route-68",
+        "route-69"
+      ]
+    },
+    {
+      "id": "creek-footbridge",
+      "kind": "bridge",
+      "samples": 81,
+      "uncovered": 0,
+      "patches": [
+        "route-66",
+        "route-69"
+      ]
+    },
+    {
+      "id": "meadow-east-link",
+      "kind": "trail",
+      "samples": 162,
+      "uncovered": 0,
+      "patches": [
+        "route-59",
+        "route-66",
+        "route-71"
+      ]
+    }
+  ]
+}

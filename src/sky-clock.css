@@ -1,0 +1,56 @@
+/* The same painted instrument and coordinate system are used in native. */
+.field-kit{--sky-dial-width:120px;--kit-toolbar-width:272px}
+.field-kit .kit-utilities{display:flex;align-items:flex-start;gap:12px;z-index:10;pointer-events:none;top:calc(var(--kit-top) + 5px)}
+.kit-utility-buttons{display:flex;align-items:flex-end;gap:10px;pointer-events:none}
+.sky-clock{position:relative;width:var(--sky-dial-width,120px);height:var(--sky-height,40px);flex:none;pointer-events:auto;--sky-light:#ead39b}
+.sky-clock[data-night=true]{--sky-light:#d3e2df}
+.camp-studio .field-kit .sky-horizon-button,.sky-horizon-button{display:block;position:relative;box-sizing:border-box;width:100%;height:var(--sky-height,40px);min-width:44px;min-height:var(--sky-height,40px);margin:0;padding:0;border:0;border-radius:var(--sky-radius,11px);background:transparent;box-shadow:none;appearance:none;-webkit-appearance:none;touch-action:manipulation;cursor:pointer;-webkit-tap-highlight-color:transparent}
+.sky-horizon-button:before{content:'';position:absolute;inset:-5px;pointer-events:auto}
+.camp-studio .field-kit .sky-horizon-button:is(:hover,:active,:focus){background:transparent;box-shadow:none}
+.sky-horizon-button:focus-visible{outline:1px solid #ead39bcc;outline-offset:3px}
+.sky-dial-art{position:absolute;left:50%;top:50%;width:120px;height:var(--sky-height,40px);transform:translate(-50%,-50%);filter:drop-shadow(0 2px 3px #000b);pointer-events:none}
+.sky-scene,.sky-dial-rim{position:absolute;inset:0;width:120px;height:var(--sky-height,40px);max-width:none;pointer-events:none}
+.sky-scene-night{opacity:0;transition:opacity 40ms linear}
+.sky-clock[data-night=true] .sky-scene-night{opacity:1}
+.sky-flight-window{position:absolute;inset:0;overflow:hidden;border-radius:var(--sky-radius,11px);pointer-events:none}
+.sky-flight{position:absolute;left:0;top:0;width:var(--sky-icon);height:var(--sky-icon);transition:transform 40ms linear,opacity 40ms linear;will-change:transform;pointer-events:none}
+.sky-flight-sprite{position:absolute;inset:0;width:100%;height:100%;max-width:none;object-fit:contain;pointer-events:none}
+.sky-orb-glow{position:absolute;left:calc((var(--sky-icon) - var(--sky-glow))/2);top:calc((var(--sky-icon) - var(--sky-glow))/2);width:var(--sky-glow);height:var(--sky-glow);max-width:none;animation:sky-breathe var(--sky-pulse) ease-in-out infinite;pointer-events:none}
+@keyframes sky-breathe{0%,100%{opacity:.65;transform:scale(.92)}50%{opacity:1;transform:scale(1.08)}}
+.sky-clock[data-paused=true] .sky-flight,.sky-clock[data-paused=true] .sky-scene-night{transition:none}
+.sky-clock[data-paused=true] .sky-orb-glow{animation-play-state:paused}
+@media(orientation:portrait){
+ .field-kit{--kit-toolbar-width:140px}
+ .kit-utility-buttons{flex-direction:row}
+ .field-kit .kit-utilities{top:calc(var(--kit-top) + 5px)}
+ .field-kit .kit-vitals-toggle[data-expanded=false][data-combat]{width:min(232px,calc(100% - var(--kit-left) - var(--kit-right) - var(--kit-toolbar-width) - 12px))}
+ .field-kit .kit-vitals-toggle[data-expanded=true]{top:calc(var(--kit-top) + 104px)}
+}
+@media(orientation:landscape){.field-kit .kit-vitals-toggle[data-expanded=false][data-combat=false]{width:min(232px,calc(100% - var(--kit-left) - var(--kit-right) - var(--kit-toolbar-width) - 12px))}.field-kit .kit-vitals-toggle[data-expanded=false][data-combat=true]{width:calc(100% - var(--kit-left) - var(--kit-right) - var(--kit-toolbar-width) - 12px)}}
+@media(prefers-reduced-motion:reduce){.sky-flight,.sky-scene-night{transition:none;will-change:auto}.sky-orb-glow{animation:none;opacity:.8}}
+
+/* A brass-framed calendar wing grows left; the sky and utility buttons stay fixed. */
+.sky-clock{--sky-wing:0px}
+.sky-clock[data-expanded=true]{--sky-wing:var(--sky-day-width,72px)}
+.camp-studio .field-kit .sky-horizon-button,.sky-horizon-button{position:absolute;right:0;top:0;width:calc(var(--sky-dial-width,120px) + var(--sky-wing));transition:width 220ms cubic-bezier(.2,.8,.2,1)}
+.sky-dial-art{left:auto;right:0;top:0;transform:none;z-index:2}
+.sky-day-wing{position:absolute;right:calc(var(--sky-dial-width,120px) - 3px);top:0;width:var(--sky-wing);height:var(--sky-height,34px);overflow:hidden;pointer-events:none;transition:width 220ms cubic-bezier(.2,.8,.2,1)}
+.sky-day-inlay{position:absolute;right:0;top:0;box-sizing:border-box;width:var(--sky-day-width,72px);height:100%;display:flex;flex-direction:column;align-items:center;justify-content:center;padding-right:3px;border:2px solid #a68d58;border-right:0;border-radius:11px 0 0 11px;background:#123936 url('/survival/ui-field-kit-v1/utility-panel.png') center/100% 100%;box-shadow:inset 0 0 0 1px #092a2d,0 2px 3px #0009;color:#f1dfb3;text-shadow:0 1px 2px #041b1d}
+.sky-day-inlay small{font:900 7px/8px 'Barlow Condensed',sans-serif;letter-spacing:1.8px;color:#c5bb93}
+.sky-day-inlay b{font:900 19px/18px 'Barlow Condensed',sans-serif;font-variant-numeric:tabular-nums;letter-spacing:.5px}
+.sky-day-inlay i{position:absolute;left:6px;top:6px;width:2px;height:2px;background:#d1b477;border-radius:50%}
+.sky-day-inlay i+i{top:auto;bottom:6px}
+.field-kit[data-sky-expanded=true]{--kit-toolbar-width:344px}
+.field-kit[data-sky-expanded=true][data-waypoint=true]{--kit-toolbar-width:394px}
+.field-kit[data-sky-expanded=true] .kit-vitals-toggle[data-expanded=false][data-combat=false]{width:min(232px,calc(100% - var(--kit-left) - var(--kit-right) - var(--kit-toolbar-width) - 12px))}
+@media(orientation:portrait){
+ .field-kit .kit-utilities>.sky-clock{position:absolute;right:0;top:44px;transition:top 180ms ease,right 180ms ease}
+ .field-kit[data-sky-expanded=true]{--kit-toolbar-width:140px}
+ .field-kit[data-sky-expanded=true][data-waypoint=true]{--kit-toolbar-width:190px}
+ .field-kit[data-sky-expanded=true] .kit-utilities>.sky-clock{right:0;top:44px}
+ .field-kit[data-sky-expanded=true] .kit-vitals-toggle[data-expanded=true]{top:calc(var(--kit-top) + 104px)}
+}
+@media(orientation:landscape){.field-kit[data-sky-expanded=true] .kit-vitals-toggle[data-expanded=true]{top:calc(var(--kit-top) + 52px)}}
+@media(prefers-reduced-motion:reduce){.sky-clock,.sky-day-wing,.sky-horizon-button{transition:none!important}}
+
+@media(orientation:portrait) and (max-width:355px){.field-kit[data-waypoint=true] .kit-vitals-toggle[data-expanded=false][data-combat]{top:calc(var(--kit-top) + 104px);width:232px}}

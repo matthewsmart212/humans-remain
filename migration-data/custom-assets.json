@@ -1,0 +1,65 @@
+{
+  "table": "custom_assets",
+  "rows": [
+    {
+      "id": "misc_0c17a859-9e4a-4145-bfde-29cab029d69a",
+      "name": "Base wall 7",
+      "created_at": "2026-10-07T07:52:31.345Z"
+    },
+    {
+      "id": "misc_2dd09bb8-883b-42e3-b765-c2a1c735b016",
+      "name": "Bunker",
+      "created_at": "2026-10-10T17:26:59.789Z"
+    },
+    {
+      "id": "misc_2ecc542f-d46f-4370-84dc-1718f1ca2551",
+      "name": "Base wall 1",
+      "created_at": "2026-10-07T07:35:25.862Z"
+    },
+    {
+      "id": "misc_839757e5-8646-448a-9c44-ab90dd109082",
+      "name": "Base wall 3",
+      "created_at": "2026-10-07T07:49:36.951Z"
+    },
+    {
+      "id": "misc_b4f79cef-2bfe-4c2e-8e5e-6dbbcec7e645",
+      "name": "Base wall 6",
+      "created_at": "2026-10-07T07:51:53.205Z"
+    },
+    {
+      "id": "misc_c3a6521e-5a81-424d-a25c-c102891355a2",
+      "name": "Base wall 2",
+      "created_at": "2026-10-07T07:44:18.899Z"
+    },
+    {
+      "id": "misc_ccf51c94-ae61-4c60-8ef5-79df0442c1d0",
+      "name": "Base wall 8",
+      "created_at": "2026-10-07T16:25:32.664Z"
+    },
+    {
+      "id": "misc_ceaf1a05-5426-45df-8a51-d3e2e07c6f9f",
+      "name": "Warehouse",
+      "created_at": "2026-10-12T10:43:26.700Z"
+    },
+    {
+      "id": "misc_d0d1ee51-fe35-4ff1-981f-200188f0acc2",
+      "name": "Base wall 4",
+      "created_at": "2026-10-07T07:50:36.465Z"
+    },
+    {
+      "id": "misc_d9795b56-b7cc-4e3a-84e2-3140912e5d0d",
+      "name": "Bonfire background",
+      "created_at": "2026-10-10T15:13:17.583Z"
+    },
+    {
+      "id": "misc_dc6dcbec-1730-4540-9f18-81e93654dfd1",
+      "name": "Base wall 5",
+      "created_at": "2026-10-07T07:51:18.241Z"
+    },
+    {
+      "id": "misc_e986e1cf-f055-4af0-a37b-ab09beaaff3b",
+      "name": "Base wall 1",
+      "created_at": "2026-10-07T07:35:08.609Z"
+    }
+  ]
+}

@@ -1,0 +1,23 @@
+[
+  {
+    "source": "/survival/home-props.png",
+    "webp": "/survival/home-props.webp",
+    "oldBytes": 2153734,
+    "newBytes": 1648220,
+    "visiblePixelsIdentical": true
+  },
+  {
+    "source": "/survival/water-storage/tier-3-tank.png",
+    "webp": "/survival/water-storage/tier-3-tank.webp",
+    "oldBytes": 2039158,
+    "newBytes": 1570610,
+    "visiblePixelsIdentical": true
+  },
+  {
+    "source": "/survival/provisions.png",
+    "webp": "/survival/provisions.webp",
+    "oldBytes": 1926733,
+    "newBytes": 801228,
+    "visiblePixelsIdentical": true
+  }
+]

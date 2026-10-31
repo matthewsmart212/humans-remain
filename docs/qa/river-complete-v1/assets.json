@@ -1,0 +1,58 @@
+[
+  {
+    "id": "river-western-bends-v1",
+    "nativePixels": [
+      1330,
+      1182
+    ],
+    "world": {
+      "x": -6144,
+      "y": -1800,
+      "width": 4608,
+      "height": 4096
+    },
+    "bytes": 900792
+  },
+  {
+    "id": "river-waterworks-approach-v1",
+    "nativePixels": [
+      1330,
+      1182
+    ],
+    "world": {
+      "x": -5888,
+      "y": 1900,
+      "width": 4608,
+      "height": 4096
+    },
+    "bytes": 936096
+  },
+  {
+    "id": "river-lower-pools-v1",
+    "nativePixels": [
+      1330,
+      1182
+    ],
+    "world": {
+      "x": -5120,
+      "y": 5600,
+      "width": 4608,
+      "height": 4096
+    },
+    "bytes": 912022
+  },
+  {
+    "id": "river-southern-reach-v1",
+    "nativePixels": [
+      1269,
+      1240
+    ],
+    "world": {
+      "x": -5632,
+      "y": 9300,
+      "width": 4608,
+      "height": 4500
+    },
+    "bytes": 893602
+  }
+]

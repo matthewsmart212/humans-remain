@@ -1,0 +1,27 @@
+{
+  "passed": true,
+  "daySeconds": 180,
+  "nightSeconds": 90,
+  "duskSeconds": 20,
+  "dawnSeconds": 10,
+  "weatherFadeSeconds": 20,
+  "weatherTypes": [
+    "CLEAR SKIES",
+    "FOGGY",
+    "MIST + RAIN",
+    "SHOWERS",
+    "HEAVY RAIN",
+    "THUNDERSTORM"
+  ],
+  "checks": [
+    "actual play-loop integration",
+    "full day/night boundaries and round count",
+    "continuous dusk/dawn brightness",
+    "pause and game-over freeze",
+    "60 seeded days repeat deterministically",
+    "all weather mixes and no identical consecutive day patterns",
+    "gentle first day",
+    "weather fades and delayed reduced-motion lightning"
+  ],
+  "browserTested": false
+}

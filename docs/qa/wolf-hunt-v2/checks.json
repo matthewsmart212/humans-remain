@@ -1,0 +1,42 @@
+{
+  "passed": true,
+  "results": {
+    "walkingGap": {
+      "before": 420,
+      "after": 270.00000000001137
+    },
+    "bite": {
+      "damage": 12,
+      "tell": 0.32,
+      "travel": 6.66666666666697
+    },
+    "lunge": {
+      "damage": 18,
+      "tell": 0.5,
+      "travel": 124.00000000000182
+    },
+    "axeMash": {
+      "damageTaken": 24,
+      "seconds": 1.9666666666666666,
+      "wolfHealth": 0
+    },
+    "fistsMash": {
+      "damageTaken": 60,
+      "seconds": 9.083333333333334,
+      "wolfHealth": 0
+    }
+  },
+  "checks": [
+    "recorded home-boundary retreat reproduced and removed",
+    "walking is caught; sprint and real separation allow escape",
+    "distinct grounded bite and committed lunge",
+    "lunge follows with bite when player stays close",
+    "real stationary axe/fist spam receives damage",
+    "early spaced interruption; no cooldown reset from repeated hits",
+    "readable tells, sidestep, dodge and single-hit recovery",
+    "bounded obstacle detour, no attacks through walls",
+    "short sight loss retained; sustained hiding loses pursuit",
+    "death, downed guard, body spacing and single meat reward"
+  ],
+  "physicalIPhoneTested": false
+}

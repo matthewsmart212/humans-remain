@@ -1,0 +1,10 @@
+{
+  "sourcePath": "/workspace/scratch/23bb648437fc/generated_images/exec-fb6525af-51c2-466c-ad7a-1e4403ee3fcb.png",
+  "prompt": "Precise game texture repair. Edit this exact tall terrain crop, same dimensions, camera, framing, palette and lighting. The narrow north-south cobblestone walkway in the centre is currently deformed and partly blurry from a bad image seam. REPAINT IT as ONE continuous clear S-curving walkway of small closely fitted grey and warm pale sandstone cobbles, matching the crisp horizontal circular path across the top. It must join that ring at its current centre opening and exit the bottom at the current right-of-centre opening. Follow the main central S curve, no extra forks, no spurs, no loose resource rocks, no disconnected stone patches. Replace the broken stray diagonal spurs in the lower left and upper right with the adjacent dry ochre leaf-litter ground. All walkway stones should have equally crisp natural painted contours and fine pitted highlights, dark clear joints; make the complete central walkway sharp from top to bottom, with no soft spots or smudged stones. Preserve the horizontal ring stones across the very top pixel-for-pixel if possible, preserve the rest of the surrounding soil, dry leaves and dark bottom edge fade. Don't add water or vegetation. Highest native resolution portrait 900:1690 aspect ratio. Do not crop, zoom or change the outline of the terrain. No text. One image.",
+  "crop": {
+    "left": 1980,
+    "top": 3110,
+    "width": 900,
+    "height": 1690
+  }
+}

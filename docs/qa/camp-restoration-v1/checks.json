@@ -1,0 +1,12 @@
+{
+  "passed": true,
+  "checks": [
+    "New runs start with all nine ruins, no working facilities, and HQ as the only repair",
+    "HQ validates proximity, life, site and full cost; pays once; unlocks Level 1 without moving the player or layout",
+    "Broken workshop, warehouse, water, fire and bunker cannot be used; logs alone restore workshop and craft the first pickaxe",
+    "All repairs persist, re-enable their facilities, and permit Camp Level 2 and furnace progression",
+    "Repair progress survives interior travel, saving below ground and returning to camp",
+    "Existing saves and sandbox keep their facilities; malformed repair saves are rejected",
+    "All ruin sprites preload and render to exact authored bounds, including rotated/flipped placements; editor layout stays untouched"
+  ]
+}

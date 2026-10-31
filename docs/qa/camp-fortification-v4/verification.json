@@ -1,0 +1,78 @@
+{
+  "result": "pass",
+  "boundaryChecks": 1250,
+  "oldWallsRemoved": 54,
+  "walls": 26,
+  "nonWallPlacementsPreserved": 1357,
+  "foliage": 1335,
+  "puddles": 8,
+  "gates": [
+    {
+      "gate": "camp_gate_southeast_v3",
+      "center": [
+        2788.999892109419,
+        2618.2417220095126
+      ],
+      "pathCells": 11,
+      "closedSprintAndDodge": true,
+      "openBothDirections": true,
+      "safeClosing": true
+    },
+    {
+      "gate": "camp_gate_south_v3",
+      "center": [
+        1701.2818699534919,
+        2999.038661786454
+      ],
+      "pathCells": 8,
+      "closedSprintAndDodge": true,
+      "openBothDirections": true,
+      "safeClosing": true
+    },
+    {
+      "gate": "camp_gate_southwest_v3",
+      "center": [
+        875.3304191754416,
+        2702.803315963249
+      ],
+      "pathCells": 10,
+      "closedSprintAndDodge": true,
+      "openBothDirections": true,
+      "safeClosing": true
+    },
+    {
+      "gate": "camp_gate_west_v3",
+      "center": [
+        374.07050310334466,
+        2060.5490933210704
+      ],
+      "pathCells": 10,
+      "closedSprintAndDodge": true,
+      "openBothDirections": true,
+      "safeClosing": true
+    },
+    {
+      "gate": "camp_gate_northwest_v3",
+      "center": [
+        677.6307510587267,
+        431.92698775865216
+      ],
+      "pathCells": 11,
+      "closedSprintAndDodge": true,
+      "openBothDirections": true,
+      "safeClosing": true
+    },
+    {
+      "gate": "camp_gate_northeast_v3",
+      "center": [
+        3004.4246181617445,
+        577.5259812939396
+      ],
+      "pathCells": 10,
+      "closedSprintAndDodge": true,
+      "openBothDirections": true,
+      "safeClosing": true
+    }
+  ],
+  "transformedGateChecks": 6
+}

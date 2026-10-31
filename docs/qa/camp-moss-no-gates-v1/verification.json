@@ -1,0 +1,50 @@
+{
+  "result": "pass",
+  "gatesRemoved": 6,
+  "placementsPreserved": 1368,
+  "originalWalls": 11,
+  "entrances": [
+    {
+      "entrance": "camp_gate_northeast_classic_v1",
+      "roadClear": true,
+      "sprintBothDirections": true,
+      "noPrompt": true,
+      "pathCells": 10
+    },
+    {
+      "entrance": "camp_gate_southeast_classic_v1",
+      "roadClear": true,
+      "sprintBothDirections": true,
+      "noPrompt": true,
+      "pathCells": 11
+    },
+    {
+      "entrance": "camp_gate_south_classic_v1",
+      "roadClear": true,
+      "sprintBothDirections": true,
+      "noPrompt": true,
+      "pathCells": 8
+    },
+    {
+      "entrance": "camp_gate_southwest_classic_v1",
+      "roadClear": true,
+      "sprintBothDirections": true,
+      "noPrompt": true,
+      "pathCells": 11
+    },
+    {
+      "entrance": "camp_gate_west_classic_v1",
+      "roadClear": true,
+      "sprintBothDirections": true,
+      "noPrompt": true,
+      "pathCells": 9
+    },
+    {
+      "entrance": "camp_gate_northwest_classic_v1",
+      "roadClear": true,
+      "sprintBothDirections": true,
+      "noPrompt": true,
+      "pathCells": 10
+    }
+  ]
+}

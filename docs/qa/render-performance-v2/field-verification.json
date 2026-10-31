@@ -1,0 +1,33 @@
+{
+  "passed": true,
+  "ground": [
+    {
+      "name": "world",
+      "meanChannelDelta": 0.23321151733398438,
+      "p99ChannelDelta": 1
+    },
+    {
+      "name": "camp",
+      "meanChannelDelta": 0.037364959716796875,
+      "p99ChannelDelta": 1
+    },
+    {
+      "name": "west",
+      "meanChannelDelta": 0.14485549926757812,
+      "p99ChannelDelta": 1
+    },
+    {
+      "name": "woodland",
+      "meanChannelDelta": 0.06612014770507812,
+      "p99ChannelDelta": 1
+    },
+    {
+      "name": "south",
+      "meanChannelDelta": 0.07471847534179688,
+      "p99ChannelDelta": 1
+    }
+  ],
+  "groundFieldBytes": 4194304,
+  "riverFieldBytes": 17383424,
+  "physicalDeviceTested": false
+}

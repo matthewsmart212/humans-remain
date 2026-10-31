@@ -1,0 +1,56 @@
+{
+  "passed": true,
+  "riverAreas": 6,
+  "tiles": 170,
+  "lossless": true,
+  "geometryAndCrossingsUnchanged": true,
+  "peakGameplayRiverBytes": 20804288,
+  "chunkBytesMax": 1115136,
+  "motion": [
+    {
+      "batch": 0,
+      "visibleChunks": 6,
+      "waterPixels": 50248,
+      "movingFraction": 0.6948933290877248,
+      "dryChanged": 0
+    },
+    {
+      "batch": 1,
+      "visibleChunks": 6,
+      "waterPixels": 19470,
+      "movingFraction": 0.7446841294298921,
+      "dryChanged": 0
+    },
+    {
+      "batch": 2,
+      "visibleChunks": 3,
+      "waterPixels": 29069,
+      "movingFraction": 0.6306030479204651,
+      "dryChanged": 0
+    },
+    {
+      "batch": 3,
+      "visibleChunks": 2,
+      "waterPixels": 41855,
+      "movingFraction": 0.47920200692868237,
+      "dryChanged": 0
+    },
+    {
+      "batch": 4,
+      "visibleChunks": 4,
+      "waterPixels": 60852,
+      "movingFraction": 0.48785578123972917,
+      "dryChanged": 0
+    },
+    {
+      "batch": 5,
+      "visibleChunks": 6,
+      "waterPixels": 16726,
+      "movingFraction": 0.6370321654908526,
+      "dryChanged": 0
+    }
+  ],
+  "physicalIPhoneTested": false,
+  "losslessTilesDecoded": 170,
+  "identicalSamplingGutters": 276
+}

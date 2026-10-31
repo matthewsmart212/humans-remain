@@ -1,0 +1,44 @@
+.chest-modes{display:flex;gap:4px;padding:3px;border:1px solid #72806738;border-radius:9px;background:#10292b;flex-shrink:0}
+.camp-studio .field-kit .station-menu .chest-modes button{flex:1;display:flex;align-items:center;justify-content:center;gap:8px;min-height:40px;padding:5px 8px;border-color:transparent;background:transparent;font:700 15px Barlow,sans-serif;color:#b7c5b1}
+.camp-studio .field-kit .station-menu .chest-modes button[aria-pressed=true]{background:#45563d;border-color:#bda76b;color:#f4e4b5}
+.chest-modes img{width:23px;height:23px;object-fit:contain}
+.chest-categories{display:flex;gap:5px;flex-shrink:0}
+.camp-studio .field-kit .station-menu .chest-categories button{flex:1;min-height:30px;padding:4px 5px;font:600 11px Barlow,sans-serif;background:#10292466;border-color:transparent;color:#b5c4aa}
+.camp-studio .field-kit .station-menu .chest-categories button[aria-pressed=true]{background:#3b5038;border-color:#b29d6377;color:#f7e4b5}
+.chest-browser{flex:1;min-height:0;overflow:hidden}
+.chest-catalog{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));grid-auto-rows:max(44px,calc((100% - 12px)/3));height:100%;gap:6px;align-content:start;overflow:auto;overscroll-behavior:contain;scrollbar-width:thin;scrollbar-color:#9b9a70 transparent;padding:1px 2px 1px 1px;box-sizing:border-box}
+.camp-studio .field-kit .station-menu button.chest-catalog-item{position:relative;display:flex;flex-direction:column;align-items:center;justify-content:center;min-width:0;min-height:0;gap:4px;padding:5px 4px;border:1px solid #65756070;border-bottom:3px solid #0c2223;border-radius:8px;background:#18322b;overflow:hidden}
+.camp-studio .field-kit .station-menu button.chest-catalog-item[aria-pressed=true]{border-color:#d0b879;border-bottom-color:#9b8154;background:#4b583a;box-shadow:inset 0 0 0 1px #d0b87955}
+.chest-catalog-item>img{width:54px;height:calc(100% - 22px);min-height:18px;max-height:58px;object-fit:contain;filter:drop-shadow(0 2px 2px #071c1c55)}
+.chest-catalog-item>span{max-width:100%;font:600 12px/1.15 Barlow,sans-serif;color:#eee2c3;text-align:center;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.chest-catalog-item>b{position:absolute;right:4px;top:3px;font:700 11px/1.1 Barlow,sans-serif;color:#eddbac;background:#0e2525df;border-radius:4px;padding:3px 4px}
+.chest-empty-state{height:100%;overflow:auto}.chest-empty-state .supply-empty{height:100%;box-sizing:border-box;min-height:125px}
+.chest-selection{border-top:1px solid #bda67940;padding-top:4px;display:flex;flex-direction:column;gap:4px;flex-shrink:0}
+.chest-selection-heading{display:flex;align-items:center;gap:6px;min-height:30px;min-width:0}
+.chest-selection-heading>img{width:25px;height:25px;object-fit:contain}.chest-selection-heading>strong{font:700 15px/1.1 'Barlow Condensed',sans-serif;color:#f4e5c1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.camp-studio .field-kit .station-menu button.chest-info-button{flex:none;min-height:28px;width:28px;padding:0;border:0;background:transparent;color:#e5ca91;font:800 16px Georgia,serif;box-shadow:none}
+.chest-info-button::first-letter{border-radius:50%;background:#e5ca91;color:#21372e;padding:0 6px}
+.chest-stock{margin-left:auto;white-space:nowrap;font:500 11px Barlow,sans-serif;color:#b5c4ac}.chest-stock b{color:#efdaaa;font-weight:600}
+.chest-selection-prompt{font:500 12px Barlow,sans-serif;color:#b5c4ac}
+.chest-transfer-controls{display:flex;align-items:stretch;gap:7px;min-width:0}
+.chest-stepper{display:flex;align-items:center;gap:4px;flex-shrink:0}
+.camp-studio .field-kit .station-menu .chest-stepper button{width:42px;min-height:42px;padding:4px;background:#1a352f;color:#eee2c3;border-color:#76816b77;font-size:14px}
+.chest-stepper output{min-width:29px;text-align:center;font:700 16px Barlow,sans-serif;color:#f4e4bc}
+.camp-studio .field-kit .station-menu button.chest-transfer-button{flex:1;min-width:0;min-height:42px;padding:6px 8px;font-size:14px;justify-content:center}
+.camp-studio .field-kit .station-menu .chest-stepper button:disabled{opacity:.45}.camp-studio .field-kit .station-menu button.chest-transfer-button:disabled{opacity:.65}
+.chest-item-info{position:absolute;left:2px;right:2px;bottom:88px;max-height:calc(100% - 102px);overflow:auto;box-sizing:border-box;z-index:4;padding:10px 12px;border:1px solid #bea772;border-radius:9px;background:#16372ff8;box-shadow:0 8px 28px #071b1bbd;color:#c7cfb8}
+.chest-item-info>header{display:flex;align-items:center;justify-content:space-between;gap:8px}.chest-item-info h3{margin:0;font:800 23px 'Barlow Condensed',sans-serif;color:#f4e5c1}
+.camp-studio .field-kit .station-menu .chest-item-info>header>button{width:36px;min-height:36px;padding:0;font-size:23px;flex:none}
+.chest-item-info p{font:500 12px/1.45 Barlow,sans-serif;margin:8px 0}.chest-item-info .chest-item-effects{color:#ebd8aa}.chest-item-info .chest-info-hint{font-size:11px;color:#afc2aa}
+.chest-item-info dl{display:flex;gap:12px;flex-wrap:wrap;margin:9px 0}.chest-item-info dl>div{min-width:64px}.chest-item-info dt{font:500 10px Barlow,sans-serif;color:#a7b99f}.chest-item-info dd{font:600 12px Barlow,sans-serif;color:#eee0bb;margin:3px 0 0}
+.chest-menu[data-short=true] .chest-modes{padding:2px}.camp-studio .field-kit .chest-menu[data-short=true] .chest-modes button{min-height:34px;font-size:13px;padding:3px 6px}.chest-menu[data-short=true] .chest-modes img{width:19px;height:19px}
+.camp-studio .field-kit .chest-menu[data-short=true] .chest-categories button{min-height:26px;padding:3px 4px;font-size:10px}
+.chest-menu[data-short=true] .chest-selection-heading{min-height:26px}.chest-menu[data-short=true] .chest-selection-heading>img{width:21px;height:21px}.chest-menu[data-short=true] .chest-selection-heading>strong{font-size:14px}
+.chest-menu[data-short=true] .chest-catalog{gap:4px;grid-auto-rows:max(40px,calc((100% - 8px)/3))}.camp-studio .field-kit .chest-menu[data-short=true] button.chest-catalog-item{gap:2px;padding:3px 2px;border-bottom-width:2px}.chest-menu[data-short=true] .chest-catalog-item>span{font-size:10px}.chest-menu[data-short=true] .chest-catalog-item>img{height:calc(100% - 15px);max-height:46px}.chest-menu[data-short=true] .chest-catalog-item>b{font-size:10px;padding:2px 3px}
+@container(max-width:359px){.chest-catalog{grid-template-columns:repeat(3,minmax(0,1fr))}.chest-stock{font-size:10px}.chest-selection-heading{gap:3px}.chest-selection-heading>img{display:none}.camp-studio .field-kit .station-menu .chest-stepper button{width:36px}.chest-stepper output{min-width:24px}.chest-transfer-controls{gap:5px}.camp-studio .field-kit .station-menu button.chest-transfer-button{font-size:12px;padding-inline:5px}}
+.camp-studio .field-kit .chest-menu[data-short=true] .chest-modes button{min-height:32px}
+.camp-studio .field-kit .chest-menu[data-short=true] .chest-categories button{min-height:24px}
+.chest-menu[data-short=true] .chest-selection{padding-top:3px;gap:3px}
+.chest-menu[data-short=true] .chest-selection-heading{min-height:24px}
+.camp-studio .field-kit .chest-menu[data-short=true] button.chest-info-button{min-height:24px;width:24px}
+.camp-studio .field-kit .chest-menu[data-short=true] .chest-stepper button,.camp-studio .field-kit .chest-menu[data-short=true] button.chest-transfer-button{min-height:40px}

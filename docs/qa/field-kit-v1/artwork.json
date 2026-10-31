@@ -1,0 +1,118 @@
+{
+  "source": {
+    "vitals": "exec-526f9804-a495-418a-ba23-388276138eab.png",
+    "ring": "exec-dee89f22-191e-43cf-9d7c-ff8aa18e627b.png",
+    "icons": "exec-ddfe1248-edef-4985-8bb1-bb3a6130b8c4.png"
+  },
+  "files": [
+    {
+      "name": "vitals",
+      "width": 834,
+      "height": 210,
+      "bytes": 340619
+    },
+    {
+      "name": "ring",
+      "width": 216,
+      "height": 216,
+      "bytes": 29257
+    },
+    {
+      "name": "axe",
+      "width": 120,
+      "height": 120,
+      "bytes": 21013
+    },
+    {
+      "name": "sprint",
+      "width": 120,
+      "height": 120,
+      "bytes": 21838
+    },
+    {
+      "name": "dodge",
+      "width": 120,
+      "height": 120,
+      "bytes": 20626
+    },
+    {
+      "name": "backpack",
+      "width": 120,
+      "height": 120,
+      "bytes": 32843
+    },
+    {
+      "name": "pause",
+      "width": 120,
+      "height": 120,
+      "bytes": 32154
+    },
+    {
+      "name": "heart",
+      "width": 120,
+      "height": 120,
+      "bytes": 25461
+    },
+    {
+      "name": "stamina",
+      "width": 120,
+      "height": 120,
+      "bytes": 19292
+    },
+    {
+      "name": "food",
+      "width": 120,
+      "height": 120,
+      "bytes": 24256
+    },
+    {
+      "name": "water",
+      "width": 120,
+      "height": 120,
+      "bytes": 21172
+    },
+    {
+      "name": "chest",
+      "width": 120,
+      "height": 120,
+      "bytes": 31337
+    },
+    {
+      "name": "cook",
+      "width": 120,
+      "height": 120,
+      "bytes": 27351
+    },
+    {
+      "name": "collect",
+      "width": 120,
+      "height": 120,
+      "bytes": 18801
+    },
+    {
+      "name": "punch",
+      "width": 120,
+      "height": 120,
+      "bytes": 28653
+    },
+    {
+      "name": "logs",
+      "width": 120,
+      "height": 120,
+      "bytes": 28045
+    },
+    {
+      "name": "gate",
+      "width": 120,
+      "height": 120,
+      "bytes": 25884
+    },
+    {
+      "name": "close",
+      "width": 120,
+      "height": 120,
+      "bytes": 28910
+    }
+  ],
+  "decodedBytes": 1808784
+}

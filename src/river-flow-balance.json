@@ -1,0 +1,15 @@
+{
+  "previousAreas": 31,
+  "pilotRetained": true,
+  "areas": {
+    "south-chute": [800, 870, 100, 100],
+    "logging-upper": [560, 500, 110, 85],
+    "riverExtension0_2Flow": [750, 590, 145, 85],
+    "riverExtension0_4Flow": [320, 1040, 95, 85],
+    "riverExtension1_2Flow": [825, 650, 110, 80],
+    "riverExtension2_1Flow": [585, 330, 100, 90],
+    "riverExtension2_4Flow": [390, 1060, 135, 85],
+    "riverExtension3_0Flow": [370, 235, 90, 70],
+    "riverExtension3_3Flow": [760, 830, 110, 95]
+  }
+}

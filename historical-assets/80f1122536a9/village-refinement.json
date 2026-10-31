@@ -1,0 +1,16 @@
+{
+  "mode": "built-in image_gen",
+  "use_case": "precise-object-edit",
+  "reason": "Move the junction 200 source pixels away from the lower fade band, repairing the entire junction in opaque artwork.",
+  "bounds": {
+    "x": 4700,
+    "y": -1250,
+    "width": 1536,
+    "height": 1024
+  },
+  "prompt": "Use case: precise-object-edit. Image 1 is the EXACT target and layout, 1536x1024 top-down game ground. Image 2 is the approved camp style reference, not its layout. Repaint only the road corridor and its immediate soil shoulders. Preserve all surrounding ground and image framing exactly.\nMake a single coherent village stone lane entering TOP near x150, following the existing curve via(240,350),(370,680),(460,820), then curving down-right to exit BOTTOM near x920. A smaller branch enters LEFT at y750 and joins the lane near(380,760). This branch junction must be fully opaque, composed of whole stones and brown soil; remove ALL double/ghosted/translucent cobbles around(200,750) and (500,800). Keep the branch's leftmost120px existing approved artwork exactly aligned.\nCobbles are crisp hand-painted irregular warm-grey and tan, 25–48 pixels each, camp-sized, shaded and embedded in earth. Match the camp's subtle bevels and soil contact shadows. Width varies by number of whole stones across; never shrink stones or repeat small bead motifs. Worn edges have earth-filled gaps and sparse fragments. Lower-right lane becomes earth-filled towards bottom through missing stones, not transparency. Keep the final edge crossing positions and widths unchanged. Outer80px ground unchanged.\nNo new foliage, leaves, grass, green tint, puddles, structures, props, UI or additional roads. Preserve the exact terrain scale, texture, warm palette and dimensions. Full opaque image.",
+  "refs": [
+    "/workspace/scratch/b21393be6c68/camp-reference/docs/qa/world-roads-v3/source-village-approach.webp",
+    "/workspace/scratch/b21393be6c68/camp-reference/artwork-archive/road-pilot-v1/southeast.png"
+  ]
+}

@@ -1,0 +1,1027 @@
+{
+  "bounds": {
+    "x": -1528,
+    "y": 0,
+    "width": 11508,
+    "height": 6206
+  },
+  "tiles": [
+    {
+      "key": "outdoor:village-outskirts:west:v1",
+      "image": "/survival/maps/village-outskirts-v1/05-camp-northeast-clearing.webp",
+      "x": 4096,
+      "y": 456,
+      "width": 1538,
+      "height": 1538,
+      "paintRight": 4,
+      "paintBottom": 2,
+      "fadeTop": 192,
+      "fadeBottom": 0,
+      "fadeRight": 0
+    },
+    {
+      "key": "outdoor:village-outskirts:east:v1",
+      "image": "/survival/maps/village-outskirts-v1/06-village-outskirts.webp",
+      "x": 5630,
+      "y": 456,
+      "width": 1538,
+      "height": 1538,
+      "paintRight": 0,
+      "paintBottom": 2,
+      "fadeTop": 192,
+      "fadeBottom": 0,
+      "fadeRight": 96
+    },
+    {
+      "key": "outdoor:village-approach:west:v2",
+      "image": "/survival/maps/village-approach-v2/03-camp-east-clearing.webp",
+      "x": 4096,
+      "y": 1860,
+      "width": 1538,
+      "height": 1538,
+      "paintRight": 4,
+      "paintBottom": 2,
+      "fadeTop": 192,
+      "fadeBottom": 0,
+      "fadeRight": 0,
+      "northKey": "outdoor:village-outskirts:west:v1",
+      "coveredTop": 132
+    },
+    {
+      "key": "outdoor:village-approach:east:v2",
+      "image": "/survival/maps/village-approach-v2/04-village-trail.webp",
+      "x": 5630,
+      "y": 1860,
+      "width": 1538,
+      "height": 1538,
+      "paintRight": 0,
+      "paintBottom": 2,
+      "fadeTop": 192,
+      "fadeBottom": 0,
+      "fadeRight": 96,
+      "northKey": "outdoor:village-outskirts:east:v1",
+      "coveredTop": 132
+    },
+    {
+      "key": "outdoor:east-approach:west:v1",
+      "image": "/survival/maps/east-approach-v1/01-camp-approach.webp",
+      "x": 4096,
+      "y": 3264,
+      "width": 1538,
+      "height": 1536,
+      "paintRight": 4,
+      "paintBottom": 0,
+      "fadeTop": 192,
+      "fadeBottom": 96,
+      "fadeRight": 0,
+      "northKey": "outdoor:village-approach:west:v2",
+      "coveredTop": 132
+    },
+    {
+      "key": "outdoor:east-approach:east:v1",
+      "image": "/survival/maps/east-approach-v1/02-woodland-junction.webp",
+      "x": 5630,
+      "y": 3264,
+      "width": 1538,
+      "height": 1536,
+      "paintRight": 0,
+      "paintBottom": 0,
+      "fadeTop": 192,
+      "fadeBottom": 96,
+      "fadeRight": 96,
+      "northKey": "outdoor:village-approach:east:v2",
+      "coveredTop": 132
+    },
+    {
+      "key": "outdoor:northern-works:clearing:v1",
+      "image": "/survival/maps/northern-works-v1/09-north-works-clearing.webp",
+      "x": 7036,
+      "y": 456,
+      "width": 1538,
+      "height": 1538,
+      "paintRight": 0,
+      "paintBottom": 2,
+      "fadeTop": 192,
+      "fadeBottom": 0,
+      "fadeRight": 96,
+      "fadeLeft": 36,
+      "westKey": "outdoor:village-outskirts:east:v1"
+    },
+    {
+      "key": "outdoor:northern-works:connector:v1",
+      "image": "/survival/maps/northern-works-v1/10-works-trail-connector.webp",
+      "x": 7036,
+      "y": 1860,
+      "width": 1538,
+      "height": 266,
+      "paintRight": 0,
+      "paintBottom": 2,
+      "fadeTop": 192,
+      "fadeBottom": 0,
+      "fadeRight": 96,
+      "fadeLeft": 36,
+      "westKey": "outdoor:village-approach:east:v2",
+      "northKey": "outdoor:northern-works:clearing:v1",
+      "coveredTop": 132
+    },
+    {
+      "key": "outdoor:eastern-works:north:v1",
+      "image": "/survival/maps/eastern-works-v1/07-works-footpath.webp",
+      "x": 7036,
+      "y": 1992,
+      "width": 1538,
+      "height": 1406,
+      "paintRight": 0,
+      "paintBottom": 2,
+      "fadeTop": 192,
+      "fadeBottom": 0,
+      "fadeRight": 96,
+      "fadeLeft": 36,
+      "westKey": "outdoor:village-approach:east:v2",
+      "northKey": "outdoor:northern-works:connector:v1",
+      "coveredTop": 132,
+      "topNeighborKey": "outdoor:northern-works:clearing:v1"
+    },
+    {
+      "key": "outdoor:eastern-works:south:v1",
+      "image": "/survival/maps/eastern-works-v1/08-works-service-track.webp",
+      "x": 7036,
+      "y": 3264,
+      "width": 1538,
+      "height": 1536,
+      "paintRight": 0,
+      "paintBottom": 0,
+      "fadeTop": 192,
+      "fadeBottom": 96,
+      "fadeRight": 96,
+      "fadeLeft": 36,
+      "westKey": "outdoor:east-approach:east:v1",
+      "northKey": "outdoor:eastern-works:north:v1",
+      "coveredTop": 132
+    },
+    {
+      "key": "outdoor:works-meadow:main:v1",
+      "image": "/survival/maps/works-meadow-v1/13-works-meadow.webp",
+      "x": 8442,
+      "y": 456,
+      "width": 1538,
+      "height": 1538,
+      "paintRight": 0,
+      "paintBottom": 2,
+      "fadeTop": 192,
+      "fadeBottom": 0,
+      "fadeRight": 96,
+      "fadeLeft": 36,
+      "westKey": "outdoor:northern-works:clearing:v1"
+    },
+    {
+      "key": "outdoor:works-meadow:south:v1",
+      "image": "/survival/maps/works-meadow-v1/14-meadow-south-contact.webp",
+      "x": 8442,
+      "y": 1860,
+      "width": 1538,
+      "height": 266,
+      "paintRight": 0,
+      "paintBottom": 2,
+      "fadeTop": 192,
+      "fadeBottom": 0,
+      "fadeRight": 96,
+      "fadeLeft": 36,
+      "westKey": "outdoor:northern-works:connector:v1",
+      "northKey": "outdoor:works-meadow:main:v1",
+      "coveredTop": 132
+    },
+    {
+      "key": "outdoor:works-meadow:yard:v1",
+      "image": "/survival/maps/works-meadow-v1/15-meadow-yard-contact.webp",
+      "x": 8442,
+      "y": 1992,
+      "width": 1538,
+      "height": 266,
+      "paintRight": 0,
+      "paintBottom": 2,
+      "fadeTop": 192,
+      "fadeBottom": 0,
+      "fadeRight": 96,
+      "fadeLeft": 36,
+      "westKey": "outdoor:eastern-works:north:v1",
+      "northKey": "outdoor:works-meadow:south:v1",
+      "coveredTop": 132,
+      "topNeighborKey": "outdoor:works-meadow:main:v1"
+    },
+    {
+      "key": "outdoor:works-grounds:yard:v1",
+      "image": "/survival/maps/works-grounds-v1/11-works-yard.webp",
+      "x": 8442,
+      "y": 2124,
+      "width": 1538,
+      "height": 1274,
+      "paintRight": 0,
+      "paintBottom": 2,
+      "fadeTop": 192,
+      "fadeBottom": 0,
+      "fadeRight": 96,
+      "fadeLeft": 36,
+      "westKey": "outdoor:eastern-works:north:v1",
+      "northKey": "outdoor:works-meadow:yard:v1",
+      "coveredTop": 132,
+      "topNeighborKey": "outdoor:works-meadow:south:v1"
+    },
+    {
+      "key": "outdoor:works-grounds:lane:v1",
+      "image": "/survival/maps/works-grounds-v1/12-works-dirt-lane.webp",
+      "x": 8442,
+      "y": 3264,
+      "width": 1538,
+      "height": 1536,
+      "paintRight": 0,
+      "paintBottom": 0,
+      "fadeTop": 192,
+      "fadeBottom": 96,
+      "fadeRight": 96,
+      "fadeLeft": 36,
+      "westKey": "outdoor:eastern-works:south:v1",
+      "northKey": "outdoor:works-grounds:yard:v1",
+      "coveredTop": 132
+    },
+    {
+      "key": "outdoor:south-works:clearing:v1",
+      "image": "/survival/maps/south-works-v1/16-south-works-clearing.webp",
+      "x": 7036,
+      "y": 4668,
+      "width": 1538,
+      "height": 1538,
+      "paintRight": 0,
+      "paintBottom": 0,
+      "fadeTop": 36,
+      "fadeBottom": 96,
+      "fadeRight": 96,
+      "fadeLeft": 96,
+      "northBlendKey": "outdoor:eastern-works:south:v1"
+    },
+    {
+      "key": "outdoor:south-works:trail:v1",
+      "image": "/survival/maps/south-works-v1/17-scrap-outskirts-trail.webp",
+      "x": 8442,
+      "y": 4668,
+      "width": 1538,
+      "height": 1538,
+      "paintRight": 0,
+      "paintBottom": 0,
+      "fadeTop": 36,
+      "fadeBottom": 96,
+      "fadeRight": 96,
+      "fadeLeft": 36,
+      "northBlendKey": "outdoor:works-grounds:lane:v1",
+      "westKey": "outdoor:south-works:clearing:v1"
+    },
+    {
+      "key": "outdoor:camp-return:meadow:v2",
+      "image": "/survival/maps/camp-return-v2/18-camp-southeast-meadow.webp",
+      "x": 4096,
+      "y": 4668,
+      "width": 1666,
+      "height": 1538,
+      "paintRight": 0,
+      "paintBottom": 0,
+      "fadeTop": 36,
+      "fadeBottom": 96,
+      "fadeRight": 96,
+      "fadeLeft": 96,
+      "northBlendKey": "outdoor:east-approach:west:v1"
+    },
+    {
+      "key": "outdoor:camp-return:open-ground:v2",
+      "image": "/survival/maps/camp-return-v2/19-camp-works-open-ground.webp",
+      "x": 5630,
+      "y": 4668,
+      "width": 1538,
+      "height": 1538,
+      "paintRight": 0,
+      "paintBottom": 0,
+      "fadeTop": 36,
+      "fadeBottom": 96,
+      "fadeRight": 36,
+      "fadeLeft": 36,
+      "northBlendKey": "outdoor:east-approach:east:v1",
+      "westKey": "outdoor:camp-return:meadow:v2",
+      "eastBlendKey": "outdoor:south-works:clearing:v1"
+    },
+    {
+      "key": "outdoor:south-camp:clearing:v1",
+      "image": "/survival/maps/south-camp-v1/20-camp-south-clearing.webp",
+      "x": 2690,
+      "y": 4412,
+      "width": 1538,
+      "height": 1794,
+      "paintRight": 0,
+      "paintBottom": 0,
+      "fadeTop": 36,
+      "fadeBottom": 96,
+      "fadeRight": 36,
+      "fadeLeft": 96,
+      "eastBlendKey": "outdoor:camp-return:meadow:v2"
+    },
+    {
+      "key": "outdoor:south-camp:trail:v1",
+      "image": "/survival/maps/south-camp-v1/21-camp-south-trail.webp",
+      "x": 1284,
+      "y": 4412,
+      "width": 1538,
+      "height": 1794,
+      "paintRight": 0,
+      "paintBottom": 0,
+      "fadeTop": 36,
+      "fadeBottom": 96,
+      "fadeRight": 36,
+      "fadeLeft": 96,
+      "eastBlendKey": "outdoor:south-camp:clearing:v1"
+    },
+    {
+      "key": "outdoor:west-camp:corner:v2",
+      "image": "/survival/maps/west-camp-v2/22-southwest-camp-corner.webp",
+      "x": -122,
+      "y": 4412,
+      "width": 1538,
+      "height": 1794,
+      "paintRight": 0,
+      "paintBottom": 0,
+      "fadeTop": 36,
+      "fadeBottom": 96,
+      "fadeRight": 36,
+      "fadeLeft": 96,
+      "eastBlendKey": "outdoor:south-camp:trail:v1"
+    },
+    {
+      "key": "outdoor:west-camp:lower:v2",
+      "image": "/survival/maps/west-camp-v2/23-west-camp-lower.webp",
+      "x": -1528,
+      "y": 3006,
+      "width": 1794,
+      "height": 1666,
+      "paintRight": 0,
+      "paintBottom": 0,
+      "fadeTop": 96,
+      "fadeBottom": 96,
+      "fadeRight": 36,
+      "fadeLeft": 96,
+      "eastBlendKey": "outdoor:west-camp:corner:v2"
+    },
+    {
+      "key": "outdoor:west-camp:southwest-trail:v2",
+      "image": "/survival/maps/west-camp-v2/24-southwest-woodland-trail.webp",
+      "x": -1528,
+      "y": 4540,
+      "width": 1794,
+      "height": 1666,
+      "paintRight": 0,
+      "paintBottom": 0,
+      "fadeTop": 36,
+      "fadeBottom": 96,
+      "fadeRight": 36,
+      "fadeLeft": 96,
+      "northBlendKey": "outdoor:west-camp:lower:v2",
+      "eastBlendKey": "outdoor:west-camp:corner:v2"
+    },
+    {
+      "key": "outdoor:west-camp:exit:v2",
+      "image": "/survival/maps/west-camp-v2/25-west-camp-exit.webp",
+      "x": -1528,
+      "y": 1598,
+      "width": 1794,
+      "height": 1540,
+      "paintRight": 0,
+      "paintBottom": 0,
+      "fadeTop": 96,
+      "fadeBottom": 36,
+      "fadeRight": 36,
+      "fadeLeft": 96,
+      "southBlendKey": "outdoor:west-camp:lower:v2"
+    },
+    {
+      "key": "outdoor:west-camp:upper:v2",
+      "image": "/survival/maps/west-camp-v2/26-west-camp-upper-ground.webp",
+      "x": -1528,
+      "y": 190,
+      "width": 1794,
+      "height": 1540,
+      "paintRight": 0,
+      "paintBottom": 0,
+      "fadeTop": 96,
+      "fadeBottom": 36,
+      "fadeRight": 36,
+      "fadeLeft": 96,
+      "southBlendKey": "outdoor:west-camp:exit:v2"
+    }
+  ],
+  "routes": [
+    {
+      "id": "camp-northwest",
+      "from": "gateNW",
+      "to": "campNW",
+      "via": [
+        [
+          1400,
+          1130
+        ],
+        [
+          890,
+          700
+        ]
+      ],
+      "kind": "stone",
+      "status": "built",
+      "width": 160,
+      "points": [
+        [
+          1770,
+          1480
+        ],
+        [
+          1400,
+          1130
+        ],
+        [
+          890,
+          700
+        ],
+        [
+          230,
+          90
+        ]
+      ]
+    },
+    {
+      "id": "camp-northeast",
+      "from": "gateNE",
+      "to": "campNE",
+      "via": [
+        [
+          3460,
+          1130
+        ],
+        [
+          4000,
+          550
+        ]
+      ],
+      "kind": "stone",
+      "status": "built",
+      "width": 150,
+      "points": [
+        [
+          3090,
+          1630
+        ],
+        [
+          3460,
+          1130
+        ],
+        [
+          4000,
+          550
+        ],
+        [
+          4440,
+          110
+        ]
+      ]
+    },
+    {
+      "id": "camp-west",
+      "from": "gateW",
+      "to": "campW",
+      "via": [
+        [
+          1000,
+          2770
+        ],
+        [
+          500,
+          2800
+        ]
+      ],
+      "kind": "stone",
+      "status": "built",
+      "width": 155,
+      "points": [
+        [
+          1530,
+          2780
+        ],
+        [
+          1000,
+          2770
+        ],
+        [
+          500,
+          2800
+        ],
+        [
+          80,
+          2720
+        ]
+      ]
+    },
+    {
+      "id": "camp-southwest",
+      "from": "gateSW",
+      "to": "campSW",
+      "via": [
+        [
+          1550,
+          3460
+        ],
+        [
+          900,
+          3830
+        ]
+      ],
+      "kind": "stone",
+      "status": "built",
+      "width": 160,
+      "points": [
+        [
+          1780,
+          3160
+        ],
+        [
+          1550,
+          3460
+        ],
+        [
+          900,
+          3830
+        ],
+        [
+          100,
+          4530
+        ]
+      ]
+    },
+    {
+      "id": "camp-south",
+      "from": "gateS",
+      "to": "campS",
+      "via": [
+        [
+          2170,
+          3500
+        ],
+        [
+          2380,
+          4000
+        ],
+        [
+          2550,
+          4450
+        ],
+        [
+          2580,
+          4630
+        ],
+        [
+          2400,
+          4950
+        ],
+        [
+          2050,
+          5350
+        ],
+        [
+          1950,
+          5750
+        ]
+      ],
+      "kind": "trail",
+      "status": "built",
+      "width": 85,
+      "points": [
+        [
+          2150,
+          3250
+        ],
+        [
+          2170,
+          3500
+        ],
+        [
+          2380,
+          4000
+        ],
+        [
+          2550,
+          4450
+        ],
+        [
+          2580,
+          4630
+        ],
+        [
+          2400,
+          4950
+        ],
+        [
+          2050,
+          5350
+        ],
+        [
+          1950,
+          5750
+        ],
+        [
+          1770,
+          6170
+        ]
+      ]
+    },
+    {
+      "id": "camp-southeast",
+      "from": "gateSE",
+      "to": "approach",
+      "via": [
+        [
+          3600,
+          3500
+        ],
+        [
+          4030,
+          4040
+        ],
+        [
+          4590,
+          4560
+        ],
+        [
+          5100,
+          4540
+        ],
+        [
+          5630,
+          4400
+        ],
+        [
+          6100,
+          4350
+        ]
+      ],
+      "kind": "stone",
+      "status": "built",
+      "width": 180,
+      "points": [
+        [
+          3190,
+          3090
+        ],
+        [
+          3600,
+          3500
+        ],
+        [
+          4030,
+          4040
+        ],
+        [
+          4590,
+          4560
+        ],
+        [
+          5100,
+          4540
+        ],
+        [
+          5630,
+          4400
+        ],
+        [
+          6100,
+          4350
+        ],
+        [
+          6600,
+          4240
+        ]
+      ]
+    },
+    {
+      "id": "village-approach",
+      "from": "approach",
+      "to": "villageEdge",
+      "via": [
+        [
+          6710,
+          3600
+        ],
+        [
+          6650,
+          3100
+        ],
+        [
+          6450,
+          2600
+        ],
+        [
+          6100,
+          2120
+        ],
+        [
+          6100,
+          1600
+        ],
+        [
+          6100,
+          1000
+        ]
+      ],
+      "kind": "lane",
+      "status": "built",
+      "width": 110,
+      "points": [
+        [
+          6600,
+          4240
+        ],
+        [
+          6710,
+          3600
+        ],
+        [
+          6650,
+          3100
+        ],
+        [
+          6450,
+          2600
+        ],
+        [
+          6100,
+          2120
+        ],
+        [
+          6100,
+          1600
+        ],
+        [
+          6100,
+          1000
+        ],
+        [
+          5736,
+          456
+        ]
+      ]
+    },
+    {
+      "id": "works-approach",
+      "from": "approach",
+      "to": "worksJunction",
+      "via": [
+        [
+          7220,
+          4070
+        ],
+        [
+          7500,
+          3900
+        ],
+        [
+          7900,
+          3500
+        ],
+        [
+          7950,
+          2800
+        ],
+        [
+          7900,
+          2100
+        ]
+      ],
+      "kind": "lane",
+      "status": "built",
+      "width": 140,
+      "points": [
+        [
+          6600,
+          4240
+        ],
+        [
+          7220,
+          4070
+        ],
+        [
+          7500,
+          3900
+        ],
+        [
+          7900,
+          3500
+        ],
+        [
+          7950,
+          2800
+        ],
+        [
+          7900,
+          2100
+        ],
+        [
+          8100,
+          1350
+        ]
+      ]
+    },
+    {
+      "id": "works-north",
+      "from": "worksJunction",
+      "to": "worksEdge",
+      "via": [
+        [
+          8000,
+          900
+        ]
+      ],
+      "kind": "lane",
+      "status": "built",
+      "width": 110,
+      "points": [
+        [
+          8100,
+          1350
+        ],
+        [
+          8000,
+          900
+        ],
+        [
+          8000,
+          456
+        ]
+      ]
+    },
+    {
+      "id": "works-scrap-trail",
+      "from": "worksJunction",
+      "to": "scrapEdge",
+      "via": [
+        [
+          8500,
+          1300
+        ],
+        [
+          9000,
+          1850
+        ],
+        [
+          9410,
+          2500
+        ],
+        [
+          9460,
+          3300
+        ],
+        [
+          9300,
+          4200
+        ],
+        [
+          9420,
+          4900
+        ],
+        [
+          9360,
+          5600
+        ]
+      ],
+      "kind": "trail",
+      "status": "built",
+      "width": 90,
+      "points": [
+        [
+          8100,
+          1350
+        ],
+        [
+          8500,
+          1300
+        ],
+        [
+          9000,
+          1850
+        ],
+        [
+          9410,
+          2500
+        ],
+        [
+          9460,
+          3300
+        ],
+        [
+          9300,
+          4200
+        ],
+        [
+          9420,
+          4900
+        ],
+        [
+          9360,
+          5600
+        ],
+        [
+          9410,
+          6206
+        ]
+      ]
+    },
+    {
+      "id": "west-camp-trail",
+      "from": "campW",
+      "to": "westFrontier",
+      "via": [
+        [
+          -450,
+          2740
+        ],
+        [
+          -694,
+          2640
+        ],
+        [
+          -1100,
+          2770
+        ]
+      ],
+      "kind": "trail",
+      "status": "built",
+      "width": 100,
+      "points": [
+        [
+          80,
+          2720
+        ],
+        [
+          -450,
+          2740
+        ],
+        [
+          -694,
+          2640
+        ],
+        [
+          -1100,
+          2770
+        ],
+        [
+          -1528,
+          2860
+        ]
+      ]
+    },
+    {
+      "id": "southwest-camp-trail",
+      "from": "campSW",
+      "to": "southwestFrontier",
+      "via": [
+        [
+          -122,
+          4775
+        ],
+        [
+          -694,
+          5040
+        ],
+        [
+          -1100,
+          5300
+        ]
+      ],
+      "kind": "trail",
+      "status": "built",
+      "width": 100,
+      "points": [
+        [
+          100,
+          4530
+        ],
+        [
+          -122,
+          4775
+        ],
+        [
+          -694,
+          5040
+        ],
+        [
+          -1100,
+          5300
+        ],
+        [
+          -1528,
+          5520
+        ]
+      ]
+    }
+  ]
+}

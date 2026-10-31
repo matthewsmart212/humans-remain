@@ -1,0 +1,56 @@
+{
+  "sections": [
+    {
+      "id": "headwater-entry",
+      "activePixels": 10043,
+      "maskBytes": 7918
+    },
+    {
+      "id": "boulder-step",
+      "activePixels": 7740,
+      "maskBytes": 9557
+    },
+    {
+      "id": "mid-boulder",
+      "activePixels": 6403,
+      "maskBytes": 8898
+    },
+    {
+      "id": "bend-rapids",
+      "activePixels": 6258,
+      "maskBytes": 6185
+    },
+    {
+      "id": "south-chute",
+      "activePixels": 11218,
+      "maskBytes": 9229
+    },
+    {
+      "id": "pool-entry",
+      "activePixels": 23364,
+      "maskBytes": 12440
+    },
+    {
+      "id": "pool-outlet",
+      "activePixels": 15467,
+      "maskBytes": 13132
+    },
+    {
+      "id": "logging-upper",
+      "activePixels": 14334,
+      "maskBytes": 11129
+    },
+    {
+      "id": "logging-bend",
+      "activePixels": 11011,
+      "maskBytes": 9186
+    },
+    {
+      "id": "crossing-drop",
+      "activePixels": 16049,
+      "maskBytes": 11876
+    }
+  ],
+  "addedAssetBytes": 138282,
+  "reusedFrames": 12
+}

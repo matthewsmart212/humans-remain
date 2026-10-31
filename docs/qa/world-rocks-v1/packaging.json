@@ -1,0 +1,342 @@
+[
+  {
+    "key": "moss-capped-boulder",
+    "source": "/workspace/scratch/721c0d4dc4ac/generated_images/exec-f2d0f9d2-e9e3-4f36-acf4-647fcc2c2f87.png",
+    "size": [
+      512,
+      365
+    ],
+    "bytes": 94658,
+    "crop": [
+      34,
+      67,
+      1376,
+      981
+    ],
+    "cropAlphaThreshold": 8,
+    "alphaPreservedInsideCrop": true
+  },
+  {
+    "key": "lichen-twin-stones",
+    "source": "/workspace/scratch/721c0d4dc4ac/generated_images/exec-65a732a0-5fb2-4295-b440-b2652b4c1cee.png",
+    "size": [
+      640,
+      474
+    ],
+    "bytes": 134996,
+    "crop": [
+      53,
+      66,
+      1335,
+      989
+    ],
+    "cropAlphaThreshold": 8,
+    "alphaPreservedInsideCrop": true
+  },
+  {
+    "key": "split-forest-rock",
+    "source": "/workspace/scratch/721c0d4dc4ac/generated_images/exec-3b1611f4-11e5-4f84-bd64-0a7f2a7de782.png",
+    "size": [
+      576,
+      361
+    ],
+    "bytes": 98752,
+    "crop": [
+      53,
+      75,
+      1431,
+      896
+    ],
+    "cropAlphaThreshold": 8,
+    "alphaPreservedInsideCrop": true
+  },
+  {
+    "key": "mossy-flat-shelf",
+    "source": "/workspace/scratch/721c0d4dc4ac/generated_images/exec-6581925f-227d-48c7-8663-fd3a2033bb4c.png",
+    "size": [
+      640,
+      319
+    ],
+    "bytes": 97422,
+    "crop": [
+      37,
+      156,
+      1462,
+      728
+    ],
+    "cropAlphaThreshold": 8,
+    "alphaPreservedInsideCrop": true
+  },
+  {
+    "key": "forest-pebble-patch",
+    "source": "/workspace/scratch/721c0d4dc4ac/generated_images/exec-ad1325f4-762a-4e3e-b1ff-14d1b3d9f039.png",
+    "size": [
+      384,
+      209
+    ],
+    "bytes": 44208,
+    "crop": [
+      80,
+      138,
+      1390,
+      756
+    ],
+    "cropAlphaThreshold": 8,
+    "alphaPreservedInsideCrop": true
+  },
+  {
+    "key": "smooth-river-boulder",
+    "source": "/workspace/scratch/721c0d4dc4ac/generated_images/exec-3468eab0-94c6-4636-9992-8308926fd2d5.png",
+    "size": [
+      512,
+      302
+    ],
+    "bytes": 69862,
+    "crop": [
+      51,
+      95,
+      1441,
+      849
+    ],
+    "cropAlphaThreshold": 8,
+    "alphaPreservedInsideCrop": true
+  },
+  {
+    "key": "river-stone-trio",
+    "source": "/workspace/scratch/721c0d4dc4ac/generated_images/exec-52d35ad1-1e20-4f16-a2f6-f081da2857dd.png",
+    "size": [
+      512,
+      306
+    ],
+    "bytes": 77304,
+    "crop": [
+      48,
+      186,
+      1352,
+      809
+    ],
+    "cropAlphaThreshold": 8,
+    "alphaPreservedInsideCrop": true
+  },
+  {
+    "key": "flat-river-slab",
+    "source": "/workspace/scratch/721c0d4dc4ac/generated_images/exec-15933d34-55c8-4ec8-824d-ea0f5bd2833c.png",
+    "size": [
+      576,
+      339
+    ],
+    "bytes": 85354,
+    "crop": [
+      48,
+      97,
+      1444,
+      851
+    ],
+    "cropAlphaThreshold": 8,
+    "alphaPreservedInsideCrop": true
+  },
+  {
+    "key": "river-shingle-patch",
+    "source": "/workspace/scratch/721c0d4dc4ac/generated_images/exec-d5eca78b-9ff8-46c6-adab-b0fb6a0a6d33.png",
+    "size": [
+      512,
+      216
+    ],
+    "bytes": 54776,
+    "crop": [
+      57,
+      219,
+      1424,
+      601
+    ],
+    "cropAlphaThreshold": 8,
+    "alphaPreservedInsideCrop": true
+  },
+  {
+    "key": "eroded-bank-rock",
+    "source": "/workspace/scratch/721c0d4dc4ac/generated_images/exec-b98d84c3-983a-421f-8418-8817f700f1dd.png",
+    "size": [
+      768,
+      409
+    ],
+    "bytes": 138898,
+    "crop": [
+      41,
+      98,
+      1507,
+      803
+    ],
+    "cropAlphaThreshold": 8,
+    "alphaPreservedInsideCrop": true
+  },
+  {
+    "key": "ochre-lone-boulder",
+    "source": "/workspace/scratch/721c0d4dc4ac/generated_images/exec-c3fbdc71-20ea-47da-9cf0-32df1aefb52f.png",
+    "size": [
+      512,
+      350
+    ],
+    "bytes": 82926,
+    "crop": [
+      29,
+      81,
+      1387,
+      949
+    ],
+    "cropAlphaThreshold": 8,
+    "alphaPreservedInsideCrop": true
+  },
+  {
+    "key": "rust-sandstone-fin",
+    "source": "/workspace/scratch/721c0d4dc4ac/generated_images/exec-f61c4d91-a1a4-437e-8f9a-849667da9389.png",
+    "size": [
+      640,
+      323
+    ],
+    "bytes": 86374,
+    "crop": [
+      4,
+      113,
+      1567,
+      791
+    ],
+    "cropAlphaThreshold": 8,
+    "alphaPreservedInsideCrop": true
+  },
+  {
+    "key": "chalk-cracked-rock",
+    "source": "/workspace/scratch/721c0d4dc4ac/generated_images/exec-afbff8c3-a529-4b54-bc47-ed2a741581ea.png",
+    "size": [
+      576,
+      428
+    ],
+    "bytes": 108536,
+    "crop": [
+      48,
+      44,
+      1365,
+      1015
+    ],
+    "cropAlphaThreshold": 8,
+    "alphaPreservedInsideCrop": true
+  },
+  {
+    "key": "dry-scree-scatter",
+    "source": "/workspace/scratch/721c0d4dc4ac/generated_images/exec-80088644-bf1d-4914-9b54-e5c36c60fc72.png",
+    "size": [
+      512,
+      311
+    ],
+    "bytes": 74712,
+    "crop": [
+      39,
+      134,
+      1375,
+      836
+    ],
+    "cropAlphaThreshold": 8,
+    "alphaPreservedInsideCrop": true
+  },
+  {
+    "key": "layered-sandstone-shelf",
+    "source": "/workspace/scratch/721c0d4dc4ac/generated_images/exec-f350c517-0563-44e3-a6f3-c002856b029c.png",
+    "size": [
+      768,
+      451
+    ],
+    "bytes": 130264,
+    "crop": [
+      28,
+      76,
+      1479,
+      868
+    ],
+    "cropAlphaThreshold": 8,
+    "alphaPreservedInsideCrop": true
+  },
+  {
+    "key": "dark-basalt-blocks",
+    "source": "/workspace/scratch/721c0d4dc4ac/generated_images/exec-68959fdc-982d-4d82-944d-15dbec2fe907.png",
+    "size": [
+      640,
+      440
+    ],
+    "bytes": 114010,
+    "crop": [
+      28,
+      64,
+      1382,
+      950
+    ],
+    "cropAlphaThreshold": 8,
+    "alphaPreservedInsideCrop": true
+  },
+  {
+    "key": "blue-grey-split-crag",
+    "source": "/workspace/scratch/721c0d4dc4ac/generated_images/exec-fe6cfab2-cda2-45ec-861d-1cf977f35b72.png",
+    "size": [
+      768,
+      505
+    ],
+    "bytes": 157340,
+    "crop": [
+      34,
+      108,
+      1390,
+      914
+    ],
+    "cropAlphaThreshold": 8,
+    "alphaPreservedInsideCrop": true
+  },
+  {
+    "key": "slanted-schist-slab",
+    "source": "/workspace/scratch/721c0d4dc4ac/generated_images/exec-41d51ca1-5fe4-4dc7-b2d0-7867c3f82d6d.png",
+    "size": [
+      640,
+      375
+    ],
+    "bytes": 106732,
+    "crop": [
+      26,
+      75,
+      1507,
+      882
+    ],
+    "cropAlphaThreshold": 8,
+    "alphaPreservedInsideCrop": true
+  },
+  {
+    "key": "weathered-standing-stone",
+    "source": "/workspace/scratch/721c0d4dc4ac/generated_images/exec-ceafdbc3-54b7-43fe-9c8c-aca33f492aa3.png",
+    "size": [
+      576,
+      511
+    ],
+    "bytes": 127166,
+    "crop": [
+      128,
+      12,
+      1181,
+      1047
+    ],
+    "cropAlphaThreshold": 8,
+    "alphaPreservedInsideCrop": true
+  },
+  {
+    "key": "broad-granite-erratic",
+    "source": "/workspace/scratch/721c0d4dc4ac/generated_images/exec-f64badae-6da7-435b-9b3d-91325b556f0d.png",
+    "size": [
+      768,
+      491
+    ],
+    "bytes": 181070,
+    "crop": [
+      25,
+      112,
+      1387,
+      887
+    ],
+    "cropAlphaThreshold": 8,
+    "alphaPreservedInsideCrop": true
+  }
+]

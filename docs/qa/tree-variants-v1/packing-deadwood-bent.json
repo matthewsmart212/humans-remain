@@ -1,0 +1,134 @@
+{
+  "key": "deadwood-bent",
+  "species": "deadwood",
+  "id": "art_tree_deadwood_bent",
+  "name": "Gnarled deadwood: bent",
+  "image": "/survival/tree-variants-v1/deadwood-bent.webp",
+  "size": [
+    589,
+    1264
+  ],
+  "worldWidth": 293,
+  "hp": 80,
+  "frames": [
+    {
+      "crop": [
+        2,
+        2,
+        561,
+        904
+      ],
+      "anchor": [
+        301,
+        824
+      ]
+    },
+    {
+      "crop": [
+        460,
+        910,
+        127,
+        129
+      ],
+      "anchor": [
+        16,
+        241
+      ]
+    },
+    {
+      "crop": [
+        2,
+        910,
+        454,
+        352
+      ],
+      "anchor": [
+        252,
+        272
+      ]
+    }
+  ],
+  "damageRect": [
+    285,
+    583,
+    127,
+    129
+  ],
+  "source": "artwork-archive/tree-variants-v1/deadwood-bent.png",
+  "sourceSize": [
+    1536,
+    1024
+  ],
+  "sourceHealthyCrop": [
+    4,
+    66,
+    561,
+    904
+  ],
+  "sourceDamageCrop": [
+    833,
+    649,
+    127,
+    129
+  ],
+  "sourceStumpCrop": [
+    1078,
+    619,
+    454,
+    352
+  ],
+  "sourceRoot": [
+    305,
+    890
+  ],
+  "damagedTranslation": [
+    544,
+    0
+  ],
+  "stumpTranslation": [
+    1025,
+    1
+  ],
+  "bytes": 683278,
+  "decodedBytes": 2977984,
+  "extraction": {
+    "visibleBounds": [
+      [
+        12,
+        74,
+        545,
+        888
+      ],
+      [
+        557,
+        74,
+        532,
+        888
+      ],
+      [
+        1086,
+        627,
+        438,
+        336
+      ]
+    ],
+    "separatorMaximumAlpha": [
+      0,
+      1
+    ],
+    "boundsPadding": 8,
+    "alphaThresholdAppliedToPixels": false,
+    "notchOverlapJoin": true
+  },
+  "checks": {
+    "alphaMismatch": 0,
+    "visibleRgbMismatch": 0,
+    "outsideNotchPreserved": true,
+    "rootFanPreserved": true
+  },
+  "notes": [
+    "Healthy pixels are reused unchanged outside the tight notch rectangle.",
+    "Separate generated loose chips are omitted; runtime hit particles supply debris.",
+    "Stump roots are registered to the same ground anchor; no scaling or resampling was applied."
+  ]
+}

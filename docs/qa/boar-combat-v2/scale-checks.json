@@ -1,0 +1,13 @@
+{
+  "passed": true,
+  "directions": 8,
+  "bodyMassSpread": 1.000001601974265,
+  "checks": [
+    "actual atlas alpha measured across ten resting/locomotion poses",
+    "uniform scale per direction preserves anatomy and every animation frame",
+    "mirrored views use identical scale",
+    "common ground anchor retained",
+    "production predator renderer through native Skia adapter",
+    "wolf size unchanged"
+  ]
+}

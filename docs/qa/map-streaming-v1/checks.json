@@ -1,0 +1,15 @@
+{
+  "result": "pass",
+  "prefetchBeyondOldBoundary": true,
+  "reversalLoads": 0,
+  "residentAndPendingLimit": 3,
+  "zoomHysteresis": true,
+  "lateCompletionCleanup": true,
+  "asyncBrowserDecode": true,
+  "codecFallback": true,
+  "abortCleanup": true,
+  "textureWarmupPerFrame": 1,
+  "detailHiddenUntilPrepared": true,
+  "pixelsPreserved": true,
+  "verification": "Production CanvasKit software renderer and deterministic lifecycle checks; browser GPU and physical iPhone performance remain unverified."
+}

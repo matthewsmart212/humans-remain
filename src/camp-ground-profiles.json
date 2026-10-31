@@ -1,0 +1,871 @@
+[
+  {
+    "name": "wall-1",
+    "wall": 1,
+    "sources": [
+      "/survival/base-walls-hd/wall-1.webp",
+      "/survival/camp-walls-v2/wall-1.webp",
+      "/survival/wall-tiers-v1/t2-wall-1.webp"
+    ],
+    "canvas": [
+      1168,
+      1040
+    ],
+    "paths": [
+      [
+        [
+          0.094178,
+          0.235577
+        ],
+        [
+          0.222603,
+          0.278846
+        ],
+        [
+          0.359589,
+          0.331731
+        ],
+        [
+          0.509418,
+          0.403846
+        ],
+        [
+          0.642123,
+          0.504808
+        ],
+        [
+          0.761986,
+          0.586538
+        ]
+      ]
+    ],
+    "soilRadius": 0.044,
+    "contactWidth": 0.021,
+    "contactOpacity": 0.25
+  },
+  {
+    "name": "wall-2",
+    "wall": 2,
+    "sources": [
+      "/survival/base-walls-hd/wall-2.webp",
+      "/survival/camp-walls-v2/wall-2.webp",
+      "/survival/wall-tiers-v1/t2-wall-2.webp"
+    ],
+    "canvas": [
+      988,
+      804
+    ],
+    "paths": [
+      [
+        [
+          0.723684,
+          0.317164
+        ],
+        [
+          0.779352,
+          0.435323
+        ],
+        [
+          0.840081,
+          0.568408
+        ],
+        [
+          0.885628,
+          0.715174
+        ],
+        [
+          0.915992,
+          0.876866
+        ]
+      ]
+    ],
+    "soilRadius": 0.044,
+    "contactWidth": 0.021,
+    "contactOpacity": 0.25
+  },
+  {
+    "name": "wall-3",
+    "wall": 3,
+    "sources": [
+      "/survival/base-walls-hd/wall-3.webp",
+      "/survival/camp-walls-v2/wall-3.webp",
+      "/survival/wall-tiers-v1/t2-wall-3.webp"
+    ],
+    "canvas": [
+      956,
+      916
+    ],
+    "paths": [
+      [
+        [
+          0.533473,
+          0.862445
+        ],
+        [
+          0.643305,
+          0.769651
+        ],
+        [
+          0.753138,
+          0.644105
+        ],
+        [
+          0.84205,
+          0.507642
+        ],
+        [
+          0.894351,
+          0.398472
+        ],
+        [
+          0.915272,
+          0.289301
+        ]
+      ]
+    ],
+    "soilRadius": 0.044,
+    "contactWidth": 0.021,
+    "contactOpacity": 0.25
+  },
+  {
+    "name": "wall-4",
+    "wall": 4,
+    "sources": [
+      "/survival/base-walls-hd/wall-4.webp",
+      "/survival/camp-walls-v2/wall-4.webp",
+      "/survival/wall-tiers-v1/t2-wall-4.webp"
+    ],
+    "canvas": [
+      878,
+      694
+    ],
+    "paths": [
+      [
+        [
+          0.102506,
+          0.853026
+        ],
+        [
+          0.261959,
+          0.819885
+        ],
+        [
+          0.415718,
+          0.759366
+        ],
+        [
+          0.558087,
+          0.670029
+        ],
+        [
+          0.709567,
+          0.554755
+        ]
+      ]
+    ],
+    "soilRadius": 0.044,
+    "contactWidth": 0.021,
+    "contactOpacity": 0.25
+  },
+  {
+    "name": "wall-5",
+    "wall": 5,
+    "sources": [
+      "/survival/base-walls-hd/wall-5.webp",
+      "/survival/camp-walls-v2/wall-5.webp",
+      "/survival/wall-tiers-v1/t2-wall-5.webp"
+    ],
+    "canvas": [
+      930,
+      1236
+    ],
+    "paths": [
+      [
+        [
+          0.263441,
+          0.720065
+        ],
+        [
+          0.392473,
+          0.768608
+        ],
+        [
+          0.550538,
+          0.820388
+        ],
+        [
+          0.717204,
+          0.849515
+        ],
+        [
+          0.866667,
+          0.858414
+        ]
+      ]
+    ],
+    "soilRadius": 0.044,
+    "contactWidth": 0.021,
+    "contactOpacity": 0.25
+  },
+  {
+    "name": "wall-6",
+    "wall": 6,
+    "sources": [
+      "/survival/base-walls-hd/wall-6.webp",
+      "/survival/camp-walls-v2/wall-6.webp",
+      "/survival/wall-tiers-v1/t2-wall-6.webp"
+    ],
+    "canvas": [
+      930,
+      1148
+    ],
+    "paths": [
+      [
+        [
+          0.088172,
+          0.195122
+        ],
+        [
+          0.137634,
+          0.3223
+        ],
+        [
+          0.22043,
+          0.457317
+        ],
+        [
+          0.350538,
+          0.591463
+        ],
+        [
+          0.494624,
+          0.704704
+        ]
+      ]
+    ],
+    "soilRadius": 0.044,
+    "contactWidth": 0.021,
+    "contactOpacity": 0.25
+  },
+  {
+    "name": "wall-7",
+    "wall": 7,
+    "sources": [
+      "/survival/base-walls-hd/wall-7.webp",
+      "/survival/camp-walls-v2/wall-7.webp",
+      "/survival/wall-tiers-v1/t2-wall-7.webp"
+    ],
+    "canvas": [
+      900,
+      934
+    ],
+    "paths": [
+      [
+        [
+          0.161111,
+          0.907923
+        ],
+        [
+          0.231111,
+          0.764454
+        ],
+        [
+          0.316667,
+          0.586724
+        ],
+        [
+          0.416667,
+          0.43469
+        ],
+        [
+          0.513333,
+          0.294433
+        ]
+      ]
+    ],
+    "soilRadius": 0.044,
+    "contactWidth": 0.021,
+    "contactOpacity": 0.25
+  },
+  {
+    "name": "wall-8",
+    "wall": 8,
+    "sources": [
+      "/survival/base-walls-hd/wall-8.webp",
+      "/survival/camp-walls-v2/wall-8.webp",
+      "/survival/wall-tiers-v1/t2-wall-8.webp"
+    ],
+    "canvas": [
+      842,
+      1138
+    ],
+    "paths": [
+      [
+        [
+          0.166271,
+          0.363796
+        ],
+        [
+          0.336105,
+          0.307557
+        ],
+        [
+          0.516627,
+          0.246924
+        ],
+        [
+          0.700713,
+          0.202109
+        ],
+        [
+          0.87886,
+          0.165202
+        ]
+      ]
+    ],
+    "soilRadius": 0.044,
+    "contactWidth": 0.021,
+    "contactOpacity": 0.25
+  },
+  {
+    "name": "headquarters",
+    "sources": [
+      "/api/asset-files/93db0d98-1245-4026-a136-6248654149f9"
+    ],
+    "canvas": [
+      1536,
+      1024
+    ],
+    "paths": [
+      [
+        [
+          0.08984375,
+          0.6689453125
+        ],
+        [
+          0.13346354166666666,
+          0.71875
+        ],
+        [
+          0.20052083333333334,
+          0.751953125
+        ],
+        [
+          0.24479166666666666,
+          0.7978515625
+        ],
+        [
+          0.4134114583333333,
+          0.892578125
+        ],
+        [
+          0.4811197916666667,
+          0.91015625
+        ],
+        [
+          0.5377604166666666,
+          0.87890625
+        ],
+        [
+          0.6165364583333334,
+          0.9306640625
+        ],
+        [
+          0.6822916666666666,
+          0.962890625
+        ],
+        [
+          0.7408854166666666,
+          0.9423828125
+        ],
+        [
+          0.875,
+          0.8623046875
+        ],
+        [
+          0.9309895833333334,
+          0.791015625
+        ]
+      ]
+    ],
+    "soilRadius": 0.023,
+    "contactWidth": 0.012,
+    "contactOpacity": 0.22
+  },
+  {
+    "name": "well",
+    "sources": [
+      "/survival/camp-well-v2/oak-well.webp"
+    ],
+    "canvas": [
+      1091,
+      1012
+    ],
+    "paths": [
+      [
+        [
+          0.1,
+          0.8
+        ],
+        [
+          0.2,
+          0.91
+        ],
+        [
+          0.44,
+          0.955
+        ],
+        [
+          0.69,
+          0.88
+        ],
+        [
+          0.87,
+          0.76
+        ]
+      ]
+    ],
+    "soilRadius": 0,
+    "contactWidth": 0.022,
+    "contactOpacity": 0.19
+  },
+  {
+    "name": "bonfire",
+    "sources": [
+      "/api/asset-files/0e6f4385-99d4-4bd1-990e-1f3cb3fa87ea",
+      "/api/asset-files/0e6f4385-99d4-4bd1-990e-1f3cb3fa87ea",
+      "/api/asset-files/33c670e0-ef26-487e-b46f-230d28a66446",
+      "/api/asset-files/c63dbbf8-c089-49b4-9559-94f40439ab97",
+      "/api/asset-files/f24d5a53-da03-4ef1-81c3-84bbfda7f56f",
+      "/api/asset-files/71d702cf-d32a-45da-9f28-ef28d1d5dc36",
+      "/api/asset-files/10f7b0ab-a198-4373-a434-bfe90aacec5d",
+      "/api/asset-files/18bea2f8-1dd6-4d86-b767-89473f47eda6",
+      "/api/asset-files/c9095651-2b46-40dd-8eaf-c73ea3ee5f5b",
+      "/api/asset-files/646cd6ce-36e6-406f-925a-ecb2c3e091d5"
+    ],
+    "canvas": [
+      1254,
+      1254
+    ],
+    "paths": [
+      [
+        [
+          0.13,
+          0.815
+        ],
+        [
+          0.23,
+          0.887
+        ],
+        [
+          0.48,
+          0.925
+        ],
+        [
+          0.72,
+          0.895
+        ],
+        [
+          0.87,
+          0.83
+        ]
+      ]
+    ],
+    "soilRadius": 0,
+    "contactWidth": 0.032,
+    "contactOpacity": 0.22
+  },
+  {
+    "name": "bunker",
+    "sources": [
+      "/api/asset-files/2401745e-7f2d-4a8c-b6da-7351bc248ca7",
+      "/api/asset-files/2401745e-7f2d-4a8c-b6da-7351bc248ca7",
+      "/api/asset-files/c3ca8339-9c06-46f9-bbdd-ffe6b58d5376",
+      "/api/asset-files/588cd1b0-8ac3-4283-a358-e6e86bd2ba10"
+    ],
+    "canvas": [
+      1312,
+      1199
+    ],
+    "paths": [
+      [
+        [
+          0.12,
+          0.32
+        ],
+        [
+          0.27,
+          0.225
+        ],
+        [
+          0.45,
+          0.2
+        ]
+      ],
+      [
+        [
+          0.84,
+          0.575
+        ],
+        [
+          0.88,
+          0.73
+        ],
+        [
+          0.57,
+          0.96
+        ],
+        [
+          0.34,
+          0.88
+        ]
+      ]
+    ],
+    "soilRadius": 0.011,
+    "contactWidth": 0.014,
+    "contactOpacity": 0.15
+  },
+  {
+    "name": "warehouse",
+    "sources": [
+      "/api/asset-files/511df250-f10f-4b4e-8b9d-f091fe490070"
+    ],
+    "canvas": [
+      1254,
+      1254
+    ],
+    "paths": [
+      [
+        [
+          0.065,
+          0.55
+        ],
+        [
+          0.1,
+          0.665
+        ],
+        [
+          0.225,
+          0.7
+        ],
+        [
+          0.385,
+          0.765
+        ],
+        [
+          0.505,
+          0.86
+        ],
+        [
+          0.665,
+          0.95
+        ],
+        [
+          0.875,
+          0.84
+        ],
+        [
+          0.94,
+          0.755
+        ]
+      ]
+    ],
+    "soilRadius": 0.014,
+    "contactWidth": 0.018,
+    "contactOpacity": 0.2
+  },
+  {
+    "name": "workshop",
+    "sources": [
+      "/survival/camp-workshop-v1/camp-workshop.png"
+    ],
+    "canvas": [
+      1254,
+      1254
+    ],
+    "paths": [
+      [
+        [
+          0.08,
+          0.7
+        ],
+        [
+          0.17,
+          0.8
+        ],
+        [
+          0.34,
+          0.865
+        ],
+        [
+          0.5,
+          0.91
+        ],
+        [
+          0.73,
+          0.81
+        ],
+        [
+          0.91,
+          0.72
+        ]
+      ]
+    ],
+    "soilRadius": 0.014,
+    "contactWidth": 0.018,
+    "contactOpacity": 0.18
+  },
+  {
+    "name": "medical",
+    "sources": [
+      "/survival/camp-essentials-v1/treatment-centre.webp"
+    ],
+    "canvas": [
+      1536,
+      1024
+    ],
+    "paths": [
+      [
+        [
+          0.045,
+          0.73
+        ],
+        [
+          0.16,
+          0.8
+        ],
+        [
+          0.32,
+          0.875
+        ],
+        [
+          0.57,
+          0.935
+        ],
+        [
+          0.78,
+          0.94
+        ],
+        [
+          0.93,
+          0.81
+        ]
+      ]
+    ],
+    "soilRadius": 0,
+    "contactWidth": 0.018,
+    "contactOpacity": 0.18
+  },
+  {
+    "name": "art_hq_storage_chest",
+    "sources": [
+      "/survival/hq-furniture-v2/storage-station-0.webp"
+    ],
+    "canvas": [
+      960,
+      960
+    ],
+    "paths": [
+      [
+        [
+          0.077,
+          0.633
+        ],
+        [
+          0.594,
+          0.458
+        ],
+        [
+          0.747,
+          0.699
+        ],
+        [
+          0.231,
+          0.861
+        ],
+        [
+          0.077,
+          0.633
+        ]
+      ],
+      [
+        [
+          0.693,
+          0.536
+        ],
+        [
+          0.84,
+          0.478
+        ],
+        [
+          0.957,
+          0.604
+        ],
+        [
+          0.808,
+          0.668
+        ],
+        [
+          0.693,
+          0.536
+        ]
+      ]
+    ],
+    "soilRadius": 0,
+    "contactWidth": 0.026,
+    "contactOpacity": 0.15
+  },
+  {
+    "name": "art_camp_planning_board",
+    "sources": [
+      "/survival/hq-furniture-v2/exploration-bench.webp"
+    ],
+    "canvas": [
+      1536,
+      1024
+    ],
+    "paths": [
+      [
+        [
+          0.18,
+          0.66
+        ],
+        [
+          0.4,
+          0.53
+        ],
+        [
+          0.835,
+          0.82
+        ],
+        [
+          0.701,
+          0.965
+        ],
+        [
+          0.18,
+          0.66
+        ]
+      ]
+    ],
+    "soilRadius": 0,
+    "contactWidth": 0.026,
+    "contactOpacity": 0.15
+  },
+  {
+    "name": "art_hq_peg_rail",
+    "sources": [
+      "/survival/hq-support-v1/peg-rail.webp"
+    ],
+    "canvas": [
+      891,
+      892
+    ],
+    "paths": [
+      [
+        [
+          0.09,
+          0.7
+        ],
+        [
+          0.43,
+          0.88
+        ],
+        [
+          0.89,
+          0.7
+        ]
+      ]
+    ],
+    "soilRadius": 0,
+    "contactWidth": 0.03,
+    "contactOpacity": 0.15
+  },
+  {
+    "name": "art_hq_supply_bundle",
+    "sources": [
+      "/survival/hq-support-v1/supply-bundle.webp"
+    ],
+    "canvas": [
+      964,
+      965
+    ],
+    "paths": [
+      [
+        [
+          0.13,
+          0.75
+        ],
+        [
+          0.44,
+          0.925
+        ],
+        [
+          0.85,
+          0.76
+        ]
+      ]
+    ],
+    "soilRadius": 0,
+    "contactWidth": 0.03,
+    "contactOpacity": 0.15
+  },
+  {
+    "name": "art_hq_field_shelf",
+    "sources": [
+      "/survival/hq-support-v1/field-shelf.webp"
+    ],
+    "canvas": [
+      982,
+      743
+    ],
+    "paths": [
+      [
+        [
+          0.08,
+          0.76
+        ],
+        [
+          0.39,
+          0.92
+        ],
+        [
+          0.91,
+          0.72
+        ]
+      ]
+    ],
+    "soilRadius": 0,
+    "contactWidth": 0.03,
+    "contactOpacity": 0.15
+  },
+  {
+    "name": "art_hq_boots",
+    "sources": [
+      "/survival/hq-support-v1/boots.webp"
+    ],
+    "canvas": [
+      1084,
+      958
+    ],
+    "paths": [
+      [
+        [
+          0.11,
+          0.67
+        ],
+        [
+          0.4,
+          0.9
+        ],
+        [
+          0.88,
+          0.77
+        ]
+      ]
+    ],
+    "soilRadius": 0,
+    "contactWidth": 0.03,
+    "contactOpacity": 0.15
+  }
+]

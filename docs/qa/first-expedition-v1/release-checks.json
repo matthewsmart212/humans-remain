@@ -1,0 +1,27 @@
+{
+  "passed": true,
+  "interface": "production components in development-only authored-map fixture",
+  "viewports": [
+    "844x390",
+    "390x844",
+    "1363x936"
+  ],
+  "checks": [
+    "Headquarters blueprint overview and tier selection",
+    "Defence prerequisite and material costs",
+    "Salvage cache interaction recovers persistent bellows",
+    "Furnace repair disabled before materials",
+    "Restore consumes costs and opens working smelting panel",
+    "Portrait and landscape scrolling and close controls"
+  ],
+  "webProductionBuild": true,
+  "webTypecheck": true,
+  "nativeTypecheck": true,
+  "iosExport": true,
+  "physicalIPhoneTested": false,
+  "legacyTest": {
+    "name": "check-studio-combat.mjs",
+    "baselineAndCurrentFailure": "Expected Walker max HP 80, actual 160",
+    "currentBalanceAndSpawnChecks": "pass"
+  }
+}

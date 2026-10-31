@@ -1,0 +1,454 @@
+{
+  "/survival/camp-well-t1.png": [
+    1312,
+    1199
+  ],
+  "/survival/camp-lamp.png": [
+    1024,
+    1536
+  ],
+  "/survival/home-salvage.png": [
+    1448,
+    1086
+  ],
+  "/survival/worker-diagonal.png": [
+    1024,
+    1536
+  ],
+  "/survival/city-ground-lossless.webp": [
+    1086,
+    1448
+  ],
+  "/survival/home-props.png": [
+    1254,
+    1254
+  ],
+  "/survival/camp-hearth-t1.png": [
+    1428,
+    1102
+  ],
+  "/survival/building-roofs-lossless.webp": [
+    1254,
+    1254
+  ],
+  "/survival/scrapling.png": [
+    808,
+    854
+  ],
+  "/survival/camp-flame.png": [
+    1263,
+    1246
+  ],
+  "/survival/home-ground-lossless.webp": [
+    1086,
+    1448
+  ],
+  "/survival/provisions.png": [
+    1536,
+    1024
+  ],
+  "/survival/worker-motion-a.png": [
+    1448,
+    1086
+  ],
+  "/survival/home-buildings-atlas-lossless.webp": [
+    1086,
+    1448
+  ],
+  "/survival/generator.png": [
+    906,
+    841
+  ],
+  "/survival/worker-motion-b.png": [
+    1312,
+    1199
+  ],
+  "/survival/shelters/tier-3-roof.webp": [
+    1254,
+    1254
+  ],
+  "/survival/shelters/tier-2-interior.webp": [
+    1254,
+    1254
+  ],
+  "/survival/shelters/tier-1-interior.webp": [
+    1402,
+    1122
+  ],
+  "/survival/shelters/bedroll.png": [
+    1254,
+    1254
+  ],
+  "/survival/shelters/tier-1-roof.webp": [
+    1402,
+    1122
+  ],
+  "/survival/shelters/tier-3-interior.webp": [
+    1254,
+    1254
+  ],
+  "/survival/shelters/tier-2-roof.webp": [
+    1254,
+    1254
+  ],
+  "/survival/shelters/proper-bed.webp": [
+    1024,
+    1536
+  ],
+  "/survival/water-storage/tier-1-barrel.png": [
+    1312,
+    1199
+  ],
+  "/survival/water-storage/tier-2-barrel-bank.png": [
+    1312,
+    1199
+  ],
+  "/survival/water-storage/tier-3-tank.png": [
+    1312,
+    1199
+  ],
+  "/survival/hearth/tier-3-lit-sheet.webp": [
+    1254,
+    1254
+  ],
+  "/survival/hearth/tier-2-lit-sheet.webp": [
+    1254,
+    1254
+  ],
+  "/survival/hearth/tier-1-lit-sheet.png": [
+    1254,
+    1254
+  ],
+  "/survival/hearth/source/tier-2-original-sheet.jpeg": [
+    1254,
+    1254
+  ],
+  "/survival/hearth/source/tier-1-original-sheet.jpeg": [
+    1254,
+    1254
+  ],
+  "/survival/hearth/source/tier-3-original-sheet.jpeg": [
+    1254,
+    1254
+  ],
+  "/packaging/props.webp": [
+    1536,
+    1024
+  ],
+  "/packaging/floor.webp": [
+    1024,
+    1536
+  ],
+  "/packaging/machinery.webp": [
+    1536,
+    1024
+  ],
+  "/packaging/worker.webp": [
+    1774,
+    887
+  ],
+  "/packaging/effects.webp": [
+    1536,
+    1024
+  ],
+  "/survival/home-terrain-hd-v2.webp": [
+    3042,
+    4056
+  ],
+  "/survival/home-terrain-perimeter-v4-preview.webp": [
+    1200,
+    1200
+  ],
+  "/survival/hq-furniture-v1/hq-storage-chest.webp": [
+    1254,
+    1254
+  ],
+  "/survival/hq-furniture-v1/hq-supply-boxes.webp": [
+    1254,
+    1254
+  ],
+  "/survival/hq-furniture-v1/hq-planning-bench.webp": [
+    1254,
+    1254
+  ],
+  "/survival/hq-furniture-v2/storage-station-0.webp": [
+    960,
+    960
+  ],
+  "/survival/hq-furniture-v2/storage-station-1.webp": [
+    960,
+    960
+  ],
+  "/survival/hq-furniture-v2/storage-station-2.webp": [
+    960,
+    960
+  ],
+  "/survival/hq-furniture-v2/supply-cubby.webp": [
+    1254,
+    1254
+  ],
+  "/survival/hq-furniture-v2/exploration-bench.webp": [
+    1536,
+    1024
+  ],
+  "/survival/hq-support-v1/peg-rail.webp": [
+    891,
+    892
+  ],
+  "/survival/hq-support-v1/supply-bundle.webp": [
+    964,
+    965
+  ],
+  "/survival/hq-support-v1/field-shelf.webp": [
+    982,
+    743
+  ],
+  "/survival/hq-support-v1/woven-rug.webp": [
+    1597,
+    788
+  ],
+  "/survival/hq-support-v1/boots.webp": [
+    1084,
+    958
+  ],
+  "/survival/camp-workshop-v1/camp-workshop.png": [
+    1254,
+    1254
+  ],
+  "/survival/camp-essentials-v1/rope-well.webp": [
+    1091,
+    1012
+  ],
+  "/survival/camp-essentials-v1/treatment-centre.webp": [
+    1536,
+    1024
+  ],
+  "/survival/hearth-painted-v2/tier-1-unlit.webp": [
+    1024,
+    1024
+  ],
+  "/survival/hearth-painted-v2/tier-1-flame-0.webp": [
+    1024,
+    1024
+  ],
+  "/survival/hearth-painted-v2/tier-1-flame-1.webp": [
+    1024,
+    1024
+  ],
+  "/survival/hearth-painted-v2/tier-1-flame-2.webp": [
+    1024,
+    1024
+  ],
+  "/survival/hearth-painted-v2/tier-1-flame-3.webp": [
+    1024,
+    1024
+  ],
+  "/survival/hearth-painted-v2/tier-1-flame-4.webp": [
+    1024,
+    1024
+  ],
+  "/survival/hearth-painted-v2/tier-1-flame-5.webp": [
+    1024,
+    1024
+  ],
+  "/survival/hearth-painted-v2/tier-1-flame-6.webp": [
+    1024,
+    1024
+  ],
+  "/survival/hearth-painted-v2/tier-1-flame-7.webp": [
+    1024,
+    1024
+  ],
+  "/survival/hearth-painted-v2/tier-2-unlit.webp": [
+    1024,
+    1024
+  ],
+  "/survival/hearth-painted-v2/tier-2-flame-0.webp": [
+    1024,
+    1024
+  ],
+  "/survival/hearth-painted-v2/tier-2-flame-1.webp": [
+    1024,
+    1024
+  ],
+  "/survival/hearth-painted-v2/tier-2-flame-2.webp": [
+    1024,
+    1024
+  ],
+  "/survival/hearth-painted-v2/tier-2-flame-3.webp": [
+    1024,
+    1024
+  ],
+  "/survival/hearth-painted-v2/tier-2-flame-4.webp": [
+    1024,
+    1024
+  ],
+  "/survival/hearth-painted-v2/tier-2-flame-5.webp": [
+    1024,
+    1024
+  ],
+  "/survival/hearth-painted-v2/tier-2-flame-6.webp": [
+    1024,
+    1024
+  ],
+  "/survival/hearth-painted-v2/tier-2-flame-7.webp": [
+    1024,
+    1024
+  ],
+  "/survival/hearth-painted-v2/tier-3-unlit.webp": [
+    1024,
+    1024
+  ],
+  "/survival/hearth-painted-v2/tier-3-flame-0.webp": [
+    1024,
+    1024
+  ],
+  "/survival/hearth-painted-v2/tier-3-flame-1.webp": [
+    1024,
+    1024
+  ],
+  "/survival/hearth-painted-v2/tier-3-flame-2.webp": [
+    1024,
+    1024
+  ],
+  "/survival/hearth-painted-v2/tier-3-flame-3.webp": [
+    1024,
+    1024
+  ],
+  "/survival/hearth-painted-v2/tier-3-flame-4.webp": [
+    1024,
+    1024
+  ],
+  "/survival/hearth-painted-v2/tier-3-flame-5.webp": [
+    1024,
+    1024
+  ],
+  "/survival/hearth-painted-v2/tier-3-flame-6.webp": [
+    1024,
+    1024
+  ],
+  "/survival/hearth-painted-v2/tier-3-flame-7.webp": [
+    1024,
+    1024
+  ],
+  "/survival/hearth-painted-v2/ground.webp": [
+    1774,
+    887
+  ],
+  "/survival/bonfire-v3/tier-1-unlit.webp": [
+    1024,
+    1024
+  ],
+  "/survival/bonfire-v3/tier-1-flame-0.webp": [
+    1024,
+    1024
+  ],
+  "/survival/bonfire-v3/tier-1-flame-1.webp": [
+    1024,
+    1024
+  ],
+  "/survival/bonfire-v3/tier-1-flame-2.webp": [
+    1024,
+    1024
+  ],
+  "/survival/bonfire-v3/tier-1-flame-3.webp": [
+    1024,
+    1024
+  ],
+  "/survival/bonfire-v3/tier-1-flame-4.webp": [
+    1024,
+    1024
+  ],
+  "/survival/bonfire-v3/tier-1-flame-5.webp": [
+    1024,
+    1024
+  ],
+  "/survival/bonfire-v3/tier-1-flame-6.webp": [
+    1024,
+    1024
+  ],
+  "/survival/bonfire-v3/tier-1-flame-7.webp": [
+    1024,
+    1024
+  ],
+  "/survival/bonfire-v3/tier-2-unlit.webp": [
+    1024,
+    1024
+  ],
+  "/survival/bonfire-v3/tier-2-flame-0.webp": [
+    1024,
+    1024
+  ],
+  "/survival/bonfire-v3/tier-2-flame-1.webp": [
+    1024,
+    1024
+  ],
+  "/survival/bonfire-v3/tier-2-flame-2.webp": [
+    1024,
+    1024
+  ],
+  "/survival/bonfire-v3/tier-2-flame-3.webp": [
+    1024,
+    1024
+  ],
+  "/survival/bonfire-v3/tier-2-flame-4.webp": [
+    1024,
+    1024
+  ],
+  "/survival/bonfire-v3/tier-2-flame-5.webp": [
+    1024,
+    1024
+  ],
+  "/survival/bonfire-v3/tier-2-flame-6.webp": [
+    1024,
+    1024
+  ],
+  "/survival/bonfire-v3/tier-2-flame-7.webp": [
+    1024,
+    1024
+  ],
+  "/survival/bonfire-v3/tier-3-unlit.webp": [
+    1024,
+    1024
+  ],
+  "/survival/bonfire-v3/tier-3-flame-0.webp": [
+    1024,
+    1024
+  ],
+  "/survival/bonfire-v3/tier-3-flame-1.webp": [
+    1024,
+    1024
+  ],
+  "/survival/bonfire-v3/tier-3-flame-2.webp": [
+    1024,
+    1024
+  ],
+  "/survival/bonfire-v3/tier-3-flame-3.webp": [
+    1024,
+    1024
+  ],
+  "/survival/bonfire-v3/tier-3-flame-4.webp": [
+    1024,
+    1024
+  ],
+  "/survival/bonfire-v3/tier-3-flame-5.webp": [
+    1024,
+    1024
+  ],
+  "/survival/bonfire-v3/tier-3-flame-6.webp": [
+    1024,
+    1024
+  ],
+  "/survival/bonfire-v3/tier-3-flame-7.webp": [
+    1024,
+    1024
+  ],
+  "/survival/bonfire-v3/ground.webp": [
+    1774,
+    887
+  ],
+  "/survival/camp-well-v2/oak-well.webp": [
+    1091,
+    1012
+  ]
+}

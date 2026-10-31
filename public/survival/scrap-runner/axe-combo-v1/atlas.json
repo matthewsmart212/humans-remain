@@ -1,0 +1,1593 @@
+{
+  "version": 1,
+  "cell": [
+    384,
+    384
+  ],
+  "anchor": [
+    192,
+    340
+  ],
+  "scale": 0.4,
+  "columns": 4,
+  "rows": 2,
+  "poses": [
+    "cut-windup",
+    "cut-contact",
+    "cut-followthrough",
+    "cut-recovery",
+    "return-windup",
+    "return-contact",
+    "return-followthrough",
+    "return-ready"
+  ],
+  "cuts": [
+    [
+      0,
+      1,
+      2,
+      3
+    ],
+    [
+      4,
+      5,
+      6,
+      7
+    ]
+  ],
+  "views": {
+    "down": {
+      "image": "/survival/scrap-runner/axe-combo-v1/down.webp",
+      "blade": [
+        [
+          78.7,
+          123.25
+        ],
+        [
+          277.8,
+          285.5
+        ],
+        [
+          302.82,
+          259.1
+        ],
+        [
+          273.95,
+          285.5
+        ],
+        [
+          300.07,
+          111.7
+        ],
+        [
+          96.3,
+          269
+        ],
+        [
+          81.45,
+          249.75
+        ],
+        [
+          119.13,
+          239.85
+        ]
+      ]
+    },
+    "down-right": {
+      "image": "/survival/scrap-runner/axe-combo-v1/down-right.webp",
+      "blade": [
+        [
+          82.11,
+          109.68
+        ],
+        [
+          288.39,
+          277.08
+        ],
+        [
+          303.24,
+          266.28
+        ],
+        [
+          285.15,
+          273.84
+        ],
+        [
+          288.93,
+          98.88
+        ],
+        [
+          68.88,
+          246.84
+        ],
+        [
+          44.58,
+          249.54
+        ],
+        [
+          175.8,
+          246.84
+        ]
+      ]
+    },
+    "right": {
+      "image": "/survival/scrap-runner/axe-combo-v1/right.webp",
+      "blade": [
+        [
+          108.28,
+          105.92
+        ],
+        [
+          326.68,
+          212.88
+        ],
+        [
+          325,
+          257.68
+        ],
+        [
+          282.16,
+          190.48
+        ],
+        [
+          248,
+          264.96
+        ],
+        [
+          317.44,
+          107.04
+        ],
+        [
+          320.8,
+          85.76
+        ],
+        [
+          283.84,
+          240.32
+        ]
+      ]
+    },
+    "up-right": {
+      "image": "/survival/scrap-runner/axe-combo-v1/up-right.webp",
+      "blade": [
+        [
+          71.94,
+          114.87
+        ],
+        [
+          324.45,
+          127.26
+        ],
+        [
+          314.13,
+          152.63
+        ],
+        [
+          296.43,
+          271.22
+        ],
+        [
+          302.33,
+          246.44
+        ],
+        [
+          313.54,
+          81.24
+        ],
+        [
+          313.54,
+          68.26
+        ],
+        [
+          287.58,
+          258.83
+        ]
+      ]
+    },
+    "up": {
+      "image": "/survival/scrap-runner/axe-combo-v1/up.webp",
+      "blade": [
+        [
+          119.14,
+          57.05
+        ],
+        [
+          330.36,
+          112.51
+        ],
+        [
+          323.27,
+          182.13
+        ],
+        [
+          317.38,
+          277.71
+        ],
+        [
+          247.16,
+          52.92
+        ],
+        [
+          39.78,
+          121.36
+        ],
+        [
+          61.91,
+          231.69
+        ],
+        [
+          310.29,
+          243.49
+        ]
+      ]
+    }
+  },
+  "directions": {
+    "down": {
+      "view": "down",
+      "mirror": false
+    },
+    "down-right": {
+      "view": "down-right",
+      "mirror": false
+    },
+    "right": {
+      "view": "right",
+      "mirror": false
+    },
+    "up-right": {
+      "view": "up-right",
+      "mirror": false
+    },
+    "up": {
+      "view": "up",
+      "mirror": false
+    },
+    "up-left": {
+      "view": "up-right",
+      "mirror": true
+    },
+    "left": {
+      "view": "right",
+      "mirror": true
+    },
+    "down-left": {
+      "view": "down-right",
+      "mirror": true
+    }
+  },
+  "layers": {
+    "upperBody": true,
+    "includesAxe": true,
+    "includesLegs": false,
+    "headTop": 60,
+    "nominalHipWorldY": -30,
+    "bladeCoordinates": "Cell-local pixels. Convert (point-anchor)*scale and negate world x when mirrored."
+  },
+  "packing": {
+    "registration": "Translation-only measured hair center and top; one uniform packing scale per view, never per-pose scale.",
+    "transparentBackground": true
+  },
+  "sources": [
+    {
+      "view": "down",
+      "source": "exec-28d179ef-f1cb-4dec-b3e9-25601a62cec0.png",
+      "packingScale": 0.55,
+      "bytes": 168690,
+      "frames": [
+        {
+          "frame": 0,
+          "crop": [
+            0,
+            0,
+            384,
+            384
+          ],
+          "sourceBounds": [
+            25,
+            4,
+            427,
+            409
+          ],
+          "sourceHairBox": [
+            130,
+            9,
+            448,
+            233
+          ],
+          "contentBounds": [
+            47,
+            57,
+            235,
+            225
+          ],
+          "blade": [
+            78.7,
+            123.25
+          ],
+          "alphaPixels": 108898
+        },
+        {
+          "frame": 1,
+          "crop": [
+            384,
+            0,
+            384,
+            384
+          ],
+          "sourceBounds": [
+            512,
+            3,
+            389,
+            477
+          ],
+          "sourceHairBox": [
+            515,
+            9,
+            837,
+            230
+          ],
+          "contentBounds": [
+            102,
+            57,
+            214,
+            262
+          ],
+          "blade": [
+            277.8,
+            285.5
+          ],
+          "alphaPixels": 103334
+        },
+        {
+          "frame": 2,
+          "crop": [
+            768,
+            0,
+            384,
+            384
+          ],
+          "sourceBounds": [
+            959,
+            5,
+            417,
+            447
+          ],
+          "sourceHairBox": [
+            965,
+            11,
+            1280,
+            239
+          ],
+          "contentBounds": [
+            102,
+            57,
+            229,
+            246
+          ],
+          "blade": [
+            302.82,
+            259.1
+          ],
+          "alphaPixels": 103446
+        },
+        {
+          "frame": 3,
+          "crop": [
+            1152,
+            0,
+            384,
+            384
+          ],
+          "sourceBounds": [
+            1398,
+            8,
+            360,
+            472
+          ],
+          "sourceHairBox": [
+            1403,
+            11,
+            1725,
+            234
+          ],
+          "contentBounds": [
+            101,
+            58,
+            198,
+            260
+          ],
+          "blade": [
+            273.95,
+            285.5
+          ],
+          "alphaPixels": 100716
+        },
+        {
+          "frame": 4,
+          "crop": [
+            0,
+            384,
+            384,
+            384
+          ],
+          "sourceBounds": [
+            40,
+            437,
+            405,
+            408
+          ],
+          "sourceHairBox": [
+            44,
+            441,
+            357,
+            670
+          ],
+          "contentBounds": [
+            104,
+            58,
+            223,
+            224
+          ],
+          "blade": [
+            300.07,
+            111.7
+          ],
+          "alphaPixels": 104589
+        },
+        {
+          "frame": 5,
+          "crop": [
+            384,
+            384,
+            384,
+            384
+          ],
+          "sourceBounds": [
+            438,
+            441,
+            391,
+            446
+          ],
+          "sourceHairBox": [
+            495,
+            445,
+            823,
+            690
+          ],
+          "contentBounds": [
+            70,
+            58,
+            215,
+            245
+          ],
+          "blade": [
+            96.3,
+            269
+          ],
+          "alphaPixels": 99408
+        },
+        {
+          "frame": 6,
+          "crop": [
+            768,
+            384,
+            384,
+            384
+          ],
+          "sourceBounds": [
+            867,
+            449,
+            422,
+            412
+          ],
+          "sourceHairBox": [
+            957,
+            452,
+            1283,
+            686
+          ],
+          "contentBounds": [
+            53,
+            58,
+            232,
+            227
+          ],
+          "blade": [
+            81.45,
+            249.75
+          ],
+          "alphaPixels": 102289
+        },
+        {
+          "frame": 7,
+          "crop": [
+            1152,
+            384,
+            384,
+            384
+          ],
+          "sourceBounds": [
+            1375,
+            451,
+            355,
+            405
+          ],
+          "sourceHairBox": [
+            1415,
+            454,
+            1726,
+            681
+          ],
+          "contentBounds": [
+            84,
+            58,
+            195,
+            223
+          ],
+          "blade": [
+            119.13,
+            239.85
+          ],
+          "alphaPixels": 99815
+        }
+      ]
+    },
+    {
+      "view": "down-right",
+      "source": "exec-520197cd-3ff4-44e9-8bf8-cc16498263dd.png",
+      "packingScale": 0.54,
+      "bytes": 166174,
+      "frames": [
+        {
+          "frame": 0,
+          "crop": [
+            0,
+            0,
+            384,
+            384
+          ],
+          "sourceBounds": [
+            16,
+            15,
+            422,
+            399
+          ],
+          "sourceHairBox": [
+            118,
+            17,
+            433,
+            231
+          ],
+          "contentBounds": [
+            52,
+            59,
+            228,
+            215
+          ],
+          "blade": [
+            82.11,
+            109.68
+          ],
+          "alphaPixels": 105283
+        },
+        {
+          "frame": 1,
+          "crop": [
+            384,
+            0,
+            384,
+            384
+          ],
+          "sourceBounds": [
+            487,
+            14,
+            407,
+            472
+          ],
+          "sourceHairBox": [
+            490,
+            17,
+            815,
+            238
+          ],
+          "contentBounds": [
+            103,
+            58,
+            220,
+            255
+          ],
+          "blade": [
+            288.39,
+            277.08
+          ],
+          "alphaPixels": 102518
+        },
+        {
+          "frame": 2,
+          "crop": [
+            768,
+            0,
+            384,
+            384
+          ],
+          "sourceBounds": [
+            934,
+            14,
+            422,
+            448
+          ],
+          "sourceHairBox": [
+            938,
+            17,
+            1260,
+            236
+          ],
+          "contentBounds": [
+            103,
+            58,
+            228,
+            242
+          ],
+          "blade": [
+            303.24,
+            266.28
+          ],
+          "alphaPixels": 102582
+        },
+        {
+          "frame": 3,
+          "crop": [
+            1152,
+            0,
+            384,
+            384
+          ],
+          "sourceBounds": [
+            1379,
+            14,
+            380,
+            464
+          ],
+          "sourceHairBox": [
+            1382,
+            17,
+            1705,
+            237
+          ],
+          "contentBounds": [
+            103,
+            58,
+            205,
+            251
+          ],
+          "blade": [
+            285.15,
+            273.84
+          ],
+          "alphaPixels": 97604
+        },
+        {
+          "frame": 4,
+          "crop": [
+            0,
+            384,
+            384,
+            384
+          ],
+          "sourceBounds": [
+            17,
+            438,
+            398,
+            401
+          ],
+          "sourceHairBox": [
+            21,
+            444,
+            344,
+            671
+          ],
+          "contentBounds": [
+            103,
+            57,
+            215,
+            217
+          ],
+          "blade": [
+            288.93,
+            98.88
+          ],
+          "alphaPixels": 106032
+        },
+        {
+          "frame": 5,
+          "crop": [
+            384,
+            384,
+            384,
+            384
+          ],
+          "sourceBounds": [
+            404,
+            441,
+            449,
+            414
+          ],
+          "sourceHairBox": [
+            519,
+            444,
+            849,
+            676
+          ],
+          "contentBounds": [
+            41,
+            58,
+            242,
+            224
+          ],
+          "blade": [
+            68.88,
+            246.84
+          ],
+          "alphaPixels": 101210
+        },
+        {
+          "frame": 6,
+          "crop": [
+            768,
+            384,
+            384,
+            384
+          ],
+          "sourceBounds": [
+            833,
+            433,
+            490,
+            422
+          ],
+          "sourceHairBox": [
+            992,
+            436,
+            1318,
+            667
+          ],
+          "contentBounds": [
+            18,
+            58,
+            265,
+            228
+          ],
+          "blade": [
+            44.58,
+            249.54
+          ],
+          "alphaPixels": 107819
+        },
+        {
+          "frame": 7,
+          "crop": [
+            1152,
+            384,
+            384,
+            384
+          ],
+          "sourceBounds": [
+            1381,
+            440,
+            335,
+            424
+          ],
+          "sourceHairBox": [
+            1384,
+            444,
+            1712,
+            670
+          ],
+          "contentBounds": [
+            102,
+            58,
+            181,
+            229
+          ],
+          "blade": [
+            175.8,
+            246.84
+          ],
+          "alphaPixels": 93907
+        }
+      ]
+    },
+    {
+      "view": "right",
+      "source": "exec-6625ffaf-2447-4675-a9c0-bf93b8675e21.png",
+      "packingScale": 0.56,
+      "bytes": 159032,
+      "frames": [
+        {
+          "frame": 0,
+          "crop": [
+            0,
+            0,
+            384,
+            384
+          ],
+          "sourceBounds": [
+            19,
+            17,
+            361,
+            402
+          ],
+          "sourceHairBox": [
+            78,
+            20,
+            375,
+            269
+          ],
+          "contentBounds": [
+            76,
+            58,
+            202,
+            225
+          ],
+          "blade": [
+            108.28,
+            105.92
+          ],
+          "alphaPixels": 93459
+        },
+        {
+          "frame": 1,
+          "crop": [
+            384,
+            0,
+            384,
+            384
+          ],
+          "sourceBounds": [
+            483,
+            22,
+            456,
+            400
+          ],
+          "sourceHairBox": [
+            486,
+            24,
+            797,
+            265
+          ],
+          "contentBounds": [
+            103,
+            59,
+            255,
+            224
+          ],
+          "blade": [
+            326.68,
+            212.88
+          ],
+          "alphaPixels": 99437
+        },
+        {
+          "frame": 2,
+          "crop": [
+            768,
+            0,
+            384,
+            384
+          ],
+          "sourceBounds": [
+            929,
+            25,
+            455,
+            408
+          ],
+          "sourceHairBox": [
+            933,
+            28,
+            1240,
+            275
+          ],
+          "contentBounds": [
+            104,
+            58,
+            255,
+            228
+          ],
+          "blade": [
+            325,
+            257.68
+          ],
+          "alphaPixels": 100934
+        },
+        {
+          "frame": 3,
+          "crop": [
+            1152,
+            0,
+            384,
+            384
+          ],
+          "sourceBounds": [
+            1380,
+            20,
+            379,
+            401
+          ],
+          "sourceHairBox": [
+            1384,
+            24,
+            1700,
+            272
+          ],
+          "contentBounds": [
+            101,
+            58,
+            212,
+            225
+          ],
+          "blade": [
+            282.16,
+            190.48
+          ],
+          "alphaPixels": 95351
+        },
+        {
+          "frame": 4,
+          "crop": [
+            0,
+            384,
+            384,
+            384
+          ],
+          "sourceBounds": [
+            59,
+            451,
+            324,
+            427
+          ],
+          "sourceHairBox": [
+            64,
+            456,
+            376,
+            689
+          ],
+          "contentBounds": [
+            102,
+            57,
+            181,
+            239
+          ],
+          "blade": [
+            248,
+            264.96
+          ],
+          "alphaPixels": 95929
+        },
+        {
+          "frame": 5,
+          "crop": [
+            384,
+            384,
+            384,
+            384
+          ],
+          "sourceBounds": [
+            461,
+            455,
+            443,
+            398
+          ],
+          "sourceHairBox": [
+            465,
+            459,
+            777,
+            700
+          ],
+          "contentBounds": [
+            102,
+            58,
+            248,
+            223
+          ],
+          "blade": [
+            317.44,
+            107.04
+          ],
+          "alphaPixels": 101832
+        },
+        {
+          "frame": 6,
+          "crop": [
+            768,
+            384,
+            384,
+            384
+          ],
+          "sourceBounds": [
+            913,
+            443,
+            454,
+            410
+          ],
+          "sourceHairBox": [
+            916,
+            454,
+            1230,
+            705
+          ],
+          "contentBounds": [
+            102,
+            54,
+            254,
+            230
+          ],
+          "blade": [
+            320.8,
+            85.76
+          ],
+          "alphaPixels": 102369
+        },
+        {
+          "frame": 7,
+          "crop": [
+            1152,
+            384,
+            384,
+            384
+          ],
+          "sourceBounds": [
+            1374,
+            452,
+            392,
+            403
+          ],
+          "sourceHairBox": [
+            1379,
+            457,
+            1699,
+            704
+          ],
+          "contentBounds": [
+            100,
+            57,
+            220,
+            226
+          ],
+          "blade": [
+            283.84,
+            240.32
+          ],
+          "alphaPixels": 95986
+        }
+      ]
+    },
+    {
+      "view": "up-right",
+      "source": "exec-b2f3ba8d-5ba1-44d3-8972-ec04005fce0b.png",
+      "packingScale": 0.59,
+      "bytes": 157330,
+      "frames": [
+        {
+          "frame": 0,
+          "crop": [
+            0,
+            0,
+            384,
+            384
+          ],
+          "sourceBounds": [
+            43,
+            32,
+            399,
+            381
+          ],
+          "sourceHairBox": [
+            160,
+            35,
+            437,
+            271
+          ],
+          "contentBounds": [
+            41,
+            58,
+            235,
+            225
+          ],
+          "blade": [
+            71.94,
+            114.87
+          ],
+          "alphaPixels": 88108
+        },
+        {
+          "frame": 1,
+          "crop": [
+            384,
+            0,
+            384,
+            384
+          ],
+          "sourceBounds": [
+            520,
+            35,
+            433,
+            368
+          ],
+          "sourceHairBox": [
+            522,
+            39,
+            813,
+            281
+          ],
+          "contentBounds": [
+            105,
+            58,
+            255,
+            217
+          ],
+          "blade": [
+            324.45,
+            127.26
+          ],
+          "alphaPixels": 87410
+        },
+        {
+          "frame": 2,
+          "crop": [
+            768,
+            0,
+            384,
+            384
+          ],
+          "sourceBounds": [
+            943,
+            37,
+            407,
+            374
+          ],
+          "sourceHairBox": [
+            944,
+            40,
+            1232,
+            282
+          ],
+          "contentBounds": [
+            106,
+            58,
+            240,
+            221
+          ],
+          "blade": [
+            314.13,
+            152.63
+          ],
+          "alphaPixels": 88142
+        },
+        {
+          "frame": 3,
+          "crop": [
+            1152,
+            0,
+            384,
+            384
+          ],
+          "sourceBounds": [
+            1358,
+            31,
+            382,
+            405
+          ],
+          "sourceHairBox": [
+            1364,
+            34,
+            1662,
+            276
+          ],
+          "contentBounds": [
+            101,
+            58,
+            225,
+            239
+          ],
+          "blade": [
+            296.43,
+            271.22
+          ],
+          "alphaPixels": 84206
+        },
+        {
+          "frame": 4,
+          "crop": [
+            0,
+            384,
+            384,
+            384
+          ],
+          "sourceBounds": [
+            84,
+            460,
+            386,
+            377
+          ],
+          "sourceHairBox": [
+            87,
+            463,
+            385,
+            706
+          ],
+          "contentBounds": [
+            102,
+            58,
+            228,
+            222
+          ],
+          "blade": [
+            302.33,
+            246.44
+          ],
+          "alphaPixels": 87889
+        },
+        {
+          "frame": 5,
+          "crop": [
+            384,
+            384,
+            384,
+            384
+          ],
+          "sourceBounds": [
+            495,
+            443,
+            412,
+            392
+          ],
+          "sourceHairBox": [
+            498,
+            467,
+            792,
+            712
+          ],
+          "contentBounds": [
+            104,
+            46,
+            243,
+            231
+          ],
+          "blade": [
+            313.54,
+            81.24
+          ],
+          "alphaPixels": 92407
+        },
+        {
+          "frame": 6,
+          "crop": [
+            768,
+            384,
+            384,
+            384
+          ],
+          "sourceBounds": [
+            920,
+            420,
+            403,
+            419
+          ],
+          "sourceHairBox": [
+            923,
+            470,
+            1219,
+            727
+          ],
+          "contentBounds": [
+            103,
+            31,
+            238,
+            247
+          ],
+          "blade": [
+            313.54,
+            68.26
+          ],
+          "alphaPixels": 91645
+        },
+        {
+          "frame": 7,
+          "crop": [
+            1152,
+            384,
+            384,
+            384
+          ],
+          "sourceBounds": [
+            1366,
+            462,
+            360,
+            391
+          ],
+          "sourceHairBox": [
+            1370,
+            466,
+            1666,
+            714
+          ],
+          "contentBounds": [
+            102,
+            58,
+            212,
+            231
+          ],
+          "blade": [
+            287.58,
+            258.83
+          ],
+          "alphaPixels": 83830
+        }
+      ]
+    },
+    {
+      "view": "up",
+      "source": "exec-3db1a0b1-ce87-4ab7-b409-7580a4a9059d.png",
+      "packingScale": 0.59,
+      "bytes": 153370,
+      "frames": [
+        {
+          "frame": 0,
+          "crop": [
+            0,
+            0,
+            384,
+            384
+          ],
+          "sourceBounds": [
+            51,
+            1,
+            344,
+            423
+          ],
+          "sourceHairBox": [
+            118,
+            87,
+            389,
+            315
+          ],
+          "contentBounds": [
+            73,
+            9,
+            203,
+            250
+          ],
+          "blade": [
+            119.14,
+            57.05
+          ],
+          "alphaPixels": 81460
+        },
+        {
+          "frame": 1,
+          "crop": [
+            384,
+            0,
+            384,
+            384
+          ],
+          "sourceBounds": [
+            496,
+            75,
+            443,
+            349
+          ],
+          "sourceHairBox": [
+            500,
+            78,
+            785,
+            320
+          ],
+          "contentBounds": [
+            106,
+            58,
+            261,
+            206
+          ],
+          "blade": [
+            330.36,
+            112.51
+          ],
+          "alphaPixels": 87681
+        },
+        {
+          "frame": 2,
+          "crop": [
+            768,
+            0,
+            384,
+            384
+          ],
+          "sourceBounds": [
+            928,
+            75,
+            422,
+            348
+          ],
+          "sourceHairBox": [
+            932,
+            78,
+            1217,
+            319
+          ],
+          "contentBounds": [
+            106,
+            58,
+            249,
+            205
+          ],
+          "blade": [
+            323.27,
+            182.13
+          ],
+          "alphaPixels": 81938
+        },
+        {
+          "frame": 3,
+          "crop": [
+            1152,
+            0,
+            384,
+            384
+          ],
+          "sourceBounds": [
+            1340,
+            80,
+            415,
+            430
+          ],
+          "sourceHairBox": [
+            1345,
+            84,
+            1634,
+            320
+          ],
+          "contentBounds": [
+            104,
+            58,
+            245,
+            254
+          ],
+          "blade": [
+            317.38,
+            277.71
+          ],
+          "alphaPixels": 80379
+        },
+        {
+          "frame": 4,
+          "crop": [
+            0,
+            384,
+            384,
+            384
+          ],
+          "sourceBounds": [
+            44,
+            436,
+            325,
+            413
+          ],
+          "sourceHairBox": [
+            47,
+            506,
+            332,
+            743
+          ],
+          "contentBounds": [
+            106,
+            19,
+            192,
+            244
+          ],
+          "blade": [
+            247.16,
+            52.92
+          ],
+          "alphaPixels": 86882
+        },
+        {
+          "frame": 5,
+          "crop": [
+            384,
+            384,
+            384,
+            384
+          ],
+          "sourceBounds": [
+            383,
+            499,
+            460,
+            348
+          ],
+          "sourceHairBox": [
+            549,
+            502,
+            839,
+            747
+          ],
+          "contentBounds": [
+            9,
+            58,
+            271,
+            205
+          ],
+          "blade": [
+            39.78,
+            121.36
+          ],
+          "alphaPixels": 87400
+        },
+        {
+          "frame": 6,
+          "crop": [
+            768,
+            384,
+            384,
+            384
+          ],
+          "sourceBounds": [
+            845,
+            492,
+            421,
+            358
+          ],
+          "sourceHairBox": [
+            973,
+            496,
+            1262,
+            744
+          ],
+          "contentBounds": [
+            31,
+            58,
+            248,
+            211
+          ],
+          "blade": [
+            61.91,
+            231.69
+          ],
+          "alphaPixels": 84023
+        },
+        {
+          "frame": 7,
+          "crop": [
+            1152,
+            384,
+            384,
+            384
+          ],
+          "sourceBounds": [
+            1371,
+            497,
+            395,
+            363
+          ],
+          "sourceHairBox": [
+            1376,
+            499,
+            1661,
+            749
+          ],
+          "contentBounds": [
+            105,
+            59,
+            233,
+            214
+          ],
+          "blade": [
+            310.29,
+            243.49
+          ],
+          "alphaPixels": 83956
+        }
+      ]
+    }
+  ]
+}

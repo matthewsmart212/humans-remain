@@ -1,0 +1,52 @@
+{
+  "sourceRevision": 72,
+  "existingPreserved": 4153,
+  "added": 312,
+  "total": 4465,
+  "remainingEditorSlots": 535,
+  "edge": {
+    "left": -490.68542494923804,
+    "top": -500.68542494923804,
+    "right": 3864.7979746446663,
+    "bottom": 3854.7979746446663
+  },
+  "bySide": {
+    "north": 82,
+    "south": 96,
+    "east": 90,
+    "west": 44
+  },
+  "bands": [
+    {
+      "from": 0,
+      "to": 200,
+      "count": 115,
+      "averageWidth": 128
+    },
+    {
+      "from": 200,
+      "to": 450,
+      "count": 105,
+      "averageWidth": 116
+    },
+    {
+      "from": 450,
+      "to": 750,
+      "count": 70,
+      "averageWidth": 104
+    },
+    {
+      "from": 750,
+      "to": 1100,
+      "count": 20,
+      "averageWidth": 96
+    },
+    {
+      "from": 1100,
+      "to": 1500,
+      "count": 2,
+      "averageWidth": 104
+    }
+  ],
+  "additionalImages": 0
+}
