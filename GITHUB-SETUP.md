@@ -1,10 +1,10 @@
 # Working with this repository
 
-This import contains the verified Humans Remain export from published version
-322, source commit `4fb29e47ef5aac4ba49ee115dae54740a55ea614`. All 8,721 export
-files are preserved. The GitHub import adds only this document and
-`.gitattributes`, which places binary originals and embedded-image SVG maps in
-Git LFS and preserves exact line endings.
+This repository was initialized from the verified Humans Remain export of
+published version 322, source commit `4fb29e47ef5aac4ba49ee115dae54740a55ea614`. The initial import preserved all
+8,721 export files and added this document and `.gitattributes`. Subsequent
+commits contain ongoing development. Binary originals and embedded-image SVG
+maps use Git LFS, with exact line endings preserved.
 
 The export reports describe the state when the downloadable archives were
 created, before this GitHub import. Keep them as provenance. Missing historical
@@ -20,11 +20,14 @@ git lfs install
 git clone https://github.com/matthewsmart212/humans-remain.git
 cd humans-remain
 git lfs pull
-python3 tools/verify-export.py
+git lfs fsck
 ```
 
-On Windows, use `py -3 tools/verify-export.py` if Python is installed through the
-Windows launcher. Run the inventory check before making development edits.
+The `FILE-INVENTORY.csv` hashes and `tools/verify-export.py` describe the original
+export, before ongoing development. Run that checker on the original archives
+or the initial import commit (`ab7ffa0146d9d6684ab8557a78ab9f6244dc8263`).
+Later intentional source changes are expected to differ from those historical
+hashes. Use `git lfs fsck` for the current checkout's large asset integrity.
 
 There are 7,185 LFS-managed asset paths representing 6,816 unique original
 objects (3,557,435,200 bytes). A checkout without the LFS objects contains small
@@ -43,6 +46,8 @@ node tools/local-preview.mjs
 ```
 
 Open <http://127.0.0.1:8787/>. Local editor changes stay in `.local-preview/`.
+After source changes, stop the preview, rebuild, and restart it. `npm run dev`
+alone starts the frontend without its required Worker APIs.
 See `MIGRATION.md` for the separate Expo/native install, iOS export commands,
 backend bindings and authentication requirements.
 

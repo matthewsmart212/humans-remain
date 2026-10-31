@@ -30,9 +30,9 @@ export const QUICK_ITEMS:readonly {id:QuickItem;label:string;image:string}[]=[
 ];
 export const QUICK_EMPTY_SLOTS=0;
 export type QuickBarInventory={torch?:boolean;cooked:number;cookedRabbit?:number;cookedVenison?:number;provisions?:Partial<Record<ProvisionId,number>>;axes?:GearInventory};
-export type QuickBarProps=QuickBarInventory&{selected:QuickItem;disabled:boolean;onSelect:(id:QuickItem)=>void};
+export type QuickBarProps=QuickBarInventory&{selected:QuickItem;disabled:boolean;onSelect:(id:QuickItem)=>void;onExpandedChange?:(expanded:boolean)=>void};
 // One scale for both primary controls; opening the selector never shrinks items.
-export const QUICK_BAR_LAYOUT={height:ACTION_HEX.cells.primary.height,closedWidth:ACTION_HEX.cells.primary.width,slotWidth:64,toggleWidth:40,padding:6,gap:4,iconSize:42,closedIconSize:34} as const;
+export const QUICK_BAR_LAYOUT={height:ACTION_HEX.cells.primary.height,closedWidth:ACTION_HEX.cells.primary.width,slotWidth:64,toggleWidth:40,padding:6,gap:4,iconSize:42,closedIconSize:34*1.2} as const;
 export function quickBarWidth(slots:number){const l=QUICK_BAR_LAYOUT;return l.padding*2+Math.max(1,slots)*l.slotWidth+l.toggleWidth+Math.max(1,slots)*l.gap}
 // Fixed end caps retain the hand-painted corners as the centre opens sideways.
 export const QUICK_BAR_SLICES=[

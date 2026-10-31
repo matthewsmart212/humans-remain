@@ -1,6 +1,8 @@
 /** Point-up regular hexagons. Each secondary's facing edge is centred
  * against a main hexagon edge, with a constant perpendicular gap. */
-const c=Math.sqrt(3)/2,primaryRadius=36,secondaryRadius=27,gap=4;
+// The main control is 20% larger; keep companion buttons at their familiar
+// size and give every facing edge a little more breathing room.
+const c=Math.sqrt(3)/2,primaryRadius=36*1.2,secondaryRadius=27,gap=7;
 const smallHalfWidth=c*secondaryRadius;
 // Offset along the shared edge's outward normal (30 degrees from vertical).
 const centreDistance=c*(primaryRadius+secondaryRadius)+gap;

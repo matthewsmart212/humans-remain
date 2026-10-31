@@ -21,10 +21,13 @@ try{
   assert(Math.abs(Math.hypot(b.x-a.x,b.y-a.y)-layout.gap)<1e-8,`${slot} facing edge is centred on the primary edge`);
  }
  for(const[first,second]of[['sprint','dodge'],['dodge','repair'],['sprint','repair']])assert(distance(vertices(cells[first]),vertices(cells[second]))>=layout.gap,`${first}/${second} controls keep clear of each other`);
- const c=Math.sqrt(3)/2,oldDistance=c*(36+27)+4,oldCentreX=oldDistance/2+c*27,oldWidth=oldCentreX*2,oldLeft={primary:oldCentreX-c*36,sprint:oldCentreX+oldDistance/2-c*27,dodge:0};
- for(const slot of ['primary','sprint','dodge'])assert(Math.abs(layout.width-cells[slot].left-(oldWidth-oldLeft[slot]))<1e-8,`${slot} keeps its existing right-anchored screen position`);
+ const c=Math.sqrt(3)/2;
+ assert(Math.abs(cells.primary.height-72*1.2)<1e-8,'Main action is exactly 20% taller');
+ assert(Math.abs(cells.primary.width-72*c*1.2)<1e-8,'Main action is exactly 20% wider');
+ assert.equal(layout.gap,7,'The former 4px border gap gains 3px of breathing room');
+ for(const cell of Object.values(cells))assert(cell.left>=0&&cell.top>=0&&cell.left+cell.width<=layout.width+1e-8&&cell.top+cell.height<=layout.height+1e-8,'Every touch target remains within its anchored cluster');
  for(const cell of Object.values(cells)){const v=vertices(cell),r=cell.height/2;for(let i=0;i<6;i++)assert(Math.abs(Math.hypot(v[i].x-v[(i+1)%6].x,v[i].y-v[(i+1)%6].y)-r)<1e-8);assert(!m.pointInActionHex(cell.left,cell.top,cell),'Transparent corner cannot activate a button')}
- assert.equal(cells.sprint.height/cells.primary.height,.75);assert.equal(cells.sprint.height,cells.dodge.height);assert.equal(cells.repair.height,cells.sprint.height);
+ assert.equal(cells.sprint.height,54,'Secondary controls keep their existing size');assert.equal(cells.sprint.height,cells.dodge.height);assert.equal(cells.repair.height,cells.sprint.height);
  const counts={primary:0,sprint:0,dodge:0,repair:0,release:0,repairRelease:0};
  const props={primary:{label:'PUNCH',icon:'punch',disabled:false,onDown:()=>counts.primary++,onUp:()=>counts.release++},sprint:{label:'SPRINT',icon:'sprint',disabled:false,onDown:()=>counts.sprint++},dodge:{label:'DODGE',icon:'dodge',disabled:false,onDown:()=>counts.dodge++},repair:{label:'REPAIR',icon:'chest',disabled:false,onDown:()=>counts.repair++,onUp:()=>counts.repairRelease++}};
  const tree=m.NativeHexActions(props),contact=(slot,id)=>{const c=cells[slot];return{identifier:id,locationX:c.left+c.width/2,locationY:c.top+c.height/2}},event=t=>({nativeEvent:{changedTouches:[t]}});
@@ -34,5 +37,5 @@ try{
  const repair=contact('repair','repair-finger'),menu=contact('primary','menu-finger');tree.props.onTouchStart(event(repair));tree.props.onTouchStart(event(menu));assert.equal(counts.repair,1);tree.props.onTouchEnd(event(menu));assert.equal(counts.release,3);assert.equal(counts.repairRelease,0,'Releasing the menu finger must not release the separate repair contact');tree.props.onTouchEnd(event(repair));assert.equal(counts.repairRelease,1);
  const savedRepair=props.repair;tree.props.onTouchStart(event({...repair,identifier:'finishing-repair'}));props.repair=undefined;tree.props.onTouchEnd(event({...repair,identifier:'finishing-repair'}));assert.equal(counts.repairRelease,2,'A repair that disappears on completion retains its own release callback');tree.props.onTouchStart(event({...repair,identifier:'hidden-repair'}));assert.equal(counts.repair,2,'Hidden repair control cannot activate');props.repair={...savedRepair,disabled:true};tree.props.onTouchStart(event({...repair,identifier:'disabled-repair'}));assert.equal(counts.repair,2,'Disabled repair control cannot activate');
  for(const slot of Object.keys(cells)){const point=contact(slot,'hit-test');assert.equal(m.actionHexAt(point.locationX,point.locationY),slot,`${slot} centre selects only its own control`)}
- console.log('Passed: four regular hexes; equal primary gaps; original screen positions; 25% smaller secondary controls; transparent-corner hit tests; independent menu/repair fingers; hidden/disabled controls; disappearing-repair and drag/cancel release.');
+ console.log('Passed: four regular hexes; 20% larger main action; equal 7px primary gaps; unchanged secondary size; cluster bounds; transparent-corner hit tests; independent menu/repair fingers; hidden/disabled controls; disappearing-repair and drag/cancel release.');
 }finally{delete globalThis.__hexReact;fs.rmSync(temp,{recursive:true,force:true})}

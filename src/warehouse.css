@@ -1,45 +1,63 @@
 .warehouse-picture{position:relative;width:100%;aspect-ratio:1;max-height:310px;margin:auto}
 .warehouse-picture img{position:absolute;inset:0;width:100%;height:100%;object-fit:contain}
 
-/* Three shared materials, one compact transfer area. */
+/* Both inventories stay visible while choosing the transfer direction. */
 .station-menu.warehouse-menu .warehouse-overview{display:flex;flex-direction:column;gap:9px;min-height:0;overflow:auto;overscroll-behavior:contain;scrollbar-width:thin;scrollbar-color:#9b9a70 transparent;padding:2px;flex:0 1 auto}
 .warehouse-mode{display:flex;gap:5px;flex-shrink:0;padding:3px;border:1px solid #72806738;border-radius:9px;background:#0b2425}
-.camp-studio .field-kit .station-menu.warehouse-menu .warehouse-mode button{flex:1;display:flex;align-items:center;justify-content:center;gap:8px;min-height:44px;padding:5px 9px;background:transparent;border-color:transparent;font-size:14px;color:#bac5ac}
+.camp-studio .field-kit .station-menu.warehouse-menu .warehouse-mode button{flex:1;min-width:0;display:flex;align-items:center;justify-content:center;gap:8px;min-height:49px;padding:5px 8px;background:transparent;border-color:transparent;font-size:14px;color:#bac5ac}
 .warehouse-mode img{width:26px;height:26px;object-fit:contain}
+.warehouse-mode button>span{display:flex;flex-direction:column;gap:3px;min-width:0;text-align:left}
+.warehouse-mode strong{font:700 14px/1.1 Barlow,sans-serif}
+.warehouse-mode small{font:500 10px/1.15 Barlow,sans-serif;color:#abbda7;white-space:nowrap}
 .camp-studio .field-kit .station-menu.warehouse-menu .warehouse-mode button[aria-pressed=true]{background:linear-gradient(#646b4977,#42543b);border-color:#c9b477;color:#f8e8bf;box-shadow:inset 0 1px #f2dfa12b}
+.warehouse-mode button[aria-pressed=true] small{color:#e1d8b7}
 .warehouse-resources{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;flex-shrink:0}
-.camp-studio .field-kit .station-menu.warehouse-menu button.warehouse-resource{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;min-width:0;min-height:124px;padding:10px 5px;border:1px solid #65756070;border-bottom-width:2px;border-radius:9px;background:radial-gradient(ellipse at 50% 35%,#71805a20,#0a2423a6);color:#f5e6bf}
+.camp-studio .field-kit .station-menu.warehouse-menu button.warehouse-resource{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;min-width:0;min-height:138px;padding:8px 7px;border:1px solid #65756070;border-bottom-width:2px;border-radius:9px;background:radial-gradient(ellipse at 50% 35%,#71805a20,#0a2423a6);color:#f5e6bf}
 .camp-studio .field-kit .station-menu.warehouse-menu button.warehouse-resource[aria-pressed=true]{border-color:#d8c284;border-bottom-color:#a68a52;background:radial-gradient(ellipse at 50% 35%,#a8996055,#3c4c36);box-shadow:inset 0 0 0 1px #efd69a22}
-.warehouse-resource>img{width:62px;height:62px;object-fit:contain;filter:drop-shadow(0 3px 2px #071c1c80);pointer-events:none}
-.warehouse-resource>strong{font:800 22px/1.1 'Barlow Condensed',sans-serif;text-align:center}
-.warehouse-resource>span{font:500 12px/1.2 Barlow,sans-serif;color:#b3c3aa}
-.warehouse-resource>span>b{color:#f0dfb8;font-weight:600;margin-left:3px}
+.warehouse-resource-heading{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;min-width:0}
+.warehouse-resource-heading>img{width:50px;height:50px;object-fit:contain;filter:drop-shadow(0 3px 2px #071c1c80);pointer-events:none;flex-shrink:0}
+.warehouse-resource-heading>strong{font:800 22px/1.1 'Barlow Condensed',sans-serif;text-align:center;min-width:0}
+.warehouse-resource-balances{display:flex;flex-direction:column;gap:3px;width:100%;max-width:158px;margin-top:2px;font:500 11px/1.2 Barlow,sans-serif;color:#b9c9af}
+.warehouse-resource-balances>span{display:flex;align-items:baseline;justify-content:space-between;gap:5px;padding:2px 5px;border-radius:4px;background:#071e1b40}
+.warehouse-resource-balances>span[data-source=true]{background:#d6c78a12}
+.warehouse-resource-balances b{font:700 15px/1 Barlow,sans-serif;color:#f5e5bc;font-variant-numeric:tabular-nums}
 .warehouse-selected{display:flex;align-items:center;justify-content:space-between;gap:5px;flex-shrink:0;padding-top:5px;border-top:1px solid #b9ac7844}
 .warehouse-selected-heading{display:flex;align-items:center;gap:5px;min-width:0}
 .warehouse-selected-heading>img{width:31px;height:31px;object-fit:contain;flex-shrink:0}
 .warehouse-selected-heading>h3{font:800 21px/1.05 'Barlow Condensed',sans-serif;color:#f1e3bd;margin:0}
 .camp-studio .field-kit .station-menu.warehouse-menu button.warehouse-info-toggle{display:grid;place-items:center;min-width:44px;width:44px;height:44px;padding:0;flex-shrink:0;border:0;background:transparent;box-shadow:none}
 .warehouse-info-toggle>span{display:grid;place-items:center;width:21px;height:21px;border-radius:50%;background:#e4c99a;color:#253a30;font:bold 15px Georgia,serif}
-.warehouse-flow{display:flex;align-items:center;gap:8px;font:500 12px/1.2 Barlow,sans-serif;color:#b3c2ad;white-space:nowrap}
-.warehouse-flow b{color:#f2dfb1;font-weight:700;margin-left:3px}
-.warehouse-actions{display:flex;align-items:stretch;gap:8px;flex-shrink:0}
+.warehouse-preview{display:flex;flex-direction:column;align-items:flex-end;gap:3px;font:500 12px/1.2 Barlow,sans-serif;color:#bbc9af;text-align:right}
+.warehouse-preview small{font:500 10px/1 Barlow,sans-serif;color:#a3b89e}
+.warehouse-preview>span{white-space:nowrap}
+.warehouse-preview b{color:#f2dfb1;font-weight:700;margin-left:3px;font-variant-numeric:tabular-nums}
+.warehouse-preview i{font-style:normal;color:#8b9f83;margin:0 7px}
+.warehouse-actions{display:flex;align-items:stretch;gap:8px;flex-shrink:0;margin-inline:2px}
 .warehouse-quantity{display:flex;align-items:center;gap:5px;flex-shrink:0}
 .camp-studio .field-kit .station-menu.warehouse-menu .warehouse-quantity button{min-width:44px;min-height:44px;padding:5px 8px;font-size:18px;background:#1b3931;border-color:#7e8e7066}
 .camp-studio .field-kit .station-menu.warehouse-menu .warehouse-quantity button:last-child{font-size:12px}
 .warehouse-quantity output{display:grid;place-items:center;min-width:32px;min-height:44px;border:1px solid #71836a55;border-radius:7px;background:#0e2a24;color:#f4e6c4;font:700 17px Barlow,sans-serif}
-.camp-studio .field-kit .station-menu.warehouse-menu button.warehouse-primary{flex:1;min-width:0;min-height:46px;padding:7px 10px;border:1px solid #f1d697;border-bottom:3px solid #907046;border-radius:8px;background:linear-gradient(#ead5a0,#c8a66b);color:#25372e;font-weight:800;font-size:14px;box-shadow:inset 0 1px #fff2c4,0 2px 4px #071b1c55}
+.camp-studio .field-kit .station-menu.warehouse-menu button.warehouse-primary{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;flex:1;min-width:0;min-height:49px;padding:5px 9px;border:1px solid #f1d697;border-bottom:3px solid #907046;border-radius:8px;background:linear-gradient(#ead5a0,#c8a66b);color:#25372e;font-weight:800;font-size:14px;box-shadow:inset 0 1px #fff2c4,0 2px 4px #071b1c55}
+.warehouse-primary strong{font:800 14px/1.15 Barlow,sans-serif}
+.warehouse-primary small{font:600 10px/1 Barlow,sans-serif;color:#394a36}
 .camp-studio .field-kit .station-menu.warehouse-menu button.warehouse-primary:hover:not(:disabled){background:linear-gradient(#f3dfad,#dcc08a)!important;color:#25372e!important}
 .camp-studio .field-kit .station-menu.warehouse-menu button:disabled{opacity:.55}
 .warehouse-info{font:400 12px/1.4 Barlow,sans-serif;color:#c2cdb5;margin:0;padding:8px 10px;border-radius:7px;border:1px solid #8b9b7250;background:#102c25;flex-shrink:0}
 @container(max-width:359px){
  .station-menu.warehouse-menu .warehouse-overview{gap:7px}
  .warehouse-resources{gap:5px}
- .camp-studio .field-kit .station-menu.warehouse-menu button.warehouse-resource{min-height:106px;padding:8px 3px}
- .warehouse-resource>img{width:47px;height:47px}
- .warehouse-resource>strong{font-size:18px}
- .warehouse-resource>span{font-size:11px}
+ .camp-studio .field-kit .station-menu.warehouse-menu .warehouse-mode button{gap:5px;padding-inline:4px}
+ .warehouse-mode img{width:20px;height:20px}
+ .warehouse-mode strong{font-size:12px}
+ .warehouse-mode small{font-size:9px}
+ .camp-studio .field-kit .station-menu.warehouse-menu button.warehouse-resource{min-height:122px;padding:7px 3px}
+ .warehouse-resource-heading>img{width:42px;height:42px}
+ .warehouse-resource-heading>strong{font-size:18px}
+ .warehouse-resource-balances{font-size:10px}
+ .warehouse-resource-balances>span{padding:2px 3px}
+ .warehouse-resource-balances b{font-size:14px}
  .warehouse-selected{flex-wrap:wrap;gap:0}
- .warehouse-flow{font-size:11px;margin-left:auto;gap:5px}
+ .warehouse-preview{font-size:11px;margin-left:auto;gap:3px}
  .warehouse-selected-heading>img{width:26px;height:26px}
  .warehouse-selected-heading>h3{font-size:19px}
  .warehouse-actions{flex-wrap:wrap;gap:6px}
@@ -48,14 +66,21 @@
  .camp-studio .field-kit .station-menu.warehouse-menu button.warehouse-primary{flex-basis:100%}
 }
 @media(max-height:500px) and (min-width:600px){
- .station-menu.warehouse-menu .warehouse-overview{gap:5px}
+ .station-menu.warehouse-menu .warehouse-overview{gap:4px}
+ .warehouse-mode{padding:2px}
+ .camp-studio .field-kit .station-menu.warehouse-menu .warehouse-mode button{min-height:44px;padding-block:4px}
  .warehouse-resources{gap:6px}
- .camp-studio .field-kit .station-menu.warehouse-menu button.warehouse-resource{min-height:84px;padding:5px 3px;gap:2px}
- .warehouse-resource>img{width:40px;height:40px}
- .warehouse-resource>strong{font-size:18px}
- .warehouse-resource>span{font-size:10px}
- .warehouse-selected{padding-top:2px}
- .warehouse-selected-heading>img{width:27px;height:27px}
- .warehouse-selected-heading>h3{font-size:20px}
- .warehouse-info{font-size:11px;padding:6px 8px}
+ .camp-studio .field-kit .station-menu.warehouse-menu button.warehouse-resource{min-height:80px;padding:4px 6px;gap:3px}
+ .warehouse-resource-heading{width:100%;flex-direction:row;gap:6px}
+ .warehouse-resource-heading>img{width:28px;height:28px}
+ .warehouse-resource-heading>strong{font-size:17px;text-align:left}
+ .warehouse-resource-balances{font-size:10px;gap:2px;margin-top:1px}
+ .warehouse-resource-balances>span{padding-block:1px}
+ .warehouse-resource-balances b{font-size:14px}
+ .warehouse-selected{min-height:20px;padding-top:2px;justify-content:flex-end}
+ .warehouse-selected-heading{display:none}
+ .warehouse-preview{flex-direction:row;align-items:baseline;gap:7px;font-size:11px}
+ .warehouse-preview small{font-size:10px}
+ .camp-studio .field-kit .station-menu.warehouse-menu button.warehouse-primary{min-height:44px;padding-block:4px}
+ .warehouse-info{display:none}
 }

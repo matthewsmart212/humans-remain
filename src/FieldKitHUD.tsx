@@ -19,6 +19,8 @@ import {setFieldKitTarget} from './field-kit-target';
 import {COMBAT_VITALS_SLICES,FIELD_KIT_TOP} from './field-kit-vitals-layout';
 import './field-kit.css';
 import {ACTION_HEX,actionHexOutline,type ActionHexCell} from './action-hex';
+import {WAREHOUSE_MATERIALS} from './warehouse';
+import type {WarehouseStock} from './warehouse-hud';
 
 export function KitIcon({name,className='',light=false}:{name:FieldKitIcon;className?:string;light?:boolean}){return <img className={`kit-icon ${className}`} data-icon={name} src={light&&(name==='pause'||name==='backpack')?`/survival/ui-field-kit-v1/${name}-light.png`:fieldKitArt(name)} draggable={false} alt="" aria-hidden="true"/>}
 // Pointer-down also works while Safari's other finger is moving the character.
@@ -64,8 +66,16 @@ export function FieldKitVitals({stats}:{stats:FieldKitSnapshot}){
 }
 
 type Props={world:RefObject<World>;controller:FieldKitController;enabled:boolean;mobile:boolean;input:React.MutableRefObject<{x:number;y:number}>;sprinting:boolean;onSprint:()=>void;onHeld:(held:boolean)=>void;onDodge:()=>unknown;onTool:()=>void;onMove:()=>void;onPause:()=>void;bagOpen:boolean;onBag:(open:boolean)=>void;mapOpen:boolean;onMap:(open:boolean)=>void;isPinching?:()=>boolean;onCheckpoint?:()=>void};
+export function FieldKitWarehouseStock({stock}:{stock:WarehouseStock}){
+ return <div className="kit-target kit-warehouse-stock" role="group" aria-label="Stored in warehouse">
+  <div className="kit-target-heading"><b className="kit-target-name">Warehouse</b><span className="kit-warehouse-label">Stored</span></div>
+  <div className="kit-warehouse-materials">{WAREHOUSE_MATERIALS.map(material=><span className="kit-warehouse-material" key={material.id} aria-label={`${material.name}: ${stock[material.id]} stored`}>
+   <img src={material.image} alt="" draggable={false}/><strong>{stock[material.id]}</strong>
+  </span>)}</div>
+ </div>;
+}
 export default function FieldKitHUD({world,controller,enabled,mobile,input,sprinting,onSprint,onHeld,onDodge,onTool,onMove,onPause,bagOpen,onBag,mapOpen,onMap,isPinching,onCheckpoint}:Props){
- const navigation=useWaypointNavigation(world,false),[dayExpanded,setDayExpanded]=useState(false);
+ const navigation=useWaypointNavigation(world,false),[dayExpanded,setDayExpanded]=useState(false),[quickExpanded,setQuickExpanded]=useState(false);
  const [stats,setStats]=useState(()=>controller.sample(world.current)),statsRef=useRef(stats);statsRef.current=stats;
  const available=useRef(false);available.current=enabled&&!bagOpen&&!mapOpen&&!stats.stationPanel;
  const release=()=>{controller.release();onHeld(false)};
@@ -88,14 +98,14 @@ export default function FieldKitHUD({world,controller,enabled,mobile,input,sprin
   {!stats.stationPanel&&!bagOpen&&<div className="kit-utilities">{stats.cycle&&<SkyClock cycle={stats.cycle} world={world} paused={!enabled} onExpanded={setDayExpanded}/>}<div className="kit-utility-buttons">{navigation.target&&<KitButton glyph={<WaypointGuide world={world}/>} label="" ariaLabel="Waypoint direction. Open map to edit or remove" className="kit-utility kit-waypoint-toggle" disabled={disabled} onDown={()=>onMap(true)}/>}<KitButton icon="settings" label="" ariaLabel="Open game settings. Pauses game" className="kit-utility" onDown={onPause}/><KitButton icon="backpack" label="" ariaLabel={'Open backpack'+(stats.loadLabel==='Comfortable'?'':'. '+stats.loadLabel)} loadBadge={stats.loadLabel==='Comfortable'?undefined:stats.loadLabel} className="kit-utility" onDown={()=>{world.current!.stationPanel=undefined;onBag(true)}}/><KitButton glyph={<MapIcon size={21} strokeWidth={1.8}/>} label="" ariaLabel="Open map (M)" className="kit-utility kit-map-toggle" disabled={!enabled||stats.downed} onDown={()=>onMap(true)}/></div></div>}
   {!!stats.notice&&<div className="kit-notice" role="status">{stats.notice}</div>}
   {!bagOpen&&!stats.stationPanel&&<div className="kit-action-cluster" style={{width:ACTION_HEX.width,height:ACTION_HEX.height}}>
-   {caption.target?.revealed&&<FieldKitTargetCard target={caption.target} description={caption.description}/>}
+   {!quickExpanded&&(stats.warehouseStock?<FieldKitWarehouseStock stock={stats.warehouseStock}/>:caption.target?.revealed&&<FieldKitTargetCard target={caption.target} description={caption.description}/>)}
    <KitButton cell={ACTION_HEX.cells.primary} className="kit-primary" label={action.label} holdToRepair={!!action.repair&&action.label==='REPAIR'} icon={action.icon} image={action.image??(action.label==='EAT'?QUICK_ITEMS.find(item=>item.id===stats.selected)?.image:undefined)} ariaLabel={action.disabled&&action.target?'Inspect '+action.target.label+'. '+action.target.detail:action.description} unavailable={action.disabled} disabled={disabled||action.disabled&&!action.target} repairProgress={action.target?.repairState?action.target.progress:undefined} onDown={press} onUp={releasePrimary}/>
    {repairAction&&<KitButton cell={ACTION_HEX.cells.repair} className="kit-secondary kit-repair" label={repairAction.label} holdToRepair={!!repairAction.repair&&repairAction.label==='REPAIR'} icon={repairAction.icon} image={repairAction.image} ariaLabel={repairAction.description} unavailable={repairAction.disabled} disabled={disabled||repairAction.disabled&&!repairAction.target} repairProgress={repairAction.target?.repairState?repairAction.target.progress:undefined} onDown={pressRepair} onUp={releaseRepair}/>}
    <KitButton cell={ACTION_HEX.cells.sprint} className="kit-north kit-secondary" label={sprinting?'WALK':'SPRINT'} icon="sprint" ariaLabel={sprinting?'Walk. Tap to stop sprinting':'Sprint. Tap to start sprinting'} pressed={sprinting} disabled={disabled} onDown={onSprint}/>
    {stats.selected==='bow'?<KitButton cell={ACTION_HEX.cells.dodge} className="kit-north-west kit-secondary kit-bow-lock" label={stats.bowTarget?'LOCKED':'LOCK'} glyph={<BowLockGlyph locked={!!stats.bowTarget}/>} ariaLabel={stats.bowTarget?`Release lock on ${stats.bowTarget.label.toLowerCase()} (Q)`:'Lock onto a nearby target (Q)'} pressed={!!stats.bowTarget} disabled={disabled} onDown={lock}/>:stats.combat&&<KitButton cell={ACTION_HEX.cells.dodge} className="kit-north-west kit-secondary" label={stats.dodge>0?`${stats.dodge.toFixed(1)}s`:'DODGE'} icon="dodge" ariaLabel={stats.dodge>0?`Dodge ready in ${stats.dodge.toFixed(1)} seconds`:'Dodge'} disabled={disabled||stats.dodge>0} progress={dodgeProgress(stats.dodge)} onDown={()=>{onDodge();refresh()}}/>}
    {!mobile&&<span className="kit-key-hint">WASD move · Space action{repairAction?' · R repair':''} · Shift run{stats.selected==='bow'?' · Q lock':''} · M map</span>}
   </div>}
-  {!bagOpen&&!stats.stationPanel&&<QuickBar torch={stats.torch} axes={stats.axes} selected={stats.selected} cooked={stats.cooked} cookedRabbit={stats.cookedRabbit} cookedVenison={stats.cookedVenison} provisions={stats.provisions} disabled={disabled} onSelect={select}/>}
+  {!bagOpen&&!stats.stationPanel&&<QuickBar torch={stats.torch} axes={stats.axes} selected={stats.selected} cooked={stats.cooked} cookedRabbit={stats.cookedRabbit} cookedVenison={stats.cookedVenison} provisions={stats.provisions} disabled={disabled} onSelect={select} onExpandedChange={setQuickExpanded}/>}
   {stats.stationPanel&&!bagOpen&&enabled&&<CampStationPanel key={stats.stationPanel} world={world.current} onClose={()=>{world.current.stationPanel=undefined;refresh()}} onChange={()=>{onCheckpoint?.();refresh()}}/>}
   <FieldKitBag open={bagOpen} stats={stats} onClose={()=>onBag(false)} onUse={id=>{if(stats.action.owner!==world.current)return false;const result=useBackpackItem(world.current,id);refresh();return result}} onDrop={(id,quantity)=>{if(stats.action.owner!==world.current)return{ok:false,message:'This run has ended.'};const result=dropBackpackItem(world.current,id,quantity);refresh();return result}}/>
  </div>;

@@ -28,9 +28,9 @@ try{
  const m=require(path.join(temp,'test.cjs'));
  for(const platform of ['web','native']){
   reset();const world=m.createWorld();world.enemies=[];world.animals=[];world.loot=[];world.player.x=1500;world.player.y=1500;world.gear={bag:{axe:1,woodenAxe:0},chest:{axe:0,woodenAxe:0}};world.player.equipped='axe';world.cooked=3;world.cookedRabbit=2;world.cookedVenison=0;world.hunger=40;world.player.hp=70;
-  let disabled=false,maxWidth=400,selections=0;
+  let disabled=false,maxWidth=400,selections=0;const expandedEvents=[];
   const Component=m[platform==='web'?'WebQuickBar':'NativeQuickBar'];
-  const draw=()=>{let tree;for(let pass=0;pass<6;pass++){dirty=false;cursor=0;tree=Component({selected:m.selectedQuickItem(world),cooked:world.cooked,cookedRabbit:world.cookedRabbit,cookedVenison:world.cookedVenison,axes:world.gear.bag,disabled,maxWidth,onSelect:id=>{assert(m.selectQuickItem(world,id));selections++}});const effects=pending;pending=[];effects.forEach(effect=>effect());if(!dirty)return tree}throw Error('Unstable selector state')};
+  const draw=()=>{let tree;for(let pass=0;pass<6;pass++){dirty=false;cursor=0;tree=Component({selected:m.selectedQuickItem(world),cooked:world.cooked,cookedRabbit:world.cookedRabbit,cookedVenison:world.cookedVenison,axes:world.gear.bag,disabled,maxWidth,onExpandedChange:open=>expandedEvents.push(open),onSelect:id=>{assert(m.selectQuickItem(world,id));selections++}});const effects=pending;pending=[];effects.forEach(effect=>effect());if(!dirty)return tree}throw Error('Unstable selector state')};
   const buttons=tree=>nodes(tree).filter(n=>n.type===(platform==='web'?'button':'pressable'));
   const slots=tree=>buttons(tree).slice(0,-1),toggle=tree=>buttons(tree).at(-1);
   const press=(button,keyboard=false)=>{
@@ -39,18 +39,18 @@ try{
    const e={button:0,pointerId:7,clientX:10,clientY:10,currentTarget:{setPointerCapture(){}},stopPropagation(){},preventDefault(){}};
    button.props.onPointerDown(e);button.props.onPointerUp(e);button.props.onClick({detail:1,nativeEvent:{pointerType:'touch'},stopPropagation(){}});
   };
-  let tree=draw();assert.equal(slots(tree).length,1);assert.equal(text(slots(tree)[0]),'Axe');assert.equal(m.QUICK_BAR_LAYOUT.height,72);assert.equal(m.quickBarWidth(1),120);
-  press(toggle(tree));tree=draw();assert.deepEqual(slots(tree).map(n=>text(n)),['Fists','Axe','Chicken3','Rabbit2']);
+  let tree=draw();assert.equal(slots(tree).length,1);assert.equal(text(slots(tree)[0]),'Axe');assert.equal(m.QUICK_BAR_LAYOUT.height,72*1.2,'Quick selector matches the 20% larger main control');assert.equal(m.QUICK_BAR_LAYOUT.closedIconSize,34*1.2);assert.equal(m.quickBarWidth(1),120);assert.deepEqual(expandedEvents,[false],'HUD starts with captions available');
+  press(toggle(tree));tree=draw();assert.deepEqual(slots(tree).map(n=>text(n)),['Fists','Axe','Chicken3','Rabbit2']);assert.deepEqual(expandedEvents,[false,true],'Opening informs the HUD once');draw();assert.deepEqual(expandedEvents,[false,true],'A fresh callback identity cannot cause repeated expansion notifications');
   if(platform==='web'){
    const food=slots(tree)[2],e={button:0,pointerId:8,clientX:10,clientY:10,currentTarget:{setPointerCapture(){}},stopPropagation(){},preventDefault(){}};
    food.props.onPointerDown(e);food.props.onPointerMove({...e,clientX:40});food.props.onPointerUp({...e,clientX:40});assert.equal(selections,0,'Swiping cannot equip food');
   }
-  press(slots(tree)[2]);tree=draw();assert.equal(selections,1,'One physical tap must select exactly once');assert.equal(world.cooked,3,'Selecting food must not consume it');assert.equal(m.selectedQuickItem(world),'meal');assert.equal(slots(tree).length,1);assert.equal(text(slots(tree)[0]),'Chicken3');
+  press(slots(tree)[2]);tree=draw();assert.equal(selections,1,'One physical tap must select exactly once');assert.equal(world.cooked,3,'Selecting food must not consume it');assert.equal(m.selectedQuickItem(world),'meal');assert.equal(slots(tree).length,1);assert.equal(text(slots(tree)[0]),'Chicken3');assert.equal(expandedEvents.at(-1),false,'Selecting an item restores the HUD captions');
   const controller=new m.FieldKitController();for(let i=0;i<3;i++){assert(controller.press(world,controller.sample(world).action));controller.release();world.tick+=480;tree=draw()}
   assert.equal(world.cooked,0);assert.equal(text(slots(tree)[0]),'Fists','Last meal returns the compact selector to fists');
   press(slots(tree)[0],true);tree=draw();assert.equal(slots(tree).length,3);assert(!slots(tree).some(n=>text(n).startsWith('Chicken')));
   press(slots(tree)[1],true);tree=draw();assert.equal(m.selectedQuickItem(world),'axe');assert.equal(slots(tree).length,1);
-  press(toggle(tree));tree=draw();disabled=true;tree=draw();assert.equal(slots(tree).length,1);assert(buttons(tree).every(n=>n.props.disabled));const before=selections;press(toggle(tree));press(slots(tree)[0]);assert.equal(selections,before);disabled=false;tree=draw();assert.equal(slots(tree).length,1,'Resuming starts closed');
+  press(toggle(tree));tree=draw();disabled=true;tree=draw();assert.equal(slots(tree).length,1);assert(buttons(tree).every(n=>n.props.disabled));assert.equal(expandedEvents.at(-1),false,'Disabling an open selector restores the captions');const before=selections;press(toggle(tree));press(slots(tree)[0]);assert.equal(selections,before);disabled=false;tree=draw();assert.equal(slots(tree).length,1,'Resuming starts closed');
   world.gear.bag.woodenAxe=1;world.cooked=2;world.cookedVenison=5;maxWidth=160;press(toggle(tree));tree=draw();assert.equal(slots(tree).length,6);if(platform==='native')assert.equal(tree.props.style.at(-1).width.value,160,'Narrow native row stays inside available width');
   Object.assign(world.gear.bag,{woodenSpear:1,metalSpear:1,woodenKnife:0,scrapKnife:0});tree=draw();
   assert(slots(tree).some(n=>text(n)==='Wood spear'));assert(slots(tree).some(n=>text(n)==='Metal spear'));assert(!slots(tree).some(n=>/knife/i.test(text(n))),'Stored knives stay out of the selector');
@@ -60,6 +60,7 @@ try{
   assert(slots(tree).some(n=>text(n)==='Wood sword'));assert(slots(tree).some(n=>text(n)==='Metal sword'));
   press(slots(tree).find(n=>text(n)==='Metal sword'));tree=draw();assert.equal(m.selectedQuickItem(world),'metalSword');assert.equal(text(slots(tree)[0]),'Metal sword');
   world.gear.bag.metalSword=0;tree=draw();assert.equal(text(slots(tree)[0]),'Fists','Stashing the active sword returns to fists');
+  press(toggle(tree));tree=draw();assert.equal(expandedEvents.at(-1),true);reset();assert.equal(expandedEvents.at(-1),false,'Unmounting an open selector restores the captions');
   console.log(`${platform}: compact active item, four owned slots, tap/keyboard selection, no duplicate activation, food depletion, disabled state, six-item overflow, spear/sword selection and stored-knife filtering passed`);
  }
 }finally{reset();fs.rmSync(temp,{recursive:true,force:true});delete globalThis.__selectorReact;delete globalThis.document}
