@@ -1,46 +1,47 @@
-import StationMenu,{stationMenuLayout} from './StationMenu';
 import React,{useState} from 'react';
 import {View,Text,Pressable,ScrollView,Image,StyleSheet} from 'react-native';
+import StationMenu,{stationMenuLayout} from './StationMenu';
 import type {World} from '../src/survival-engine';
-import {WAREHOUSE_MATERIALS,type WarehouseMaterial} from '../src/warehouse';
+import type {WarehouseMaterial} from '../src/warehouse';
 import {warehouseView,transferWarehouse} from '../src/warehouse-storage';
-import {itemCount,packLoad,storedCount} from '../src/expedition-inventory';
+import {warehouseInventoryItems,warehouseMaterialForItem} from '../src/warehouse-inventory';
+import {packLoad} from '../src/expedition-inventory';
 import {FIELD_KIT_NATIVE_ART as art} from './field-kit-art';
-import {ItemArt} from './InventoryUI';
+import {InventoryGrid,InventoryDetail,InventoryAction,s} from './InventoryUI';
+
 type Props={world:World;width:number;height:number;onClose:()=>void;onChange:()=>void;safe:{top:number;bottom:number;left:number;right:number}};
 export default function WarehousePanel({world,width,height,onClose,onChange,safe}:Props){
- const [selected,setSelected]=useState<WarehouseMaterial>('pallets'),[taking,setTaking]=useState(false),[quantity,setQuantity]=useState(1),[message,setMessage]=useState(''),[showInfo,setShowInfo]=useState(false);
- const load=packLoad(world),v=warehouseView(world,selected,taking,quantity),panel=stationMenuLayout(width,height,safe).panel,short=height<500,narrow=panel.width<360,compactLandscape=height<=500&&width>=600;
- const afterBag=v.bag+(taking?v.amount:-v.amount),afterStored=v.stored+(taking?-v.amount:v.amount);
- const actionLabel=v.limit?`${taking?'Take':'Store'} ${v.amount} ${v.amount===1?v.material.singular:v.material.unit}`:taking?(v.stored?'Backpack full':`No ${v.material.name.toLowerCase()} in warehouse`):`No ${v.material.name.toLowerCase()} in backpack`;
- const move=()=>{const n=transferWarehouse(world,selected,taking,v.amount);setMessage(n?`${taking?'Took':'Stored'} ${n} ${n===1?v.material.singular:v.material.unit} ${taking?'into backpack':'in warehouse'}.`:'Supplies or backpack space changed.');setQuantity(1);onChange()};
- return <StationMenu world={world} title="Warehouse" label="Warehouse storage" onClose={onClose} weight={load.weight} loadLabel={load.label} message={message} width={width} height={height} safe={safe} compact fitContent>
- <ScrollView style={n.scroll} contentContainerStyle={[n.body,short&&{gap:5},compactLandscape&&n.bodyCompact]}>
-  <View style={[n.modes,compactLandscape&&n.modesCompact]}>{[false,true].map(t=><Pressable key={String(t)} accessibilityRole="button" accessibilityLabel={t?'Take from warehouse to backpack':'Store from backpack in warehouse'} accessibilityState={{selected:taking===t}} onPress={()=>{setTaking(t);setQuantity(1);setMessage('');setShowInfo(false)}} style={[n.mode,compactLandscape&&n.modeCompact,taking===t&&n.modeOn]}><Image source={art[t?'backpack':'chest']} resizeMode="contain" style={[n.modeIcon,narrow&&{width:20,height:20}]}/><View style={n.modeCopy}><Text style={[n.modeText,narrow&&{fontSize:11}]}>{t?'Take to backpack':'Store in warehouse'}</Text><Text style={n.route}>{t?'Warehouse → Backpack':'Backpack → Warehouse'}</Text></View></Pressable>)}</View>
-  <View style={n.resources}>{WAREHOUSE_MATERIALS.map(m=>{const bag=itemCount(world,m.id),stored=storedCount(world,m.id);return <Pressable key={m.id} accessibilityRole="button" accessibilityLabel={`${m.name}. Backpack: ${bag}. Warehouse: ${stored}.`} accessibilityState={{selected:selected===m.id}} onPress={()=>{setSelected(m.id);setQuantity(1);setMessage('');setShowInfo(false)}} style={[n.resource,short&&n.resourceShort,compactLandscape&&n.resourceCompact,selected===m.id&&n.resourceOn]}><View style={[n.resourceHeading,compactLandscape&&n.resourceHeadingCompact]}><ItemArt id={m.id==='pallets'?'logs':m.id} size={compactLandscape?26:short?32:narrow?40:50}/><Text style={[n.resourceName,(short||narrow)&&{fontSize:17},compactLandscape&&n.resourceNameCompact]}>{m.name}</Text></View><View style={[n.counts,compactLandscape&&n.countsCompact]}><View style={n.countRow}><Text style={[n.count,narrow&&{fontSize:9}]}>Backpack</Text><Text style={n.countValue}>{bag}</Text></View><View style={[n.countRow,n.warehouseCount,compactLandscape&&{paddingTop:1}]}><Text style={[n.count,narrow&&{fontSize:9}]}>Warehouse</Text><Text style={n.countValue}>{stored}</Text></View></View></Pressable>})}</View>
-  <View style={[n.selected,narrow&&{flexDirection:'column',alignItems:'stretch'},compactLandscape&&n.selectedCompact]}>
-   {!compactLandscape&&<View style={n.selectedHeading}><ItemArt id={selected==='pallets'?'logs':selected} size={28}/><Text style={n.selectedName}>{v.material.name}</Text><Pressable accessibilityRole="button" accessibilityLabel={`${v.material.name} information`} accessibilityState={{expanded:showInfo}} onPress={()=>setShowInfo(!showInfo)} style={n.infoButton}><Text style={n.infoMark}>i</Text></Pressable></View>}
-   <View accessible accessibilityLabel={v.limit?`After transfer: backpack ${afterBag}, warehouse ${afterStored}`:taking?'Transfer direction: warehouse to backpack':'Transfer direction: backpack to warehouse'} style={[n.preview,narrow&&{alignItems:'flex-start',marginLeft:0},compactLandscape&&n.previewCompact]}><Text style={n.previewLabel}>{v.limit?'After transfer':'Transfer direction'}</Text>{v.limit?<View style={n.flow}><Text style={n.flowText}>Backpack <Text style={n.countValue}>{afterBag}</Text></Text><Text style={n.flowSeparator}>·</Text><Text style={n.flowText}>Warehouse <Text style={n.countValue}>{afterStored}</Text></Text></View>:<Text style={n.flowText}>{taking?'Warehouse → Backpack':'Backpack → Warehouse'}</Text>}</View>
+ const [selected,setSelected]=useState<WarehouseMaterial>('pallets'),[taking,setTaking]=useState(true),[message,setMessage]=useState('');
+ const load=packLoad(world),v=warehouseView(world,selected,taking,1),items=warehouseInventoryItems(world,taking);
+ const item=items.find(i=>warehouseMaterialForItem(i.id)===selected)!;
+ const wide=stationMenuLayout(width,height,safe).wide;
+ const verb=taking?'Take':'Store',stackLabel=taking&&v.limit>0&&v.limit<v.stored?`Take ${v.limit}`:`${verb} all`;
+ const blockedReason=taking?(v.stored?'Backpack full':`No ${v.material.name.toLowerCase()} in warehouse`):`No ${v.material.name.toLowerCase()} in backpack`;
+ const transfer=(quantity:1|'all')=>{
+  const n=transferWarehouse(world,selected,taking,quantity);
+  setMessage(n?`${taking?'Took':'Stored'} ${n} ${n===1?v.material.singular:v.material.unit} ${taking?'into your backpack':'in the warehouse'}.`:'Supplies or backpack space changed.');
+  onChange();
+ };
+ return <StationMenu world={world} title="Warehouse" label="Warehouse storage" onClose={onClose} weight={load.weight} loadLabel={load.label} message={message} width={width} height={height} safe={safe} compact>
+  <View accessibilityRole="tablist" style={[s.tabs,n.tabs]}>
+   {[true,false].map(t=><Pressable key={String(t)} accessibilityRole="tab" accessibilityLabel={t?'View warehouse resources':'View backpack resources'} accessibilityState={{selected:taking===t}} onPress={()=>{setTaking(t);setMessage('')}} style={[s.tab,n.tab,taking===t&&s.tabOn]}><Image source={art[t?'chest':'backpack']} resizeMode="contain" style={n.tabIcon}/><Text style={n.tabText}>{t?'Warehouse':'Backpack'}</Text></Pressable>)}
   </View>
-  {showInfo&&!compactLandscape&&<Text style={n.info}>{v.hint}</Text>}
- </ScrollView>
-  <View style={[n.actions,narrow&&{flexDirection:'column'}]}>
-   <View style={n.quantity}>
-    <Pressable accessibilityRole="button" accessibilityLabel="Decrease quantity" accessibilityState={{disabled:v.amount<=1}} disabled={v.amount<=1} onPress={()=>setQuantity(v.amount-1)} style={[n.step,narrow&&n.grow,v.amount<=1&&n.disabled]}><Text style={n.stepText}>−</Text></Pressable>
-    <Text accessibilityLiveRegion="polite" accessibilityLabel={`Selected quantity ${v.amount}`} style={[n.amount,narrow&&n.grow]}>{v.amount}</Text>
-    <Pressable accessibilityRole="button" accessibilityLabel="Increase quantity" accessibilityState={{disabled:v.amount>=v.limit}} disabled={v.amount>=v.limit} onPress={()=>setQuantity(v.amount+1)} style={[n.step,narrow&&n.grow,v.amount>=v.limit&&n.disabled]}><Text style={n.stepText}>+</Text></Pressable>
-    <Pressable accessibilityRole="button" accessibilityLabel={taking?'Select all that fit':'Select all available'} accessibilityState={{disabled:!v.limit}} disabled={!v.limit} onPress={()=>setQuantity(v.limit)} style={[n.step,narrow&&n.grow,!v.limit&&n.disabled]}><Text style={n.maxText}>Max</Text></Pressable>
-   </View>
-   <Pressable accessibilityRole="button" accessibilityLabel={actionLabel+(v.limit?`, ${taking?'warehouse to backpack':'backpack to warehouse'}`:'')} accessibilityState={{disabled:!v.limit}} disabled={!v.limit} onPress={move} style={[n.primary,compactLandscape&&n.primaryCompact,narrow&&{flex:0},!v.limit&&n.disabled]}><Text style={n.primaryText}>{actionLabel}</Text>{!!v.limit&&<Text style={n.destination}>{taking?'To your backpack':'Into the warehouse'}</Text>}</Pressable>
+  <View style={[s.layout,n.layout,wide&&s.wide]}>
+   <ScrollView accessibilityLabel={taking?'Warehouse resources':'Backpack resources'} style={[s.inventory,wide?n.inventoryWide:n.inventoryPortrait]} contentContainerStyle={n.inventoryContent}>
+    <InventoryGrid items={items} selected={item.id} showCounts columns={wide?2:3} onSelect={id=>{const material=warehouseMaterialForItem(id);if(material){setSelected(material);setMessage('')}}}/>
+   </ScrollView>
+   <InventoryDetail item={item} wide showInfo={false} compact={!wide}>
+    {!v.limit&&<Text accessibilityLiveRegion="polite" style={n.blocked}>{blockedReason}</Text>}
+    <View style={[s.actions,n.actions]}>
+     <InventoryAction label={`${verb} 1`} onPress={()=>transfer(1)} disabled={!v.limit} primary/>
+     <InventoryAction label={stackLabel} onPress={()=>transfer('all')} disabled={v.limit<=1}/>
+    </View>
+   </InventoryDetail>
   </View>
  </StationMenu>;
 }
 const n=StyleSheet.create({
- scroll:{flexGrow:0,flexShrink:1},body:{gap:9,padding:2},bodyCompact:{gap:3,padding:0},
- modesCompact:{padding:1,gap:4},modeCompact:{minHeight:44,paddingVertical:3},resourceCompact:{minHeight:80,paddingVertical:3,paddingHorizontal:5,gap:3},resourceHeading:{alignItems:'center',gap:3},resourceHeadingCompact:{alignSelf:'stretch',flexDirection:'row',justifyContent:'center',gap:4},resourceNameCompact:{flexShrink:1,fontSize:17,lineHeight:18,textAlign:'left'},countsCompact:{gap:2,paddingTop:1},selectedCompact:{paddingTop:1},previewCompact:{width:'100%',marginLeft:0,flexDirection:'row',alignItems:'center',justifyContent:'space-between',gap:6},primaryCompact:{minHeight:44,paddingVertical:4},
- modes:{flexDirection:'row',gap:5,padding:3,borderWidth:1,borderColor:'#72806738',borderRadius:9,backgroundColor:'#0b2425'},
- mode:{flex:1,flexDirection:'row',alignItems:'center',justifyContent:'center',gap:6,minHeight:50,paddingHorizontal:5,paddingVertical:5,borderWidth:1,borderColor:'transparent',borderRadius:7},modeOn:{backgroundColor:'#45563d',borderColor:'#c9b477'},modeIcon:{width:25,height:25},modeCopy:{flexShrink:1,gap:2},modeText:{fontSize:12,fontWeight:'700',color:'#f1e3be',textAlign:'center'},route:{fontSize:9,color:'#bdcbb4',textAlign:'center'},
- resources:{flexDirection:'row',gap:7},resource:{flex:1,minWidth:0,minHeight:132,paddingVertical:7,paddingHorizontal:6,gap:3,borderWidth:1,borderBottomWidth:2,borderColor:'#65756070',borderRadius:9,backgroundColor:'#102b25',alignItems:'center',justifyContent:'center'},resourceShort:{minHeight:106,paddingVertical:5,gap:2},resourceOn:{borderColor:'#d8c284',borderBottomColor:'#a68a52',backgroundColor:'#435339'},resourceName:{fontFamily:'FieldKitBarlow',fontSize:21,lineHeight:22,color:'#f5e6bf',textAlign:'center'},counts:{alignSelf:'stretch',gap:3,paddingTop:3},countRow:{flexDirection:'row',justifyContent:'space-between',alignItems:'center',gap:3},warehouseCount:{borderTopWidth:1,borderTopColor:'#8e9b7050',paddingTop:3},count:{fontSize:10,color:'#c2ccb6'},countValue:{fontSize:12,color:'#f0dfb8',fontWeight:'700',fontVariant:['tabular-nums']},
- selected:{flexDirection:'row',alignItems:'center',justifyContent:'space-between',gap:4,paddingTop:3,borderTopWidth:1,borderTopColor:'#b9ac7844'},selectedHeading:{flexDirection:'row',alignItems:'center',gap:5,flexShrink:1},selectedName:{fontFamily:'FieldKitBarlow',fontSize:21,color:'#f1e3bd',flexShrink:1},infoButton:{width:44,height:44,alignItems:'center',justifyContent:'center'},infoMark:{width:21,height:21,borderRadius:11,textAlign:'center',lineHeight:21,fontWeight:'800',fontSize:15,color:'#253a30',backgroundColor:'#e4c99a'},preview:{alignItems:'flex-end',gap:2,marginLeft:'auto',flexShrink:0},previewLabel:{fontSize:9,color:'#b3c2ad'},flow:{flexDirection:'row',alignItems:'center',gap:5},flowText:{fontSize:10,color:'#d3dac6'},flowSeparator:{fontSize:10,color:'#99ae99'},
- actions:{flexDirection:'row',alignItems:'stretch',gap:7},quantity:{flexDirection:'row',alignItems:'center',gap:4},step:{width:44,height:44,paddingHorizontal:5,borderWidth:1,borderColor:'#7e8e7066',borderRadius:7,backgroundColor:'#1b3931',alignItems:'center',justifyContent:'center'},stepText:{fontSize:21,fontWeight:'700',color:'#f1e1b9'},maxText:{fontSize:12,fontWeight:'700',color:'#f1e1b9'},amount:{minWidth:32,height:44,textAlign:'center',lineHeight:44,borderWidth:1,borderColor:'#71836a55',borderRadius:7,backgroundColor:'#0e2a24',fontSize:17,fontWeight:'700',color:'#f4e6c4'},grow:{flex:1},primary:{flex:1,minHeight:46,paddingVertical:6,paddingHorizontal:7,gap:2,borderWidth:1,borderBottomWidth:3,borderColor:'#f1d697',borderBottomColor:'#907046',borderRadius:8,backgroundColor:'#dfc38c',alignItems:'center',justifyContent:'center'},primaryText:{fontSize:13,fontWeight:'800',color:'#25372e',textAlign:'center'},destination:{fontSize:9,color:'#41513b',textAlign:'center'},disabled:{opacity:.55},info:{fontSize:11,lineHeight:16,color:'#c2cdb5',padding:8,borderRadius:7,borderWidth:1,borderColor:'#8b9b7250',backgroundColor:'#102c25'}
+ tabs:{padding:2,flexShrink:0},tab:{minHeight:44},tabIcon:{width:23,height:23},tabText:{fontSize:13,fontWeight:'700',color:'#f1e3be'},
+ layout:{gap:8},inventoryWide:{flex:0,width:'44%'},inventoryPortrait:{flex:0,height:82,minHeight:0},inventoryContent:{padding:3},
+ actions:{flexWrap:'nowrap'},blocked:{fontSize:10,lineHeight:13,color:'#c2cfb6',marginBottom:5},
 });
