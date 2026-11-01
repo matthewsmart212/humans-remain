@@ -58,7 +58,10 @@ metadata files are covered by the original archive checksums. The new Git
 attributes and this setup document are import support, outside that original
 payload inventory.
 
-This repository includes no GitHub Actions deployment workflow. The preserved
-`.openai/hosting.json` identifies the original live Site; it is provenance, not
-an instruction to redeploy that Site. Configure a new hosting workflow
-deliberately when you are ready to change hosting.
+This repository includes no GitHub Actions deployment workflow, so a GitHub
+push alone does not publish the live Site. Matthew's development workflow is
+to complete both steps for every game update, including native-only changes:
+commit and push the shared repository, then reconcile, build and publish the
+matching source through Sites. `.openai/hosting.json` identifies the existing
+live Site and its bindings; preserve them and its audience. See `AGENTS.md` for
+the required handoff and source reconciliation rules.
