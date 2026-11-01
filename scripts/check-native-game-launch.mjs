@@ -1,0 +1,84 @@
+// Exercise the actual native Game component/effects with platform services
+// replaced. The engine, world loader, save codec and scene travel remain real.
+import assert from 'node:assert/strict';
+import fs from 'node:fs';
+import os from 'node:os';
+import path from 'node:path';
+import vm from 'node:vm';
+import {createRequire} from 'node:module';
+import {build,transformSync} from 'esbuild';
+import ts from 'typescript';
+import React from 'react';
+
+const require=createRequire(import.meta.url),temp=fs.mkdtempSync(path.join(os.tmpdir(),'native-launch-'));
+const source=fs.readFileSync('native/App.tsx','utf8');
+const ast=ts.createSourceFile('App.tsx',source,ts.ScriptTarget.Latest,true,ts.ScriptKind.TSX);
+const component=ast.statements.find(n=>ts.isFunctionDeclaration(n)&&n.name?.text==='Game');
+const styles=ast.statements.flatMap(n=>ts.isVariableStatement(n)?[...n.declarationList.declarations]:[]).find(n=>n.name.getText(ast)==='s');
+const modules=['run-save','station-menu-layout','continuous-zoom-state','continuous-zoom','studio-play','survival-engine','player-presentation','camp-lighting','weather-model','placed-world-renderer','editor-image-sources','world-assets','terrain-art','scene-resources','scene-travel','world-scenes','performance-recording','performance-context','field-kit'];
+const noop=()=>{};
+const nodes=tree=>Array.isArray(tree)?tree.flatMap(nodes):tree&&typeof tree==='object'&&tree.props?[tree,...nodes(tree.props.children)]:[];
+const text=tree=>Array.isArray(tree)?tree.map(text).join(' '):typeof tree==='string'?tree:tree?.props?text(tree.props.children):'';
+async function until(predicate){for(let i=0;i<1000;i++){if(predicate())return;await new Promise(resolve=>setImmediate(resolve))}assert.fail('Native startup did not settle')}
+try{
+ await build({stdin:{contents:modules.map(id=>`export * from './src/${id}';`).join('')+"export * from './native/game-world';export * from './native/play-zoom';",resolveDir:process.cwd()},bundle:true,platform:'node',format:'cjs',outfile:path.join(temp,'model.cjs'),logLevel:'error'});
+ const m=require(path.join(temp,'model.cjs'));
+ function app(saved,{background=false,failArtwork=false,holdArtwork=false}={}){
+  const storage=new Map([['safety-last-authored-world-v2','invalid retired editor cache']]);if(saved!==undefined)storage.set(m.RUN_SAVE_KEY,saved);
+  const slots=[],effects=[],timers=new Map(),frames=new Map(),events=new Map(),reads=[],writes=[],errors=[],draws=[];
+  let cursor=0,id=0,releaseArtwork;
+  const artworkGate=holdArtwork?new Promise(resolve=>releaseArtwork=resolve):Promise.resolve();
+  const slot=initialize=>{const i=cursor++;return slots[i]??=initialize()};
+  const useRef=value=>slot(()=>({current:value}));
+  const useState=value=>{const s=slot(()=>({value:typeof value==='function'?value():value}));return[s.value,next=>{s.value=typeof next==='function'?next(s.value):next}]};
+  const useMemo=fn=>slot(()=>({value:fn()})).value;
+  const useEffect=(fn,deps)=>{const s=slot(()=>({}));if(!s.deps||deps.some((v,i)=>v!==s.deps[i])){s.deps=deps;effects.push(()=>{s.cleanup?.();s.cleanup=fn()})}};
+  const renderer={revision:1,warmImages:async()=>{await artworkGate;if(failArtwork)throw new TypeError('artwork failed')},releaseImages:noop,dispose:noop,draw:(world,width,height)=>{draws.push({world,width,height});return {frame:draws.length}},textureStats:()=>undefined};
+  const ctx={...m,React,useRef,useState,useMemo,useEffect,Error,console:{error:(...args)=>errors.push(args)},performance,zero:()=>({x:0,y:0}),
+   require:()=>1,View:'View',Text:'Text',Pressable:'Pressable',ScrollView:'ScrollView',StatusBar:'StatusBar',Canvas:'Canvas',Picture:'Picture',
+   StyleSheet:{create:v=>v,absoluteFill:{}},useWindowDimensions:()=>({width:844,height:390}),useSafeAreaInsets:()=>({top:0,bottom:0,left:0,right:0}),
+   useSharedValue:value=>slot(()=>({value})),Skia:{PictureRecorder:()=>({beginRecording:noop,finishRecordingAsPicture:()=>({empty:true}),dispose:noop})},
+   AppState:{currentState:background?'background':'active',addEventListener:(event,fn)=>{events.set(event,fn);return{remove:()=>events.delete(event)}}},
+   AccessibilityInfo:{isReduceMotionEnabled:async()=>false,addEventListener:()=>({remove:noop})},Font:{loadAsync:async()=>{}},Haptics:{selectionAsync:async()=>{},impactAsync:async()=>{},ImpactFeedbackStyle:{Light:1}},
+   AsyncStorage:{getItem:async key=>{reads.push(key);return storage.get(key)||null},setItem:async(key,value)=>{writes.push(key);storage.set(key,value)}},
+   Alert:{alert:(title,description,buttons)=>{ctx.alert=buttons}},PLAY_VIEW:{x:0,y:0,zoom:1,follow:true,grid:false,collision:false,selected:null,playing:true},
+   createNativeRenderer:async()=>renderer,OutdoorTerrainStream:class{ready=true;update(){}settled(){return Promise.resolve()}dispose(){}retry(){}},
+   NativeFieldKitHUD:function NativeFieldKitHUD(){},NativePlayerMap:function NativePlayerMap(){},
+   setInterval:fn=>{const next=++id;timers.set(next,fn);return next},clearInterval:key=>timers.delete(key),
+   requestAnimationFrame:fn=>{const next=++id;frames.set(next,fn);return next},cancelAnimationFrame:key=>frames.delete(key),
+  };
+  const context=vm.createContext(ctx);
+  vm.runInContext(transformSync(`globalThis.Game=${component.getText(ast)};globalThis.s=${styles.initializer.getText(ast)};`,{loader:'tsx'}).code,context);
+  let tree;
+  const render=()=>{cursor=0;tree=ctx.Game();for(const effect of effects.splice(0))effect();return tree};
+  const labels=()=>text(render());
+  const hud=()=>nodes(render()).find(n=>n.type===ctx.NativeFieldKitHUD);
+  const press=label=>{const button=nodes(render()).find(n=>n.type==='Pressable'&&text(n)===label);assert(button,`Native button exists: ${label}`);button.props.onPress();render()};
+  const frame=at=>{const callbacks=[...frames.values()];frames.clear();callbacks.forEach(fn=>fn(at))};
+  render();
+  return{render,labels,hud,press,frame,draws,reads,writes,errors,storage,ctx,releaseArtwork,
+   state:value=>events.get('change')?.(value),autosave:()=>{for(const timer of timers.values())timer()},
+   settled:()=>until(()=>Boolean(hud())||/Game paused|Run ended|Unable to open game/.test(labels())),
+   close:()=>{for(const s of slots)s.cleanup?.()},
+  };
+ }
+ const cold=app();await cold.settled();assert(cold.hud(),'First launch goes straight to the HUD');
+ const world=cold.hud().props.world.current;assert(world.progression,'Native always starts Survival');assert(cold.draws.length,'The first scene is drawn before gameplay');
+ assert.deepEqual(cold.reads,[m.RUN_SAVE_KEY],'No editor cache or web service is consulted');
+ for(const label of ['Continue game','Main menu','Open testing sandbox','Spawn tools','editor'])assert(!cold.labels().includes(label));
+ const tick=world.tick;cold.frame(1000);cold.frame(1034);assert(world.tick>tick,'The game simulation starts without a Play button');
+ cold.hud().props.onPause();assert(cold.labels().includes('Game paused'));const paused=world.tick;cold.frame(1068);assert.equal(world.tick,paused);
+ cold.press('Resume');assert(cold.hud());
+ world.player.hp=83;cold.autosave();await until(()=>cold.writes.length>0);
+ const saved=cold.storage.get(m.RUN_SAVE_KEY);assert(saved);const captured=m.decodeRun(saved).worlds.find(([id])=>id==='camp')[1];
+ const returning=app(saved);await returning.settled();assert(returning.hud(),'A valid saved expedition resumes directly');assert.equal(returning.hud().props.world.current.player.hp,captured.player.hp);assert.equal(returning.hud().props.world.current.tick,captured.tick);
+ const endedData=JSON.parse(saved);endedData.worlds.find(([id])=>id==='camp')[1].phase='over';endedData.worlds.find(([id])=>id==='camp')[1].player.hp=0;
+ const ended=app(JSON.stringify(endedData));await ended.settled();assert(ended.labels().includes('Run ended'));assert(!ended.hud());
+ const damaged=app('{broken save');await damaged.settled();assert(damaged.labels().includes('Your save has been kept'));assert(!damaged.hud());damaged.autosave();await new Promise(resolve=>setImmediate(resolve));assert.equal(damaged.storage.get(m.RUN_SAVE_KEY),'{broken save');assert(!damaged.labels().includes('Resume'));
+ damaged.press('New Survival run');assert.equal(damaged.ctx.alert.length,2,'Replacing a save still requires the existing destructive-action confirmation');assert.equal(damaged.storage.get(m.RUN_SAVE_KEY),'{broken save');
+ damaged.ctx.alert.find(button=>button.style==='destructive').onPress();assert(damaged.hud());await until(()=>damaged.writes.length>0);assert.doesNotThrow(()=>m.decodeRun(damaged.storage.get(m.RUN_SAVE_KEY)));
+ const inactive=app(undefined,{holdArtwork:true});await until(()=>inactive.labels().includes('Preparing game'));inactive.state('background');inactive.releaseArtwork();await inactive.settled();assert(inactive.labels().includes('Game paused'),'Backgrounding during startup must not launch a hidden simulation');inactive.state('active');assert(!inactive.hud());inactive.press('Resume');assert(inactive.hud());
+ const failed=app(undefined,{failArtwork:true});await failed.settled();assert(failed.labels().includes('Warm artwork: artwork failed'));assert(failed.labels().includes('Retry'));assert.equal(failed.storage.has(m.RUN_SAVE_KEY),false);
+ for(const instance of [cold,returning,ended,damaged,inactive,failed])instance.close();
+ console.log(JSON.stringify({passed:true,checks:['offline direct Survival launch','first frame before HUD','no native editor/test menu','automatic saved-run resume','pause/resume','ended-run screen','damaged save preserved','confirmed new run','background during boot','named startup failure and retry'],physicalIPhoneTested:false},null,2));
+}finally{fs.rmSync(temp,{recursive:true,force:true})}

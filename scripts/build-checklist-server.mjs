@@ -86,6 +86,11 @@ console.log(JSON.stringify({publishedCircularWallImages:circularWallImages.size,
 // illustrated map and v3 walker sprites remain in the published bundle.
 const historicalPublishExports=[
  '/maps/world-terrain.webp','/maps/world-terrain.json','/survival/scrap-walker-v2',
+ // Unused sword study, retired HQ map art and duplicate food PNG exports.
+ // Source/native copies remain available; the browser uses the food WebPs.
+ '/survival/scrap-runner/sword-west-study-v1.webp',
+ '/survival/headquarters-menu-v1/camp-plan.webp',
+ '/survival/chicken-food-v1/raw-chicken.png','/survival/chicken-food-v1/cooked-chicken.png',
  ...['arena','ben-avatar','challenge-heading','dave-avatar','faceoff','factory-background','flattened-stamp-v3','flattened','locker-background','metal-texture','night-card','night-scene','night-worker','paper-texture','press-worker','result-stamp','results-background-v3','room-background','sarah-avatar','uniform-card','worker'].map(name=>'/art/'+name+'.webp'),
 ];
 const historicalBuildArchive=fs.mkdtempSync('.sites-runtime/historical-publish-');

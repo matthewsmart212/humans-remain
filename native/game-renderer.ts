@@ -29,24 +29,19 @@ import type {GamePerformanceRecorder} from '../src/performance-recording';
 export const PLAY_VIEW:EditorView={x:0,y:0,zoom:1,follow:true,grid:false,collision:false,selected:null,ghost:null,placingSpawn:false,playing:true,hideFoliage:false};
 
 const mark=(name:string,error:unknown):never=>{const e=error instanceof Error?error:Error(String(error));e.message=`${name}: ${e.message}`;throw e};
+const open=<T,>(name:string,run:()=>T):T=>{try{return run()}catch(e){return mark(name,e)}};
 export async function createNativeRenderer(view:EditorView={...PLAY_VIEW},diagnostics?:GamePerformanceRecorder){
- let asset:Asset;
- try{asset=Asset.fromModule(require('../public/fonts/barlow-condensed-black.ttf'))}catch(e){mark('Font module',e)}
+ const asset=open('Font module',()=>Asset.fromModule(require('../public/fonts/barlow-condensed-black.ttf')));
  try{await asset.downloadAsync()}catch(e){mark('Font download',e)}
- let bytes;
- try{bytes=await Skia.Data.fromURI(asset.localUri||asset.uri)}catch(e){mark('Font data',e)}
- let face;
- try{face=Skia.Typeface.MakeFreeTypeFaceFromData(bytes)}catch(e){bytes.dispose();mark('Font typeface',e)}
- bytes.dispose();
+ const bytes=await Skia.Data.fromURI(asset.localUri||asset.uri).catch(e=>mark('Font data',e));
+ const face=open('Font typeface',()=>{try{return Skia.Typeface.MakeFreeTypeFaceFromData(bytes)}finally{bytes.dispose()}});
  if(!face)throw Error('The game font could not open.');
- let font,adapter;
- try{font=Skia.Font(face,30)}catch(e){mark('Font face',e)}
- try{adapter=createSkiaAdapter(Skia,diagnostics)}catch(e){mark('Skia adapter',e)}
+ const font=open('Font face',()=>Skia.Font(face,30));
+ const adapter=open('Skia adapter',()=>createSkiaAdapter(Skia,diagnostics));
  const keyByUrl=new Map<string,string>();
  let disposed=false,revision=0;
  const prepared:Record<string,SkImage>={};
- let preparationSurface,preparationPaint;
- try{preparationSurface=Skia.Surface.MakeOffscreen(1,1);preparationPaint=Skia.Paint()}catch(e){mark('Preparation surface',e)}
+ const preparationSurface=open('Preparation surface',()=>Skia.Surface.MakeOffscreen(1,1)),preparationPaint=Skia.Paint();
  if(!preparationSurface){preparationPaint.dispose();adapter.disposeLighting();font.dispose();face.dispose();throw Error('The image preparation surface is unavailable.')}
  // Pictures retain their own image references on the render thread. Removing a
  // streamed image from the loader releases our ownership; Skia/JS GC releases
@@ -92,8 +87,7 @@ export async function createNativeRenderer(view:EditorView={...PLAY_VIEW},diagno
  };
  const releaseImages=(keys:string[])=>{for(const key of keys)delete prepared[key];loader.release(keys);revision++};
  const streamSources={...TERRAIN_CHUNK_IMAGES,...RIVER_DETAIL_IMAGES};
- let streams;
- try{streams=createTerrainArtStreams(warmImages,releaseImages,keys=>{loader.promote(Object.fromEntries(keys.map(k=>[k,streamSources[k]])));const images=new Set(keys.map(k=>loader.images[k]));for(const job of queue)if(images.has(job.image))job.priority='foreground'},diagnostics)}catch(e){mark('Terrain streams',e)}
+ const streams=open('Terrain streams',()=>createTerrainArtStreams(warmImages,releaseImages,keys=>{loader.promote(Object.fromEntries(keys.map(k=>[k,streamSources[k]])));const images=new Set(keys.map(k=>loader.images[k]));for(const job of queue)if(images.has(job.image))job.priority='foreground'},diagnostics));
  return {
   warmImages,releaseImages,get revision(){return revision},
   textureStats:()=>({graphics:{backend:'native-skia',shaderFieldBytes:adapter.shaderFieldBytes()},roads:streams.roads.stats(),camp:streams.camp.stats(),rivers:streams.rivers.stats(),artwork:{...loader.stats(),warming:queue.length,warmQueue:queue.slice(0,12).map(job=>({key:job.key,priority:job.priority,ageMs:Math.round(performance.now()-job.queuedAt)}))}}),

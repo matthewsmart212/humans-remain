@@ -1,4 +1,5 @@
 import {PaintStyle,TileMode,FilterMode,MipmapMode,ClipOp} from '@shopify/react-native-skia/lib/module/skia/types';
+import {createDrawingPath} from './skia-drawing-path';
 import type {SkCanvas,Skia as SkiaApi,SkImage,SkShader} from '@shopify/react-native-skia';
 import type {WeatherState} from './weather-model';
 export type WeatherView={x:number;y:number;width:number;height:number;scale:number;pixelRatio:number};
@@ -9,7 +10,7 @@ const fract=(v:number)=>v-Math.floor(v),noise=(i:number)=>fract(Math.sin(i*127.1
 export function createWeatherRenderer(Skia:Pick<typeof SkiaApi,'Paint'|'Path'|'Shader'|'Surface'|'Matrix'|'XYWHRect'|'Color'>){
  const rain=Skia.Paint(),wash=Skia.Paint(),mist=Skia.Paint();
  rain.setStyle(PaintStyle.Stroke);rain.setAntiAlias(true);rain.setColor(Skia.Color('#c7dce1'));
- const streaks=Skia.Path.Make(),shelter=Skia.Path.Make();
+ const streaks=createDrawingPath(Skia),shelter=createDrawingPath(Skia);
  let fogImage:SkImage|undefined,fogShader:SkShader|undefined,disposed=false,tileBuilds=0,previousShelters:readonly (readonly [number,number][])[]|undefined;
  const makeFog=()=>{
   if(fogImage)return;const surface=Skia.Surface.Make(128,128);if(!surface)return;
@@ -40,7 +41,7 @@ export function createWeatherRenderer(Skia:Pick<typeof SkiaApi,'Paint'|'Path'|'S
    }
    if(state.rain){
     // Only falling rain is sheltered. Atmospheric fog must not reveal a hard-edged interior rectangle.
-    if(shelters.length){if(previousShelters!==shelters){shelter.reset();for(const polygon of shelters){polygon.forEach(([px,py],i)=>i?shelter.lineTo(px,py):shelter.moveTo(px,py));shelter.close()}previousShelters=shelters}canvas.clipPath(shelter,ClipOp.Difference,true)}
+    if(shelters.length){if(previousShelters!==shelters){shelter.reset();for(const polygon of shelters){polygon.forEach(([px,py],i)=>i?shelter.lineTo(px,py):shelter.moveTo(px,py));shelter.close()}previousShelters=shelters}canvas.clipPath(shelter.path(),ClipOp.Difference,true)}
     // Screen-space streak sizes and a fixed budget: zooming out never explodes the count.
     const unit=pixelRatio/scale,sw=width/unit,sh=height/unit;
     const heavy=state.heavy,softCount=Math.min(MAX_RAIN_STREAKS,Math.max(45,Math.round(sw*sh/2800))),count=Math.min(MAX_HEAVY_RAIN_STREAKS,Math.round(softCount*(1+heavy*1.5)));
@@ -57,7 +58,7 @@ export function createWeatherRenderer(Skia:Pick<typeof SkiaApi,'Paint'|'Path'|'S
      const px=fract(noise(i+804)-x/width)*width+x,py=fract(noise(i+930)-y/height)*height+y,r=(1+age*10)*unit;
      streaks.addOval(Skia.XYWHRect(px-r,py-r*.35,r*2,r*.7));
     }
-    rain.setStrokeWidth((.8+heavy*.2)*unit);rain.setAlphaf(state.rain*(.48+heavy*.12));canvas.drawPath(streaks,rain);
+    rain.setStrokeWidth((.8+heavy*.2)*unit);rain.setAlphaf(state.rain*(.48+heavy*.12));canvas.drawPath(streaks.path(),rain);
    }
    canvas.restore();
    // Broad distant lightning lights the scene, including roofs, without rebuilding night lighting.

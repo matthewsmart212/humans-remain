@@ -1,6 +1,6 @@
 # First expedition: survival progression
 
-The first Survival milestone connects the existing gathering, crafting, weather and combat systems into one saved run. Web Play and the native app start or continue Survival. The pause menu also opens a separate testing sandbox with the existing stocked equipment and spawn tools.
+The first Survival milestone connects the existing gathering, crafting, weather and combat systems into one saved run. Web Play starts or continues Survival. The native app automatically opens into the saved expedition or a fresh Survival run. Only the browser pause menu offers the separate testing sandbox with stocked equipment and spawn tools.
 
 ## Player path
 

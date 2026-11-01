@@ -118,7 +118,7 @@ export default function NativePlayerMap({world,width,height,safe,onClose,active=
  const view=playerMapView(scene.bounds,size.width,size.height,camera.zoom,focus,Math.max(12,continuous?.entry??12));
  useEffect(()=>{waypointTap.current.cancel()},[view.scale]);
  const current=useRef({scene,size,view});current.current={scene,size,view};
- const body=useRef<View>(null),origin=useRef({x:0,y:0}),gesture=useRef<ReturnType<typeof touchState>>(null),following=useRef(true);
+ const body=useRef<React.ElementRef<typeof View>>(null),origin=useRef({x:0,y:0}),gesture=useRef<ReturnType<typeof touchState>>(null),following=useRef(true);
  const [textures,setTextures]=useState<Record<string,'ready'|'error'>>({}),[retry,setRetry]=useState(0);
  const reportTexture=useCallback((key:string,ready:boolean)=>setTextures(old=>old[key]===(ready?'ready':'error')?old:{...old,[key]:ready?'ready':'error'}),[]);
  const onClosed=useRef(onClose);onClosed.current=onClose;
