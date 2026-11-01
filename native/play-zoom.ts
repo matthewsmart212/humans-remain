@@ -1,12 +1,14 @@
 import type {GestureResponderEvent} from 'react-native';
+import type {SharedValue} from 'react-native-reanimated';
 import {PlayPinchZoom} from '../src/play-zoom';
 
 /** The pinch amount changes on every move; only its subscribers re-render. */
 export function createZoomStore(initial:number){
- let value=initial;const listeners=new Set<()=>void>();
+ let value=initial,presentation:SharedValue<number>|undefined;const listeners=new Set<()=>void>();
  return{
   get:()=>value,
-  set(next:number){if(next===value)return;value=next;for(const listener of listeners)listener()},
+  set(next:number,present=true){if(present&&presentation)presentation.value=next;if(next===value)return;value=next;for(const listener of listeners)listener()},
+  bindPresentation(shared:SharedValue<number>){presentation=shared;shared.value=value;return()=>{if(presentation===shared)presentation=undefined}},
   subscribe(listener:()=>void){listeners.add(listener);return()=>{listeners.delete(listener)}},
  };
 }

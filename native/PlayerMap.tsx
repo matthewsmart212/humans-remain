@@ -1,7 +1,14 @@
-import React,{memo,useCallback,useEffect,useMemo,useRef,useState,useSyncExternalStore} from 'react';
+import React,{memo,useCallback,useEffect,useMemo,useRef,useState} from 'react';
 import {AccessibilityInfo,Animated,BackHandler,Easing,PixelRatio,Platform,Pressable,StyleSheet,Text,View,type GestureResponderEvent} from 'react-native';
+import AnimatedUI,{useAnimatedReaction,useAnimatedStyle,useDerivedValue,useSharedValue,type SharedValue} from 'react-native-reanimated';
+import {GestureDetector,GestureStateManager,useManualGesture,type ManualGesture} from 'react-native-gesture-handler';
+import {scheduleOnRN,scheduleOnUI} from 'react-native-worklets';
+import {nativeAtlasOpacity,nativeMapCameraView,nativeMapCoverageKey,nativeMapFollowAllowed,nativeMapPan,type NativeMapCamera} from './map-presentation';
+import {NativeMapAccessiblePlayer,NativeMapCampPicture,NativeMapFireGlow,NativeMapLabel,NativeMapLandmark,NativeMapPoint,NativeMapWaypointLabel} from './MapPresentation';
+import type {NativePinchRegistration} from './use-native-play-zoom';
+import type {NativeFrameWorkScheduler} from './frame-work-scheduler';
 import {Canvas,Circle,Group,Image as SkiaImage,LinearGradient,RadialGradient,Path,Picture,Rect,Skia,useImage,type SkImage} from '@shopify/react-native-skia';
-import {PLAYER_MAP_MAX_ZOOM,PLAYER_MAP_TERRAIN_URL,playerMapFeatures,playerMapHeading,playerMapScene,playerMapView,projectMapPoint,unprojectMapPoint,type PlayerMapFeatures,type PlayerMapImage,type PlayerMapLandmark} from '../src/player-map';
+import {PLAYER_MAP_MAX_ZOOM,PLAYER_MAP_TERRAIN_URL,playerMapFeatures,playerMapHeading,playerMapScene,playerMapView,projectMapPoint,unprojectMapPoint,type PlayerMapFeatures,type PlayerMapImage,type PlayerMapLandmark,type PlayerMapView} from '../src/player-map';
 import type {Direction,Vec,World} from '../src/survival-engine';
 import type {GamePerformanceRecorder} from '../src/performance-recording';
 import type {WorldBounds} from '../src/world-bounds';
@@ -35,7 +42,7 @@ type Props={world:React.RefObject<World|null>;width:number;height:number;safe:{t
  camera?:(amount:number)=>ReturnType<typeof continuousMapCamera>|null;zoom?:ZoomStore;
  /** Called after each game frame with its start time to render tiles in the time left. */
  pump?:React.MutableRefObject<((frameStart:number)=>void)|undefined>;
- onTouchStart?:(event:GestureResponderEvent)=>void};
+ onTouchStart?:(event:GestureResponderEvent)=>void;presentation?:SharedValue<number>;pinching?:SharedValue<boolean>;pinchGesture?:ManualGesture;preparation?:NativeFrameWorkScheduler;nativePinch?:NativePinchRegistration};
 /** Tile cache bounds while the atlas is open, and while it waits closed at its entry view. */
 const OPEN_TILES=48,CLOSED_TILES=32;
 const unsubscribed=()=>()=>{};
@@ -63,7 +70,7 @@ function measureMapBuild<T>(diagnostics:GamePerformanceRecorder|undefined,stage:
 }
 
 // One decoded atlas and one retained display list for every camp illustration.
-function MapIllustrations({features,bounds,scale,image}:{features:PlayerMapFeatures;bounds:WorldBounds;scale:number;image:SkImage|null|undefined}){
+function MapIllustrations({features,bounds,view,image}:{features:PlayerMapFeatures;bounds:WorldBounds;view:SharedValue<PlayerMapView>;image:SkImage|null|undefined}){
  const picture=useMemo(()=>{
   if(!image)return null;
   const recorder=Skia.PictureRecorder(),canvas=recorder.beginRecording(Skia.XYWHRect(bounds.left,bounds.top,bounds.width,bounds.height)),paint=Skia.Paint();
@@ -83,7 +90,7 @@ function MapIllustrations({features,bounds,scale,image}:{features:PlayerMapFeatu
   try{const source=item.source;canvas.drawImageRect(image,Skia.XYWHRect(source.x,source.y,source.width,source.height),Skia.XYWHRect(-item.width/2,-item.height/2,item.width,item.height),paint,false);return{item,picture:recorder.finishRecordingAsPicture()}}finally{paint.dispose();recorder.dispose()}
  }):[],[image,features]);
  useEffect(()=>()=>{for(const camp of campPictures)camp.picture.dispose()},[campPictures]);
- return <>{picture&&<Picture picture={picture}/>}{campPictures.map(({item,picture})=>{const factor=mapArtDisplayFactor(item,scale);return <Group key={item.id} transform={[{translateX:item.x},{translateY:item.y},{rotate:item.rotation},{scaleX:(item.flipX?-1:1)*factor},{scaleY:(item.flipY?-1:1)*factor}]}><Picture picture={picture}/></Group>})}</>;
+ return <>{picture&&<Picture picture={picture}/>}{campPictures.map(({item,picture})=><NativeMapCampPicture key={item.id} item={item} picture={picture} view={view}/>)}</>;
 }
 
 function LandmarkSymbol({kind}:{kind:PlayerMapLandmark['kind']}){return <Group><Path path={landmarkSymbols[kind]} color="#11150fe0" style="stroke" strokeWidth={4} strokeCap="round" strokeJoin="round"/><Path path={landmarkSymbols[kind]} color="#eee4c9" style="stroke" strokeWidth={1.3} strokeCap="round" strokeJoin="round"/></Group>}
@@ -101,10 +108,12 @@ function MapAction({kind,label,top,right,selected=false,onPress}:{kind:'place'|'
  return <Pressable accessibilityRole="button" accessibilityLabel={label} accessibilityState={{selected}} onPress={onPress} style={[s.close,{position:'absolute',top,right},selected&&{borderColor:'#ffe0a0'}]}><Canvas pointerEvents="none" style={{width:44,height:44}}><Circle cx={22} cy={22} r={21}><LinearGradient start={{x:8,y:5}} end={{x:35,y:42}} colors={selected?['#98683d','#573b29']:['#26565a','#0b3034']}/></Circle><Circle cx={22} cy={22} r={21} color="#edcb83" style="stroke" strokeWidth={1}/><Group transform={[{translateX:22},{translateY:22},{scale:.72}]}>{kind==='place'?<><Path path={WAYPOINT_PIN} color="#f4e6c7" style="stroke" strokeWidth={2.5}/><Path path="M4 -18H16M10 -24V-12" color="#f4e6c7" style="stroke" strokeWidth={2.5} strokeCap="round"/></>:<Path path="M-10 -10H10M-6 -10V-15H6V-10M-8 -10L-6 14H6L8 -10M-2 -4V8M3 -4V8" color="#f4e6c7" style="stroke" strokeWidth={2.5} strokeCap="round" strokeJoin="round"/>}</Group></Canvas></Pressable>;
 }
 
-function NativePlayerMap({world,width,height,safe,onClose,active=true,camera:continuousCamera,zoom,pump,onTouchStart,diagnostics,onReady}:Props){
- // Closed, any amount shows the entry view, so gameplay zoom never re-renders the map.
- const amount=useSyncExternalStore(zoom?.subscribe??unsubscribed,()=>Math.min(MIN_PLAY_ZOOM,zoom?.get()??1));
- const continuous=continuousCamera?.(amount)??undefined;
+function NativePlayerMap({world,width,height,safe,onClose,active=true,camera:continuousCamera,zoom,pump,onTouchStart,diagnostics,onReady,presentation,pinchGesture,pinching,preparation,nativePinch}:Props){
+ // Camera presentation stays on the UI runtime; RN only receives changed tile
+ // coverage, scene samples and settled actions, never one React update per pixel.
+ const fallbackAmount=useSharedValue(zoom?.get()??1),amount=presentation??fallbackAmount;
+ useEffect(()=>{if(!presentation)return zoom?.subscribe(()=>{fallbackAmount.value=zoom.get()})},[zoom,fallbackAmount,presentation]);
+ const continuous=continuousCamera?.(Math.min(MIN_PLAY_ZOOM,zoom?.get()??1))??undefined;
  const portrait=useImage(require('../public/maps/survivor-map-portrait-v2.webp'));
  const [sample,setSample]=useState(()=>sampleWorld(world.current!));
  const [placingWaypoint,setPlacingWaypoint]=useState(false),waypointTap=useRef(new WaypointTap());
@@ -120,30 +129,54 @@ function NativePlayerMap({world,width,height,safe,onClose,active=true,camera:con
  const cameraRef=useRef(camera);cameraRef.current=camera;
  const [size,setSize]=useState({width:Math.max(1,width),height:Math.max(1,height)});
  const outdoorMinimumZoom=outdoorFollowZoom(scene.bounds,size.width,size.height);
- const focus=continuous?{x:continuous.focus.x+(camera.focus.x-continuous.focus.x)*continuous.opacity,y:continuous.focus.y+(camera.focus.y-continuous.focus.y)*continuous.opacity}:camera.focus;
- const view=playerMapView(scene.bounds,size.width,size.height,camera.zoom,focus,Math.max(12,continuous?.entry??12));
- useEffect(()=>{waypointTap.current.cancel()},[view.scale]);
- const current=useRef({scene,size,view,tiles,active});current.current={scene,size,view,tiles,active};
- // Tiles render on the JS thread in the time each game frame leaves: the open
- // atlas's view, or else the view it opens at.
+ const uiFocus=useSharedValue(camera.focus),uiFollowing=useSharedValue(true),cameraEpoch=useRef(0),uiEpoch=useSharedValue(0);
+ const cameraConfig:NativeMapCamera={bounds:scene.bounds,width:size.width,height:size.height,entry:continuous?.entry??12,continuous:!!continuous,zoom:camera.zoom,baseFocus:continuous?.focus??camera.focus,focus:camera.focus};
+ const uiCamera=useSharedValue(cameraConfig),uiScene=useSharedValue(scene.id);
+ useEffect(()=>{uiCamera.value=cameraConfig;uiScene.value=scene.id},[scene.id,scene.bounds,size.width,size.height,continuous?.entry,continuous?.focus.x,continuous?.focus.y,!!continuous,camera.zoom]);
+ const visibleAmount=useDerivedValue(()=>Math.min(MIN_PLAY_ZOOM,amount.value));
+ const presentationView=useDerivedValue(()=>nativeMapCameraView(uiCamera.value,visibleAmount.value,uiFocus.value));
+ const cameraTransform=useDerivedValue(()=>{const v=presentationView.value;return[{translateX:-v.x*v.scale},{translateY:-v.y*v.scale},{scale:v.scale}]});
+ const mapOpacity=useAnimatedStyle(()=>({opacity:uiCamera.value.continuous?nativeAtlasOpacity(visibleAmount.value):1}));
+ const initialView=playerMapView(scene.bounds,size.width,size.height,camera.zoom,camera.focus,Math.max(12,continuous?.entry??12));
+ const current=useRef({scene,size,view:initialView,tiles,active});
+ current.current.scene=scene;current.current.size=size;current.current.tiles=tiles;current.current.active=active;
+ const coveragePending=useSharedValue(false),coverageSent=useSharedValue(''),ratio=PixelRatio.get();
+ const acceptCoverage=useCallback((view:PlayerMapView,id:string)=>{if(current.current.scene.id===id)current.current.view=view;coveragePending.value=false},[coveragePending]);
+ useAnimatedReaction(()=>({key:uiScene.value+'|'+nativeMapCoverageKey(presentationView.value,uiCamera.value.bounds,ratio),pending:coveragePending.value}),next=>{
+  if(next.pending||next.key===coverageSent.value)return;coverageSent.value=next.key;coveragePending.value=true;scheduleOnRN(acceptCoverage,presentationView.value,uiScene.value);
+ },[acceptCoverage,ratio]);
+ useEffect(()=>{if(!preparation)return;return preparation.register({name:'map-tiles',peek:()=>tiles.nextWork(current.current.active?'foreground':'prefetch'),run:()=>{if(tiles.runWork(current.current.active?OPEN_TILES:CLOSED_TILES))setTileRevision(n=>n+1)}})},[tiles,preparation]);
+ // Coverage is selected on RN; shared-budget preparation is drained by App.
  useEffect(()=>{
   if(!pump)return;
   let open=false,entryAt=-Infinity;
   pump.current=frameStart=>{
    const {scene,size,view,tiles,active}=current.current,ratio=PixelRatio.get();
-   if(active){
-    tiles.want(view,ratio,OPEN_TILES);
-    if(tiles.step(frameStart+10,true,OPEN_TILES))setTileRevision(n=>n+1);
-   }else{
+   if(active){tiles.want(view,ratio,OPEN_TILES);if(!preparation&&tiles.step(frameStart+10,false,OPEN_TILES))setTileRevision(n=>n+1)}
+   else{
     if(open)tiles.trim(CLOSED_TILES);
-    if(frameStart-entryAt>=250){entryAt=frameStart;const c=continuousCamera?.(MIN_PLAY_ZOOM);if(c)tiles.want(playerMapView(scene.bounds,size.width,size.height,c.zoom,c.focus,Math.max(12,c.entry)),ratio,CLOSED_TILES)}
-    tiles.step(frameStart+8,false,CLOSED_TILES);
+    if(frameStart-entryAt>=250){
+     entryAt=frameStart;const c=continuousCamera?.(MIN_PLAY_ZOOM),id=world.current?.scene?.id??'camp';
+     if(c&&id===scene.id){
+      tiles.want(playerMapView(scene.bounds,size.width,size.height,c.zoom,c.focus,Math.max(12,c.entry)),ratio,CLOSED_TILES);
+      // Reuse the prefetch camera without rendering React while closed. A UI
+      // pinch may reveal this retained map before RN can commit its open state.
+      scheduleOnUI((focus:Vec,entry:number,expectedScene:string,expectedEpoch:number)=>{
+       'worklet';
+       if(amount.value<MIN_PLAY_ZOOM||!uiCamera.value.continuous||!nativeMapFollowAllowed(uiFollowing.value,uiScene.value,uiEpoch.value,expectedScene,expectedEpoch))return;
+       uiCamera.value={...uiCamera.value,entry,baseFocus:focus};uiFocus.value=focus;
+      },c.focus,c.entry,id,cameraEpoch.current);
+     }
+    }
+    if(!preparation&&tiles.step(frameStart+8,false,CLOSED_TILES))setTileRevision(n=>n+1);
    }
    open=active;
   };
   return()=>{pump.current=undefined};
- },[pump,continuousCamera]);
- const tilePicture=active?tiles.picture(view,PixelRatio.get()):null;
+ },[pump,continuousCamera,preparation,world]);
+ // Whole-map single-coverage tiles let native pan reveal cached/fallback detail
+ // even while RN is busy; old viewport-sized pictures could expose empty strips.
+ const tilePicture=tiles.presentationPicture();
  const body=useRef<React.ElementRef<typeof View>>(null),origin=useRef({x:0,y:0}),gesture=useRef<ReturnType<typeof touchState>>(null),following=useRef(true);
  const [textures,setTextures]=useState<Record<string,SkImage|null>>({}),[retry,setRetry]=useState(0);
  const reportTexture=useCallback((key:string,image:SkImage|null)=>setTextures(old=>old[key]===image?old:{...old,[key]:image}),[]);
@@ -151,86 +184,91 @@ function NativePlayerMap({world,width,height,safe,onClose,active=true,camera:con
  const progress=useRef(new Animated.Value(0)).current,closing=useRef(false),entering=useRef(true),reducedMotion=useRef(false);
  const requestClose=()=>{if(continuous){onClose();return}if(closing.current)return;closing.current=true;gesture.current=null;progress.stopAnimation();if(reducedMotion.current){onClosed.current();return}Animated.timing(progress,{toValue:0,duration:220,easing:Easing.in(Easing.cubic),useNativeDriver:true}).start(({finished})=>{if(finished)onClosed.current()})};
  const close=useRef(requestClose);close.current=requestClose;
- const updateCamera=(next:Camera)=>{cameraRef.current=next;setCamera(next)};
+ const updateCamera=(next:Camera)=>{cameraRef.current=next;uiFocus.value=next.focus;setCamera(next)};
  const normalized=(next:Camera):Camera=>{const {scene,size}=current.current,v=playerMapView(scene.bounds,size.width,size.height,next.zoom,next.focus);return{zoom:clampZoom(next.zoom),focus:{x:v.x+v.width/2,y:v.y+v.height/2}}};
  useEffect(()=>{if(continuous){entering.current=false;progress.setValue(1);return}let active=true;const ready=()=>{if(!active)return;entering.current=false;body.current?.measureInWindow((x,y)=>{origin.current={x,y}})};const enter=(reduce:boolean)=>{if(!active||closing.current)return;reducedMotion.current=reduce;if(reduce){progress.setValue(1);ready()}else Animated.timing(progress,{toValue:1,duration:420,easing:Easing.out(Easing.cubic),useNativeDriver:true}).start(({finished})=>{if(finished)ready()})};void AccessibilityInfo.isReduceMotionEnabled().then(enter,()=>enter(false));return()=>{active=false;progress.stopAnimation()}},[progress]);
 
- useEffect(()=>{if(!active)return;const timer=setInterval(()=>{const w=world.current;if(!w)return;const next=sampleWorld(w);setSample(old=>old.world===next.world&&old.layout===next.layout&&old.scene===next.scene&&old.x===next.x&&old.y===next.y&&old.direction===next.direction&&old.waypoint===next.waypoint&&old.night===next.night&&old.fireLit===next.fireLit?old:next)},100);return()=>clearInterval(timer)},[world,active]);
+ useEffect(()=>{if(!active)return;const refresh=()=>{const w=world.current;if(!w)return;const next=sampleWorld(w);setSample(old=>old.world===next.world&&old.layout===next.layout&&old.scene===next.scene&&old.x===next.x&&old.y===next.y&&old.direction===next.direction&&old.waypoint===next.waypoint&&old.night===next.night&&old.fireLit===next.fireLit?old:next)};refresh();const timer=setInterval(refresh,100);return()=>clearInterval(timer)},[world,active]);
  useEffect(()=>{const listener=BackHandler.addEventListener('hardwareBackPress',()=>{if(!active)return false;close.current();return true});return()=>listener.remove()},[active]);
- useEffect(()=>{gesture.current=null;following.current=true;updateCamera({zoom:sample.scene?1:2.5,focus:{x:sample.x,y:sample.y}})},[scene.id]);
+ useEffect(()=>{gesture.current=null;following.current=true;uiFollowing.value=true;uiEpoch.value=++cameraEpoch.current;coverageSent.value='';updateCamera({zoom:sample.scene?1:2.5,focus:{x:sample.x,y:sample.y}})},[scene.id]);
  useEffect(()=>{if(!continuous&&following.current&&!sample.scene&&cameraRef.current.zoom<outdoorMinimumZoom)updateCamera({...cameraRef.current,zoom:outdoorMinimumZoom})},[scene.id,sample.scene,outdoorMinimumZoom]);
- useEffect(()=>{if(following.current)updateCamera({...cameraRef.current,focus:continuous?.focus??{x:sample.x,y:sample.y}})},[sample.x,sample.y]);
+ useEffect(()=>{const next=continuous?.focus??{x:sample.x,y:sample.y},id=scene.id,epoch=cameraEpoch.current;scheduleOnUI((point:Vec,expectedScene:string,expectedEpoch:number)=>{'worklet';if(nativeMapFollowAllowed(uiFollowing.value,uiScene.value,uiEpoch.value,expectedScene,expectedEpoch))uiFocus.value=point},next,id,epoch)},[sample.x,sample.y]);
  useEffect(()=>{gesture.current=null;body.current?.measureInWindow((x,y)=>{origin.current={x,y}})},[width,height,size.width,size.height]);
 
- const move=(event:GestureResponderEvent)=>{
-  if(entering.current||closing.current)return;
-  const next=touchState(event),previous=gesture.current;gesture.current=next;
-  if(next)waypointTap.current.move(next.x,next.y,next.count);
-  if(placingWaypoint&&waypointTap.current.pending)return;
-  if(!next||!previous||next.count!==previous.count||continuous&&next.count!==1)return;
-  following.current=false;
-  const {scene,size}=current.current,cam=cameraRef.current,v=current.current.view;
-  const anchor=unprojectMapPoint({x:previous.x-origin.current.x,y:previous.y-origin.current.y},v);
-  const zoom=continuous?continuous.zoom:clampZoom(cam.zoom*(next.count===2&&previous.distance>1?next.distance/previous.distance:1));
-  const scale=playerMapView(scene.bounds,size.width,size.height,zoom,undefined,Math.max(12,continuous?.entry??12)).scale;
-  const nextCamera={zoom,focus:{x:anchor.x-(next.x-origin.current.x-size.width/2)/scale,y:anchor.y-(next.y-origin.current.y-size.height/2)/scale}};updateCamera(continuous?nextCamera:normalized(nextCamera));
- };
+ const panState=useSharedValue({id:-1,x:0,y:0,startX:0,startY:0,moving:false});
+ const waypointMode=useSharedValue(placingWaypoint),fallbackPinching=useSharedValue(false),pinchActive=pinching??fallbackPinching;
+ useEffect(()=>{waypointMode.value=placingWaypoint},[placingWaypoint,waypointMode]);
+ const panBegan=useCallback((id:string,epoch:number)=>{if(current.current.scene.id!==id||cameraEpoch.current!==epoch)return;following.current=false;waypointTap.current.cancel()},[]);
+ const surfaceIds=useSharedValue<string[]>([]),registerSurface=nativePinch?.registerSurface,unregisterSurface=nativePinch?.unregisterSurface;
+ const mapGesture=useManualGesture({enabled:active,simultaneousWith:nativePinch?.gesture??pinchGesture,cancelsJSResponder:false,cancelsTouchesInView:false,shouldCancelWhenOutside:false,
+  onTouchesDown:e=>{'worklet';for(const touch of e.changedTouches){const id=e.handlerTag+':'+touch.id;surfaceIds.value=[...surfaceIds.value,id];registerSurface?.(id,touch.absoluteX,touch.absoluteY)}const p=e.allTouches[0];if(p&&e.numberOfTouches===1)panState.value={id:p.id,x:p.x,y:p.y,startX:p.x,startY:p.y,moving:false}},
+  onTouchesMove:e=>{'worklet';const p=e.allTouches[0],old=panState.value;if(!p||e.numberOfTouches!==1||pinchActive.value){panState.value={...old,id:-1,moving:false};return}if(old.id!==p.id){panState.value={id:p.id,x:p.x,y:p.y,startX:p.x,startY:p.y,moving:false};return}if(waypointMode.value&&!old.moving&&Math.hypot(p.x-old.startX,p.y-old.startY)<=12)return;
+   if(!old.moving){uiFollowing.value=false;GestureStateManager.activate(e.handlerTag);scheduleOnRN(panBegan,uiScene.value,uiEpoch.value)}
+   const c=uiCamera.value,v=presentationView.value,next=nativeMapPan(v,{x:old.x,y:old.y},{x:p.x,y:p.y},c.width,c.height),opacity=c.continuous?nativeAtlasOpacity(visibleAmount.value):1;
+   // The displayed focus blends into the game camera during the transition.
+   // Invert that blend so dragging retains the exact previous anchor.
+   if(opacity>0)uiFocus.value=c.continuous?{x:c.baseFocus.x+(next.x-c.baseFocus.x)/opacity,y:c.baseFocus.y+(next.y-c.baseFocus.y)/opacity}:next;
+   panState.value={...old,x:p.x,y:p.y,moving:true};
+  },
+  onTouchesUp:e=>{'worklet';for(const touch of e.changedTouches){const id=e.handlerTag+':'+touch.id;unregisterSurface?.(id);surfaceIds.value=surfaceIds.value.filter(value=>value!==id)}if(!e.numberOfTouches){panState.value={id:-1,x:0,y:0,startX:0,startY:0,moving:false};GestureStateManager.deactivate(e.handlerTag)}},
+  onTouchesCancel:e=>{'worklet';for(const id of surfaceIds.value)unregisterSurface?.(id);surfaceIds.value=[];panState.value={id:-1,x:0,y:0,startX:0,startY:0,moving:false};GestureStateManager.deactivate(e.handlerTag)},
+ });
+ const move=(event:GestureResponderEvent)=>{const next=touchState(event);gesture.current=next;if(next)waypointTap.current.move(next.x,next.y,next.count)};
  const zoomBy=(factor:number)=>updateCamera(normalized({...cameraRef.current,zoom:clampZoom(cameraRef.current.zoom*factor)}));
- const findMe=()=>{const w=world.current;if(!w)return;following.current=true;updateCamera({zoom:Math.max(cameraRef.current.zoom,w.scene?1:outdoorMinimumZoom),focus:{x:w.player.x,y:w.player.y}})};
- const fit=()=>{following.current=false;updateCamera({zoom:1,focus:{x:scene.bounds.left+scene.bounds.width/2,y:scene.bounds.top+scene.bounds.height/2}})};
- const target=currentWaypoint(sample.world),targetPoint=target?projectMapPoint(target,view):null;
+ const findMe=()=>{const w=world.current;if(!w)return;following.current=true;uiFollowing.value=true;uiEpoch.value=++cameraEpoch.current;updateCamera({zoom:Math.max(cameraRef.current.zoom,w.scene?1:outdoorMinimumZoom),focus:{x:w.player.x,y:w.player.y}})};
+ const fit=()=>{following.current=false;uiFollowing.value=false;uiEpoch.value=++cameraEpoch.current;updateCamera({zoom:1,focus:{x:scene.bounds.left+scene.bounds.width/2,y:scene.bounds.top+scene.bounds.height/2}})};
+ const target=currentWaypoint(sample.world);
+ const labelData=useMemo(()=>{const illustrations=new Map(features.illustrations.filter(a=>a.kind!=='palisade').map(a=>[a.id,a]));return features.landmarks.map(mark=>({...mark,illustration:illustrations.get(mark.id)}))},[features]);
  const removeDestination=()=>{if(world.current){clearWaypoint(world.current);setPlacingWaypoint(false);setSample(sampleWorld(world.current))}};
- const finishWaypoint=(event:GestureResponderEvent)=>{const t=event.nativeEvent.changedTouches[0];if(placingWaypoint&&t&&!event.nativeEvent.touches.length&&waypointTap.current.end(t.identifier,t.pageX,t.pageY)&&world.current&&placeWaypoint(world.current,unprojectMapPoint({x:t.pageX-origin.current.x,y:t.pageY-origin.current.y},current.current.view))){setPlacingWaypoint(false);setSample(sampleWorld(world.current))}waypointTap.current.cancel();gesture.current=null};
- const pin=projectMapPoint({x:sample.x,y:sample.y},view),pinVisible=pin.x>=-20&&pin.x<=size.width+20&&pin.y>=-20&&pin.y<=size.height+20;
+ const finishWaypoint=(event:GestureResponderEvent)=>{const t=event.nativeEvent.changedTouches[0];if(placingWaypoint&&t&&!event.nativeEvent.touches.length&&waypointTap.current.end(t.identifier,t.pageX,t.pageY)&&world.current&&placeWaypoint(world.current,unprojectMapPoint({x:t.pageX-origin.current.x,y:t.pageY-origin.current.y},presentationView.value))){setPlacingWaypoint(false);setSample(sampleWorld(world.current))}waypointTap.current.cancel();gesture.current=null};
  const artReady=!!textures['camp-art'];
- const landmarks=playerMapLabels(features,view,size.width,size.height,camera.zoom,pin,artReady);
  const anyError=scene.images.some(image=>textures[image.id+'|'+image.url]===null)||features.illustrations.length>0&&textures['camp-art']===null,loading=scene.images.some(image=>!textures[image.id+'|'+image.url])||features.illustrations.length>0&&!textures['camp-art'];
  useEffect(()=>{const ready=!loading&&!anyError;onReady?.(ready);diagnostics?.trace(performance.now(),'native-map-ready',0,{ready,active});return()=>onReady?.(false)},[loading,anyError,onReady]);
  const compact=height<440;
  const mapButton=(label:string,action:()=>void,kind:'location'|'fit',active=false)=><Pressable accessibilityRole="button" accessibilityLabel={label} onPress={action} style={({pressed})=>[s.control,active&&s.primary,pressed&&s.pressed]}><ControlSymbol kind={kind}/><Text style={[s.controlText,active&&s.primaryText]}>{label}</Text></Pressable>;
 
- return <Animated.View pointerEvents={active?'auto':'none'} style={[s.overlay,{opacity:continuous?.opacity??progress}]}>
+ return <Animated.View pointerEvents={active?'auto':'none'} style={[s.overlay,{opacity:continuous?1:progress,backgroundColor:'transparent'}]}>
   {scene.images.map(image=><MapTextureLoader key={image.id+'|'+image.url+'|'+retry} textureKey={image.id+'|'+image.url} source={image.url===PLAYER_MAP_TERRAIN_URL?require('../public/maps/world-illustrated.webp'):BUNDLED_ART[image.url]??(image.url.startsWith('/')?WORLD_URL+image.url:image.url)} onImage={reportTexture} diagnostics={diagnostics}/>)}
   {features.illustrations.length>0&&<MapTextureLoader key={'camp-art|'+retry} textureKey="camp-art" source={require('../public/maps/camp-atlas-v2.webp')} onImage={reportTexture} diagnostics={diagnostics}/>}
-  <Animated.View style={[s.panel,{borderWidth:0,borderRadius:0}]}>
+  <AnimatedUI.View style={[s.panel,{borderWidth:0,borderRadius:0},mapOpacity]}>
    <View ref={body} style={s.map} onLayout={event=>{const {width,height}=event.nativeEvent.layout;gesture.current=null;setSize({width:Math.max(1,width),height:Math.max(1,height)});body.current?.measureInWindow((x,y)=>{origin.current={x,y}})}}>
     {/* Kept mounted while closed: creating the native canvas at the open threshold stalls a pinch. */}
-    <Canvas pointerEvents="none" style={StyleSheet.absoluteFill}>{active&&<>
+    <Canvas pointerEvents="none" style={StyleSheet.absoluteFill}>
      <Rect x={0} y={0} width={size.width} height={size.height} color="#252b19"/>
-     <Group transform={[{translateX:-view.x*view.scale},{translateY:-view.y*view.scale},{scale:view.scale}]} clip={{x:scene.bounds.left,y:scene.bounds.top,width:scene.bounds.width,height:scene.bounds.height}}>
+     <Group transform={cameraTransform} clip={{x:scene.bounds.left,y:scene.bounds.top,width:scene.bounds.width,height:scene.bounds.height}}>
       {scene.images.map(image=>{const decoded=textures[image.id+'|'+image.url];return decoded?<SkiaImage key={image.id} image={decoded} x={image.x} y={image.y} width={image.width} height={image.height} fit="fill"/>:null})}
       {tilePicture&&<Picture picture={tilePicture}/>}
-      {features.illustrations.length>0&&<MapIllustrations key={'camp-art|'+retry} features={features} bounds={scene.bounds} scale={view.scale} image={textures['camp-art']}/>}
+      {features.illustrations.length>0&&<MapIllustrations key={'camp-art|'+retry} features={features} bounds={scene.bounds} view={presentationView} image={textures['camp-art']}/>}
      </Group>
      {sample.night>0&&<>
       <Rect x={0} y={0} width={size.width} height={size.height} color={PLAYER_MAP_NIGHT.tint} opacity={sample.night} blendMode="multiply"/>
       <Rect x={0} y={0} width={size.width} height={size.height} color={PLAYER_MAP_NIGHT.moonlight} opacity={sample.night*PLAYER_MAP_NIGHT.moonlightOpacity} blendMode="screen"/>
-      {sample.fireLit&&features.illustrations.filter(item=>item.kind==='camp').map(fire=>{const p=projectMapPoint(fire,view),radius=Math.min(190,PLAYER_MAP_NIGHT.campRadius*view.scale);return <Circle key={fire.id} cx={p.x} cy={p.y} r={radius} opacity={sample.night*PLAYER_MAP_NIGHT.campOpacity}><RadialGradient c={p} r={radius} colors={['#ffb957','#efad6040','#efad6000']} positions={[0,.38,1]}/></Circle>})}
+      {sample.fireLit&&features.illustrations.filter(item=>item.kind==='camp').map(fire=><NativeMapFireGlow key={fire.id} point={fire} view={presentationView} night={sample.night} opacity={PLAYER_MAP_NIGHT.campOpacity} radius={PLAYER_MAP_NIGHT.campRadius}/>)}
      </>}
      <Rect x={0} y={0} width={size.width} height={38}><LinearGradient start={{x:0,y:0}} end={{x:0,y:38}} colors={['#18210fe0','#18210f00']}/></Rect>
      <Rect x={0} y={size.height-38} width={size.width} height={38}><LinearGradient start={{x:0,y:size.height-38}} end={{x:0,y:size.height}} colors={['#18210f00','#18210fe0']}/></Rect>
      <Rect x={0} y={0} width={28} height={size.height}><LinearGradient start={{x:0,y:0}} end={{x:28,y:0}} colors={['#18210fc0','#18210f00']}/></Rect>
      <Rect x={size.width-28} y={0} width={28} height={size.height}><LinearGradient start={{x:size.width-28,y:0}} end={{x:size.width,y:0}} colors={['#18210f00','#18210fc0']}/></Rect>
      {sample.night>0&&<Rect x={0} y={0} width={size.width} height={size.height} opacity={sample.night}><RadialGradient c={{x:size.width/2,y:size.height/2}} r={Math.hypot(size.width,size.height)/2} colors={['#07132700','#07132700','#0713277a']} positions={[0,.36,1]}/></Rect>}
-     {landmarks.filter(point=>!point.illustrated).map(point=><Group key={point.mark.id} transform={[{translateX:point.anchor.x},{translateY:point.anchor.y}]}><LandmarkSymbol kind={point.mark.kind}/></Group>)}
-     {targetPoint&&<Group transform={[{translateX:targetPoint.x},{translateY:targetPoint.y-16}]}><Path path={WAYPOINT_PIN} color="#173f40"/><Path path={WAYPOINT_PIN} color="#e2bf75" style="stroke" strokeWidth={2}/><Circle cy={-6} r={4} color="#f4e6c7"/></Group>}
-     {pinVisible&&<Group transform={[{translateX:pin.x},{translateY:pin.y}]}>
+     {labelData.filter(point=>!artReady||!point.illustration).map(point=><NativeMapLandmark key={point.id} data={point} view={presentationView} width={size.width} height={size.height}><LandmarkSymbol kind={point.kind}/></NativeMapLandmark>)}
+     {target&&<NativeMapPoint point={target} view={presentationView} width={size.width} height={size.height} yOffset={-16}><Path path={WAYPOINT_PIN} color="#173f40"/><Path path={WAYPOINT_PIN} color="#e2bf75" style="stroke" strokeWidth={2}/><Circle cy={-6} r={4} color="#f4e6c7"/></NativeMapPoint>}
+     {<NativeMapPoint point={{x:sample.x,y:sample.y}} view={presentationView} width={size.width} height={size.height} clip>
       <Group transform={[{rotate:playerMapHeading(sample.direction)*Math.PI/180}]}><Path path={PLAYER_MAP_MARKER.pointer} color="#f7e9bd"/><Path path={PLAYER_MAP_MARKER.pointer} color="#173c38" style="stroke" strokeWidth={1.5} strokeJoin="round"/></Group>
       <Circle r={PLAYER_MAP_MARKER.size/2} color="#123b3c"/>
       {portrait?<SkiaImage image={portrait} x={-PLAYER_MAP_MARKER.size/2} y={-PLAYER_MAP_MARKER.size/2} width={PLAYER_MAP_MARKER.size} height={PLAYER_MAP_MARKER.size} fit="contain"/>:<Circle r={21} color="#bb9555" style="stroke" strokeWidth={2}/>}
-     </Group>}
-    </>}</Canvas>
-    <View style={StyleSheet.absoluteFill} onTouchStart={e=>{onTouchStart?.(e);if(e.nativeEvent.touches.length>1)waypointTap.current.cancel()}} onStartShouldSetResponder={()=>!entering.current&&!closing.current} onMoveShouldSetResponder={()=>!entering.current&&!closing.current} onResponderTerminationRequest={()=>true} onResponderGrant={event=>{const t=touchState(event);gesture.current=t;if(placingWaypoint&&t)waypointTap.current.begin(event.nativeEvent.touches[0].identifier,t.x,t.y,t.count)}} onResponderMove={move} onResponderEnd={event=>{gesture.current=touchState(event)}} onResponderRelease={finishWaypoint} onResponderTerminate={()=>{gesture.current=null;waypointTap.current.cancel()}}/>
-    {landmarks.map(({mark,box,opacity})=>box&&<View pointerEvents="none" key={mark.id} style={[s.landmark,{left:box.left,width:box.width,top:box.top,opacity}]}><Text numberOfLines={1} style={[s.landmarkText,{color:playerMapInk(sample.night),textShadowColor:`rgba(3,15,27,${Math.min(1,sample.night*3)})`,textShadowOffset:{width:0,height:1},textShadowRadius:2}]}>{mark.label}</Text></View>)}
-    {targetPoint&&<View pointerEvents="none" style={[s.waypointLabel,{left:targetPoint.x-34,top:targetPoint.y+6}]}><Text style={s.waypointText}>WAYPOINT</Text></View>}
-    {pinVisible&&<View pointerEvents="none" accessible accessibilityRole="image" accessibilityLabel={`Your location. Facing ${headingNames[sample.direction]}.`} style={{position:'absolute',left:pin.x-22,top:pin.y-22,width:44,height:44}}/>}
+     </NativeMapPoint>}
+    </Canvas>
+    <GestureDetector gesture={mapGesture}><View collapsable={false} style={StyleSheet.absoluteFill} onTouchStart={e=>{onTouchStart?.(e);if(e.nativeEvent.touches.length>1)waypointTap.current.cancel()}} onStartShouldSetResponder={()=>!entering.current&&!closing.current} onMoveShouldSetResponder={()=>!entering.current&&!closing.current} onResponderTerminationRequest={()=>true} onResponderGrant={event=>{const t=touchState(event);gesture.current=t;if(placingWaypoint&&t)waypointTap.current.begin(event.nativeEvent.touches[0].identifier,t.x,t.y,t.count)}} onResponderMove={move} onResponderEnd={event=>{gesture.current=touchState(event)}} onResponderRelease={finishWaypoint} onResponderTerminate={()=>{gesture.current=null;waypointTap.current.cancel()}}/></GestureDetector>
+    {labelData.map(data=><NativeMapLabel key={data.id} data={data} view={presentationView} width={size.width} height={size.height} style={s.landmark} textStyle={[s.landmarkText,{color:playerMapInk(sample.night),textShadowColor:`rgba(3,15,27,${Math.min(1,sample.night*3)})`,textShadowOffset:{width:0,height:1},textShadowRadius:2}]}/>)}
+    {target&&<NativeMapWaypointLabel point={target} view={presentationView} style={s.waypointLabel} textStyle={s.waypointText}/>}
+    <NativeMapAccessiblePlayer point={{x:sample.x,y:sample.y}} view={presentationView} width={size.width} height={size.height} label={`Your location. Facing ${headingNames[sample.direction]}.`}/>
     {anyError?<View style={s.textureNotice}><Text style={s.textureText}>Map artwork couldn’t load.</Text><Pressable accessibilityRole="button" accessibilityLabel="Retry loading map artwork" onPress={()=>{setTextures({});setRetry(value=>value+1)}} style={s.retry}><Text style={s.controlText}>Retry</Text></Pressable></View>:loading?<View pointerEvents="none" style={s.textureNotice}><Text style={s.textureText}>Loading map…</Text></View>:null}
    </View>
    <Pressable accessibilityRole="button" accessibilityLabel="Exit map" onPress={requestClose} style={({pressed})=>[s.close,{position:'absolute',top:Math.max(12,safe.top),right:Math.max(12,safe.right)},pressed&&{opacity:.8}]}><Canvas pointerEvents="none" style={{width:44,height:44}}><Circle cx={22} cy={22} r={21}><LinearGradient start={{x:8,y:5}} end={{x:35,y:42}} colors={['#26565a','#0b3034']}/></Circle><Circle cx={22} cy={22} r={21} color="#edcb83" style="stroke" strokeWidth={1}/><Circle cx={22} cy={22} r={19} color="#123134" style="stroke" strokeWidth={1}/><Path path="M15 15L29 29M29 15L15 29" color="#f6e7bb" style="stroke" strokeWidth={3.5} strokeCap="round"/><Path path="M34 2L41 9M32 4L37 9" color="#d18442" style="stroke" strokeWidth={2.2} strokeCap="round"/></Canvas></Pressable>
    <MapAction kind="place" label={placingWaypoint?'Cancel waypoint placement':'Place waypoint'} selected={placingWaypoint} top={Math.max(12,safe.top)+58} right={Math.max(12,safe.right)} onPress={()=>{waypointTap.current.cancel();setPlacingWaypoint(v=>!v)}}/>
    {sample.waypoint&&<MapAction kind="clear" label="Remove waypoint" top={Math.max(12,safe.top)+116} right={Math.max(12,safe.right)} onPress={removeDestination}/>}
    {placingWaypoint&&<View pointerEvents="none" style={[s.placementHint,{top:Math.max(12,safe.top)+62,right:Math.max(12,safe.right)+64}]}><Text style={s.placementText}>Tap a spot to set your waypoint</Text></View>}
-  </Animated.View>
+  </AnimatedUI.View>
  </Animated.View>;
 }
 export default memo(NativePlayerMap);

@@ -6,7 +6,11 @@ import {isPickaxe} from '../src/pickaxes';
 const miningToolArt={woodenPickaxe:require('../public/survival/equipment/wooden-pickaxe-v1.png'),metalPickaxe:require('../public/survival/equipment/metal-pickaxe-v1.png')};
 import BowLockGlyph from './BowLockGlyph';
 import {toggleBowLock} from '../src/bow-lock';
-import {movementTrailDots,type MovementTrail} from '../src/movement-trail';
+import type {MovementTrail} from '../src/movement-trail';
+import Animated,{useAnimatedStyle,useSharedValue,type SharedValue} from 'react-native-reanimated';
+import {MOVEMENT_TRAIL_DOTS,nativeTrailDot,startVisibleHudPolling} from './hud-presentation';
+import {NativePinchSurface} from './NativePinchSurface';
+import type {NativePinchRegistration} from './use-native-play-zoom';
 import {useWaypointNavigation} from '../src/use-waypoint-navigation';
 import WaypointGuide from './WaypointGuide';
 import CampStationPanel from './CampStationPanel';
@@ -53,21 +57,27 @@ function MapGlyph(){return <View pointerEvents="none" style={{width:22,height:20
 
 /** Touching the left 40% sets an invisible origin; dragging from it moves.
  * Raw identifiers keep that drag independent of action buttons across the screen. */
-type MovementGestures={isPinching?:()=>boolean;onMovementTouchStart?:(e:GestureResponderEvent)=>void};
-export function FieldKitMovement({input,width,height,isPinching,onMovementTouchStart}:{input:React.MutableRefObject<Vec>;width:number;height:number}&MovementGestures){
+type MovementGestures={nativePinch?:NativePinchRegistration;isPinching?:()=>boolean;onMovementTouchStart?:(e:GestureResponderEvent)=>void};
+const trailIndices=Array.from({length:MOVEMENT_TRAIL_DOTS},(_,index)=>index);
+const MovementTrailDot=React.memo(function MovementTrailDot({trail,index}:{trail:SharedValue<MovementTrail|null>;index:number}){
+ const position=useAnimatedStyle(()=>{const dot=nativeTrailDot(trail.value,index);return{width:dot.r*2,height:dot.r*2,borderRadius:dot.r,opacity:dot.opacity,transform:[{translateX:dot.x-dot.r},{translateY:dot.y-dot.r}]}});
+ return <Animated.View style={[s.trailDot,position]}/>;
+});
+export function FieldKitMovement({input,width,height,isPinching,onMovementTouchStart,nativePinch}:{input:React.MutableRefObject<Vec>;width:number;height:number}&MovementGestures){
  const active=useRef<{id:NativeTouchEvent['identifier'];x:number;y:number;localX:number;localY:number}|null>(null);
- const [trail,setTrail]=useState<MovementTrail|null>(null);
- const clear=useCallback(()=>{active.current=null;input.current={x:0,y:0};setTrail(null)},[input]);
+ const trail=useSharedValue<MovementTrail|null>(null);
+ const clear=useCallback(()=>{active.current=null;input.current={x:0,y:0};trail.value=null},[input,trail]);
  useEffect(()=>{clear()},[clear,width,height]);
  useEffect(()=>{const state=AppState.addEventListener('change',value=>{if(value!=='active')clear()}),blur=AppState.addEventListener('blur',clear);return()=>{state.remove();blur.remove();clear()}},[clear]);
- const update=(touch:NativeTouchEvent)=>{const a=active.current;if(!a)return;const dx=touch.pageX-a.x,dy=touch.pageY-a.y,d=Math.hypot(dx,dy),length=Math.max(30,d);input.current=d<5?{x:0,y:0}:{x:dx/length,y:dy/length};setTrail({origin:{x:a.localX,y:a.localY},current:{x:a.localX+dx,y:a.localY+dy}})};
+ const update=(touch:NativeTouchEvent)=>{const a=active.current;if(!a)return;const dx=touch.pageX-a.x,dy=touch.pageY-a.y,d=Math.hypot(dx,dy),length=Math.max(30,d);input.current=d<5?{x:0,y:0}:{x:dx/length,y:dy/length};trail.value={origin:{x:a.localX,y:a.localY},current:{x:a.localX+dx,y:a.localY+dy}}};
  const move=(e:GestureResponderEvent)=>{if(isPinching?.()){clear();return}const a=active.current;if(!a)return;const touch=e.nativeEvent.touches.find(t=>t.identifier===a.id);if(touch)update(touch);else clear()};
  const finish=(e:GestureResponderEvent)=>{const a=active.current;if(a&&(e.nativeEvent.changedTouches.some(t=>t.identifier===a.id)||!e.nativeEvent.touches.some(t=>t.identifier===a.id)))clear()};
- return <View accessibilityLabel="Movement touch area" accessibilityHint="Touch anywhere in the left 40 percent of the screen, then drag from that starting point to move. Release to stop." style={[s.movementZone,{width:width*.4,height}]}
-  onTouchStart={e=>{onMovementTouchStart?.(e);if(isPinching?.()){clear();return}if(active.current)return;const t=e.nativeEvent;if(t.locationX<0||t.locationX>=width*.4||t.locationY<0||t.locationY>=height)return;active.current={id:t.identifier,x:t.pageX,y:t.pageY,localX:t.locationX,localY:t.locationY};input.current={x:0,y:0};const point={x:t.locationX,y:t.locationY};setTrail({origin:point,current:point})}}
+ const surface=<View collapsable={false} accessibilityLabel="Movement touch area" accessibilityHint="Touch anywhere in the left 40 percent of the screen, then drag from that starting point to move. Release to stop." style={[s.movementZone,{width:width*.4,height}]}
+  onTouchStart={e=>{onMovementTouchStart?.(e);if(isPinching?.()){clear();return}if(active.current)return;const t=e.nativeEvent;if(t.locationX<0||t.locationX>=width*.4||t.locationY<0||t.locationY>=height)return;active.current={id:t.identifier,x:t.pageX,y:t.pageY,localX:t.locationX,localY:t.locationY};input.current={x:0,y:0};const point={x:t.locationX,y:t.locationY};trail.value={origin:point,current:point}}}
   onTouchMove={move} onTouchEnd={finish} onTouchCancel={finish}>
-   {trail&&<View pointerEvents="none" accessible={false} style={StyleSheet.absoluteFill}>{movementTrailDots(trail).map((dot,i)=><View key={i} style={{position:'absolute',left:dot.x-dot.r,top:dot.y-dot.r,width:dot.r*2,height:dot.r*2,borderRadius:dot.r,borderWidth:1,borderColor:'#123936',backgroundColor:'#f1dfb3',opacity:dot.opacity,shadowColor:'#092a2d',shadowOpacity:.8,shadowRadius:2,shadowOffset:{width:0,height:1}}}/>)}</View>}
+   <View pointerEvents="none" accessible={false} style={StyleSheet.absoluteFill}>{trailIndices.map(index=><MovementTrailDot key={index} index={index} trail={trail}/>)}</View>
   </View>;
+ return nativePinch?<NativePinchSurface registration={nativePinch}>{surface}</NativePinchSurface>:surface;
 }
 
 export function FieldKitVitals({stats,width,combatWidth=width,compactWidth,onExpanded}:{stats:FieldKitSnapshot;width:number;combatWidth?:number;compactWidth?:number;onExpanded?:(open:boolean)=>void}){
@@ -95,15 +105,17 @@ export function FieldKitVitals({stats,width,combatWidth=width,compactWidth,onExp
  </Pressable>;
 }
 type Props={world:React.RefObject<World|null>;controller:FieldKitController;input:React.MutableRefObject<Vec>;enabled:boolean;mapOpen?:boolean;width:number;height:number;safe:{top:number;right:number;bottom:number;left:number};sprinting:boolean;bagOpen:boolean;onBag:(open:boolean)=>void;onMap:()=>void;onHeld:(held:boolean)=>void;onSprint:()=>void;onTool:()=>void;onDodge:()=>unknown;onPause:()=>void;onLock?:()=>void;onCheckpoint?:()=>void}&MovementGestures;
-export default function NativeFieldKitHUD({world,controller,input,enabled,mapOpen=false,width,height,safe,sprinting,bagOpen,onBag,onMap,onHeld,onSprint,onTool,onDodge,onPause,onLock,onCheckpoint,isPinching,onMovementTouchStart}:Props){
- const navigation=useWaypointNavigation(world,false),hasWaypoint=!!navigation.target,[dayExpanded,setDayExpanded]=useState(false);
+export default function NativeFieldKitHUD({world,controller,input,enabled,mapOpen=false,width,height,safe,sprinting,bagOpen,onBag,onMap,onHeld,onSprint,onTool,onDodge,onPause,onLock,onCheckpoint,isPinching,onMovementTouchStart,nativePinch}:Props){
+ const [foreground,setForeground]=useState(AppState.currentState==='active'),hudVisible=!mapOpen&&foreground;
+ useEffect(()=>{const subscription=AppState.addEventListener('change',state=>setForeground(state==='active'));return()=>subscription.remove()},[]);
+ const navigation=useWaypointNavigation(world,false,hudVisible),hasWaypoint=!!navigation.target,[dayExpanded,setDayExpanded]=useState(false);
  useFonts({[font]:require('../public/fonts/barlow-condensed-black.ttf')});
  const [stats,setStats]=useState(()=>controller.sample(world.current!)),[vitalsExpanded,setVitalsExpanded]=useState(false),[quickExpanded,setQuickExpanded]=useState(false),latest=useRef(stats);latest.current=stats;
  const available=useRef(false);available.current=enabled&&!bagOpen&&!stats.stationPanel;
  const release=()=>{controller.release();onHeld(false)};
  const releaseAction=(channel:'primary'|'repair')=>{controller.release(channel);onHeld(controller.holdingAttack)};
  const refresh=()=>{if(!world.current)return;const next=controller.sample(world.current);setFieldKitTarget(world.current,available.current?(next.repairAction?.target??next.action.target):undefined);latest.current=next;setStats(old=>sameFieldKit(old,next)?old:next)};
- useEffect(()=>{refresh();const timer=setInterval(refresh,100);return()=>{clearInterval(timer);controller.cancel();onHeld(false)}},[world,controller]);
+ useEffect(()=>{const stop=startVisibleHudPolling(hudVisible,refresh,100);return()=>{stop();controller.cancel();onHeld(false)}},[world,controller,hudVisible]);
  useEffect(()=>{if(!enabled||bagOpen||stats.stationPanel){release();input.current={x:0,y:0}}},[enabled,bagOpen,stats.stationPanel]);
  const layout=fieldKitLayout(width,height,safe),disabled=!enabled||bagOpen||!!stats.stationPanel||stats.downed;
  const sky=skyHudLayout(width,height,safe,vitalsExpanded,!!stats.cycle,hasWaypoint,dayExpanded);
@@ -114,10 +126,10 @@ export default function NativeFieldKitHUD({world,controller,input,enabled,mapOpe
  const target=stats.repairAction?.target??stats.action.target,captionRight=stats.combat||stats.repairAction?ACTION_HEX.width+8:ACTION_HEX.width-ACTION_HEX.cells.primary.left+8;
  const captionWidth=Math.min(256,height>=width?width-layout.left-layout.right:width*.6-layout.right-captionRight-8),captionStyle=height>=width?{right:0,bottom:ACTION_HEX.height+8}:{right:captionRight,bottom:ACTION_HEX.height-(ACTION_HEX.cells.primary.top+ACTION_HEX.cells.primary.height/2)-21};
  return <View pointerEvents="box-none" style={[StyleSheet.absoluteFill,{opacity:mapOpen?0:1}]}>
-  {(!disabled||mapOpen)&&<FieldKitMovement input={input} width={width} height={height} isPinching={isPinching} onMovementTouchStart={onMovementTouchStart}/>}
+  {(!disabled||mapOpen)&&<FieldKitMovement nativePinch={nativePinch} input={input} width={width} height={height} isPinching={isPinching} onMovementTouchStart={onMovementTouchStart}/>}
   <View pointerEvents="box-none" style={{position:'absolute',left:layout.left,top:layout.top+sky.vitalsTopOffset}}><FieldKitVitals stats={stats} width={layout.vitals} compactWidth={Math.min(fieldKitBadge.size.width,sky.combatWidth)} combatWidth={stats.campThreat?Math.min(fieldKitBadge.size.width,sky.combatWidth):sky.combatWidth} onExpanded={setVitalsExpanded}/></View>
   {!stats.stationPanel&&!bagOpen&&!mapOpen&&stats.campThreat&&<CampThreatBanner threat={stats.campThreat} width={width} height={height} left={layout.left} right={layout.right} top={layout.top} toolbarWidth={sky.toolbarWidth} vitalsExpanded={vitalsExpanded}/>}
-  {!stats.stationPanel&&!bagOpen&&<View pointerEvents="box-none" style={{position:'absolute',right:layout.right,top:layout.top+sky.topOffset-FIELD_KIT_UTILITY.hitSlop,gap:12,flexDirection:'row',zIndex:10}}>{stats.cycle&&<View pointerEvents="box-none" style={sky.portrait?{position:'absolute',right:0,top:44}:undefined}><SkyClock cycle={stats.cycle} world={world} paused={!enabled} width={sky.clockWidth} onExpanded={setDayExpanded}/></View>}<View pointerEvents="box-none" style={{flexDirection:'row',gap:10,paddingVertical:FIELD_KIT_UTILITY.hitSlop}}>{hasWaypoint&&<View pointerEvents="box-none"><KitButton kind="utility" glyph={<WaypointGuide world={world}/>} ariaLabel="Waypoint direction. Open map to edit or remove" disabled={disabled||mapOpen} onDown={onMap}/></View>}<KitButton kind="utility" icon="settings" ariaLabel="Open game settings. Pauses game" onDown={onPause}/><KitButton kind="utility" icon="backpack" ariaLabel={'Open backpack'+(stats.loadLabel==='Comfortable'?'':'. '+stats.loadLabel)} loadBadge={stats.loadLabel==='Comfortable'?undefined:stats.loadLabel} onDown={()=>{world.current!.stationPanel=undefined;onBag(true)}}/><KitButton kind="utility" glyph={<MapGlyph/>} ariaLabel="Open live world map" disabled={disabled} onDown={onMap}/></View></View>}
+  {!stats.stationPanel&&!bagOpen&&<View pointerEvents="box-none" style={{position:'absolute',right:layout.right,top:layout.top+sky.topOffset-FIELD_KIT_UTILITY.hitSlop,gap:12,flexDirection:'row',zIndex:10}}>{stats.cycle&&<View pointerEvents="box-none" style={sky.portrait?{position:'absolute',right:0,top:44}:undefined}><SkyClock cycle={stats.cycle} world={world} paused={!enabled||!foreground} width={sky.clockWidth} onExpanded={setDayExpanded}/></View>}<View pointerEvents="box-none" style={{flexDirection:'row',gap:10,paddingVertical:FIELD_KIT_UTILITY.hitSlop}}>{hasWaypoint&&<View pointerEvents="box-none"><KitButton kind="utility" glyph={<WaypointGuide world={world} active={hudVisible}/>} ariaLabel="Waypoint direction. Open map to edit or remove" disabled={disabled||mapOpen} onDown={onMap}/></View>}<KitButton kind="utility" icon="settings" ariaLabel="Open game settings. Pauses game" onDown={onPause}/><KitButton kind="utility" icon="backpack" ariaLabel={'Open backpack'+(stats.loadLabel==='Comfortable'?'':'. '+stats.loadLabel)} loadBadge={stats.loadLabel==='Comfortable'?undefined:stats.loadLabel} onDown={()=>{world.current!.stationPanel=undefined;onBag(true)}}/><KitButton kind="utility" glyph={<MapGlyph/>} ariaLabel="Open live world map" disabled={disabled} onDown={onMap}/></View></View>}
   {!!stats.notice&&<View pointerEvents="none" style={[s.notice,{left:layout.left,top:layout.top+sky.vitalsTopOffset+(vitalsExpanded?90:40)+7,maxWidth:Math.min(232,width-layout.left-layout.right)}]}><Text style={s.noticeText}>{stats.notice}</Text></View>}
   {!bagOpen&&!stats.stationPanel&&<View pointerEvents="box-none" style={{position:'absolute',right:layout.right,bottom:layout.controlsBottom,width:ACTION_HEX.width,height:ACTION_HEX.height}}>
    {!quickExpanded&&(stats.warehouseStock?<WarehouseStockCaption stock={stats.warehouseStock} width={captionWidth} style={captionStyle}/>:target?.revealed&&<FieldKitTargetCaption target={target} width={captionWidth} style={captionStyle}/>)}
@@ -139,6 +151,7 @@ const s=StyleSheet.create({
  combatRow:{flexDirection:'row',height:24,alignItems:'center'},combatHealth:{flex:1,minWidth:0,height:24,flexDirection:'row',alignItems:'center'},combatMeter:{flex:1,minWidth:0,height:9,overflow:'hidden',borderWidth:1,borderColor:'#718c7e',borderRadius:8,backgroundColor:'#0a1d21'},
  button:{alignItems:'center',justifyContent:'center',borderRadius:40,padding:6},primary:{backgroundColor:'#123c40b8'},secondary:{backgroundColor:'#153d3f32'},utility:{padding:8,height:FIELD_KIT_UTILITY.height,backgroundColor:'#123936',borderRadius:11,borderWidth:2,borderColor:'#7f7857'},touching:{backgroundColor:'#6e877d80'},disabled:{opacity:.5},buttonLabel:{fontFamily:font,fontSize:10,lineHeight:10,color:'#f4e6c7',textAlign:'center'},primaryLabel:{fontSize:10,lineHeight:10},pip:{position:'absolute',right:1,top:1,width:7,height:7,borderRadius:5,borderWidth:1,borderColor:'#d6d5ac',backgroundColor:'#53685e'},pipOn:{backgroundColor:'#a7d86c'},repair:{position:'absolute',right:0,top:4,width:7,height:3,borderRadius:1,backgroundColor:'#b96038',transform:[{rotate:'48deg'}]},
  movementZone:{position:'absolute',left:0,top:0},
+ trailDot:{position:'absolute',left:0,top:0,borderWidth:1,borderColor:'#123936',backgroundColor:'#f1dfb3',shadowColor:'#092a2d',shadowOpacity:.8,shadowRadius:2,shadowOffset:{width:0,height:1}},
  statName:{fontFamily:font,color:'#f4e6c7'},statValue:{fontFamily:font,color:'#f4e6c7',textAlign:'right',fontVariant:['tabular-nums']},meter:{flex:1,overflow:'hidden',borderWidth:1,borderColor:'#718c7e',borderRadius:8,backgroundColor:'#0a1d21'},meterFill:{height:'100%',borderRadius:8,borderTopWidth:1,borderTopColor:'#e8dcb580'},need:{flexDirection:'row',alignItems:'center',borderWidth:1,borderColor:'#554f36',borderRadius:5,backgroundColor:'#e8d9b6'},needValue:{fontFamily:font,color:'#193a3d'},
  notice:{position:'absolute',borderLeftWidth:2,borderLeftColor:'#ad9d72',borderTopRightRadius:4,borderBottomRightRadius:4,paddingHorizontal:8,paddingVertical:5,backgroundColor:'#10322fe8'},noticeText:{fontFamily:font,fontSize:12,color:'#f4e6c7',textAlign:'left'},
 });

@@ -76,7 +76,28 @@ const flowSamplers=(batch:RiverBatch,scale:number,sidePoints?:readonly (readonly
 open('River fields',()=>{for(const batch of RIVER_BATCHES)flowSamplers(batch,EAST_TERRAIN_SCALE,RIVER_SIDE_FEATURES.find(f=>RIVER_BATCHES[f.batch]===batch)?.points)});
 const riverSamplerCache=new Map<string,{children:SkShader[];resources:Resource[];images:SkImage[]}>();
 const dropRiverSampler=(key:string)=>{const entry=riverSamplerCache.get(key);if(entry){for(const r of [...entry.resources].reverse())r.dispose();riverSamplerCache.delete(key)}};
-const releaseImage=(image:SkImage)=>{for(const [key,item]of terrainCache)if(item.images.includes(image))drop(key);for(const [key,item]of riverSamplerCache)if(item.images.includes(image))dropRiverSampler(key)};
+// Waterfall masks and animation atlases do not change with the clock. Reuse
+// their immutable image samplers; only the small time-varying parent shader
+// belongs to a draw. Bound this separately from the larger river pipelines.
+const waterfallSamplerCache=new Map<string,{children:SkShader[];images:SkImage[]}>();
+const dropWaterfallSampler=(key:string)=>{const entry=waterfallSamplerCache.get(key);if(entry){for(const child of entry.children)child.dispose();waterfallSamplerCache.delete(key)}};
+const waterfallSamplers=(artwork:SkImage,mask:SkImage,frames:SkImage)=>{
+ const images=[artwork,mask,frames],key=images.map(imageId).join(',');
+ const previous=waterfallSamplerCache.get(key);
+ if(previous){waterfallSamplerCache.delete(key);waterfallSamplerCache.set(key,previous);return previous.children}
+ const children:SkShader[]=[];
+ try{for(const image of images)children.push(image.makeShaderOptions(TileMode.Clamp,TileMode.Clamp,FilterMode.Linear,MipmapMode.None))}
+ catch(error){for(const child of children)child.dispose();throw error}
+ waterfallSamplerCache.set(key,{children,images});
+ if(waterfallSamplerCache.size>32)dropWaterfallSampler(waterfallSamplerCache.keys().next().value!);
+ return children;
+};
+let waterfallPaint:SkPaint|undefined;
+const waterfallDrawPaint=(shader:SkShader,alpha:number)=>{
+ if(!waterfallPaint){waterfallPaint=Skia.Paint();waterfallPaint.setAntiAlias(false)}
+ waterfallPaint.setShader(shader);waterfallPaint.setAlphaf(alpha);return waterfallPaint;
+};
+const releaseImage=(image:SkImage)=>{for(const [key,item]of terrainCache)if(item.images.includes(image))drop(key);for(const [key,item]of riverSamplerCache)if(item.images.includes(image))dropRiverSampler(key);for(const [key,item]of waterfallSamplerCache)if(item.images.includes(image))dropWaterfallSampler(key)};
 // Skia copies paint values into each recorded command, so one native paint can
 // serve every matching draw. Allocating one per fill, stroke or sprite made
 // thousands of short-lived native objects a second for the JS collector.
@@ -173,18 +194,20 @@ class SkiaContext{
   this.c.drawRect({x:core.x,y:core.y,width:core.width,height:core.height},paint);
  }
  drawWaterfallPilot(artwork:SkImage,mask:SkImage,frames:SkImage,b:{x:number;y:number;width:number;height:number},time:number){
-  const children=[artwork,mask,frames].map(image=>this.keep(image.makeShaderOptions(TileMode.Clamp,TileMode.Clamp,FilterMode.Linear,MipmapMode.None)));
+  const children=waterfallSamplers(artwork,mask,frames);
   const shader=this.keep(waterfallEffect.makeShaderWithChildren([b.x,b.y,b.width,b.height,time],children));
-  const paint=this.keep(Skia.Paint());paint.setShader(shader);paint.setAlphaf(this.globalAlpha);paint.setAntiAlias(false);
-  this.c.drawRect({x:b.x,y:b.y,width:b.width,height:b.height},paint);
+  const paint=waterfallDrawPaint(shader,this.globalAlpha);
+  // Recorded commands snapshot paint state. Drop the reusable paint's shader
+  // reference immediately so it cannot pin streamed images between frames.
+  try{this.c.drawRect({x:b.x,y:b.y,width:b.width,height:b.height},paint)}finally{paint.setShader(null)}
  }
  drawWaterfallSection(artwork:SkImage,mask:SkImage,frames:SkImage,b:{x:number;y:number;width:number;height:number},time:number,sampling:WaterfallSampling,core=b){
-  const children=[artwork,mask,frames].map(image=>this.keep(image.makeShaderOptions(TileMode.Clamp,TileMode.Clamp,FilterMode.Linear,MipmapMode.None)));
+  const children=waterfallSamplers(artwork,mask,frames);
   const [x,y,w,h]=sampling.region,[width,height]=sampling.nativeSize;
   const uniforms=[b.x,b.y,b.width,b.height,time,width,height,x*artwork.width(),y*artwork.height(),w*artwork.width()/width,h*artwork.height()/height,...sampling.direction];
   const shader=this.keep(waterfallSectionEffect.makeShaderWithChildren(uniforms,children));
-  const paint=this.keep(Skia.Paint());paint.setShader(shader);paint.setAlphaf(this.globalAlpha);paint.setAntiAlias(false);
-  this.c.drawRect({x:core.x,y:core.y,width:core.width,height:core.height},paint);
+  const paint=waterfallDrawPaint(shader,this.globalAlpha);
+  try{this.c.drawRect({x:core.x,y:core.y,width:core.width,height:core.height},paint)}finally{paint.setShader(null)}
  }
  drawRoadSurfaces(roads:readonly WorldRoad[],images:SkImage[],scale:number){
   const paints=images.map((image,i)=>{
@@ -277,5 +300,5 @@ class SkiaContext{
   if(sw>1000&&sh>1000&&dw>sw*1.4)this.c.drawImageRectCubic(im,src,dst,1/3,1/3,p);else this.c.drawImageRectOptions(im,src,dst,FilterMode.Linear,MipmapMode.None,p);if(layer)im.dispose()}
 }
 
-return {SkiaContext,NativeLayer,releaseImage,shaderFieldBytes:()=>fieldSize*fieldSize*4+[...flowFields.values()].reduce((sum,f)=>sum+f.bytes,0),warmLighting:lighting.warm,disposeLighting:()=>{for(const key of riverSamplerCache.keys())dropRiverSampler(key);for(const key of terrainCache.keys())drop(key);for(const entry of flowFields.values())for(const resource of [...entry.resources].reverse())resource.dispose();flowFields.clear();waterfallEffect.dispose();waterfallSectionEffect.dispose();lighting.dispose();weather.dispose();lightning.dispose();for(const shader of colourSamplers.values())shader.dispose();colourSamplers.clear();colourImage.dispose();groundColour.dispose();roadSection.dispose();roadPilot.dispose();riverEffect.dispose();for(const meshes of roadMeshes.values())for(const mesh of meshes)mesh?.dispose();roadMeshes.clear();for(const {paint,dash}of solidPaints.values()){paint.dispose();dash?.dispose()}solidPaints.clear();for(const paint of spritePaints.splice(0))paint?.dispose();for(const resource of spriteResources.splice(0))resource.dispose();clearPaint?.dispose();clearPaint=undefined}};
+return {SkiaContext,NativeLayer,releaseImage,shaderFieldBytes:()=>fieldSize*fieldSize*4+[...flowFields.values()].reduce((sum,f)=>sum+f.bytes,0),warmLighting:lighting.warm,disposeLighting:()=>{waterfallPaint?.dispose();waterfallPaint=undefined;for(const key of waterfallSamplerCache.keys())dropWaterfallSampler(key);for(const key of riverSamplerCache.keys())dropRiverSampler(key);for(const key of terrainCache.keys())drop(key);for(const entry of flowFields.values())for(const resource of [...entry.resources].reverse())resource.dispose();flowFields.clear();waterfallEffect.dispose();waterfallSectionEffect.dispose();lighting.dispose();weather.dispose();lightning.dispose();for(const shader of colourSamplers.values())shader.dispose();colourSamplers.clear();colourImage.dispose();groundColour.dispose();roadSection.dispose();roadPilot.dispose();riverEffect.dispose();for(const meshes of roadMeshes.values())for(const mesh of meshes)mesh?.dispose();roadMeshes.clear();for(const {paint,dash}of solidPaints.values()){paint.dispose();dash?.dispose()}solidPaints.clear();for(const paint of spritePaints.splice(0))paint?.dispose();for(const resource of spriteResources.splice(0))resource.dispose();clearPaint?.dispose();clearPaint=undefined}};
 }

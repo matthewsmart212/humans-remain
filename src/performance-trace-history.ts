@@ -6,7 +6,7 @@ export const PERFORMANCE_IMPORTANT_TRACE_LIMIT=128;
 export type PerformanceTraceDetail=Record<string,string|number|boolean>;
 type Trace={id:number;elapsedMs:number;durationMs:number;stage:string;detail:PerformanceTraceDetail};
 type HitchCapture={id:number;fromMs:number;toMs:number;peakMs:number;worstFrameIndex:number;triggerCount:number;traceEvents:Trace[];traceEventsOmitted:number};
-const importantStages=new Set(['browser-capabilities','webglcontextlost','webglcontextrestored','stream-failed','surface-created','resume-frame','native-map-open','native-map-close','native-map-button','native-map-ready','native-pinch-start','native-pinch-end','native-map-features','native-map-texture','native-memory-warning']);
+const importantStages=new Set(['browser-capabilities','webglcontextlost','webglcontextrestored','stream-failed','surface-created','resume-frame','native-map-open','native-map-close','native-map-button','native-map-ready','native-pinch-start','native-pinch-end','native-map-features','native-map-texture','native-memory-warning','native-device-context-capability','native-device-context-error']);
 const overlaps=(trace:Trace,capture:HitchCapture)=>trace.elapsedMs<=capture.toMs&&trace.elapsedMs+trace.durationMs>=capture.fromMs;
 const round=(value:number)=>Math.round(value*1000)/1000;
 

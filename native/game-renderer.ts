@@ -25,12 +25,13 @@ import type {Atlas} from '../src/packaging-renderer';
 import type {TerrainView} from '../src/outdoor-terrain';
 import {WORLD_URL} from './config';
 import type {GamePerformanceRecorder} from '../src/performance-recording';
+import {NativeFrameWorkScheduler} from './frame-work-scheduler';
 
 export const PLAY_VIEW:EditorView={x:0,y:0,zoom:1,follow:true,grid:false,collision:false,selected:null,ghost:null,placingSpawn:false,playing:true,hideFoliage:false};
 
 const mark=(name:string,error:unknown):never=>{const e=error instanceof Error?error:Error(String(error));e.message=`${name}: ${e.message}`;throw e};
 const open=<T,>(name:string,run:()=>T):T=>{try{return run()}catch(e){return mark(name,e)}};
-export async function createNativeRenderer(view:EditorView={...PLAY_VIEW},diagnostics?:GamePerformanceRecorder){
+export async function createNativeRenderer(view:EditorView={...PLAY_VIEW},diagnostics?:GamePerformanceRecorder,sharedPreparation?:NativeFrameWorkScheduler){
  const asset=open('Font module',()=>Asset.fromModule(require('../public/fonts/barlow-condensed-black.ttf')));
  try{await asset.downloadAsync()}catch(e){mark('Font download',e)}
  const bytes=await Skia.Data.fromURI(asset.localUri||asset.uri).catch(e=>mark('Font data',e));
@@ -58,30 +59,43 @@ export async function createNativeRenderer(view:EditorView={...PLAY_VIEW},diagno
   try{const image=Skia.Image.MakeImageFromEncoded(data);if(!image)throw Error('An artwork image could not open.');if(started!==undefined)diagnostics!.trace(started,'native-artwork-load',performance.now()-started,{key,mode:'skia-encoded',width:image.width(),height:image.height()},session);return image}finally{data.dispose()}
   }catch(error){if(started!==undefined)diagnostics!.trace(started,'artwork-failed',performance.now()-started,{key,aborted:signal.aborted,...artworkFailureDetails(error)},session);throw error}
  },image=>adapter.releaseImage(image),3);
- // Warm at most one decoded texture per animation frame, rather than making
- // first use of a whole group interrupt player movement in one frame.
+ // Startup can warm before a gameplay frame exists. Once frame-managed, map
+ // raster work and image preparation share the remaining gameplay allowance.
  const warmed=new WeakSet<SkImage>(),pendingWarm=new WeakMap<SkImage,Promise<void>>();
  const queue:{key:string;queuedAt:number;image:SkImage;resolve:()=>void;reject:(e:Error)=>void;priority:ArtworkPriority}[]=[];
- let warming=false;
- const pump=async()=>{
-  if(warming)return;warming=true;
-  while(queue.length&&!disposed){
-   const urgent=queue.findIndex(j=>j.priority==='foreground'),job=queue.splice(urgent<0?0:urgent,1)[0];
+ const preparation=sharedPreparation??new NativeFrameWorkScheduler(diagnostics);
+ let frameManaged=false,standaloneScheduled=false;
+ const nextWarm=()=>{const urgent=queue.findIndex(j=>j.priority==='foreground');return urgent<0?0:urgent};
+ const warmKind=(image:SkImage)=>'decode:'+Math.max(0,Math.min(8,Math.ceil(Math.log2(Math.max(1,image.width()*image.height())/262144))));
+ const warmOne=(standalone=false)=>{
+   if(disposed||!queue.length)return;
+   const job=queue.splice(nextWarm(),1)[0],at=performance.now();
    try{if(!warmed.has(job.image)){
     const started=diagnostics?.recording?performance.now():undefined;
     preparationSurface.getCanvas().drawImageRect(job.image,Skia.XYWHRect(0,0,job.image.width(),job.image.height()),Skia.XYWHRect(0,0,1,1),preparationPaint);warmed.add(job.image);
     if(started!==undefined)diagnostics!.trace(started,'native-texture-warm',performance.now()-started,{key:job.key,mode:'raster-decode',width:job.image.width(),height:job.image.height(),queueMs:Math.max(0,started-job.queuedAt),priority:job.priority});
    }job.resolve()}catch(e){job.reject(e instanceof Error?e:Error(String(e)))}
-   await new Promise<void>(resolve=>requestAnimationFrame(()=>resolve()));
-  }warming=false;
+   finally{if(standalone)preparation.observe('artwork',warmKind(job.image),performance.now()-at)}
  };
+ const scheduleStandalone=()=>{
+  if(disposed||frameManaged||standaloneScheduled||!queue.length)return;
+  standaloneScheduled=true;
+  requestAnimationFrame(()=>{standaloneScheduled=false;if(disposed||frameManaged)return;warmOne(true);scheduleStandalone()});
+ };
+ const unregisterPreparation=preparation.register({name:'artwork',maxPerFrame:1,peek:()=>{
+  if(disposed||!frameManaged||!queue.length)return null;
+  const job=queue[nextWarm()];return{kind:warmKind(job.image),priority:job.priority==='foreground'?'foreground':'prefetch',initialMs:2};
+ },run:()=>warmOne()});
+ /** Switch only after boot/restoration finishes. Returning to standalone mode
+  * lets an explicit paused reload settle without waiting for a playing frame. */
+ const setFrameManaged=(managed:boolean)=>{frameManaged=managed&&!!sharedPreparation;if(!frameManaged)scheduleStandalone()};
  const warmImages=async(sources:Record<string,string>,priority:ArtworkPriority='foreground')=>{
   for(const [key,url]of Object.entries(sources))if(!keyByUrl.has(url))keyByUrl.set(url,key);
   await loader.load(sources,undefined,priority);
   await Promise.all(Object.keys(sources).map(key=>{
    const image=loader.images[key];if(warmed.has(image))return Promise.resolve();
-   const existing=pendingWarm.get(image);if(existing)return existing;
-   const task=new Promise<void>((resolve,reject)=>{if(disposed){reject(Error('Renderer closed'));return}queue.push({key,queuedAt:performance.now(),image,resolve,reject,priority});void pump()});
+   const existing=pendingWarm.get(image);if(existing){if(priority==='foreground'){const job=queue.find(job=>job.image===image);if(job)job.priority='foreground'}return existing}
+   const task=new Promise<void>((resolve,reject)=>{if(disposed){reject(Error('Renderer closed'));return}queue.push({key,queuedAt:performance.now(),image,resolve,reject,priority});scheduleStandalone()});
    pendingWarm.set(image,task);void task.finally(()=>pendingWarm.delete(image)).catch(()=>{});return task;
   }));
   if(disposed)throw Error('Renderer closed');
@@ -92,7 +106,7 @@ export async function createNativeRenderer(view:EditorView={...PLAY_VIEW},diagno
  const streamSources={...TERRAIN_CHUNK_IMAGES,...RIVER_DETAIL_IMAGES};
  const streams=open('Terrain streams',()=>createTerrainArtStreams(warmImages,releaseImages,keys=>{loader.promote(Object.fromEntries(keys.map(k=>[k,streamSources[k]])));const images=new Set(keys.map(k=>loader.images[k]));for(const job of queue)if(images.has(job.image))job.priority='foreground'},diagnostics));
  return {
-  warmImages,releaseImages,get revision(){return revision},
+  warmImages,releaseImages,setFrameManaged,get revision(){return revision},
   textureStats:()=>({graphics:{backend:'native-skia',shaderFieldBytes:adapter.shaderFieldBytes()},roads:streams.roads.stats(),camp:streams.camp.stats(),rivers:streams.rivers.stats(),artwork:{...loader.stats(),warming:queue.length,warmQueue:queue.slice(0,12).map(job=>({key:job.key,priority:job.priority,ageMs:Math.round(performance.now()-job.queuedAt)}))}}),
   draw(world:World,width:number,height:number,fade=0){
    const recorder=Skia.PictureRecorder(),canvas=recorder.beginRecording(Skia.XYWHRect(0,0,width,height));
@@ -110,6 +124,6 @@ export async function createNativeRenderer(view:EditorView={...PLAY_VIEW},diagno
    const started=diagnostics?.tracing?performance.now():undefined;
    try{drawWorldEditor(ctx as unknown as CanvasRenderingContext2D,{} as Atlas,prepared as unknown as Record<string,HTMLImageElement>,world,view,fade);return recorder.finishRecordingAsPicture()}finally{if(started!==undefined)diagnostics!.phase('worldDrawMs',performance.now()-started);const cleanup=started!==undefined?performance.now():undefined;ctx.dispose();recorder.dispose();if(cleanup!==undefined)diagnostics!.phase('cleanupMs',performance.now()-cleanup)}
   },
-  dispose(){if(disposed)return;disposed=true;streams.dispose();for(const job of queue.splice(0))job.reject(Error('Renderer closed'));loader.dispose();for(const key of Object.keys(prepared))delete prepared[key];preparationSurface.dispose();preparationPaint.dispose();adapter.disposeLighting();font.dispose();face.dispose()}
+  dispose(){if(disposed)return;disposed=true;unregisterPreparation();if(!sharedPreparation)preparation.dispose();streams.dispose();for(const job of queue.splice(0))job.reject(Error('Renderer closed'));loader.dispose();for(const key of Object.keys(prepared))delete prepared[key];preparationSurface.dispose();preparationPaint.dispose();adapter.disposeLighting();font.dispose();face.dispose()}
  };
 }

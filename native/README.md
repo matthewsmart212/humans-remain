@@ -29,3 +29,15 @@ pause menu replaces it after confirmation. An unreadable save is kept and shown
 on the pause screen rather than silently overwritten. HQ blueprints, furnace
 restoration and the opening three night raids share their rules with the web
 game. See `../docs/FIRST-EXPEDITION.md`.
+
+The native save store keeps changing progress separate from cached world layouts.
+Existing saves migrate automatically; a failed update keeps the previous valid
+checkpoint. Do not delete app storage to install this update.
+
+Native map gestures use the Expo-compatible Gesture Handler dependency. Run
+`npm ci` after pulling this update, then restart Metro with `npx expo start --clear`.
+For optional iOS memory, thermal and Low Power Mode measurements, rebuild a native
+development/release app; Expo Go continues to support the normal recorder and
+explicitly marks those extra measurements unavailable. See
+[`IOS-PERFORMANCE-CONTEXT.md`](../docs/IOS-PERFORMANCE-CONTEXT.md) for native build
+and Instruments instructions.

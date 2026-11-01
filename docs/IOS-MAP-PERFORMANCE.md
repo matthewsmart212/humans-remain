@@ -105,9 +105,49 @@ outside those measurements. It cannot identify garbage collection, a GPU stall,
 thermal throttling or a memory leak. No total process/GPU memory measurement is
 claimed. Asset loading spans are elapsed time, not synchronous CPU attribution.
 
+## Native smoothness follow-up
+
+The `ios-native-smoothness-v2` recorder revision accompanies these changes:
+
+- Native autosaves persist a compact mutable-state manifest and two bounded
+  layout slots. Layout dependencies are durable before the manifest commits.
+  Existing single-file saves remain readable, and failed or corrupt saves do
+  not silently reset progress. The shipped new-run fixture's ordinary payload
+  is about 44 KB versus 782 KB previously; that is a storage/serialization-size
+  result, not a measured iPhone speedup.
+- One adaptive preparation scheduler shares available frame time between map
+  tile construction and image warming. It skips already-late frames and learns
+  native operation costs. A single Skia raster/decode call cannot be interrupted:
+  overdue oversized work has an explicit rate-limited exception to avoid
+  permanently missing artwork, and overruns remain logged.
+- Native gesture handlers update map transforms, opacity, labels and markers on
+  the UI runtime. Tile requests follow coverage changes; illustration pictures
+  stay retained across map closures. Single-coverage cached tiles retain the
+  existing coarse fallback during fast camera motion.
+- Hidden HUD/waypoint sampling stops while the map covers play. Movement dots
+  reuse native views and the day/night dial interpolates authoritative samples
+  on the UI runtime, retaining their artwork and geometry.
+- Waterfall image samplers and a reusable paint are cached with bounded lifetime
+  and image-release invalidation. Immediate and recorded pixel comparisons
+  match the uncached path.
+
+`native-preparation-work` describes synchronous optional work, estimated frame
+headroom and explicit oversized/overrun admission. `native-save-encode` reports
+mutable-state characters, layout characters and the number of newly serialized
+layouts. Optional native process-memory/thermal/power samples and Instruments
+correlation are described in [iOS performance context](IOS-PERFORMANCE-CONTEXT.md).
+Those extra samples require a rebuilt native app; Expo Go reports the capability
+as unavailable. They still do not measure GPU execution or display FPS.
+
+Focused regressions cover save recovery and migration, scheduler fairness and
+liveness, tile/pixel equivalence, gesture models, HUD interpolation, native launch
+and diagnostics. The iOS JavaScript export does not compile the local Swift
+module. A native Xcode/EAS build and the physical-device comparison below remain
+necessary before claiming a frame-time improvement.
+
 ## Repeat on the iPhone
 
-1. Pull the latest main, then in `native` run `npx expo start --clear`.
+1. Pull the latest main, then in `native` run `npm ci` and `npx expo start --clear`.
 2. Pause → Performance recording → Start recording & resume.
 3. Wait a few seconds, then pinch out into the map, pan and zoom, stand still
    with it open for ten seconds, and zoom back into play. Repeat three times.

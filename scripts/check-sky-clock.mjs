@@ -8,9 +8,9 @@ try{
  assert.equal(h.height,34,'Chrome matches the stats body, excluding its raised crest');assert(h.height+10>=44,'Slim artwork retains a 44px touch target');assert(peakY>=0&&peakY+h.icon<h.height,'The unchanged round orb fits at its peak');
  let v=sample();assert.equal(v.icon,'sun');assert.deepEqual(v.orbs.map(o=>o.icon),['sun','moon']);
  const body=(v,icon)=>v.orbs.find(o=>o.icon===icon),centerY=orb=>m.horizonPosition(orb).y+h.icon/2;
- const at=(night,elapsed)=>m.skyClockView({...m.cycleStatus(w),night,progress:1-elapsed/(night?60:120)});
+ const at=(night,elapsed)=>m.skyClockView({...m.cycleStatus(w),night,progress:1-elapsed/(night?m.RUN_NIGHT_SECONDS:m.RUN_DAY_SECONDS)});
  for(const night of [false,true]){
-  const duration=night?60:120,outgoing=night?'moon':'sun',incoming=night?'sun':'moon';
+  const duration=night?m.RUN_NIGHT_SECONDS:m.RUN_DAY_SECONDS,outgoing=night?'moon':'sun',incoming=night?'sun':'moon';
   const peak=m.horizonPosition(body(at(night,duration/2),outgoing));near(peak.x,peakX);near(peak.y,peakY);
   const begin=at(night,duration-h.handover);
   near(centerY(body(begin,outgoing)),h.lip);near(body(begin,incoming).opacity,0);
@@ -39,7 +39,7 @@ try{
   near(at(night,duration).nightMix,night?0:1);
  }
  const held=JSON.stringify(sample());m.stepSurvivalCycle(w,0);assert.equal(JSON.stringify(sample()),held,'Pausing holds the exact sky');
- m.stepSurvivalCycle(w,120);assert.equal(w.phase,'night');m.stepSurvivalCycle(w,60);assert.equal(w.round,2);assert.equal(sample().icon,'sun');
+ m.stepSurvivalCycle(w,m.RUN_DAY_SECONDS);assert.equal(w.phase,'night');m.stepSurvivalCycle(w,m.RUN_NIGHT_SECONDS);assert.equal(w.round,2);assert.equal(sample().icon,'sun');
  for(const p of [5,-1])assert(m.skyClockView({...m.cycleStatus(w),progress:p}).orbs.every(o=>o.travel>=0&&o.travel<=1));
  for(const [width,height,safe] of [[320,568,{top:0,right:0,bottom:0,left:0}],[390,844,{top:47,right:0,bottom:34,left:0}],[768,1024,{top:24,right:0,bottom:20,left:0}],[844,390,{top:0,right:47,bottom:21,left:47}],[667,375,{top:0,right:0,bottom:0,left:0}]]){
   const l=m.skyHudLayout(width,height,safe),left=Math.max(12,safe.left+8),right=Math.max(12,safe.right+8);assert.equal(l.portrait,height>=width);assert.equal(l.toolbarWidth,l.portrait?140:272);assert.equal(l.clockWidth,120,'Narrow screens preserve the same height and round sun/moon');assert(width-right-l.toolbarWidth>=safe.left+8,'The whole horizon and controls fit within safe edges');assert(l.combatWidth>=0);
@@ -59,5 +59,5 @@ try{
  for(const file of ['day','night','rim']){const png=fs.readFileSync(`public/survival/ui-survivor-dial-v2/${file}.png`);assert.equal(png.readUInt32BE(16),h.width*4);assert.equal(png.readUInt32BE(20),h.height*4,'Scene and frame share the new artwork height');}
  for(const file of ['pause-light','backpack-light','utility-panel'])assert(fs.statSync(`public/survival/ui-field-kit-v1/${file}.png`).size>1000,'Both platforms ship the shared ivory icons and teal backing');
  for(const day of [1,9,10,99,100,365])assert.equal(m.skyClockView({...m.cycleStatus(w),day}).dayTag,String(day).padStart(2,'0'),'The calendar displays the real day without truncating long runs');
- console.log('PASS: 120s day / 60s night, noon/midnight peaks, early half-hidden sunset/moonset, dusk moonrise, dawn sunrise, continuous phase boundaries, pause and safe HUD layout.');
+ console.log('PASS: authoritative day/night durations, noon/midnight peaks, early half-hidden sunset/moonset, dusk moonrise, dawn sunrise, continuous phase boundaries, pause and safe HUD layout.');
 }finally{fs.rmSync(tmp,{recursive:true,force:true})}

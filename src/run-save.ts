@@ -25,10 +25,12 @@ export async function prepareSavedCampArtwork(snapshot:TravelSnapshot,load:(sour
 }
 const MAX_SAVE_BYTES=12_000_000;
 const OMIT=new Set(['scene','outdoorReady','foliageMotions','puddleMotion','stepOnMotions','effects','combatStats','stationPanel','repairHammerUntil','buildingRepair','buildingHits','fieldKitTarget','fieldKitBuildingFocus','repairCheckpoint','furnaceId','smithyId','attackQueuedUntil','axeSwing','spearThrust','swordThrust','bowShot','bowLock','bruteGrab','dodge']);
+/** Shared with the native compact store so both formats retain identical state. */
+export function runSaveValue(key:string,value:unknown):unknown{return OMIT.has(key)?undefined:value instanceof Set?{$set:[...value]}:value}
 export function encodeRun(travel:SceneTravel):string|null{
  if(travel.busy||!travel.current.progression)return null;
  const snapshot=travel.capture();
- return JSON.stringify({version:1,savedAt:new Date().toISOString(),...snapshot},(key,value)=>OMIT.has(key)?undefined:value instanceof Set?{$set:[...value]}:value);
+ return JSON.stringify({version:1,savedAt:new Date().toISOString(),...snapshot},runSaveValue);
 }
 function validateNumbers(value:unknown,depth=0):boolean{if(depth>35)return false;if(typeof value==='number')return Number.isFinite(value);if(Array.isArray(value))return value.length<15000&&value.every(v=>validateNumbers(v,depth+1));if(value&&typeof value==='object')return Object.entries(value).every(([k,v])=>!['__proto__','constructor','prototype'].includes(k)&&validateNumbers(v,depth+1));return true}
 const point=(p:any)=>p&&Number.isFinite(p.x)&&Number.isFinite(p.y);

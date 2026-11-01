@@ -3,6 +3,7 @@ import type {SkCanvas,SkImage,SkPaint,SkPath,SkPathBuilder,SkPicture,SkSurface,S
 import type {PlayerMapPath,PlayerMapView} from '../src/player-map';
 import type {GamePerformanceRecorder} from '../src/performance-recording';
 import type {WorldBounds} from '../src/world-bounds';
+import type {NativeFrameWorkHint,NativeWorkPriority} from './frame-work-scheduler';
 
 /** iOS Skia draws without MSAA, so anti-aliased paths are filled through CPU
  * coverage masks. Drawing the engraved batches directly re-rasterized ~8k
@@ -81,6 +82,7 @@ export function createMapTiles(Skia:Api,paths:readonly PlayerMapPath[],area:Worl
  let wanted:number[]=[],wantedSet=new Set<number>(),wantedView='',job:Job|undefined,revision=0,clock=0,disposed=false;
  let requestBuilds=0,cancelledJobs=0,allocationFailures=0;
  let pictureKey='',current:SkPicture|null=null,retired:SkPicture|null=null;
+ let presentationRevision=-1,presentation:SkPicture|null=null,retiredPresentation:SkPicture|null=null;
  const ready=(level:number,i:number,j:number)=>{const tile=tiles.get(keyOf(level,i,j));return tile?.image?tile:undefined};
 
  /** Tiles this view should hold, in render order: the base, then the
@@ -115,11 +117,14 @@ export function createMapTiles(Skia:Api,paths:readonly PlayerMapPath[],area:Worl
   builder?.reset();
   return{tile,surface,canvas,region:region(tile.level,tile.i,tile.j),batch:0,next:0,added:0,started:performance.now(),drawn:0};
  };
- /** One unit of work, appending a chunk of a batch's subpaths or drawing the
-  * batch in the original fill-then-stroke order; true once the tile is complete. */
+ /** Selection, bounded append, indivisible raster and image snapshot each get
+  * their own admission/cost sample. The raster retains the original complete
+  * fill-then-stroke batch: splitting translucent draws changes the artwork. */
  const advance=(work:Job)=>{
-  while(work.batch<batches.length){
-   const batch=batches[work.batch],list=work.list??=select(batch,work.region);
+  if(work.batch<batches.length){
+   const batch=batches[work.batch];
+   if(!work.list){work.list=select(batch,work.region);return false}
+   const list=work.list;
    if(work.next<list.length){
     const shapes=builder??=Skia.PathBuilder.Make();
     for(const end=Math.min(list.length,work.next+CHUNK);work.next<end;work.next++){
@@ -130,7 +135,7 @@ export function createMapTiles(Skia:Api,paths:readonly PlayerMapPath[],area:Worl
     return false;
    }
    work.batch++;work.list=undefined;work.next=0;
-   if(!work.added)continue;
+   if(!work.added)return false;
    work.added=0;
    // One path per batch keeps translucent overlaps blended once, as before.
    const path=builder!.detach();
@@ -139,7 +144,7 @@ export function createMapTiles(Skia:Api,paths:readonly PlayerMapPath[],area:Worl
     if(batch.stroke){ink.setStyle(PaintStyle.Stroke);ink.setColor(batch.stroke);ink.setStrokeWidth(batch.strokeWidth);work.canvas.drawPath(path,ink)}
    }finally{path.dispose()}
    work.drawn++;
-   if(work.batch<batches.length)return false;
+   return false;
   }
   work.tile.image=work.surface.makeImageSnapshot({x:PAD,y:PAD,width:MAP_TILE_SIZE,height:MAP_TILE_SIZE});work.surface.dispose();
   if(diagnostics?.recording)diagnostics.trace(work.started,'native-map-tile',performance.now()-work.started,{level:work.tile.level,i:work.tile.i,j:work.tile.j,batches:work.drawn});
@@ -148,7 +153,31 @@ export function createMapTiles(Skia:Api,paths:readonly PlayerMapPath[],area:Worl
  const trim=(limit:number)=>{
   if(tiles.size<=limit)return;
   const spare=[...tiles.values()].filter(t=>t.level>0&&!wantedSet.has(t.key)&&t!==job?.tile).sort((a,b)=>a.used-b.used);
-  for(const tile of spare){if(tiles.size<=limit)break;tiles.delete(tile.key);tile.image?.dispose()}
+  for(const tile of spare){if(tiles.size<=limit)break;tiles.delete(tile.key);tile.image?.dispose();revision++}
+ };
+ const nextWork=(priority:NativeWorkPriority='prefetch'):NativeFrameWorkHint|null=>{
+  if(disposed)return null;
+  if(!job)return wanted.some(k=>!tiles.has(k))?{kind:'allocate',priority,initialMs:.5}:null;
+  if(job.batch>=batches.length)return{kind:'snapshot',priority,initialMs:1};
+  const batch=batches[job.batch],phase=!job.list?'select':job.next<job.list.length?'append':'raster';
+  return{kind:phase+':'+batch.item.id,priority,initialMs:phase==='raster'?1:.5};
+ };
+ /** One admitted operation; unlike step(...,true), it never hides additional
+  * allocation/selection/raster work behind an append cost estimate. */
+ const runWork=(limit=64)=>{
+  if(disposed)return false;
+  if(!job){
+   const key=wanted.find(k=>!tiles.has(k));if(key===undefined)return false;
+   const level=Math.floor(key/LEVEL_KEY),j=Math.floor(key%LEVEL_KEY/ROW_KEY),i=key%ROW_KEY,tile:Tile={key,level,i,j,image:null,used:clock};
+   job=begin(tile);
+   if(!job){allocationFailures++;return false}
+   tiles.set(key,tile);return false;
+  }
+  const started=diagnostics?.recording?performance.now():undefined,kind=started!==undefined?nextWork()!.kind:undefined;
+  const finished=advance(job);
+  if(finished){job=undefined;revision++;trim(limit)}
+  if(started!==undefined){const ms=performance.now()-started;if(ms>=1)diagnostics!.trace(started,'native-map-tile-work',ms,{units:1,finished,tiles:tiles.size,level:job?.tile.level??-1,kind:kind??'unknown'})}
+  return finished;
  };
 
  /** Tile draws covering a view exactly once: each visible tile, else its four
@@ -173,10 +202,26 @@ export function createMapTiles(Skia:Api,paths:readonly PlayerMapPath[],area:Worl
   }
   return out;
  };
+ /** Entire-map coverage for a camera animated independently on the UI thread.
+  * Every quadtree leaf draws exactly once; a missing child samples its nearest
+  * complete ancestor. Cached detail never paints over a translucent base. */
+ const presentationPlan=():MapTileDraw[]=>{
+  const branches=new Set<number>(),out:MapTileDraw[]=[];
+  for(const tile of tiles.values())if(tile.image)for(let level=tile.level-1;level>=0;level--){const shift=tile.level-level;branches.add(keyOf(level,tile.i>>shift,tile.j>>shift))}
+  const visit=(level:number,i:number,j:number,parent:Tile|undefined)=>{
+   const size=grid(level);if(i>=size.cols||j>=size.rows)return;
+   const tile=ready(level,i,j)??parent,key=keyOf(level,i,j);
+   if(branches.has(key)&&level<MAX_LEVEL){for(const [x,y]of [[0,0],[1,0],[0,1],[1,1]])visit(level+1,i*2+x,j*2+y,tile);return}
+   if(!tile)return;
+   const ratio=2**(level-tile.level),part=MAP_TILE_SIZE/ratio,s=span(level);
+   out.push({level:tile.level,i:tile.i,j:tile.j,src:{x:(i-tile.i*ratio)*part,y:(j-tile.j*ratio)*part,width:part,height:part},dst:{x:area.left+i*s,y:area.top+j*s,width:s,height:s}});
+  };
+  visit(0,0,0,undefined);return out;
+ };
 
  return{
   /** Requests the tiles for a view; repeated calls with the same view are free. */
-  want,
+  want,nextWork,runWork,
   /** Renders queued tiles until `until`, optionally at least one unit. True when a tile finished. */
   step(until:number,atLeastOne=false,limit=64){
    if(disposed)return false;
@@ -184,16 +229,11 @@ export function createMapTiles(Skia:Api,paths:readonly PlayerMapPath[],area:Worl
    let finished=false,first=atLeastOne,units=0;
    while(first||performance.now()<until){
     first=false;
-    if(!job){
-     const key=wanted.find(k=>!tiles.has(k));if(key===undefined)break;
-     const level=Math.floor(key/LEVEL_KEY),j=Math.floor(key%LEVEL_KEY/ROW_KEY),i=key%ROW_KEY,tile:Tile={key,level,i,j,image:null,used:clock};
-     job=begin(tile);
-     // A transient allocation failure must neither poison the cache nor spin
-     // in this callback. Leave the tile pending and retry on the next pump.
-     if(!job){allocationFailures++;break}
-     tiles.set(key,tile);
-    }
-    units++;if(advance(job)){job=undefined;finished=true;revision++}
+    if(!nextWork())break;
+    const failures=allocationFailures;
+    units++;if(runWork(limit))finished=true;
+    // A transient allocation failure must neither poison the cache nor spin.
+    if(allocationFailures!==failures)break;
    }
    if(finished)trim(limit);
    // Unlike native-map-tile (wall time across many frames), this measures the
@@ -204,7 +244,20 @@ export function createMapTiles(Skia:Api,paths:readonly PlayerMapPath[],area:Worl
   /** True while any requested tile is missing. */
   pending:()=>!!job||wanted.some(k=>!tiles.has(k)),
   trim,
-  plan,
+  plan,presentationPlan,
+  /** Retained until cache content changes, rather than every UI camera move. */
+  presentationPicture():SkPicture|null{
+   if(disposed)return null;
+   if(presentationRevision===revision)return presentation;
+   presentationRevision=revision;clock++;
+   retiredPresentation?.dispose();retiredPresentation=presentation;
+   const draws=presentationPlan();if(!draws.length)return presentation=null;
+   const recorder=Skia.PictureRecorder(),canvas=recorder.beginRecording({x:area.left,y:area.top,width:area.width,height:area.height});
+   try{
+    for(const draw of draws){const tile=tiles.get(keyOf(draw.level,draw.i,draw.j))!;tile.used=clock;canvas.drawImageRectOptions(tile.image!,draw.src,draw.dst,FilterMode.Linear,MipmapMode.None,tilePaint)}
+    return presentation=recorder.finishRecordingAsPicture();
+   }finally{recorder.dispose()}
+  },
   /** One retained picture of the view's tile draws, re-recorded only when they change. */
   picture(view:PlayerMapView,pixelRatio:number):SkPicture|null{
    const level=levelFor(view.scale,pixelRatio),r=range(level,view);
@@ -226,6 +279,7 @@ export function createMapTiles(Skia:Api,paths:readonly PlayerMapPath[],area:Worl
   dispose(){
    disposed=true;job?.surface.dispose();job=undefined;
    current?.dispose();retired?.dispose();current=retired=null;
+   presentation?.dispose();retiredPresentation?.dispose();presentation=retiredPresentation=null;
    for(const tile of tiles.values())tile.image?.dispose();
    tiles.clear();
    for(const batch of batches)for(const path of batch.paths)path?.dispose();
