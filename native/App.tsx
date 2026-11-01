@@ -119,27 +119,30 @@ function Game(){
   };
   void (async()=>{
    await Font.loadAsync({FieldKitBarlow:require('../public/fonts/barlow-condensed-black.ttf')});
+   const stage=async<T>(name:string,run:()=>T|Promise<T>)=>{try{return await run()}catch(e){const error=e instanceof Error?e:Error(String(e));error.message=`${name}: ${error.message}`;throw error}};
    const reduced=await AccessibilityInfo.isReduceMotionEnabled(),candidates=await worldCandidates();let failure:unknown;
    for(const candidate of candidates){
     if(!live)return;
     try{
-     const saved=validateSavedWorld(candidate.value,candidate.source);setStatus(`Loading ${candidate.source.toLowerCase()}…`);
-     renderer=await createNativeRenderer(playView.current,gamePerformance);if(!live){renderer.dispose();return}
+     setStatus(`Loading ${candidate.source.toLowerCase()}…`);
+     const saved=await stage('Check world',()=>validateSavedWorld(candidate.value,candidate.source));
+     setStatus(`Preparing ${candidate.source.toLowerCase()}…`);
+     renderer=await stage('Open renderer',()=>createNativeRenderer(playView.current,gamePerformance));if(!live){renderer.dispose();return}
      // Complete placed animations, chopping, stumps and movement before Play.
      // Distant terrain detail retains the same bounded streaming as web.
-     await renderer.warmImages({...EDITOR_IMAGE_SOURCES,...editorTerrainDetail(saved.layout.terrainImage),...requiredImages(saved.layout.items.map(p=>p.assetId),saved.layout.terrainImage)});
+     await stage('Warm artwork',()=>renderer!.warmImages({...EDITOR_IMAGE_SOURCES,...editorTerrainDetail(saved.layout.terrainImage),...requiredImages(saved.layout.items.map(p=>p.assetId),saved.layout.terrainImage)}));
      if(!live){renderer.dispose();return}
-     const resources=new SceneResourceCache(SCENES,renderer.warmImages,renderer.releaseImages),outdoor=new OutdoorTerrainStream(renderer.warmImages,renderer.releaseImages,setStatus);
-     local={renderer,resources,outdoor,saved,reduced,travel:undefined as unknown as SceneTravel};runtime.current=local;await restoreSurvival(local);
+     const resources=await stage('Open scenes',()=>new SceneResourceCache(SCENES,renderer!.warmImages,renderer!.releaseImages)),outdoor=new OutdoorTerrainStream(renderer.warmImages,renderer.releaseImages,setStatus);
+     local={renderer,resources,outdoor,saved,reduced,travel:undefined as unknown as SceneTravel};runtime.current=local;await stage('Restore survival',()=>restoreSurvival(local!));
      const w=world.current!,size=dimensions.current,c=editorCamera(size.width,size.height,w,playView.current,1);
-     outdoor.update({x:c.x,y:c.y,width:size.width/c.scale,height:size.height/c.scale},w.player,usesPaintedHomeTerrain(w.layout?.terrainImage));w.outdoorReady=outdoor.ready;await outdoor.settled();
+     await stage('Settle terrain',async()=>{outdoor.update({x:c.x,y:c.y,width:size.width/c.scale,height:size.height/c.scale},w.player,usesPaintedHomeTerrain(w.layout?.terrainImage));w.outdoorReady=outdoor.ready;await outdoor.settled()});
      if(!live){stop();return}
      // Save one complete successful world/artwork pair, never a partial update.
      void AsyncStorage.setItem(WORLD_CACHE,JSON.stringify(saved)).catch(()=>{});
      setStatus('');change('ready');if(appActive)raf=requestAnimationFrame(frame);return;
-    }catch(e){failure=e;stop()}
+    }catch(e){console.error('World candidate failed',candidate.source,e);failure=e;stop()}
    }throw failure||Error('The saved game could not open.');
-  })().catch(e=>{if(live){setError(e instanceof Error?e.message:String(e));change('error')}});
+  })().catch(e=>{console.error('Unable to open game',e);if(live){setError(e instanceof Error?[e.message,e.stack].filter(Boolean).join('\n'):String(e));change('error')}});
   const subscription=AppState.addEventListener('change',state=>{appActive=state==='active';last=0;acc=0;if(!appActive){pause();gamePerformance.setActivity('background',performance.now());cancelAnimationFrame(raf);raf=0}else if(local&&!raf){gamePerformance.setActivity('paused',performance.now());raf=requestAnimationFrame(frame)}});
   const accessibility=AccessibilityInfo.addEventListener('reduceMotionChanged',reduced=>{if(local)local.reduced=reduced;if(world.current?.weather)world.current.weather.reducedMotion=reduced});
   return()=>{live=false;cancelAnimationFrame(raf);subscription.remove();accessibility.remove();picture.value=empty;stop()};

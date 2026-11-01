@@ -21,8 +21,9 @@ import type {WaterfallSampling} from './waterfalls';
 import {PaintStyle,BlendMode,TileMode,FilterMode,MipmapMode,VertexMode,ClipOp,AlphaType,ColorType} from '@shopify/react-native-skia/lib/module/skia/types';
 import type {SkCanvas,SkImage,SkShader,SkSurface,SkFont,SkPaint,Skia as SkiaApi} from '@shopify/react-native-skia';
 import type {GamePerformanceRecorder} from './performance-recording';
+const open=(name:string,run:()=>unknown)=>{try{return run()}catch(e){const error=e instanceof Error?e:Error(String(e));error.message=`${name}: ${error.message}`;throw error}};
 export function createSkiaAdapter(Skia:Pick<typeof SkiaApi,'Paint'|'Shader'|'Color'|'Surface'|'Matrix'|'Path'|'PathEffect'|'XYWHRect'|'ColorFilter'|'ImageFilter'|'MakeVertices'|'RuntimeEffect'|'Image'|'Data'>,diagnostics?:GamePerformanceRecorder){
-const lighting=createNightLighting(Skia),weather=createWeatherRenderer(Skia),silhouettes=createArtworkSilhouettes(Skia,diagnostics),lightning=createGroundLightningRenderer(Skia);
+const lighting=open('Night lighting',()=>createNightLighting(Skia)),weather=open('Weather',()=>createWeatherRenderer(Skia)),silhouettes=open('Silhouettes',()=>createArtworkSilhouettes(Skia,diagnostics)),lightning=open('Lightning',()=>createGroundLightningRenderer(Skia));
 const groundColour=(()=>{const effect=Skia.RuntimeEffect.Make(WORLD_GROUND_COLOUR_SHADER);if(!effect)throw Error('The terrain colour shader could not compile.');return effect})();
 const roadSection=(()=>{const effect=Skia.RuntimeEffect.Make(WORLD_ROAD_SECTION_SHADER);if(!effect)throw Error('The road section shader could not compile.');return effect})();
 const roadPilot=(()=>{const effect=Skia.RuntimeEffect.Make(ROAD_PILOT_SHADER);if(!effect)throw Error('The road pilot shader could not compile.');return effect})();
@@ -71,7 +72,7 @@ const flowSamplers=(batch:RiverBatch,scale:number,sidePoints?:readonly (readonly
 };
 // Build the finite authored fields while the renderer opens, never during
 // the first frame after crossing a river boundary.
-for(const batch of RIVER_BATCHES)flowSamplers(batch,EAST_TERRAIN_SCALE,RIVER_SIDE_FEATURES.find(f=>RIVER_BATCHES[f.batch]===batch)?.points);
+open('River fields',()=>{for(const batch of RIVER_BATCHES)flowSamplers(batch,EAST_TERRAIN_SCALE,RIVER_SIDE_FEATURES.find(f=>RIVER_BATCHES[f.batch]===batch)?.points)});
 const riverSamplerCache=new Map<string,{children:SkShader[];resources:Resource[];images:SkImage[]}>();
 const dropRiverSampler=(key:string)=>{const entry=riverSamplerCache.get(key);if(entry){for(const r of [...entry.resources].reverse())r.dispose();riverSamplerCache.delete(key)}};
 const releaseImage=(image:SkImage)=>{for(const [key,item]of terrainCache)if(item.images.includes(image))drop(key);for(const [key,item]of riverSamplerCache)if(item.images.includes(image))dropRiverSampler(key)};
