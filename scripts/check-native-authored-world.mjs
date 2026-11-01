@@ -11,6 +11,8 @@ const cache=new Map();globalThis.__testStorage={getItem:async k=>cache.get(k)||n
 const redirects=Object.assign({},...['lossless-artwork','retired-road','calm-river','river-features','river-quality'].map(n=>JSON.parse(fs.readFileSync(`server/${n}-redirects.json`))));
 const canonical=url=>{while(redirects[url])url=redirects[url];return url};
 const decoded=[];
+const nativeSkia=path.resolve('native/node_modules/@shopify/react-native-skia');
+const nativeRequire=createRequire(path.join(nativeSkia,'package.json'));
 try{
  const aliases={
   '@react-native-async-storage/async-storage':'module.exports=globalThis.__testStorage;',
@@ -18,12 +20,12 @@ try{
   'react-native':'export const PixelRatio={get:()=>2};',
   'expo-asset':`const asset=uri=>({uri,localUri:uri,downloadAsync:async()=>{}});export const Asset={fromModule:asset,fromURI:asset};`,
  };
- await build({stdin:{contents:"export {hitAnimal,worldBlocked,lineClear} from './src/survival-engine';export {PREDATOR_RULES,predatorAnimalFrame} from './src/camp-predators';export {WOLF_ATTACKS} from './src/wolf-hunt';export {BOAR_ATTACKS} from './src/boar-hunt';export {OutdoorTerrainStream} from './src/outdoor-streaming';export {editorCamera} from './src/placed-world-renderer';export * from './native/game-world';export * from './native/game-renderer';export * from './native/bundled-art';export * from './src/studio-play';export * from './src/world-assets';export * from './src/authored-world';export * from './src/editor-image-sources';export * from './src/terrain-art';export * from './src/play-interaction';export {JsiSkApi} from '@shopify/react-native-skia/lib/module/skia/web/JsiSkia';",resolveDir:process.cwd()},bundle:true,platform:'node',format:'cjs',outfile:path.join(temp,'model.cjs'),plugins:[{name:'native-test-adapters',setup(b){
+ await build({stdin:{contents:"export {hitAnimal,worldBlocked,lineClear} from './src/survival-engine';export {PREDATOR_RULES,predatorAnimalFrame} from './src/camp-predators';export {WOLF_ATTACKS} from './src/wolf-hunt';export {BOAR_ATTACKS} from './src/boar-hunt';export {OutdoorTerrainStream} from './src/outdoor-streaming';export {editorCamera} from './src/placed-world-renderer';export * from './native/game-world';export * from './native/game-renderer';export * from './native/bundled-art';export * from './src/studio-play';export * from './src/world-assets';export * from './src/authored-world';export * from './src/editor-image-sources';export * from './src/terrain-art';export * from './src/play-interaction';export {JsiSkApi} from "+JSON.stringify(path.join(nativeSkia,'lib/module/skia/web/JsiSkia.js'))+';',resolveDir:process.cwd()},bundle:true,platform:'node',format:'cjs',outfile:path.join(temp,'model.cjs'),plugins:[{name:'native-test-adapters',setup(b){
   b.onResolve({filter:/^(@react-native-async-storage\/async-storage|@shopify\/react-native-skia|react-native|expo-asset)$/},a=>({path:a.path,namespace:'native-test'}));
   b.onLoad({filter:/.*/,namespace:'native-test'},a=>({contents:aliases[a.path],loader:'js'}));
   b.onLoad({filter:/\.(webp|png|jpg|ttf)$/},a=>({contents:`module.exports=${JSON.stringify(a.path)};`,loader:'js'}));
  }}]});
- const kit=await require('canvaskit-wasm')({locateFile:f=>path.join(path.dirname(require.resolve('canvaskit-wasm')),f)});
+ const kit=await nativeRequire('canvaskit-wasm')({locateFile:f=>path.join(path.dirname(nativeRequire.resolve('canvaskit-wasm')),f)});
  // The shim substitutes only platform services. The production native image
  // queue, Picture recorder, shaders, draw function and stream budgets run here.
  const {JsiSkApi}=require(path.join(temp,'model.cjs'));
@@ -31,11 +33,10 @@ try{
  // Reload after the native Skia import receives the initialized API.
  delete require.cache[require.resolve(path.join(temp,'model.cjs'))];const m=require(path.join(temp,'model.cjs'));
  globalThis.requestAnimationFrame=fn=>setImmediate(()=>fn(performance.now()));
- globalThis.fetch=async url=>new Response(JSON.stringify(String(url).includes('asset-artwork')?{records:snapshot.records}:{draft:snapshot.layout,applied:{items:[]},revision:90}));
- let candidates=await m.worldCandidates();assert.equal(candidates[0].source,'Latest saved editor world');
- const saved=m.validateSavedWorld(candidates[0].value,candidates[0].source);assert.equal(saved.layout.items.length,snapshot.layout.items.length);assert.deepEqual(saved.layout,snapshot.layout);assert.equal(m.prepareAuthoredWorld(saved.layout),saved.layout,'Approved upgrades are idempotent');
- cache.set(m.WORLD_CACHE,JSON.stringify(saved));globalThis.fetch=async()=>{throw Error('offline')};
- candidates=await m.worldCandidates();assert.equal(candidates.length,2);assert.equal(candidates[0].source,'Saved offline world');assert.equal(candidates[1].source,'Included editor world');
+ let requests=0;globalThis.fetch=async()=>{requests++;throw Error('Native launch must work offline')};
+ cache.set('safety-last-authored-world-v2','invalid retired editor cache');
+ const saved=m.loadGameWorld();assert.equal(saved.source,'Game world');assert.equal(saved.layout.items.length,snapshot.layout.items.length);assert.deepEqual(saved.layout,snapshot.layout);assert.equal(m.prepareAuthoredWorld(saved.layout),saved.layout,'Approved upgrades are idempotent');
+ assert.equal(requests,0,'Native startup has no dependency on editor APIs');
  assert.throws(()=>m.validateSavedWorld({layout:{},records:[]},'invalid'));
  m.validateSavedWorld(snapshot,'included');
  const sources={...m.EDITOR_IMAGE_SOURCES,...m.editorTerrainDetail(saved.layout.terrainImage),...m.requiredImages(saved.layout.items.map(p=>p.assetId),saved.layout.terrainImage)};
@@ -166,6 +167,6 @@ try{
  assert.equal(predatorPictures,16);predatorTerrain.dispose();
  // Native stream jobs may finish after the active Picture has changed.
  await new Promise(r=>setTimeout(r,30));renderer.dispose();renderer.dispose();
- const report={passed:true,placements:saved.layout.items.length,bundledImages:Object.keys(bundled).length,startupDecoded,portraitAndLandscapePictures:draws,heldFoodPictures,chickenPictures,rabbitPictures,deerPictures,stagAttackPictures,predatorPictures,predatorSpawns,zoomRange:[.7,1],checks:['saved draft rather than retired applied world','matching approved migrations','cached and bundled offline fallback','isolated play snapshot','all chopping/animation states bundled','backpack and dropped-item artwork bundled offline','no retired player textures','production native renderer via CanvasKit software shim','held food in production native renderer','chickens in production native renderer','rabbits, held rabbit meal and both rabbit pickup sprites in production native renderer','doe and stag, held venison and both venison pickup sprites in production native renderer','animal health bars, dealt/received hit markers, and stag warning/charge/contact without a ground box in production native renderer','representative pair/solitary habitats, separate wolf bite/lunge and boar tusk/charge tells and actual contact poses on streamed terrain','both zoom limits in both orientations','safe repeated renderer disposal'],physicalIPhoneTested:false};
+ const report={passed:true,placements:saved.layout.items.length,bundledImages:Object.keys(bundled).length,startupDecoded,portraitAndLandscapePictures:draws,heldFoodPictures,chickenPictures,rabbitPictures,deerPictures,stagAttackPictures,predatorPictures,predatorSpawns,zoomRange:[.7,1],checks:['packaged game world without editor APIs or cached drafts','matching approved migrations','bundled offline launch','isolated play snapshot','all chopping/animation states bundled','backpack and dropped-item artwork bundled offline','no retired player textures','production native renderer via CanvasKit software shim','held food in production native renderer','chickens in production native renderer','rabbits, held rabbit meal and both rabbit pickup sprites in production native renderer','doe and stag, held venison and both venison pickup sprites in production native renderer','animal health bars, dealt/received hit markers, and stag warning/charge/contact without a ground box in production native renderer','representative pair/solitary habitats, separate wolf bite/lunge and boar tusk/charge tells and actual contact poses on streamed terrain','both zoom limits in both orientations','safe repeated renderer disposal'],physicalIPhoneTested:false};
  fs.writeFileSync('docs/NATIVE-VERIFICATION.json',JSON.stringify(report,null,2)+'\n');console.log(JSON.stringify(report,null,2));
 }finally{globalThis.fetch=originalFetch;globalThis.requestAnimationFrame=originalRAF;fs.rmSync(temp,{recursive:true,force:true});delete globalThis.__testStorage;delete globalThis.__testSkia}

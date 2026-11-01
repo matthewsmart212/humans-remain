@@ -1,4 +1,5 @@
 import {createWeatherRenderer,type WeatherView} from './weather-skia';
+import {createDrawingPath} from './skia-drawing-path';
 import {createGroundLightningRenderer} from './ground-lightning-skia';
 import type {GroundStrike} from './ground-lightning';
 import {createArtworkSilhouettes} from './weather-silhouette';
@@ -21,7 +22,7 @@ import type {WaterfallSampling} from './waterfalls';
 import {PaintStyle,BlendMode,TileMode,FilterMode,MipmapMode,VertexMode,ClipOp,AlphaType,ColorType} from '@shopify/react-native-skia/lib/module/skia/types';
 import type {SkCanvas,SkImage,SkShader,SkSurface,SkFont,SkPaint,Skia as SkiaApi} from '@shopify/react-native-skia';
 import type {GamePerformanceRecorder} from './performance-recording';
-const open=(name:string,run:()=>unknown)=>{try{return run()}catch(e){const error=e instanceof Error?e:Error(String(e));error.message=`${name}: ${error.message}`;throw error}};
+const open=<T,>(name:string,run:()=>T):T=>{try{return run()}catch(e){const error=e instanceof Error?e:Error(String(e));error.message=`${name}: ${error.message}`;throw error}};
 export function createSkiaAdapter(Skia:Pick<typeof SkiaApi,'Paint'|'Shader'|'Color'|'Surface'|'Matrix'|'Path'|'PathEffect'|'XYWHRect'|'ColorFilter'|'ImageFilter'|'MakeVertices'|'RuntimeEffect'|'Image'|'Data'>,diagnostics?:GamePerformanceRecorder){
 const lighting=open('Night lighting',()=>createNightLighting(Skia)),weather=open('Weather',()=>createWeatherRenderer(Skia)),silhouettes=open('Silhouettes',()=>createArtworkSilhouettes(Skia,diagnostics)),lightning=open('Lightning',()=>createGroundLightningRenderer(Skia));
 const groundColour=(()=>{const effect=Skia.RuntimeEffect.Make(WORLD_GROUND_COLOUR_SHADER);if(!effect)throw Error('The terrain colour shader could not compile.');return effect})();
@@ -109,7 +110,7 @@ class SkiaContext{
  private trash:{dispose:()=>void}[]=[];
  private keep<T extends {dispose:()=>void}>(v:T){this.trash.push(v);return v}
  dispose(){this.trash.forEach(v=>v.dispose());this.trash=[]}
- private path=this.keep(Skia.Path.Make());private dash:number[]=[];private states:any[]=[];
+ private path=this.keep(createDrawingPath(Skia));private dash:number[]=[];private states:any[]=[];
  constructor(private c:SkCanvas,width:number,height:number,private face:SkFont){this.canvas={width,height}}
  private paint(stroke=false){const p=this.keep(Skia.Paint());p.setAntiAlias(true);const color=stroke?this.strokeStyle:this.fillStyle;if(typeof color==='string')p.setColor(Skia.Color(color));else p.setShader(this.keep(color.shader()));p.setAlphaf(p.getAlphaf()*this.globalAlpha);p.setStyle(stroke?PaintStyle.Stroke:PaintStyle.Fill);p.setStrokeWidth(this.lineWidth);p.setBlendMode(this.globalCompositeOperation==='destination-out'?BlendMode.DstOut:BlendMode.SrcOver);if(stroke&&this.dash.length)p.setPathEffect(this.keep(Skia.PathEffect.MakeDash(this.dash,0)!));return p}
  save(){this.c.save();this.states.push({fillStyle:this.fillStyle,strokeStyle:this.strokeStyle,globalAlpha:this.globalAlpha,lineWidth:this.lineWidth,globalCompositeOperation:this.globalCompositeOperation,filter:this.filter,font:this.font,textAlign:this.textAlign,dash:[...this.dash]})}
@@ -229,14 +230,14 @@ class SkiaContext{
  clearRect(x:number,y:number,w:number,h:number){const p=this.keep(Skia.Paint());p.setBlendMode(BlendMode.Clear);this.c.drawRect(Skia.XYWHRect(x,y,w,h),p)}
  fillRect(x:number,y:number,w:number,h:number){this.c.drawRect(Skia.XYWHRect(x,y,w,h),this.paint())}
  strokeRect(x:number,y:number,w:number,h:number){this.c.drawRect(Skia.XYWHRect(x,y,w,h),this.paint(true))}
- beginPath(){this.path=this.keep(Skia.Path.Make())}
+ beginPath(){this.path=this.keep(createDrawingPath(Skia))}
  moveTo(x:number,y:number){this.path.moveTo(x,y)}lineTo(x:number,y:number){this.path.lineTo(x,y)}closePath(){this.path.close()}
- clip(){this.c.clipPath(this.path,ClipOp.Intersect,true)}
- clipOutsidePath(){this.c.clipPath(this.path,ClipOp.Difference,true)}
+ clip(){this.c.clipPath(this.path.path(),ClipOp.Intersect,true)}
+ clipOutsidePath(){this.c.clipPath(this.path.path(),ClipOp.Difference,true)}
  clipOutsideRect(x:number,y:number,width:number,height:number){this.c.clipRect(Skia.XYWHRect(x,y,width,height),ClipOp.Difference,false)}
  arc(x:number,y:number,r:number,start:number,end:number){this.path.addArc(Skia.XYWHRect(x-r,y-r,2*r,2*r),start*180/Math.PI,(end-start)*180/Math.PI)}
  ellipse(x:number,y:number,rx:number,ry:number){this.path.addOval(Skia.XYWHRect(x-rx,y-ry,rx*2,ry*2))}
- fill(){this.c.drawPath(this.path,this.paint())} stroke(){this.c.drawPath(this.path,this.paint(true))}
+ fill(){this.c.drawPath(this.path.path(),this.paint())} stroke(){this.c.drawPath(this.path.path(),this.paint(true))}
  setLineDash(d:number[]){this.dash=d}
  createRadialGradient(x:number,y:number,r0:number,_x:number,_y:number,r1:number){return new Gradient(x,y,r0,r1)}
  private text(s:string,x:number,y:number,stroke:boolean){this.face.setSize(Number(this.font.match(/([\d.]+)px/)?.[1]||30));const width=this.face.getGlyphWidths(this.face.getGlyphIDs(s)).reduce((a,b)=>a+b,0);this.c.drawText(s,this.textAlign==='center'?x-width/2:this.textAlign==='right'||this.textAlign==='end'?x-width:x,y,this.paint(stroke),this.face)}

@@ -5,7 +5,7 @@ import {PlayPinchZoom} from '../src/play-zoom';
  * Raw events on their common ancestor keep a pinch across both surfaces intact
  * without taking the native responder away from an action button. */
 export function createNativePlayZoom(options:{enabled:()=>boolean;getZoom:()=>number;setZoom:(zoom:number)=>void;onMinimumZoom?:()=>void;onPinchStart?:()=>void;minimumZoom?:()=>number;onGestureEnd?:(interrupted:boolean)=>void}){
- const pinch=new PlayPinchZoom(),ids=new Set<string>();let movementBlocked=false;
+ const pinch=new PlayPinchZoom(),ids=new Set<GestureResponderEvent['nativeEvent']['identifier']>();let movementBlocked=false;
  const cancel=()=>{const completed=movementBlocked;ids.clear();pinch.cancel();movementBlocked=false;if(completed&&options.enabled())options.onGestureEnd?.(true)};
  const update=(e:GestureResponderEvent,interrupted=false)=>{
   if(!options.enabled()){cancel();return}

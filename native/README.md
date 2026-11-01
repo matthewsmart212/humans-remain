@@ -1,8 +1,10 @@
 # Humans Remain for iPhone
 
-This Expo app plays the authored editor world through native Skia. It uses the
+This Expo app opens straight into Survival through native Skia. It uses the
 same simulation, Scrap Runner artwork, tree chopping, foliage contact, terrain
-streaming and bunker travel as web Play. The old factory mode is removed.
+streaming and bunker travel as web Play. There is no native world editor, editor
+sync, launch menu, testing sandbox or spawn panel. Existing progress resumes
+automatically; a first launch starts a fresh run.
 
 Open the parent project folder in Cursor, then:
 
@@ -12,9 +14,18 @@ npm ci
 npx expo start
 ```
 
-Use a compatible Expo Go build for SDK 57, or `npm run ios` on a Mac with Xcode
+After pulling an update, run `npm ci` again if dependencies changed and use
+`npx expo start --clear` to discard an old Metro bundle.
+
+Use a compatible Expo Go build for SDK 58, or `npm run ios` on a Mac with Xcode
 and signing configured. Keep the parent `src` and `public` folders alongside
 this folder. Read `../docs/APP-RUNTIME.md` for world syncing, offline fallback,
-controls, checks and device-testing limits.
+controls, checks and device-testing limits. The world and its artwork ship with
+the app and work offline. Saving a browser editor draft does not change the
+iPhone game; world updates are reviewed and bundled into a new app update.
 
-Survival progress saves in AsyncStorage on this device. Continue resumes it; New Survival run replaces it after confirmation. HQ blueprints, furnace restoration and the opening three night raids share their rules with the web game. The testing sandbox does not overwrite Survival saves. See `../docs/FIRST-EXPEDITION.md`.
+Survival progress saves in AsyncStorage on this device. New Survival run in the
+pause menu replaces it after confirmation. An unreadable save is kept and shown
+on the pause screen rather than silently overwritten. HQ blueprints, furnace
+restoration and the opening three night raids share their rules with the web
+game. See `../docs/FIRST-EXPEDITION.md`.

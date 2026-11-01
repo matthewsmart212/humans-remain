@@ -1,1 +1,1 @@
-{"extends":"expo/tsconfig.base","compilerOptions":{"strict":true,"lib":["ES2022","DOM"],"skipLibCheck":true},"include":["*.ts","*.tsx"]}
+{"extends":"expo/tsconfig.base","compilerOptions":{"strict":true,"lib":["ES2022","DOM"],"skipLibCheck":true,"paths":{"@shopify/react-native-skia":["./node_modules/@shopify/react-native-skia"],"@shopify/react-native-skia/*":["./node_modules/@shopify/react-native-skia/*"]}},"include":["*.ts","*.tsx"]}

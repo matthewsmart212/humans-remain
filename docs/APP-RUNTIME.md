@@ -16,10 +16,15 @@ npm ci
 npx expo start
 ```
 
-Use an Expo Go version compatible with this project's Expo SDK 57. A development
+Use an Expo Go version compatible with this project's Expo SDK 58. A development
 build can be launched with `npm run ios` on a Mac with Xcode and signing set up.
-The web editor does not run inside the native game. The app opens a clean game
-menu with Continue and New Survival run, then the painted field-kit HUD. Rotation clears held controls;
+The app loads its packaged world and opens directly into Survival with the
+painted field-kit HUD. It automatically resumes the device's existing expedition
+or starts a new one on first launch. The native app has no editor interface,
+editor sync, testing sandbox, spawn panel or main-menu detour. Its pause menu
+contains Resume and New Survival run. An ended run stays on the Run ended screen;
+an unreadable save stays preserved until the player confirms a new run.
+Rotation clears held controls;
 backgrounding pauses the game.
 
 ## Field-kit controls
@@ -67,16 +72,20 @@ persists through scene travel and pause; restarting a run restores 100%.
 Gesture updates write directly to the camera used by rendering and streaming,
 without React updates for each gesture sample. Editor zoom remains independent.
 
-The app first requests the latest **saved draft** from the editor. Press Save
-in the web editor to sync world changes to iPhone. Unsaved browser edits and
-browser-local weather/time preferences do not sync. Native starts in daylight
-and clear weather. A successfully loaded layout and artwork metadata are cached
-together. The included 4,465-placement snapshot also works on a first offline
-launch. New remote artwork is downloaded and cached on demand. If it cannot
-load, the previous complete world or bundled snapshot remains available.
+Native loads `native/assets/world-snapshot.json` with its bundled artwork.
+It does not request the world's editor APIs or read retired cached editor
+drafts. A clean launch works offline and never waits for the hosted editor.
+World changes ship with a reviewed snapshot and artwork in an app update;
+pressing Save in the browser editor alone no longer changes the iPhone game.
+Fresh runs start in daylight and clear weather. Continued runs retain their
+saved environment. Legacy/custom artwork referenced by an existing run can
+still use the renderer's artwork download fallback when necessary.
 
 Runs use a copy of the authored world: restarting resets the run without
-modifying the editor draft. Survival progress now saves locally on this device, including the active scene and bunker return route. The testing sandbox has a separate disposable session. See [the first expedition](FIRST-EXPEDITION.md) for progression, saving behavior and current validation.
+modifying the editor draft. Survival progress saves locally on this device,
+including the active scene and bunker return route. The browser keeps its editor
+and separate testing sandbox. See [the first expedition](FIRST-EXPEDITION.md) for
+progression, saving behavior and current validation.
 
 ## Rendering and cleanup
 
@@ -92,6 +101,12 @@ touch, keyboard and assistive activation without sending an action to the game.
 Sprint sits 10px lower in the right-thumb arc. Context names such as Camp well
 and Cooking fire appear immediately left of the main action as its tooltip.
 Both web Play and the native HUD use the same arrangement.
+
+The native SDK uses Skia 2.14's immutable paths. Shared rendering builds paths
+with `PathBuilder`, retaining each snapshot until its geometry changes. The
+older browser Skia keeps its existing mutable path API through the same small
+adapter. Native TypeScript resolves shared graphics imports against the native
+dependency, so browser types cannot hide an iOS API mismatch.
 
 The renderer records one Skia Picture for the scene. HUD data is sampled every
 100 ms in an isolated component; React updates only when displayed values or
@@ -127,6 +142,8 @@ texture budget.
 ```sh
 npm ci
 npm run typecheck
+node scripts/check-native-game-launch.mjs
+node scripts/check-native-skia-paths.mjs
 node scripts/check-native-authored-world.mjs
 node scripts/check-clean-play.mjs
 node scripts/check-field-kit.mjs
@@ -138,6 +155,14 @@ cd native
 npm run typecheck
 npm run export:ios
 ```
+
+The launch check executes the native Game component and its effects with
+platform-service shims and the real world loader, simulation, save codec and
+scene travel. It covers direct launch, automatic resume, damaged saves, ended
+runs, backgrounding during startup and stage-specific errors. The graphics
+compatibility check renders paths, clipping, rain, fog and lightning with both
+the browser and native dependency versions and rejects removed native path
+mutation methods.
 
 Native rendering checks run the production native recorder/image queue through
 a CanvasKit software shim in portrait and landscape. Metro's iOS export checks

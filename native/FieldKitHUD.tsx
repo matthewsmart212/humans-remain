@@ -55,7 +55,7 @@ function MapGlyph(){return <View pointerEvents="none" style={{width:22,height:20
  * Raw identifiers keep that drag independent of action buttons across the screen. */
 type MovementGestures={isPinching?:()=>boolean;onMovementTouchStart?:(e:GestureResponderEvent)=>void};
 export function FieldKitMovement({input,width,height,isPinching,onMovementTouchStart}:{input:React.MutableRefObject<Vec>;width:number;height:number}&MovementGestures){
- const active=useRef<{id:string;x:number;y:number;localX:number;localY:number}|null>(null);
+ const active=useRef<{id:NativeTouchEvent['identifier'];x:number;y:number;localX:number;localY:number}|null>(null);
  const [trail,setTrail]=useState<MovementTrail|null>(null);
  const clear=useCallback(()=>{active.current=null;input.current={x:0,y:0};setTrail(null)},[input]);
  useEffect(()=>{clear()},[clear,width,height]);
