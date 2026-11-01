@@ -170,7 +170,7 @@ function Game(){
      setStatus('Preparing game…');
      renderer=await stage('Open renderer',()=>createNativeRenderer(playView.current,gamePerformance,preparation));if(!live){renderer.dispose();return}
      // Complete placed animations, chopping, stumps and movement before Play.
-     // Distant terrain detail retains the same bounded streaming as web.
+     // Detailed terrain uses bounded native lookahead and a startup buffer.
      await stage('Warm artwork',()=>renderer!.warmImages({...EDITOR_IMAGE_SOURCES,...editorTerrainDetail(saved.layout.terrainImage),...requiredImages(saved.layout.items.map(p=>p.assetId),saved.layout.terrainImage)}));
      if(!live){renderer?.dispose();return}
      const resources=await stage('Open scenes',()=>new SceneResourceCache(SCENES,renderer!.warmImages,renderer!.releaseImages)),outdoor=new OutdoorTerrainStream(renderer.warmImages,renderer.releaseImages,setStatus);
@@ -178,6 +178,8 @@ function Game(){
      local={renderer,resources,outdoor,saved,reduced,travel:undefined as unknown as SceneTravel};runtime.current=local;await stage('Restore survival',()=>restoreSurvival(local!));
      const w=world.current!,size=dimensions.current,c=editorCamera(size.width,size.height,w,playView.current,1);
      await stage('Settle terrain',async()=>{outdoor.update({x:c.x,y:c.y,width:size.width/c.scale,height:size.height/c.scale},w.player,usesPaintedHomeTerrain(w.layout?.terrainImage));await outdoor.settled();w.outdoorReady=outdoor.ready});
+     if(!live){stop();return}
+     await stage('Prepare nearby detail',()=>renderer!.prepareTerrain(w,size.width,size.height));
      if(!live){stop();return}
      // Present a complete first frame before removing the loading screen.
      picture.value=await stage('Draw game',()=>renderer!.draw(w,size.width,size.height,local!.travel.opacity));

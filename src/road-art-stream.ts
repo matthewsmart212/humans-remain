@@ -5,7 +5,8 @@ import {artworkFailureDetails,type ArtworkPriority} from './artwork-loading';
 import type {GamePerformanceRecorder} from './performance-recording';
 export const ROAD_DETAIL_LIMIT=10; // retained for older diagnostic callers
 type Patch={key:string;x:number;y:number;width:number;height:number;bytes?:number;minPixelsPerWorldUnit?:number;maxPixelsPerWorldUnit?:number};
-export type ArtworkStreamConfig={patches:readonly Patch[];sources:Record<string,string>;maxBytes?:number;limit?:number;name?:string};
+export type ArtworkStreamPolicy={prefetchMargin:number;retainMargin:number;lookaheadMs:number;maxLead:number;residencyMs:number};
+export type ArtworkStreamConfig={patches:readonly Patch[];sources:Record<string,string>;maxBytes?:number;limit?:number;name?:string;policy?:ArtworkStreamPolicy};
 const PREFETCH_MARGIN=650,RETAIN_MARGIN=1600,LOOKAHEAD_MS=1600;
 const PREFETCH_RESIDENCY_MS=1500,PREFETCH_RELOAD_MS=2000;
 /** Visible texels are mandatory. Speculative work and recent textures share a
@@ -22,12 +23,17 @@ export class RoadArtStream{
  private failed=new Map<string,number>();
  private counters={requested:0,completed:0,failures:0,evictions:0,rapidEvictions:0,recentReloads:0};
  private disposed=false;
+ private tasks=new Set<Promise<void>>();
+ private missingSince=new Map<string,number>();
+ private lead=0;
+ private policy:ArtworkStreamPolicy;
  private lastUpdate=-Infinity;
  private lastView?:TerrainView;
  private budget:number;
  private sizes=new Map<string,number>();
  private patches:(Patch&{b:TerrainView})[];
  constructor(private load:(sources:Record<string,string>,priority:ArtworkPriority)=>Promise<void>,private release:(keys:string[])=>void,private config:ArtworkStreamConfig={patches:streamPatches('road'),sources:TERRAIN_CHUNK_IMAGES,maxBytes:48*1024*1024,name:'roads'},private promote?:(keys:string[])=>void,private diagnostics?:GamePerformanceRecorder){
+  this.policy=config.policy??{prefetchMargin:PREFETCH_MARGIN,retainMargin:RETAIN_MARGIN,lookaheadMs:LOOKAHEAD_MS,maxLead:750,residencyMs:PREFETCH_RESIDENCY_MS};
   const s=EAST_TERRAIN_SCALE;this.budget=config.maxBytes??config.limit??48*1024*1024;
   this.patches=config.patches.map(p=>{this.sizes.set(p.key,p.bytes??1);return {...p,b:{x:(p.x-600)*s,y:(p.y-600)*s,width:p.width*s,height:p.height*s}}});
  }
@@ -37,15 +43,23 @@ export class RoadArtStream{
   let dx=0,dy=0;
   if(previous&&elapsed<1000&&Math.abs(previous.width-view.width)<view.width*.05&&Math.abs(previous.height-view.height)<view.height*.05){
    const mx=view.x-previous.x,my=view.y-previous.y,d=Math.hypot(mx,my);
-   if(d&&d/elapsed<1){const lead=Math.min(750,d*LOOKAHEAD_MS/elapsed);dx=mx/d*lead;dy=my/d*lead}
+   if(d&&d/elapsed<1){const lead=Math.min(this.policy.maxLead,d*this.policy.lookaheadMs/elapsed);dx=mx/d*lead;dy=my/d*lead}
   }
+  this.lead=Math.hypot(dx,dy);
   const ahead={...view,x:view.x+dx,y:view.y+dy},cx=ahead.x+view.width/2,cy=ahead.y+view.height/2;
   const eligible=this.patches.filter(p=>pixelsPerWorldUnit>=(p.minPixelsPerWorldUnit??(this.ready.has(p.key)?.4:.45))&&pixelsPerWorldUnit<(p.maxPixelsPerWorldUnit??Infinity));
-  this.kept=new Set(this.patches.filter(p=>pixelsPerWorldUnit>=.12&&terrainIntersects(p.b,view,RETAIN_MARGIN)).map(p=>p.key));
-  const candidates=eligible.filter(p=>terrainIntersects(p.b,view,PREFETCH_MARGIN)||terrainIntersects(p.b,ahead,PREFETCH_MARGIN))
+  this.kept=new Set(this.patches.filter(p=>pixelsPerWorldUnit>=.12&&terrainIntersects(p.b,view,this.policy.retainMargin)).map(p=>p.key));
+  const candidates=eligible.filter(p=>terrainIntersects(p.b,view,this.policy.prefetchMargin)||terrainIntersects(p.b,ahead,this.policy.prefetchMargin))
    .map(p=>({...p,priority:terrainIntersects(p.b,view)?0:terrainIntersects(p.b,ahead)?1:2,distance:Math.hypot(p.b.x+p.b.width/2-cx,p.b.y+p.b.height/2-cy)-(this.ready.has(p.key)||this.pending.has(p.key)?180:0)}))
    .sort((a,b)=>a.priority-b.priority||a.distance-b.distance);
   this.visible=new Set(candidates.filter(p=>p.priority===0).map(p=>p.key));
+  // One event per newly missing visible key, rather than per frame. Re-entering
+  // an unready tile starts a new interval; completion reports time on screen.
+  for(const key of this.missingSince.keys())if(!this.visible.has(key)||this.ready.has(key))this.missingSince.delete(key);
+  for(const key of this.visible)if(!this.ready.has(key)&&!this.missingSince.has(key)){
+   this.missingSince.set(key,now);
+   if(this.diagnostics?.recording)this.diagnostics.trace(performance.now(),'stream-visible-miss',0,{layer:this.config.name||'terrain',key,pending:this.pending.has(key),bytes:this.bytes(key),leadWorldUnits:Math.round(this.lead)});
+  }
   // Visible footprint is naturally bounded by viewport and selected mip level.
   // Never strand an on-screen section because several paintings overlap.
   this.budget=Math.max(this.config.maxBytes??this.config.limit??0,[...this.visible].reduce((n,k)=>n+this.bytes(k),0));
@@ -66,11 +80,11 @@ export class RoadArtStream{
   this.pump(now);
  }
  private bytes(key:string){return this.sizes.get(key)??1}
- private isRecent(key:string,now:number){const since=this.residentSince.get(key);return since!==undefined&&now-since<PREFETCH_RESIDENCY_MS}
+ private isRecent(key:string,now:number){const since=this.residentSince.get(key);return since!==undefined&&now-since<this.policy.residencyMs}
  private evict(key:string,now:number,reason:string){
   const ageMs=Math.max(0,now-(this.residentSince.get(key)??now));
   this.ready.delete(key);this.residentSince.delete(key);this.evictedAt.set(key,now);this.counters.evictions++;
-  if(ageMs<PREFETCH_RESIDENCY_MS)this.counters.rapidEvictions++;
+  if(ageMs<this.policy.residencyMs)this.counters.rapidEvictions++;
   if(this.diagnostics?.recording)this.diagnostics.trace(performance.now(),'stream-evict',0,{layer:this.config.name||'terrain',key,bytes:this.bytes(key),ageMs,reason});this.release([key]);
  }
  private pump(now=Date.now()){
@@ -96,16 +110,22 @@ export class RoadArtStream{
    if(this.evictedAt.has(key)&&now-this.evictedAt.get(key)!<PREFETCH_RELOAD_MS)this.counters.recentReloads++;
    const trace=this.diagnostics,started=trace?.recording?performance.now():undefined,session=trace?.session;
    if(started!==undefined)trace!.trace(started,'stream-request',0,{layer:this.config.name||'terrain',key,priority,bytes:this.bytes(key)},session);
-   void this.load({[key]:this.config.sources[key]},priority).then(()=>{
+   const task=this.load({[key]:this.config.sources[key]},priority).then(()=>{
     // Completion moves bytes atomically from pending to resident. Otherwise
     // another completion's pump can count the same image twice and evict it.
     this.pending.delete(key);this.pendingSince.delete(key);
     if(this.disposed||!this.kept.has(key)){this.release([key]);return}
     this.ready.add(key);this.residentSince.set(key,Date.now());this.failed.delete(key);this.counters.completed++;
-    if(started!==undefined)trace!.trace(started,'stream-ready',performance.now()-started,{layer:this.config.name||'terrain',key},session);
+    if(started!==undefined)trace!.trace(started,'stream-ready',performance.now()-started,{layer:this.config.name||'terrain',key,visibleOnReady:this.visible.has(key),visibleWaitMs:this.missingSince.has(key)?Math.max(0,Date.now()-this.missingSince.get(key)!):0},session);
+    this.missingSince.delete(key);
    }).catch(error=>{if(!this.disposed){this.failed.set(key,Date.now()+5000);this.counters.failures++;if(started!==undefined)trace!.trace(started,'stream-failed',performance.now()-started,{layer:this.config.name||'terrain',key,retryMs:5000,...artworkFailureDetails(error)},session)}}).finally(()=>{this.pending.delete(key);this.pendingSince.delete(key);this.pump()});
+   this.tasks.add(task);void task.finally(()=>this.tasks.delete(task));
   }
  }
+ /** Drain all admitted nearby work, including requests pumped by completion.
+  * Failed speculative loads keep their normal backoff; startup checks visible
+  * coverage separately and must not wait forever on a failed background tile. */
+ async settled(){while(this.tasks.size)await Promise.all([...this.tasks])}
  get residentCount(){return this.ready.size}
  get pendingCount(){return this.pending.size}
  get residentBytes(){let n=0;for(const k of this.ready)n+=this.bytes(k);return n}
@@ -113,8 +133,8 @@ export class RoadArtStream{
  get visibleMissing(){return [...this.visible].filter(k=>!this.ready.has(k)).length}
  stats(now=Date.now()){
   const missingKeys=[...this.visible].filter(k=>!this.ready.has(k));
-  return {bytes:this.residentBytes+this.pendingBytes,missing:missingKeys.length,residentBytes:this.residentBytes,pendingBytes:this.pendingBytes,budgetBytes:this.budget,resident:this.ready.size,pending:this.pending.size,wanted:this.wanted.length,visible:this.visible.size,...this.counters,
+  return {prefetchMargin:this.policy.prefetchMargin,lookaheadMs:this.policy.lookaheadMs,leadWorldUnits:Math.round(this.lead),retainMargin:this.policy.retainMargin,residencyMs:this.policy.residencyMs,bytes:this.residentBytes+this.pendingBytes,missing:missingKeys.length,residentBytes:this.residentBytes,pendingBytes:this.pendingBytes,budgetBytes:this.budget,resident:this.ready.size,pending:this.pending.size,wanted:this.wanted.length,visible:this.visible.size,...this.counters,
    missingDetails:missingKeys.slice(0,12).map(key=>({key,state:this.pending.has(key)?'loading-or-warming':(this.failed.get(key)||0)>now?'retry-backoff':this.pending.size>=2?'waiting-for-slot':'waiting-for-budget',pendingMs:this.pendingSince.has(key)?Math.max(0,now-this.pendingSince.get(key)!):0,retryInMs:Math.max(0,(this.failed.get(key)||0)-now),bytes:this.bytes(key)})),missingDetailsOmitted:Math.max(0,missingKeys.length-12)};
  }
- dispose(){if(this.disposed)return;this.disposed=true;this.release([...this.ready]);this.ready.clear();this.residentSince.clear();this.evictedAt.clear();this.wanted=[];this.kept.clear();this.failed.clear()}
+ dispose(){if(this.disposed)return;this.disposed=true;this.release([...this.ready]);this.ready.clear();this.residentSince.clear();this.evictedAt.clear();this.wanted=[];this.kept.clear();this.failed.clear();this.missingSince.clear()}
 }

@@ -104,9 +104,15 @@ export async function createNativeRenderer(view:EditorView={...PLAY_VIEW},diagno
  };
  const releaseImages=(keys:string[])=>{for(const key of keys)delete prepared[key];loader.release(keys);revision++};
  const streamSources={...TERRAIN_CHUNK_IMAGES,...RIVER_DETAIL_IMAGES};
- const streams=open('Terrain streams',()=>createTerrainArtStreams(warmImages,releaseImages,keys=>{loader.promote(Object.fromEntries(keys.map(k=>[k,streamSources[k]])));const images=new Set(keys.map(k=>loader.images[k]));for(const job of queue)if(images.has(job.image))job.priority='foreground'},diagnostics));
+ const streams=open('Terrain streams',()=>createTerrainArtStreams(warmImages,releaseImages,keys=>{loader.promote(Object.fromEntries(keys.map(k=>[k,streamSources[k]])));const images=new Set(keys.map(k=>loader.images[k]));for(const job of queue)if(images.has(job.image))job.priority='foreground'},diagnostics,'native'));
  return {
   warmImages,releaseImages,setFrameManaged,get revision(){return revision},
+  async prepareTerrain(world:World,width:number,height:number){
+   // Use the actual draw/culling/LOD hooks to select exactly the same artwork
+   // as gameplay. Finish warming the admitted buffer before removing loading.
+   const preview=this.draw(world,width,height);preview.dispose();
+   await streams.settled();
+  },
   textureStats:()=>({graphics:{backend:'native-skia',shaderFieldBytes:adapter.shaderFieldBytes()},roads:streams.roads.stats(),camp:streams.camp.stats(),rivers:streams.rivers.stats(),artwork:{...loader.stats(),warming:queue.length,warmQueue:queue.slice(0,12).map(job=>({key:job.key,priority:job.priority,ageMs:Math.round(performance.now()-job.queuedAt)}))}}),
   draw(world:World,width:number,height:number,fade=0){
    const recorder=Skia.PictureRecorder(),canvas=recorder.beginRecording(Skia.XYWHRect(0,0,width,height));

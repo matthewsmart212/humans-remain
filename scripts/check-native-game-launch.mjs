@@ -23,10 +23,11 @@ async function until(predicate){for(let i=0;i<1000;i++){if(predicate())return;aw
 try{
  await build({stdin:{contents:modules.map(id=>`export * from './src/${id}';`).join('')+"export * from './native/game-world';export * from './native/play-zoom';export * from './native/frame-diagnostics';export * from './native/run-save-store';export * from './native/frame-work-scheduler';",resolveDir:process.cwd()},bundle:true,platform:'node',format:'cjs',outfile:path.join(temp,'model.cjs'),logLevel:'error'});
  const m=require(path.join(temp,'model.cjs'));
- function app(saved,{background=false,failArtwork=false,holdArtwork=false}={}){
+ function app(saved,{background=false,failArtwork=false,holdArtwork=false,holdTerrain=false,failTerrain=false}={}){
   const storage=new Map([['safety-last-authored-world-v2','invalid retired editor cache']]);if(saved instanceof Map){for(const entry of saved)storage.set(...entry)}else if(saved!==undefined)storage.set(m.RUN_SAVE_KEY,saved);
   const slots=[],effects=[],timers=new Map(),frames=new Map(),events=new Map(),reads=[],writes=[],errors=[],draws=[],preparationFrames=[];
-  let cursor=0,id=0,releaseArtwork;
+  let cursor=0,id=0,releaseArtwork,releaseTerrain;
+  const terrainGate=holdTerrain?new Promise(resolve=>releaseTerrain=resolve):Promise.resolve();
   const artworkGate=holdArtwork?new Promise(resolve=>releaseArtwork=resolve):Promise.resolve();
   const slot=initialize=>{const i=cursor++;return slots[i]??=initialize()};
   const useRef=value=>slot(()=>({current:value}));
@@ -45,7 +46,7 @@ try{
     return{...legacy,gesture,registration,amount,uiPinching,animateTo:target=>{const value=Math.max(ref.current.minimumZoom?.()??.7,Math.min(1,target));amount.value=value;ref.current.setZoom(value)},stopAnimation:noop,syncConfig:noop};
    });
   };
-  const renderer={revision:1,frameManaged:false,setFrameManaged(value){this.frameManaged=value},warmImages:async()=>{await artworkGate;if(failArtwork)throw new TypeError('artwork failed')},releaseImages:noop,dispose:noop,draw:(world,width,height)=>{draws.push({world,width,height});return {frame:draws.length}},textureStats:()=>undefined};
+  const renderer={revision:1,frameManaged:false,setFrameManaged(value){this.frameManaged=value},warmImages:async()=>{await artworkGate;if(failArtwork)throw new TypeError('artwork failed')},prepareTerrain:async()=>{renderer.preparingTerrain=true;await terrainGate;if(failTerrain)throw Error('terrain failed');renderer.terrainPrepared=true},releaseImages:noop,dispose:noop,draw:(world,width,height)=>{draws.push({world,width,height});return {frame:draws.length}},textureStats:()=>undefined};
   const ctx={...m,useNativePlayZoom,GestureDetector:'GestureDetector',NativePinchSurface:function NativePinchSurface(){},NativeFrameWorkScheduler:class extends m.NativeFrameWorkScheduler{drain(...args){preparationFrames.push(args);return super.drain(...args)}},React,Profiler:React.Profiler,useCallback:fn=>useMemo(()=>fn),useRef,useState,useMemo,useEffect,Error,console:{error:(...args)=>errors.push(args)},performance,zero:()=>({x:0,y:0}),
    __DEV__:true,process:{env:{}},Platform:{OS:'ios',Version:'test',constants:{reactNativeVersion:{major:0,minor:88,patch:1}}},PixelRatio:{get:()=>3},require:()=>1,View:'View',Text:'Text',Pressable:'Pressable',ScrollView:'ScrollView',StatusBar:'StatusBar',Canvas:'Canvas',Picture:'Picture',
    StyleSheet:{create:v=>v,absoluteFill:{}},useWindowDimensions:()=>({width:844,height:390}),useSafeAreaInsets:()=>({top:0,bottom:0,left:0,right:0}),
@@ -70,14 +71,18 @@ try{
   render();
   const flush=async()=>{const store=slots.map(s=>s.value).find(value=>value instanceof m.NativeRunSaveStore||value instanceof m.RunSaveWriter);assert(store,'The production component owns a real save store');await store.flush()};
   const readSaved=async()=>{await flush();return new m.NativeRunSaveStore({getItem:async key=>storage.get(key)??null,setItem:async(key,value)=>{storage.set(key,value)}}).load()};
-  return{render,labels,hud,press,frame,draws,reads,writes,errors,storage,ctx,releaseArtwork,renderer,flush,readSaved,preparationFrames,
+  return{render,labels,hud,press,frame,draws,reads,writes,errors,storage,ctx,releaseArtwork,releaseTerrain,renderer,flush,readSaved,preparationFrames,
    state:value=>events.get('change')?.(value),memoryWarning:()=>events.get('memoryWarning')?.(),autosave:()=>{for(const timer of timers.values())timer()},
    settled:()=>until(()=>Boolean(hud())||/Game paused|Run ended|Unable to open game/.test(labels())),
    close:()=>{for(const s of slots)s.cleanup?.()},
   };
  }
+ const gatedTerrain=app(undefined,{holdTerrain:true});await until(()=>gatedTerrain.renderer.preparingTerrain);
+ assert(!gatedTerrain.hud(),'No movement/HUD before detailed terrain is prepared');assert.equal(gatedTerrain.draws.length,0,'Final frame waits for detail');assert(!gatedTerrain.renderer.frameManaged,'Startup warming must not depend on gameplay frames');
+ gatedTerrain.releaseTerrain();await gatedTerrain.settled();assert(gatedTerrain.hud());gatedTerrain.close();
+ const brokenTerrain=app(undefined,{failTerrain:true});await brokenTerrain.settled();assert(brokenTerrain.labels().includes('Prepare nearby detail: terrain failed'));assert(brokenTerrain.labels().includes('Retry'));assert(!brokenTerrain.hud());brokenTerrain.close();
  const cold=app();await cold.settled();assert(cold.hud(),'First launch goes straight to the HUD');
- const world=cold.hud().props.world.current;assert(world.progression,'Native always starts Survival');assert(cold.draws.length,'The first scene is drawn before gameplay');assert(cold.renderer.frameManaged,'Artwork preparation joins gameplay budgeting after startup');
+ const world=cold.hud().props.world.current;assert(world.progression,'Native always starts Survival');assert(cold.renderer.terrainPrepared,'Nearby detail is prepared before gameplay');assert(cold.draws.length,'The first scene is drawn before gameplay');assert(cold.renderer.frameManaged,'Artwork preparation joins gameplay budgeting after startup');
  assert.deepEqual(cold.reads,[m.RUN_SAVE_KEY],'No editor cache or web service is consulted');
  for(const label of ['Continue game','Main menu','Open testing sandbox','Spawn tools','editor'])assert(!cold.labels().includes(label));
  const tick=world.tick;cold.frame(1000);cold.frame(1034);assert(world.tick>tick,'The game simulation starts without a Play button');

@@ -172,3 +172,38 @@ subpath reaching a tile is drawn, compares tiled views with the previous
 renderer, and checks for seams and double blending. The launch harness also
 checks that tiles render only during play frames, from the pinch store. These
 are host checks, not physical-iPhone FPS or visual smoothness measurements.
+
+## Sprint terrain preparation
+
+Native detail streaming uses 3.2 seconds of velocity lookahead (previously 1.6),
+a 1,000-world-unit surrounding margin (previously 650), and at most 1,500 units
+of directional lead. Teleports, pauses and substantial camera-size changes do
+not extrapolate velocity. Nearby decoded detail receives a four-second residency
+grace; visible terrain can still reclaim speculative space immediately. The
+retention radius is 2,800 units so the extended lookahead is not immediately
+discarded. Roads/camp/rivers have baseline budgets of 64/64/28 MiB respectively,
+versus 48/48/20 previously. These describe stream-owned decoded bytes, not total
+process memory or guaranteed GPU residency. Visible coverage can raise a budget
+floor at unusual viewport/zoom sizes. Resolution thresholds and artwork remain
+unchanged; browser streaming retains its previous settings.
+
+Startup now exercises the actual drawing/LOD selectors while the loading screen
+is visible, disposes that temporary picture, and waits for all admitted nearby
+detail work before publishing the gameplay frame. It does not preload the whole
+world. Failed visible detail produces a retryable startup error; failed
+speculative work retains backoff rather than blocking startup forever. Warming
+continues to use the standalone startup pump until gameplay begins, then shares
+the frame scheduler. This prepares decoded images, not verified UI-thread GPU
+uploads, so it cannot eliminate every first-use graphics stall.
+
+`stream-visible-miss` identifies a detail image that reached the view before it
+was ready. `stream-ready` includes `visibleOnReady` and `visibleWaitMs`; stream
+snapshots include policy margins and current directional lead. Compare these
+with `native-texture-warm` and hitch captures on a sprint recording. Coincidence
+is evidence to investigate, not proof that loading caused a displayed-frame gap.
+
+Run `node scripts/check-native-terrain-prefetch.mjs`,
+`node scripts/check-native-preparation.mjs` and
+`node scripts/check-native-game-launch.mjs`. These cover delayed preparation,
+startup gating/failure, native-only policy selection, manifest coverage, byte
+budgets and stale completions. They do not measure iPhone FPS.

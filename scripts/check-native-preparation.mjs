@@ -82,7 +82,7 @@ try{
   b.onLoad({filter:/.*/,namespace:'native-fixture'},a=>({contents:modules[a.path],loader:'js'}));
   b.onLoad({filter:/\.(webp|png|jpg|ttf)$/},a=>({contents:`module.exports=${JSON.stringify(a.path)};`,loader:'js'}));
   b.onLoad({filter:/[\/]skia-adapter\.ts$/},()=>({contents:'export const createSkiaAdapter=()=>({releaseImage(){},disposeLighting(){},shaderFieldBytes:()=>0});',loader:'js'}));
-  b.onLoad({filter:/[\/]terrain-art-streams\.ts$/},()=>({contents:'const stream=()=>({update(){},stats:()=>({})});export const createTerrainArtStreams=()=>({roads:stream(),camp:stream(),rivers:stream(),dispose(){}});',loader:'js'}));
+  b.onLoad({filter:/[\/]terrain-art-streams\.ts$/},()=>({contents:'const stream=()=>({update(){},stats:()=>({})});export const createTerrainArtStreams=(_load,_release,_promote,_diagnostics,profile)=>{globalThis.__terrainProfile=profile;return {roads:stream(),camp:stream(),rivers:stream(),settled:()=>globalThis.__terrainGate,dispose(){}}};',loader:'js'}));
  }}]});
  const {createNativeRenderer}=require(path.join(temp,'renderer.cjs'));
  const shared=new NativeFrameWorkScheduler(),renderer=await createNativeRenderer(undefined,undefined,shared);
@@ -90,6 +90,13 @@ try{
  const boot=renderer.warmImages({boot:'fixture://boot'});await flush();
  assert.equal(decoded.length,0);assert.equal(raf.length,1);
  raf.shift()(performance.now());await boot;assert.deepEqual(decoded,['fixture://boot']);
+ assert.equal(globalThis.__terrainProfile,'native','Only the native renderer opts into the larger buffer');
+ const draw=renderer.draw;let releaseTerrain,previewDisposed=false,prepared=false;
+ globalThis.__terrainGate=new Promise(resolve=>releaseTerrain=resolve);
+ renderer.draw=()=>({dispose(){previewDisposed=true}});
+ const terrain=renderer.prepareTerrain({},844,390).then(()=>prepared=true);await flush();
+ assert(previewDisposed,'Temporary startup picture releases its references');assert(!prepared,'Renderer waits for admitted detail loads');
+ releaseTerrain();await terrain;assert(prepared);renderer.draw=draw;
  renderer.setFrameManaged(true);
  const gameplay=renderer.warmImages({visible:'fixture://visible'},'foreground');await flush();
  assert.equal(raf.length,0,'Managed warm does not schedule an independent callback');
