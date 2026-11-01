@@ -13,6 +13,10 @@ export type PerformanceSample=Record<string,unknown>;
 type Event={elapsedMs:number;type:string;detail:string};
 export type PerformanceSummary={frames:number;activeSeconds:number;wallSeconds:number;averageFps:number;meanFrameMs:number;p95FrameMs:number;p99FrameMs:number;worstFrameMs:number;meanUpdateCpuMs:number;meanRenderCpuMs:number;worstRenderCpuMs:number;worstRenderStage:string;worstRenderStageMs:number;over33ms:number;over50ms:number;over100ms:number;simulationSteps:number;simulationClampedMs:number;stopReason:string};
 const phaseLabels=['Surface setup','Texture preparation','Texture flush','World drawing','Render flush','Cleanup'];
+const PHASE_NAMES:Record<PerformancePhase,string>={surfaceMs:'Surface setup',textureDrawMs:'Texture preparation',textureFlushMs:'Texture flush',worldDrawMs:'World drawing',submitFlushMs:'Render flush',cleanupMs:'Cleanup',shaderBuildMs:'Shader builds',silhouetteBuildMs:'Silhouette builds'};
+export type PerformanceStageStat={key:PerformancePhase;label:string;meanMs:number;maxMs:number;shareOfRender:number;spikesOver8ms:number};
+export type PerformanceHitch={atSeconds:number;peakMs:number;repeats:number;frame:{frameMs:number;updateCpuMs:number;renderCpuMs:number;slowestStage:string}|null;activity:{stage:string;count:number;totalMs:number}[]};
+export type PerformanceAnalysis={cpuSplit:{updateShare:number;renderShare:number;simulationStepsPerFrame:number};stages:PerformanceStageStat[];hitches:PerformanceHitch[];findings:string[]};
 const round=(v:number)=>Math.round(v*1000)/1000;
 const positive=(v:number)=>Number.isFinite(v)?Math.max(0,v):0;
 
@@ -49,6 +53,7 @@ export class GamePerformanceRecorder{
  private live={fps:0,frameMs:0,renderMs:0,worstMs:0};
  private lastLive=-Infinity;
  private cachedSummary:PerformanceSummary|null=null;
+ private cachedAnalysis:PerformanceAnalysis|null=null;
  constructor(private readonly limits:{frames:number;wallMs:number}=PERFORMANCE_LIMITS){}
  get enabled(){return this.overlay||this.recording}
  get hasLog(){return !!this.data}
@@ -71,12 +76,12 @@ export class GamePerformanceRecorder{
   this.phases=new Float32Array(this.limits.frames*PERFORMANCE_PHASES.length);this.links=new Uint8Array(this.limits.frames);
   this.generation++;this.history.clear();this.phaseTotals.fill(0);
   this.count=0;this.started=now;this.ended=0;this.startedIso=new Date().toISOString();this.reason='';
-  this.metadata=metadata;this.samples=[];this.events=[];this.cachedSummary=null;this.nextSample=now;
+  this.metadata=metadata;this.samples=[];this.events=[];this.cachedSummary=null;this.cachedAnalysis=null;this.nextSample=now;
   this.recording=true;this.resetWindow();this.event(now,'start','Recording started');this.notify();
  }
  stop(now:number,reason='Stopped by player'){
   if(!this.recording)return;
-  this.event(now,'stop',reason);this.recording=false;this.traceFrame=false;this.ended=now;this.reason=reason;this.cachedSummary=null;this.notify();
+  this.event(now,'stop',reason);this.recording=false;this.traceFrame=false;this.ended=now;this.reason=reason;this.cachedSummary=null;this.cachedAnalysis=null;this.notify();
  }
  event(now:number,type:string,detail:string){
   // Lifecycle events only, never per-frame messages. Leave space for Stop.
@@ -138,6 +143,46 @@ export class GamePerformanceRecorder{
   times.sort();const n=this.count||1,p=(q:number)=>times[Math.max(0,Math.ceil(this.count*q)-1)]||0;
   return this.cachedSummary={frames:this.count,activeSeconds:round(total/1000),wallSeconds:round((this.ended-this.started)/1000),averageFps:round(total?this.count*1000/total:0),meanFrameMs:round(total/n),p95FrameMs:round(p(.95)),p99FrameMs:round(p(.99)),worstFrameMs:round(p(1)),meanUpdateCpuMs:round(update/n),meanRenderCpuMs:round(draw/n),worstRenderCpuMs:round(worstDraw),worstRenderStage,worstRenderStageMs:round(worstRenderStageMs),over33ms:over33,over50ms:over50,over100ms:over100,simulationSteps:steps,simulationClampedMs:round(clamped),stopReason:this.reason};
  }
+ /** Post-stop breakdown of where frame time went and what the hitches coincided with. */
+ analysis():PerformanceAnalysis|null{
+  const summary=this.summary(),data=this.data,phases=this.phases;if(!summary||!data||!phases)return null;
+  if(this.cachedAnalysis)return this.cachedAnalysis;
+  const n=this.count,cols=PERFORMANCE_COLUMNS.length,phaseCount=PERFORMANCE_PHASES.length;
+  let total=0,update=0,draw=0,sim=0,over16=0;
+  const phaseTotals=new Float64Array(phaseCount),phaseMax=new Float64Array(phaseCount),phaseSpikes=new Uint32Array(phaseCount);
+  for(let f=0;f<n;f++){
+   const i=f*cols,dt=data[i+1];total+=dt;update+=data[i+2];draw+=data[i+3];sim+=data[i+4];if(dt>1000/60+.5)over16++;
+   for(let c=0;c<phaseCount;c++){const ms=phases[f*phaseCount+c];phaseTotals[c]+=ms;if(ms>phaseMax[c])phaseMax[c]=ms;if(ms>8)phaseSpikes[c]++}
+  }
+  const cpu=update+draw||1,stages=PERFORMANCE_PHASES.map((key,c)=>({key,label:PHASE_NAMES[key],meanMs:round(phaseTotals[c]/(n||1)),maxMs:round(phaseMax[c]),shareOfRender:round(draw?phaseTotals[c]/draw:0),spikesOver8ms:phaseSpikes[c]})).filter(s=>s.meanMs>0||s.maxMs>0).sort((a,b)=>b.meanMs-a.meanMs);
+  const {hitchCaptures}=this.history.snapshot();
+  const hitches=[...hitchCaptures].sort((a,b)=>b.peakMs-a.peakMs).slice(0,8).map(capture=>{
+   const byStage=new Map<string,{count:number;ms:number}>();
+   for(const t of capture.traceEvents){const entry=byStage.get(t.stage)||{count:0,ms:0};entry.count++;entry.ms+=t.durationMs;byStage.set(t.stage,entry)}
+   const worst=capture.worstFrameIndex,wi=worst*cols,frame=worst<n?{frameMs:round(data[wi+1]),updateCpuMs:round(data[wi+2]),renderCpuMs:round(data[wi+3]),slowestStage:this.slowestStage(worst)}:null;
+   return {atSeconds:round(capture.fromMs/1000),peakMs:capture.peakMs,repeats:capture.triggerCount,frame,activity:[...byStage].sort((a,b)=>b[1].ms-a[1].ms).slice(0,4).map(([stage,v])=>({stage,count:v.count,totalMs:round(v.ms)}))};
+  });
+  const findings:string[]=[];
+  const renderShare=draw/cpu,meanBudget=total/(n||1);
+  findings.push(`Average frame ${summary.meanFrameMs.toFixed(1)} ms (${summary.averageFps.toFixed(0)} FPS). ${Math.round(over16/(n||1)*100)}% of frames missed the 60 FPS budget, ${summary.over33ms} missed 30 FPS.`);
+  findings.push(renderShare>.65?`Drawing dominates: Skia picture recording averages ${summary.meanRenderCpuMs.toFixed(1)} ms per frame versus ${summary.meanUpdateCpuMs.toFixed(1)} ms of simulation. Reducing draw calls, visible sprites or shader rebuilds will help most.`:renderShare<.35?`Simulation dominates: world update averages ${summary.meanUpdateCpuMs.toFixed(1)} ms per frame versus ${summary.meanRenderCpuMs.toFixed(1)} ms drawing. Enemy AI, collision and pathfinding are the first places to look.`:`Simulation (${summary.meanUpdateCpuMs.toFixed(1)} ms) and drawing (${summary.meanRenderCpuMs.toFixed(1)} ms) share the frame roughly equally.`);
+  if(stages[0])findings.push(`Heaviest render stage: ${stages[0].label} at ${stages[0].meanMs.toFixed(2)} ms average, ${stages[0].maxMs.toFixed(1)} ms worst (${Math.round(stages[0].shareOfRender*100)}% of render CPU).`);
+  const shaderBuilds=stages.find(s=>s.key==='shaderBuildMs'),silhouettes=stages.find(s=>s.key==='silhouetteBuildMs');
+  if(shaderBuilds&&shaderBuilds.spikesOver8ms)findings.push(`${shaderBuilds.spikesOver8ms} frames spent over 8 ms compiling or rebuilding terrain shaders (worst ${shaderBuilds.maxMs.toFixed(1)} ms). Those appear as stutters when new terrain or river sections come into view.`);
+  if(silhouettes&&silhouettes.spikesOver8ms)findings.push(`${silhouettes.spikesOver8ms} frames spent over 8 ms building shelter silhouettes (worst ${silhouettes.maxMs.toFixed(1)} ms).`);
+  const loading=new Map<string,{count:number;ms:number}>();for(const h of hitches)for(const a of h.activity){const e=loading.get(a.stage)||{count:0,ms:0};e.count+=a.count;e.ms+=a.totalMs;loading.set(a.stage,e)}
+  const topLoad=[...loading].sort((a,b)=>b[1].ms-a[1].ms)[0];
+  if(hitches.length)findings.push(`${hitchCaptures.length} hitch window${hitchCaptures.length===1?'':'s'} recorded; the worst peaked at ${hitches[0].peakMs.toFixed(0)} ms around ${performanceDuration(hitches[0].atSeconds)}${hitches[0].frame?.slowestStage?` with ${hitches[0].frame.slowestStage} as the slowest stage`:''}.${topLoad?` Most hitches overlapped "${topLoad[0]}" activity (${topLoad[1].count} events, ${topLoad[1].ms.toFixed(0)} ms).`:''}`);
+  else findings.push('No hitch windows were recorded: no frame exceeded 33 ms or 16.7 ms of CPU.');
+  if(summary.simulationClampedMs>0)findings.push(`${summary.simulationClampedMs.toFixed(0)} ms of game time was dropped because frames exceeded the 100 ms catch-up cap; the game visibly slowed rather than skipped.`);
+  if(meanBudget<17&&summary.p99FrameMs<34)findings.push('Overall pacing is healthy; focus on the individual hitch windows above.');
+  return this.cachedAnalysis={cpuSplit:{updateShare:round(update/cpu),renderShare:round(renderShare),simulationStepsPerFrame:round(sim/(n||1))},stages,hitches,findings};
+ }
+ private slowestStage(frame:number){
+  let best='',bestMs=0;const phaseCount=PERFORMANCE_PHASES.length;
+  for(let c=0;c<phaseCount;c++){const ms=this.phases![frame*phaseCount+c];if(ms>bestMs){bestMs=ms;best=PHASE_NAMES[PERFORMANCE_PHASES[c]]}}
+  return best;
+ }
  exportJson(){
   const summary=this.summary();if(!summary||!this.data)throw Error('Stop recording before exporting.');
   const frames:number[][]=[];for(let f=0;f<this.count;f++){const row:number[]=[];for(let c=0;c<PERFORMANCE_COLUMNS.length;c++)row.push(round(this.data[f*PERFORMANCE_COLUMNS.length+c]));frames.push(row)}
@@ -150,7 +195,7 @@ export class GamePerformanceRecorder{
   return JSON.stringify({schema:'safety-last-performance/v2',recorderRevision:'hitch-retention-2026-10-23',startedAt:this.startedIso,metadata:this.metadata,limits:{...this.limits,traceEvents:PERFORMANCE_TRACE_LIMIT,slowFrames:128,hitchCaptures:PERFORMANCE_HITCH_LIMIT,traceEventsPerHitch:PERFORMANCE_HITCH_TRACE_LIMIT,importantTraceEvents:PERFORMANCE_IMPORTANT_TRACE_LIMIT},
    measurement:{fps:'Game requestAnimationFrame callback cadence during active play; not GPU/display FPS.',updateCpu:'Synchronous world simulation, streaming and audio work on the JS thread.',renderCpu:'CPU drawing/submission (web) or Skia picture recording (native); not GPU completion.',frameIntervals:'Unclamped callback intervals. First frame after a pause/background/resume is excluded.',clampedTime:'Active frame time above the simulation 100 ms catch-up cap.',context:'Sampled at most once per second, not per-frame visibility/draw-call counts.',privacy:'Local diagnostic log. Includes in-game position and device/render settings; no account credentials or world artwork.'},
    diagnostics:{phaseTiming:'Synchronous CPU time, not GPU execution. shaderBuildMs and silhouetteBuildMs are nested within worldDrawMs; do not sum them twice. Zero means no measured work (or unsupported stage on this platform).',frameAlignment:'frameMs ends at this callback. Its delay may originate in the previous callback. Slow-frame records link both, never across pause/resume.',assetTiming:'Download/decode/queue spans are elapsed wall time and may overlap frames; they are not CPU attribution. Texture draw/flush spans are synchronous CPU.',gpuMemory:'CanvasKit cache counters, not total process/GPU memory; null means unavailable, not zero.',traceRetention:'Recent events, important events and hitch captures share event IDs. Deduplicate by id. Captures keep nearby evidence for the worst 32 windows; per-window omissions are explicit. Overlap is not proof of causation.',...retention,slowFramesOmitted:Math.max(0,slowIndices.length-128)},
-   summary,events:this.events,contextSamples:this.samples,frameColumns:PERFORMANCE_COLUMNS,frames,renderPhaseColumns:PERFORMANCE_PHASES,renderPhases,phaseSummary,slowFrames,traceEvents,importantTraceEvents,hitchCaptures,browserCapabilities});
+   summary,analysis:this.analysis(),events:this.events,contextSamples:this.samples,frameColumns:PERFORMANCE_COLUMNS,frames,renderPhaseColumns:PERFORMANCE_PHASES,renderPhases,phaseSummary,slowFrames,traceEvents,importantTraceEvents,hitchCaptures,browserCapabilities});
  }
  filename(){return `humans-remain-performance-${this.startedIso.replace(/[:.]/g,'-')}.json`}
 }

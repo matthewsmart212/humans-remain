@@ -53,4 +53,46 @@ function nestedPackageModules(){
   cachedPackageModules=paths;
   return paths;
 }
+// Dev-only: the phone POSTs a finished performance log here so it lands in the repo.
+const PERFORMANCE_LOG_LIMIT=80*1024*1024;
+function receivePerformanceLog(req,res,next){
+  const pathname=(req.url||'').split('?')[0];
+  if(req.method!=='POST'||pathname!=='/__performance-log')return next();
+  const chunks=[];
+  let size=0,failed=false;
+  req.on('data',chunk=>{
+    if(failed)return;
+    size+=chunk.length;
+    if(size>PERFORMANCE_LOG_LIMIT){
+      failed=true;
+      res.writeHead(413,{'Content-Type':'application/json'});
+      res.end(JSON.stringify({ok:false,error:'Log is larger than 80 MB.'}));
+      req.destroy();
+      return;
+    }
+    chunks.push(chunk);
+  });
+  req.on('error',()=>{failed=true});
+  req.on('end',()=>{
+    if(failed||res.writableEnded)return;
+    try{
+      const body=Buffer.concat(chunks);
+      JSON.parse(body.toString('utf8'));
+      const dir=path.resolve(projectRoot,'..','performance-logs');
+      fs.mkdirSync(dir,{recursive:true});
+      const stamp=new Date().toISOString().replace(/[:.]/g,'-');
+      const named=`humans-remain-performance-${stamp}.json`;
+      fs.writeFileSync(path.join(dir,named),body);
+      fs.writeFileSync(path.join(dir,'latest.json'),body);
+      res.writeHead(200,{'Content-Type':'application/json'});
+      res.end(JSON.stringify({ok:true,file:`performance-logs/${named}`,latest:'performance-logs/latest.json',bytes:body.length}));
+    }catch(error){
+      if(res.writableEnded)return;
+      res.writeHead(400,{'Content-Type':'application/json'});
+      res.end(JSON.stringify({ok:false,error:error&&error.message?error.message:'Could not save the log.'}));
+    }
+  });
+}
+config.server=config.server||{};
+config.server.unstable_priorityMiddleware=[...(config.server.unstable_priorityMiddleware||[]),receivePerformanceLog];
 module.exports=config;
