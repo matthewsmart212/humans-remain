@@ -10,7 +10,7 @@ import {useSharedValue} from 'react-native-reanimated';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import * as Haptics from 'expo-haptics';
 import * as Font from 'expo-font';
-import {createCampPlaySession,stepCampPlaySession} from '../src/studio-play';
+import {createCampPlaySession,stepCampPlaySession,type SimulationProfiler} from '../src/studio-play';
 import {STEP,clearAttackQueue,dodgePlayer,toggleAxe,type World} from '../src/survival-engine';
 import {samplePlayer,presentPlayer,type PlayerSample} from '../src/player-presentation';
 import {stepCampLighting,setWorldTimeOfDay} from '../src/camp-lighting';
@@ -31,9 +31,12 @@ import {GamePerformanceRecorder} from '../src/performance-recording';
 import NativePerformancePanel,{NativePerformanceMenuOptions,NativePerformanceOverlay} from './PerformancePanel';
 import {NativeFrameDiagnostics,nativeMapCoversWorld} from './frame-diagnostics';
 import {performanceWorldContext} from '../src/performance-context';
+import {NativeUiFrameProbe} from './UiFrameProbe';
 import {FieldKitController} from '../src/field-kit';
 import {loadGameWorld,type SavedWorld} from './game-world';
 
+// Statically replaced by Expo's environment transform; no Node runtime required.
+declare const process:{env:Partial<Record<'EXPO_PUBLIC_GAME_SOURCE_COMMIT'|'EXPO_PUBLIC_GAME_SOURCE_DIRTY'|'EXPO_PUBLIC_GAME_SOURCE_CAPTURED_AT',string>>};
 type Mode='loading'|'playing'|'paused'|'bag'|'map'|'error';
 type Runtime={renderer:Awaited<ReturnType<typeof createNativeRenderer>>;outdoor:OutdoorTerrainStream;resources:SceneResourceCache;travel:SceneTravel;saved:SavedWorld;reduced:boolean};
 const zero=()=>({x:0,y:0});
@@ -60,14 +63,26 @@ function Game(){
  useEffect(()=>()=>cancelAnimationFrame(zoomAnimation.current),[]);
  const fieldKit=useMemo(()=>new FieldKitController(),[]);
  const saveWriter=useMemo(()=>new RunSaveWriter((key,value)=>AsyncStorage.setItem(key,value)),[]),saveBlocked=useRef(false),saveRunRef=useRef(()=>{}),[saveNotice,setSaveNotice]=useState('');
- const saveRun=()=>{const t=runtime.current?.travel;if(!t||saveBlocked.current)return;try{const text=encodeRun(t);if(text)void saveWriter.save(text).then(()=>setSaveNotice(saveWriter.error))}catch{setSaveNotice('Progress could not be saved on this device.')}};
+ const saveRun=()=>{
+  const t=runtime.current?.travel;if(!t||saveBlocked.current)return;
+  const recording=gamePerformance.recording,session=gamePerformance.session,started=recording?performance.now():0;
+  try{
+   const text=encodeRun(t),encodedAt=recording?performance.now():0;
+   if(recording)gamePerformance.trace(started,'native-save-encode',encodedAt-started,{characters:text?.length??0},session);
+   if(text)void saveWriter.save(text).then(()=>{
+    if(recording)gamePerformance.trace(encodedAt,'native-save-write',performance.now()-encodedAt,{ok:!saveWriter.error},session);
+    setSaveNotice(saveWriter.error);
+   });
+  }catch{setSaveNotice('Progress could not be saved on this device.')}
+ };
  saveRunRef.current=saveRun;
  useEffect(()=>{const timer=setInterval(()=>saveRunRef.current(),15000);return()=>{saveRunRef.current();clearInterval(timer)}},[]);
  const gamePerformance=useMemo(()=>new GamePerformanceRecorder(),[]);
+ const profileSimulation=useMemo<SimulationProfiler>(()=>(phase,ms)=>gamePerformance.system(phase,ms),[gamePerformance]);
  const frameDiagnostics=useMemo(()=>new NativeFrameDiagnostics(gamePerformance),[gamePerformance]);
  const [performanceOpen,setPerformanceOpen]=useState(false);
  const profileRender:React.ProfilerOnRenderCallback=(id,phase,actualDuration,_baseDuration,startTime)=>{if(gamePerformance.recording&&actualDuration>=4)gamePerformance.trace(startTime,'native-react-commit',actualDuration,{id,phase,atlasZoom:continuousZoom.current,mapVisible:mapVisible.current})};
- const startRecording=()=>{if(world.current?.phase==='over'||saveBlocked.current)return;gamePerformance.start(performance.now(),{platform:Platform.OS,osVersion:Platform.Version,developmentBuild:__DEV__,renderer:'native-skia-picture',pixelRatio:PixelRatio.get(),renderPixelRatio:Math.min(2,PixelRatio.get()),viewport:dimensions.current,worldUpdatedAt:runtime.current?.saved.layout.updatedAt,worldRevision:runtime.current?.saved.revision,overlayEnabled:gamePerformance.overlay,nativeDiagnosticsRevision:'map-transition-2026-11-01',reactProfilerAvailable:__DEV__});clear();change('playing')};
+ const startRecording=()=>{if(world.current?.phase==='over'||saveBlocked.current)return;gamePerformance.start(performance.now(),{platform:Platform.OS,osVersion:Platform.Version,developmentBuild:__DEV__,sourceAtMetroStart:{commit:process.env.EXPO_PUBLIC_GAME_SOURCE_COMMIT??'unavailable',trackedChanges:process.env.EXPO_PUBLIC_GAME_SOURCE_DIRTY??'unknown',capturedAt:process.env.EXPO_PUBLIC_GAME_SOURCE_CAPTURED_AT??'unavailable',scope:'Metro startup snapshot; restart Metro after pulling or editing code before a comparison run.'},jsEngine:typeof (globalThis as {HermesInternal?:unknown}).HermesInternal==='object'?'Hermes':'unknown',reactNativeVersion:Platform.constants.reactNativeVersion,renderer:'native-skia-picture',pixelRatio:PixelRatio.get(),renderPixelRatio:Math.min(2,PixelRatio.get()),viewport:dimensions.current,worldUpdatedAt:runtime.current?.saved.layout.updatedAt,worldRevision:runtime.current?.saved.revision,overlayEnabled:gamePerformance.overlay,nativeDiagnosticsRevision:'ios-flight-recorder-2026-11-01',reactProfilerAvailable:__DEV__,uiCadenceAvailable:true});clear();change('playing')};
  const pinch=useMemo(()=>createNativePlayZoom({enabled:()=>enabled.current&&!runtime.current?.travel?.busy,getZoom:()=>continuousZoom.current,minimumZoom:()=>mapCamera()?.minimum??.7,onGestureEnd:settleZoom,setZoom:zoom=>{cancelAnimationFrame(zoomAnimation.current);applyZoom(zoom)},onPinchStart:()=>{gamePerformance.trace(performance.now(),'native-pinch-start',0,{atlasZoom:continuousZoom.current});cancelAnimationFrame(zoomAnimation.current);input.current=zero()}}),[]);
  const [mode,setMode]=useState<Mode>('loading'),[boot,setBoot]=useState(0),[status,setStatus]=useState('Opening game…'),[error,setError]=useState(''),[,refresh]=useState(0),[sprinting,setSprinting]=useState(false);
  const empty=useMemo(()=>{const r=Skia.PictureRecorder();r.beginRecording();const p=r.finishRecordingAsPicture();r.dispose();return p},[]),picture=useSharedValue<SkPicture>(empty);
@@ -104,7 +119,7 @@ function Game(){
     if(activeWorld!==w){activeWorld=w;acc=0;previous=undefined;lastTerrain=0}
     stepCampLighting(w,dt);stepWeather(w,dt);acc+=dt;if(!playing)acc=0;
     while(acc>=STEP){const current:World=world.current!;previous=samplePlayer(current);simulationSteps++;
-     if(!r.travel.busy)stepCampPlaySession(current,input.current,sprint.current,swing.current);
+     if(!r.travel.busy)stepCampPlaySession(current,input.current,sprint.current,swing.current,gamePerformance.tracing?profileSimulation:undefined);
      if(current.repairCheckpoint){current.repairCheckpoint=false;saveRunRef.current()}
      if(current.phase==='over'){clear();change('paused');saveRun();acc=0;break}
      r.travel.tick(STEP,true);acc-=STEP;
@@ -117,9 +132,21 @@ function Game(){
     const drawStarted=tracked?performance.now():0;
     let worldDrawn=false,publishMs=0;
     if(!worldCovered&&(playing||drawnMenuRevision!==stationMenuRevision(current)||stationMenuAnimating(current,now/1000)||drawnWorld!==current||drawnRevision!==r.renderer.revision||drawnSize!==sizeKey)){worldDrawn=true;const nextPicture=r.renderer.draw(presentPlayer(current,previous,playing?acc/STEP:1),size.width,size.height,r.travel.opacity);const publishStarted=tracked?performance.now():0;picture.value=nextPicture;if(tracked)publishMs=performance.now()-publishStarted;drawnRevision=r.renderer.revision;drawnSize=sizeKey;drawnWorld=current;drawnMenuRevision=stationMenuRevision(current)}
-    if(tracked){const renderMs=performance.now()-drawStarted,updateMs=drawStarted-updateStarted;gamePerformance.endFrame(updateMs,renderMs,simulationSteps);if(playing)frameDiagnostics.frame(now,updateMs,renderMs,{atlasZoom:continuousZoom.current,mapVisible:mapVisible.current,mapReady:mapReady.current,worldDrawn,pinching:pinch.blocksMovement(),simulationMs:simulationEnded-updateStarted,terrainMs:drawStarted-simulationEnded,publishMs})}
+    const renderMs=tracked?performance.now()-drawStarted:0,updateMs=tracked?drawStarted-updateStarted:0,diagnosticsStarted=gamePerformance.tracing?performance.now():0;
+    if(gamePerformance.tracing){
+     gamePerformance.system('simulationMs',simulationEnded-updateStarted);gamePerformance.system('terrainMs',drawStarted-simulationEnded);
+     const camera=editorCamera(size.width,size.height,current,playView.current,1);
+     gamePerformance.frameContext({playerX:current.player.x,playerY:current.player.y,cameraX:camera.x,cameraY:camera.y,zoom:playView.current.zoom,atlasZoom:continuousZoom.current,enemyCount:current.enemies.length,mapVisible:mapVisible.current,mapReady:mapReady.current,worldDrawn,pinching:pinch.blocksMovement(),moving:current.player.moving,sprinting:current.player.sprinting});
+    }
     if(gamePerformance.sampleDue(now)){const sampleStarted=performance.now();gamePerformance.sample(now,{...performanceWorldContext(current,playView.current.zoom,r.renderer.textureStats(),size.width,size.height),presentation:{atlasZoom:continuousZoom.current,mapVisible:mapVisible.current,mapReady:mapReady.current,mapOpacity:mapCamera()?.opacity??0,pinching:pinch.blocksMovement(),worldDrawn}});gamePerformance.trace(sampleStarted,'context-sample',performance.now()-sampleStarted)}
+    const diagnosticsMs=gamePerformance.tracing?performance.now()-diagnosticsStarted:0;
+    if(gamePerformance.tracing)gamePerformance.system('diagnosticsMs',diagnosticsMs);
+    const mapWorkStarted=gamePerformance.tracing?performance.now():0;
     if(playing)mapPump.current?.(frameStart);
+    const mapPrefetchMs=gamePerformance.tracing?performance.now()-mapWorkStarted:0;
+    if(gamePerformance.tracing)gamePerformance.system('mapPrefetchMs',mapPrefetchMs);
+    if(tracked&&playing)frameDiagnostics.frame(now,updateMs,renderMs,{atlasZoom:continuousZoom.current,mapVisible:mapVisible.current,mapReady:mapReady.current,worldDrawn,pinching:pinch.blocksMovement(),simulationMs:simulationEnded-updateStarted,terrainMs:drawStarted-simulationEnded,publishMs,mapPrefetchMs,diagnosticsMs});
+    if(tracked)gamePerformance.endFrame(updateMs,renderMs,simulationSteps);
     raf=requestAnimationFrame(frame);
    }catch(e){clear();setError(e instanceof Error?e.message:String(e));change('error')}
   };
@@ -149,14 +176,16 @@ function Game(){
    }catch(e){stop();throw e}
   })().catch(e=>{if(!live)return;console.error('Unable to open game',e);setError(e instanceof Error?e.message:String(e));change('error')});
   const subscription=AppState.addEventListener('change',state=>{appActive=state==='active';last=0;acc=0;if(!appActive){pause();gamePerformance.setActivity('background',performance.now());cancelAnimationFrame(raf);raf=0}else if(local&&!raf){gamePerformance.setActivity('paused',performance.now());raf=requestAnimationFrame(frame)}});
+  const memoryWarning=AppState.addEventListener('memoryWarning',()=>{gamePerformance.trace(performance.now(),'native-memory-warning',0,{atlasZoom:continuousZoom.current,mapVisible:mapVisible.current});});
   const accessibility=AccessibilityInfo.addEventListener('reduceMotionChanged',reduced=>{if(local)local.reduced=reduced;if(world.current?.weather)world.current.weather.reducedMotion=reduced});
-  return()=>{live=false;cancelAnimationFrame(raf);subscription.remove();accessibility.remove();picture.value=empty;stop()};
+  return()=>{live=false;cancelAnimationFrame(raf);subscription.remove();memoryWarning.remove();accessibility.remove();picture.value=empty;stop()};
  },[boot]);
  const active=mode==='playing',w=world.current;
  const act=(fn:(world:World)=>unknown)=>{if(!enabled.current||runtime.current?.travel.busy||!world.current)return;fn(world.current);refresh(n=>n+1)};
  const wide=width>600;
  const button=(label:string,onPress:()=>void,disabled=false,style?:StyleProp<ViewStyle>)=><Pressable accessibilityRole="button" disabled={disabled} onPress={onPress} style={[s.button,disabled&&s.disabled,style]}><Text style={s.buttonText}>{label}</Text></Pressable>;
  return <View style={s.root} {...pinch.touchHandlers}><StatusBar hidden/><Canvas pointerEvents="none" style={StyleSheet.absoluteFill}><Picture picture={picture}/></Canvas>
+  <NativeUiFrameProbe recorder={gamePerformance} active={active}/>
   <View style={StyleSheet.absoluteFill} onTouchStart={pinch.start}/>
   {w&&(active||mode==='bag')&&<Profiler id="native-hud" onRender={profileRender}><NativeFieldKitHUD world={world} controller={fieldKit} input={input} mapOpen={mapOpen} enabled={active&&!mapOpen&&!runtime.current?.travel.busy} width={width} height={height} safe={safe} sprinting={sprinting} bagOpen={mode==='bag'}
    onPause={pause} onCheckpoint={()=>saveRunRef.current()} onBag={open=>{clear();change(open?'bag':'playing')}}

@@ -25,7 +25,7 @@ try{
  const retained=new Set([...log.traceEvents,...log.importantTraceEvents,...log.hitchCaptures.flatMap(c=>c.traceEvents)].map(e=>e.id));
  assert.equal(log.diagnostics.traceEventsDropped,log.diagnostics.traceEventsTotal-retained.size);
  assert(log.diagnostics.recentTraceEventsOverwritten>log.diagnostics.traceEventsDropped);
- assert.equal(r.bufferBytes,6840000,'No new per-frame timing buffers');
+ assert.equal(r.bufferBytes,120000*((6+m.PERFORMANCE_PHASES.length+m.PERFORMANCE_CONTEXT_COLUMNS.length+m.PERFORMANCE_SYSTEMS.length)*4+1),'Fixed-size bounded timing and context buffers');
  const oldSession=r.session;r.start(20000,{});r.trace(20001,'stream-failed',0,{},oldSession);r.stop(20002);
  const fresh=JSON.parse(r.exportJson());assert.equal(fresh.hitchCaptures.length,0);assert.equal(fresh.importantTraceEvents.length,0);assert.equal(fresh.browserCapabilities,null);
  // Preserve the worst windows, bound all collections, and expose truncation.
@@ -39,5 +39,5 @@ try{
  const storm=new m.GamePerformanceRecorder();storm.start(0,{});
  for(let i=0;i<10000;i++){storm.beginFrame(i*40,'playing');storm.trace(i*40,'texture-warm',2,{key:'tile'});storm.endFrame(1,20,1)}
  storm.stop(400000);const bounded=JSON.parse(storm.exportJson());assert(bounded.hitchCaptures.length<=32);assert(bounded.hitchCaptures.every(c=>c.toMs-c.fromMs<=5000));
- console.log(JSON.stringify({passed:true,checks:['early hitch evidence survives 4,000 later events','async completions attach to overlapping windows','important failures and browser capabilities survive','previous-render links identify preserved evidence','unique event loss counts and per-window truncation','session isolation','worst-window and event caps','bounded capture during sustained slow gameplay','unchanged timing-buffer allocation']},null,2));
+ console.log(JSON.stringify({passed:true,checks:['early hitch evidence survives 4,000 later events','async completions attach to overlapping windows','important failures and browser capabilities survive','previous-render links identify preserved evidence','unique event loss counts and per-window truncation','session isolation','worst-window and event caps','bounded capture during sustained slow gameplay','bounded typed timing/context allocation']},null,2));
 }finally{fs.rmSync(temp,{recursive:true,force:true})}

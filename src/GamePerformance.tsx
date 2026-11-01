@@ -36,7 +36,7 @@ export function GamePerformancePanel({recorder,onStart,onBack,defeated=false}:Ga
    {s.recording?<button type="button" className="performance-stop" onClick={()=>recorder.stop(performance.now())}><Square size={18}/>Stop recording</button>:<button type="button" className="game-resume" disabled={defeated||exporting} onClick={()=>{setMessage('');onStart()}}><Play size={18}/>{s.hasLog?'New recording & resume':'Start recording & resume'}</button>}
    {s.hasLog&&!s.recording&&<button type="button" disabled={exporting} onClick={()=>void save()}><Download size={18}/>{exporting?'Preparing log…':'Export log (.json)'}</button>}
    <button type="button" disabled={exporting} onClick={onBack}><ArrowLeft size={18}/>Back to pause menu</button>
-   <p className="performance-note">Opt-in only. Timing buffers ≤ 6.9 MB plus capped event/context history; display refreshes twice a second. A new recording replaces the previous log. Export before closing the game.</p>
+   <p className="performance-note">Opt-in only. Timing buffers ≤ 17.4 MB plus capped event/context history; display refreshes twice a second. A new recording replaces the previous log. Export before closing the game.</p>
    <p className="performance-note">FPS measures the game loop. CPU render time is not GPU time. No screenshots or automatic uploads.</p>
    {!!message&&<p role="status" className="performance-note">{message}</p>}
   </div></div>

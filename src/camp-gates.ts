@@ -16,12 +16,26 @@ export function gateLocal(p:Placement,a:WorldAsset,amount:number,assets=ASSET_BY
  const dx=(B.x-A.x)/2,dy=(B.y-A.y)/2,c=Math.cos(amount*GATE_ANGLE),s=Math.sin(amount*GATE_ANGLE);
  return {a:A,b:B,ae:{x:A.x+dx*c-dy*s,y:A.y+dy*c+dx*s},be:{x:B.x-dx*c-dy*s,y:B.y-dy*c+dx*s},height:g.height*b.height/a.height,postWidth:g.postWidth*b.width/a.width,postHeight:g.postHeight*b.height/a.height};
 }
+type GateCollisionCache={
+ asset:WorldAsset;id:string;x:number;y:number;scale:number;rotation:number;flipX:boolean;flipY:boolean;
+ width:number;height:number;anchorX:number;anchorY:number;aX:number;aY:number;bX:number;bY:number;
+ closed:Collider[];open:Collider[];
+};
+const gateCollisionCache=new WeakMap<Placement,GateCollisionCache>();
+/** Collision has only two poses, even while the visual gate animates. Cached
+ * lists are read-only to callers, and all geometry inputs are checked so edits
+ * and tier/asset changes cannot leave an invisible old doorway behind. */
 export function gateColliders(p:Placement,amount:number,assets=ASSET_BY_ID):Collider[]{
  const a=assets.get(p.assetId);if(!a?.gate||!p.solid)return [];
+ const frame=p.frame,width=frame?.width??a.width,height=frame?.height??a.height,anchorX=frame?.anchor[0]??a.anchor[0]/a.crop[2],anchorY=frame?.anchor[1]??a.anchor[1]/a.crop[3],g=a.gate;
+ const rotation=p.rotation||0,flipX=!!p.flipX,flipY=!!p.flipY,cached=gateCollisionCache.get(p);
+ if(cached&&cached.asset===a&&cached.id===p.id&&cached.x===p.x&&cached.y===p.y&&cached.scale===p.scale&&cached.rotation===rotation&&cached.flipX===flipX&&cached.flipY===flipY&&cached.width===width&&cached.height===height&&cached.anchorX===anchorX&&cached.anchorY===anchorY&&cached.aX===g.a[0]&&cached.aY===g.a[1]&&cached.bX===g.b[0]&&cached.bY===g.b[1])return Math.abs(amount)>=.5?cached.open:cached.closed;
  const q=gateLocal(p,a,0,assets),point=(v:{x:number;y:number})=>{const [x,y]=placementPoint(p,v.x,v.y,false,assets);return{x,y}},A=point(q.a),B=point(q.b);
  const posts:Collider[]=[{id:p.id+':post-a',shape:'circle',...A,r:20*p.scale},{id:p.id+':post-b',shape:'circle',...B,r:20*p.scale}];
  // Open artwork is parked beside the hinges. There is no invisible moving sweep.
- return Math.abs(amount)>=.5?posts:[...posts,{id:p.id+':leaf-closed',shape:'segment',...A,ex:B.x,ey:B.y,r:16*p.scale}];
+ const closed:Collider[]=[...posts,{id:p.id+':leaf-closed',shape:'segment',...A,ex:B.x,ey:B.y,r:16*p.scale}];
+ gateCollisionCache.set(p,{asset:a,id:p.id,x:p.x,y:p.y,scale:p.scale,rotation,flipX,flipY,width,height,anchorX,anchorY,aX:g.a[0],aY:g.a[1],bX:g.b[0],bY:g.b[1],closed,open:posts});
+ return Math.abs(amount)>=.5?posts:closed;
 }
 export function gatesBlocked(w:World,x:number,y:number,r:number){return layoutViews(w.layout).gates.some(p=>gateColliders(p,gatePose(w,p.id)).some(c=>hitCollider(c,x,y,r)))}
 /** Current gate colliders, for many queries while no gate can move. */

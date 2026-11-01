@@ -79,23 +79,34 @@ export function createMapTiles(Skia:Api,paths:readonly PlayerMapPath[],area:Worl
  ink.setAntiAlias(true);tilePaint.setAntiAlias(false);
  let builder:SkPathBuilder|undefined;
  let wanted:number[]=[],wantedSet=new Set<number>(),wantedView='',job:Job|undefined,revision=0,clock=0,disposed=false;
+ let requestBuilds=0,cancelledJobs=0,allocationFailures=0;
  let pictureKey='',current:SkPicture|null=null,retired:SkPicture|null=null;
  const ready=(level:number,i:number,j:number)=>{const tile=tiles.get(keyOf(level,i,j));return tile?.image?tile:undefined};
 
  /** Tiles this view should hold, in render order: the base, then the
   * visible tiles from the centre out, the next coarser level, then a ring. */
  const want=(view:PlayerMapView,pixelRatio:number,limit:number)=>{
-  const id=`${view.x}|${view.y}|${view.width}|${view.height}|${view.scale}|${pixelRatio}|${limit}`;if(id===wantedView)return;wantedView=id;
-  const level=levelFor(view.scale,pixelRatio),cx=view.x+view.width/2,cy=view.y+view.height/2,list=[keyOf(0,0,0)],seen=new Set(list);
+  if(disposed)return;
+  const level=levelFor(view.scale,pixelRatio),visible=range(level,view),coarse=level>1?range(level-1,view):null,prefetch=range(level,view,1);
+  // The coverage is unchanged between tile boundaries. Preserve its request
+  // order instead of sorting/allocating queues on every subpixel pinch update.
+  const rangeKey=(r:Range|null)=>r?`${r.i0},${r.i1},${r.j0},${r.j1}`:'-';
+  const id=`${level}|${rangeKey(visible)}|${rangeKey(coarse)}|${rangeKey(prefetch)}|${limit}`;if(id===wantedView)return;wantedView=id;requestBuilds++;
+  const cx=view.x+view.width/2,cy=view.y+view.height/2,list=[keyOf(0,0,0)],seen=new Set(list);
   const add=(lv:number,r:Range|null)=>{
    if(!r)return;const s=span(lv),fresh:{key:number;d:number}[]=[];
    for(let j=r.j0;j<=r.j1;j++)for(let i=r.i0;i<=r.i1;i++){const key=keyOf(lv,i,j);if(!seen.has(key)){seen.add(key);fresh.push({key,d:Math.hypot(area.left+(i+.5)*s-cx,area.top+(j+.5)*s-cy)})}}
    fresh.sort((a,b)=>a.d-b.d);for(const f of fresh)list.push(f.key);
   };
-  add(level,range(level,view));
-  if(level>1)add(level-1,range(level-1,view));
-  add(level,range(level,view,1));
+  add(level,visible);
+  if(level>1)add(level-1,coarse);
+  add(level,prefetch);
   wanted=list.slice(0,limit);wantedSet=new Set(wanted);
+  // During a fast pan/zoom a tile can leave even the prefetch ring before it
+  // finishes. Keep completed tiles for reuse, but spend no more CPU on stale work.
+  if(job&&!wantedSet.has(job.tile.key)){
+   job.surface.dispose();tiles.delete(job.tile.key);job=undefined;builder?.reset();cancelledJobs++;
+  }
  };
  const begin=(tile:Tile):Job|undefined=>{
   const surface=Skia.Surface.Make(MAP_TILE_SIZE+2*PAD,MAP_TILE_SIZE+2*PAD);if(!surface)return undefined;
@@ -169,17 +180,25 @@ export function createMapTiles(Skia:Api,paths:readonly PlayerMapPath[],area:Worl
   /** Renders queued tiles until `until`, optionally at least one unit. True when a tile finished. */
   step(until:number,atLeastOne=false,limit=64){
    if(disposed)return false;
-   let finished=false,first=atLeastOne;
+   const started=diagnostics?.recording?performance.now():undefined;
+   let finished=false,first=atLeastOne,units=0;
    while(first||performance.now()<until){
     first=false;
     if(!job){
      const key=wanted.find(k=>!tiles.has(k));if(key===undefined)break;
      const level=Math.floor(key/LEVEL_KEY),j=Math.floor(key%LEVEL_KEY/ROW_KEY),i=key%ROW_KEY,tile:Tile={key,level,i,j,image:null,used:clock};
-     tiles.set(key,tile);job=begin(tile);if(!job)continue;
+     job=begin(tile);
+     // A transient allocation failure must neither poison the cache nor spin
+     // in this callback. Leave the tile pending and retry on the next pump.
+     if(!job){allocationFailures++;break}
+     tiles.set(key,tile);
     }
-    if(advance(job)){job=undefined;finished=true;revision++}
+    units++;if(advance(job)){job=undefined;finished=true;revision++}
    }
    if(finished)trim(limit);
+   // Unlike native-map-tile (wall time across many frames), this measures the
+   // synchronous CPU slice charged to this callback, including queue/trim work.
+   if(started!==undefined){const ms=performance.now()-started;if(ms>=1)diagnostics!.trace(started,'native-map-tile-work',ms,{units,finished,tiles:tiles.size,level:job?.tile.level??-1})}
    return finished;
   },
   /** True while any requested tile is missing. */
@@ -203,7 +222,7 @@ export function createMapTiles(Skia:Api,paths:readonly PlayerMapPath[],area:Worl
   },
   /** Each batch's subpath indices drawn into one tile. */
   selection:(level:number,i:number,j:number)=>{const box=region(level,i,j);return batches.map(batch=>select(batch,box))},
-  stats:()=>({tiles:tiles.size,ready:[...tiles.values()].filter(t=>t.image).length,revision}),
+  stats:()=>({tiles:tiles.size,ready:[...tiles.values()].filter(t=>t.image).length,revision,requestBuilds,cancelledJobs,allocationFailures}),
   dispose(){
    disposed=true;job?.surface.dispose();job=undefined;
    current?.dispose();retired?.dispose();current=retired=null;

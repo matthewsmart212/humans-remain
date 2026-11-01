@@ -1,4 +1,6 @@
 node_modules/
+# Ignore local dependency links as well as dependency directories.
+node_modules
 dist/
 .sites-runtime/
 .env

@@ -16,6 +16,7 @@ import {wallIdentity} from '../src/world-tiers';
 import {validateLayout} from '../src/world-layout';
 import {WALKER_IMAGE_SOURCES} from '../src/walker-sprites';
 import {BOMBER_IMAGE_SOURCES} from '../src/bomber-sprites';
+import circularWallArt from '../src/camp-circular-wall-art.json';
 
 // Refresh inputs explicitly before running. Generation itself is reproducible offline.
 const root=process.cwd(),input=path.join(root,'.qa/native-world');
@@ -30,7 +31,7 @@ const savedWallIds=WORLD_ASSETS.filter(a=>wallIdentity(a.id)).map(a=>a.id);
 const sources={...Object.fromEntries(SPAWNABLES.map(v=>['spawn-thumb-'+v.id,v.image])),...EDITOR_IMAGE_SOURCES,...editorTerrainDetail(layout.terrainImage),
  ...Object.fromEntries(OUTDOOR_TILES.map(t=>[t.key,t.image])),...TERRAIN_CHUNK_IMAGES,...RIVER_DETAIL_IMAGES,
  ...Object.assign({},...[...SCENES.values()].map(sceneImages)),
- ...WALKER_IMAGE_SOURCES,...BOMBER_IMAGE_SOURCES,...requiredImages([...layout.items.map(p=>p.assetId),...GARDEN_ART.map(a=>a.id),...savedWallIds],layout.terrainImage),
+ ...WALKER_IMAGE_SOURCES,...BOMBER_IMAGE_SOURCES,...requiredImages([...layout.items.map(p=>p.assetId),...GARDEN_ART.map(a=>a.id),...savedWallIds,...circularWallArt.map(a=>a.id)],layout.terrainImage),
  ...Object.assign({},...[...SCENES.values()].map(s=>requiredImages(s.layout?.items.map(p=>p.assetId)||[])))};
 const redirects=Object.assign({},...['lossless-artwork','retired-road','calm-river','river-features','river-quality'].map(n=>JSON.parse(fs.readFileSync(`server/${n}-redirects.json`,'utf8'))));
 const canonical=(url:string)=>{const seen=new Set();while(redirects[url]){if(seen.has(url))throw Error('Redirect cycle');seen.add(url);url=redirects[url]}return url};

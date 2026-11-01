@@ -2,6 +2,18 @@ const {getDefaultConfig}=require('expo/metro-config');
 const fs=require('fs');
 const path=require('path');
 const projectRoot=__dirname;
+// Expo inlines public values into the native JS bundle. Capture source identity
+// when Metro starts; never pass repo credentials or local file paths to the app.
+try{
+  const {execFileSync}=require('child_process');
+  const git=args=>execFileSync('git',args,{cwd:path.resolve(projectRoot,'..'),encoding:'utf8',stdio:['ignore','pipe','ignore']}).trim();
+  process.env.EXPO_PUBLIC_GAME_SOURCE_COMMIT=git(['rev-parse','HEAD']);
+  process.env.EXPO_PUBLIC_GAME_SOURCE_DIRTY=git(['status','--porcelain','--untracked-files=no'])?'true':'false';
+}catch{
+  process.env.EXPO_PUBLIC_GAME_SOURCE_COMMIT='unavailable';
+  process.env.EXPO_PUBLIC_GAME_SOURCE_DIRTY='unknown';
+}
+process.env.EXPO_PUBLIC_GAME_SOURCE_CAPTURED_AT=new Date().toISOString();
 const config=getDefaultConfig(projectRoot);
 config.watchFolders=[path.resolve(projectRoot,'..')];
 const nativeNodeModules=path.resolve(projectRoot,'node_modules');

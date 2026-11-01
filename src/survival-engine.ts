@@ -80,10 +80,13 @@ export function blocked(x:number,y:number,r=19,includeBase=true){const b=origina
 export function worldBlocked(w:World,x:number,y:number,r=19,includeBase=true,ignoreId=-1){if(!w.scene&&w.layout&&usesPaintedHomeTerrain(w.layout.terrainImage)&&!outdoorTerrainReadyAt(w.outdoorReady,x,y,r))return true;if(!w.scene&&w.layout&&usesPaintedHomeTerrain(w.layout.terrainImage)&&riverWaterBlocked(x,y,r))return true;if(w.scene&&sceneBlocked(w.scene,x,y,r))return true;if(w.layout&&gatesBlocked(w,x,y,r))return true;if(w.layout&&w.editorPreview)return layoutBlocked(w.layout,x,y,r,[],undefined,w.scene,true,w.minedRockColliders);if(w.layout)return layoutBlocked(w.layout,x,y,r,includeBase?['crate','shutter']:['generator','crate','shutter'],undefined,w.scene,true,w.minedRockColliders)||(timeOf(w)<w.shutterUntil&&circleRect(x,y,r,worldMachine(w,'shutter').x,worldMachine(w,'shutter').y,59,15))||w.breakables.some(b=>{if(b.hp<=0||b.id===ignoreId)return false;const placement=w.layout!.items.find(p=>p.id===b.placementId);return placement?placementBodies(placement).some(c=>hitCollider(c,x,y,r)):circleRect(x,y,r,b.x,b.y-13,31,25)});const generatorScale=(142+(w.generator.level-1)*22)/142;return blocked(x,y,r,false)||STATION_IDS.some(id=>{const b=stationBody(w.camp,id);return circleRect(x,y,r,b.x,b.y,b.hw,b.hh)})||(includeBase&&circleRect(x,y,r,BASE.x,BASE.y-10,48*generatorScale,35*generatorScale))||w.breakables.some(b=>b.hp>0&&b.id!==ignoreId&&circleRect(x,y,r,b.x,b.y-13,31,25))||(timeOf(w)<w.shutterUntil&&circleRect(x,y,r,SHUTTER_BODY.x,SHUTTER_BODY.y,SHUTTER_BODY.hw,SHUTTER_BODY.hh))||(w.barrierHp>0&&circleRect(x,y,r,BARRICADE_BODY.x,BARRICADE_BODY.y,BARRICADE_BODY.hw,BARRICADE_BODY.hh))}
 /** Fixed substeps cover knockback as well as walking, so thin fences cannot be skipped. */
 export function moveBody(w:World,p:Vec,dx:number,dy:number,r=19){
+ // A zero displacement never resolves penetration: the old sweep only wrote
+ // the same coordinate back. Skip its collision work for idle actors/axes.
+ if(dx===0&&dy===0)return;
  const n=Math.max(1,Math.ceil(Math.max(Math.abs(dx),Math.abs(dy))/8));
  const blockedAt=(x:number,y:number)=>worldBlocked(w,x,y,r)||(
   p===w.player&&w.combatTest&&!w.dodge&&(w.enemies.some(e=>e.hp>0&&Math.hypot(x-e.x,y-e.y)<r+combatEnemyBody(e.kind)&&Math.hypot(x-e.x,y-e.y)<distance(p,e)-.001)||w.animals.some(a=>a.hp>0&&a.predator&&Math.hypot(x-a.x,y-a.y)<r+22&&Math.hypot(x-a.x,y-a.y)<distance(p,a)-.001)));
- for(let i=0;i<n;i++){const nx=p.x+dx/n;if(!blockedAt(nx,p.y))p.x=nx;const ny=p.y+dy/n;if(!blockedAt(p.x,ny))p.y=ny}
+ for(let i=0;i<n;i++){if(dx!==0){const nx=p.x+dx/n;if(!blockedAt(nx,p.y))p.x=nx}if(dy!==0){const ny=p.y+dy/n;if(!blockedAt(p.x,ny))p.y=ny}}
 }
 export const SPRINT_SPEED=1.55;
 /** A short, committed sidestep. Dodge cannot pass through authored collision,
@@ -124,10 +127,13 @@ export function movePlayer(w:World,input:Vec,sprint=false){
  const runTarget=requested?1:0;
  p.runBlend=runTarget+((p.runBlend??0)-runTarget)*Math.exp(-STEP*14);
  if(p.runBlend<.001)p.runBlend=0;else if(p.runBlend>.999)p.runBlend=1;
- const speed=p.downedUntil?65:285*packLoad(w).speed*(1+(SPRINT_SPEED-1)*(swinging||thrusting||swordThrusting?0:p.runBlend))*(swinging?axeMoveScale(w.axeSwing!,timeOf(w)):thrusting?.6:swordThrusting?.65:1);
+ // Movement cannot change inventory; share this tick's weight calculation
+ // between speed and sprint cost instead of traversing the pack twice.
+ const load=p.downedUntil?undefined:packLoad(w);
+ const speed=p.downedUntil?65:285*load!.speed*(1+(SPRINT_SPEED-1)*(swinging||thrusting||swordThrusting?0:p.runBlend))*(swinging?axeMoveScale(w.axeSwing!,timeOf(w)):thrusting?.6:swordThrusting?.65:1);
  moveBody(w,p,dx*speed*STEP,dy*speed*STEP);
  const travelled=distance(p,before);p.moving=travelled>.001;p.sprinting=requested&&p.moving;
- if(p.sprinting&&needsActive(w))spendSprintStamina(w,STEP*packLoad(w).stamina,timeOf(w));
+ if(p.sprinting&&needsActive(w))spendSprintStamina(w,STEP*load!.stamina,timeOf(w));
  // Running lengthens the stride as well as increasing the cadence. Advance by
  // real displacement so a wall or released joystick never runs on the spot.
  if(p.moving)p.walkDistance=(p.walkDistance+travelled*112/(160+40*p.runBlend))%112;
@@ -193,7 +199,7 @@ export function pathTo(start:Vec,target:Vec,w?:World,maxVisited=Infinity,bodyRad
  const from=key(a.x,a.y),goal=key(b.x,b.y),visited=searchVisited,parent=searchParent,queue=searchQueue;
  visited[from]=generation;parent[from]=-1;queue[0]=from;let head=0,tail=1;
  while(head<tail&&head<maxVisited){const n=queue[head++];if(n===goal)break;const x=n%cols,y=Math.floor(n/cols);for(let d=0;d<4;d++){const nx=x+STEP_X[d],ny=y+STEP_Y[d],id=key(nx,ny);if(visited[id]===generation||!open(nx,ny))continue;visited[id]=generation;parent[id]=n;queue[tail++]=id}}
- if(visited[goal]!==generation)return[];const path:Vec[]=[];for(let n=goal;n!==from&&n!==-1;n=parent[n])path.unshift({x:bounds.left+(n%cols+.5)*size,y:bounds.top+(Math.floor(n/cols)+.5)*size});return path;
+ if(visited[goal]!==generation)return[];const path:Vec[]=[];for(let n=goal;n!==from&&n!==-1;n=parent[n])path.push({x:bounds.left+(n%cols+.5)*size,y:bounds.top+(Math.floor(n/cols)+.5)*size});return path.reverse();
 }
 /** Explicit taps queue sooner than a held press. Late recovery taps
  * are buffered for 140ms; a queued action never survives an input reset. */

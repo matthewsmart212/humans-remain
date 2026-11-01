@@ -51,20 +51,34 @@ export function createCampPlaySession(draft:WorldLayout,from?:{x:number;y:number
  return world;
 }
 
-export function stepCampPlaySession(world:World,input:{x:number;y:number},sprint:boolean,swing:boolean){
+/** Optional recording-only CPU timings. These contiguous phases are children
+ * of the caller's simulation total; they are not GPU or presentation timings. */
+export type SimulationPhase='simMovementMs'|'simProgressionMs'|'simCombatMs'|'simWildlifeMs'|'simEnvironmentMs'|'simSurvivalMs';
+export type SimulationProfiler=(phase:SimulationPhase,ms:number)=>void;
+export function stepCampPlaySession(world:World,input:{x:number;y:number},sprint:boolean,swing:boolean,profile?:SimulationProfiler){
  if(world.phase==='over')return;
+ let phaseStart=profile?performance.now():0;
+ const finishPhase=profile?(phase:SimulationPhase)=>{const now=performance.now();profile(phase,now-phaseStart);phaseStart=performance.now()}:undefined;
  stepGates(world,STEP);movePlayer(world,input,sprint);stepWaypoint(world);
+ finishPhase?.('simMovementMs');
  world.tick++;
  stepSurvivalCycle(world,STEP);
  if(!world.scene)stepCampSiege(world);
  stepOnAnimations(world,STEP);
+ finishPhase?.('simProgressionMs');
  const tapped=(world.attackQueuedUntil??0)>=world.tick*STEP;
  if(swing||tapped){if(attack(world,!tapped))world.attackQueuedUntil=undefined}
  if(world.attackQueuedUntil&&world.attackQueuedUntil<world.tick*STEP)world.attackQueuedUntil=undefined;
- stepAxe(world);stepSpear(world);stepSword(world);stepBow(world);stepCombatEnemies(world);stepWildlife(world);stepCampChickens(world,STEP);stepCampRabbits(world,STEP);stepCampDeer(world,STEP);stepCampPredators(world,STEP);stepBonfireCooking(world);stepFoliage(world,STEP);stepPuddles(world,STEP);
+ stepAxe(world);stepSpear(world);stepSword(world);stepBow(world);stepCombatEnemies(world);
+ finishPhase?.('simCombatMs');
+ stepWildlife(world);stepCampChickens(world,STEP);stepCampRabbits(world,STEP);stepCampDeer(world,STEP);stepCampPredators(world,STEP);
+ finishPhase?.('simWildlifeMs');
+ stepBonfireCooking(world);stepFoliage(world,STEP);stepPuddles(world,STEP);
+ finishPhase?.('simEnvironmentMs');
  stepBuildingRepair(world,input);
  world.effects=world.effects.filter(e=>world.tick*STEP-e.born<(e.type==='kill'&&e.enemyKind==='iron-brute'?1.7:1.2));
  if(world.survivalEnabled){stepPlayerSurvival(world);if(world.player.hp<=0){world.phase='over';world.cause||='THE CREW WENT DOWN'}}
+ finishPhase?.('simSurvivalMs');
 }
 
 export function campInteraction(world:World):{label:string;action:'pickup'|'cook'|'drink'|'deposit';disabled:boolean}|null{

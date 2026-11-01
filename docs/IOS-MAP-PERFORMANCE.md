@@ -62,6 +62,29 @@ requests, so streamed textures were repeatedly dropped and loaded again.
 
 ## New evidence
 
+### Follow-up native rendering work
+
+- Map tile requests now reuse their priority queue while the visible, coarse
+  and prefetch tile ranges are unchanged. Subpixel camera movement no longer
+  rebuilds and sorts that queue on every pinch update. Crossing a tile boundary,
+  changing density level or changing the cache limit still refreshes it.
+- An unfinished tile outside the new request set releases its raster surface
+  immediately. Its already parsed paths remain reusable; completed fallback
+  tiles remain cached. A failed surface allocation yields for that callback and
+  remains retryable instead of leaving a permanently missing tile in the cache.
+- Solid Skia paints now cache colour/style independently of animated opacity.
+  Each draw sets effective alpha from the original colour alpha, avoiding native
+  paint allocation and cache churn during fades without changing compositing.
+- `native-map-tile-work` measures a synchronous tile-pump slice when it takes at
+  least 1 ms. The older `native-map-tile` span remains elapsed time across frames;
+  it must not be counted as one continuous CPU stall.
+
+`scripts/check-native-rendering-efficiency.mjs` checks queue reuse, cancellation,
+retry/disposal, and real Skia pixel equality for immediate and recorded drawing.
+It exercises 2,400 draws with varying opacity across five paint styles (including
+translucent colours, strokes, dashes and erasing). These host checks establish
+allocation reduction and rendering equivalence, not an iPhone FPS improvement.
+
 `metadata.nativeDiagnosticsRevision` identifies `map-transition-2026-11-01`.
 `contextSamples[].presentation` records atlas zoom, opacity, map visibility,
 texture readiness, pinch state and whether gameplay was drawn.

@@ -35,7 +35,7 @@ try{
   const useEffect=(fn,deps)=>{const s=slot(()=>({}));if(!s.deps||deps.some((v,i)=>v!==s.deps[i])){s.deps=deps;effects.push(()=>{s.cleanup?.();s.cleanup=fn()})}};
   const renderer={revision:1,warmImages:async()=>{await artworkGate;if(failArtwork)throw new TypeError('artwork failed')},releaseImages:noop,dispose:noop,draw:(world,width,height)=>{draws.push({world,width,height});return {frame:draws.length}},textureStats:()=>undefined};
   const ctx={...m,React,Profiler:React.Profiler,useCallback:fn=>useMemo(()=>fn),useRef,useState,useMemo,useEffect,Error,console:{error:(...args)=>errors.push(args)},performance,zero:()=>({x:0,y:0}),
-   __DEV__:true,Platform:{OS:'ios',Version:'test'},PixelRatio:{get:()=>3},require:()=>1,View:'View',Text:'Text',Pressable:'Pressable',ScrollView:'ScrollView',StatusBar:'StatusBar',Canvas:'Canvas',Picture:'Picture',
+   __DEV__:true,process:{env:{}},Platform:{OS:'ios',Version:'test',constants:{reactNativeVersion:{major:0,minor:88,patch:1}}},PixelRatio:{get:()=>3},require:()=>1,View:'View',Text:'Text',Pressable:'Pressable',ScrollView:'ScrollView',StatusBar:'StatusBar',Canvas:'Canvas',Picture:'Picture',
    StyleSheet:{create:v=>v,absoluteFill:{}},useWindowDimensions:()=>({width:844,height:390}),useSafeAreaInsets:()=>({top:0,bottom:0,left:0,right:0}),
    useSharedValue:value=>slot(()=>({value})),Skia:{PictureRecorder:()=>({beginRecording:noop,finishRecordingAsPicture:()=>({empty:true}),dispose:noop})},
    AppState:{currentState:background?'background':'active',addEventListener:(event,fn)=>{events.set(event,fn);return{remove:()=>events.delete(event)}}},
@@ -43,7 +43,7 @@ try{
    AsyncStorage:{getItem:async key=>{reads.push(key);return storage.get(key)||null},setItem:async(key,value)=>{writes.push(key);storage.set(key,value)}},
    Alert:{alert:(title,description,buttons)=>{ctx.alert=buttons}},PLAY_VIEW:{x:0,y:0,zoom:1,follow:true,grid:false,collision:false,selected:null,playing:true},
    createNativeRenderer:async()=>renderer,OutdoorTerrainStream:class{ready=true;update(){}settled(){return Promise.resolve()}dispose(){}retry(){}},
-   NativePerformanceOverlay:function NativePerformanceOverlay(){},NativePerformanceMenuOptions:function NativePerformanceMenuOptions(){},NativePerformancePanel:function NativePerformancePanel(){},NativeFieldKitHUD:function NativeFieldKitHUD(){},NativePlayerMap:function NativePlayerMap(){},
+   NativeUiFrameProbe:function NativeUiFrameProbe(){},NativePerformanceOverlay:function NativePerformanceOverlay(){},NativePerformanceMenuOptions:function NativePerformanceMenuOptions(){},NativePerformancePanel:function NativePerformancePanel(){},NativeFieldKitHUD:function NativeFieldKitHUD(){},NativePlayerMap:function NativePlayerMap(){},
    setInterval:fn=>{const next=++id;timers.set(next,fn);return next},clearInterval:key=>timers.delete(key),
    requestAnimationFrame:fn=>{const next=++id;frames.set(next,fn);return next},cancelAnimationFrame:key=>frames.delete(key),
   };
@@ -57,7 +57,7 @@ try{
   const frame=at=>{const callbacks=[...frames.values()];frames.clear();callbacks.forEach(fn=>fn(at))};
   render();
   return{render,labels,hud,press,frame,draws,reads,writes,errors,storage,ctx,releaseArtwork,
-   state:value=>events.get('change')?.(value),autosave:()=>{for(const timer of timers.values())timer()},
+   state:value=>events.get('change')?.(value),memoryWarning:()=>events.get('memoryWarning')?.(),autosave:()=>{for(const timer of timers.values())timer()},
    settled:()=>until(()=>Boolean(hud())||/Game paused|Run ended|Unable to open game/.test(labels())),
    close:()=>{for(const s of slots)s.cleanup?.()},
   };
@@ -84,6 +84,15 @@ try{
  cold.hud().props.onPause();const pumpedBeforePause=pumped.length;cold.frame(stamp+600);assert.equal(pumped.length,pumpedBeforePause,'No tile rendering while paused');
  const options=nodes(cold.render()).find(n=>n.type===cold.ctx.NativePerformanceMenuOptions);assert(options,'Pause menu exposes diagnostics');options.props.onOpen();
  const panel=nodes(cold.render()).find(n=>n.type===cold.ctx.NativePerformancePanel);assert(panel);panel.props.onStart();assert(panel.props.recorder.recording);assert(cold.hud(),'Recording resumes play');
+ const probe=nodes(cold.render()).find(n=>n.type===cold.ctx.NativeUiFrameProbe);assert(probe.props.active&&probe.props.recorder===panel.props.recorder,'UI cadence probe shares the active native recorder');
+ cold.frame(stamp+700);cold.frame(stamp+734);cold.memoryWarning();cold.autosave();await new Promise(resolve=>setImmediate(resolve));
+ panel.props.recorder.stop(stamp+735);const log=JSON.parse(panel.props.recorder.exportJson());
+ assert.equal(log.frameContexts.length,log.frames.length);assert(log.frames.length>0);
+ const lastContext=log.frameContexts.at(-1),playerX=log.frameContextColumns.indexOf('playerX');assert(Math.abs(lastContext[playerX]-world.player.x)<.01,'Recorded frame contains the actual native player position');
+ assert(log.systemTimings.some(row=>row[log.systemTimingColumns.indexOf('simulationMs')]>0),'Native simulation system is instrumented');
+ assert(log.traceEvents.some(event=>event.stage==='native-save-encode'),'Native autosave serialization is captured');
+ assert(log.importantTraceEvents.some(event=>event.stage==='native-memory-warning'),'Native memory warnings are retained');
+ assert.equal(log.metadata.nativeDiagnosticsRevision,'ios-flight-recorder-2026-11-01');
  const saved=cold.storage.get(m.RUN_SAVE_KEY);assert(saved);const captured=m.decodeRun(saved).worlds.find(([id])=>id==='camp')[1];
  const returning=app(saved);await returning.settled();assert(returning.hud(),'A valid saved expedition resumes directly');assert.equal(returning.hud().props.world.current.player.hp,captured.player.hp);assert.equal(returning.hud().props.world.current.tick,captured.tick);
  const endedData=JSON.parse(saved);endedData.worlds.find(([id])=>id==='camp')[1].phase='over';endedData.worlds.find(([id])=>id==='camp')[1].player.hp=0;

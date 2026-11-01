@@ -1,12 +1,12 @@
 {
   "passed": true,
   "collectorMedianMsPerFrame": {
-    "baseline": 0.0000053299999999995864,
-    "off": 0.0000025070000000005166,
-    "overlay": 0.000015487000000000535,
-    "recording": 0.0000772320000000002
+    "baseline": 0.00002270338000000265,
+    "off": 0.00007715461000000232,
+    "overlay": 0.00008031665999999859,
+    "recording": 0.000831805059999997
   },
-  "bufferBytes": 6840000,
+  "bufferBytes": 17400000,
   "checks": [
     "off by default, zero recording buffer and UI polling",
     "30/60/120Hz cadence",

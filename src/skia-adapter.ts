@@ -80,13 +80,16 @@ const releaseImage=(image:SkImage)=>{for(const [key,item]of terrainCache)if(item
 // Skia copies paint values into each recorded command, so one native paint can
 // serve every matching draw. Allocating one per fill, stroke or sprite made
 // thousands of short-lived native objects a second for the JS collector.
-const solidPaints=new Map<string,{paint:SkPaint;dash?:Resource}>();
+const solidPaints=new Map<string,{paint:SkPaint;colourAlpha:number;dash?:Resource}>();
 const solidPaint=(color:string,alpha:number,stroke:boolean,width:number,erase:boolean,dash:readonly number[])=>{
- const dashed=stroke&&dash.length>0,key=(stroke?'s'+width:'f')+(erase?'x':'')+(dashed?'d'+dash.join(','):'')+'|'+alpha+'|'+color;
- let entry=solidPaints.get(key);if(entry){solidPaints.delete(key);solidPaints.set(key,entry);return entry.paint}
- const paint=Skia.Paint();paint.setAntiAlias(true);paint.setColor(Skia.Color(color));paint.setAlphaf(paint.getAlphaf()*alpha);paint.setStyle(stroke?PaintStyle.Stroke:PaintStyle.Fill);paint.setStrokeWidth(width);paint.setBlendMode(erase?BlendMode.DstOut:BlendMode.SrcOver);
+ const dashed=stroke&&dash.length>0,key=(stroke?'s'+width:'f')+(erase?'x':'')+(dashed?'d'+dash.join(','):'')+'|'+color;
+ // Opacity varies continuously for fades and effects. Skia snapshots a paint
+ // into each draw command, so reuse its style and update only effective alpha.
+ // Keep the colour's own alpha separately; never multiply an already faded one.
+ let entry=solidPaints.get(key);if(entry){solidPaints.delete(key);solidPaints.set(key,entry);entry.paint.setAlphaf(entry.colourAlpha*alpha);return entry.paint}
+ const paint=Skia.Paint();paint.setAntiAlias(true);paint.setColor(Skia.Color(color));const colourAlpha=paint.getAlphaf();paint.setAlphaf(colourAlpha*alpha);paint.setStyle(stroke?PaintStyle.Stroke:PaintStyle.Fill);paint.setStrokeWidth(width);paint.setBlendMode(erase?BlendMode.DstOut:BlendMode.SrcOver);
  const effect=dashed?Skia.PathEffect.MakeDash([...dash],0)!:undefined;if(effect)paint.setPathEffect(effect);
- solidPaints.set(key,entry={paint,dash:effect});
+ solidPaints.set(key,entry={paint,colourAlpha,dash:effect});
  if(solidPaints.size>512){const [oldest,old]=solidPaints.entries().next().value!;solidPaints.delete(oldest);old.paint.dispose();old.dash?.dispose()}
  return paint;
 };

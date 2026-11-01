@@ -49,7 +49,9 @@ export function nearbyResourceOutlines(w:World,v:ResourceOutlineView,hideFoliage
    clear=lineClear(w.player,{x:w.player.x+(root.x-w.player.x)*ratio,y:w.player.y+(root.y-w.player.y)*ratio},w)&&!coveredByRoof(w,root.x,root.y,p.id);cache.clear.set(p,clear);
   }
   if(!clear)continue;
-  const id=`${kind}:${p.id}`,selected=target?.forageId===p.id||target?.rockId===p.id||target?.treeId===p.id||target?.id?.endsWith(`:${p.id}`)===true;
+  // Restored/legacy presentation targets can carry a numeric loot ID. Only
+  // namespaced string IDs support placement suffix matching.
+  const id=`${kind}:${p.id}`,selected=target?.forageId===p.id||target?.rockId===p.id||target?.treeId===p.id||typeof target?.id==='string'&&target.id.endsWith(`:${p.id}`);
   cues.push({id,kind,placement:p,distance,selected,alpha:resourceOutlineAlpha(distance,selected)});
  }
  for(const loot of pickups){
