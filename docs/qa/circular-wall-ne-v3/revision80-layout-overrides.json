@@ -1,0 +1,46 @@
+{
+  "sourceRevision": 80,
+  "layout": {
+    "campPerimeterVersion": 6,
+    "updatedAt": "2026-11-01T08:56:27.603Z"
+  },
+  "placements": [
+    {
+      "id": "camp-centre-v1-oak-well",
+      "fields": {
+        "x": 2393.0652857992955,
+        "y": 1002.7223820437208
+      }
+    },
+    {
+      "id": "camp-natural-v1-347",
+      "fields": {
+        "x": 3080.703133922631,
+        "y": -47.28612707355268
+      }
+    },
+    {
+      "id": "forage-v1-berry-0",
+      "fields": {
+        "x": 233.08941859636502,
+        "y": 896.4579345201557
+      }
+    },
+    {
+      "id": "forage-v1-berry-5",
+      "fields": {
+        "x": 1480.7809686476132,
+        "y": 1837.8421586081663
+      }
+    },
+    {
+      "id": "camp-circular-wall-v1-03",
+      "fields": {
+        "assetId": "camp_circular_wall_03",
+        "x": 3101.270267780181,
+        "y": 686.8197171304214,
+        "locked": false
+      }
+    }
+  ]
+}

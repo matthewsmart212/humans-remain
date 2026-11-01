@@ -1,0 +1,4 @@
+{
+  "result": "pass",
+  "command": "npm run typecheck"
+}

@@ -1,0 +1,11 @@
+{
+  "status": "validated_pending_publication",
+  "correctsSiteVersion": 327,
+  "perimeterVersion": 7,
+  "sourceBase": "076c5e647cd883a64eb5109cf2f4fecc3c612032",
+  "reproducedLiveRevision": 80,
+  "actualSavedStateRepaired": true,
+  "all777RoadProbesClear": true,
+  "continuedSaveStatePreserved": true,
+  "rendererProof": "after-live-draft.png"
+}

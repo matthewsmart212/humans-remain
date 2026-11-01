@@ -34,3 +34,8 @@ historical-assets/*/master-map.svg filter=lfs diff=lfs merge=lfs -text
 /docs/qa/circular-wall-ne-v2/**/*.png -filter -diff -merge -text
 /docs/qa/circular-wall-ne-v2/**/*.jpg -filter -diff -merge -text
 /docs/qa/circular-wall-ne-v2/**/*.jpeg -filter -diff -merge -text
+
+# Shared-renderer evidence for the northeast saved-layout repair.
+docs/qa/circular-wall-ne-v3/**/*.png -filter -diff -merge -text
+docs/qa/circular-wall-ne-v3/**/*.jpg -filter -diff -merge -text
+docs/qa/circular-wall-ne-v3/**/*.jpeg -filter -diff -merge -text

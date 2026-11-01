@@ -1,0 +1,51 @@
+{
+  "sourceRevision": 80,
+  "campPerimeterVersion": 6,
+  "hearth": {
+    "id": "06c42057-0d46-43ef-977b-f183d7c50561",
+    "assetId": "base_hearth_t1",
+    "x": 1718.1675873489273,
+    "y": 1573.5124773329626,
+    "scale": 2.7,
+    "frame": {
+      "sourceAssetId": "base_hearth_t1",
+      "width": 112,
+      "height": 112,
+      "anchor": [
+        0.5,
+        0.9375
+      ]
+    },
+    "locked": true,
+    "solid": true,
+    "allowTransparency": false,
+    "roof": "auto",
+    "role": "hearth"
+  },
+  "northeastPlacements": [
+    {
+      "id": "camp-circular-wall-v1-02",
+      "assetId": "camp_circular_wall_02_ne_v2",
+      "x": 2658.6622456328273,
+      "y": 217.7950297283926,
+      "scale": 1,
+      "locked": true,
+      "solid": true,
+      "allowTransparency": true,
+      "roof": "auto",
+      "role": "prop"
+    },
+    {
+      "id": "camp-circular-wall-v1-03",
+      "assetId": "camp_circular_wall_03",
+      "x": 3101.270267780181,
+      "y": 686.8197171304214,
+      "scale": 1,
+      "locked": false,
+      "solid": true,
+      "allowTransparency": true,
+      "roof": "auto",
+      "role": "prop"
+    }
+  ]
+}

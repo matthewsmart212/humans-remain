@@ -9,7 +9,7 @@ import {build} from 'esbuild';
 
 const require=createRequire(import.meta.url);
 const temp=fs.mkdtempSync(path.join(os.tmpdir(),'circular-wall-native-'));
-const output='docs/qa/circular-wall-ne-v2';
+const output=process.argv[2]||'docs/qa/circular-wall-ne-v3';
 const snapshot=JSON.parse(fs.readFileSync('native/assets/world-snapshot.json'));
 const art=JSON.parse(fs.readFileSync('src/camp-circular-wall-art.json'));
 const plan=JSON.parse(fs.readFileSync('src/camp-circular-wall-layout.json'));
@@ -23,7 +23,7 @@ try{
  const expected=plan.placements.map(p=>p.assetId).sort();
  assert.equal(expected.length,16);
  assert.deepEqual(snapshot.layout.items.filter(p=>p.assetId.startsWith('camp_circular_wall_')).map(p=>p.assetId).sort(),expected);
- assert.equal(snapshot.layout.campPerimeterVersion,6);
+ assert.equal(snapshot.layout.campPerimeterVersion,7);
 
  const aliases={
   '@react-native-async-storage/async-storage':'export default {getItem:async()=>null,setItem:async()=>{}};',

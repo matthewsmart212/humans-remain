@@ -1,0 +1,337 @@
+{
+  "sourceRevision": 80,
+  "sourceVersion": 6,
+  "method": "Exact finished placementBodies polygons; player radius19; every current road segment resampled at at most8 units; +/-35 lateral lanes within120 units of ring.",
+  "saved03": {
+    "id": "camp-circular-wall-v1-03",
+    "assetId": "camp_circular_wall_03",
+    "x": 3101.270267780181,
+    "y": 686.8197171304214,
+    "scale": 1,
+    "locked": false,
+    "solid": true,
+    "allowTransparency": true,
+    "roof": "auto",
+    "role": "prop"
+  },
+  "repaired03": {
+    "id": "camp-circular-wall-v1-03",
+    "assetId": "camp_circular_wall_03_ne_v2",
+    "x": 3172.626040129635,
+    "y": 809.3584785204785,
+    "scale": 1,
+    "locked": false,
+    "solid": true,
+    "allowTransparency": true,
+    "roof": "auto",
+    "role": "prop"
+  },
+  "delta": {
+    "x": -5.771149033311303,
+    "y": 4.109959723949828,
+    "length": 7.08504975968269,
+    "tangentAtSeam": 1.5885845476449445,
+    "radialAtSeam": -6.904659964992009
+  },
+  "before": {
+    "wallCount": 16,
+    "bodyCount": 28,
+    "samples": 777,
+    "blocked": 49,
+    "minMargin": -58.81612755313026,
+    "byRoad": [
+      {
+        "road": "camp-northwest",
+        "samples": 120,
+        "blocked": 0,
+        "minMargin": 53.588604236939105
+      },
+      {
+        "road": "camp-northeast",
+        "samples": 102,
+        "blocked": 49,
+        "minMargin": -58.81612755313026
+      },
+      {
+        "road": "camp-west",
+        "samples": 123,
+        "blocked": 0,
+        "minMargin": 31.252730140882903
+      },
+      {
+        "road": "camp-southwest",
+        "samples": 129,
+        "blocked": 0,
+        "minMargin": 47.949364540789944
+      },
+      {
+        "road": "camp-south-painted",
+        "samples": 162,
+        "blocked": 0,
+        "minMargin": 10.981173776013595
+      },
+      {
+        "road": "camp-southeast",
+        "samples": 141,
+        "blocked": 0,
+        "minMargin": 57.47469310286782
+      }
+    ]
+  },
+  "after": {
+    "wallCount": 16,
+    "bodyCount": 28,
+    "samples": 777,
+    "blocked": 0,
+    "minMargin": 10.981173776013595,
+    "byRoad": [
+      {
+        "road": "camp-northwest",
+        "samples": 120,
+        "blocked": 0,
+        "minMargin": 53.588604236939105
+      },
+      {
+        "road": "camp-northeast",
+        "samples": 102,
+        "blocked": 0,
+        "minMargin": 32.54582658152152
+      },
+      {
+        "road": "camp-west",
+        "samples": 123,
+        "blocked": 0,
+        "minMargin": 31.252730140882903
+      },
+      {
+        "road": "camp-southwest",
+        "samples": 129,
+        "blocked": 0,
+        "minMargin": 47.949364540789944
+      },
+      {
+        "road": "camp-south-painted",
+        "samples": 162,
+        "blocked": 0,
+        "minMargin": 10.981173776013595
+      },
+      {
+        "road": "camp-southeast",
+        "samples": 141,
+        "blocked": 0,
+        "minMargin": 57.47469310286782
+      }
+    ]
+  },
+  "canonical": {
+    "wallCount": 16,
+    "bodyCount": 28,
+    "samples": 777,
+    "blocked": 0,
+    "minMargin": 10.981173776013595,
+    "byRoad": [
+      {
+        "road": "camp-northwest",
+        "samples": 120,
+        "blocked": 0,
+        "minMargin": 53.588604236939105
+      },
+      {
+        "road": "camp-northeast",
+        "samples": 102,
+        "blocked": 0,
+        "minMargin": 32.54582658152152
+      },
+      {
+        "road": "camp-west",
+        "samples": 123,
+        "blocked": 0,
+        "minMargin": 31.252730140882903
+      },
+      {
+        "road": "camp-southwest",
+        "samples": 129,
+        "blocked": 0,
+        "minMargin": 47.949364540789944
+      },
+      {
+        "road": "camp-south-painted",
+        "samples": 162,
+        "blocked": 0,
+        "minMargin": 10.981173776013595
+      },
+      {
+        "road": "camp-southeast",
+        "samples": 141,
+        "blocked": 0,
+        "minMargin": 57.47469310286782
+      }
+    ]
+  },
+  "bound16": {
+    "euclidean": true,
+    "minimumCanonicalClearanceFromAllSamplesToNEColliders": 32.54582658152152,
+    "analyticClearanceLowerBoundForAnyNETranslationWithin16": 16.545826581521517,
+    "reason": "Distance to a rigidly translated polygon can decrease by no more than the translation magnitude. Positive lower bound covers every vector in the16-unit disk, not only sampled directions.",
+    "boundarySweep": [
+      {
+        "wallId": "camp-circular-wall-v1-02",
+        "translations": 360,
+        "maximumTranslation": 16,
+        "roadSamplesPerTranslation": 777,
+        "blocked": 0,
+        "minMargin": 16.54583404059069,
+        "worstAngle": 66
+      },
+      {
+        "wallId": "camp-circular-wall-v1-03",
+        "translations": 360,
+        "maximumTranslation": 16,
+        "roadSamplesPerTranslation": 777,
+        "blocked": 0,
+        "minMargin": 69.94303449573175,
+        "worstAngle": 242
+      }
+    ]
+  },
+  "fullWorldRoute": {
+    "clear": true,
+    "playerRadius": 19,
+    "start": [
+      2660,
+      780
+    ],
+    "end": [
+      3260,
+      300
+    ],
+    "routePoints": 31,
+    "bothDirectionsClear": true,
+    "route": [
+      [
+        2660,
+        780
+      ],
+      [
+        2680,
+        760
+      ],
+      [
+        2700,
+        740
+      ],
+      [
+        2720,
+        720
+      ],
+      [
+        2740,
+        700
+      ],
+      [
+        2760,
+        680
+      ],
+      [
+        2780,
+        660
+      ],
+      [
+        2800,
+        640
+      ],
+      [
+        2820,
+        620
+      ],
+      [
+        2840,
+        600
+      ],
+      [
+        2860,
+        580
+      ],
+      [
+        2880,
+        560
+      ],
+      [
+        2900,
+        540
+      ],
+      [
+        2920,
+        520
+      ],
+      [
+        2940,
+        500
+      ],
+      [
+        2960,
+        480
+      ],
+      [
+        2980,
+        460
+      ],
+      [
+        3000,
+        440
+      ],
+      [
+        3020,
+        420
+      ],
+      [
+        3040,
+        400
+      ],
+      [
+        3060,
+        380
+      ],
+      [
+        3080,
+        380
+      ],
+      [
+        3100,
+        380
+      ],
+      [
+        3120,
+        360
+      ],
+      [
+        3140,
+        360
+      ],
+      [
+        3160,
+        360
+      ],
+      [
+        3180,
+        360
+      ],
+      [
+        3200,
+        360
+      ],
+      [
+        3220,
+        340
+      ],
+      [
+        3240,
+        320
+      ],
+      [
+        3260,
+        300
+      ]
+    ]
+  }
+}
