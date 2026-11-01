@@ -21,7 +21,7 @@ const nodes=tree=>Array.isArray(tree)?tree.flatMap(nodes):tree&&typeof tree==='o
 const text=tree=>Array.isArray(tree)?tree.map(text).join(' '):typeof tree==='string'?tree:tree?.props?text(tree.props.children):'';
 async function until(predicate){for(let i=0;i<1000;i++){if(predicate())return;await new Promise(resolve=>setImmediate(resolve))}assert.fail('Native startup did not settle')}
 try{
- await build({stdin:{contents:modules.map(id=>`export * from './src/${id}';`).join('')+"export * from './native/game-world';export * from './native/play-zoom';",resolveDir:process.cwd()},bundle:true,platform:'node',format:'cjs',outfile:path.join(temp,'model.cjs'),logLevel:'error'});
+ await build({stdin:{contents:modules.map(id=>`export * from './src/${id}';`).join('')+"export * from './native/game-world';export * from './native/play-zoom';export * from './native/frame-diagnostics';",resolveDir:process.cwd()},bundle:true,platform:'node',format:'cjs',outfile:path.join(temp,'model.cjs'),logLevel:'error'});
  const m=require(path.join(temp,'model.cjs'));
  function app(saved,{background=false,failArtwork=false,holdArtwork=false}={}){
   const storage=new Map([['safety-last-authored-world-v2','invalid retired editor cache']]);if(saved!==undefined)storage.set(m.RUN_SAVE_KEY,saved);
@@ -34,8 +34,8 @@ try{
   const useMemo=fn=>slot(()=>({value:fn()})).value;
   const useEffect=(fn,deps)=>{const s=slot(()=>({}));if(!s.deps||deps.some((v,i)=>v!==s.deps[i])){s.deps=deps;effects.push(()=>{s.cleanup?.();s.cleanup=fn()})}};
   const renderer={revision:1,warmImages:async()=>{await artworkGate;if(failArtwork)throw new TypeError('artwork failed')},releaseImages:noop,dispose:noop,draw:(world,width,height)=>{draws.push({world,width,height});return {frame:draws.length}},textureStats:()=>undefined};
-  const ctx={...m,React,useRef,useState,useMemo,useEffect,Error,console:{error:(...args)=>errors.push(args)},performance,zero:()=>({x:0,y:0}),
-   require:()=>1,View:'View',Text:'Text',Pressable:'Pressable',ScrollView:'ScrollView',StatusBar:'StatusBar',Canvas:'Canvas',Picture:'Picture',
+  const ctx={...m,React,Profiler:React.Profiler,useCallback:fn=>useMemo(()=>fn),useRef,useState,useMemo,useEffect,Error,console:{error:(...args)=>errors.push(args)},performance,zero:()=>({x:0,y:0}),
+   __DEV__:true,Platform:{OS:'ios',Version:'test'},PixelRatio:{get:()=>3},require:()=>1,View:'View',Text:'Text',Pressable:'Pressable',ScrollView:'ScrollView',StatusBar:'StatusBar',Canvas:'Canvas',Picture:'Picture',
    StyleSheet:{create:v=>v,absoluteFill:{}},useWindowDimensions:()=>({width:844,height:390}),useSafeAreaInsets:()=>({top:0,bottom:0,left:0,right:0}),
    useSharedValue:value=>slot(()=>({value})),Skia:{PictureRecorder:()=>({beginRecording:noop,finishRecordingAsPicture:()=>({empty:true}),dispose:noop})},
    AppState:{currentState:background?'background':'active',addEventListener:(event,fn)=>{events.set(event,fn);return{remove:()=>events.delete(event)}}},
@@ -43,7 +43,7 @@ try{
    AsyncStorage:{getItem:async key=>{reads.push(key);return storage.get(key)||null},setItem:async(key,value)=>{writes.push(key);storage.set(key,value)}},
    Alert:{alert:(title,description,buttons)=>{ctx.alert=buttons}},PLAY_VIEW:{x:0,y:0,zoom:1,follow:true,grid:false,collision:false,selected:null,playing:true},
    createNativeRenderer:async()=>renderer,OutdoorTerrainStream:class{ready=true;update(){}settled(){return Promise.resolve()}dispose(){}retry(){}},
-   NativeFieldKitHUD:function NativeFieldKitHUD(){},NativePlayerMap:function NativePlayerMap(){},
+   NativePerformanceOverlay:function NativePerformanceOverlay(){},NativePerformanceMenuOptions:function NativePerformanceMenuOptions(){},NativePerformancePanel:function NativePerformancePanel(){},NativeFieldKitHUD:function NativeFieldKitHUD(){},NativePlayerMap:function NativePlayerMap(){},
    setInterval:fn=>{const next=++id;timers.set(next,fn);return next},clearInterval:key=>timers.delete(key),
    requestAnimationFrame:fn=>{const next=++id;frames.set(next,fn);return next},cancelAnimationFrame:key=>frames.delete(key),
   };
@@ -70,6 +70,16 @@ try{
  cold.hud().props.onPause();assert(cold.labels().includes('Game paused'));const paused=world.tick;cold.frame(1068);assert.equal(world.tick,paused);
  cold.press('Resume');assert(cold.hud());
  world.player.hp=83;cold.autosave();await until(()=>cold.writes.length>0);
+ // A ready opaque atlas must stop hidden draws while simulation continues.
+ const map=()=>nodes(cold.render()).find(n=>n.type===cold.ctx.NativePlayerMap);
+ const stamp=performance.now()+2000;cold.hud().props.onMap();cold.frame(stamp);cold.render();
+ assert(map().props.active,'Map button enters the continuous atlas');
+ const beforeReady=cold.draws.length;cold.frame(stamp+17);assert(cold.draws.length>beforeReady,'Keep drawing until map textures are ready');
+ map().props.onReady(true);const beforeHidden=cold.draws.length,hiddenTick=world.tick;cold.frame(stamp+34);cold.frame(stamp+51);
+ assert.equal(cold.draws.length,beforeHidden,'No world picture recording behind a ready opaque map');assert(world.tick>hiddenTick,'Map does not pause survival');
+ map().props.onClose();cold.frame(stamp+500);cold.frame(stamp+517);assert(cold.draws.length>beforeHidden,'World resumes drawing when the atlas closes');
+ cold.hud().props.onPause();const options=nodes(cold.render()).find(n=>n.type===cold.ctx.NativePerformanceMenuOptions);assert(options,'Pause menu exposes diagnostics');options.props.onOpen();
+ const panel=nodes(cold.render()).find(n=>n.type===cold.ctx.NativePerformancePanel);assert(panel);panel.props.onStart();assert(panel.props.recorder.recording);assert(cold.hud(),'Recording resumes play');
  const saved=cold.storage.get(m.RUN_SAVE_KEY);assert(saved);const captured=m.decodeRun(saved).worlds.find(([id])=>id==='camp')[1];
  const returning=app(saved);await returning.settled();assert(returning.hud(),'A valid saved expedition resumes directly');assert.equal(returning.hud().props.world.current.player.hp,captured.player.hp);assert.equal(returning.hud().props.world.current.tick,captured.tick);
  const endedData=JSON.parse(saved);endedData.worlds.find(([id])=>id==='camp')[1].phase='over';endedData.worlds.find(([id])=>id==='camp')[1].player.hp=0;
@@ -80,5 +90,5 @@ try{
  const inactive=app(undefined,{holdArtwork:true});await until(()=>inactive.labels().includes('Preparing game'));inactive.state('background');inactive.releaseArtwork();await inactive.settled();assert(inactive.labels().includes('Game paused'),'Backgrounding during startup must not launch a hidden simulation');inactive.state('active');assert(!inactive.hud());inactive.press('Resume');assert(inactive.hud());
  const failed=app(undefined,{failArtwork:true});await failed.settled();assert(failed.labels().includes('Warm artwork: artwork failed'));assert(failed.labels().includes('Retry'));assert.equal(failed.storage.has(m.RUN_SAVE_KEY),false);
  for(const instance of [cold,returning,ended,damaged,inactive,failed])instance.close();
- console.log(JSON.stringify({passed:true,checks:['offline direct Survival launch','first frame before HUD','no native editor/test menu','automatic saved-run resume','pause/resume','ended-run screen','damaged save preserved','confirmed new run','background during boot','named startup failure and retry'],physicalIPhoneTested:false},null,2));
+ console.log(JSON.stringify({passed:true,checks:['offline direct Survival launch','first frame before HUD','no native editor/test menu','automatic saved-run resume','pause/resume','map suppresses hidden drawing without pausing survival','map close resumes drawing','recorder accessible from pause menu','ended-run screen','damaged save preserved','confirmed new run','background during boot','named startup failure and retry'],physicalIPhoneTested:false},null,2));
 }finally{fs.rmSync(temp,{recursive:true,force:true})}
