@@ -7,15 +7,15 @@ import {build} from 'esbuild';
 const require=createRequire(import.meta.url),temp=fs.mkdtempSync(path.join(os.tmpdir(),'performance-check-'));
 const effects=[];
 globalThis.__performanceReact={createElement:(type,props,...children)=>({type,props:{...props,children}}),useRef:value=>({current:value}),useState:value=>[typeof value==='function'?value():value,()=>{}],useEffect:fn=>effects.push(fn),useMemo:fn=>fn(),useId:()=> 'test-title'};
-globalThis.__performanceFiles=[];globalThis.__performanceShares=[];globalThis.__sharingAvailable=true;
+globalThis.__performanceFiles=[];globalThis.__performanceShares=[];globalThis.__sharingAvailable=true;globalThis.__nativeModules={SourceCode:{scriptURL:'http://192.168.1.20:8081/index.bundle?platform=ios&dev=true'}};
 try{
  const aliases={react:'module.exports=globalThis.__performanceReact;',
   'react/jsx-runtime':"export const jsx=(type,props)=>({type,props});export const jsxs=jsx;export const Fragment='fragment';",
-  'react-native':"export const View='view',Text='text',Pressable='pressable',ScrollView='scroll';export const StyleSheet={create:x=>x};",
+  'react-native':"export const View='view',Text='text',Pressable='pressable',ScrollView='scroll';export const StyleSheet={create:x=>x};export const NativeModules=globalThis.__nativeModules;",
   'lucide-react':"export const Plus='svg',Trash2='svg',HeartPulse='svg',Activity='svg',ArrowLeft='svg',Download='svg',Square='svg',Play='svg',Pause='svg',RotateCcw='svg',Minimize2='svg',Maximize2='svg';",
   'expo-file-system':"export const Paths={cache:'file:///cache/'};export class File{constructor(dir,name){this.uri=dir+name}write(text){globalThis.__performanceFiles.push({uri:this.uri,text})}}",
   'expo-sharing':"export const isAvailableAsync=async()=>globalThis.__sharingAvailable;export const shareAsync=async(uri,options)=>globalThis.__performanceShares.push({uri,options});"};
- await build({stdin:{contents:`export * from './src/performance-recording';export * from './src/performance-context';export * from './src/use-performance-snapshot';export * from './src/GamePerformance';export {default as Menu} from './src/GamePlayMenu';export {default as NativePanel,NativePerformanceOverlay,NativePerformanceMenuOptions,exportNativePerformanceLog} from './native/PerformancePanel';`,resolveDir:process.cwd()},bundle:true,platform:'node',format:'cjs',outfile:path.join(temp,'test.cjs'),plugins:[{name:'platform-boundaries',setup(b){b.onResolve({filter:/^(react(?:\/jsx-runtime)?|react-native|lucide-react|expo-file-system|expo-sharing)$/},a=>({path:a.path,namespace:'platform'}));b.onLoad({filter:/.*/,namespace:'platform'},a=>({contents:aliases[a.path],loader:'js'}));}}]});
+ await build({stdin:{contents:`export * from './src/performance-recording';export * from './src/performance-context';export * from './src/use-performance-snapshot';export * from './src/GamePerformance';export {default as Menu} from './src/GamePlayMenu';export {default as NativePanel,NativePerformanceOverlay,NativePerformanceMenuOptions,exportNativePerformanceLog,saveNativePerformanceLogToComputer} from './native/PerformancePanel';`,resolveDir:process.cwd()},bundle:true,platform:'node',format:'cjs',outfile:path.join(temp,'test.cjs'),plugins:[{name:'platform-boundaries',setup(b){b.onResolve({filter:/^(react(?:\/jsx-runtime)?|react-native|lucide-react|expo-file-system|expo-sharing)$/},a=>({path:a.path,namespace:'platform'}));b.onLoad({filter:/.*/,namespace:'platform'},a=>({contents:aliases[a.path],loader:'js'}));}}]});
  const m=require(path.join(temp,'test.cjs')),Recorder=m.GamePerformanceRecorder;
  const frame=(r,at,activity='playing',update=1.5,draw=3,steps=1)=>{if(r.beginFrame(at,activity))r.endFrame(update,draw,steps)};
  const off=new Recorder();let notifications=0;off.subscribe(()=>notifications++);
@@ -53,13 +53,13 @@ try{
  // Use the real platform components/handlers, mocking only React/native/OS APIs.
  const nodes=n=>!n||typeof n!=='object'?[]:Array.isArray(n)?n.flatMap(nodes):[n,...nodes(n.props?.children)];
  const text=n=>n==null||typeof n==='boolean'?'':typeof n==='string'||typeof n==='number'?String(n):Array.isArray(n)?n.map(text).join(''):text(n.props?.children);
- const find=(tree,label)=>nodes(tree).find(n=>(n.type==='button'||n.type==='pressable')&&text(n).includes(label));
+ const find=(tree,label)=>nodes(tree).find(n=>(n.type==='button'||n.type==='pressable')&&(label instanceof RegExp?label.test(text(n)):text(n).includes(label)));
  for(const platform of ['web','native']){
   const diagnostics=new Recorder();let started=0,back=0,opened=0;
   const props={recorder:diagnostics,onStart:()=>{started++;diagnostics.start(0,{})},onBack:()=>back++,defeated:false,wide:true};
   const menu=platform==='web'?m.PerformanceMenuOptions({recorder:diagnostics,onOpen:()=>opened++}):m.NativePerformanceMenuOptions({recorder:diagnostics,onOpen:()=>opened++});
   const toggle=find(menu,'Show FPS');toggle.props[platform==='web'?'onClick':'onPress']();assert(diagnostics.overlay);
-  find(menu,'Performance').props[platform==='web'?'onClick':'onPress']();assert.equal(opened,1);
+  find(menu,/performance/i).props[platform==='web'?'onClick':'onPress']();assert.equal(opened,1);
   const panel=()=>platform==='web'?m.GamePerformancePanel(props):m.NativePanel(props);
   let ui=panel();find(ui,'Start recording').props[platform==='web'?'onClick':'onPress']();assert.equal(started,1);assert(diagnostics.recording);
   ui=panel();assert(!find(ui,'Export log'),'No expensive export during active recording');find(ui,'Stop recording').props[platform==='web'?'onClick':'onPress']();assert(!diagnostics.recording);
@@ -70,6 +70,14 @@ try{
  const stopped=new Recorder();stopped.start(0,{});frame(stopped,0);frame(stopped,16);stopped.stop(20);
  await m.exportNativePerformanceLog(stopped);assert.equal(globalThis.__performanceFiles.length,1);assert.equal(JSON.parse(globalThis.__performanceFiles[0].text).summary.frames,1);assert.equal(globalThis.__performanceShares[0].options.mimeType,'application/json');assert.match(globalThis.__performanceShares[0].uri,/\.json$/);
  globalThis.__sharingAvailable=false;await assert.rejects(()=>m.exportNativePerformanceLog(stopped),/unavailable/);assert.equal(globalThis.__performanceFiles.length,1,'No file written when sharing unavailable');
+ // A development build posts the log to the Expo server that served it, which writes performance-logs/.
+ const originalFetch=globalThis.fetch;let posted;
+ globalThis.fetch=async(url,init)=>{posted={url,init};return{ok:true,status:200,text:async()=>JSON.stringify({ok:true,latest:'performance-logs/latest.json'})}};
+ assert.equal(await m.saveNativePerformanceLogToComputer(stopped),'performance-logs/latest.json');
+ assert.equal(posted.url,'http://192.168.1.20:8081/__performance-log');assert.equal(posted.init.method,'POST');assert.equal(JSON.parse(posted.init.body).summary.frames,1);
+ globalThis.fetch=async()=>({ok:false,status:404,text:async()=>'Not found'});await assert.rejects(()=>m.saveNativePerformanceLogToComputer(stopped),/restart/,'An Expo server without the log route asks for a restart');
+ globalThis.__nativeModules.SourceCode.scriptURL=undefined;await assert.rejects(()=>m.saveNativePerformanceLogToComputer(stopped),/Export log/,'Without a dev server the log is exported instead');
+ globalThis.fetch=originalFetch;
  // Native/web use the same report; exercise browser download and share routes.
  const originalNavigator=Object.getOwnPropertyDescriptor(globalThis,'navigator'),originalDocument=globalThis.document,originalTimeout=globalThis.setTimeout;
  let shared,downloaded=false;Object.defineProperty(globalThis,'navigator',{value:{canShare:()=>true,share:async data=>{shared=data}},configurable:true});
@@ -83,6 +91,6 @@ try{
  // Collector-only benchmark. No claim that this models phone/GPU/React overhead.
  const bench=(kind)=>{const samples=[];for(let run=0;run<7;run++){const recorder=new Recorder();if(kind==='recording')recorder.start(0,{});if(kind==='overlay')recorder.setOverlay(true);let active=0;const begin=performance.now();for(let i=0;i<100000;i++){if(kind==='baseline'){active+=i&1;continue}if(recorder.beginFrame(i*4,'playing')){recorder.endFrame(1.5,3,1);active++}if(recorder.sampleDue(i*4))recorder.sample(i*4,{scene:'camp',placed:15000})}samples.push((performance.now()-begin)/100000);assert(active>=0)}samples.sort((a,b)=>a-b);return samples[3]};
  const benchmark=Object.fromEntries(['baseline','off','overlay','recording'].map(kind=>[kind,bench(kind)]));
- const result={passed:true,collectorMedianMsPerFrame:benchmark,bufferBytes:120000*((6+m.PERFORMANCE_PHASES.length)*4+1),checks:['off by default, zero recording buffer and UI polling','30/60/120Hz cadence','unclamped hitch and percentiles','pause, bag and background excluded','bounded frame buffer, samples and recording duration','no per-frame React notifications','export only after Stop','zero-frame logs, replacement and finite numbers','web/native menu handlers, toggle, start/stop and export states','native file/share adapter and web download/share adapters','44-point native tap targets'],limitations:['No browser UI or physical iPhone session in this check.','Benchmark covers collector code only on the build host, not total diagnostics overhead or GPU/display FPS.']};
+ const result={passed:true,collectorMedianMsPerFrame:benchmark,bufferBytes:120000*((6+m.PERFORMANCE_PHASES.length)*4+1),checks:['off by default, zero recording buffer and UI polling','30/60/120Hz cadence','unclamped hitch and percentiles','pause, bag and background excluded','bounded frame buffer, samples and recording duration','no per-frame React notifications','export only after Stop','zero-frame logs, replacement and finite numbers','web/native menu handlers, toggle, start/stop and export states','native file/share adapter and web download/share adapters','dev-build log saved to this computer through the Expo server','44-point native tap targets'],limitations:['No browser UI or physical iPhone session in this check.','Benchmark covers collector code only on the build host, not total diagnostics overhead or GPU/display FPS.']};
  fs.mkdirSync('docs/qa/performance-v2',{recursive:true});fs.writeFileSync('docs/qa/performance-v2/checks.json',JSON.stringify(result,null,2)+'\n');console.log(JSON.stringify(result,null,2));
 }finally{fs.rmSync(temp,{recursive:true,force:true})}

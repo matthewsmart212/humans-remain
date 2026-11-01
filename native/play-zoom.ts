@@ -1,6 +1,17 @@
 import type {GestureResponderEvent} from 'react-native';
 import {PlayPinchZoom} from '../src/play-zoom';
 
+/** The pinch amount changes on every move; only its subscribers re-render. */
+export function createZoomStore(initial:number){
+ let value=initial;const listeners=new Set<()=>void>();
+ return{
+  get:()=>value,
+  set(next:number){if(next===value)return;value=next;for(const listener of listeners)listener()},
+  subscribe(listener:()=>void){listeners.add(listener);return()=>{listeners.delete(listener)}},
+ };
+}
+export type ZoomStore=ReturnType<typeof createZoomStore>;
+
 /** World and movement touches register here; action-button touches never do.
  * Raw events on their common ancestor keep a pinch across both surfaces intact
  * without taking the native responder away from an action button. */

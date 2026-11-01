@@ -24,6 +24,8 @@ export function gateColliders(p:Placement,amount:number,assets=ASSET_BY_ID):Coll
  return Math.abs(amount)>=.5?posts:[...posts,{id:p.id+':leaf-closed',shape:'segment',...A,ex:B.x,ey:B.y,r:16*p.scale}];
 }
 export function gatesBlocked(w:World,x:number,y:number,r:number){return layoutViews(w.layout).gates.some(p=>gateColliders(p,gatePose(w,p.id)).some(c=>hitCollider(c,x,y,r)))}
+/** Current gate colliders, for many queries while no gate can move. */
+export function gateBlockers(w:World):Collider[]{return layoutViews(w.layout).gates.flatMap(p=>gateColliders(p,gatePose(w,p.id)))}
 function occupied(w:World,p:Placement,amount:number,swing= w.gateMotions?.[p.id]?.swing??1){const bodies=gateColliders(p,amount*swing).filter(c=>c.id.includes(':leaf-'));return [{...w.player,r:20},...w.enemies.filter(e=>e.hp>0).map(e=>({...e,r:19})),...w.animals.filter(e=>e.hp>0).map(e=>({...e,r:12}))].some(v=>bodies.some(c=>hitCollider(c,v.x,v.y,v.r)))}
 export function nearbyGate(w:World){if(w.player.downedUntil)return null;let best:Placement|null=null,distance=260;
  for(const p of layoutViews(w.layout).gates){if(!p.solid)continue;const [a,b]=gateColliders(p,0),dx=b.x-a.x,dy=b.y-a.y,t=Math.max(0,Math.min(1,((w.player.x-a.x)*dx+(w.player.y-a.y)*dy)/(dx*dx+dy*dy))),d=Math.hypot(w.player.x-a.x-t*dx,w.player.y-a.y-t*dy);if(d<distance){distance=d;best=p}}return best;

@@ -16,7 +16,9 @@ export const PLAYER_MAP_TERRAIN_URL='/maps/world-illustrated.webp';
 export const PLAYER_MAP_MAX_ZOOM=12;
 export type PlayerMapImage={id:string;url:string;x:number;y:number;width:number;height:number};
 export type PlayerMapScene={id:string;name:string;bounds:WorldBounds;images:PlayerMapImage[];footprint:Vec[][]};
-export type PlayerMapPath={id:string;path:string;fill:string;stroke?:string;strokeWidth?:number};
+/** `parts` joined is `path`; `bounds` holds [left,top,right,bottom] for each
+ * part so a region can be drawn from only the subpaths that reach it. */
+export type PlayerMapPath={id:string;path:string;fill:string;stroke?:string;strokeWidth?:number;parts?:readonly string[];bounds?:readonly number[]};
 export type PlayerMapLandmark={id:string;kind:'camp'|'well'|'bunker'|'headquarters'|'storage'|'building';label:string;x:number;y:number;caption?:Vec};
 export type PlayerMapFeatures={paths:PlayerMapPath[];landmarks:PlayerMapLandmark[];illustrations:MapIllustration[]};
 export type PlayerMapView={x:number;y:number;width:number;height:number;scale:number};
@@ -70,12 +72,19 @@ export const projectMapPoint=(point:Vec,view:PlayerMapView):Vec=>({x:(point.x-vi
 export const unprojectMapPoint=(point:Vec,view:PlayerMapView):Vec=>({x:point.x/view.scale+view.x,y:point.y/view.scale+view.y});
 
 const n=(value:number)=>Number(value.toFixed(2));
-const polygon=(points:readonly Vec[])=>points.length?'M'+points.map(p=>`${n(p.x)} ${n(p.y)}`).join('L')+'Z':'';
-function transformedPolygon(p:Placement,points:Vec[]){return polygon(points.map(v=>{const [x,y]=placementPoint(p,v.x,v.y);return{x,y}}))}
+type Batch={parts:string[];bounds:number[]};
+const batch=():Batch=>({parts:[],bounds:[]});
+function addShape(target:Batch,points:readonly Vec[],closed=true){
+ let left=Infinity,top=Infinity,right=-Infinity,bottom=-Infinity;
+ for(const v of points){if(v.x<left)left=v.x;if(v.x>right)right=v.x;if(v.y<top)top=v.y;if(v.y>bottom)bottom=v.y}
+ target.parts.push(points.length||!closed?'M'+points.map(p=>`${n(p.x)} ${n(p.y)}`).join('L')+(closed?'Z':''):'');
+ target.bounds.push(left,top,right,bottom);
+}
+const transformed=(p:Placement,points:readonly Vec[])=>points.map(v=>{const [x,y]=placementPoint(p,v.x,v.y);return{x,y}});
 function ellipse(p:Placement,cx:number,cy:number,rx:number,ry:number){
  // Eight vertices are enough at map scale; both mirroring and placement
  // rotation are the exact production transforms, including custom anchors.
- return transformedPolygon(p,Array.from({length:8},(_,i)=>{const a=i*Math.PI/4;return{x:cx+Math.cos(a)*rx,y:cy+Math.sin(a)*ry}}));
+ return transformed(p,Array.from({length:8},(_,i)=>{const a=i*Math.PI/4;return{x:cx+Math.cos(a)*rx,y:cy+Math.sin(a)*ry}}));
 }
 function landmark(p:Placement,a:WorldAsset):PlayerMapLandmark|undefined{
  const b=placementBounds(p),centre=()=>{const [x,y]=placementPoint(p,b.x+b.width/2,b.y+b.height*.58);return{x,y}};
@@ -95,7 +104,7 @@ const emptyFeatures:PlayerMapFeatures={paths:[],landmarks:[],illustrations:[]};
 export function playerMapFeatures(layout?:WorldLayout):PlayerMapFeatures{
  if(!layout)return emptyFeatures;
  const old=cache.get(layout);if(old)return old;
- const batches={woodland:[] as string[],foliage:[] as string[],treeShadows:[] as string[],trees:[] as string[],treeInk:[] as string[],rocks:[] as string[],rockInk:[] as string[],puddles:[] as string[]};
+ const batches={woodland:batch(),foliage:batch(),treeShadows:batch(),trees:batch(),treeInk:batch(),rocks:batch(),rockInk:batch(),puddles:batch()};
  const landmarks:PlayerMapLandmark[]=[],walls:{p:Placement;a:WorldAsset}[]=[],buildings:MapIllustration[]=[];
  const shelters=layout.items.filter(p=>ASSET_BY_ID.get(p.assetId)?.interior);
  for(const p of layout.items){
@@ -111,28 +120,28 @@ export function playerMapFeatures(layout?:WorldLayout):PlayerMapFeatures{
    // symbol rather than a miniature rendering of the canopy sprite.
    const w=b.width*.65,h=Math.max(w*1.2,b.height*.56),x=p.x,y=p.y;
    const conifer=/pine|fir|spruce|cedar/i.test(a.id+' '+a.name);
-   batches.woodland.push(ellipse(p,x,y-h*.32,w*1.45,h*.88));
-   batches.treeShadows.push(ellipse(p,x+w*.1,y-h*.08,w*.52,h*.11));
+   addShape(batches.woodland,ellipse(p,x,y-h*.32,w*1.45,h*.88));
+   addShape(batches.treeShadows,ellipse(p,x+w*.1,y-h*.08,w*.52,h*.11));
    const points=conifer?[{x,y:y-h},{x:x+w*.27,y:y-h*.62},{x:x+w*.12,y:y-h*.65},{x:x+w*.42,y:y-h*.35},{x:x+w*.24,y:y-h*.38},{x:x+w*.5,y:y-h*.09},{x:x-w*.5,y:y-h*.09},{x:x-w*.24,y:y-h*.38},{x:x-w*.42,y:y-h*.35},{x:x-w*.12,y:y-h*.65},{x:x-w*.27,y:y-h*.62}]:
     Array.from({length:18},(_,i)=>{const t=i*Math.PI/9,r=i%2?.94:1.08;return{x:x+Math.cos(t)*w*.49*r,y:y-h*.58+Math.sin(t)*h*.38*r}});
-   batches.trees.push(transformedPolygon(p,points));
-   const line=(points:Vec[])=>{const transformed=points.map(v=>{const [x,y]=placementPoint(p,v.x,v.y);return{x,y}});return'M'+transformed.map(v=>`${n(v.x)} ${n(v.y)}`).join('L')};
-   batches.treeInk.push(line([{x,y:y+h*.03},{x,y:y-h*.77}]));
-   for(let i=0;i<3;i++){const level=y-h*(.3+i*.18),reach=w*(conifer?.34-i*.065:.31);batches.treeInk.push(line([{x:x-reach,y:level-h*.09},{x,y:level},{x:x+reach*.84,y:level-h*.12}]))}
+   addShape(batches.trees,transformed(p,points));
+   const line=(points:Vec[])=>addShape(batches.treeInk,transformed(p,points),false);
+   line([{x,y:y+h*.03},{x,y:y-h*.77}]);
+   for(let i=0;i<3;i++){const level=y-h*(.3+i*.18),reach=w*(conifer?.34-i*.065:.31);line([{x:x-reach,y:level-h*.09},{x,y:level},{x:x+reach*.84,y:level-h*.12}])}
    continue;
   }
   if(a.foliage){
    // Tiny tufts provide a woodland wash without thousands of coloured dots.
    const x=p.x,y=p.y,w=b.width*.18,h=b.height*.14;
-   batches.foliage.push(transformedPolygon(p,[{x:x-w,y},{x:x-w*.6,y:y-h*.85},{x:x-w*.2,y:y-h*.2},{x:x+w*.08,y:y-h},{x:x+w*.3,y:y-h*.18},{x:x+w*.75,y:y-h*.7},{x:x+w,y}]));continue;
+   addShape(batches.foliage,transformed(p,[{x:x-w,y},{x:x-w*.6,y:y-h*.85},{x:x-w*.2,y:y-h*.2},{x:x+w*.08,y:y-h},{x:x+w*.3,y:y-h*.18},{x:x+w*.75,y:y-h*.7},{x:x+w,y}]));continue;
   }
-  if(a.puddle){batches.puddles.push(transformedPolygon(p,a.puddle.water.map(([x,y])=>({x:b.x+x*b.width,y:b.y+y*b.height}))));continue;}
+  if(a.puddle){addShape(batches.puddles,transformed(p,a.puddle.water.map(([x,y])=>({x:b.x+x*b.width,y:b.y+y*b.height}))));continue;}
   if(a.groundDetail)continue;
   const wall=!!a.perimeter||/\bwall\b|stockade|palisade/i.test(a.name);
   const rock=/^art_rock_|boulder|\brock\b/i.test(a.id+' '+a.name);
   if(rock){const x=b.x+b.width*.5,y=b.y+b.height*.72,w=b.width*.36,h=b.height*.28;
-   batches.rocks.push(transformedPolygon(p,[{x:x-w,y},{x:x-w*.7,y:y-h*.7},{x:x-w*.14,y:y-h},{x:x+w*.55,y:y-h*.77},{x:x+w,y:y-h*.1},{x:x+w*.45,y:y+h*.2},{x:x-w*.5,y:y+h*.15}]));
-   batches.rockInk.push(transformedPolygon(p,[{x:x-w*.14,y:y-h},{x:x+w*.13,y:y-h*.33},{x:x+w*.45,y:y+h*.2},{x:x+w,y:y-h*.1},{x:x+w*.55,y:y-h*.77}]));continue;}
+   addShape(batches.rocks,transformed(p,[{x:x-w,y},{x:x-w*.7,y:y-h*.7},{x:x-w*.14,y:y-h},{x:x+w*.55,y:y-h*.77},{x:x+w,y:y-h*.1},{x:x+w*.45,y:y+h*.2},{x:x-w*.5,y:y+h*.15}]));
+   addShape(batches.rockInk,transformed(p,[{x:x-w*.14,y:y-h},{x:x+w*.13,y:y-h*.33},{x:x+w*.45,y:y+h*.2},{x:x+w,y:y-h*.1},{x:x+w*.55,y:y-h*.77}]));continue;}
   if(wall){walls.push({p,a});continue;}
   if(!pin)continue;
   const kind:MapArtKind=pin.kind==='building'?(/workshop/i.test(a.name)?'workshop':/treatment/i.test(a.name)?'medical-tent':'warehouse'):pin.kind;
@@ -148,7 +157,7 @@ export function playerMapFeatures(layout?:WorldLayout):PlayerMapFeatures{
   rocks:{fill:'#c4b08b',stroke:'#6e6343',strokeWidth:4},rockInk:{fill:'#887c4f60',stroke:'#716343',strokeWidth:2},
   puddles:{fill:'#5a9390',stroke:'#315e64',strokeWidth:3},
  };
- const paths:PlayerMapPath[]=(Object.keys(batches) as (keyof typeof batches)[]).filter(id=>batches[id].length).map(id=>({id,path:batches[id].join(''),...styles[id]}));
+ const paths:PlayerMapPath[]=(Object.keys(batches) as (keyof typeof batches)[]).filter(id=>batches[id].parts.length).map(id=>({id,path:batches[id].parts.join(''),parts:batches[id].parts,bounds:batches[id].bounds,...styles[id]}));
  const campWall=(!layout.terrainImage||usesPaintedHomeTerrain(layout.terrainImage))&&walls.filter(w=>isCampMapWall(w.a.name)).length>=6;
  if(campWall)paths.push(...CAMP_MAP_WALL_PATHS);
  const curvedWalls=walls.filter(w=>(w.a.perimeterCurve?.length??0)>1);

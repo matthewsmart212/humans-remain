@@ -77,6 +77,28 @@ open('River fields',()=>{for(const batch of RIVER_BATCHES)flowSamplers(batch,EAS
 const riverSamplerCache=new Map<string,{children:SkShader[];resources:Resource[];images:SkImage[]}>();
 const dropRiverSampler=(key:string)=>{const entry=riverSamplerCache.get(key);if(entry){for(const r of [...entry.resources].reverse())r.dispose();riverSamplerCache.delete(key)}};
 const releaseImage=(image:SkImage)=>{for(const [key,item]of terrainCache)if(item.images.includes(image))drop(key);for(const [key,item]of riverSamplerCache)if(item.images.includes(image))dropRiverSampler(key)};
+// Skia copies paint values into each recorded command, so one native paint can
+// serve every matching draw. Allocating one per fill, stroke or sprite made
+// thousands of short-lived native objects a second for the JS collector.
+const solidPaints=new Map<string,{paint:SkPaint;dash?:Resource}>();
+const solidPaint=(color:string,alpha:number,stroke:boolean,width:number,erase:boolean,dash:readonly number[])=>{
+ const dashed=stroke&&dash.length>0,key=(stroke?'s'+width:'f')+(erase?'x':'')+(dashed?'d'+dash.join(','):'')+'|'+alpha+'|'+color;
+ let entry=solidPaints.get(key);if(entry){solidPaints.delete(key);solidPaints.set(key,entry);return entry.paint}
+ const paint=Skia.Paint();paint.setAntiAlias(true);paint.setColor(Skia.Color(color));paint.setAlphaf(paint.getAlphaf()*alpha);paint.setStyle(stroke?PaintStyle.Stroke:PaintStyle.Fill);paint.setStrokeWidth(width);paint.setBlendMode(erase?BlendMode.DstOut:BlendMode.SrcOver);
+ const effect=dashed?Skia.PathEffect.MakeDash([...dash],0)!:undefined;if(effect)paint.setPathEffect(effect);
+ solidPaints.set(key,entry={paint,dash:effect});
+ if(solidPaints.size>512){const [oldest,old]=solidPaints.entries().next().value!;solidPaints.delete(oldest);old.paint.dispose();old.dash?.dispose()}
+ return paint;
+};
+const spritePaints:SkPaint[]=[],spriteResources:Resource[]=[];
+const spritePaint=(bright:boolean)=>{
+ const index=bright?1:0;let paint=spritePaints[index];if(paint)return paint;
+ paint=Skia.Paint();paint.setAntiAlias(true);
+ if(bright){const filter=Skia.ColorFilter.MakeMatrix([2,0,0,0,0,0,2,0,0,0,0,0,2,0,0,0,0,0,1,0]);spriteResources.push(filter);paint.setColorFilter(filter)}
+ return spritePaints[index]=paint;
+};
+let clearPaint:SkPaint|undefined;
+const textWidths=new WeakMap<SkFont,Map<string,number>>();
 const riverSamplers=(image:SkImage,b:{x:number;y:number;width:number;height:number},scale:number,batch:RiverBatch,sideFootprint?:SkImage,surfaceRipples?:SkImage,sidePoints?:readonly (readonly number[])[])=>{
  const images=[image,sideFootprint||image,surfaceRipples||image],source=batch.source,key=images.map(imageId).join(',')+JSON.stringify([b,scale,batch,sidePoints]);
  const cached=riverSamplerCache.get(key);if(cached){riverSamplerCache.delete(key);riverSamplerCache.set(key,cached);return cached.children}
@@ -109,10 +131,11 @@ class SkiaContext{
  canvas:{width:number;height:number};fillStyle:string|Gradient='#000';strokeStyle:string|Gradient='#000';globalAlpha=1;lineWidth=1;globalCompositeOperation='source-over';filter='none';font='900 30px sans-serif';textAlign='center';
  private trash:{dispose:()=>void}[]=[];
  private keep<T extends {dispose:()=>void}>(v:T){this.trash.push(v);return v}
- dispose(){this.trash.forEach(v=>v.dispose());this.trash=[]}
- private path=this.keep(createDrawingPath(Skia));private dash:number[]=[];private states:any[]=[];
+ dispose(){this.trash.forEach(v=>v.dispose());this.trash=[];this.drawing?.dispose();this.drawing=undefined}
+ private drawing?:ReturnType<typeof createDrawingPath>;private dash:number[]=[];private states:any[]=[];
+ private get path(){return this.drawing??=createDrawingPath(Skia)}
  constructor(private c:SkCanvas,width:number,height:number,private face:SkFont){this.canvas={width,height}}
- private paint(stroke=false){const p=this.keep(Skia.Paint());p.setAntiAlias(true);const color=stroke?this.strokeStyle:this.fillStyle;if(typeof color==='string')p.setColor(Skia.Color(color));else p.setShader(this.keep(color.shader()));p.setAlphaf(p.getAlphaf()*this.globalAlpha);p.setStyle(stroke?PaintStyle.Stroke:PaintStyle.Fill);p.setStrokeWidth(this.lineWidth);p.setBlendMode(this.globalCompositeOperation==='destination-out'?BlendMode.DstOut:BlendMode.SrcOver);if(stroke&&this.dash.length)p.setPathEffect(this.keep(Skia.PathEffect.MakeDash(this.dash,0)!));return p}
+ private paint(stroke=false){const color=stroke?this.strokeStyle:this.fillStyle,erase=this.globalCompositeOperation==='destination-out';if(typeof color==='string')return solidPaint(color,this.globalAlpha,stroke,this.lineWidth,erase,this.dash);const p=this.keep(Skia.Paint());p.setAntiAlias(true);p.setShader(this.keep(color.shader()));p.setAlphaf(p.getAlphaf()*this.globalAlpha);p.setStyle(stroke?PaintStyle.Stroke:PaintStyle.Fill);p.setStrokeWidth(this.lineWidth);p.setBlendMode(erase?BlendMode.DstOut:BlendMode.SrcOver);if(stroke&&this.dash.length)p.setPathEffect(this.keep(Skia.PathEffect.MakeDash(this.dash,0)!));return p}
  save(){this.c.save();this.states.push({fillStyle:this.fillStyle,strokeStyle:this.strokeStyle,globalAlpha:this.globalAlpha,lineWidth:this.lineWidth,globalCompositeOperation:this.globalCompositeOperation,filter:this.filter,font:this.font,textAlign:this.textAlign,dash:[...this.dash]})}
  restore(){this.c.restore();Object.assign(this,this.states.pop()||{})}
  transform(a:number,b:number,c:number,d:number,e:number,f:number){this.c.concat([a,c,e,b,d,f,0,0,1])}
@@ -135,7 +158,7 @@ class SkiaContext{
    const shader=keep(roadPilot.makeShaderWithChildren([b.x,b.y,b.width,b.height,scale],[art]));
    const paint=keep(Skia.Paint());paint.setShader(shader);paint.setAntiAlias(false);return paint;
   });paint.setAlphaf(this.globalAlpha);
-  this.c.drawRect(Skia.XYWHRect(core.x,core.y,core.width,core.height),paint);
+  this.c.drawRect({x:core.x,y:core.y,width:core.width,height:core.height},paint);
  }
  drawRiverTerrainPatch(image:SkImage,b:{x:number;y:number;width:number;height:number},scale:number,time:number,sourceY:number,batch:RiverBatch,sideFootprint?:SkImage,sidePoints?:readonly (readonly number[])[],core=b,surfaceRipples?:SkImage){
   const started=diagnostics?.tracing?performance.now():undefined;
@@ -144,13 +167,13 @@ class SkiaContext{
   const shader=this.keep(riverEffect.makeShaderWithChildren([source.x,source.y,source.width,source.height,scale,time,sourceY,batch.topFade,sideFootprint?1:0,surfaceRipples?1:0],children));
   const paint=this.keep(Skia.Paint());paint.setShader(shader);paint.setAlphaf(this.globalAlpha);paint.setAntiAlias(false);
   if(started!==undefined)diagnostics!.phase('shaderBuildMs',performance.now()-started);
-  this.c.drawRect(Skia.XYWHRect(core.x,core.y,core.width,core.height),paint);
+  this.c.drawRect({x:core.x,y:core.y,width:core.width,height:core.height},paint);
  }
  drawWaterfallPilot(artwork:SkImage,mask:SkImage,frames:SkImage,b:{x:number;y:number;width:number;height:number},time:number){
   const children=[artwork,mask,frames].map(image=>this.keep(image.makeShaderOptions(TileMode.Clamp,TileMode.Clamp,FilterMode.Linear,MipmapMode.None)));
   const shader=this.keep(waterfallEffect.makeShaderWithChildren([b.x,b.y,b.width,b.height,time],children));
   const paint=this.keep(Skia.Paint());paint.setShader(shader);paint.setAlphaf(this.globalAlpha);paint.setAntiAlias(false);
-  this.c.drawRect(Skia.XYWHRect(b.x,b.y,b.width,b.height),paint);
+  this.c.drawRect({x:b.x,y:b.y,width:b.width,height:b.height},paint);
  }
  drawWaterfallSection(artwork:SkImage,mask:SkImage,frames:SkImage,b:{x:number;y:number;width:number;height:number},time:number,sampling:WaterfallSampling,core=b){
   const children=[artwork,mask,frames].map(image=>this.keep(image.makeShaderOptions(TileMode.Clamp,TileMode.Clamp,FilterMode.Linear,MipmapMode.None)));
@@ -158,7 +181,7 @@ class SkiaContext{
   const uniforms=[b.x,b.y,b.width,b.height,time,width,height,x*artwork.width(),y*artwork.height(),w*artwork.width()/width,h*artwork.height()/height,...sampling.direction];
   const shader=this.keep(waterfallSectionEffect.makeShaderWithChildren(uniforms,children));
   const paint=this.keep(Skia.Paint());paint.setShader(shader);paint.setAlphaf(this.globalAlpha);paint.setAntiAlias(false);
-  this.c.drawRect(Skia.XYWHRect(core.x,core.y,core.width,core.height),paint);
+  this.c.drawRect({x:core.x,y:core.y,width:core.width,height:core.height},paint);
  }
  drawRoadSurfaces(roads:readonly WorldRoad[],images:SkImage[],scale:number){
   const paints=images.map((image,i)=>{
@@ -208,7 +231,7 @@ class SkiaContext{
 
    return paint;
   });paint.setAlphaf(this.globalAlpha);
-  this.c.drawRect(Skia.XYWHRect(t.x+(t.paintLeft||0),t.y+t.paintTop,t.paintWidth,t.paintHeight),paint);
+  this.c.drawRect({x:t.x+(t.paintLeft||0),y:t.y+t.paintTop,width:t.paintWidth,height:t.paintHeight},paint);
  }
  // One extra rendering of the current animated pose into a small local layer.
  // Dilated alpha minus the original alpha leaves only its true outer edge;
@@ -221,33 +244,35 @@ class SkiaContext{
    const dilation=keep(Skia.ImageFilter.MakeDilate(radius,radius)),edge=keep(Skia.ImageFilter.MakeBlend(BlendMode.DstOut,dilation));
    const paint=keep(Skia.Paint());paint.setColorFilter(keep(Skia.ColorFilter.MakeBlend(Skia.Color('#f5e7c3'),BlendMode.SrcIn)));paint.setImageFilter(edge);return paint;
   });paint.setAlphaf(alpha);
+  // Native saveLayer keeps only a raw pointer to the bounds: pass a Skia rect.
   this.c.saveLayer(paint,Skia.XYWHRect(bounds.x,bounds.y,bounds.width,bounds.height));
   try{draw()}finally{this.c.restore()}
  }
  drawGroundLightning(strike:GroundStrike|undefined,age:number,reduced:boolean){lightning.draw(this.c,strike,age,reduced)}
  drawWeather(state:WeatherState|undefined,view:WeatherView,night:number,shelters:readonly (readonly [number,number][])[]){weather.draw(this.c,state,view,night,shelters)}
  drawNightLighting(lights:CampLight[],amount:number,view:LightViewport,torch?:import('./torch').TorchBeam,warningLights:CampLight[]=[]){lighting.draw(this.c,lights,amount,view,torch,warningLights)}
- clearRect(x:number,y:number,w:number,h:number){const p=this.keep(Skia.Paint());p.setBlendMode(BlendMode.Clear);this.c.drawRect(Skia.XYWHRect(x,y,w,h),p)}
- fillRect(x:number,y:number,w:number,h:number){this.c.drawRect(Skia.XYWHRect(x,y,w,h),this.paint())}
- strokeRect(x:number,y:number,w:number,h:number){this.c.drawRect(Skia.XYWHRect(x,y,w,h),this.paint(true))}
- beginPath(){this.path=this.keep(createDrawingPath(Skia))}
+ clearRect(x:number,y:number,w:number,h:number){if(!clearPaint){clearPaint=Skia.Paint();clearPaint.setBlendMode(BlendMode.Clear)}this.c.drawRect({x,y,width:w,height:h},clearPaint)}
+ fillRect(x:number,y:number,w:number,h:number){this.c.drawRect({x,y,width:w,height:h},this.paint())}
+ strokeRect(x:number,y:number,w:number,h:number){this.c.drawRect({x,y,width:w,height:h},this.paint(true))}
+ beginPath(){this.drawing?.reset()}
  moveTo(x:number,y:number){this.path.moveTo(x,y)}lineTo(x:number,y:number){this.path.lineTo(x,y)}closePath(){this.path.close()}
  clip(){this.c.clipPath(this.path.path(),ClipOp.Intersect,true)}
  clipOutsidePath(){this.c.clipPath(this.path.path(),ClipOp.Difference,true)}
- clipOutsideRect(x:number,y:number,width:number,height:number){this.c.clipRect(Skia.XYWHRect(x,y,width,height),ClipOp.Difference,false)}
- arc(x:number,y:number,r:number,start:number,end:number){this.path.addArc(Skia.XYWHRect(x-r,y-r,2*r,2*r),start*180/Math.PI,(end-start)*180/Math.PI)}
- ellipse(x:number,y:number,rx:number,ry:number){this.path.addOval(Skia.XYWHRect(x-rx,y-ry,rx*2,ry*2))}
+ clipOutsideRect(x:number,y:number,width:number,height:number){this.c.clipRect({x,y,width,height},ClipOp.Difference,false)}
+ arc(x:number,y:number,r:number,start:number,end:number){this.path.addArc({x:x-r,y:y-r,width:2*r,height:2*r},start*180/Math.PI,(end-start)*180/Math.PI)}
+ ellipse(x:number,y:number,rx:number,ry:number){this.path.addOval({x:x-rx,y:y-ry,width:rx*2,height:ry*2})}
  fill(){this.c.drawPath(this.path.path(),this.paint())} stroke(){this.c.drawPath(this.path.path(),this.paint(true))}
  setLineDash(d:number[]){this.dash=d}
  createRadialGradient(x:number,y:number,r0:number,_x:number,_y:number,r1:number){return new Gradient(x,y,r0,r1)}
- private text(s:string,x:number,y:number,stroke:boolean){this.face.setSize(Number(this.font.match(/([\d.]+)px/)?.[1]||30));const width=this.face.getGlyphWidths(this.face.getGlyphIDs(s)).reduce((a,b)=>a+b,0);this.c.drawText(s,this.textAlign==='center'?x-width/2:this.textAlign==='right'||this.textAlign==='end'?x-width:x,y,this.paint(stroke),this.face)}
+ private text(s:string,x:number,y:number,stroke:boolean){const size=Number(this.font.match(/([\d.]+)px/)?.[1]||30);this.face.setSize(size);let widths=textWidths.get(this.face);if(!widths)textWidths.set(this.face,widths=new Map());const key=size+'|'+s;let width=widths.get(key);if(width===undefined){width=this.face.getGlyphWidths(this.face.getGlyphIDs(s)).reduce((a,b)=>a+b,0);if(widths.size>=1024)widths.clear();widths.set(key,width)}this.c.drawText(s,this.textAlign==='center'?x-width/2:this.textAlign==='right'||this.textAlign==='end'?x-width:x,y,this.paint(stroke),this.face)}
  fillText(s:string,x:number,y:number){this.text(s,x,y,false)} strokeText(s:string,x:number,y:number){this.text(s,x,y,true)}
- drawImage(source:SkImage|NativeLayer,...args:number[]){const layer=source instanceof NativeLayer,im=layer?source.image():source as SkImage;let sx=0,sy=0,sw=im.width(),sh=im.height(),dx=0,dy=0,dw=sw,dh=sh;if(args.length===2)[dx,dy]=args;else if(args.length===4)[dx,dy,dw,dh]=args;else [sx,sy,sw,sh,dx,dy,dw,dh]=args;
-  // Skia snapshots paint values into draw commands. Reuse the native paint
-  // rather than allocate/dispose one for every visible sprite on every frame.
-  const p=cachedPaint('sprite',[],this.filter==='brightness(2)',keep=>{const paint=keep(Skia.Paint());paint.setAntiAlias(true);if(this.filter==='brightness(2)')paint.setColorFilter(keep(Skia.ColorFilter.MakeMatrix([2,0,0,0,0,0,2,0,0,0,0,0,2,0,0,0,0,0,1,0])));return paint});p.setAlphaf(this.globalAlpha);
-  if(sw>1000&&sh>1000&&dw>sw*1.4)this.c.drawImageRectCubic(im,Skia.XYWHRect(sx,sy,sw,sh),Skia.XYWHRect(dx,dy,dw,dh),1/3,1/3,p);else this.c.drawImageRectOptions(im,Skia.XYWHRect(sx,sy,sw,sh),Skia.XYWHRect(dx,dy,dw,dh),FilterMode.Linear,MipmapMode.None,p);if(layer)im.dispose()}
+ drawImage(source:SkImage|NativeLayer,...args:number[]){const layer=source instanceof NativeLayer,im=layer?source.image():source as SkImage;let sx=0,sy=0,sw:number,sh:number,dx=0,dy=0,dw:number,dh:number;
+  // Sprite sheets always pass a source rectangle; only ask native for the size otherwise.
+  if(args.length===2){sw=dw=im.width();sh=dh=im.height();[dx,dy]=args}else if(args.length===4){sw=im.width();sh=im.height();[dx,dy,dw,dh]=args}else [sx,sy,sw,sh,dx,dy,dw,dh]=args;
+  const p=spritePaint(this.filter==='brightness(2)');p.setAlphaf(this.globalAlpha);
+  const src={x:sx,y:sy,width:sw,height:sh},dst={x:dx,y:dy,width:dw,height:dh};
+  if(sw>1000&&sh>1000&&dw>sw*1.4)this.c.drawImageRectCubic(im,src,dst,1/3,1/3,p);else this.c.drawImageRectOptions(im,src,dst,FilterMode.Linear,MipmapMode.None,p);if(layer)im.dispose()}
 }
 
-return {SkiaContext,NativeLayer,releaseImage,shaderFieldBytes:()=>fieldSize*fieldSize*4+[...flowFields.values()].reduce((sum,f)=>sum+f.bytes,0),warmLighting:lighting.warm,disposeLighting:()=>{for(const key of riverSamplerCache.keys())dropRiverSampler(key);for(const key of terrainCache.keys())drop(key);for(const entry of flowFields.values())for(const resource of [...entry.resources].reverse())resource.dispose();flowFields.clear();waterfallEffect.dispose();waterfallSectionEffect.dispose();lighting.dispose();weather.dispose();lightning.dispose();for(const shader of colourSamplers.values())shader.dispose();colourSamplers.clear();colourImage.dispose();groundColour.dispose();roadSection.dispose();roadPilot.dispose();riverEffect.dispose();for(const meshes of roadMeshes.values())for(const mesh of meshes)mesh?.dispose();roadMeshes.clear()}};
+return {SkiaContext,NativeLayer,releaseImage,shaderFieldBytes:()=>fieldSize*fieldSize*4+[...flowFields.values()].reduce((sum,f)=>sum+f.bytes,0),warmLighting:lighting.warm,disposeLighting:()=>{for(const key of riverSamplerCache.keys())dropRiverSampler(key);for(const key of terrainCache.keys())drop(key);for(const entry of flowFields.values())for(const resource of [...entry.resources].reverse())resource.dispose();flowFields.clear();waterfallEffect.dispose();waterfallSectionEffect.dispose();lighting.dispose();weather.dispose();lightning.dispose();for(const shader of colourSamplers.values())shader.dispose();colourSamplers.clear();colourImage.dispose();groundColour.dispose();roadSection.dispose();roadPilot.dispose();riverEffect.dispose();for(const meshes of roadMeshes.values())for(const mesh of meshes)mesh?.dispose();roadMeshes.clear();for(const {paint,dash}of solidPaints.values()){paint.dispose();dash?.dispose()}solidPaints.clear();for(const paint of spritePaints.splice(0))paint?.dispose();for(const resource of spriteResources.splice(0))resource.dispose();clearPaint?.dispose();clearPaint=undefined}};
 }

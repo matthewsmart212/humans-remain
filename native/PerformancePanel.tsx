@@ -27,11 +27,12 @@ export async function saveNativePerformanceLogToComputer(recorder:GamePerformanc
   if(!origin)throw Error('Could not find this computer from the phone. Use Export log.');
   const response=await fetch(`${origin}/__performance-log`,{method:'POST',headers:{'Content-Type':'application/json'},body:recorder.exportJson()});
   const text=await response.text();
-  if(!response.ok){
+  let saved:{ok?:boolean;latest?:string;error?:string}|undefined;
+  try{saved=JSON.parse(text)}catch{saved=undefined}
+  if(!response.ok||!saved?.ok){
     if(response.status===404)throw Error('Expo needs a restart before it can save here. In the Expo terminal press Ctrl+C, run npx expo start, reload the app, and record again.');
-    throw Error(text.slice(0,180)||`This computer did not save the log (${response.status}).`);
+    throw Error(saved?.error||'This computer did not save the log. Restart Expo from the native folder, reload the app, and record again.');
   }
-  const saved=JSON.parse(text) as {latest?:string};
   return saved.latest||'performance-logs/latest.json';
 }
 export async function exportNativePerformanceLog(recorder:GamePerformanceRecorder){

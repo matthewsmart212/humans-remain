@@ -21,14 +21,14 @@ import {getFieldKitTarget} from './field-kit-target';
 import {chooseInteractionFocus} from './interaction-focus';
 import {outdoorTerrainReadyAt} from './outdoor-terrain';
 import {usesPaintedHomeTerrain} from './terrain-art';
-import {gatesBlocked,stepGates} from './camp-gates';
-import {campBounds,originalCampBounds,worldBounds} from './world-bounds';
+import {gateBlockers,gatesBlocked,stepGates} from './camp-gates';
+import {campBounds,originalCampBounds,worldBounds,type WorldBounds} from './world-bounds';
 import {stepPuddles} from './puddle-motion';
 import {stepFoliage} from './foliage-motion';
 import {sceneBlocked} from './scene-collision';
-import {placementBodies,layoutBlocked,roleItems,type WorldLayout} from './world-layout';
+import {placementBodies,layoutBlocked,layoutColliderHits,layoutCollisionKey,roleItems,type WorldLayout} from './world-layout';
 import {MAP_WIDTH,MAP_HEIGHT,BASE_POINT,SPAWN_POINT,CAMP_LAMPS,SHUTTER_POINT,SHUTTER_CONTROL,BARRIER_POINT,CRUSHER_POINT,CRUSHER_CONTROL,OBSTACLES,LOOT_POINTS,ENTRANCES,EMERGENCY_FUEL,FURNITURE,BREAKABLE_POINTS,WELL_POINT,FIRE_POINT,ANIMAL_POINTS} from './factory-map';
-import {hitCollider,staticBlocked} from './camp-collision';
+import {hitCollider,staticBlocked,type Collider} from './camp-collision';
 import {createCamp,stationFront,stationBody,STATION_IDS,HEARTH_CAPACITY,type CampState} from './camp-stations';
 import {COMBAT_DODGE,WALKER_ATTACK,WALKER_ARMOUR,angleDelta,type WalkerMotion,type CombatStats} from './combat-model';
 import {SKITTER_LASER} from './skitter-model';
@@ -138,17 +138,62 @@ export function movePlayer(w:World,input:Vec,sprint=false){
 // Small-grid BFS gives the single prototype creature proper routes around racks and machinery.
 const PATH_CELL=45,PATH_BOUNDS=originalCampBounds(),PATH_COLS=Math.ceil(PATH_BOUNDS.width/PATH_CELL),PATH_ROWS=Math.ceil(PATH_BOUNDS.height/PATH_CELL);
 const pathGrid=Array.from({length:PATH_COLS*PATH_ROWS},(_,i)=>!blocked(PATH_BOUNDS.left+(i%PATH_COLS+.5)*PATH_CELL,PATH_BOUNDS.top+(Math.floor(i/PATH_COLS)+.5)*PATH_CELL,21));
+// Raids search the same cell centres thousands of times a night. Collision that
+// cannot change during play (bounds, water, scene walls and placed colliders) is
+// kept per layout, scene and body radius; streamed ground, gates and mined rocks
+// are evaluated afresh. Results are identical to worldBlocked at the cell centre.
+type NavigationCells={left:number;top:number;cols:number;state:Uint8Array;hits:Map<number,readonly string[]>};
+const NAV_KNOWN=1,NAV_BLOCKED=2,NAV_HITS=4,NO_SCENE={},navigationCache=new WeakMap<object,WeakMap<object,Map<number,NavigationCells>>>();
+function navigationCells(layout:WorldLayout,scene:object|undefined,bounds:WorldBounds,cols:number,count:number,r:number){
+ const index=layoutCollisionKey(layout);let scenes=navigationCache.get(index);if(!scenes)navigationCache.set(index,scenes=new WeakMap());
+ let radii=scenes.get(scene??NO_SCENE);if(!radii)scenes.set(scene??NO_SCENE,radii=new Map());
+ let cells=radii.get(r);
+ if(!cells||cells.left!==bounds.left||cells.top!==bounds.top||cells.cols!==cols||cells.state.length!==count)radii.set(r,cells={left:bounds.left,top:bounds.top,cols,state:new Uint8Array(count),hits:new Map()});
+ return cells;
+}
+function navigationBlocked(w:World,layout:WorldLayout,cells:NavigationCells,gates:readonly Collider[],painted:boolean,id:number,x:number,y:number,r:number){
+ if(painted&&!outdoorTerrainReadyAt(w.outdoorReady,x,y,r))return true;
+ let state=cells.state[id];
+ if(!state){
+  state=NAV_KNOWN;
+  if(painted&&riverWaterBlocked(x,y,r)||w.scene&&sceneBlocked(w.scene,x,y,r))state|=NAV_BLOCKED;
+  else{const hits=layoutColliderHits(layout,x,y,r,w.scene);if(hits===true)state|=NAV_BLOCKED;else if(hits.length){state|=NAV_HITS;cells.hits.set(id,hits.map(c=>c.id))}}
+  cells.state[id]=state;
+ }
+ if(state&NAV_BLOCKED)return true;
+ for(const c of gates)if(hitCollider(c,x,y,r))return true;
+ if(!(state&NAV_HITS))return false;
+ const mined=w.minedRockColliders;for(const c of cells.hits.get(id)!)if(!mined?.has(c))return true;
+ return false;
+}
+// Search scratch is reused; a generation stamp marks the entries of the current search.
+let searchGeneration=0,searchVisited=new Uint32Array(0),searchParent=new Int32Array(0),searchQueue=new Int32Array(0),searchKnown=new Uint32Array(0),searchOpen=new Uint8Array(0);
+function beginSearch(count:number){
+ if(searchVisited.length<count){searchVisited=new Uint32Array(count);searchParent=new Int32Array(count);searchQueue=new Int32Array(count);searchKnown=new Uint32Array(count);searchOpen=new Uint8Array(count);searchGeneration=0}
+ if(++searchGeneration===0xffffffff){searchVisited.fill(0);searchKnown.fill(0);searchGeneration=1}
+ return searchGeneration;
+}
+const STEP_X=[1,-1,0,0],STEP_Y=[0,0,1,-1];
 export function pathTo(start:Vec,target:Vec,w?:World,maxVisited=Infinity,bodyRadius=21):Vec[]{
- const size=PATH_CELL,bounds=worldBounds(w),cols=Math.ceil(bounds.width/size),rows=Math.ceil(bounds.height/size),key=(x:number,y:number)=>y*cols+x;
+ const size=PATH_CELL,bounds=worldBounds(w),cols=Math.ceil(bounds.width/size),rows=Math.ceil(bounds.height/size),count=cols*rows,key=(x:number,y:number)=>y*cols+x;
  const cell=(p:Vec)=>({x:Math.max(0,Math.min(cols-1,Math.floor((p.x-bounds.left)/size))),y:Math.max(0,Math.min(rows-1,Math.floor((p.y-bounds.top)/size)))});
- const open=(x:number,y:number)=>x>=0&&x<cols&&y>=0&&y<rows&&(w?.layout||w?.scene||pathGrid[key(x,y)])&&(!w||!worldBlocked(w,bounds.left+(x+.5)*size,bounds.top+(y+.5)*size,bodyRadius));
+ const generation=beginSearch(count),layout=w?.layout,cached=w&&layout&&w.editorPreview?navigationCells(layout,w.scene,bounds,cols,count,bodyRadius):undefined;
+ const gates=cached?gateBlockers(w!):[],painted=!!cached&&!w!.scene&&usesPaintedHomeTerrain(layout!.terrainImage);
+ const open=(x:number,y:number)=>{
+  if(!(x>=0&&x<cols&&y>=0&&y<rows&&(w?.layout||w?.scene||pathGrid[key(x,y)])))return false;
+  if(!w)return true;
+  const id=key(x,y);if(searchKnown[id]===generation)return searchOpen[id]===1;
+  const cx=bounds.left+(x+.5)*size,cy=bounds.top+(y+.5)*size,clear=cached?!navigationBlocked(w,layout!,cached,gates,painted,id,cx,cy,bodyRadius):!worldBlocked(w,cx,cy,bodyRadius);
+  searchKnown[id]=generation;searchOpen[id]=clear?1:0;return clear;
+ };
  const a=cell(start);let b=cell(target);
  // A valid interaction point can lie in a grid cell whose centre overlaps a wall.
  // Route to the closest open centre instead of permitting a blocked goal cell.
  if(!open(b.x,b.y)){const choices:{x:number;y:number}[]=[];for(let dy=-2;dy<=2;dy++)for(let dx=-2;dx<=2;dx++)if(open(b.x+dx,b.y+dy))choices.push({x:b.x+dx,y:b.y+dy});choices.sort((u,v)=>Math.hypot(bounds.left+(u.x+.5)*size-target.x,bounds.top+(u.y+.5)*size-target.y)-Math.hypot(bounds.left+(v.x+.5)*size-target.x,bounds.top+(v.y+.5)*size-target.y));if(!choices.length)return[];b=choices[0]}
- const from=key(a.x,a.y),goal=key(b.x,b.y),queue=[from],parents=new Map<number,number>([[from,-1]]);let head=0;
- while(head<queue.length&&head<maxVisited){const n=queue[head++];if(n===goal)break;const x=n%cols,y=Math.floor(n/cols);for(const [dx,dy]of [[1,0],[-1,0],[0,1],[0,-1]]){const nx=x+dx,ny=y+dy,id=key(nx,ny);if(parents.has(id)||!open(nx,ny))continue;parents.set(id,n);queue.push(id)}}
- if(!parents.has(goal))return[];const path:Vec[]=[];for(let n=goal;n!==from&&n!==-1;n=parents.get(n)??-1)path.unshift({x:bounds.left+(n%cols+.5)*size,y:bounds.top+(Math.floor(n/cols)+.5)*size});return path;
+ const from=key(a.x,a.y),goal=key(b.x,b.y),visited=searchVisited,parent=searchParent,queue=searchQueue;
+ visited[from]=generation;parent[from]=-1;queue[0]=from;let head=0,tail=1;
+ while(head<tail&&head<maxVisited){const n=queue[head++];if(n===goal)break;const x=n%cols,y=Math.floor(n/cols);for(let d=0;d<4;d++){const nx=x+STEP_X[d],ny=y+STEP_Y[d],id=key(nx,ny);if(visited[id]===generation||!open(nx,ny))continue;visited[id]=generation;parent[id]=n;queue[tail++]=id}}
+ if(visited[goal]!==generation)return[];const path:Vec[]=[];for(let n=goal;n!==from&&n!==-1;n=parent[n])path.unshift({x:bounds.left+(n%cols+.5)*size,y:bounds.top+(Math.floor(n/cols)+.5)*size});return path;
 }
 /** Explicit taps queue sooner than a held press. Late recovery taps
  * are buffered for 140ms; a queued action never survives an input reset. */

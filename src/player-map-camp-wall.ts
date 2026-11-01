@@ -31,20 +31,29 @@ export const CAMP_MAP_STAKES=Array.from({length:CAMP_MAP_WALL.posts},(_,i)=>{
 }).filter(p=>campMapRoadClearance(p)>CAMP_MAP_WALL.height+24);
 const n=(v:number)=>Number(v.toFixed(2));
 const polygon=(points:number[][])=>'M'+points.map(p=>p.map(n).join(' ')).join('L')+'Z';
+function polygons(shapes:number[][][]):Pick<PlayerMapPath,'path'|'parts'|'bounds'>{
+ const parts=shapes.map(polygon),bounds:number[]=[];
+ for(const points of shapes){
+  let left=Infinity,top=Infinity,right=-Infinity,bottom=-Infinity;
+  for(const [x,y] of points){if(x<left)left=x;if(x>right)right=x;if(y<top)top=y;if(y>bottom)bottom=y}
+  bounds.push(left,top,right,bottom);
+ }
+ return{path:parts.join(''),parts,bounds};
+}
 // Two retained paths: upright pointed stakes with one flat shaded side.
 export const CAMP_MAP_WALL_PATHS:PlayerMapPath[]=[{
  id:'camp-palisade-posts',fill:'#b89b5a',stroke:'#625536',strokeWidth:3,
- path:CAMP_MAP_STAKES.map(({x,y})=>polygon([[x-15,y],[x-15,y-48],[x,y-70],[x+15,y-48],[x+15,y]])).join(''),
+ ...polygons(CAMP_MAP_STAKES.map(({x,y})=>[[x-15,y],[x-15,y-48],[x,y-70],[x+15,y-48],[x+15,y]])),
 },{
  id:'camp-palisade-shade',fill:'#887542',
- path:CAMP_MAP_STAKES.map(({x,y})=>polygon([[x,y-66],[x+13,y-47],[x+13,y-2],[x,y-2]])).join(''),
+ ...polygons(CAMP_MAP_STAKES.map(({x,y})=>[[x,y-66],[x+13,y-47],[x+13,y-2],[x,y-2]])),
 }];
 
 /** Engrave the installed wall's actual ground curves, including its road ends.
  * Each placement stays independent, so moving or deleting a piece in Build
  * is reflected on the map without restoring a decorative fixed circle. */
 export function circularCampMapWallPaths(walls:{p:Placement;a:WorldAsset}[]):PlayerMapPath[]{
- const stone:string[]=[],timber:string[]=[],shade:string[]=[];
+ const stone:number[][][]=[],timber:number[][][]=[],shade:number[][][]=[];
  for(const {p,a} of walls){
   const curve=a.perimeterCurve;if(!curve||curve.length<2)continue;
   const points=curve.map(([x,y])=>placementPoint(p,p.x+x*p.scale,p.y+y*p.scale));
@@ -52,18 +61,18 @@ export function circularCampMapWallPaths(walls:{p:Placement;a:WorldAsset}[]):Pla
   const length=lengths[lengths.length-1];if(length<1)continue;
   const at=(distance:number)=>{let i=1;while(i<lengths.length-1&&lengths[i]<distance)i++;const t=(distance-lengths[i-1])/(lengths[i]-lengths[i-1]||1),u=points[i-1],v=points[i];return[u[0]+(v[0]-u[0])*t,u[1]+(v[1]-u[1])*t]};
   const side=(sign:number)=>points.map((v,i)=>{const before=points[Math.max(0,i-1)],after=points[Math.min(points.length-1,i+1)],dx=after[0]-before[0],dy=after[1]-before[1],d=Math.hypot(dx,dy)||1;return[v[0]-dy/d*20*p.scale*sign,v[1]+dx/d*20*p.scale*sign]});
-  stone.push(polygon([...side(1),...side(-1).reverse()]));
+  stone.push([...side(1),...side(-1).reverse()]);
   const count=Math.max(1,Math.ceil(length/(40*p.scale)));
   for(let i=0;i<=count;i++){
    const [x,y]=at(length*i/count),w=14*p.scale,h=(i%3===0?76:67)*p.scale;
-   timber.push(polygon([[x-w,y],[x-w,y-h*.7],[x+w*.12,y-h],[x+w,y-h*.76],[x+w,y]]));
-   shade.push(polygon([[x+w*.1,y-h*.93],[x+w*.86,y-h*.73],[x+w*.86,y-2*p.scale],[x+w*.1,y-2*p.scale]]));
+   timber.push([[x-w,y],[x-w,y-h*.7],[x+w*.12,y-h],[x+w,y-h*.76],[x+w,y]]);
+   shade.push([[x+w*.1,y-h*.93],[x+w*.86,y-h*.73],[x+w*.86,y-2*p.scale],[x+w*.1,y-2*p.scale]]);
   }
  }
  if(!timber.length)return[];
  return[
-  {id:'circular-camp-stone-base',path:stone.join(''),fill:'#a49370',stroke:'#667046',strokeWidth:5},
-  {id:'circular-camp-spiked-timber',path:timber.join(''),fill:'#b89b5a',stroke:'#625536',strokeWidth:2.5},
-  {id:'circular-camp-timber-shade',path:shade.join(''),fill:'#887542'},
+  {id:'circular-camp-stone-base',...polygons(stone),fill:'#a49370',stroke:'#667046',strokeWidth:5},
+  {id:'circular-camp-spiked-timber',...polygons(timber),fill:'#b89b5a',stroke:'#625536',strokeWidth:2.5},
+  {id:'circular-camp-timber-shade',...polygons(shade),fill:'#887542'},
  ];
 }

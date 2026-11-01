@@ -45,7 +45,7 @@ try{
  globalThis.__neLiveSkia={...api,Data:{fromBytes:bytes=>api.Data.fromBytes(bytes),fromURI:async uri=>{
   assert(fs.existsSync(uri),'Every proof image must resolve locally: '+uri);
   decoded.add(uri);return api.Data.fromBytes(fs.readFileSync(uri));
- }},Surface:{...api.Surface,MakeOffscreen:(width,height)=>api.Surface.Make(width,height)}};
+ }},Surface:{...api.Surface,Make:(width,height)=>api.Surface.Make(width,height),MakeOffscreen:(width,height)=>api.Surface.Make(width,height)}};
  delete require.cache[require.resolve(bundle)];const m=require(bundle);
  globalThis.requestAnimationFrame=fn=>setImmediate(()=>fn(performance.now()));
  globalThis.fetch=async()=>{throw Error('This proof is offline; external requests are prohibited')};

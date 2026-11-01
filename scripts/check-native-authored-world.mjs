@@ -29,7 +29,7 @@ try{
  // The shim substitutes only platform services. The production native image
  // queue, Picture recorder, shaders, draw function and stream budgets run here.
  const {JsiSkApi}=require(path.join(temp,'model.cjs'));
- const api=JsiSkApi(kit);globalThis.__testSkia={...api,Data:{fromBytes:bytes=>api.Data.fromBytes(bytes),fromURI:async uri=>{decoded.push(uri);return api.Data.fromBytes(fs.readFileSync(uri))}},Surface:{...api.Surface,MakeOffscreen:(w,h)=>api.Surface.Make(w,h)}};
+ const api=JsiSkApi(kit);globalThis.__testSkia={...api,Data:{fromBytes:bytes=>api.Data.fromBytes(bytes),fromURI:async uri=>{decoded.push(uri);return api.Data.fromBytes(fs.readFileSync(uri))}},Surface:{...api.Surface,Make:(w,h)=>api.Surface.Make(w,h),MakeOffscreen:(w,h)=>api.Surface.Make(w,h)}};
  // Reload after the native Skia import receives the initialized API.
  delete require.cache[require.resolve(path.join(temp,'model.cjs'))];const m=require(path.join(temp,'model.cjs'));
  globalThis.requestAnimationFrame=fn=>setImmediate(()=>fn(performance.now()));

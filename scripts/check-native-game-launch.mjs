@@ -77,8 +77,12 @@ try{
  const beforeReady=cold.draws.length;cold.frame(stamp+17);assert(cold.draws.length>beforeReady,'Keep drawing until map textures are ready');
  map().props.onReady(true);const beforeHidden=cold.draws.length,hiddenTick=world.tick;cold.frame(stamp+34);cold.frame(stamp+51);
  assert.equal(cold.draws.length,beforeHidden,'No world picture recording behind a ready opaque map');assert(world.tick>hiddenTick,'Map does not pause survival');
+ const pumped=[];map().props.pump.current=at=>pumped.push(at);cold.frame(stamp+68);
+ assert(pumped.length===1&&Number.isFinite(pumped[0]),'Each play frame hands the map its start time for tile rendering');
+ assert(map().props.active&&map().props.zoom.get()<.7&&map().props.camera(.7).zoom>map().props.camera(map().props.zoom.get()).zoom,'The map reads the pinch amount from its store');
  map().props.onClose();cold.frame(stamp+500);cold.frame(stamp+517);assert(cold.draws.length>beforeHidden,'World resumes drawing when the atlas closes');
- cold.hud().props.onPause();const options=nodes(cold.render()).find(n=>n.type===cold.ctx.NativePerformanceMenuOptions);assert(options,'Pause menu exposes diagnostics');options.props.onOpen();
+ cold.hud().props.onPause();const pumpedBeforePause=pumped.length;cold.frame(stamp+600);assert.equal(pumped.length,pumpedBeforePause,'No tile rendering while paused');
+ const options=nodes(cold.render()).find(n=>n.type===cold.ctx.NativePerformanceMenuOptions);assert(options,'Pause menu exposes diagnostics');options.props.onOpen();
  const panel=nodes(cold.render()).find(n=>n.type===cold.ctx.NativePerformancePanel);assert(panel);panel.props.onStart();assert(panel.props.recorder.recording);assert(cold.hud(),'Recording resumes play');
  const saved=cold.storage.get(m.RUN_SAVE_KEY);assert(saved);const captured=m.decodeRun(saved).worlds.find(([id])=>id==='camp')[1];
  const returning=app(saved);await returning.settled();assert(returning.hud(),'A valid saved expedition resumes directly');assert.equal(returning.hud().props.world.current.player.hp,captured.player.hp);assert.equal(returning.hud().props.world.current.tick,captured.tick);
@@ -90,5 +94,5 @@ try{
  const inactive=app(undefined,{holdArtwork:true});await until(()=>inactive.labels().includes('Preparing game'));inactive.state('background');inactive.releaseArtwork();await inactive.settled();assert(inactive.labels().includes('Game paused'),'Backgrounding during startup must not launch a hidden simulation');inactive.state('active');assert(!inactive.hud());inactive.press('Resume');assert(inactive.hud());
  const failed=app(undefined,{failArtwork:true});await failed.settled();assert(failed.labels().includes('Warm artwork: artwork failed'));assert(failed.labels().includes('Retry'));assert.equal(failed.storage.has(m.RUN_SAVE_KEY),false);
  for(const instance of [cold,returning,ended,damaged,inactive,failed])instance.close();
- console.log(JSON.stringify({passed:true,checks:['offline direct Survival launch','first frame before HUD','no native editor/test menu','automatic saved-run resume','pause/resume','map suppresses hidden drawing without pausing survival','map close resumes drawing','recorder accessible from pause menu','ended-run screen','damaged save preserved','confirmed new run','background during boot','named startup failure and retry'],physicalIPhoneTested:false},null,2));
+ console.log(JSON.stringify({passed:true,checks:['offline direct Survival launch','first frame before HUD','no native editor/test menu','automatic saved-run resume','pause/resume','map suppresses hidden drawing without pausing survival','map tiles render in play frames only, from the pinch store','map close resumes drawing','recorder accessible from pause menu','ended-run screen','damaged save preserved','confirmed new run','background during boot','named startup failure and retry'],physicalIPhoneTested:false},null,2));
 }finally{fs.rmSync(temp,{recursive:true,force:true})}

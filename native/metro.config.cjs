@@ -84,6 +84,7 @@ function receivePerformanceLog(req,res,next){
       const named=`humans-remain-performance-${stamp}.json`;
       fs.writeFileSync(path.join(dir,named),body);
       fs.writeFileSync(path.join(dir,'latest.json'),body);
+      console.log(`Saved performance log performance-logs/${named} (${body.length} bytes)`);
       res.writeHead(200,{'Content-Type':'application/json'});
       res.end(JSON.stringify({ok:true,file:`performance-logs/${named}`,latest:'performance-logs/latest.json',bytes:body.length}));
     }catch(error){
@@ -94,5 +95,13 @@ function receivePerformanceLog(req,res,next){
   });
 }
 config.server=config.server||{};
+// Expo 58's Metro build never installs unstable_priorityMiddleware. enhanceMiddleware
+// is mounted before the dev server's catch-all, which otherwise answers this POST with
+// the Expo manifest and the phone treats that as a successful save.
 config.server.unstable_priorityMiddleware=[...(config.server.unstable_priorityMiddleware||[]),receivePerformanceLog];
+const passThrough=config.server.enhanceMiddleware;
+config.server.enhanceMiddleware=(middleware,metroServer)=>{
+  const inner=typeof passThrough==='function'?passThrough(middleware,metroServer):middleware;
+  return (req,res,next)=>receivePerformanceLog(req,res,()=>inner(req,res,next));
+};
 module.exports=config;

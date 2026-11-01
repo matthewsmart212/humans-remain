@@ -41,7 +41,10 @@ export async function createNativeRenderer(view:EditorView={...PLAY_VIEW},diagno
  const keyByUrl=new Map<string,string>();
  let disposed=false,revision=0;
  const prepared:Record<string,SkImage>={};
- const preparationSurface=open('Preparation surface',()=>Skia.Surface.MakeOffscreen(1,1)),preparationPaint=Skia.Paint();
+ // Decode into Skia's process-wide bitmap cache on this thread. A GPU surface
+ // here would upload a texture into the JS thread's own GPU context, which the
+ // UI-thread renderer cannot use; it would only duplicate texture memory.
+ const preparationSurface=open('Preparation surface',()=>Skia.Surface.Make(1,1)),preparationPaint=Skia.Paint();
  if(!preparationSurface){preparationPaint.dispose();adapter.disposeLighting();font.dispose();face.dispose();throw Error('The image preparation surface is unavailable.')}
  // Pictures retain their own image references on the render thread. Removing a
  // streamed image from the loader releases our ownership; Skia/JS GC releases
@@ -66,8 +69,8 @@ export async function createNativeRenderer(view:EditorView={...PLAY_VIEW},diagno
    const urgent=queue.findIndex(j=>j.priority==='foreground'),job=queue.splice(urgent<0?0:urgent,1)[0];
    try{if(!warmed.has(job.image)){
     const started=diagnostics?.recording?performance.now():undefined;
-    preparationSurface.getCanvas().drawImageRect(job.image,Skia.XYWHRect(0,0,job.image.width(),job.image.height()),Skia.XYWHRect(0,0,1,1),preparationPaint);preparationSurface.flush();warmed.add(job.image);
-    if(started!==undefined)diagnostics!.trace(started,'native-texture-warm',performance.now()-started,{key:job.key,width:job.image.width(),height:job.image.height(),queueMs:Math.max(0,started-job.queuedAt),priority:job.priority});
+    preparationSurface.getCanvas().drawImageRect(job.image,Skia.XYWHRect(0,0,job.image.width(),job.image.height()),Skia.XYWHRect(0,0,1,1),preparationPaint);warmed.add(job.image);
+    if(started!==undefined)diagnostics!.trace(started,'native-texture-warm',performance.now()-started,{key:job.key,mode:'raster-decode',width:job.image.width(),height:job.image.height(),queueMs:Math.max(0,started-job.queuedAt),priority:job.priority});
    }job.resolve()}catch(e){job.reject(e instanceof Error?e:Error(String(e)))}
    await new Promise<void>(resolve=>requestAnimationFrame(()=>resolve()));
   }warming=false;

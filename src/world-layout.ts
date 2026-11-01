@@ -64,6 +64,18 @@ export function insideBuilding(p:Placement,x:number,y:number,assets=ASSET_BY_ID)
 const spatial=new WeakMap<WorldLayout,Map<string,Collider[]>>();
 /** Shared library collision edits invalidate the cached blockers of open worlds. */
 export function invalidateLayoutCollision(layout:WorldLayout){spatial.delete(layout)}
+/** Identity of the layout's current collision index. It changes whenever the
+ * collision is invalidated, so derived navigation caches can key on it. */
+export function layoutCollisionKey(layout:WorldLayout):object{return index(layout)}
+/** The fixed part of a dynamic-gate layoutBlocked query: true outside the
+ * walkable bounds, otherwise every solid placement collider touching the circle. */
+export function layoutColliderHits(layout:WorldLayout,x:number,y:number,r:number,bounds?:{width:number;height:number;left?:number;top?:number}):true|Collider[]{
+ const b=bounds?rectBounds(bounds.left??0,bounds.top??0,bounds.width,bounds.height):campBounds(layout);
+ if(x<b.left+r||x>b.right-r||y<b.top+r||y>b.bottom-r||!bounds&&!campContains(layout,x,y,r))return true;
+ const map=index(layout),hits:Collider[]=[];
+ for(let cx=Math.floor((x-r)/160);cx<=Math.floor((x+r)/160);cx++)for(let cy=Math.floor((y-r)/160);cy<=Math.floor((y+r)/160);cy++)for(const c of map.get(cx+','+cy)||[])if(!hits.includes(c)&&hitCollider(c,x,y,r))hits.push(c);
+ return hits;
+}
 function index(layout:WorldLayout,assets=ASSET_BY_ID){let map=assets===ASSET_BY_ID?spatial.get(layout):undefined;if(map)return map;map=new Map();for(const c of layout.items.filter(p=>!assets.get(p.assetId)?.gate).flatMap(p=>placementBodies(p,assets))){const b=colliderBounds(c);for(let x=Math.floor(b.left/160);x<=Math.floor(b.right/160);x++)for(let y=Math.floor(b.top/160);y<=Math.floor(b.bottom/160);y++){const k=x+','+y,list=map.get(k)||[];list.push(c);map.set(k,list)}}if(assets===ASSET_BY_ID)spatial.set(layout,map);return map}
 export function layoutBlocked(layout:WorldLayout,x:number,y:number,r=19,ignoreRoles:WorldRole[]=[],assets=ASSET_BY_ID,bounds?:{width:number;height:number;left?:number;top?:number},dynamicGates=false,ignoredColliders?:ReadonlySet<string>){if(!dynamicGates&&layout.items.some(p=>assets.get(p.assetId)?.gate&&gateColliders(p,0,assets).some(c=>hitCollider(c,x,y,r))))return true;const b=bounds?rectBounds(bounds.left??0,bounds.top??0,bounds.width,bounds.height):campBounds(layout);if(x<b.left+r||x>b.right-r||y<b.top+r||y>b.bottom-r||!bounds&&!campContains(layout,x,y,r))return true;const map=index(layout,assets),ignored=ignoreRoles.length?layout.items.filter(p=>ignoreRoles.includes(p.role)).map(p=>p.id+':'):[];for(let cx=Math.floor((x-r)/160);cx<=Math.floor((x+r)/160);cx++)for(let cy=Math.floor((y-r)/160);cy<=Math.floor((y+r)/160);cy++)for(const c of map.get(cx+','+cy)||[])if(!ignoredColliders?.has(c.id)&&!ignored.some(id=>c.id.startsWith(id))&&hitCollider(c,x,y,r))return true;return false}
 export function roleItems(layout:WorldLayout,role:WorldRole){return layout.items.filter(p=>p.role===role)}
