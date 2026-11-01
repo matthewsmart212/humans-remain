@@ -99,7 +99,9 @@ for(const e of entries.filter(e=>e.image&&!e.canonicalArt&&!e.id.startsWith('map
 for(const f of perimeterArt){sizes[f.image]=f.size;assets.push({id:f.id,name:f.name,group:'Camp perimeter',image:f.image,crop:[0,0,...f.size],anchor:[f.anchor[0]*f.size[0],f.anchor[1]*f.size[1]],width:f.width,height:f.height,solid:f.kind!=='post',role:'prop',body:[],segments:f.segments,perimeter:f.kind as 'wall'|'post'|'gate',perimeterRise:f.rise,gate:f.gate,note:f.kind==='gate'?'Painted open/closed gate · tap Close once; it waits for a clear doorway.':'Continuous worn stockade · traced ground collision.'});if(f.gate){sizes[f.gate.leaf]=f.gate.leafSize;sizes[f.gate.post]=f.gate.postSize;}}
 for(const f of circularWallArt){sizes[f.image]=f.size;assets.push({id:f.id,catalogueId:f.id,name:f.name,group:'Camp perimeter',image:f.image,crop:[0,0,...f.size],anchor:[f.anchor[0]*f.size[0],f.anchor[1]*f.size[1]],width:f.width,height:f.height,solid:true,allowTransparency:true,role:'prop',body:[],collision:f.collision as AssetCollision,segments:f.segments,perimeter:'wall',perimeterRise:f.rise,perimeterCurve:f.curve,perimeterDrawOrder:f.drawOrder,note:'Curved mossy timber wall · fixed orientation · keep the six camp roads clear.'});}
 const catalogueIds=new Set(entries.map(e=>e.id));
-export const WORLD_ASSETS=assets.filter(a=>catalogueIds.has(a.id)).map(addCampGround);
+// Saved custom placements can still use the prior NE shapes, although the
+// editor catalogue offers only the corrected sixteen pieces.
+export const WORLD_ASSETS=assets.filter(a=>catalogueIds.has(a.id)||circularWallArt.some(piece=>piece.id===a.id)).map(addCampGround);
 for(const a of WORLD_ASSETS)if(a.ground)imageDimensions[a.ground.image]=a.ground.size;
 export const ASSET_BY_ID=new Map(WORLD_ASSETS.map(a=>[a.id,a]));
 export const TREE_LOG_IMAGE='/survival/world-scenery-v1/hollow-birch-log.webp';

@@ -1,0 +1,13 @@
+{
+  "result": "pass",
+  "command": [
+    "npm",
+    "run",
+    "typecheck"
+  ],
+  "startedAt": "2026-11-01T08:30:01.310990+00:00",
+  "durationSeconds": 16.543,
+  "exitCode": 0,
+  "stdout": "> humans-remain@1.0.0 typecheck\n> tsc --noEmit",
+  "stderr": "npm warn Unknown env config \"http-proxy\". This will stop working in the next major version of npm."
+}

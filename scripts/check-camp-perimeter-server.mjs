@@ -30,17 +30,18 @@ try{
  const loaded=async()=>await(await call('/api/world-layout')).json();
  m.installImportedArt(artwork.records);
  const circular=m.addApprovedCampPerimeter(source.draft);
- assert.equal(circular.campPerimeterVersion,5);
- assert.equal((await save({...circular,campPerimeterVersion:6},0)).status,400,'Unknown versions remain invalid');
+ assert.equal(circular.campPerimeterVersion,6);
+ assert.equal((await save({...circular,campPerimeterVersion:7},0)).status,400,'Unknown versions remain invalid');
 
  // Historical saved JSON remains readable without requiring retired gates to
- // be new catalogue placements. Round-trip the complete current v4/v5 worlds.
+ // be new catalogue placements. Round-trip v4, previous v5, and corrected v6.
  const old=read('docs/qa/camp-moss-no-gates-v1/layout-before.json').draft;
  const legacy={...old,name:'Legacy perimeter persistence check',items:old.items.filter(p=>p.id.startsWith('camp-original-gate-')||p.assetId==='base_hearth_t1')};
  delete legacy.terrainImage;delete legacy.terrainBorder;
  sql.prepare("UPDATE world_layout SET draft_json=? WHERE id='main'").run(JSON.stringify(legacy));
  assert.deepEqual((await loaded()).draft,legacy,'Historical gate-bearing saves remain readable');
- for(const [index,layout] of [source.draft,circular].entries()){
+ const v5={...circular,campPerimeterVersion:5,items:circular.items.map(p=>p.id==='camp-circular-wall-v1-02'?{...p,assetId:'camp_circular_wall_02',x:2537.662278621207,y:141.40617856301742}:p.id==='camp-circular-wall-v1-03'?{...p,assetId:'camp_circular_wall_03',x:3107.041416813492,y:682.7097574064716}:p)};
+ for(const [index,layout] of [source.draft,v5,circular].entries()){
   const response=await save(layout,index);
   assert.equal(response.status,200,`Version ${layout.campPerimeterVersion}: ${await response.clone().text()}`);
   const stored=await loaded();
@@ -50,11 +51,11 @@ try{
   assert.deepEqual(stored.draft.spawn,layout.spawn);
  }
  assert.equal((await save(circular,1)).status,409,'A stale tab cannot overwrite the current world');
- assert.equal((await save({...circular,campPerimeterVersion:6},2)).status,400);
- const final=await loaded();assert.equal(final.revision,2);assert.equal(final.draft.campPerimeterVersion,5);
+ assert.equal((await save({...circular,campPerimeterVersion:7},3)).status,400);
+ const final=await loaded();assert.equal(final.revision,3);assert.equal(final.draft.campPerimeterVersion,6);
  assert.deepEqual(final.draft.items,circular.items);
  const html=await(await call('/checklist.html')).text();
  assert(!html.includes('Northeast matching timber gate'));
  assert(!html.includes('Heavy weathered fortification pier'));
- console.log(JSON.stringify({result:'pass',sourceRevision:source.revision,artworkRecords:artwork.records.length,legacyVersion3Readable:true,version4Placements:source.draft.items.length,version5Placements:circular.items.length,exactPlacementRoundTrips:true,unknownVersion6Rejected:true,staleWritesRejected:true,retiredGatesHidden:true,database:'disposable in-memory SQLite'},null,2));
+ console.log(JSON.stringify({result:'pass',sourceRevision:source.revision,artworkRecords:artwork.records.length,legacyVersion3Readable:true,version4Placements:source.draft.items.length,version5Placements:v5.items.length,version6Placements:circular.items.length,exactPlacementRoundTrips:true,unknownVersion7Rejected:true,staleWritesRejected:true,retiredGatesHidden:true,database:'disposable in-memory SQLite'},null,2));
 }finally{sql.close();fs.rmSync(temp,{recursive:true,force:true})}

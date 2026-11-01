@@ -1,0 +1,31 @@
+{
+  "result": "pass",
+  "buildCommand": "node /root/.codex/plugins/cache/openai-curated-remote/sites/1.1.2/scripts/build-site.mjs",
+  "publishedWallImages": 18,
+  "activeWallPieces": 16,
+  "legacyWallPieces": 2,
+  "sourceBase": "b7697647aea7a66a8c6cb1977bd51c75c90fa1ab",
+  "preservedDarkSource": "1cb33ef17ba4caa6e97f6b2477d530de7022c2a5",
+  "userApproval": "Yes do both",
+  "livePublication": "succeeded",
+  "currentLiveVersion": 327,
+  "savedVersion": 327,
+  "siteVersionId": "appgprj_6ac21a48e5588191a4e2af8602282d8b~appgver_b46c9d4991c88191a608fee5047a17ed",
+  "siteSourceCommit": "f2af47cf7b36681b6b7074ecc7357198fdeeaab7",
+  "deploymentId": "appgdep_6ae6fe0ecfe08191b990ab4b3222f85a",
+  "publicationStatusAt": "2026-11-01T08:54:27.158758+00:00",
+  "githubRepository": "matthewsmart212/humans-remain",
+  "githubBranch": "main",
+  "archiveValidation": {
+    "result": "pass",
+    "archiveBytes": 257106640,
+    "expandedBytes": 265242632,
+    "fileCount": 2044,
+    "requiredWallImages": 18,
+    "extraWallImages": 0,
+    "staticApiCacheFiles": 0,
+    "temporaryArtFiles": 0,
+    "wallHashesMatchSource": true
+  },
+  "liveUrl": "https://safety-last.matthew-smart212.chatgpt.site"
+}

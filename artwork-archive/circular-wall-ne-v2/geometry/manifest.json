@@ -1,0 +1,933 @@
+{
+  "version": 2,
+  "description": "Two replacement north-east wall guides registered to the painted road at 47–57 degrees. Geometry only; finished artwork is supplied by ImageGen.",
+  "sourceKit": "artwork-archive/circular-wall-kit-v1",
+  "sourceCommit": "16bce936604162fe8de8abd1a3e4fea58f6c69d9",
+  "previousPublishedSourceCommit": "1cb33ef17ba4caa6e97f6b2477d530de7022c2a5",
+  "coordinateSystem": {
+    "angleZero": "north",
+    "angleDirection": "clockwise",
+    "units": "world units",
+    "centre": [
+      0,
+      0
+    ],
+    "recommendedWorldCentre": [
+      1718.1675873489273,
+      1573.5124773329626
+    ],
+    "projection": {
+      "screenX": "X",
+      "screenY": "Y-z",
+      "depth": "Y+z"
+    },
+    "groundProjection": "equal x/y scale; unforeshortened circle"
+  },
+  "radius": 1650,
+  "baseThickness": 80,
+  "stoneHeight": 40,
+  "nominalTimberAndStoneHeight": 180,
+  "sectorCount": 16,
+  "sectorAngleDeg": 22.5,
+  "postOwnership": "Retain the original 7.5-degree post grid where it fits. Every exposed road end owns a finished post; non-road ending posts still belong to the next sector. A road post replaces any grid post closer than 72 world units. The 02 span crosses its previous 45-degree boundary with a complete plank grid.",
+  "overlapWorldUnits": 8,
+  "pixelsPerWorldUnit": 1.4,
+  "canvas": [
+    1536,
+    1536
+  ],
+  "worldCanvasSize": [
+    1097.142857142857,
+    1097.142857142857
+  ],
+  "geometryTessellation": {
+    "maxStepDeg": 0.65,
+    "maxRadialChordErrorWorldUnits": 0.027187983747012368
+  },
+  "openings": [
+    {
+      "direction": "NE",
+      "startAngleDeg": 47,
+      "endAngleDeg": 57,
+      "start": [
+        1206.7336076716313,
+        -1125.2972941031226
+      ],
+      "end": [
+        1383.8064371099497,
+        -898.6544077747947
+      ],
+      "nominalChordWidth": 287.61395106727196,
+      "approximateWidthBetweenPostCentres": 287.61395106727196,
+      "approximateClearWidthAfterPosts": 238.61395106727196
+    },
+    {
+      "direction": "SE",
+      "startAngleDeg": 129.343,
+      "endAngleDeg": 139.464,
+      "start": [
+        1276.0516639734337,
+        1046.0364003564268
+      ],
+      "end": [
+        1072.3774004821353,
+        1253.9962962206778
+      ],
+      "nominalChordWidth": 291.08508016831314,
+      "approximateWidthBetweenPostCentres": 291.08508016831314,
+      "approximateClearWidthAfterPosts": 242.08508016831314
+    },
+    {
+      "direction": "S",
+      "startAngleDeg": 177.827,
+      "endAngleDeg": 186.837,
+      "start": [
+        62.56290692363697,
+        1648.8134772245355
+      ],
+      "end": [
+        -196.4245349880512,
+        1638.2665845504898
+      ],
+      "nominalChordWidth": 259.2021064980718,
+      "approximateWidthBetweenPostCentres": 259.2021064980718,
+      "approximateClearWidthAfterPosts": 210.20210649807183
+    },
+    {
+      "direction": "SW",
+      "startAngleDeg": 216.329,
+      "endAngleDeg": 226.562,
+      "start": [
+        -977.4946828508721,
+        1329.287081483256
+      ],
+      "end": [
+        -1198.0960488951114,
+        1134.489249672258
+      ],
+      "nominalChordWidth": 294.29773695842505,
+      "approximateWidthBetweenPostCentres": 294.29773695842505,
+      "approximateClearWidthAfterPosts": 245.29773695842505
+    },
+    {
+      "direction": "W",
+      "startAngleDeg": 247.083,
+      "endAngleDeg": 256.978,
+      "start": [
+        -1519.7653508717065,
+        642.5054694629443
+      ],
+      "end": [
+        -1607.5679696259556,
+        371.7865288477815
+      ],
+      "nominalChordWidth": 284.60155422607926,
+      "approximateWidthBetweenPostCentres": 284.60155422607926,
+      "approximateClearWidthAfterPosts": 235.60155422607926
+    },
+    {
+      "direction": "NW",
+      "startAngleDeg": 312.419,
+      "endAngleDeg": 321.84,
+      "start": [
+        -1218.0822932645965,
+        -1113.0029320874503
+      ],
+      "end": [
+        -1019.4683615990524,
+        -1297.3759130254207
+      ],
+      "nominalChordWidth": 270.9997969585926,
+      "approximateWidthBetweenPostCentres": 270.9997969585926,
+      "approximateClearWidthAfterPosts": 221.99979695859258
+    }
+  ],
+  "sectors": [
+    {
+      "id": "wall-02",
+      "index": 2,
+      "file": "wall-02.png",
+      "runtimeAssetId": "camp_circular_wall_02_ne_v2",
+      "placementId": "camp-circular-wall-v1-02",
+      "sourceSectorId": "wall-02",
+      "sourceGuide": "artwork-archive/circular-wall-kit-v1/geometry/wall-02.png",
+      "reusesOriginalArtwork": false,
+      "canonicalStartAngleDeg": 22.5,
+      "canonicalEndAngleDeg": 45,
+      "startAngleDeg": 22.5,
+      "endAngleDeg": 47,
+      "roadEnds": {
+        "start": false,
+        "end": true
+      },
+      "omittedGridPosts": [
+        {
+          "angleDeg": 45,
+          "reason": "Replaced by adjacent finished road-end post to avoid overlapping shafts."
+        }
+      ],
+      "expectedPostCount": 4,
+      "pixelsPerWorldUnit": 1.4,
+      "canvas": [
+        1536,
+        1536
+      ],
+      "worldCanvasSize": [
+        1097.142857142857,
+        1097.142857142857
+      ],
+      "projectedInkBounds": {
+        "minX": 597.4570263156124,
+        "minY": -1742.1029889175347,
+        "maxX": 1243.4807612753548,
+        "maxY": -1090.6701685919215
+      },
+      "guideAlphaBBox": {
+        "left": 343,
+        "top": 339,
+        "width": 908,
+        "height": 917,
+        "opaqueOrAntialiasedPixels": 307062
+      },
+      "cropCentre": [
+        899.1237039606054,
+        -1437.5059143778776
+      ],
+      "groundMidpoint": [
+        940.4946582839,
+        -1355.71744760457
+      ],
+      "anchorPixels": [
+        825.9193360526124,
+        882.5038534826307
+      ],
+      "anchorNormalized": [
+        0.5377079010759195,
+        0.5745467796110877
+      ],
+      "groundEndpoints": {
+        "start": [
+          631.4276634023981,
+          -1524.4012286436232
+        ],
+        "end": [
+          1206.7336076716313,
+          -1125.2972941031226
+        ]
+      },
+      "endPlane": {
+        "nominalAngleDeg": 47,
+        "drawExtensionWorldUnits": 0,
+        "extendedAngleDeg": 47
+      },
+      "placement": {
+        "x": 940.4946582839,
+        "y": -1355.71744760457,
+        "rotation": 0,
+        "scale": 1,
+        "flipX": false,
+        "flipY": false
+      },
+      "recommendedWorldPlacement": {
+        "x": 2658.6622456328273,
+        "y": 217.7950297283926,
+        "rotation": 0,
+        "scale": 1
+      },
+      "posts": [
+        {
+          "angleDeg": 22.5,
+          "ground": [
+            631.4276634023981,
+            -1524.4012286436232
+          ],
+          "width": 49,
+          "shaftHeight": 176.69007372343913,
+          "tipHeight": 197.81770479260013,
+          "ownership": "this-sector",
+          "roadEnd": null
+        },
+        {
+          "angleDeg": 29.999999999999996,
+          "ground": [
+            824.9999999999999,
+            -1428.941916244324
+          ],
+          "width": 49,
+          "shaftHeight": 177.90311282034963,
+          "tipHeight": 194.7626933620777,
+          "ownership": "this-sector",
+          "roadEnd": null
+        },
+        {
+          "angleDeg": 37.49999999999999,
+          "ground": [
+            1004.4563578643889,
+            -1309.033011480538
+          ],
+          "width": 49,
+          "shaftHeight": 179.11615191726014,
+          "tipHeight": 198.70768193155527,
+          "ownership": "this-sector",
+          "roadEnd": null
+        },
+        {
+          "angleDeg": 47,
+          "ground": [
+            1206.7336076716313,
+            -1125.2972941031226
+          ],
+          "width": 49,
+          "shaftHeight": 175.96779821673408,
+          "tipHeight": 193.14897053455934,
+          "ownership": "this-sector-road-end",
+          "roadEnd": "end"
+        }
+      ],
+      "collisionCentreline": [
+        [
+          631.4276634023981,
+          -1524.4012286436232
+        ],
+        [
+          658.4861167680751,
+          -1512.9097904447908
+        ],
+        [
+          685.3355444971565,
+          -1500.9381038033468
+        ],
+        [
+          711.9674236784065,
+          -1488.4899689352067
+        ],
+        [
+          738.3733004578137,
+          -1475.5693372969754
+        ],
+        [
+          764.5447927221292,
+          -1462.1803103316213
+        ],
+        [
+          790.4735927596305,
+          -1448.3271381665406
+        ],
+        [
+          816.1514698972695,
+          -1434.0142182644238
+        ],
+        [
+          841.5702731133642,
+          -1419.246094027353
+        ],
+        [
+          866.7219336250068,
+          -1404.0274533545735
+        ],
+        [
+          891.5984674493678,
+          -1388.3631271543977
+        ],
+        [
+          916.1919779380803,
+          -1372.2580878107108
+        ],
+        [
+          940.4946582839,
+          -1355.71744760457
+        ],
+        [
+          964.4987939988515,
+          -1338.7464570913944
+        ],
+        [
+          988.1967653630635,
+          -1321.3505034342622
+        ],
+        [
+          1011.5810498435253,
+          -1303.5351086938438
+        ],
+        [
+          1034.6442244819918,
+          -1285.3059280755137
+        ],
+        [
+          1057.3789682512793,
+          -1266.6687481341996
+        ],
+        [
+          1079.778064379207,
+          -1247.6294849375324
+        ],
+        [
+          1101.834402639442,
+          -1228.1941821878916
+        ],
+        [
+          1123.5409816085244,
+          -1208.369009303927
+        ],
+        [
+          1144.8909108883547,
+          -1188.1602594621793
+        ],
+        [
+          1165.877413293439,
+          -1167.574347599415
+        ],
+        [
+          1186.4938270021933,
+          -1146.6178083763089
+        ],
+        [
+          1206.7336076716313,
+          -1125.2972941031226
+        ]
+      ],
+      "collisionStartAngleDeg": 22.5,
+      "collisionEndAngleDeg": 47.87182500521235,
+      "collisionFootprint": {
+        "type": "closed-annular-sector-with-road-post-cap-allowance",
+        "samplesPerArc": 16,
+        "innerRadius": 1610,
+        "outerRadius": 1690,
+        "polygonWorldRelativeToCircle": [
+          [
+            646.7350006970017,
+            -1561.3564099440746
+          ],
+          [
+            689.6944807163899,
+            -1542.8614724820077
+          ],
+          [
+            732.1257013609074,
+            -1523.1848073713181
+          ],
+          [
+            773.9961631822923,
+            -1502.3414856080792
+          ],
+          [
+            815.2737962356551,
+            -1480.3474717685383
+          ],
+          [
+            855.9269846428891,
+            -1457.2196117813303
+          ],
+          [
+            895.9245908082984,
+            -1432.9756200246338
+          ],
+          [
+            935.235979267891,
+            -1407.6340657581532
+          ],
+          [
+            973.8310401540758,
+            -1381.2143589003233
+          ],
+          [
+            1011.6802122577855,
+            -1353.7367351616201
+          ],
+          [
+            1048.7545056703661,
+            -1325.2222405453758
+          ],
+          [
+            1085.0255239878898,
+            -1295.6927152279607
+          ],
+          [
+            1120.4654860608784,
+            -1265.1707768306853
+          ],
+          [
+            1155.0472472727906,
+            -1233.6798030962284
+          ],
+          [
+            1188.7443203309622,
+            -1201.2439139828675
+          ],
+          [
+            1221.5308955540822,
+            -1167.8879531902198
+          ],
+          [
+            1253.3818606406678,
+            -1133.6374691306467
+          ],
+          [
+            1194.050174929867,
+            -1079.9741569824505
+          ],
+          [
+            1163.7069478355459,
+            -1112.603316352813
+          ],
+          [
+            1132.4723998419224,
+            -1144.3802967529093
+          ],
+          [
+            1100.370454502481,
+            -1175.280759162679
+          ],
+          [
+            1067.42569973847,
+            -1205.2810359156233
+          ],
+          [
+            1033.6633690062145,
+            -1234.358148826637
+          ],
+          [
+            999.1093219699939,
+            -1262.4898267917486
+          ],
+          [
+            963.7900246952868,
+            -1289.6545228462771
+          ],
+          [
+            927.7325293775516,
+            -1315.8314306683553
+          ],
+          [
+            890.9644536220737,
+            -1341.0005005151638
+          ],
+          [
+            853.5139592907458,
+            -1365.1424545796806
+          ],
+          [
+            815.4097309319832,
+            -1388.2388017561786
+          ],
+          [
+            776.6809538102987,
+            -1410.2718518031638
+          ],
+          [
+            737.3572915523613,
+            -1431.2247288929038
+          ],
+          [
+            697.4688634266633,
+            -1451.0813845371729
+          ],
+          [
+            657.0462212741938,
+            -1469.8266098793092
+          ],
+          [
+            616.1203261077945,
+            -1487.4460473431716
+          ]
+        ],
+        "pointCount": 34,
+        "note": "Thirty-four points fit the game collision validator. Expanded angular endpoints contain the finished 49-world-unit road posts; centreline road intervals remain separately recorded."
+      },
+      "seamToNext": {
+        "nextId": "wall-03",
+        "endpointErrorWorldUnits": 0,
+        "roadOpening": false
+      }
+    },
+    {
+      "id": "wall-03",
+      "index": 3,
+      "file": "wall-03.png",
+      "runtimeAssetId": "camp_circular_wall_03_ne_v2",
+      "placementId": "camp-circular-wall-v1-03",
+      "sourceSectorId": "wall-03",
+      "sourceGuide": "artwork-archive/circular-wall-kit-v1/geometry/wall-03.png",
+      "reusesOriginalArtwork": false,
+      "canonicalStartAngleDeg": 45,
+      "canonicalEndAngleDeg": 67.5,
+      "startAngleDeg": 57,
+      "endAngleDeg": 67.5,
+      "roadEnds": {
+        "start": true,
+        "end": false
+      },
+      "omittedGridPosts": [],
+      "expectedPostCount": 2,
+      "pixelsPerWorldUnit": 1.4,
+      "canvas": [
+        1536,
+        1536
+      ],
+      "worldCanvasSize": [
+        1097.142857142857,
+        1097.142857142857
+      ],
+      "projectedInkBounds": {
+        "minX": 1347.8403874329779,
+        "minY": -1110.9710876481745,
+        "maxX": 1564.4737305151284,
+        "maxY": -608.9012529359562
+      },
+      "guideAlphaBBox": {
+        "left": 768,
+        "top": 597,
+        "width": 306,
+        "height": 707,
+        "opaqueOrAntialiasedPixels": 108692
+      },
+      "cropCentre": [
+        1347.2151834256156,
+        -990.4480494241511
+      ],
+      "groundMidpoint": [
+        1460.229601814019,
+        -768.263958536434
+      ],
+      "anchorPixels": [
+        926.2201857437647,
+        1079.057727242804
+      ],
+      "anchorNormalized": [
+        0.6030079334269302,
+        0.7025115411737005
+      ],
+      "groundEndpoints": {
+        "start": [
+          1383.8064371099497,
+          -898.6544077747947
+        ],
+        "end": [
+          1524.4012286436232,
+          -631.4276634023983
+        ]
+      },
+      "endPlane": {
+        "nominalAngleDeg": 67.5,
+        "drawExtensionWorldUnits": 8,
+        "extendedAngleDeg": 67.7777977188513
+      },
+      "placement": {
+        "x": 1460.229601814019,
+        "y": -768.263958536434,
+        "rotation": 0,
+        "scale": 1,
+        "flipX": false,
+        "flipY": false
+      },
+      "recommendedWorldPlacement": {
+        "x": 3178.3971891629462,
+        "y": 805.2485187965286,
+        "rotation": 0,
+        "scale": 1
+      },
+      "posts": [
+        {
+          "angleDeg": 57,
+          "ground": [
+            1383.8064371099497,
+            -898.6544077747947
+          ],
+          "width": 49,
+          "shaftHeight": 178.42559460084885,
+          "tipHeight": 198.07515496737324,
+          "ownership": "this-sector-road-end",
+          "roadEnd": "start"
+        },
+        {
+          "angleDeg": 59.99999999999999,
+          "ground": [
+            1428.9419162443237,
+            -825.0000000000002
+          ],
+          "width": 49,
+          "shaftHeight": 172.75526920799166,
+          "tipHeight": 193.542647639988,
+          "ownership": "this-sector",
+          "roadEnd": null
+        }
+      ],
+      "collisionCentreline": [
+        [
+          1383.8064371099497,
+          -898.6544077747947
+        ],
+        [
+          1390.6279879738086,
+          -888.061821645271
+        ],
+        [
+          1397.3684577239328,
+          -877.417456720709
+        ],
+        [
+          1404.0274533545735,
+          -866.7219336250071
+        ],
+        [
+          1410.6045866103618,
+          -855.9758759648602
+        ],
+        [
+          1417.0994740089475,
+          -845.1799102934029
+        ],
+        [
+          1423.5117368633566,
+          -834.3346660736745
+        ],
+        [
+          1429.8410013040727,
+          -823.4407756419199
+        ],
+        [
+          1436.0868983008345,
+          -812.4988741707207
+        ],
+        [
+          1442.2490636841521,
+          -801.5095996319611
+        ],
+        [
+          1448.3271381665406,
+          -790.4735927596306
+        ],
+        [
+          1454.3207673634683,
+          -779.3914970124661
+        ],
+        [
+          1460.229601814019,
+          -768.263958536434
+        ],
+        [
+          1466.053297001268,
+          -757.0916261270572
+        ],
+        [
+          1471.7915133723684,
+          -745.8751511915874
+        ],
+        [
+          1477.4439163583502,
+          -734.6151877110225
+        ],
+        [
+          1483.0101763936257,
+          -723.3123922019778
+        ],
+        [
+          1488.4899689352067,
+          -711.9674236784066
+        ],
+        [
+          1493.8829744816262,
+          -700.5809436131767
+        ],
+        [
+          1499.1888785915671,
+          -689.1536158995028
+        ],
+        [
+          1504.4073719021962,
+          -677.6861068122373
+        ],
+        [
+          1509.538150147201,
+          -666.1790849690246
+        ],
+        [
+          1514.5809141745303,
+          -654.6332212913148
+        ],
+        [
+          1519.535369963838,
+          -643.049188965247
+        ],
+        [
+          1524.4012286436232,
+          -631.4276634023983
+        ]
+      ],
+      "collisionStartAngleDeg": 56.128174994787656,
+      "collisionEndAngleDeg": 67.5,
+      "collisionFootprint": {
+        "type": "closed-annular-sector-with-road-post-cap-allowance",
+        "samplesPerArc": 16,
+        "innerRadius": 1610,
+        "outerRadius": 1690,
+        "polygonWorldRelativeToCircle": [
+          [
+            1403.1841070802323,
+            -941.8993373166005
+          ],
+          [
+            1414.7598629307317,
+            -924.4211866028477
+          ],
+          [
+            1426.117921870057,
+            -906.800790097268
+          ],
+          [
+            1437.25653617097,
+            -889.040859147556
+          ],
+          [
+            1448.1739918733906,
+            -871.1441265723423
+          ],
+          [
+            1458.8686090481328,
+            -853.1133462406775
+          ],
+          [
+            1469.338742055406,
+            -834.951292648282
+          ],
+          [
+            1479.582779798037,
+            -816.660760490617
+          ],
+          [
+            1489.5991459693807,
+            -798.2445642328495
+          ],
+          [
+            1499.3862992958716,
+            -779.7055376767763
+          ],
+          [
+            1508.942733774192,
+            -761.0465335247693
+          ],
+          [
+            1518.266978903006,
+            -742.2704229408167
+          ],
+          [
+            1527.3575999092357,
+            -723.380095108719
+          ],
+          [
+            1536.2131979688363,
+            -704.3784567875151
+          ],
+          [
+            1544.8324104220412,
+            -685.2684318642047
+          ],
+          [
+            1553.213910983043,
+            -666.0529609038308
+          ],
+          [
+            1561.3564099440746,
+            -646.7350006970019
+          ],
+          [
+            1487.4460473431716,
+            -616.1203261077947
+          ],
+          [
+            1479.6889921199402,
+            -634.5238266598625
+          ],
+          [
+            1471.7042489819446,
+            -652.8296895274376
+          ],
+          [
+            1463.493046585696,
+            -671.035097886331
+          ],
+          [
+            1455.0566484342423,
+            -689.1372503698448
+          ],
+          [
+            1446.3963526827454,
+            -707.1333614998313
+          ],
+          [
+            1437.5134919387274,
+            -725.0206621153128
+          ],
+          [
+            1428.4094330570138,
+            -742.7963997985858
+          ],
+          [
+            1419.08557692941,
+            -760.4578392987502
+          ],
+          [
+            1409.543358269136,
+            -778.0022629525996
+          ],
+          [
+            1399.7842453900614,
+            -795.4269711028012
+          ],
+          [
+            1389.8097399807657,
+            -812.7292825133081
+          ],
+          [
+            1379.6213768734667,
+            -829.9065347819355
+          ],
+          [
+            1369.2207238078472,
+            -846.9560847500386
+          ],
+          [
+            1358.6093811898177,
+            -863.8753089092316
+          ],
+          [
+            1347.7889818452534,
+            -880.6616038050797
+          ],
+          [
+            1336.761190768742,
+            -897.3123864377083
+          ]
+        ],
+        "pointCount": 34,
+        "note": "Thirty-four points fit the game collision validator. Expanded angular endpoints contain the finished 49-world-unit road posts; centreline road intervals remain separately recorded."
+      },
+      "seamToNext": {
+        "nextId": "wall-04",
+        "endpointErrorWorldUnits": 0,
+        "roadOpening": false
+      }
+    }
+  ],
+  "validation": {
+    "twoReplacementGuides": true,
+    "circleRadius": 1650,
+    "intervals": [
+      [
+        "wall-02",
+        22.5,
+        47
+      ],
+      [
+        "wall-03",
+        57,
+        67.5
+      ]
+    ],
+    "boundarySeamsPreserved": true,
+    "allRoadEndsFinished": true,
+    "fullExtendedPlankSpan": true,
+    "noClippedGuideCanvases": true,
+    "collisionPathsWithin64PointLimit": true
+  }
+}

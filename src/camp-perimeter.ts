@@ -9,6 +9,22 @@ type Point=[number,number];
 const originalIds=new Set(plan.sourceProvenance.originalWallPlacementIds);
 const currentIds=new Set(plan.placements.map(p=>p.id));
 const oldAssetIds=new Set(oldWalls.flatMap(a=>[a.entryId,'wall-t2-'+a.entryId]));
+// Immutable placements from the published version-5 ring. The revised plan
+// must not become its own matching baseline, or an owner's edits could move.
+const northeastV5=[
+ {id:'camp-circular-wall-v1-02',assetId:'camp_circular_wall_02',x:2537.662278621207,y:141.40617856301742},
+ {id:'camp-circular-wall-v1-03',assetId:'camp_circular_wall_03',x:3107.041416813492,y:682.7097574064716},
+];
+function alignNortheastEntrance(layout:WorldLayout,offsetX:number,offsetY:number):WorldLayout{
+ const items=layout.items.map(p=>{
+  const old=northeastV5.find(old=>old.id===p.id),next=plan.placements.find(next=>next.id===p.id);
+  // Only untouched authored sections adopt the new asset/anchor. Retain old
+  // asset definitions for custom placements and deferred saved expeditions.
+  if(!old||!next||p.assetId!==old.assetId||p.x!==old.x+offsetX||p.y!==old.y+offsetY||p.scale!==1||(p.rotation??0)!==0||p.flipX||p.flipY||p.layer!==undefined||p.locked!==true||p.solid!==true||p.allowTransparency!==true||p.roof!=='auto'||p.role!=='prop'||p.frame!==undefined||p.collision!==undefined||p.footprint!==undefined)return p;
+  return{...p,assetId:next.assetId,x:next.x+offsetX,y:next.y+offsetY};
+ });
+ return{...layout,campPerimeterVersion:6,items,updatedAt:new Date().toISOString()};
+}
 const isCampGate=(p:Placement)=>p.id.startsWith('camp-original-gate-')||p.assetId.startsWith('camp_gate_')||p.frame?.sourceAssetId.startsWith('camp_gate_');
 const cross=(a:Point,b:Point,c:Point)=>(b[0]-a[0])*(c[1]-a[1])-(b[1]-a[1])*(c[0]-a[0]);
 function edgesCross(a:Point,b:Point,c:Point,d:Point){
@@ -47,10 +63,11 @@ function clearAuditedScenery(p:Placement,centre:Point,wallPolygons:Point[][]):Pl
 
 /** Replace the authored camp perimeter once; later editor changes remain intact. */
 export function addApprovedCampPerimeter(layout:WorldLayout):WorldLayout{
- if(layout.campPerimeterVersion===5||!usesPaintedHomeTerrain(layout.terrainImage))return layout;
+ if((layout.campPerimeterVersion??0)>=6||!usesPaintedHomeTerrain(layout.terrainImage))return layout;
  const hearth=layout.items.find(p=>p.id===plan.hearthPlacementId&&p.role==='hearth');
  if(!hearth)return layout;
  const centre:Point=[hearth.x,hearth.y],offsetX=centre[0]-plan.centre[0],offsetY=centre[1]-plan.centre[1];
+ if(layout.campPerimeterVersion===5)return alignNortheastEntrance(layout,offsetX,offsetY);
  // Match the eleven original placements and legacy wall artwork around camp.
  // Remote owner-placed uses of the old artwork stay in the world.
  const nearCamp=(p:Placement)=>Math.hypot(p.x-centre[0],p.y-centre[1])<=plan.radius+plan.baseThickness*2;
@@ -59,6 +76,13 @@ export function addApprovedCampPerimeter(layout:WorldLayout):WorldLayout{
  if(retained.length+plan.placements.length>MAX_LAYOUT_ITEMS)return layout;
  const walls=plan.placements.map(p=>({...p,x:p.x+offsetX,y:p.y+offsetY} as Placement));
  const wallPolygons=plan.sections.map(s=>s.collisionFootprint.polygonWorldRelativeToCircle.map(([x,y]):Point=>[centre[0]+x,centre[1]+y]));
+ // Keep the original audited scenery clearance when skipping straight from
+ // an older camp to v6. The NE rock used to overlap wall 03 and would now sit
+ // in the corrected road opening if that already-approved move were skipped.
+ for(const p of northeastV5){
+  const legacy={...p,x:p.x+offsetX,y:p.y+offsetY,scale:1,solid:true,role:'prop' as const,roof:'auto' as const};
+  wallPolygons.push(...placementBodies(legacy).map(colliderPolygon).filter(points=>points.length>0));
+ }
  const items=retained.map(p=>clearAuditedScenery(p,centre,wallPolygons));
- return{...layout,campPerimeterVersion:5,items:[...items,...walls],updatedAt:new Date().toISOString()};
+ return{...layout,campPerimeterVersion:6,items:[...items,...walls],updatedAt:new Date().toISOString()};
 }

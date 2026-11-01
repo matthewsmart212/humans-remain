@@ -1,0 +1,123 @@
+{
+  "result": "pass",
+  "command": [
+    "node",
+    "scripts/check-circular-wall-layout.mjs"
+  ],
+  "startedAt": "2026-11-01T08:30:01.294213+00:00",
+  "durationSeconds": 17.884,
+  "exitCode": 0,
+  "checks": {
+    "result": "pass",
+    "sourceRevision": 78,
+    "artworkRecords": 15,
+    "before": 4543,
+    "after": 4548,
+    "oldWallsRemoved": 11,
+    "newWalls": 16,
+    "unrelatedPlacementsPreserved": 4529,
+    "scenery": [
+      {
+        "id": "camp-outskirts-v1-east-near-rock-2",
+        "displacement": 160
+      },
+      {
+        "id": "camp-outskirts-v1-northeast-near-rock-3",
+        "displacement": 160
+      },
+      {
+        "id": "forage-v1-apple-9",
+        "displacement": 160
+      }
+    ],
+    "finalCollisionPolygons": 28,
+    "roadCorridorSamples": 777,
+    "routes": [
+      {
+        "road": "camp-northwest",
+        "playerRadius": 19,
+        "routePoints": 19,
+        "start": [
+          800,
+          520
+        ],
+        "end": [
+          440,
+          180
+        ]
+      },
+      {
+        "road": "camp-northeast",
+        "playerRadius": 19,
+        "routePoints": 31,
+        "start": [
+          2660,
+          780
+        ],
+        "end": [
+          3260,
+          300
+        ]
+      },
+      {
+        "road": "camp-west",
+        "playerRadius": 19,
+        "routePoints": 27,
+        "start": [
+          400,
+          2060
+        ],
+        "end": [
+          -120,
+          2060
+        ]
+      },
+      {
+        "road": "camp-southwest",
+        "playerRadius": 19,
+        "routePoints": 23,
+        "start": [
+          860,
+          2680
+        ],
+        "end": [
+          420,
+          2940
+        ]
+      },
+      {
+        "road": "camp-south",
+        "playerRadius": 19,
+        "routePoints": 25,
+        "start": [
+          1620,
+          2980
+        ],
+        "end": [
+          1780,
+          3460
+        ]
+      },
+      {
+        "road": "camp-southeast",
+        "playerRadius": 19,
+        "routePoints": 19,
+        "start": [
+          2720,
+          2580
+        ],
+        "end": [
+          3080,
+          2880
+        ]
+      }
+    ],
+    "ownerEditsPreserved": true,
+    "version5NortheastCorrection": true,
+    "version5OwnerEditsAndDeletionsPreserved": true,
+    "remoteLegacyWallPreserved": true,
+    "idempotent": true,
+    "mapFollowsMovedAndDeletedSections": true,
+    "legacyMapCircleAbsent": true
+  }
+}

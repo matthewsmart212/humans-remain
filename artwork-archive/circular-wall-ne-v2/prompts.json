@@ -1,0 +1,23 @@
+{
+  "tool": "image_gen",
+  "mode": "built-in",
+  "purpose": "Align the north-east opening with the painted road",
+  "prompts": [
+    {
+      "id": "wall-02",
+      "paths": [
+        "/workspace/scratch/c4a2933de392/humans-remain/artwork-archive/circular-wall-ne-v2/geometry/wall-02.png",
+        "/workspace/scratch/c4a2933de392/humans-remain/public/survival/camp-circular-wall-weathered-v1/wall-02.png"
+      ],
+      "prompt": "Use case: precise-object-edit. Asset type: final transparent raster wall sprite for Humans Remain. Image 1 is the EXACT GEOMETRY TARGET: a plain 3D scaffold with a long gently curved wall, FOUR substantial posts, two horizontal support rails and a low stone foundation. Image 2 is the approved MATERIAL/PAINTING STYLE reference only; its shorter length must NOT replace Image 1 geometry. Paint Image 1 in the detailed hand-painted game style of Image 2. Preserve Image 1's exact camera projection, curve, overall silhouette, screen-space endpoint locations, height, canvas registration and FOUR post locations. This new wall spans 22.5 to 47 degrees of the ring, longer than the style reference. The left seam and the finished right road-end post must stay exactly where Image 1 puts them. Materials: dark muted weathered grey-brown timber matching Image 2, irregular sharpened plank tips, deep grain/cracks, restrained pale worn highlights, dark iron straps with small rivets, low uneven moss-covered stone foundation, green and yellow-green moss in seams. Keep timber dark and desaturated, never orange/golden/honey brown. Keep two rails and all four posts. Keep the stone base shallow; no extra ground or foreground foliage. True transparent background, no background colour, no floor, no separate shadow blob, no text or labels. Use the full 1536 x 1536 transparent canvas and preserve the scaffold framing and empty margins. The goal is a production sprite that joins existing wall pieces precisely, not a new wall design."
+    },
+    {
+      "id": "wall-03",
+      "paths": [
+        "/workspace/scratch/c4a2933de392/humans-remain/artwork-archive/circular-wall-ne-v2/geometry/wall-03.png",
+        "/workspace/scratch/c4a2933de392/humans-remain/public/survival/camp-circular-wall-weathered-v1/wall-03.png"
+      ],
+      "prompt": "Use case: precise-object-edit. Asset type: final transparent raster wall sprite for Humans Remain. Image 1 is the EXACT GEOMETRY TARGET: a SHORT narrow curved wall seen at a steep diagonal, TWO substantial upright posts near the upper-left start, two support rails, pointed timber infill and a low stone foundation. Image 2 is only the approved MATERIAL/PAINTING STYLE reference; do NOT retain its longer length or its extra post. Paint Image 1 in the detailed hand-painted game style of Image 2. Preserve Image 1's exact camera projection, curve, silhouette, screen-space endpoints, height, canvas registration, TWO post positions and the uncovered connecting end at lower right. This new wall spans 57 to 67.5 degrees of the ring. The upper-left road end owns a finished square pointed post; the lower-right end joins the next wall, whose post is separate, so do not invent a third end post. Materials: dark muted weathered grey-brown timber matching Image 2, uneven sharpened plank tips, natural deep grain/cracks, restrained worn highlights, dark iron straps with small rivets, low irregular moss-covered stone foundation. Preserve green and yellow-green moss along the stone base and cracks. Keep timber dark and desaturated, never orange/golden/honey brown. No extra ground, no foreground foliage, no separate shadow blob. True transparent background, no background colour, no text or labels. Use the full 1536 x 1536 transparent canvas, preserve Image 1's position and empty margins. This is a precisely joining game sprite, not a new wall design."
+    }
+  ]
+}

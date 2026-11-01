@@ -1,0 +1,45 @@
+{
+  "scope": "Actual registered sprite assembly and unchanged section joins; not an in-game or physical-device test",
+  "sourceHashes": {
+    "wall-02": "a115ab90d4cbe59155ba2f4bb89068454439e1fc17398c2dc0b311324de1e21f",
+    "wall-03": "05878e032f932a927a9ae00faaae871d82f9c730209b802b4904c54637957b3b"
+  },
+  "inspected": [
+    "previews/complete-ring.jpg",
+    "previews/ne-registered-sprites.jpg",
+    "previews/seam-comparison.jpg"
+  ],
+  "findings": [
+    {
+      "check": "01/02 closed join",
+      "result": "pass",
+      "note": "Shared post covers the join. Irregular stone-height step remains comparable to the baseline; no through-wall background gap."
+    },
+    {
+      "check": "03/04 closed join",
+      "result": "pass",
+      "note": "New short section meets the unchanged section04 and its shared post without a visible hole or clipped upright."
+    },
+    {
+      "check": "47-degree road end",
+      "result": "pass",
+      "note": "Complete exposed post and stone foundation termination."
+    },
+    {
+      "check": "57-degree road end",
+      "result": "pass",
+      "note": "Complete exposed post and stone foundation termination."
+    },
+    {
+      "check": "wall03 aspect flag",
+      "result": "reviewed",
+      "note": "Source-to-guide fit has -13.1446 percent horizontal-to-vertical ratio adjustment. In the registered assembly the upright height and joining foundation remain visually consistent; preserve the metric as a limitation of bounding-box registration."
+    }
+  ],
+  "remainingValidation": [
+    "Full painted-terrain view",
+    "Player traversal and collision",
+    "Saved-run migration",
+    "Native bundle and production build"
+  ]
+}

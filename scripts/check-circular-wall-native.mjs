@@ -9,7 +9,7 @@ import {build} from 'esbuild';
 
 const require=createRequire(import.meta.url);
 const temp=fs.mkdtempSync(path.join(os.tmpdir(),'circular-wall-native-'));
-const output='docs/qa/circular-wall-v1';
+const output='docs/qa/circular-wall-ne-v2';
 const snapshot=JSON.parse(fs.readFileSync('native/assets/world-snapshot.json'));
 const art=JSON.parse(fs.readFileSync('src/camp-circular-wall-art.json'));
 const plan=JSON.parse(fs.readFileSync('src/camp-circular-wall-layout.json'));
@@ -20,9 +20,10 @@ try{
  assert.equal(snapshot.revision,78,'This release uses the latest reviewed editor revision');
  assert.equal(snapshot.layout.items.length,4548,'The original 4,543 placements replace eleven walls with sixteen');
  assert.equal(snapshot.records.length,15,'Include the fresh artwork records');
- const expected=Array.from({length:16},(_,i)=>'camp_circular_wall_'+String(i+1).padStart(2,'0'));
+ const expected=plan.placements.map(p=>p.assetId).sort();
+ assert.equal(expected.length,16);
  assert.deepEqual(snapshot.layout.items.filter(p=>p.assetId.startsWith('camp_circular_wall_')).map(p=>p.assetId).sort(),expected);
- assert.equal(snapshot.layout.campPerimeterVersion,5);
+ assert.equal(snapshot.layout.campPerimeterVersion,6);
 
  const aliases={
   '@react-native-async-storage/async-storage':'export default {getItem:async()=>null,setItem:async()=>{}};',
@@ -81,7 +82,10 @@ try{
  const view={...m.PLAY_VIEW,zoom:1},sizes=[[844,390],[390,844]];
  const views=sizes.map(([width,height])=>{const c=m.editorCamera(width*2,height*2,world,view,2);return{x:c.x,y:c.y,width:width*2/c.scale,height:height*2/c.scale,scale:c.scale}});
  const localPlacements=new Set(views.flatMap(v=>m.visiblePlacements(saved.layout,v)));
- const sources={...m.EDITOR_ENTRY_IMAGES,...m.editorTerrainDetail(saved.layout.terrainImage),...m.requiredImages([...localPlacements].map(p=>p.assetId),saved.layout.terrainImage,{animationFrames:false}),...m.requiredImages(expected)};
+ // Continued v5/custom worlds may still need the previous northeast shapes,
+ // even though this fixture installs only the sixteen current sections.
+ const retainedCircularSources=m.requiredImages(art.filter(entry=>!expected.includes(entry.id)).map(entry=>entry.id));
+ const sources={...m.EDITOR_ENTRY_IMAGES,...m.editorTerrainDetail(saved.layout.terrainImage),...m.requiredImages([...localPlacements].map(p=>p.assetId),saved.layout.terrainImage,{animationFrames:false}),...m.requiredImages(expected),...retainedCircularSources};
  renderer=await m.createNativeRenderer(view);await renderer.warmImages({...sources,...savedWallSources});
  for(const entry of art)assert(decoded.has(m.BUNDLED_ART[entry.image]),'Production native image loader opened '+entry.id);
  for(const {url}of savedWallImages)assert(decoded.has(m.BUNDLED_ART[url]),'Production native image loader opened deferred-wall artwork: '+url);

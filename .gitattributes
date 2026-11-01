@@ -19,3 +19,18 @@ public/api/asset-files/** filter=lfs diff=lfs merge=lfs -text
 # These map SVGs embed substantial raster artwork.
 docs/qa/world-master-plan/master-map.svg filter=lfs diff=lfs merge=lfs -text
 historical-assets/*/master-map.svg filter=lfs diff=lfs merge=lfs -text
+
+# Small versioned wall updates are ordinary Git blobs so the connected
+# GitHub API can save the complete edit without separate LFS credentials.
+# Existing artwork continues to use LFS; source scripts keep text diffs.
+/public/survival/camp-circular-wall-weathered-v1/**/*.png -filter -diff -merge -text
+/public/survival/camp-circular-wall-weathered-v1/**/*.webp -filter -diff -merge -text
+/public/survival/camp-circular-wall-ne-v2/**/*.png -filter -diff -merge -text
+/public/survival/camp-circular-wall-ne-v2/**/*.webp -filter -diff -merge -text
+/artwork-archive/circular-wall-weathered-v1/**/*.png -filter -diff -merge -text
+/artwork-archive/circular-wall-weathered-v1/**/*.jpg -filter -diff -merge -text
+/artwork-archive/circular-wall-ne-v2/**/*.png -filter -diff -merge -text
+/artwork-archive/circular-wall-ne-v2/**/*.jpg -filter -diff -merge -text
+/docs/qa/circular-wall-ne-v2/**/*.png -filter -diff -merge -text
+/docs/qa/circular-wall-ne-v2/**/*.jpg -filter -diff -merge -text
+/docs/qa/circular-wall-ne-v2/**/*.jpeg -filter -diff -merge -text

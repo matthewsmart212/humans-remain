@@ -1,0 +1,24 @@
+{
+  "result": "pass",
+  "command": [
+    "node",
+    "scripts/check-camp-perimeter-server.mjs"
+  ],
+  "startedAt": "2026-11-01T08:30:01.393677+00:00",
+  "durationSeconds": 1.797,
+  "exitCode": 0,
+  "checks": {
+    "result": "pass",
+    "sourceRevision": 78,
+    "artworkRecords": 15,
+    "legacyVersion3Readable": true,
+    "version4Placements": 4543,
+    "version5Placements": 4548,
+    "version6Placements": 4548,
+    "exactPlacementRoundTrips": true,
+    "unknownVersion7Rejected": true,
+    "staleWritesRejected": true,
+    "retiredGatesHidden": true,
+    "database": "disposable in-memory SQLite"
+  }
+}

@@ -16,7 +16,7 @@ try{
  m.installImportedArt(saved.records);
  const original=JSON.stringify(saved.layout),layout=m.addApprovedCampPerimeter(saved.layout);
  assert.equal(JSON.stringify(saved.layout),original,'Migration never mutates its input');
- assert.equal(layout.campPerimeterVersion,5);
+ assert.equal(layout.campPerimeterVersion,6);
  const walls=layout.items.filter(p=>p.assetId.startsWith('camp_circular_wall_'));
  assert.equal(walls.length,16);
  assert.deepEqual(m.validateLayout(layout).errors,[]);
@@ -82,7 +82,7 @@ try{
  const before=make();before.bag.pallets=7;before.stock.scrap=12;Object.assign(before.player,occupied);
  const state=protectedState(before),encoded=m.encodeRun(new m.SceneTravel(before,resources));
  const resumed=m.decodeRun(encoded),camp=resumed.worlds.find(([id])=>id===m.CAMP_SCENE_ID)[1];
- assert.equal(camp.layout.campPerimeterVersion,5);assert.equal(protectedState(camp),state);
+ assert.equal(camp.layout.campPerimeterVersion,6);assert.equal(protectedState(camp),state);
  assert(!m.layoutBlocked(camp.layout,camp.player.x,camp.player.y,19));
  const displacement=Math.hypot(camp.player.x-occupied.x,camp.player.y-occupied.y);assert(displacement>0&&displacement<=480,'Only a bounded nearby landing correction is allowed');
  const second=m.decodeRun(m.encodeRun(new m.SceneTravel(camp,resources))).worlds[0][1];
@@ -94,8 +94,42 @@ try{
  interiorSnapshot.route=[{sceneId:m.CAMP_SCENE_ID,spawn:{...occupied,direction:'down'}}];
  const inside=m.decodeRun(JSON.stringify(interiorSnapshot)),home=inside.worlds.find(([id])=>id===m.CAMP_SCENE_ID)[1],active=inside.worlds.find(([id])=>id===m.BUNKER_SCENE.id)[1];
  assert.equal(inside.currentId,m.BUNKER_SCENE.id);assert.equal(active.player.x,936);assert.equal(active.player.y,649);
- assert.equal(protectedState(active),state);assert.equal(home.layout.campPerimeterVersion,5);
+ assert.equal(protectedState(active),state);assert.equal(home.layout.campPerimeterVersion,6);
  assert(!m.layoutBlocked(home.layout,inside.route[0].spawn.x,inside.route[0].spawn.y,19));assert.equal(inside.route[0].spawn.direction,'down');
+
+ // Existing v5 runs carry their own older circle. Retained asset definitions
+ // keep those old shapes valid until the bounded placement migration succeeds.
+ const historicalNE=[
+  {id:'camp-circular-wall-v1-02',assetId:'camp_circular_wall_02',x:2537.662278621207,y:141.40617856301742,start:22.5,end:37.059},
+  {id:'camp-circular-wall-v1-03',assetId:'camp_circular_wall_03',x:3107.041416813492,y:682.7097574064716,start:47.149,end:67.5},
+ ];
+ for(const old of historicalNE){
+  const a=m.ASSET_BY_ID.get(old.assetId);assert(a,'Original v5 wall definitions remain resolvable');
+  for(const [angle,endpoint] of [[old.start,a.perimeterCurve[0]],[old.end,a.perimeterCurve.at(-1)]]){
+   const radians=angle*Math.PI/180;
+   assert(Math.abs(old.x+endpoint[0]-1718.1675873489273-1650*Math.sin(radians))<1e-6);
+   assert(Math.abs(old.y+endpoint[1]-1573.5124773329626+1650*Math.cos(radians))<1e-6,'An owner-edited/deferred original retains its published ground curve');
+  }
+ }
+ const oldNEById=new Map(historicalNE.map(p=>[p.id,p]));
+ const v5Layout={...layout,campPerimeterVersion:5,items:layout.items.map(p=>{const old=oldNEById.get(p.id);return old?{...p,assetId:old.assetId,x:old.x,y:old.y}:p})};
+ const v5Run=m.createCampPlaySession(v5Layout,undefined,'survival');
+ v5Run.bag.pallets=9;v5Run.stock.scrap=13;
+ const newlyOccupied=walls.filter(p=>oldNEById.has(p.id)).flatMap(p=>m.ASSET_BY_ID.get(p.assetId).perimeterCurve.map(([x,y])=>({x:p.x+x*p.scale,y:p.y+y*p.scale}))).find(p=>!m.layoutBlocked(v5Layout,p.x,p.y,19)&&m.layoutBlocked(layout,p.x,p.y,19));
+ assert(newlyOccupied,'The realigned entrance has an independently identified formerly clear landing to test');
+ Object.assign(v5Run.player,newlyOccupied);
+ const v5State=protectedState(v5Run),v5Snapshot=JSON.parse(m.encodeRun(new m.SceneTravel(v5Run,resources)));
+ v5Snapshot.route=[{sceneId:m.CAMP_SCENE_ID,spawn:{...newlyOccupied,direction:'down'}}];
+ const continuedV5=m.decodeRun(JSON.stringify(v5Snapshot)),v6Camp=continuedV5.worlds.find(([id])=>id===m.CAMP_SCENE_ID)[1];
+ assert.equal(v6Camp.layout.campPerimeterVersion,6);assert.equal(protectedState(v6Camp),v5State,'An existing v5 run retains resources, health, time and progress');
+ for(const point of [v6Camp.player,continuedV5.route[0].spawn]){
+  assert(!m.layoutBlocked(v6Camp.layout,point.x,point.y,19));
+  const distance=Math.hypot(point.x-newlyOccupied.x,point.y-newlyOccupied.y);assert(distance>0&&distance<=480,'A newly occupied v5 landing only moves to nearby clear ground');
+ }
+ assert.equal(continuedV5.route[0].spawn.direction,'down');
+ const completedV5=JSON.stringify({world:v6Camp,route:continuedV5.route});
+ assert.equal(m.migrateSavedCampPerimeter(v6Camp,continuedV5.route),false);
+ assert.equal(JSON.stringify({world:v6Camp,route:continuedV5.route}),completedV5,'Repeated loading does not move a migrated v5 player again');
 
  // If a custom return landing cannot be cleared, a previously planned player
  // adjustment must not leak out of the deferred migration.
@@ -114,5 +148,5 @@ try{
  for(const old of placedOriginalWalls)assert(Object.values(resumedSources).includes(old.url),'A saved interior also prepares its deferred original camp wall: '+old.url);
  await assert.rejects(m.prepareSavedCampArtwork(deferredSnapshot,async()=>{throw Error('artwork unavailable')}),/artwork unavailable/,'Restore must report image failure so the caller can keep the original save');
  assert.equal(JSON.stringify({world:deferred,route:deferredRoute}),beforeDeferral,'Artwork preparation never rewrites saved game data');
- console.log(JSON.stringify({result:'pass',assets:walls.length,groundShape:'annular polygons',requiredImageURLsResolve:true,reviewedFrontBehind:reviewed,cardinalSides:true,drawOrder:expected,continuedCampRun:true,continuedInteriorRun:true,resourcesHealthAndProgressPreserved:true,occupiedLandingAdjustment:displacement,deferredMigrationPreservesAllState:true,savedCampArtworkPreparedFromInterior:true},null,2));
+ console.log(JSON.stringify({result:'pass',assets:walls.length,groundShape:'annular polygons',requiredImageURLsResolve:true,reviewedFrontBehind:reviewed,cardinalSides:true,drawOrder:expected,continuedCampRun:true,continuedInteriorRun:true,continuedVersion5Run:true,originalNortheastGeometryRetained:true,version5ReturnLandingPreserved:true,resourcesHealthAndProgressPreserved:true,occupiedLandingAdjustment:displacement,deferredMigrationPreservesAllState:true,savedCampArtworkPreparedFromInterior:true},null,2));
 }finally{fs.rmSync(temp,{recursive:true,force:true})}

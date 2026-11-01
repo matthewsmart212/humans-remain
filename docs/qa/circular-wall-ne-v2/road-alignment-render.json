@@ -1,0 +1,38 @@
+{
+  "render": "Exact current terrain chunks and runtime wall images at their authored world placements, before/after colour both use approved darker assets. No replacement imagery or moved roads.",
+  "regionWorld": [
+    2240,
+    -120,
+    3410,
+    1110
+  ],
+  "pixelsPerWorldUnit": 1,
+  "currentPlanVersion": 6,
+  "activeWallPlacements": 16,
+  "legacyWallAssetsExcludedFromAfter": [
+    "camp_circular_wall_02",
+    "camp_circular_wall_03"
+  ],
+  "opening": {
+    "direction": "NE",
+    "startAngleDeg": 47,
+    "endAngleDeg": 57,
+    "start": [
+      1206.7336076716313,
+      -1125.2972941031226
+    ],
+    "end": [
+      1383.8064371099497,
+      -898.6544077747947
+    ],
+    "nominalChordWidth": 287.61395106727196,
+    "approximateWidthBetweenPostCentres": 287.61395106727196,
+    "approximateClearWidthAfterPosts": 238.61395106727196
+  },
+  "files": [
+    "before-road-alignment.png",
+    "after-road-alignment.png",
+    "road-alignment-before-after.jpg",
+    "road-alignment-ground-anchors.png"
+  ]
+}

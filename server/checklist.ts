@@ -3,6 +3,7 @@ import {artworkEntry,readCustomAssets} from './custom-assets';
 import {customCatalogueEntry} from '../src/custom-assets';
 import {entries as catalogue} from '../src/catalogue-model';
 import losslessArtworkRedirects from './lossless-artwork-redirects.json';
+import circularWallArtworkRedirects from './circular-wall-artwork-redirects.json';
 import calmRiverRedirects from './calm-river-redirects.json';
 import retiredRoadRedirects from './retired-road-redirects.json';
 import riverFeaturesRedirects from './river-features-redirects.json';
@@ -25,6 +26,8 @@ const retiredTerrain:Record<string,string>={
  ...riverFeaturesRedirects,
  ...riverQualityRedirects,
  ...losslessArtworkRedirects,
+ // The weathered palette keeps these exact installed sprite shapes and crops.
+ ...circularWallArtworkRedirects,
  '/planning/built-river-logging-v1.webp':'/planning/built-river-calm-v2.webp',
  '/planning/river-logging-detail.webp':'/planning/river-calm-detail.webp',
  ...Object.fromEntries(['built-ground-consistent-v1','built-ground-earth-v3','built-ground-regions-v1','built-ground-regions-v2','built-ground-world-v1','built-roads-textured-v1','built-roads-bedded-v2','built-river-headwaters-v1'].map(name=>[`/planning/${name}.webp`,'/planning/built-river-logging-v1.webp'])),

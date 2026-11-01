@@ -7,6 +7,28 @@ import {build} from 'esbuild';
 fs.rmSync('dist',{recursive:true,force:true});
 execFileSync(process.execPath,['scripts/build-world-plan.mjs'],{stdio:'inherit'});
 execFileSync(process.execPath,['node_modules/vite/bin/vite.js','build','--configLoader','runner'],{stdio:'inherit'});
+// /api/asset-files/* is served exclusively by the Worker's database/R2 artwork
+// handler before static assets. Native/offline source copies remain under public/;
+// publishing this local cache only duplicates R2 images in the archive.
+fs.mkdirSync('.sites-runtime',{recursive:true});
+const apiArtworkCache='dist/client/api/asset-files';
+const apiArtworkArchive=fs.mkdtempSync('.sites-runtime/api-artwork-build-');
+if(fs.existsSync(apiArtworkCache))fs.renameSync(apiArtworkCache,path.join(apiArtworkArchive,'asset-files'));
+assert(!fs.existsSync(apiArtworkCache),'R2 artwork cache remained in publish bundle');
+// Interrupted asset copies can leave dot-prefixed temporary images/ZIPs under
+// public/. They are never runtime URLs and must not duplicate source art in dist.
+const temporaryArtArchive=fs.mkdtempSync('.sites-runtime/temporary-art-build-');
+function excludeTemporaryArt(directory){
+ for(const entry of fs.readdirSync(directory,{withFileTypes:true})){
+  const source=path.join(directory,entry.name);
+  if(entry.isDirectory()){excludeTemporaryArt(source);continue}
+  if(!/^\..+\.(?:png|jpe?g|webp|zip)\.[A-Za-z0-9]{6}$/.test(entry.name))continue;
+  const destination=path.join(temporaryArtArchive,path.relative('dist/client',source));
+  fs.mkdirSync(path.dirname(destination),{recursive:true});fs.renameSync(source,destination);
+  assert(!fs.existsSync(source),'Temporary artwork remained in publish bundle: '+source);
+ }
+}
+excludeTemporaryArt('dist/client/survival');
 // Retired exports now live under artwork-archive/retired-runtime. Keep these
 // defensive exclusions in case a historical generation script is rerun.
 // Retired sector artwork stays recoverable in source/history, never in the
@@ -40,12 +62,12 @@ fs.rmSync('dist/client/survival/trees-v1',{recursive:true,force:true});
 // Retain the ZIP in source without spending the deployment's asset budget on it.
 fs.rmSync('dist/client/survival/predators-v1/sprite-pack.zip',{force:true});
 // The circular-wall kit includes editable PNGs and unused closed-ring pieces.
-// Preserve every original in public/source, but publish only the sixteen
-// lossless WebPs referenced by the active runtime metadata.
+// Preserve every original in public/source, but publish only the active and
+// saved-world compatibility WebPs referenced by runtime metadata.
 const circularWallImages=new Set(JSON.parse(fs.readFileSync('src/camp-circular-wall-art.json','utf8')).map(entry=>entry.image));
 const wallBuildArchive=fs.mkdtempSync('.sites-runtime/circular-wall-build-');
 let excludedWallBytes=0,excludedWallFiles=0;
-for(const folder of ['camp-circular-wall-v1','camp-circular-wall-install-v1']){
+for(const folder of ['camp-circular-wall-v1','camp-circular-wall-install-v1','camp-circular-wall-weathered-v1','camp-circular-wall-ne-v2']){
  const directory='dist/client/survival/'+folder;
  for(const name of fs.readdirSync(directory)){
   const url='/survival/'+folder+'/'+name,source=directory+'/'+name;

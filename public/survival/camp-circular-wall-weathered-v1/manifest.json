@@ -1,0 +1,168 @@
+{
+  "version": 1,
+  "description": "Weathered wood recolour of the exact installed 16-part camp wall. Shapes, sizes, alpha, placements and collision remain unchanged.",
+  "runtimeMetadata": "src/camp-circular-wall-art.json",
+  "authoringArchive": "artwork-archive/circular-wall-weathered-v1",
+  "assets": [
+    {
+      "id": "camp_circular_wall_01",
+      "image": "/survival/camp-circular-wall-weathered-v1/wall-01.webp",
+      "size": [
+        979,
+        564
+      ],
+      "pngSha256": "e509cebabbb7d6c903db05a3f412c503b9dffe3a2548a55ad0be01a4320f520e",
+      "webpSha256": "dc01d042e58ec9da4807c200dd55babab49b9eb0108cb848757cf0baace45991"
+    },
+    {
+      "id": "camp_circular_wall_02",
+      "image": "/survival/camp-circular-wall-weathered-v1/wall-02.webp",
+      "size": [
+        652,
+        686
+      ],
+      "pngSha256": "4703d8bf94132e46b96dad02ae139779b284438e960e9b3071bca4ff4daeb44b",
+      "webpSha256": "b71300f6cb22a28e0f6a32ce3a30dd7fe4d3177ae0840f935fa805004e483038"
+    },
+    {
+      "id": "camp_circular_wall_03",
+      "image": "/survival/camp-circular-wall-weathered-v1/wall-03.webp",
+      "size": [
+        591,
+        1061
+      ],
+      "pngSha256": "3c01c477a25ef6e987b07ef627a097d3a2de7ee91e054286c8ae9951424967f6",
+      "webpSha256": "53cc0523cafe742e6c344d6c81b614178746987e26c47b98eadef058a8ac2599"
+    },
+    {
+      "id": "camp_circular_wall_04",
+      "image": "/survival/camp-circular-wall-weathered-v1/wall-04.webp",
+      "size": [
+        312,
+        1212
+      ],
+      "pngSha256": "100ee0273b1a36a5e02086c352dfe87ba9bb7a1b3b97c429b5c12efbb93e5c2b",
+      "webpSha256": "ad56c4e867ea344ad9f70444c7557d99cf33847a840116cf728cdefd0f16224c"
+    },
+    {
+      "id": "camp_circular_wall_05",
+      "image": "/survival/camp-circular-wall-weathered-v1/wall-05.webp",
+      "size": [
+        316,
+        1226
+      ],
+      "pngSha256": "217c34e828154b9f7829ce73bb0f6faa7d388d2e78e65dc3600157f0d6d59fbc",
+      "webpSha256": "14f8d0c6d66b7ee2bc48878cdd1689e4754b0d9fe7cee394b50dc52c675d9bc9"
+    },
+    {
+      "id": "camp_circular_wall_06",
+      "image": "/survival/camp-circular-wall-weathered-v1/wall-06.webp",
+      "size": [
+        495,
+        958
+      ],
+      "pngSha256": "7117aec0c51440df2f7df587227528607d89549f0aa35e82ced04b85842066b2",
+      "webpSha256": "73527c53c0831f4b02856e9e0779e9c83d5d07e6c2e6d21be9a35c401d15eb56"
+    },
+    {
+      "id": "camp_circular_wall_07",
+      "image": "/survival/camp-circular-wall-weathered-v1/wall-07.webp",
+      "size": [
+        743,
+        770
+      ],
+      "pngSha256": "4393c9144deaf6ff3d843ebd984bccff3f91b996eda0c0d1fac0ab05c8ca9951",
+      "webpSha256": "c1b8af1e393554d499ad55e35665e7ee9b3550acf907fb1c0c17805fb32dbcb7"
+    },
+    {
+      "id": "camp_circular_wall_08",
+      "image": "/survival/camp-circular-wall-weathered-v1/wall-08.webp",
+      "size": [
+        925,
+        584
+      ],
+      "pngSha256": "129d22f2c97ce7b4ac35bad6677551fa29b6151ffc500c0663b6a050ba711355",
+      "webpSha256": "69dc7aa6c4fe0689391a3ec35a4e50c482c112a8868dee1a82417cc95770976d"
+    },
+    {
+      "id": "camp_circular_wall_09",
+      "image": "/survival/camp-circular-wall-weathered-v1/wall-09.webp",
+      "size": [
+        726,
+        525
+      ],
+      "pngSha256": "c279037503b7ae1aa702881fc0a9aa5afc2e8fb1fd60a4d776ae67a1304c6314",
+      "webpSha256": "420f1873dafce1bd2072e238f8d37b558b340f879ac086c726737047b86f042f"
+    },
+    {
+      "id": "camp_circular_wall_10",
+      "image": "/survival/camp-circular-wall-weathered-v1/wall-10.webp",
+      "size": [
+        628,
+        672
+      ],
+      "pngSha256": "8a216b782911f2d064e4cb9b642c883e739fc7b5b4293d197012029ad5e38a38",
+      "webpSha256": "d18ef2382afe067269f6bdd14d4ea58b865bef96c1462460197acf2888bafd7b"
+    },
+    {
+      "id": "camp_circular_wall_11",
+      "image": "/survival/camp-circular-wall-weathered-v1/wall-11.webp",
+      "size": [
+        597,
+        1071
+      ],
+      "pngSha256": "f94fed866abefe36a075e593b27b573f0a08fc1e33014e5920651b7dbd1c4f47",
+      "webpSha256": "d4cb949bf150bd18a64964191943dd4218fa0bf6f6932f07b50b81a90c4e913b"
+    },
+    {
+      "id": "camp_circular_wall_12",
+      "image": "/survival/camp-circular-wall-weathered-v1/wall-12.webp",
+      "size": [
+        214,
+        848
+      ],
+      "pngSha256": "f28c2f93ebe5802664dface838094f8bb2b63bc393661cb8d7532495b98e3595",
+      "webpSha256": "217dadbd1cc7078d66b490b035128d0d48877b1ac2f53d5994cddf74cf781c44"
+    },
+    {
+      "id": "camp_circular_wall_13",
+      "image": "/survival/camp-circular-wall-weathered-v1/wall-13.webp",
+      "size": [
+        316,
+        1191
+      ],
+      "pngSha256": "2f2d4d9d3289b1128cdd1ef243a41af4a08f533146785bb4bc60e34f6205ee39",
+      "webpSha256": "87c0d503aecf71ca6f15d4f97b0d7aa69aa55c3afa0908537698075589a54f44"
+    },
+    {
+      "id": "camp_circular_wall_14",
+      "image": "/survival/camp-circular-wall-weathered-v1/wall-14.webp",
+      "size": [
+        575,
+        1056
+      ],
+      "pngSha256": "8be9723073068e714809d9a3ba8ad1a1ca8966305d74aaef0654c772f9624ef8",
+      "webpSha256": "49c8c0921e725dfb52b9aff8ba5f62ce7355de242d6d24cf68c4688761f1246e"
+    },
+    {
+      "id": "camp_circular_wall_15",
+      "image": "/survival/camp-circular-wall-weathered-v1/wall-15.webp",
+      "size": [
+        670,
+        672
+      ],
+      "pngSha256": "f2966e7c2b118193269023656dafba54b5693db9c16a744e5b7e20204ae19c8d",
+      "webpSha256": "a833e716d8bd252711640ecf8eff6daf54193272fd336926ffaedb0faf983a0f"
+    },
+    {
+      "id": "camp_circular_wall_16",
+      "image": "/survival/camp-circular-wall-weathered-v1/wall-16.webp",
+      "size": [
+        972,
+        540
+      ],
+      "pngSha256": "c1ce9aafed3f6114c5ed95d2fd2a0f90307faae86c998786d2ecc0099ca18841",
+      "webpSha256": "ff99383292ee5dcab063591d8ee1d52db37117bbf3d0cbd230309d77e2ce2ff9"
+    }
+  ]
+}

@@ -1,0 +1,9 @@
+{
+  "tool": "Built-in image_gen image editor",
+  "use": "Colour reference for a deterministic colour-only transfer; generated geometry is not used in the game",
+  "editTarget": "public/survival/camp-circular-wall-v1/wall-01.png",
+  "styleReference": "User-provided screenshot of the installed wall beside the HQ and workshop, 2026-11-01",
+  "transparentBackground": true,
+  "output": "imagegen-colour-reference.png",
+  "prompt": "Use case: precise-object-edit. Asset type: existing transparent game wall sprite, wood colour correction only. Image 1 is the EDIT TARGET. Image 2 is a material colour reference showing the user's camp buildings; do not reproduce the screenshot. Recolour ONLY the orange/golden wooden planks, spiked tips, timber posts and wooden support rails in image 1 to a darker muted weathered walnut/taupe-brown that matches the grey-brown exposed beams and porch of the large HQ building in image 2, while retaining a little warm brown to fit the smaller workshop. Reduce excessive orange/yellow saturation and bright golden midtones. Keep readable grain and warm restrained highlights; do not crush shadows or make it black. ABSOLUTE INVARIANTS: exact same wall sprite, exact shape, composition, camera, curve, cropping, dimensions, plank positions, irregular spikes, every crack and texture detail, rails, posts, joins and transparent silhouette. Do not redraw, add, remove or move anything. Keep every stone, all moss and green growth, and all iron straps, metal rivets and bolts their original colour with no changes. Preserve original transparency. Only recolour the existing wood pixels. No background, labels, new objects, extra moss, redesign or lighting change."
+}

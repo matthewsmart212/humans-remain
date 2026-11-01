@@ -1,0 +1,42 @@
+{
+  "result": "pass",
+  "command": [
+    "node",
+    "scripts/check-circular-wall-native.mjs"
+  ],
+  "startedAt": "2026-11-01T08:30:35.562541+00:00",
+  "durationSeconds": 15.099,
+  "exitCode": 0,
+  "checks": {
+    "result": "pass",
+    "snapshotRevision": 78,
+    "placements": 4548,
+    "wallCount": 18,
+    "actualBundledImageDimensionsVerified": true,
+    "legacyWallImagesRetained": 24,
+    "offlineBundle": true,
+    "pictures": [
+      {
+        "file": "native-wall-844x390.png",
+        "width": 844,
+        "height": 390,
+        "bytes": 952721
+      },
+      {
+        "file": "native-wall-390x844.png",
+        "width": 390,
+        "height": 844,
+        "bytes": 812061
+      },
+      {
+        "file": "native-installed-camp-overview.png",
+        "width": 1500,
+        "height": 1500,
+        "bytes": 6691551
+      }
+    ],
+    "fullNativeTypecheck": false,
+    "physicalDeviceTested": false
+  },
+  "stderr": "[react-native-skia] SkPath.moveTo() is deprecated and will be removed in a future release. Use Skia.PathBuilder.Make().moveTo() instead. See migration guide: https://shopify.github.io/react-native-skia/docs/shapes/path-migration\n[react-native-skia] SkPath.lineTo() is deprecated and will be removed in a future release. Use Skia.PathBuilder.Make().lineTo() instead. See migration guide: https://shopify.github.io/react-native-skia/docs/shapes/path-migration\n[react-native-skia] SkPath.addOval() is deprecated and will be removed in a future release. Use Skia.Path.Oval() or Skia.PathBuilder.Make().addOval() instead. See migration guide: https://shopify.github.io/react-native-skia/docs/shapes/path-migration\n[react-native-skia] SkPath.close() is deprecated and will be removed in a future release. Use Skia.PathBuilder.Make().close() instead. See migration guide: https://shopify.github.io/react-native-skia/docs/shapes/path-migration\n[react-native-skia] SkPath.addArc() is deprecated and will be removed in a future release. Use Skia.PathBuilder.Make().addArc() instead. See migration guide: https://shopify.github.io/react-native-skia/docs/shapes/path-migration"
+}

@@ -27,7 +27,7 @@ try{
  const walls=after.items.filter(isWall),originalIds=new Set(plan.sourceProvenance.originalWallPlacementIds);
  const movedIds=new Set(plan.sceneryAdjustments.map(p=>p.id));
  const byId=new Map(after.items.map(p=>[p.id,p]));
- assert.equal(after.campPerimeterVersion,5);
+ assert.equal(after.campPerimeterVersion,6);
  assert.equal(walls.length,16);
  assert.equal(before.items.filter(p=>originalIds.has(p.id)).length,11);
  assert.equal(after.items.length,before.items.length-11+16);
@@ -55,6 +55,47 @@ try{
  edited.items=edited.items.filter(p=>p.id!==walls[0].id);
  edited.items.find(isWall).x+=120;
  assert.strictEqual(m.addApprovedCampPerimeter(edited),edited,'Later moved/deleted wall pieces stay edited');
+
+ // Published v5 coordinates are independent of the revised geometry plan.
+ // An existing ring changes only its two untouched northeast placements.
+ const oldNortheast=[
+  {id:'camp-circular-wall-v1-02',assetId:'camp_circular_wall_02',x:2537.662278621207,y:141.40617856301742,scale:1,locked:true,solid:true,allowTransparency:true,roof:'auto',role:'prop'},
+  {id:'camp-circular-wall-v1-03',assetId:'camp_circular_wall_03',x:3107.041416813492,y:682.7097574064716,scale:1,locked:true,solid:true,allowTransparency:true,roof:'auto',role:'prop'},
+ ];
+ const oldNEById=new Map(oldNortheast.map(p=>[p.id,p]));
+ const v5={...after,campPerimeterVersion:5,items:after.items.map(p=>oldNEById.get(p.id)??p)};
+ const v5Before=JSON.stringify(v5),aligned=m.addApprovedCampPerimeter(v5);
+ assert.equal(aligned.campPerimeterVersion,6);assert.equal(aligned.items.length,v5.items.length);
+ assert.equal(JSON.stringify(v5),v5Before,'The v5 correction leaves its source unchanged');
+ assert.deepEqual({...aligned,items:v5.items,campPerimeterVersion:5,updatedAt:v5.updatedAt},v5,'The correction retains every other layout field');
+ for(const p of v5.items){
+  const actual=aligned.items.find(next=>next.id===p.id);
+  if(oldNEById.has(p.id)){
+   const target=plan.placements.find(next=>next.id===p.id);
+   assert.deepEqual(actual,{...p,assetId:target.assetId,x:target.x,y:target.y});
+   assert.notEqual(actual.assetId,p.assetId,'Corrected shapes use new assets so custom originals retain their geometry');
+  }else assert.strictEqual(actual,p,'Every unrelated v5 placement is retained unchanged');
+ }
+ assert.strictEqual(m.addApprovedCampPerimeter(aligned),aligned,'The v5 correction runs once');
+ const edits=[
+  {x:oldNortheast[0].x+1},{y:oldNortheast[0].y-1},{scale:1.01},{rotation:1},{flipX:true},{flipY:true},
+  {layer:0},{locked:false},{solid:false},{allowTransparency:false},{roof:'hidden'},{role:'fuel'},
+  {assetId:'camp_circular_wall_04'},{footprint:{width:70,depth:30}},
+  {frame:{sourceAssetId:'camp_circular_wall_02',width:400,height:250,anchor:[.5,.7]}},
+  {collision:{lineWidth:.008,paths:[{closed:true,points:[[.1,.1],[.9,.1],[.9,.9],[.1,.9]]}]}},
+ ];
+ for(const patch of edits){
+  const changed={...oldNortheast[0],...patch},custom={...v5,items:v5.items.filter(p=>p.id!==oldNortheast[1].id).map(p=>p.id===changed.id?changed:p)};
+  const corrected=m.addApprovedCampPerimeter(custom);
+  assert.strictEqual(corrected.items.find(p=>p.id===changed.id),changed,'Owner-edited northeast sections are preserved: '+JSON.stringify(patch));
+  assert(!corrected.items.some(p=>p.id===oldNortheast[1].id),'A deleted northeast section is never restored');
+  assert.deepEqual(corrected.items,custom.items,'A custom ring does not reinstall other walls or scenery');
+  assert.strictEqual(m.addApprovedCampPerimeter(corrected),corrected);
+ }
+ const shiftedV5={...v5,items:v5.items.map(p=>p.id===plan.hearthPlacementId||oldNEById.has(p.id)?{...p,x:p.x+20,y:p.y-10}:p)};
+ const shiftedNE=m.addApprovedCampPerimeter(shiftedV5);
+ for(const old of oldNortheast){const expected=aligned.items.find(p=>p.id===old.id),actual=shiftedNE.items.find(p=>p.id===old.id);assert.deepEqual(actual,{...expected,x:expected.x+20,y:expected.y-10},'A translated authored camp retains its offset');}
+ assert.strictEqual(m.addApprovedCampPerimeter({...v5,items:v5.items.filter(p=>p.id!==plan.hearthPlacementId)}).campPerimeterVersion,5,'Missing hearth defers the correction');
  const ownerScenery=structuredClone(before);
  for(const p of ownerScenery.items)if(movedIds.has(p.id))p.x+=1;
  const ownerMigrated=m.addApprovedCampPerimeter(ownerScenery);
@@ -112,7 +153,7 @@ try{
  // search checks complete segments against every collider in the full world.
  const endpoints=[
   ['camp-northwest',[800,520],[440,180]],
-  ['camp-northeast',[2680,700],[3000,160]],
+  ['camp-northeast',[2660,780],[3260,300]],
   ['camp-west',[400,2060],[-120,2060]],
   ['camp-southwest',[860,2680],[420,2940]],
   ['camp-south',[1620,2980],[1780,3460]],
@@ -167,5 +208,5 @@ try{
  for(let i=0;i<from.length;i++)assert(Math.abs(to[i]-from[i]-(i%2?-80:120))<.02,'Map coordinates follow the actual moved section');
  const empty={...after,items:after.items.filter(p=>!isWall(p))};
  assert.equal(circular(empty).length,0);assert.equal(legacy(empty).length,0,'Deleting all sections does not restore the old circle');
- console.log(JSON.stringify({result:'pass',sourceRevision:source.revision,artworkRecords:artwork.records.length,before:before.items.length,after:after.items.length,oldWallsRemoved:11,newWalls:walls.length,unrelatedPlacementsPreserved:preserved,scenery,finalCollisionPolygons:bodies.length,roadCorridorSamples:corridorSamples,routes,ownerEditsPreserved:true,remoteLegacyWallPreserved:true,idempotent:true,mapFollowsMovedAndDeletedSections:true,legacyMapCircleAbsent:true},null,2));
+ console.log(JSON.stringify({result:'pass',sourceRevision:source.revision,artworkRecords:artwork.records.length,before:before.items.length,after:after.items.length,oldWallsRemoved:11,newWalls:walls.length,unrelatedPlacementsPreserved:preserved,scenery,finalCollisionPolygons:bodies.length,roadCorridorSamples:corridorSamples,routes,ownerEditsPreserved:true,version5NortheastCorrection:true,version5OwnerEditsAndDeletionsPreserved:true,remoteLegacyWallPreserved:true,idempotent:true,mapFollowsMovedAndDeletedSections:true,legacyMapCircleAbsent:true},null,2));
 }finally{fs.rmSync(temp,{recursive:true,force:true})}

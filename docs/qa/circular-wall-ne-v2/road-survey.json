@@ -1,0 +1,210 @@
+{
+  "scope": "NE map-road trace and verification geometry only; no terrain image edits",
+  "source": "Actual public/survival/terrain-stream-v2/homeGround*L1.webp chunks, geometry in src/terrain-stream-manifest.json",
+  "worldScale": 0.9428090415820634,
+  "sourcePixelOffset": 600,
+  "method": "Native-resolution terrain composition; low-chroma bright-stone medians in 37-pixel horizontal bands, three-sample spatial smoothing, then visual inspection. Existing outer tail preserved after the join. This is an audited approximation of the irregular painted road centre.",
+  "oldPointCount": 55,
+  "newPointCount": 41,
+  "roadWidthRetained": 141.4213562373095,
+  "allOtherRoadsBytePreserved": true,
+  "oldPointsSha256": "06525040f09963b972c17c09b80becf266b74b43703d33827538fce63590d516",
+  "newPointsSha256": "8ea26d3b55f3c913798ba213d40255b80a4714190c66b370915cdbef9805519e",
+  "circleCrossing": {
+    "world": [
+      3003.28176419262,
+      538.6300915154482
+    ],
+    "angleDegrees": 51.15604922767016
+  },
+  "candidateOpeningDegrees": [
+    47,
+    57
+  ],
+  "measuredStoneRoadAngleSpanAtCircle": [
+    49,
+    54
+  ],
+  "routeEndpoints": [
+    [
+      2660,
+      780
+    ],
+    [
+      3260,
+      300
+    ]
+  ],
+  "routeEndpointsClearOfFullWorldCollidersAtRadius19": true,
+  "visualReviewFiles": [
+    "ne-wall-current-measured.png",
+    "ne-road-measure-detail.png",
+    "ne-road-corrected-trace-review.png"
+  ],
+  "points": [
+    [
+      2484,
+      1150
+    ],
+    [
+      2527.75,
+      1110
+    ],
+    [
+      2552.75,
+      1070
+    ],
+    [
+      2568.5,
+      1030
+    ],
+    [
+      2581.0,
+      990
+    ],
+    [
+      2581.0,
+      950
+    ],
+    [
+      2575.25,
+      910
+    ],
+    [
+      2579.75,
+      870
+    ],
+    [
+      2596.25,
+      830
+    ],
+    [
+      2623.75,
+      790
+    ],
+    [
+      2665.0,
+      750
+    ],
+    [
+      2717.75,
+      710
+    ],
+    [
+      2782.25,
+      670
+    ],
+    [
+      2845.0,
+      630
+    ],
+    [
+      2905.5,
+      590
+    ],
+    [
+      2981.75,
+      550
+    ],
+    [
+      3057.5,
+      510
+    ],
+    [
+      3121.75,
+      470
+    ],
+    [
+      3168.75,
+      430
+    ],
+    [
+      3196.75,
+      390
+    ],
+    [
+      3224.75,
+      350
+    ],
+    [
+      3245.25,
+      310
+    ],
+    [
+      3258.25,
+      270
+    ],
+    [
+      3275.75,
+      230
+    ],
+    [
+      3288.25,
+      190
+    ],
+    [
+      3295.5,
+      150
+    ],
+    [
+      3306.5,
+      110
+    ],
+    [
+      3327.25,
+      70
+    ],
+    [
+      3356.0,
+      30
+    ],
+    [
+      3380.0,
+      -10
+    ],
+    [
+      3391.0,
+      -50
+    ],
+    [
+      3408.5,
+      -90
+    ],
+    [
+      3460,
+      -130
+    ],
+    [
+      3479.22,
+      -184.98
+    ],
+    [
+      3512.84,
+      -211.1
+    ],
+    [
+      3536.88,
+      -246.8
+    ],
+    [
+      3560.08,
+      -283.34
+    ],
+    [
+      3581.62,
+      -321.54
+    ],
+    [
+      3602.87,
+      -360.02
+    ],
+    [
+      3624.88,
+      -397.75
+    ],
+    [
+      3620.39,
+      -461.98
+    ]
+  ]
+}
