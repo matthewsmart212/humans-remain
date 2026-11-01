@@ -1,3 +1,4 @@
+import {refineCampVegetation} from './camp-vegetation';
 import {addCampIronworks} from './ironworks-planting';
 import {addApprovedCampGarden} from './camp-garden-placement';
 import {placeFurnaceByWorkshop} from './camp-furnace-placement';
@@ -22,7 +23,7 @@ const upgrades:[string,(layout:WorldLayout)=>WorldLayout][]=[
  ['Foliage expansion',addApprovedFoliageExpansion],['Terrain foliage',addApprovedTerrainFoliage],['Camp foliage',addApprovedCampFoliage],
  ['Refine foliage',refineApprovedCampFoliage],['Puddles',addApprovedCampPuddles],['Perimeter',addApprovedCampPerimeter],
  ['Outskirts',addApprovedCampOutskirts],['River',addApprovedCampRiver],['Woodland',refineApprovedWoodlandZones],
- ['World planting',addApprovedWorldPlanting],['Fringe',addApprovedCampFringe],['Tree variants',addApprovedTreeVariants],['Foraging',addForagingPlants],['Ironworks',addCampIronworks],['Furnace',placeFurnaceByWorkshop],['Garden',addApprovedCampGarden]];
+ ['World planting',addApprovedWorldPlanting],['Fringe',addApprovedCampFringe],['Tree variants',addApprovedTreeVariants],['Foraging',addForagingPlants],['Ironworks',addCampIronworks],['Furnace',placeFurnaceByWorkshop],['Garden',addApprovedCampGarden],['Vegetation',refineCampVegetation]];
 export function prepareAuthoredWorld(layout:WorldLayout):WorldLayout{
  return upgrades.reduce((world,[name,upgrade])=>{try{return upgrade(world)}catch(e){const error=e instanceof Error?e:Error(String(e));error.message=`${name}: ${error.message}`;throw error}},layout);
 }

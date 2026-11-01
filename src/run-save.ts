@@ -1,3 +1,4 @@
+import {refineCampVegetation} from './camp-vegetation';
 import {grantStarterPickaxe} from './player-gear';
 import {grantStarterRepairHammer} from './repair-hammer';
 import {validRestorationSave} from './camp-restoration';
@@ -99,6 +100,7 @@ export function decodeRun(text:string):TravelSnapshot{
    // A returning player standing on the new lot keeps their position. Add it on
    // a later load once clear rather than trapping or teleporting the player.
    if(!garden||!placementBodies(garden).some(c=>hitCollider(c,w.player.x,w.player.y,19)))w.layout=next;
+   w.layout=refineCampVegetation(w.layout);
   }
  }
  if(!ids.has(CAMP_SCENE_ID)||!ids.has(data.currentId)||data.route.some((r:any)=>!ids.has(r?.sceneId)||!r.spawn||!Number.isFinite(r.spawn.x)||!Number.isFinite(r.spawn.y)))throw Error('The expedition return route is missing.');

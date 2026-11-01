@@ -8,7 +8,7 @@ import {build} from 'esbuild';
 
 const temp=fs.mkdtempSync(path.join(os.tmpdir(),'circular-wall-runtime-'));
 try{
- const modules=['world-assets','world-layout','imported-art','camp-perimeter','camp-collision','circular-wall-depth','placed-world-renderer','studio-play','survival-engine','run-save','scene-travel','world-scenes'];
+ const modules=['world-assets','world-layout','imported-art','camp-perimeter','camp-vegetation','camp-collision','circular-wall-depth','placed-world-renderer','studio-play','survival-engine','run-save','scene-travel','world-scenes'];
  await build({stdin:{contents:modules.map(id=>`export * from './src/${id}';`).join(''),resolveDir:process.cwd()},bundle:true,platform:'node',format:'cjs',outfile:path.join(temp,'model.cjs'),logLevel:'error'});
  const m=createRequire(import.meta.url)(path.join(temp,'model.cjs'));
  const fixture=process.argv[2]??'docs/qa/circular-wall-v1';
@@ -149,7 +149,8 @@ try{
  assert(Math.abs((repaired03.x-target03.x)-(liveOld03.x-3107.041416813492))<1e-9);
  assert(Math.abs((repaired03.y-target03.y)-(liveOld03.y-682.7097574064716))<1e-9);
  assert.deepEqual({...repaired03,assetId:liveOld03.assetId,x:liveOld03.x,y:liveOld03.y},liveOld03,'The small owner adjustment and non-geometric settings survive');
- for(const p of mixedLayout.items)if(p.id!==liveOld03.id)assert.deepEqual(repairedCamp.layout.items.find(q=>q.id===p.id),p,'The partial-migration repair changes no unrelated placement');
+ const retainedMixedIds=new Set(m.refineCampVegetation(m.addApprovedCampPerimeter(mixedLayout)).items.map(p=>p.id));
+ for(const p of mixedLayout.items)if(p.id!==liveOld03.id)assert.deepEqual(repairedCamp.layout.items.find(q=>q.id===p.id),retainedMixedIds.has(p.id)?p:undefined,'The partial-migration repair changes no unrelated placement beyond the approved vegetation removal');
  const repairedState=JSON.stringify({world:repairedCamp,route:repairedRun.route});
  assert.equal(m.migrateSavedCampPerimeter(repairedCamp,repairedRun.route),false);
  assert.equal(JSON.stringify({world:repairedCamp,route:repairedRun.route}),repairedState,'The repaired save does not shift again on later loads');
@@ -171,5 +172,5 @@ try{
  for(const old of placedOriginalWalls)assert(Object.values(resumedSources).includes(old.url),'A saved interior also prepares its deferred original camp wall: '+old.url);
  await assert.rejects(m.prepareSavedCampArtwork(deferredSnapshot,async()=>{throw Error('artwork unavailable')}),/artwork unavailable/,'Restore must report image failure so the caller can keep the original save');
  assert.equal(JSON.stringify({world:deferred,route:deferredRoute}),beforeDeferral,'Artwork preparation never rewrites saved game data');
- console.log(JSON.stringify({result:'pass',assets:walls.length,groundShape:'annular polygons',requiredImageURLsResolve:true,reviewedFrontBehind:reviewed,cardinalSides:true,drawOrder:expected,continuedCampRun:true,continuedInteriorRun:true,continuedVersion5Run:true,continuedMixedVersion6Run:true,revision80RoadReopened:true,ownerTranslationAndUnlockedStatePreserved:true,unrelatedMixedRunPlacementsPreserved: mixedLayout.items.length-1,originalNortheastGeometryRetained:true,version5ReturnLandingPreserved:true,resourcesHealthAndProgressPreserved:true,occupiedLandingAdjustment:displacement,deferredMigrationPreservesAllState:true,savedCampArtworkPreparedFromInterior:true},null,2));
+ console.log(JSON.stringify({result:'pass',assets:walls.length,groundShape:'annular polygons',requiredImageURLsResolve:true,reviewedFrontBehind:reviewed,cardinalSides:true,drawOrder:expected,continuedCampRun:true,continuedInteriorRun:true,continuedVersion5Run:true,continuedMixedVersion6Run:true,revision80RoadReopened:true,ownerTranslationAndUnlockedStatePreserved:true,unrelatedMixedRunPlacementsPreserved:retainedMixedIds.size-1,approvedVegetationRemovalAllowed:true,originalNortheastGeometryRetained:true,version5ReturnLandingPreserved:true,resourcesHealthAndProgressPreserved:true,occupiedLandingAdjustment:displacement,deferredMigrationPreservesAllState:true,savedCampArtworkPreparedFromInterior:true},null,2));
 }finally{fs.rmSync(temp,{recursive:true,force:true})}
