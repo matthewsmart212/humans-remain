@@ -16,7 +16,7 @@ try{
   'react-native':'export const PixelRatio={get:()=>2};',
   'expo-asset':'const asset=uri=>({uri,localUri:uri,downloadAsync:async()=>{}});export const Asset={fromModule:asset,fromURI:asset};',
  };
- const modules=['world-assets','world-layout','headquarters-south-art','run-progression','studio-play','editor-image-sources','layout-views','placed-world-renderer','outdoor-streaming'];
+ const modules=['world-assets','world-layout','headquarters-south-art','run-progression','studio-play','editor-image-sources','layout-views','placed-world-renderer','outdoor-streaming','headquarters-cutaway'];
  await build({stdin:{contents:modules.map(id=>`export * from './src/${id}';`).join('')+"export * from './native/game-world';export * from './native/game-renderer';export * from './native/bundled-art';export {JsiSkApi} from '@shopify/react-native-skia/lib/module/skia/web/JsiSkia';",resolveDir:process.cwd()},bundle:true,platform:'node',format:'cjs',outfile:path.join(temp,'model.cjs'),logLevel:'error',plugins:[{name:'hq-native-platform',setup(b){
   b.onResolve({filter:/^(@shopify\/react-native-skia|react-native|expo-asset)$/},a=>({path:a.path,namespace:'hq-native'}));
   b.onLoad({filter:/.*/,namespace:'hq-native'},a=>({contents:aliases[a.path],loader:'js'}));
@@ -40,14 +40,15 @@ try{
  for(const url of [m.HQ_SOUTH_INTERIOR,m.HQ_SOUTH_RUIN_INTERIOR,m.HQ_SOUTH_ROOF,m.HQ_SOUTH_RUIN])assert(decoded.has(m.BUNDLED_ART[url]),'Native loader decoded '+url);
  outdoor=new m.OutdoorTerrainStream(renderer.warmImages,renderer.releaseImages);outdoor.update(viewport,world.player);await outdoor.settled();assert(!outdoor.error);world.outdoorReady=outdoor.ready;
  fs.mkdirSync(output,{recursive:true});const pictures=[];
- for(const broken of [false,true])for(const inside of [false,true]){
+ for(const broken of [false,true])for(const position of [1.08,.97,.94,.91,.875,.84,.81,.78,.70,.60]){
+  const inside=position===.60;
   world.progression.restoredBuildings=broken?[]:['headquarters'];world.progression.campLevel=broken?0:1;
-  Object.assign(world.player,{x:hall.x,y:b.y+b.height*(inside?.6:1.18),equipped:null});
+  Object.assign(world.player,{x:hall.x,y:b.y+b.height*position,equipped:null,direction:'up'});
   renderer.draw(world,width,height).dispose();
   const deadline=performance.now()+30000;
   while(true){const stats=renderer.textureStats(),streams=[stats.roads,stats.camp,stats.rivers];assert(streams.every(s=>s.failures===0));if(streams.every(s=>s.missing===0&&s.pending===0)&&stats.artwork.warming===0)break;assert(performance.now()<deadline,'Native terrain preparation completes');await new Promise(resolve=>setTimeout(resolve,20));}
   const picture=renderer.draw(world,width,height),surface=api.Surface.Make(width,height);let image;
-  try{surface.getCanvas().drawPicture(picture);surface.flush();image=surface.makeImageSnapshot();const bytes=image.encodeToBytes();assert(bytes.length>25000);const file=`native-${broken?'ruined':'repaired'}-${inside?'interior':'exterior'}.png`;fs.writeFileSync(path.join(output,file),bytes);pictures.push(file)}finally{image?.dispose();surface.dispose();picture.dispose()}
+  try{surface.getCanvas().drawPicture(picture);surface.flush();image=surface.makeImageSnapshot();const bytes=image.encodeToBytes();assert(bytes.length>25000);const file=`native-${broken?'ruined':'repaired'}-${position===1.08?'exterior':inside?'interior':'step-'+String(position).replace('.','-')}.png`;fs.writeFileSync(path.join(output,file),bytes);pictures.push(file)}finally{image?.dispose();surface.dispose();picture.dispose()}
  }
  const report={passed:true,snapshotRevision:saved.revision,headquartersScale:hall.scale,productionNativeRenderer:true,offline:true,pictures,physicalIPhoneTested:false};
  fs.writeFileSync(path.join(output,'native-verification.json'),JSON.stringify(report,null,2)+'\n');console.log(JSON.stringify(report));

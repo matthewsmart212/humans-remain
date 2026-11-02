@@ -1,4 +1,5 @@
 import {drawBuildingCondition} from './building-condition-renderer';
+import {headquartersCutawayAmount,clipHeadquartersLayer} from './headquarters-cutaway';
 import {HQ_INTERIOR_PROP_IDS} from './headquarters-interior';
 import {headquartersWallMasks,clipWallsOutsideHeadquarters} from './headquarters-wall-mask';
 import {HQ_SOUTH_INTERIOR} from './headquarters-south-art';
@@ -67,8 +68,9 @@ export function drawPlacedGround(ctx:CanvasRenderingContext2D,imgs:Record<string
 export function placedDrawables(ctx:CanvasRenderingContext2D,imgs:Record<string,HTMLImageElement>,w:World,editor=false,viewport?:FoliageViewport,hideFoliage=false){
  const out:{roof?:boolean;layer?:number;y:number;draw:()=>void}[]=[];if(!w.layout)return out;
  const circular:CircularWallDraw[]=[],roomMasks=headquartersWallMasks(w.layout);
- const hqMasks=roomMasks.filter(({placement:p})=>p.roof==='hidden'||(p.allowTransparency??placementGeometryAsset(p)?.allowTransparency)!==false&&p.roof==='auto'&&(withinRoofApproach(p,w.player.x,w.player.y)||headquartersRaidVisible(p,w)));
- const hideHQProps=roomMasks.length>0&&hqMasks.length===0;
+ const hqMasks=roomMasks;
+ const hqReveal=Math.max(0,...roomMasks.map(({placement:p})=>headquartersCutawayAmount(p,w)));
+ const hideHQProps=roomMasks.length>0&&hqReveal===0;
  for(const p of visiblePlacements(w.layout,viewport)){if(hideHQProps&&HQ_INTERIOR_PROP_IDS.has(p.id))continue;const a=ASSET_BY_ID.get(p.assetId);if(!a)continue;if(!editor&&['animal','enemySpawn'].includes(p.role))continue;if(!editor&&['scrap','fuel','pallets'].includes(p.role)&&!w.loot.some(l=>l.placementId===p.id))continue;if(!editor&&p.role==='crate'&&!w.breakables.some(b=>b.placementId===p.id&&b.hp>0))continue;
   if(hideFoliage&&isFoliageAsset(a)||a.foliage&&!foliageVisible(p,viewport))continue;
   if(a.gate){const bounds=placementBounds(p);if(viewport&&!p.rotation&&!p.flipX&&!p.flipY&&(bounds.x+bounds.width<viewport.x||bounds.x>viewport.x+viewport.width||bounds.y+bounds.height<viewport.y||bounds.y>viewport.y+viewport.height))continue;for(const v of gateDrawables(ctx,imgs,w,p,a)){const draw=v.draw;out.push({...v,layer:p.layer??0,draw:()=>{ctx.save();rotatePlacement(ctx,p);draw();ctx.restore()}})}continue;}
@@ -80,6 +82,7 @@ export function placedDrawables(ctx:CanvasRenderingContext2D,imgs:Record<string,
   const frame=animationReady?(a.openFrames?.length?chestFrame(w,p.id,frames!.length):placedAnimationFrame(w,p,a)):0;
   const b=placementBounds(p),im=imgs[assetImageKey(restoration?.image||frames?.[frame]||a.image)]||imgs[assetImageKey(a.image)];if(!im)continue;
   const southHQ=a.image===HQ_SOUTH_INTERIOR&&!!a.interior;
+  const cutaway=southHQ?headquartersCutawayAmount(p,w):0;
   const revealRoof=!!(restoration?.roof||a.roof)&&(p.allowTransparency??placementGeometryAsset(p)?.allowTransparency)!==false&&p.roof==='auto'&&(withinRoofApproach(p,w.player.x,w.player.y)||headquartersRaidVisible(p,w));
   const roofImage=(restoration?.roof||a.roof)&&imgs[assetImageKey(restoration?.roof||a.roof!)];
   if(a.perimeterCurve?.length&&!p.rotation&&!p.flipX&&!p.flipY){
@@ -102,25 +105,34 @@ export function placedDrawables(ctx:CanvasRenderingContext2D,imgs:Record<string,
   // Only contacted/recovering plants need deformed geometry. All idle plants
   // retain their original pixels through the ordinary image path.
   const animatePlant=!!a.foliage&&(viewport?.scale??1)>=.42&&!!w.foliageMotions?.[p.id];
-  const drawBase=()=>{if(southHQ&&roofImage&&p.roof!=='hidden'&&!revealRoof)return;if(restoration){const ruin=imgs[assetImageKey(restoration.image)];if(ruin){ctx.drawImage(ruin,b.x,b.y,b.width,b.height);return}}if(drawCampFurnace(ctx,imgs,w,p))return;if(drawWarehouse(ctx,imgs,w,p))return;if(drawForagePlant(ctx,imgs,w,p))return;if(drawTree(ctx,im,w,p))return;if(drawMineableRock(ctx,im,w,p,a.crop))return;if(a.puddle){drawPuddle(ctx,im,w,p,a);return}if(a.foliage){drawFoliage(ctx,im,w,p,a,animatePlant);return}drawCampContact(ctx,p,a);ctx.save();const [px,py]=placementPoint(p,w.player.x,w.player.y,true);if((p.allowTransparency??placementGeometryAsset(p)?.allowTransparency)!==false&&!a.interior&&py<p.y&&py>b.y&&Math.abs(px-p.x)<b.width*.3)ctx.globalAlpha=.6;
+  const drawBase=()=>{if(southHQ){
+   if(!roofImage){ctx.drawImage(im,b.x,b.y,b.width,b.height);return}
+   ctx.save();clipHeadquartersLayer(ctx,b,false);ctx.drawImage(roofImage,b.x,b.y,b.width,b.height);ctx.restore();
+   if(cutaway>0){ctx.save();clipHeadquartersLayer(ctx,b,true);ctx.drawImage(im,b.x,b.y,b.width,b.height);ctx.restore()}
+   return;
+  }if(restoration){const ruin=imgs[assetImageKey(restoration.image)];if(ruin){ctx.drawImage(ruin,b.x,b.y,b.width,b.height);return}}if(drawCampFurnace(ctx,imgs,w,p))return;if(drawWarehouse(ctx,imgs,w,p))return;if(drawForagePlant(ctx,imgs,w,p))return;if(drawTree(ctx,im,w,p))return;if(drawMineableRock(ctx,im,w,p,a.crop))return;if(a.puddle){drawPuddle(ctx,im,w,p,a);return}if(a.foliage){drawFoliage(ctx,im,w,p,a,animatePlant);return}drawCampContact(ctx,p,a);ctx.save();const [px,py]=placementPoint(p,w.player.x,w.player.y,true);if((p.allowTransparency??placementGeometryAsset(p)?.allowTransparency)!==false&&!a.interior&&py<p.y&&py>b.y&&Math.abs(px-p.x)<b.width*.3)ctx.globalAlpha=.6;
    if(p.role==='hearth'&&!placedFireLit(w,p)&&a.unlit){const off=imgs[assetImageKey(a.unlit)];if(off){const anchor=a.unlitAnchor||[627,1190],size=a.unlitSize||[1254,1254];ctx.drawImage(off,p.frame?b.x:p.x-anchor[0]/size[0]*b.width,p.frame?b.y:p.y-anchor[1]/size[1]*b.height,b.width,b.height)}else ctx.drawImage(im,...a.crop as [number,number,number,number],b.x,b.y,b.width,b.height)}
    else ctx.drawImage(im,...a.crop as [number,number,number,number],b.x,b.y,b.width,b.height);ctx.restore()};
   // The room floor stays below actors and furniture. Palisade pixels are
   // clipped out of its envelope independently of automatic wall depth.
   out.push({y:a.interior?-10000:a.id==='art_hq_woven_rug'?-9999:p.y,draw:drawBase});
   for(const f of southHQ||restoration?[]:a.foreground||[])out.push({y:placementPoint(p,b.x+(f[0]+f[2]/2)/a.crop[2]*b.width,b.y+(f[1]+f[3])/a.crop[3]*b.height)[1],draw:()=>ctx.drawImage(im,a.crop[0]+f[0],a.crop[1]+f[1],f[2],f[3],b.x+f[0]/a.crop[2]*b.width,b.y+f[1]/a.crop[3]*b.height,f[2]/a.crop[2]*b.width,f[3]/a.crop[3]*b.height)});
-  // Outside uses the complete aligned facade, rather than a rectangular roof
-  // crop. Inside omits that pass entirely: no ghost roof or front panels.
-  if(roofImage&&p.roof!=='hidden'&&!(southHQ&&revealRoof)){
+  // The fixed foundation remains below actors; roof and front panels fade
+  // continuously over the revealed room and disappear completely indoors.
+  if(roofImage&&p.roof!=='hidden'&&!(southHQ&&cutaway===1)){
    const rect=a.roofRect||[0,0,a.crop[2],a.crop[3]];
    out.push({roof:true,y:100000,draw:()=>{
-    ctx.save();ctx.globalAlpha=revealRoof?.08:1;
+    ctx.save();ctx.globalAlpha=southHQ?1-cutaway:revealRoof?.08:1;
+    if(southHQ)clipHeadquartersLayer(ctx,b,true);
     const bottom=southHQ?undefined:headquartersRoofBottom(p);
     if(bottom!==undefined){ctx.beginPath();ctx.moveTo(b.x,b.y);ctx.lineTo(b.x+b.width,b.y);ctx.lineTo(b.x+b.width,bottom);ctx.lineTo(b.x,bottom);ctx.closePath();ctx.clip()}
     ctx.drawImage(roofImage,b.x+rect[0]/a.crop[2]*b.width,b.y+rect[1]/a.crop[3]*b.height,rect[2]/a.crop[2]*b.width,rect[3]/a.crop[3]*b.height);ctx.restore();
    }});
   }
-  for(let i=first;i<out.length;i++)out[i].layer=p.layer??0;
+  for(let i=first;i<out.length;i++){
+   out[i].layer=p.layer??0;
+   if(HQ_INTERIOR_PROP_IDS.has(p.id)&&hqReveal<1){const draw=out[i].draw;out[i].draw=()=>{ctx.save();ctx.globalAlpha*=hqReveal;draw();ctx.restore()}}
+  }
   if(p.rotation||p.flipX||p.flipY)for(let i=first;i<out.length;i++){const draw=out[i].draw;out[i].draw=()=>{ctx.save();rotatePlacement(ctx,p);draw();ctx.restore()}}
  }
  orderCircularWallDraws(circular);

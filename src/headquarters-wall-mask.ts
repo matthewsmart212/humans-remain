@@ -9,7 +9,7 @@ const cached=new WeakMap<WorldLayout,Mask[]>();
 export function headquartersWallMasks(layout:WorldLayout):Mask[]{
  let masks=cached.get(layout);if(masks)return masks;
  masks=layout.items.filter(p=>ASSET_BY_ID.get(p.assetId)?.image===HQ_SOUTH_INTERIOR).map(p=>{
-  const b=placementBounds(p),points=([[.1,.155],[.9,.155],[.978,.41],[.978,.85],[.022,.85],[.022,.41]] as const).map(([u,v])=>placementPoint(p,b.x+u*b.width,b.y+v*b.height));
+  const b=placementBounds(p),points=([[.13,.285],[.87,.285],[.95,.52],[.96,.86],[.04,.86],[.05,.52]] as const).map(([u,v])=>placementPoint(p,b.x+u*b.width,b.y+v*b.height));
   const xs=points.map(p=>p[0]),ys=points.map(p=>p[1]);return{placement:p,points,left:Math.min(...xs),top:Math.min(...ys),right:Math.max(...xs),bottom:Math.max(...ys)};
  });cached.set(layout,masks);return masks;
 }

@@ -13,7 +13,7 @@ import {addApprovedCampGarden} from './camp-garden-placement';
 import {GARDEN_PLACEMENT_ID} from './camp-garden-art';
 import {placementBodies,layoutBlocked,type WorldLayout} from './world-layout';
 import {placeSouthFacingHeadquarters} from './headquarters-south-placement';
-import {fitHeadquartersInterior} from './headquarters-interior';
+import {fitHeadquartersInterior,headquartersRefitReturnPoint} from './headquarters-interior';
 import {hitCollider} from './camp-collision';
 import {addApprovedCampPerimeter} from './camp-perimeter';
 import {requiredImages} from './world-assets';
@@ -58,14 +58,15 @@ export function migrateSavedCampPerimeter(w:World,route:{sceneId:string;spawn:Sa
  const previous=new Map(w.layout.items.map(p=>[p.id,p]));
  const added=next.items.filter(p=>{
   const old=previous.get(p.id);
-  return p.assetId.startsWith('camp_circular_wall_')||!old||old.x!==p.x||old.y!==p.y;
+  return p.assetId.startsWith('camp_circular_wall_')||!old||old.x!==p.x||old.y!==p.y||JSON.stringify(old.collision)!==JSON.stringify(p.collision);
  }).flatMap(p=>placementBodies(p));
  const occupied=(p:SavedPoint)=>added.some(c=>hitCollider(c,p.x,p.y,19));
  const points=[w.player,next.spawn,...route.filter(r=>r?.sceneId===CAMP_SCENE_ID&&point(r.spawn)).map(r=>r.spawn)];
  const moves:{target:SavedPoint;position:SavedPoint}[]=[];
  for(const target of points){
-  if(!occupied(target))continue;
-  const position=nearbyClearGround(next,target);
+  const refit=headquartersRefitReturnPoint(w.layout,next,target);
+  if(!refit&&!occupied(target))continue;
+  const position=nearbyClearGround(next,refit||target);
   // An unusually obstructed custom landing keeps the old snapshot until a
   // later load. Never trap the survivor or discard progress to force an edit.
   if(!position)return false;

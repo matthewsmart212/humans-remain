@@ -1,0 +1,30 @@
+{
+  "passed": true,
+  "snapshotRevision": 85,
+  "headquartersScale": 1.3,
+  "productionNativeRenderer": true,
+  "offline": true,
+  "pictures": [
+    "native-repaired-exterior.png",
+    "native-repaired-step-0-97.png",
+    "native-repaired-step-0-94.png",
+    "native-repaired-step-0-91.png",
+    "native-repaired-step-0-875.png",
+    "native-repaired-step-0-84.png",
+    "native-repaired-step-0-81.png",
+    "native-repaired-step-0-78.png",
+    "native-repaired-step-0-7.png",
+    "native-repaired-interior.png",
+    "native-ruined-exterior.png",
+    "native-ruined-step-0-97.png",
+    "native-ruined-step-0-94.png",
+    "native-ruined-step-0-91.png",
+    "native-ruined-step-0-875.png",
+    "native-ruined-step-0-84.png",
+    "native-ruined-step-0-81.png",
+    "native-ruined-step-0-78.png",
+    "native-ruined-step-0-7.png",
+    "native-ruined-interior.png"
+  ],
+  "physicalIPhoneTested": false
+}

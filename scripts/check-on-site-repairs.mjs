@@ -186,7 +186,7 @@ try{
  // The south-facing facade disappears on the stairs, including rotated halls.
  const hqPlacement=layout.items.find(p=>p.assetId==='base_shelter_t1');
  for(const transform of [{},{rotation:90,flipX:true,scale:.8}]){
-  const p={...hqPlacement,...transform},b=m.placementBounds(p),[x,y]=m.placementPoint(p,b.x+b.width*.5,b.y+b.height*.96),one=make();one.player.x=x;one.player.y=y;one.layout={...one.layout,items:[p]};
+  const p={...hqPlacement,...transform},b=m.placementBounds(p),[x,y]=m.placementPoint(p,b.x+b.width*.5,b.y+b.height*.78),one=make();one.player.x=x;one.player.y=y;one.layout={...one.layout,items:[p]};
   assert(m.withinRoofApproach(p,x,y));assert(m.headquartersRoofBottom(p)<b.y+b.height);
   const sources=m.requiredImages([p.assetId]),images=Object.fromEntries(Object.entries(sources).map(([k,src])=>[k,{src}])),clips=[],alphas=[];
   const ctx=new Proxy({globalAlpha:1,lineTo(...args){clips.push(args)},drawImage(image){if(image.src===m.BROKEN_CAMP_ART.headquarters)alphas.push(this.globalAlpha)}},{get:(o,k)=>k in o?o[k]:()=>{}});
