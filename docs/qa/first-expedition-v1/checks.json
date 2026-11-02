@@ -10,7 +10,7 @@
     "Bunker local state and return route persist; hiding indoors cannot pause camp attacks",
     "Corrupt/unsupported saves rejected, ordered native writes and storage-failure reporting"
   ],
-  "saveBytes": 1050339,
+  "saveBytes": 782435,
   "browserTested": false,
   "physicalIPhoneTested": false
 }

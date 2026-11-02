@@ -190,8 +190,8 @@ try{
   assert(m.withinRoofApproach(p,x,y));assert(m.headquartersRoofBottom(p)<b.y+b.height);
   const sources=m.requiredImages([p.assetId]),images=Object.fromEntries(Object.entries(sources).map(([k,src])=>[k,{src}])),clips=[],alphas=[];
   const ctx=new Proxy({globalAlpha:1,lineTo(...args){clips.push(args)},drawImage(image){if(image.src===m.BROKEN_CAMP_ART.headquarters)alphas.push(this.globalAlpha)}},{get:(o,k)=>k in o?o[k]:()=>{}});
-  const draws=m.placedDrawables(ctx,images,one);assert(draws.some(d=>!d.roof&&d.y===-10000));draws.filter(d=>d.roof).forEach(d=>d.draw());
-  assert(alphas.includes(.08),'Roof fades before the player disappears under the stairs');assert(clips.some(c=>c[1]===m.headquartersRoofBottom(p)),'Stairs cannot paint over the player in the roof pass');
+  const draws=m.placedDrawables(ctx,images,one);assert(draws.some(d=>!d.roof&&d.y<one.player.y),'Interior floor stays below a survivor on the approach');draws.filter(d=>d.roof).forEach(d=>d.draw());
+  assert(alphas.includes(.08),'Roof fades before the player disappears under the stairs');assert(clips.some(c=>c[1]<=m.headquartersRoofBottom(p)),'Stairs cannot paint over the player in the roof pass');
  }
  console.log('PASS: Separate usable-station repair actions, hammer menu access during nearby threats, channel-owned release, secondary progress refresh, stale-action rejection, instant HQ repair, hold/release decay and resume, no idle progress, resources only at 100%, HQ table arrival/strikes, starter pickaxe migration, timed repairs, visible progress, interruption without payment, persistent building damage/destruction, Walker/Hound/Bomber attacks, player aggro, line-of-sight, starter hammer, one-time save migration, equip/repair gameplay actions, all on-site ruins, access/tool/material/proximity guards, atomic costs, save reloads and rotated stair/roof layering.');
 }finally{fs.rmSync(temp,{recursive:true,force:true})}

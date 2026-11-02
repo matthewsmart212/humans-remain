@@ -931,9 +931,9 @@
     "family": "Headquarters",
     "tier": 1,
     "name": "Headquarters",
-    "appearance": "Weathered timber headquarters with a detachable roof, matching the placed camp artwork.",
+    "appearance": "South-facing weathered timber headquarters with mossy stone foundations, an open central entrance and independent roof.",
     "purpose": "The main camp building, with a walkable interior, storage and exploration furniture.",
-    "states": "Walkable interior and matching roof. Furniture is placed separately.",
+    "states": "Repaired and ruined exterior and walkable cutaway interior.",
     "batch": "B2",
     "footprint": "Layer dimensions and preview scale recorded; final per-panel collision polygons pending.",
     "lot": "576x512",
@@ -942,7 +942,7 @@
     "art": false,
     "implemented": false,
     "tested": false,
-    "lastUpdatedAt": "2026-10-06T15:02:45.127Z",
+    "lastUpdatedAt": "2026-11-02T00:00:00.000Z",
     "previous": {
       "group": "Core buildings",
       "batch": "B3",
@@ -976,10 +976,10 @@
       "roofFrontLayer": "Hide/fade independent roof upon entering floor polygon. Retain front wall/post layer for depth; export still pending."
     },
     "assetSpec": {
-      "dimensions": "1402×1122 px per layer; same canvas dimensions for base and roof.",
+      "dimensions": "1536 × 1024 px per transparent layer; one shared canvas and anchor.",
       "scale": "Preview width 672 world units. Existing idle worker uses 194×236 source crop at scale 0.4782609; collision radius 19. Validate in world before approval.",
       "groundAnchor": "Proposed south-centre threshold (701,958) in source pixels; roof layer shares origin.",
-      "source": "/survival/shelters/tier-1-interior.webp",
+      "source": "/survival/headquarters-south-v1/interior.webp",
       "crop": null,
       "states": [
         {
@@ -1001,17 +1001,19 @@
       ]
     },
     "blockers": [],
-    "image": "/survival/shelters/tier-1-interior.webp",
+    "image": "/survival/headquarters-south-v1/interior.webp",
     "artworkExports": [
-      "/survival/shelters/tier-1-interior.webp",
-      "/survival/shelters/tier-1-roof.webp"
+      "/survival/headquarters-south-v1/interior.webp",
+      "/survival/headquarters-south-v1/exterior.webp",
+      "/survival/headquarters-south-v1/ruined-interior.webp",
+      "/survival/headquarters-south-v1/ruined.webp"
     ],
     "sourceReferences": [
-      "/survival/shelters/tier-1-interior.webp",
-      "/survival/shelters/tier-1-roof.webp"
+      "/survival/headquarters-south-v1/interior.webp",
+      "/survival/headquarters-south-v1/exterior.webp"
     ],
     "artPreview": {
-      "roof": "/survival/shelters/tier-1-roof.webp",
+      "roof": "/survival/headquarters-south-v1/exterior.webp",
       "worldWidth": 672
     },
     "artworkCreated": true

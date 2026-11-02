@@ -12,6 +12,7 @@ import {resetHound} from './hound-ai';
 import {addApprovedCampGarden} from './camp-garden-placement';
 import {GARDEN_PLACEMENT_ID} from './camp-garden-art';
 import {placementBodies,layoutBlocked,type WorldLayout} from './world-layout';
+import {placeSouthFacingHeadquarters} from './headquarters-south-placement';
 import {hitCollider} from './camp-collision';
 import {addApprovedCampPerimeter} from './camp-perimeter';
 import {requiredImages} from './world-assets';
@@ -52,7 +53,7 @@ function nearbyClearGround(layout:WorldLayout,from:SavedPoint):SavedPoint|undefi
  * perimeter, retaining all run state and safe camp return points. */
 export function migrateSavedCampPerimeter(w:World,route:{sceneId:string;spawn:SavedPoint}[]){
  if(!w.layout)return false;
- const next=addApprovedCampPerimeter(w.layout);if(next===w.layout)return false;
+ const next=placeSouthFacingHeadquarters(addApprovedCampPerimeter(w.layout));if(next===w.layout)return false;
  const previous=new Map(w.layout.items.map(p=>[p.id,p]));
  const added=next.items.filter(p=>{
   const old=previous.get(p.id);

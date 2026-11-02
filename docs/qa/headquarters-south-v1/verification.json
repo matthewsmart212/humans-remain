@@ -1,0 +1,13 @@
+{
+  "result": "pass",
+  "placements": 3417,
+  "room": {
+    "width": 1016,
+    "depth": 355
+  },
+  "fourPlayers": true,
+  "centralAisle": 64,
+  "entranceAndTableReachable": true,
+  "offlineNativeAssets": 4,
+  "limit": "Shared production renderer and collision/navigation checks; no physical iPhone test"
+}

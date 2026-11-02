@@ -1,0 +1,27 @@
+import fs from 'node:fs';
+import path from 'node:path';
+import assert from 'node:assert/strict';
+
+/** Assemble a fresh output tree containing only the selected exports. This
+ * also prevents a later packaging walk from rediscovering retired entries in
+ * a reused output directory. Original artwork remains in public/source. */
+export function finalizePublishAssets(circularWallImages,historicalPublishExports){
+ const source=path.resolve('dist'),stage=fs.mkdtempSync(path.resolve('.sites-runtime/final-publish-'));
+ const target=path.join(stage,'dist');
+ const wallFolders=['camp-circular-wall-v1','camp-circular-wall-install-v1','camp-circular-wall-weathered-v1','camp-circular-wall-ne-v2','camp-circular-wall-nw-v1'];
+ const retired=[...historicalPublishExports,'/survival/camp-ruins-v1/headquarters.webp','/survival/camp-ruins-v1/headquarters-interior.webp'];
+ let excluded=0,bytes=0;
+ fs.cpSync(source,target,{recursive:true,filter:filename=>{
+  const relative=path.relative(source,filename).split(path.sep).join('/');
+  const url=relative.startsWith('client/')?'/'+relative.slice(7):'';
+  const unused=url.startsWith('/api/asset-files/')||retired.some(old=>url===old||url.startsWith(old+'/'))||
+   wallFolders.some(folder=>url.startsWith('/survival/'+folder+'/'))&&fs.statSync(filename).isFile()&&!circularWallImages.has(url);
+  if(unused){excluded++;if(fs.statSync(filename).isFile())bytes+=fs.statSync(filename).size;return false}
+  return true;
+ }});
+ for(const url of circularWallImages)assert(fs.existsSync(path.join(target,'client'+url)),'Required wall: '+url);
+ for(const file of ['interior','exterior','ruined-interior','ruined'])assert(fs.existsSync(path.join(target,'client/survival/headquarters-south-v1',file+'.webp')),'Required headquarters state: '+file);
+ const previous=fs.mkdtempSync(path.resolve('.sites-runtime/previous-dist-'));
+ fs.renameSync(source,path.join(previous,'dist'));fs.renameSync(target,source);
+ console.log(JSON.stringify({finalPublishTree:true,excludedRediscoveredExports:excluded,excludedBytes:bytes}));
+}

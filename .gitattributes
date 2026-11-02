@@ -42,3 +42,7 @@ docs/qa/circular-wall-ne-v3/**/*.jpeg -filter -diff -merge -text
 
 # Preserve the published northwest wall fix through the GitHub connector.
 /public/survival/camp-circular-wall-nw-v1/** -filter -diff -merge -text
+
+# Compact new headquarters assets are shared through the connected GitHub API.
+/public/survival/headquarters-south-v1/** -filter -diff -merge -text
+/docs/qa/headquarters-south-v1/** -filter -diff -merge -text

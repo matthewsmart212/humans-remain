@@ -3,6 +3,7 @@ import type {ArtworkRecord} from './artwork-model';
 import manifest from './wall-artwork-replacements.json';
 import campManifest from './camp-artwork-replacements.json';
 import structureManifest from './camp-structure-refresh.json';
+import {resolveSouthHeadquarters} from './headquarters-south-art';
 const replacements=[...manifest,...campManifest] as {entryId:string;sourceId:string;url:string;name:string;width:number;height:number;bytes:number}[];
 
 /** Replace only the specific source uploads selected for artwork refreshes.
@@ -10,7 +11,7 @@ const replacements=[...manifest,...campManifest] as {entryId:string;sourceId:str
  * anchors and world dimensions remain authoritative; future uploads take priority.
  */
 export function resolveArtworkReskin(record:ArtworkRecord):ArtworkRecord{
- record=resolveAnimationDefaults(record);
+ record=resolveSouthHeadquarters(resolveAnimationDefaults(record));
  // Registered ground-edge refreshes retain the original architectural pixels.
  // Animated bunker frames are an all-or-nothing match so a later owner upload
  // never becomes mixed with this particular three-frame doorway sequence.

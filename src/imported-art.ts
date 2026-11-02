@@ -8,6 +8,7 @@ import {entries,type CatalogueEntry} from './catalogue-model';
 import {ASSET_BY_ID,WORLD_ASSETS,imageDimensions,type WorldAsset} from './world-assets';
 import {installWallTiers} from './world-tiers';
 import {addCampGround} from './camp-ground-art';
+import {withSouthHeadquartersGeometry} from './headquarters-south-art';
 const originalAssets=new Map(ASSET_BY_ID);
 export function withImportedArt(entry:CatalogueEntry,record?:ArtworkRecord):CatalogueEntry{
  if(!record)return entry;record=resolveArtworkReskin(record);const c=record.config;
@@ -32,7 +33,7 @@ export function importedWorldAsset(record:ArtworkRecord):WorldAsset{
  if(old?.foliage){a.foliage=true;a.solid=false;a.body=[];a.segments=[];a.collision={lineWidth:.008,paths:[]};a.allowTransparency=false;}
  if(old?.gate){a.gate=old.gate;a.perimeter=old.perimeter;}
  if(old?.puddle){a.puddle=old.puddle;a.solid=false;a.body=[];a.segments=[];a.collision={lineWidth:.008,paths:[]};a.allowTransparency=false;}
- return addCampGround(a);
+ return addCampGround(withSouthHeadquartersGeometry(a));
 }
 export function assetMapWithImports(records:ArtworkRecord[]){const map=new Map(originalAssets);for(const record of records)if(originalAssets.has(record.id)||entries.some(e=>e.id===record.id)||record.customAsset?.id===record.id)map.set(record.id,importedWorldAsset(record));return installWallTiers(map);}
 export function installImportedArt(records:ArtworkRecord[]){invalidateLayoutViews();invalidateFoliageMotion();records=records.map(resolveArtworkReskin);const map=assetMapWithImports(records);ASSET_BY_ID.clear();for(const [id,a]of map){ASSET_BY_ID.set(id,a);if(a.image.startsWith('/survival/wall-tiers-v1/'))imageDimensions[a.image]=[a.crop[2],a.crop[3]];if(a.ground)imageDimensions[a.ground.image]=a.ground.size}WORLD_ASSETS.splice(0,WORLD_ASSETS.length,...map.values());for(const r of records)for(const f of [r.config.base,...r.config.frames,r.config.roof,r.config.unlit])if(f)imageDimensions[f.url]=[f.width,f.height];}

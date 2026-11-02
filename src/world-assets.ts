@@ -1,4 +1,5 @@
 import {restorationImages} from './camp-restoration';
+import {withSouthHeadquartersGeometry} from './headquarters-south-art';
 import {IRONWORKS_WORLD_ART,FURNACE_ID} from './ironworks-data';
 import {GARDEN_ART,GARDEN_ANCHOR,GARDEN_COLLISION} from './camp-garden-art';
 import {MINEABLE_ROCKS} from './mining-rocks';
@@ -94,7 +95,7 @@ for(const e of entries.filter(e=>e.image&&!e.canonicalArt&&!e.id.startsWith('map
  if(ironworks){a.anchor=ironworks.anchor.map((v,i)=>v*ironworks.size[i]);a.width=ironworks.worldWidth;a.height=a.width*ironworks.size[1]/ironworks.size[0];a.body=e.id===FURNACE_ID?[{x:-15,y:-29,hw:61,hh:31},{x:76,y:-21,hw:27,hh:24}]:[{x:0,y:-13,hw:72,hh:27}];a.solid=true;a.allowTransparency=false;a.note=e.id===FURNACE_ID?'Smelt ore or recycle scrap with log fuel. Collect ingots, craft gear and reinforce the bellows.':'Iron-veined boulder · metal pickaxe required · guaranteed iron ore and stone.';}
  if(GARDEN_ART.some(g=>g.id===e.id)){a.anchor=GARDEN_ANCHOR.map((v,i)=>v*crop[i+2]);a.body=[];a.collision=GARDEN_COLLISION;a.allowTransparency=false;a.note='Camp garden artwork · choose Broken or tiers 1–3 in Build. Farming and repair gameplay will be connected separately.';}
  if(role==='generator')a.body=[{x:0,y:-10,hw:48,hh:35}];
- add(a,['crate','search'].includes(role)?false:true);
+ add(withSouthHeadquartersGeometry(a),['crate','search'].includes(role)?false:true);
 }
 for(const f of perimeterArt){sizes[f.image]=f.size;assets.push({id:f.id,name:f.name,group:'Camp perimeter',image:f.image,crop:[0,0,...f.size],anchor:[f.anchor[0]*f.size[0],f.anchor[1]*f.size[1]],width:f.width,height:f.height,solid:f.kind!=='post',role:'prop',body:[],segments:f.segments,perimeter:f.kind as 'wall'|'post'|'gate',perimeterRise:f.rise,gate:f.gate,note:f.kind==='gate'?'Painted open/closed gate · tap Close once; it waits for a clear doorway.':'Continuous worn stockade · traced ground collision.'});if(f.gate){sizes[f.gate.leaf]=f.gate.leafSize;sizes[f.gate.post]=f.gate.postSize;}}
 for(const f of circularWallArt){sizes[f.image]=f.size;assets.push({id:f.id,catalogueId:f.id,name:f.name,group:'Camp perimeter',image:f.image,crop:[0,0,...f.size],anchor:[f.anchor[0]*f.size[0],f.anchor[1]*f.size[1]],width:f.width,height:f.height,solid:true,allowTransparency:true,role:'prop',body:[],collision:f.collision as AssetCollision,segments:f.segments,perimeter:'wall',perimeterRise:f.rise,perimeterCurve:f.curve,perimeterDrawOrder:f.drawOrder,note:'Curved mossy timber wall · fixed orientation · keep the six camp roads clear.'});}

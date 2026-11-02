@@ -3,6 +3,7 @@ import path from 'node:path';
 import assert from 'node:assert/strict';
 import {execFileSync} from 'node:child_process';
 import {build} from 'esbuild';
+import {finalizePublishAssets} from './finalize-publish-assets.mjs';
 // Only generated output is replaced. Game source and artwork remain untouched.
 fs.rmSync('dist',{recursive:true,force:true});
 execFileSync(process.execPath,['scripts/build-world-plan.mjs'],{stdio:'inherit'});
@@ -105,3 +106,4 @@ await build({entryPoints:['server/checklist.ts'],outfile:'dist/server/index.js',
 fs.mkdirSync('dist/.openai',{recursive:true});
 fs.copyFileSync('.openai/hosting.json','dist/.openai/hosting.json');
 fs.cpSync('drizzle','dist/.openai/drizzle',{recursive:true});
+finalizePublishAssets(circularWallImages,historicalPublishExports);

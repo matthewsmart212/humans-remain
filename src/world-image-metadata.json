@@ -450,5 +450,21 @@
   "/survival/camp-well-v2/oak-well.webp": [
     1091,
     1012
+  ],
+  "/survival/headquarters-south-v1/exterior.webp": [
+    1536,
+    1024
+  ],
+  "/survival/headquarters-south-v1/interior.webp": [
+    1536,
+    1024
+  ],
+  "/survival/headquarters-south-v1/ruined.webp": [
+    1536,
+    1024
+  ],
+  "/survival/headquarters-south-v1/ruined-interior.webp": [
+    1536,
+    1024
   ]
 }
