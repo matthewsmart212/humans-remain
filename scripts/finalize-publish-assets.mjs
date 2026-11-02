@@ -30,7 +30,7 @@ export function finalizePublishAssets(circularWallImages,historicalPublishExport
   return true;
  }});
  for(const url of circularWallImages)assert(fs.existsSync(path.join(target,'client'+url)),'Required wall: '+url);
- for(const file of ['cutaway-v3','exterior','ruined-cutaway-v3','ruined'])assert(fs.existsSync(path.join(target,'client/survival/headquarters-south-v1',file+'.webp')),'Required headquarters state: '+file);
+ for(const file of ['cutaway-v3','exterior','ruined-cutaway-v3','ruined','ground-contact-v4'])assert(fs.existsSync(path.join(target,'client/survival/headquarters-south-v1',file+'.webp')),'Required headquarters state: '+file);
  for(const url of retired)assert(!fs.existsSync(path.join(target,'client'+url)),'Retired export cannot enter the final publish tree: '+url);
  const previous=fs.mkdtempSync(path.resolve('.sites-runtime/previous-dist-'));
  fs.renameSync(source,path.join(previous,'dist'));fs.renameSync(target,source);

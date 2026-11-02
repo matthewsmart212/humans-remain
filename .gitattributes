@@ -49,3 +49,5 @@ docs/qa/circular-wall-ne-v3/**/*.jpeg -filter -diff -merge -text
 /docs/qa/headquarters-cutaway-v2/** -filter -diff -merge -text
 
 /docs/qa/headquarters-transition-v3/** -filter -diff -merge -text
+
+/docs/qa/headquarters-space-v4/** -filter -diff -merge -text

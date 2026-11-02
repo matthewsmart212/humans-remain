@@ -116,6 +116,7 @@ export const BUNDLED_ART:Record<string,number>={
  "/survival/forage-v1/apple-tree.png":require("./../public/survival/forage-v1/apple-tree-lossless-v1.webp"),
  "/survival/forage-v1/berry-bush.png":require("./../public/survival/forage-v1/berry-bush-lossless-v1.webp"),
  "/survival/headquarters-south-v1/cutaway-v3.webp":require("./../public/survival/headquarters-south-v1/cutaway-v3.webp"),
+ "/survival/headquarters-south-v1/ground-contact-v4.webp":require("./../public/survival/headquarters-south-v1/ground-contact-v4.webp"),
  "/survival/headquarters-south-v1/exterior.webp":require("./../public/survival/headquarters-south-v1/exterior.webp"),
  "/survival/headquarters-south-v1/ruined-cutaway-v3.webp":require("./../public/survival/headquarters-south-v1/ruined-cutaway-v3.webp"),
  "/survival/headquarters-south-v1/ruined.webp":require("./../public/survival/headquarters-south-v1/ruined.webp"),

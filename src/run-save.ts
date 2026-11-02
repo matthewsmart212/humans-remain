@@ -1,3 +1,4 @@
+import {expandHeadquartersSpace} from './headquarters-space';
 import {refineCampVegetation} from './camp-vegetation';
 import {grantStarterPickaxe} from './player-gear';
 import {grantStarterRepairHammer} from './repair-hammer';
@@ -54,11 +55,11 @@ function nearbyClearGround(layout:WorldLayout,from:SavedPoint):SavedPoint|undefi
  * perimeter, retaining all run state and safe camp return points. */
 export function migrateSavedCampPerimeter(w:World,route:{sceneId:string;spawn:SavedPoint}[]){
  if(!w.layout)return false;
- const next=fitHeadquartersInterior(placeSouthFacingHeadquarters(addApprovedCampPerimeter(w.layout)));if(next===w.layout)return false;
+ const next=expandHeadquartersSpace(fitHeadquartersInterior(placeSouthFacingHeadquarters(addApprovedCampPerimeter(w.layout))));if(next===w.layout)return false;
  const previous=new Map(w.layout.items.map(p=>[p.id,p]));
  const added=next.items.filter(p=>{
   const old=previous.get(p.id);
-  return p.assetId.startsWith('camp_circular_wall_')||!old||old.x!==p.x||old.y!==p.y||JSON.stringify(old.collision)!==JSON.stringify(p.collision);
+  return p.assetId.startsWith('camp_circular_wall_')||!old||old.x!==p.x||old.y!==p.y||old.scale!==p.scale||JSON.stringify(old.collision)!==JSON.stringify(p.collision);
  }).flatMap(p=>placementBodies(p));
  const occupied=(p:SavedPoint)=>added.some(c=>hitCollider(c,p.x,p.y,19));
  const points=[w.player,next.spawn,...route.filter(r=>r?.sceneId===CAMP_SCENE_ID&&point(r.spawn)).map(r=>r.spawn)];

@@ -8,7 +8,7 @@ const require=createRequire(import.meta.url),{createCanvas,loadImage}=require('@
 const temp=fs.mkdtempSync(path.join(os.tmpdir(),'hq-south-'));
 const out=process.argv[2]||'.qa/headquarters-south';fs.mkdirSync(out,{recursive:true});
 try{
- const modules=['world-assets','world-layout','imported-art','authored-world','headquarters-south-placement','headquarters-south-art','headquarters-roof','headquarters-cutaway','headquarters-interior','headquarters-wall-mask','studio-play','survival-engine','run-progression','placed-world-renderer','terrain-renderer','worker-renderer','survivor-art','camp-restoration','station-access','run-save'];
+ const modules=['world-assets','world-layout','imported-art','authored-world','headquarters-south-placement','headquarters-south-art','headquarters-roof','headquarters-cutaway','headquarters-interior','headquarters-space','headquarters-wall-mask','studio-play','survival-engine','run-progression','placed-world-renderer','terrain-renderer','worker-renderer','survivor-art','camp-restoration','station-access','run-save'];
  await build({stdin:{contents:modules.map(n=>`export * from './src/${n}';`).join(''),resolveDir:process.cwd()},bundle:true,platform:'node',format:'cjs',outfile:path.join(temp,'model.cjs'),logLevel:'error'});
  const m=require(path.join(temp,'model.cjs')),snapshot=JSON.parse(fs.readFileSync('native/assets/world-snapshot.json'));
  m.installImportedArt(snapshot.records);
@@ -16,10 +16,11 @@ try{
  assert.equal(layout.headquartersSouthVersion,1);assert.equal(m.prepareAuthoredWorld(layout),layout);
  assert.equal(m.validateLayout(layout).layout.headquartersSouthVersion,1);
  const fire=layout.items.find(p=>p.role==='hearth');assert.equal(hq.rotation,0);
- assert.equal(hq.scale,1.3,'Preserve the owner-sized headquarters');
+ assert.equal(hq.scale,1.3*m.HEADQUARTERS_SPACE_SCALE,'One proportional expansion of the owner-sized headquarters');
+ assert.equal(layout.headquartersSpaceVersion,1);assert.equal(m.validateLayout(layout).layout.headquartersSpaceVersion,1);
  assert.equal(layout.headquartersInteriorVersion,2);
  assert.equal(m.validateLayout(layout).layout.headquartersInteriorVersion,2);
- const hqBefore=snapshot.layout.items.find(p=>p.id===hq.id);assert.deepEqual({...hq,collision:undefined},{...hqBefore,collision:undefined},'Keep the exact saved hall placement and dimensions');
+ const hqBefore=snapshot.layout.items.find(p=>p.id===hq.id);assert.deepEqual({...hq,collision:undefined,scale:undefined},{...hqBefore,collision:undefined,scale:undefined},'Keep the exact saved hall origin, frame and orientation');
  const point=(u,v)=>({x:b.x+u*b.width,y:b.y+v*b.height});
  const people=[[.44,.55],[.56,.55],[.44,.69],[.56,.69]].map(([u,v])=>point(u,v));
  for(const p of people){assert(m.insideBuilding(hq,p.x,p.y));assert(!m.layoutBlocked(layout,p.x,p.y,24),'Four independently clear standing positions');}
@@ -33,13 +34,25 @@ try{
  Object.assign(continued.player,point(.2,.8));assert(m.migrateSavedCampPerimeter(continued,[]));assert(!m.layoutBlocked(continued.layout,continued.player.x,continued.player.y,19),'Returning survivor cannot be trapped by new walls');
  assert.equal(JSON.stringify(continued.progression),progress);assert.equal(JSON.stringify([continued.bag,continued.stock,continued.gear]),inventory,'Continued runs retain health, resources, unlocks and equipment');
  const oldRun=m.createCampPlaySession(snapshot.layout);oldRun.layout=structuredClone(snapshot.layout);
- Object.assign(oldRun.player,point(.5,.40));const oldProgress=JSON.stringify(oldRun.progression),oldBag=JSON.stringify(oldRun.bag);
+ const oldBounds=m.placementBounds(snapshot.layout.items.find(p=>p.id===hq.id));
+ Object.assign(oldRun.player,{x:hq.x,y:oldBounds.y+oldBounds.height*.40});const oldProgress=JSON.stringify(oldRun.progression),oldBag=JSON.stringify(oldRun.bag);
  assert(m.migrateSavedCampPerimeter(oldRun,[]),'Old HQ floor migrates');
  assert(m.insideBuilding(oldRun.layout.items.find(p=>p.id===hq.id),oldRun.player.x,oldRun.player.y),'Survivor saved on the old rear floor returns inside the room');
  assert(!m.layoutBlocked(oldRun.layout,oldRun.player.x,oldRun.player.y,19));
  assert.equal(JSON.stringify(oldRun.progression),oldProgress);assert.equal(JSON.stringify(oldRun.bag),oldBag);
  const customV1=structuredClone(snapshot.layout),customProp=customV1.items.find(p=>p.id==='63081463-b478-4601-8c5e-e8da8206f317');customProp.x+=22;
  assert.deepEqual(m.fitHeadquartersInterior(customV1).items.find(p=>p.id===customProp.id),customProp,'Owner edits from v1 survive v2');
+ const beforeSpace=m.fitHeadquartersInterior(snapshot.layout),expanded=m.expandHeadquartersSpace(beforeSpace);
+ assert.equal(m.expandHeadquartersSpace(expanded),expanded,'Expansion applies once');
+ const laterSpace={...expanded,items:expanded.items.map(p=>p.id===hq.id?{...p,x:p.x+17,scale:p.scale+.1}:p)};
+ assert.equal(m.expandHeadquartersSpace(laterSpace),laterSpace,'Later editor resizes survive');
+ for(const old of beforeSpace.items){
+  const updated=expanded.items.find(p=>p.id===old.id);
+  if(m.HQ_INTERIOR_PROP_IDS.has(old.id))assert.equal(updated.scale,old.scale,'Furniture stays its original physical size');
+  else if(old.id!==hq.id)assert.deepEqual(updated,old,'Expansion leaves the rest of camp untouched');
+ }
+ const oldRoom=m.placementBounds(beforeSpace.items.find(p=>p.id===hq.id));
+ assert(Math.abs(b.width*b.height/(oldRoom.width*oldRoom.height)-1.3924)<1e-8,'39.24% more interior area');
  const customFurniture={...layout,items:layout.items.map(p=>p.id==='63081463-b478-4601-8c5e-e8da8206f317'?{...p,x:p.x+15}:p)};assert.equal(m.fitHeadquartersInterior(customFurniture),customFurniture,'Later furniture edits survive');
  const beforeRefit={...snapshot.layout};delete beforeRefit.headquartersInteriorVersion;const refitted=m.fitHeadquartersInterior(beforeRefit);assert.deepEqual({...refitted.items.find(p=>p.id===hq.id),collision:undefined},{...hqBefore,collision:undefined});
  for(const p of refitted.items.filter(p=>p.id.startsWith('hq-props-v1-')||p.assetId==='art_hq_storage_chest'||p.assetId==='art_camp_planning_board')){const [x,y]=m.placementPoint(hq,p.x,p.y,true);assert(x>b.x+b.width*.08&&x<b.x+b.width*.92&&y>b.y+b.height*.25&&y<b.y+b.height*.8,'Furniture anchors fit the resized room');}
@@ -76,6 +89,8 @@ try{
   const url=m.HQ_SOUTH_ROOT+'/'+name+'.webp',file='public'+url,meta=await sharp(file).metadata();
   assert.deepEqual([meta.width,meta.height],[1536,1024]);assert(meta.hasAlpha);assert(bundle.includes(url),'Native offline bundle includes '+name);
  }
+ assert(Object.values(m.requiredImages([hq.assetId])).includes(m.HQ_SOUTH_GROUND),'Ground contact decal is preloaded');
+ assert(bundle.includes(m.HQ_SOUTH_GROUND),'Ground contact decal is bundled offline');
  const viewport={x:b.x-200,y:b.y-180,width:b.width+400,height:b.height+560};
  const local=layout.items.filter(p=>{const q=m.placementBounds(p);return q.x<viewport.x+viewport.width&&q.x+q.width>viewport.x&&q.y<viewport.y+viewport.height&&q.y+q.height>viewport.y});
  const redirects=JSON.parse(fs.readFileSync('server/lossless-artwork-redirects.json'));
@@ -112,6 +127,6 @@ try{
   draws.sort(m.compareWorldDrawables).forEach(d=>d.draw());
   fs.writeFileSync(path.join(out,`${broken?'ruined':'repaired'}-${interior?'interior':'exterior'}.png`),canvas.toBuffer('image/png'));
  }
- const report={result:'pass',placements:layout.items.length,room:{width:Math.round(b.width*.84),depth:Math.round(b.height*.27)},fourPlayers:true,centralAisle:64,entranceAndTableReachable:true,offlineNativeAssets:4,limit:'Shared production renderer and collision/navigation checks; no physical iPhone test'};
+ const report={result:'pass',placements:layout.items.length,floorAreaIncreasePercent:39.24,room:{width:Math.round(b.width*.84),depth:Math.round(b.height*.27)},fourPlayers:true,centralAisle:64,entranceAndTableReachable:true,offlineNativeAssets:5,limit:'Shared production renderer and collision/navigation checks; no physical iPhone test'};
  fs.writeFileSync(path.join(out,'verification.json'),JSON.stringify(report,null,2)+'\n');console.log(JSON.stringify(report));
 }finally{fs.rmSync(temp,{recursive:true,force:true})}

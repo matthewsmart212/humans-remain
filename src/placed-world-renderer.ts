@@ -106,6 +106,7 @@ export function placedDrawables(ctx:CanvasRenderingContext2D,imgs:Record<string,
   // retain their original pixels through the ordinary image path.
   const animatePlant=!!a.foliage&&(viewport?.scale??1)>=.42&&!!w.foliageMotions?.[p.id];
   const drawBase=()=>{if(southHQ){
+   drawCampContact(ctx,p,a);
    if(!roofImage){ctx.drawImage(im,b.x,b.y,b.width,b.height);return}
    ctx.save();clipHeadquartersLayer(ctx,b,false);ctx.drawImage(roofImage,b.x,b.y,b.width,b.height);ctx.restore();
    if(cutaway>0){ctx.save();clipHeadquartersLayer(ctx,b,true);ctx.drawImage(im,b.x,b.y,b.width,b.height);ctx.restore()}
