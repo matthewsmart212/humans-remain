@@ -934,7 +934,7 @@
       ]
     ],
     "soilRadius": 0.025,
-    "contactWidth": 0.014,
-    "contactOpacity": 0.66
+    "contactWidth": 0.008,
+    "contactOpacity": 0.48
   }
 ]

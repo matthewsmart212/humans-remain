@@ -23,3 +23,18 @@ export function clipHeadquartersLayer(ctx:CanvasRenderingContext2D,b:{x:number;y
  const points=upper?[[0,0],[1,0],...seam.slice().reverse()]:[...seam,[1,1],[0,1]];
  ctx.beginPath();points.forEach(([u,v],i)=>i?ctx.lineTo(b.x+u*b.width,b.y+v*b.height):ctx.moveTo(b.x+u*b.width,b.y+v*b.height));ctx.closePath();ctx.clip();
 }
+
+/** The doorway is an aperture onto the same room used by the cutaway. These
+ * pixel contours follow the inner jambs/braces, including the broken hanging
+ * timber. Never show the second, painted room baked into the exterior sprite. */
+export function clipHeadquartersDoorway(ctx:CanvasRenderingContext2D,b:{x:number;y:number;width:number;height:number},broken:boolean,outside=false){
+ const top:readonly (readonly [number,number])[]=broken
+  ?[[554,507],[625,452],[819,452],[870,508],[943,559],[935,537],[958,554],[915,493],[985,527]]
+  :[[554,507],[625,452],[913,452],[985,507]];
+ const points=[...top,[985,773],[554,773]];
+ const native=ctx as CanvasRenderingContext2D&{clipOutsidePath?:()=>void};
+ ctx.beginPath();
+ if(outside&&!native.clipOutsidePath){ctx.moveTo(b.x-1,b.y-1);ctx.lineTo(b.x+b.width+1,b.y-1);ctx.lineTo(b.x+b.width+1,b.y+b.height+1);ctx.lineTo(b.x-1,b.y+b.height+1);ctx.closePath()}
+ points.forEach(([x,y],i)=>i?ctx.lineTo(b.x+x/1536*b.width,b.y+y/1024*b.height):ctx.moveTo(b.x+x/1536*b.width,b.y+y/1024*b.height));ctx.closePath();
+ if(outside&&native.clipOutsidePath)native.clipOutsidePath();else ctx.clip(outside?'evenodd':'nonzero');
+}

@@ -1,8 +1,7 @@
 import {drawBuildingCondition} from './building-condition-renderer';
-import {headquartersCutawayAmount,clipHeadquartersLayer} from './headquarters-cutaway';
-import {HQ_INTERIOR_PROP_IDS} from './headquarters-interior';
+import {headquartersCutawayAmount,clipHeadquartersLayer,clipHeadquartersDoorway} from './headquarters-cutaway';
 import {headquartersWallMasks,clipWallsOutsideHeadquarters} from './headquarters-wall-mask';
-import {HQ_SOUTH_INTERIOR} from './headquarters-south-art';
+import {HQ_SOUTH_INTERIOR,HQ_SOUTH_RUIN} from './headquarters-south-art';
 import {headquartersRoofBottom,withinRoofApproach,headquartersRaidVisible} from './headquarters-roof';
 import {campBuildingArt} from './camp-restoration';
 import {drawProgressionMarkers} from './progression-renderer';
@@ -60,7 +59,7 @@ import {circularWallDepth,circularWallGroup,orderCircularWallDraws,type Circular
 /** A separate terrain pass keeps ground below every asset and the player, even on negative layers. */
 export function drawPlacedGround(ctx:CanvasRenderingContext2D,imgs:Record<string,HTMLImageElement>,layout?:WorldLayout,hideFoliage=false,viewport?:FoliageViewport){
  if(!layout)return;
- for(const p of visibleGroundPlacements(layout,viewport)){const asset=ASSET_BY_ID.get(p.assetId);if(hideFoliage&&isFoliageAsset(asset))continue;const ground=asset?.ground,im=ground&&imgs[assetImageKey(ground.image)];if(!ground||!im)continue;
+ for(const p of visibleGroundPlacements(layout,viewport)){const asset=ASSET_BY_ID.get(p.assetId);if(hideFoliage&&isFoliageAsset(asset)||asset?.image===HQ_SOUTH_INTERIOR)continue;const ground=asset?.ground,im=ground&&imgs[assetImageKey(ground.image)];if(!ground||!im)continue;
   const b=placementBounds(p),[x,y,width,height]=ground.rect;ctx.save();rotatePlacement(ctx,p);
   ctx.drawImage(im,b.x+x*b.width,b.y+y*b.height,width*b.width,height*b.height);ctx.restore();
  }
@@ -69,9 +68,7 @@ export function placedDrawables(ctx:CanvasRenderingContext2D,imgs:Record<string,
  const out:{roof?:boolean;layer?:number;y:number;draw:()=>void}[]=[];if(!w.layout)return out;
  const circular:CircularWallDraw[]=[],roomMasks=headquartersWallMasks(w.layout);
  const hqMasks=roomMasks;
- const hqReveal=Math.max(0,...roomMasks.map(({placement:p})=>headquartersCutawayAmount(p,w)));
- const hideHQProps=roomMasks.length>0&&hqReveal===0;
- for(const p of visiblePlacements(w.layout,viewport)){if(hideHQProps&&HQ_INTERIOR_PROP_IDS.has(p.id))continue;const a=ASSET_BY_ID.get(p.assetId);if(!a)continue;if(!editor&&['animal','enemySpawn'].includes(p.role))continue;if(!editor&&['scrap','fuel','pallets'].includes(p.role)&&!w.loot.some(l=>l.placementId===p.id))continue;if(!editor&&p.role==='crate'&&!w.breakables.some(b=>b.placementId===p.id&&b.hp>0))continue;
+ for(const p of visiblePlacements(w.layout,viewport)){const a=ASSET_BY_ID.get(p.assetId);if(!a)continue;if(!editor&&['animal','enemySpawn'].includes(p.role))continue;if(!editor&&['scrap','fuel','pallets'].includes(p.role)&&!w.loot.some(l=>l.placementId===p.id))continue;if(!editor&&p.role==='crate'&&!w.breakables.some(b=>b.placementId===p.id&&b.hp>0))continue;
   if(hideFoliage&&isFoliageAsset(a)||a.foliage&&!foliageVisible(p,viewport))continue;
   if(a.gate){const bounds=placementBounds(p);if(viewport&&!p.rotation&&!p.flipX&&!p.flipY&&(bounds.x+bounds.width<viewport.x||bounds.x>viewport.x+viewport.width||bounds.y+bounds.height<viewport.y||bounds.y>viewport.y+viewport.height))continue;for(const v of gateDrawables(ctx,imgs,w,p,a)){const draw=v.draw;out.push({...v,layer:p.layer??0,draw:()=>{ctx.save();rotatePlacement(ctx,p);draw();ctx.restore()}})}continue;}
   const first=out.length,restoration=campBuildingArt(w,p.assetId);
@@ -109,7 +106,11 @@ export function placedDrawables(ctx:CanvasRenderingContext2D,imgs:Record<string,
    drawCampContact(ctx,p,a);
    if(!roofImage){ctx.drawImage(im,b.x,b.y,b.width,b.height);return}
    ctx.save();clipHeadquartersLayer(ctx,b,false);ctx.drawImage(roofImage,b.x,b.y,b.width,b.height);ctx.restore();
-   if(cutaway>0){ctx.save();clipHeadquartersLayer(ctx,b,true);ctx.drawImage(im,b.x,b.y,b.width,b.height);ctx.restore()}
+   // Contact debris crosses the lowest stone pixels once, settling the feet
+   // into the terrain instead of leaving a detached border below the sprite.
+   const ground=a.ground,contact=ground&&imgs[assetImageKey(ground.image)];
+   if(ground&&contact){const [x,y,width,height]=ground.rect;ctx.save();ctx.globalAlpha*=.85;ctx.drawImage(contact,b.x+x*b.width,b.y+y*b.height,width*b.width,height*b.height);ctx.restore()}
+   ctx.save();clipHeadquartersLayer(ctx,b,true);ctx.drawImage(im,b.x,b.y,b.width,b.height);ctx.restore();
    return;
   }if(restoration){const ruin=imgs[assetImageKey(restoration.image)];if(ruin){ctx.drawImage(ruin,b.x,b.y,b.width,b.height);return}}if(drawCampFurnace(ctx,imgs,w,p))return;if(drawWarehouse(ctx,imgs,w,p))return;if(drawForagePlant(ctx,imgs,w,p))return;if(drawTree(ctx,im,w,p))return;if(drawMineableRock(ctx,im,w,p,a.crop))return;if(a.puddle){drawPuddle(ctx,im,w,p,a);return}if(a.foliage){drawFoliage(ctx,im,w,p,a,animatePlant);return}drawCampContact(ctx,p,a);ctx.save();const [px,py]=placementPoint(p,w.player.x,w.player.y,true);if((p.allowTransparency??placementGeometryAsset(p)?.allowTransparency)!==false&&!a.interior&&py<p.y&&py>b.y&&Math.abs(px-p.x)<b.width*.3)ctx.globalAlpha=.6;
    if(p.role==='hearth'&&!placedFireLit(w,p)&&a.unlit){const off=imgs[assetImageKey(a.unlit)];if(off){const anchor=a.unlitAnchor||[627,1190],size=a.unlitSize||[1254,1254];ctx.drawImage(off,p.frame?b.x:p.x-anchor[0]/size[0]*b.width,p.frame?b.y:p.y-anchor[1]/size[1]*b.height,b.width,b.height)}else ctx.drawImage(im,...a.crop as [number,number,number,number],b.x,b.y,b.width,b.height)}
@@ -124,7 +125,7 @@ export function placedDrawables(ctx:CanvasRenderingContext2D,imgs:Record<string,
    const rect=a.roofRect||[0,0,a.crop[2],a.crop[3]];
    out.push({roof:true,y:100000,draw:()=>{
     ctx.save();ctx.globalAlpha=southHQ?1-cutaway:revealRoof?.08:1;
-    if(southHQ)clipHeadquartersLayer(ctx,b,true);
+    if(southHQ){clipHeadquartersLayer(ctx,b,true);clipHeadquartersDoorway(ctx,b,restoration?.roof===HQ_SOUTH_RUIN,true)}
     const bottom=southHQ?undefined:headquartersRoofBottom(p);
     if(bottom!==undefined){ctx.beginPath();ctx.moveTo(b.x,b.y);ctx.lineTo(b.x+b.width,b.y);ctx.lineTo(b.x+b.width,bottom);ctx.lineTo(b.x,bottom);ctx.closePath();ctx.clip()}
     ctx.drawImage(roofImage,b.x+rect[0]/a.crop[2]*b.width,b.y+rect[1]/a.crop[3]*b.height,rect[2]/a.crop[2]*b.width,rect[3]/a.crop[3]*b.height);ctx.restore();
@@ -132,7 +133,6 @@ export function placedDrawables(ctx:CanvasRenderingContext2D,imgs:Record<string,
   }
   for(let i=first;i<out.length;i++){
    out[i].layer=p.layer??0;
-   if(HQ_INTERIOR_PROP_IDS.has(p.id)&&hqReveal<1){const draw=out[i].draw;out[i].draw=()=>{ctx.save();ctx.globalAlpha*=hqReveal;draw();ctx.restore()}}
   }
   if(p.rotation||p.flipX||p.flipY)for(let i=first;i<out.length;i++){const draw=out[i].draw;out[i].draw=()=>{ctx.save();rotatePlacement(ctx,p);draw();ctx.restore()}}
  }

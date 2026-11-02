@@ -1,0 +1,16 @@
+{
+  "result": "pass",
+  "placements": 3417,
+  "floorAreaIncreasePercent": 39.24,
+  "room": {
+    "width": 866,
+    "depth": 186
+  },
+  "fourPlayers": true,
+  "centralAisle": 64,
+  "entranceAndTableReachable": true,
+  "offlineNativeAssets": 5,
+  "doorwayPixelsStable": true,
+  "liveFurnitureThroughDoor": true,
+  "limit": "Shared production renderer and collision/navigation checks; no physical iPhone test"
+}

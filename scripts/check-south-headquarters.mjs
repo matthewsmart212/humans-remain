@@ -99,6 +99,30 @@ try{
   const resolved=redirects[url]||url;let file='public'+resolved;if(url.startsWith('/api/asset-files/'))file='native/assets/world/'+url.split('/').pop()+'.png';
   if(!fs.existsSync(file)){assert(!Object.hasOwn(m.SURVIVOR_IMAGE_SOURCES,key),'Character artwork must resolve: '+url);continue}images[key]=await loadImage(file);
  }
+ m.startExpedition(world);
+ // Compare the visible room pixels, not just the permanent steps. This catches
+ // a second painted interior being exposed through the exterior doorway.
+ for(const broken of [false,true]){
+  world.progression.restoredBuildings=broken?[]:['headquarters'];world.progression.campLevel=broken?0:1;
+  let doorway;
+  for(const v of [1.08,.94,.875,.81,.60]){
+   const canvas=createCanvas(1536,1024),ctx=canvas.getContext('2d');
+   ctx.scale(1536/b.width,1024/b.height);ctx.translate(-b.x,-b.y);
+   Object.assign(world.player,point(.5,v));
+   m.placedDrawables(ctx,images,{...world,layout:{...layout,items:[hq]}}).sort(m.compareWorldDrawables).forEach(d=>d.draw());
+   const pixels=Buffer.from(ctx.getImageData(620,570,230,170).data);
+   if(doorway)assert(pixels.equals(doorway),'The actual doorway floor stays identical outside, during reveal and inside');else doorway=pixels;
+  }
+ }
+ // Owner-positioned furniture must remain visible through the doorway while
+ // the roof is closed; the exterior itself handles occlusion.
+ Object.assign(world.player,point(.5,1.08));
+ const propContext=createCanvas(8,8).getContext('2d');
+ const propOnly={...world,layout:{...layout,items:[hq,chest]}};
+ const closedCount=m.placedDrawables(propContext,images,propOnly).length;
+ Object.assign(world.player,point(.5,.6));
+ const openCount=m.placedDrawables(propContext,images,propOnly).length;
+ assert.equal(closedCount,openCount+1,'Only the roof disappears; live furniture remains rendered');
  // Original front steps and exterior props must never swim or dissolve.
  let foundation;
  for(const v of [1.08,.97,.94,.91,.875,.84,.81,.78,.60]){
@@ -127,6 +151,6 @@ try{
   draws.sort(m.compareWorldDrawables).forEach(d=>d.draw());
   fs.writeFileSync(path.join(out,`${broken?'ruined':'repaired'}-${interior?'interior':'exterior'}.png`),canvas.toBuffer('image/png'));
  }
- const report={result:'pass',placements:layout.items.length,floorAreaIncreasePercent:39.24,room:{width:Math.round(b.width*.84),depth:Math.round(b.height*.27)},fourPlayers:true,centralAisle:64,entranceAndTableReachable:true,offlineNativeAssets:5,limit:'Shared production renderer and collision/navigation checks; no physical iPhone test'};
+ const report={result:'pass',placements:layout.items.length,floorAreaIncreasePercent:39.24,room:{width:Math.round(b.width*.84),depth:Math.round(b.height*.27)},fourPlayers:true,centralAisle:64,entranceAndTableReachable:true,offlineNativeAssets:5,doorwayPixelsStable:true,liveFurnitureThroughDoor:true,limit:'Shared production renderer and collision/navigation checks; no physical iPhone test'};
  fs.writeFileSync(path.join(out,'verification.json'),JSON.stringify(report,null,2)+'\n');console.log(JSON.stringify(report));
 }finally{fs.rmSync(temp,{recursive:true,force:true})}
