@@ -466,5 +466,13 @@
   "/survival/headquarters-south-v1/ruined-interior.webp": [
     1536,
     1024
+  ],
+  "/survival/headquarters-south-v1/cutaway.webp": [
+    1536,
+    1024
+  ],
+  "/survival/headquarters-south-v1/ruined-cutaway.webp": [
+    1536,
+    1024
   ]
 }

@@ -1,0 +1,14 @@
+{
+  "passed": true,
+  "snapshotRevision": 85,
+  "headquartersScale": 1.3,
+  "productionNativeRenderer": true,
+  "offline": true,
+  "pictures": [
+    "native-repaired-exterior.png",
+    "native-repaired-interior.png",
+    "native-ruined-exterior.png",
+    "native-ruined-interior.png"
+  ],
+  "physicalIPhoneTested": false
+}

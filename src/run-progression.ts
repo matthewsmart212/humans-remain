@@ -23,7 +23,7 @@ export type RunProgression={
 };
 const benches=new WeakMap<WorldLayout,Placement[]>();
 export function headquartersBench(w:World){if(!w.layout||w.scene)return undefined;let items=benches.get(w.layout);if(!items){items=w.layout.items.filter(p=>p.assetId===HQ_BENCH);benches.set(w.layout,items)}return items[0]}
-export function headquartersDock(p:Placement){const b=placementBounds(p),[x,y]=placementPoint(p,b.x+b.width*.5,b.y+b.height+25*p.scale);return{x,y}}
+export function headquartersDock(p:Placement){const b=placementBounds(p),[x,y]=placementPoint(p,b.x+b.width*.5,b.y+b.height+Math.max(25*p.scale,32));return{x,y}}
 export function nearbyHeadquarters(w:World){const p=headquartersBench(w);if(!p)return null;const dock=headquartersDock(p);return Math.hypot(w.player.x-dock.x,w.player.y-dock.y)<155&&lineClear(w.player,dock,w)?{placement:p,...dock}:null}
 export function openHeadquarters(w:World){if(!nearbyHeadquarters(w)||w.phase==='over'||w.player.hp<=0||w.player.downedUntil)return false;if(w.progression)w.progression.briefed=true;w.stationPanel='headquarters';return true}
 export const hasMetalworking=(w:World)=>!w.progression||campAccessLevel(w)>=2&&buildingRestored(w,'furnace');

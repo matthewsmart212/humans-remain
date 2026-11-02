@@ -181,9 +181,9 @@ try{
   for(let tick=0;tick<1800&&raid.progression.hqHp===hp;tick++){raid.tick++;m.stepSiegeWalker(raid,e,true)}
   assert(raid.progression.hqHp<hp,kind+' reaches and attacks the table');assert(m.distance(e,site)<site.reach,kind+' gets close to the table');
   if(kind!=='scrap-bomber')assert(m.headquartersRaidVisible(roof,raid),'Raid reveals the HQ interior from outside');
-  if(kind==='scrap-walker'){const impact=raid.effects.find(f=>f.type==='enemy-strike');assert(impact&&m.distance(impact,site.impact)<100,'Punch impacts land at table height');assert.equal(e.motion.direction,'up')}
+  if(kind==='scrap-walker'){const impact=raid.effects.find(f=>f.type==='enemy-strike');assert(impact&&m.distance(impact,site.impact)<100,'Punch impacts land at table height');assert.equal(e.motion.direction,m.facing(site.impact.x-e.x,site.impact.y-e.y),'Walker faces the resized planning table')}
  }
- // The roof must fade on the stairs and exclude their pixels from the always-on-top layer.
+ // The south-facing facade disappears on the stairs, including rotated halls.
  const hqPlacement=layout.items.find(p=>p.assetId==='base_shelter_t1');
  for(const transform of [{},{rotation:90,flipX:true,scale:.8}]){
   const p={...hqPlacement,...transform},b=m.placementBounds(p),[x,y]=m.placementPoint(p,b.x+b.width*.5,b.y+b.height*.96),one=make();one.player.x=x;one.player.y=y;one.layout={...one.layout,items:[p]};
@@ -191,7 +191,7 @@ try{
   const sources=m.requiredImages([p.assetId]),images=Object.fromEntries(Object.entries(sources).map(([k,src])=>[k,{src}])),clips=[],alphas=[];
   const ctx=new Proxy({globalAlpha:1,lineTo(...args){clips.push(args)},drawImage(image){if(image.src===m.BROKEN_CAMP_ART.headquarters)alphas.push(this.globalAlpha)}},{get:(o,k)=>k in o?o[k]:()=>{}});
   const draws=m.placedDrawables(ctx,images,one);assert(draws.some(d=>!d.roof&&d.y<one.player.y),'Interior floor stays below a survivor on the approach');draws.filter(d=>d.roof).forEach(d=>d.draw());
-  assert(alphas.includes(.08),'Roof fades before the player disappears under the stairs');assert(clips.some(c=>c[1]<=m.headquartersRoofBottom(p)),'Stairs cannot paint over the player in the roof pass');
+  assert(!draws.some(d=>d.roof),'The roof and front panels are absent on the approach');assert.equal(alphas.length,0,'No exterior stair pixels can paint over the survivor');
  }
  console.log('PASS: Separate usable-station repair actions, hammer menu access during nearby threats, channel-owned release, secondary progress refresh, stale-action rejection, instant HQ repair, hold/release decay and resume, no idle progress, resources only at 100%, HQ table arrival/strikes, starter pickaxe migration, timed repairs, visible progress, interruption without payment, persistent building damage/destruction, Walker/Hound/Bomber attacks, player aggro, line-of-sight, starter hammer, one-time save migration, equip/repair gameplay actions, all on-site ruins, access/tool/material/proximity guards, atomic costs, save reloads and rotated stair/roof layering.');
 }finally{fs.rmSync(temp,{recursive:true,force:true})}

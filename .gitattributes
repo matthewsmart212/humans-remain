@@ -46,3 +46,4 @@ docs/qa/circular-wall-ne-v3/**/*.jpeg -filter -diff -merge -text
 # Compact new headquarters assets are shared through the connected GitHub API.
 /public/survival/headquarters-south-v1/** -filter -diff -merge -text
 /docs/qa/headquarters-south-v1/** -filter -diff -merge -text
+/docs/qa/headquarters-cutaway-v2/** -filter -diff -merge -text

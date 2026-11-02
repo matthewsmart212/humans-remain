@@ -1,4 +1,6 @@
 import {drawBuildingCondition} from './building-condition-renderer';
+import {HQ_INTERIOR_PROP_IDS} from './headquarters-interior';
+import {headquartersWallMasks,clipWallsOutsideHeadquarters} from './headquarters-wall-mask';
 import {HQ_SOUTH_INTERIOR} from './headquarters-south-art';
 import {headquartersRoofBottom,withinRoofApproach,headquartersRaidVisible} from './headquarters-roof';
 import {campBuildingArt} from './camp-restoration';
@@ -64,8 +66,10 @@ export function drawPlacedGround(ctx:CanvasRenderingContext2D,imgs:Record<string
 }
 export function placedDrawables(ctx:CanvasRenderingContext2D,imgs:Record<string,HTMLImageElement>,w:World,editor=false,viewport?:FoliageViewport,hideFoliage=false){
  const out:{roof?:boolean;layer?:number;y:number;draw:()=>void}[]=[];if(!w.layout)return out;
- const circular:CircularWallDraw[]=[];
- for(const p of visiblePlacements(w.layout,viewport)){const a=ASSET_BY_ID.get(p.assetId);if(!a)continue;if(!editor&&['animal','enemySpawn'].includes(p.role))continue;if(!editor&&['scrap','fuel','pallets'].includes(p.role)&&!w.loot.some(l=>l.placementId===p.id))continue;if(!editor&&p.role==='crate'&&!w.breakables.some(b=>b.placementId===p.id&&b.hp>0))continue;
+ const circular:CircularWallDraw[]=[],roomMasks=headquartersWallMasks(w.layout);
+ const hqMasks=roomMasks.filter(({placement:p})=>p.roof==='hidden'||(p.allowTransparency??placementGeometryAsset(p)?.allowTransparency)!==false&&p.roof==='auto'&&(withinRoofApproach(p,w.player.x,w.player.y)||headquartersRaidVisible(p,w)));
+ const hideHQProps=roomMasks.length>0&&hqMasks.length===0;
+ for(const p of visiblePlacements(w.layout,viewport)){if(hideHQProps&&HQ_INTERIOR_PROP_IDS.has(p.id))continue;const a=ASSET_BY_ID.get(p.assetId);if(!a)continue;if(!editor&&['animal','enemySpawn'].includes(p.role))continue;if(!editor&&['scrap','fuel','pallets'].includes(p.role)&&!w.loot.some(l=>l.placementId===p.id))continue;if(!editor&&p.role==='crate'&&!w.breakables.some(b=>b.placementId===p.id&&b.hp>0))continue;
   if(hideFoliage&&isFoliageAsset(a)||a.foliage&&!foliageVisible(p,viewport))continue;
   if(a.gate){const bounds=placementBounds(p);if(viewport&&!p.rotation&&!p.flipX&&!p.flipY&&(bounds.x+bounds.width<viewport.x||bounds.x>viewport.x+viewport.width||bounds.y+bounds.height<viewport.y||bounds.y>viewport.y+viewport.height))continue;for(const v of gateDrawables(ctx,imgs,w,p,a)){const draw=v.draw;out.push({...v,layer:p.layer??0,draw:()=>{ctx.save();rotatePlacement(ctx,p);draw();ctx.restore()}})}continue;}
   const first=out.length,restoration=campBuildingArt(w,p.assetId);
@@ -75,10 +79,13 @@ export function placedDrawables(ctx:CanvasRenderingContext2D,imgs:Record<string,
   const animationReady=frames?.every(url=>!!imgs[assetImageKey(url)]);
   const frame=animationReady?(a.openFrames?.length?chestFrame(w,p.id,frames!.length):placedAnimationFrame(w,p,a)):0;
   const b=placementBounds(p),im=imgs[assetImageKey(restoration?.image||frames?.[frame]||a.image)]||imgs[assetImageKey(a.image)];if(!im)continue;
+  const southHQ=a.image===HQ_SOUTH_INTERIOR&&!!a.interior;
+  const revealRoof=!!(restoration?.roof||a.roof)&&(p.allowTransparency??placementGeometryAsset(p)?.allowTransparency)!==false&&p.roof==='auto'&&(withinRoofApproach(p,w.player.x,w.player.y)||headquartersRaidVisible(p,w));
+  const roofImage=(restoration?.roof||a.roof)&&imgs[assetImageKey(restoration?.roof||a.roof!)];
   if(a.perimeterCurve?.length&&!p.rotation&&!p.flipX&&!p.flipY){
    if(viewport&&(b.x+b.width<viewport.x||b.x>viewport.x+viewport.width||b.y+b.height<viewport.y||b.y>viewport.y+viewport.height))continue;
    const depth=circularWallDepth(a.perimeterCurve,{x:(w.player.x-p.x)/p.scale,y:(w.player.y-p.y)/p.scale},a.perimeterRise??180);
-   const drawable={layer:p.layer??0,y:p.y+(depth.near?depth.depth*p.scale:0),draw:()=>{ctx.save();if((p.allowTransparency??a.allowTransparency)!==false&&depth.obscuresPlayer)ctx.globalAlpha=.48;ctx.drawImage(im,...a.crop as [number,number,number,number],b.x,b.y,b.width,b.height);ctx.restore()}};
+   const drawable={layer:p.layer??0,y:p.y+(depth.near?depth.depth*p.scale:0),draw:()=>{ctx.save();clipWallsOutsideHeadquarters(ctx,hqMasks,b);if((p.allowTransparency??a.allowTransparency)!==false&&depth.obscuresPlayer)ctx.globalAlpha=.48;ctx.drawImage(im,...a.crop as [number,number,number,number],b.x,b.y,b.width,b.height);ctx.restore()}};
    out.push(drawable);circular.push({drawable,order:a.perimeterDrawOrder??0,priority:depth.near?1000:1,group:circularWallGroup(a.perimeterCurve,p)});
    continue;
   }
@@ -89,21 +96,30 @@ export function placedDrawables(ctx:CanvasRenderingContext2D,imgs:Record<string,
    const segment=a.segments[0],y=p.y+(segment.y+segment.ey)*.5*p.scale,ax=p.x+segment.x*p.scale,ay=p.y+segment.y*p.scale,bx=p.x+segment.ex*p.scale,by=p.y+segment.ey*p.scale,rise=(a.perimeterRise??235)*p.scale;
    const vertical=Math.abs(by-ay)>Math.abs(bx-ax),t=vertical?Math.max(0,Math.min(1,(w.player.y+rise*.4-ay)/(by-ay||1))):Math.max(0,Math.min(1,(w.player.x-ax)/(bx-ax||1))),groundX=ax+(bx-ax)*t,groundY=ay+(by-ay)*t;
    const obscuresPlayer=Math.abs(w.player.x-groundX)<65*p.scale&&w.player.y<groundY&&w.player.y>groundY-rise-20;
-   out.push({layer:p.layer??0,y,draw:()=>{ctx.save();if(p.allowTransparency!==false&&obscuresPlayer)ctx.globalAlpha=.48;ctx.drawImage(im,...a.crop as [number,number,number,number],b.x,b.y,b.width,b.height);ctx.restore()}});
+   out.push({layer:p.layer??0,y,draw:()=>{ctx.save();clipWallsOutsideHeadquarters(ctx,hqMasks,b);if(p.allowTransparency!==false&&obscuresPlayer)ctx.globalAlpha=.48;ctx.drawImage(im,...a.crop as [number,number,number,number],b.x,b.y,b.width,b.height);ctx.restore()}});
    continue;
   }
   // Only contacted/recovering plants need deformed geometry. All idle plants
   // retain their original pixels through the ordinary image path.
   const animatePlant=!!a.foliage&&(viewport?.scale??1)>=.42&&!!w.foliageMotions?.[p.id];
-  const drawBase=()=>{if(restoration){const ruin=imgs[assetImageKey(restoration.image)];if(ruin){ctx.drawImage(ruin,b.x,b.y,b.width,b.height);return}}if(drawCampFurnace(ctx,imgs,w,p))return;if(drawWarehouse(ctx,imgs,w,p))return;if(drawForagePlant(ctx,imgs,w,p))return;if(drawTree(ctx,im,w,p))return;if(drawMineableRock(ctx,im,w,p,a.crop))return;if(a.puddle){drawPuddle(ctx,im,w,p,a);return}if(a.foliage){drawFoliage(ctx,im,w,p,a,animatePlant);return}drawCampContact(ctx,p,a);ctx.save();const [px,py]=placementPoint(p,w.player.x,w.player.y,true);if((p.allowTransparency??placementGeometryAsset(p)?.allowTransparency)!==false&&!a.interior&&py<p.y&&py>b.y&&Math.abs(px-p.x)<b.width*.3)ctx.globalAlpha=.6;
+  const drawBase=()=>{if(southHQ&&roofImage&&p.roof!=='hidden'&&!revealRoof)return;if(restoration){const ruin=imgs[assetImageKey(restoration.image)];if(ruin){ctx.drawImage(ruin,b.x,b.y,b.width,b.height);return}}if(drawCampFurnace(ctx,imgs,w,p))return;if(drawWarehouse(ctx,imgs,w,p))return;if(drawForagePlant(ctx,imgs,w,p))return;if(drawTree(ctx,im,w,p))return;if(drawMineableRock(ctx,im,w,p,a.crop))return;if(a.puddle){drawPuddle(ctx,im,w,p,a);return}if(a.foliage){drawFoliage(ctx,im,w,p,a,animatePlant);return}drawCampContact(ctx,p,a);ctx.save();const [px,py]=placementPoint(p,w.player.x,w.player.y,true);if((p.allowTransparency??placementGeometryAsset(p)?.allowTransparency)!==false&&!a.interior&&py<p.y&&py>b.y&&Math.abs(px-p.x)<b.width*.3)ctx.globalAlpha=.6;
    if(p.role==='hearth'&&!placedFireLit(w,p)&&a.unlit){const off=imgs[assetImageKey(a.unlit)];if(off){const anchor=a.unlitAnchor||[627,1190],size=a.unlitSize||[1254,1254];ctx.drawImage(off,p.frame?b.x:p.x-anchor[0]/size[0]*b.width,p.frame?b.y:p.y-anchor[1]/size[1]*b.height,b.width,b.height)}else ctx.drawImage(im,...a.crop as [number,number,number,number],b.x,b.y,b.width,b.height)}
    else ctx.drawImage(im,...a.crop as [number,number,number,number],b.x,b.y,b.width,b.height);ctx.restore()};
-  // The north-facing back wall of this cutaway sits in front of the camp
-  // palisade, while the floor remains below everyone standing in the room.
-  const southHQ=a.image===HQ_SOUTH_INTERIOR&&a.interior;
-  out.push({y:southHQ?p.y+southHQ.y*p.scale:a.interior?-10000:a.id==='art_hq_woven_rug'?-9999:p.y,draw:drawBase});
-  for(const f of restoration&&!southHQ?[]:a.foreground||[])out.push({y:placementPoint(p,b.x+(f[0]+f[2]/2)/a.crop[2]*b.width,b.y+(f[1]+f[3])/a.crop[3]*b.height)[1],draw:()=>ctx.drawImage(im,a.crop[0]+f[0],a.crop[1]+f[1],f[2],f[3],b.x+f[0]/a.crop[2]*b.width,b.y+f[1]/a.crop[3]*b.height,f[2]/a.crop[2]*b.width,f[3]/a.crop[3]*b.height)});
-  if((restoration?.roof||a.roof)&&p.roof!=='hidden'){const roof=imgs[assetImageKey(restoration?.roof||a.roof!)];if(roof){const rect=a.roofRect||[0,0,a.crop[2],a.crop[3]];out.push({roof:true,y:100000,draw:()=>{ctx.save();ctx.globalAlpha=(p.allowTransparency??placementGeometryAsset(p)?.allowTransparency)!==false&&p.roof==='auto'&&(withinRoofApproach(p,w.player.x,w.player.y)||headquartersRaidVisible(p,w))?.08:1;const roofBottom=southHQ?b.y+b.height*.53:headquartersRoofBottom(p);if(roofBottom!==undefined){ctx.beginPath();ctx.moveTo(b.x,b.y);ctx.lineTo(b.x+b.width,b.y);ctx.lineTo(b.x+b.width,roofBottom);ctx.lineTo(b.x,roofBottom);ctx.closePath();ctx.clip()}ctx.drawImage(roof,b.x+rect[0]/a.crop[2]*b.width,b.y+rect[1]/a.crop[3]*b.height,rect[2]/a.crop[2]*b.width,rect[3]/a.crop[3]*b.height);ctx.restore()}})}}
+  // The room floor stays below actors and furniture. Palisade pixels are
+  // clipped out of its envelope independently of automatic wall depth.
+  out.push({y:a.interior?-10000:a.id==='art_hq_woven_rug'?-9999:p.y,draw:drawBase});
+  for(const f of southHQ||restoration?[]:a.foreground||[])out.push({y:placementPoint(p,b.x+(f[0]+f[2]/2)/a.crop[2]*b.width,b.y+(f[1]+f[3])/a.crop[3]*b.height)[1],draw:()=>ctx.drawImage(im,a.crop[0]+f[0],a.crop[1]+f[1],f[2],f[3],b.x+f[0]/a.crop[2]*b.width,b.y+f[1]/a.crop[3]*b.height,f[2]/a.crop[2]*b.width,f[3]/a.crop[3]*b.height)});
+  // Outside uses the complete aligned facade, rather than a rectangular roof
+  // crop. Inside omits that pass entirely: no ghost roof or front panels.
+  if(roofImage&&p.roof!=='hidden'&&!(southHQ&&revealRoof)){
+   const rect=a.roofRect||[0,0,a.crop[2],a.crop[3]];
+   out.push({roof:true,y:100000,draw:()=>{
+    ctx.save();ctx.globalAlpha=revealRoof?.08:1;
+    const bottom=southHQ?undefined:headquartersRoofBottom(p);
+    if(bottom!==undefined){ctx.beginPath();ctx.moveTo(b.x,b.y);ctx.lineTo(b.x+b.width,b.y);ctx.lineTo(b.x+b.width,bottom);ctx.lineTo(b.x,bottom);ctx.closePath();ctx.clip()}
+    ctx.drawImage(roofImage,b.x+rect[0]/a.crop[2]*b.width,b.y+rect[1]/a.crop[3]*b.height,rect[2]/a.crop[2]*b.width,rect[3]/a.crop[3]*b.height);ctx.restore();
+   }});
+  }
   for(let i=first;i<out.length;i++)out[i].layer=p.layer??0;
   if(p.rotation||p.flipX||p.flipY)for(let i=first;i<out.length;i++){const draw=out[i].draw;out[i].draw=()=>{ctx.save();rotatePlacement(ctx,p);draw();ctx.restore()}}
  }
