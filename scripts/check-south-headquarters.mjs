@@ -91,6 +91,10 @@ try{
  }
  assert(Object.values(m.requiredImages([hq.assetId])).includes(m.HQ_SOUTH_GROUND),'Ground contact decal is preloaded');
  assert(bundle.includes(m.HQ_SOUTH_GROUND),'Ground contact decal is bundled offline');
+ for(const detail of m.HQ_FOUNDATION_DRESSING){
+  assert(Object.values(m.requiredImages([hq.assetId])).includes(detail.image),'Foundation growth is preloaded: '+detail.image);
+  assert(bundle.includes(detail.image),'Foundation growth works offline: '+detail.image);
+ }
  const viewport={x:b.x-200,y:b.y-180,width:b.width+400,height:b.height+560};
  const local=layout.items.filter(p=>{const q=m.placementBounds(p);return q.x<viewport.x+viewport.width&&q.x+q.width>viewport.x&&q.y<viewport.y+viewport.height&&q.y+q.height>viewport.y});
  const redirects=JSON.parse(fs.readFileSync('server/lossless-artwork-redirects.json'));
@@ -151,6 +155,6 @@ try{
   draws.sort(m.compareWorldDrawables).forEach(d=>d.draw());
   fs.writeFileSync(path.join(out,`${broken?'ruined':'repaired'}-${interior?'interior':'exterior'}.png`),canvas.toBuffer('image/png'));
  }
- const report={result:'pass',placements:layout.items.length,floorAreaIncreasePercent:39.24,room:{width:Math.round(b.width*.84),depth:Math.round(b.height*.27)},fourPlayers:true,centralAisle:64,entranceAndTableReachable:true,offlineNativeAssets:5,doorwayPixelsStable:true,liveFurnitureThroughDoor:true,limit:'Shared production renderer and collision/navigation checks; no physical iPhone test'};
+ const report={result:'pass',placements:layout.items.length,floorAreaIncreasePercent:39.24,room:{width:Math.round(b.width*.84),depth:Math.round(b.height*.27)},fourPlayers:true,centralAisle:64,entranceAndTableReachable:true,offlineNativeAssets:5+new Set(m.HQ_FOUNDATION_DRESSING.map(d=>d.image)).size,doorwayPixelsStable:true,liveFurnitureThroughDoor:true,limit:'Shared production renderer and collision/navigation checks; no physical iPhone test'};
  fs.writeFileSync(path.join(out,'verification.json'),JSON.stringify(report,null,2)+'\n');console.log(JSON.stringify(report));
 }finally{fs.rmSync(temp,{recursive:true,force:true})}

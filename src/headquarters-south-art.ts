@@ -4,7 +4,18 @@ import type {AssetCollision} from './asset-collision';
 
 export const HQ_SOUTH_ROOT='/survival/headquarters-south-v1';
 export const HQ_SOUTH_INTERIOR=HQ_SOUTH_ROOT+'/cutaway-v3.webp';
-export const HQ_SOUTH_GROUND=HQ_SOUTH_ROOT+'/ground-contact-v5.webp';
+export const HQ_SOUTH_GROUND=HQ_SOUTH_ROOT+'/settled-ground-v6.webp';
+export const HQ_SOUTH_FOOTING=HQ_SOUTH_ROOT+'/rooted-footing-v6.webp';
+/** Reuse the camp's low foliage at the masonry feet. These are decorative
+ * parts of the building, so they follow owner transforms without new blockers. */
+export const HQ_FOUNDATION_DRESSING=[
+ {image:HQ_SOUTH_FOOTING,rect:[0,0,1,1]},
+ {image:'/survival/foliage-v4/forest-ivy.webp',rect:[-.012,.765,.145,.125]},
+ {image:'/survival/foliage-v1/fern.webp',rect:[.012,.686,.09,.087]},
+ {image:'/survival/foliage-v4/forest-ivy.webp',rect:[.90,.79,.11,.095]},
+ {image:'/survival/foliage-v4/sage-fan.webp',rect:[.955,.71,.09,.082]},
+ {image:'/survival/foliage-v4/forest-ivy.webp',rect:[.285,.864,.065,.056]},
+] as const;
 export const HQ_SOUTH_ROOF=HQ_SOUTH_ROOT+'/exterior.webp';
 export const HQ_SOUTH_RUIN=HQ_SOUTH_ROOT+'/ruined.webp';
 export const HQ_SOUTH_RUIN_INTERIOR=HQ_SOUTH_ROOT+'/ruined-cutaway-v3.webp';
@@ -38,7 +49,7 @@ export function resolveSouthHeadquarters(record:ArtworkRecord):ArtworkRecord{
 export function withSouthHeadquartersGeometry(a:WorldAsset):WorldAsset{
  if(a.id!=='base_shelter_t1'||a.image!==HQ_SOUTH_INTERIOR)return a;
  return {...a,body:[],segments:[],collision:HQ_SOUTH_COLLISION,
-  ground:{image:HQ_SOUTH_GROUND,size:[1536,1024],rect:[0,.012,1,1]},
+  ground:{image:HQ_SOUTH_GROUND,size:[1536,1024],rect:[-.16,.36,1.32,.82]},
   interior:{x:(.08-.5)*a.width,y:(.49-.94)*a.height,width:.84*a.width,height:.27*a.height},
   foreground:[[20,260,100,590],[1416,260,100,590]],
   roof:HQ_SOUTH_ROOF,roofRect:[0,0,1536,1024],

@@ -1,5 +1,5 @@
 import {restorationImages} from './camp-restoration';
-import {withSouthHeadquartersGeometry} from './headquarters-south-art';
+import {withSouthHeadquartersGeometry,HQ_SOUTH_INTERIOR,HQ_FOUNDATION_DRESSING} from './headquarters-south-art';
 import {IRONWORKS_WORLD_ART,FURNACE_ID} from './ironworks-data';
 import {GARDEN_ART,GARDEN_ANCHOR,GARDEN_COLLISION} from './camp-garden-art';
 import {MINEABLE_ROCKS} from './mining-rocks';
@@ -107,5 +107,5 @@ for(const a of WORLD_ASSETS)if(a.ground)imageDimensions[a.ground.image]=a.ground
 export const ASSET_BY_ID=new Map(WORLD_ASSETS.map(a=>[a.id,a]));
 export const TREE_LOG_IMAGE='/survival/world-scenery-v1/hollow-birch-log.webp';
 export const assetImageKey=(url:string)=>'placed:'+url;
-export function requiredImages(assetIds:string[],terrain?:{url:string},options:{animationFrames?:boolean}={}){const out:Record<string,string>=terrain&&!usesPaintedHomeTerrain(terrain)?{[assetImageKey(terrain.url)]:terrain.url}:{};for(const id of new Set(assetIds)){const a=ASSET_BY_ID.get(id);if(!a)continue;const frames=options.animationFrames===false?[a.frames?.[0],a.openFrames?.[0]]:[...(a.frames||[]),...(a.openFrames||[])];for(const url of [...restorationImages(id),a.image,a.roof,a.unlit,a.ground?.image,a.gate?.leaf,a.gate?.post,a.gate?.states?.closed,a.gate?.states?.open,...frames])if(url)out[assetImageKey(url)]=url;if(treeArt.some(t=>t.id===id))out[assetImageKey(TREE_LOG_IMAGE)]=TREE_LOG_IMAGE}return out}
+export function requiredImages(assetIds:string[],terrain?:{url:string},options:{animationFrames?:boolean}={}){const out:Record<string,string>=terrain&&!usesPaintedHomeTerrain(terrain)?{[assetImageKey(terrain.url)]:terrain.url}:{};for(const id of new Set(assetIds)){const a=ASSET_BY_ID.get(id);if(!a)continue;const frames=options.animationFrames===false?[a.frames?.[0],a.openFrames?.[0]]:[...(a.frames||[]),...(a.openFrames||[])];for(const url of [...restorationImages(id),a.image,a.roof,a.unlit,a.ground?.image,...(a.image===HQ_SOUTH_INTERIOR?HQ_FOUNDATION_DRESSING.map(d=>d.image):[]),a.gate?.leaf,a.gate?.post,a.gate?.states?.closed,a.gate?.states?.open,...frames])if(url)out[assetImageKey(url)]=url;if(treeArt.some(t=>t.id===id))out[assetImageKey(TREE_LOG_IMAGE)]=TREE_LOG_IMAGE}return out}
 export const ROLE_LABELS:Record<WorldRole,string>={prop:'Visual prop',generator:'Generator / workshop',hearth:'Cooking hearth',well:'Drinking well',storage:'Shared supplies',lamp:'Powered lamp',scrap:'Scrap pickup',fuel:'Fuel pickup',pallets:'Pallet pickup',crate:'Smashable crate',search:'Searchable locker',animal:'Animal spawn',enemySpawn:'Enemy entrance',crusher:'Crusher',shutter:'Security shutter'};

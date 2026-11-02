@@ -37,7 +37,7 @@ try{
  const c=m.editorCamera(width*2,height*2,world,view,2),viewport={x:c.x,y:c.y,width:width*2/c.scale,height:height*2/c.scale,scale:c.scale};
  const sources={...m.EDITOR_ENTRY_IMAGES,...m.editorTerrainDetail(saved.layout.terrainImage),...m.requiredImages(m.visiblePlacements(saved.layout,viewport).map(p=>p.assetId),saved.layout.terrainImage,{animationFrames:false})};
  renderer=await m.createNativeRenderer(view);await renderer.warmImages(sources);
- for(const url of [m.HQ_SOUTH_INTERIOR,m.HQ_SOUTH_RUIN_INTERIOR,m.HQ_SOUTH_ROOF,m.HQ_SOUTH_RUIN,m.HQ_SOUTH_GROUND])assert(decoded.has(m.BUNDLED_ART[url]),'Native loader decoded '+url);
+ for(const url of [m.HQ_SOUTH_INTERIOR,m.HQ_SOUTH_RUIN_INTERIOR,m.HQ_SOUTH_ROOF,m.HQ_SOUTH_RUIN,m.HQ_SOUTH_GROUND,...m.HQ_FOUNDATION_DRESSING.map(d=>d.image)])assert(decoded.has(m.BUNDLED_ART[url]),'Native loader decoded '+url);
  outdoor=new m.OutdoorTerrainStream(renderer.warmImages,renderer.releaseImages);outdoor.update(viewport,world.player);await outdoor.settled();assert(!outdoor.error);world.outdoorReady=outdoor.ready;
  fs.mkdirSync(output,{recursive:true});const pictures=[];
  for(const broken of [false,true])for(const position of [1.08,.97,.94,.91,.875,.84,.81,.78,.70,.60]){

@@ -15,7 +15,7 @@ export function finalizePublishAssets(circularWallImages,historicalPublishExport
  const redirected=Object.keys(Object.assign({},...['lossless-artwork','retired-road','calm-river','river-features','river-quality'].map(name=>JSON.parse(fs.readFileSync(`server/${name}-redirects.json`,'utf8')))));
  const retired=[...historicalPublishExports,...redirected,
   '/survival/headquarters-south-v1/interior.webp','/survival/headquarters-south-v1/ruined-interior.webp','/survival/headquarters-south-v1/cutaway.webp','/survival/headquarters-south-v1/ruined-cutaway.webp',
-  '/survival/headquarters-south-v1/ground-contact-v4.webp',
+  '/survival/headquarters-south-v1/ground-contact-v4.webp','/survival/headquarters-south-v1/ground-contact-v5.webp',
   '/survival/predators-v1/sprite-pack.zip','/survival/trees-v1',
   '/survival/maps/consistent-terrain-v1','/survival/world-ground-v1',
   '/survival/road-materials-v1','/survival/world-ground-v2/olive.webp',
@@ -31,7 +31,7 @@ export function finalizePublishAssets(circularWallImages,historicalPublishExport
   return true;
  }});
  for(const url of circularWallImages)assert(fs.existsSync(path.join(target,'client'+url)),'Required wall: '+url);
- for(const file of ['cutaway-v3','exterior','ruined-cutaway-v3','ruined','ground-contact-v5'])assert(fs.existsSync(path.join(target,'client/survival/headquarters-south-v1',file+'.webp')),'Required headquarters state: '+file);
+ for(const file of ['cutaway-v3','exterior','ruined-cutaway-v3','ruined','settled-ground-v6','rooted-footing-v6'])assert(fs.existsSync(path.join(target,'client/survival/headquarters-south-v1',file+'.webp')),'Required headquarters state: '+file);
  for(const url of retired)assert(!fs.existsSync(path.join(target,'client'+url)),'Retired export cannot enter the final publish tree: '+url);
  const previous=fs.mkdtempSync(path.resolve('.sites-runtime/previous-dist-'));
  fs.renameSync(source,path.join(previous,'dist'));fs.renameSync(target,source);
