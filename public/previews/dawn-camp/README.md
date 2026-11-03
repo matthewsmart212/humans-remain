@@ -4,6 +4,8 @@ The selected dawn camp now runs on a **seamless 16-second master cycle**. The tr
 
 ## Preview
 
+The published `watch.html` is a lightweight looping video preview. The full interactive sprite renderer and all masters remain in this source folder and the downloadable kit. Only the watch page and two videos enter the live deployment.
+
 Open `index.html` in a modern browser. It loads local files without external requests. Pause the animation, change wind, toggle the seated survivor, or isolate layers. Reduced-motion preferences start paused; hidden tabs stop drawing. The standalone HTML embeds the same assets.
 
 `preview.mp4` contains one complete **16-second loop at 60 fps**. The separate GIF is 25 fps with equal 40 ms frame delays. The character close-up uses the same final video, cropped for easier review. The export omits a duplicate end frame: the next frame after the last is the first frame of the next cycle.

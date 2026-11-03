@@ -25,7 +25,8 @@ export function finalizePublishAssets(circularWallImages,historicalPublishExport
  fs.cpSync(source,target,{recursive:true,filter:filename=>{
   const relative=path.relative(source,filename).split(path.sep).join('/');
   const url=relative.startsWith('client/')?'/'+relative.slice(7):'';
-  const unused=url.startsWith('/api/asset-files/')||retired.some(old=>url===old||url.startsWith(old+'/'))||
+  const previewSource=url.startsWith('/previews/dawn-camp/')&&fs.statSync(filename).isFile()&&!['watch.html','preview.mp4','character-idle-closeup.mp4'].includes(path.basename(filename));
+  const unused=previewSource||url.startsWith('/api/asset-files/')||retired.some(old=>url===old||url.startsWith(old+'/'))||
    wallFolders.some(folder=>url.startsWith('/survival/'+folder+'/'))&&fs.statSync(filename).isFile()&&!circularWallImages.has(url);
   if(unused){excluded++;if(fs.statSync(filename).isFile())bytes+=fs.statSync(filename).size;return false}
   return true;
