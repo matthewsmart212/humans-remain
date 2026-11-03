@@ -1,0 +1,1772 @@
+{
+  "version": 2,
+  "revision": "seamless-tree-and-character-idle",
+  "title": "Humans Remain — Dawn Camp",
+  "scene": {
+    "width": 1536,
+    "height": 864
+  },
+  "assets": {
+    "approved-background": {
+      "file": "assets/approved-background.jpeg",
+      "width": 1536,
+      "height": 864,
+      "sha256": "916c90618e93228c8abd65e1679292b3fa3411c0c7c6ea28963e1703d54018b7",
+      "decodedBytes": 5308416,
+      "mime": "image/jpeg",
+      "transparentFraction": 0,
+      "frames": [
+        {
+          "bounds": {
+            "x": 0,
+            "y": 0,
+            "width": 1536,
+            "height": 864
+          }
+        }
+      ],
+      "referenceBounds": {
+        "width": 1536,
+        "height": 864
+      }
+    },
+    "dawn-clean-plate": {
+      "file": "assets/dawn-clean-plate.png",
+      "width": 1672,
+      "height": 941,
+      "sha256": "74997bb3343765382b3f82045b8eab00c2c1ea6ff2f8adbf05aac3c8d3de30b0",
+      "decodedBytes": 6293408,
+      "mime": "image/png",
+      "transparentFraction": 0,
+      "frames": [
+        {
+          "bounds": {
+            "x": 0,
+            "y": 0,
+            "width": 1672,
+            "height": 941
+          }
+        }
+      ],
+      "referenceBounds": {
+        "width": 1672,
+        "height": 941
+      }
+    },
+    "autumn-canopy": {
+      "file": "assets/autumn-canopy.png",
+      "width": 1672,
+      "height": 941,
+      "sha256": "7053109f14816d6c66e6ce1ce34482ca3301decb06e45e304aade95f7d59291b",
+      "decodedBytes": 6293408,
+      "mime": "image/png",
+      "transparentFraction": 0.9091,
+      "frames": [
+        {
+          "bounds": {
+            "x": 0,
+            "y": 0,
+            "width": 1672,
+            "height": 941
+          }
+        }
+      ],
+      "referenceBounds": {
+        "width": 1672,
+        "height": 941
+      }
+    },
+    "survivor-idle-8": {
+      "file": "assets/survivor-idle-8.png",
+      "width": 1774,
+      "height": 887,
+      "sha256": "c3448d39bccc8acf3e7819fc7537af5896286eeffb457888b6dac14a3b914c51",
+      "decodedBytes": 6294152,
+      "mime": "image/png",
+      "transparentFraction": 0.5881,
+      "columns": 4,
+      "rows": 2,
+      "frames": [
+        {
+          "cell": {
+            "x": 0,
+            "y": 0,
+            "width": 444,
+            "height": 444
+          },
+          "bounds": {
+            "x": 92,
+            "y": 8,
+            "width": 251,
+            "height": 429
+          }
+        },
+        {
+          "cell": {
+            "x": 444,
+            "y": 0,
+            "width": 443,
+            "height": 444
+          },
+          "bounds": {
+            "x": 536,
+            "y": 8,
+            "width": 251,
+            "height": 429
+          }
+        },
+        {
+          "cell": {
+            "x": 887,
+            "y": 0,
+            "width": 443,
+            "height": 444
+          },
+          "bounds": {
+            "x": 979,
+            "y": 8,
+            "width": 251,
+            "height": 429
+          }
+        },
+        {
+          "cell": {
+            "x": 1330,
+            "y": 0,
+            "width": 444,
+            "height": 444
+          },
+          "bounds": {
+            "x": 1424,
+            "y": 10,
+            "width": 250,
+            "height": 427
+          }
+        },
+        {
+          "cell": {
+            "x": 0,
+            "y": 444,
+            "width": 444,
+            "height": 443
+          },
+          "bounds": {
+            "x": 92,
+            "y": 455,
+            "width": 251,
+            "height": 425
+          }
+        },
+        {
+          "cell": {
+            "x": 444,
+            "y": 444,
+            "width": 443,
+            "height": 443
+          },
+          "bounds": {
+            "x": 536,
+            "y": 455,
+            "width": 251,
+            "height": 425
+          }
+        },
+        {
+          "cell": {
+            "x": 887,
+            "y": 444,
+            "width": 443,
+            "height": 443
+          },
+          "bounds": {
+            "x": 979,
+            "y": 455,
+            "width": 251,
+            "height": 425
+          }
+        },
+        {
+          "cell": {
+            "x": 1330,
+            "y": 444,
+            "width": 444,
+            "height": 443
+          },
+          "bounds": {
+            "x": 1423,
+            "y": 453,
+            "width": 251,
+            "height": 427
+          }
+        }
+      ],
+      "referenceBounds": {
+        "width": 251,
+        "height": 427
+      }
+    },
+    "campfire-flames-8": {
+      "file": "assets/campfire-flames-8.png",
+      "width": 1774,
+      "height": 887,
+      "sha256": "cbbb699ebedabe2a3be02851f749ff6b1eff07a4e8724caf8105d4b5a03f7813",
+      "decodedBytes": 6294152,
+      "mime": "image/png",
+      "transparentFraction": 0.7061,
+      "columns": 4,
+      "rows": 2,
+      "frames": [
+        {
+          "cell": {
+            "x": 0,
+            "y": 0,
+            "width": 444,
+            "height": 444
+          },
+          "bounds": {
+            "x": 54,
+            "y": 79,
+            "width": 333,
+            "height": 300
+          }
+        },
+        {
+          "cell": {
+            "x": 444,
+            "y": 0,
+            "width": 443,
+            "height": 444
+          },
+          "bounds": {
+            "x": 495,
+            "y": 49,
+            "width": 339,
+            "height": 329
+          }
+        },
+        {
+          "cell": {
+            "x": 887,
+            "y": 0,
+            "width": 443,
+            "height": 444
+          },
+          "bounds": {
+            "x": 936,
+            "y": 23,
+            "width": 340,
+            "height": 355
+          }
+        },
+        {
+          "cell": {
+            "x": 1330,
+            "y": 0,
+            "width": 444,
+            "height": 444
+          },
+          "bounds": {
+            "x": 1377,
+            "y": 33,
+            "width": 339,
+            "height": 347
+          }
+        },
+        {
+          "cell": {
+            "x": 0,
+            "y": 444,
+            "width": 444,
+            "height": 443
+          },
+          "bounds": {
+            "x": 52,
+            "y": 492,
+            "width": 337,
+            "height": 329
+          }
+        },
+        {
+          "cell": {
+            "x": 444,
+            "y": 444,
+            "width": 443,
+            "height": 443
+          },
+          "bounds": {
+            "x": 498,
+            "y": 453,
+            "width": 339,
+            "height": 369
+          }
+        },
+        {
+          "cell": {
+            "x": 887,
+            "y": 444,
+            "width": 443,
+            "height": 443
+          },
+          "bounds": {
+            "x": 941,
+            "y": 491,
+            "width": 331,
+            "height": 331
+          }
+        },
+        {
+          "cell": {
+            "x": 1330,
+            "y": 444,
+            "width": 444,
+            "height": 443
+          },
+          "bounds": {
+            "x": 1385,
+            "y": 544,
+            "width": 334,
+            "height": 278
+          }
+        }
+      ],
+      "referenceBounds": {
+        "width": 338,
+        "height": 330
+      }
+    },
+    "smoke-12": {
+      "file": "assets/smoke-12.png",
+      "width": 1448,
+      "height": 1086,
+      "sha256": "df050fb54abe03f78aa70a6e4810ad4a857e9b9847711eeb4a8c02867372b34e",
+      "decodedBytes": 6290112,
+      "mime": "image/png",
+      "transparentFraction": 0.8223,
+      "columns": 4,
+      "rows": 3,
+      "frames": [
+        {
+          "cell": {
+            "x": 0,
+            "y": 0,
+            "width": 362,
+            "height": 362
+          },
+          "bounds": {
+            "x": 128,
+            "y": 113,
+            "width": 98,
+            "height": 242
+          }
+        },
+        {
+          "cell": {
+            "x": 362,
+            "y": 0,
+            "width": 362,
+            "height": 362
+          },
+          "bounds": {
+            "x": 474,
+            "y": 86,
+            "width": 170,
+            "height": 269
+          }
+        },
+        {
+          "cell": {
+            "x": 724,
+            "y": 0,
+            "width": 362,
+            "height": 362
+          },
+          "bounds": {
+            "x": 832,
+            "y": 57,
+            "width": 178,
+            "height": 298
+          }
+        },
+        {
+          "cell": {
+            "x": 1086,
+            "y": 0,
+            "width": 362,
+            "height": 362
+          },
+          "bounds": {
+            "x": 1192,
+            "y": 42,
+            "width": 202,
+            "height": 313
+          }
+        },
+        {
+          "cell": {
+            "x": 0,
+            "y": 362,
+            "width": 362,
+            "height": 362
+          },
+          "bounds": {
+            "x": 105,
+            "y": 396,
+            "width": 230,
+            "height": 322
+          }
+        },
+        {
+          "cell": {
+            "x": 362,
+            "y": 362,
+            "width": 362,
+            "height": 362
+          },
+          "bounds": {
+            "x": 465,
+            "y": 388,
+            "width": 238,
+            "height": 329
+          }
+        },
+        {
+          "cell": {
+            "x": 724,
+            "y": 362,
+            "width": 362,
+            "height": 362
+          },
+          "bounds": {
+            "x": 818,
+            "y": 377,
+            "width": 248,
+            "height": 340
+          }
+        },
+        {
+          "cell": {
+            "x": 1086,
+            "y": 362,
+            "width": 362,
+            "height": 362
+          },
+          "bounds": {
+            "x": 1166,
+            "y": 366,
+            "width": 249,
+            "height": 351
+          }
+        },
+        {
+          "cell": {
+            "x": 0,
+            "y": 724,
+            "width": 362,
+            "height": 362
+          },
+          "bounds": {
+            "x": 84,
+            "y": 726,
+            "width": 252,
+            "height": 353
+          }
+        },
+        {
+          "cell": {
+            "x": 362,
+            "y": 724,
+            "width": 362,
+            "height": 362
+          },
+          "bounds": {
+            "x": 456,
+            "y": 764,
+            "width": 217,
+            "height": 315
+          }
+        },
+        {
+          "cell": {
+            "x": 724,
+            "y": 724,
+            "width": 362,
+            "height": 362
+          },
+          "bounds": {
+            "x": 828,
+            "y": 806,
+            "width": 163,
+            "height": 273
+          }
+        },
+        {
+          "cell": {
+            "x": 1086,
+            "y": 724,
+            "width": 362,
+            "height": 362
+          },
+          "bounds": {
+            "x": 1199,
+            "y": 812,
+            "width": 110,
+            "height": 267
+          }
+        }
+      ],
+      "referenceBounds": {
+        "width": 209.5,
+        "height": 314
+      }
+    },
+    "autumn-leaves-16": {
+      "file": "assets/autumn-leaves-16.png",
+      "width": 1254,
+      "height": 1254,
+      "sha256": "f6df1a9e00e2df8a416158f0016f8b56f0ba23846292d09626d9d07d0a187a04",
+      "decodedBytes": 6290064,
+      "mime": "image/png",
+      "transparentFraction": 0.7523,
+      "columns": 4,
+      "rows": 4,
+      "frames": [
+        {
+          "cell": {
+            "x": 0,
+            "y": 0,
+            "width": 314,
+            "height": 314
+          },
+          "bounds": {
+            "x": 35,
+            "y": 25,
+            "width": 267,
+            "height": 269
+          }
+        },
+        {
+          "cell": {
+            "x": 314,
+            "y": 0,
+            "width": 313,
+            "height": 314
+          },
+          "bounds": {
+            "x": 357,
+            "y": 38,
+            "width": 259,
+            "height": 248
+          }
+        },
+        {
+          "cell": {
+            "x": 627,
+            "y": 0,
+            "width": 313,
+            "height": 314
+          },
+          "bounds": {
+            "x": 712,
+            "y": 40,
+            "width": 143,
+            "height": 254
+          }
+        },
+        {
+          "cell": {
+            "x": 940,
+            "y": 0,
+            "width": 314,
+            "height": 314
+          },
+          "bounds": {
+            "x": 947,
+            "y": 26,
+            "width": 265,
+            "height": 266
+          }
+        },
+        {
+          "cell": {
+            "x": 0,
+            "y": 314,
+            "width": 314,
+            "height": 313
+          },
+          "bounds": {
+            "x": 57,
+            "y": 330,
+            "width": 214,
+            "height": 273
+          }
+        },
+        {
+          "cell": {
+            "x": 314,
+            "y": 314,
+            "width": 313,
+            "height": 313
+          },
+          "bounds": {
+            "x": 370,
+            "y": 346,
+            "width": 222,
+            "height": 252
+          }
+        },
+        {
+          "cell": {
+            "x": 627,
+            "y": 314,
+            "width": 313,
+            "height": 313
+          },
+          "bounds": {
+            "x": 714,
+            "y": 339,
+            "width": 141,
+            "height": 264
+          }
+        },
+        {
+          "cell": {
+            "x": 940,
+            "y": 314,
+            "width": 314,
+            "height": 313
+          },
+          "bounds": {
+            "x": 979,
+            "y": 330,
+            "width": 212,
+            "height": 273
+          }
+        },
+        {
+          "cell": {
+            "x": 0,
+            "y": 627,
+            "width": 314,
+            "height": 313
+          },
+          "bounds": {
+            "x": 72,
+            "y": 642,
+            "width": 212,
+            "height": 272
+          }
+        },
+        {
+          "cell": {
+            "x": 314,
+            "y": 627,
+            "width": 313,
+            "height": 313
+          },
+          "bounds": {
+            "x": 377,
+            "y": 654,
+            "width": 208,
+            "height": 250
+          }
+        },
+        {
+          "cell": {
+            "x": 627,
+            "y": 627,
+            "width": 313,
+            "height": 313
+          },
+          "bounds": {
+            "x": 711,
+            "y": 651,
+            "width": 133,
+            "height": 262
+          }
+        },
+        {
+          "cell": {
+            "x": 940,
+            "y": 627,
+            "width": 314,
+            "height": 313
+          },
+          "bounds": {
+            "x": 975,
+            "y": 642,
+            "width": 205,
+            "height": 271
+          }
+        },
+        {
+          "cell": {
+            "x": 0,
+            "y": 940,
+            "width": 314,
+            "height": 314
+          },
+          "bounds": {
+            "x": 33,
+            "y": 944,
+            "width": 273,
+            "height": 276
+          }
+        },
+        {
+          "cell": {
+            "x": 314,
+            "y": 940,
+            "width": 313,
+            "height": 314
+          },
+          "bounds": {
+            "x": 351,
+            "y": 965,
+            "width": 256,
+            "height": 236
+          }
+        },
+        {
+          "cell": {
+            "x": 627,
+            "y": 940,
+            "width": 313,
+            "height": 314
+          },
+          "bounds": {
+            "x": 700,
+            "y": 960,
+            "width": 152,
+            "height": 263
+          }
+        },
+        {
+          "cell": {
+            "x": 940,
+            "y": 940,
+            "width": 314,
+            "height": 314
+          },
+          "bounds": {
+            "x": 950,
+            "y": 947,
+            "width": 271,
+            "height": 267
+          }
+        }
+      ],
+      "referenceBounds": {
+        "width": 213,
+        "height": 265
+      }
+    },
+    "embers-and-dust-16": {
+      "file": "assets/embers-and-dust-16.png",
+      "width": 1254,
+      "height": 1254,
+      "sha256": "835e64d4f2ca80937ee673122dece16e40eab3b0902283f6a8fe115c2eac00bf",
+      "decodedBytes": 6290064,
+      "mime": "image/png",
+      "transparentFraction": 0.9141,
+      "columns": 4,
+      "rows": 4,
+      "frames": [
+        {
+          "cell": {
+            "x": 0,
+            "y": 0,
+            "width": 314,
+            "height": 314
+          },
+          "bounds": {
+            "x": 122,
+            "y": 130,
+            "width": 73,
+            "height": 81
+          }
+        },
+        {
+          "cell": {
+            "x": 314,
+            "y": 0,
+            "width": 313,
+            "height": 314
+          },
+          "bounds": {
+            "x": 436,
+            "y": 128,
+            "width": 86,
+            "height": 85
+          }
+        },
+        {
+          "cell": {
+            "x": 627,
+            "y": 0,
+            "width": 313,
+            "height": 314
+          },
+          "bounds": {
+            "x": 740,
+            "y": 131,
+            "width": 75,
+            "height": 79
+          }
+        },
+        {
+          "cell": {
+            "x": 940,
+            "y": 0,
+            "width": 314,
+            "height": 314
+          },
+          "bounds": {
+            "x": 1049,
+            "y": 122,
+            "width": 91,
+            "height": 101
+          }
+        },
+        {
+          "cell": {
+            "x": 0,
+            "y": 314,
+            "width": 314,
+            "height": 313
+          },
+          "bounds": {
+            "x": 120,
+            "y": 413,
+            "width": 81,
+            "height": 109
+          }
+        },
+        {
+          "cell": {
+            "x": 314,
+            "y": 314,
+            "width": 313,
+            "height": 313
+          },
+          "bounds": {
+            "x": 419,
+            "y": 426,
+            "width": 110,
+            "height": 94
+          }
+        },
+        {
+          "cell": {
+            "x": 627,
+            "y": 314,
+            "width": 313,
+            "height": 313
+          },
+          "bounds": {
+            "x": 740,
+            "y": 426,
+            "width": 95,
+            "height": 96
+          }
+        },
+        {
+          "cell": {
+            "x": 940,
+            "y": 314,
+            "width": 314,
+            "height": 313
+          },
+          "bounds": {
+            "x": 1057,
+            "y": 430,
+            "width": 84,
+            "height": 85
+          }
+        },
+        {
+          "cell": {
+            "x": 0,
+            "y": 627,
+            "width": 314,
+            "height": 313
+          },
+          "bounds": {
+            "x": 70,
+            "y": 730,
+            "width": 189,
+            "height": 95
+          }
+        },
+        {
+          "cell": {
+            "x": 314,
+            "y": 627,
+            "width": 313,
+            "height": 313
+          },
+          "bounds": {
+            "x": 375,
+            "y": 721,
+            "width": 179,
+            "height": 108
+          }
+        },
+        {
+          "cell": {
+            "x": 627,
+            "y": 627,
+            "width": 313,
+            "height": 313
+          },
+          "bounds": {
+            "x": 677,
+            "y": 740,
+            "width": 210,
+            "height": 87
+          }
+        },
+        {
+          "cell": {
+            "x": 940,
+            "y": 627,
+            "width": 314,
+            "height": 313
+          },
+          "bounds": {
+            "x": 1015,
+            "y": 741,
+            "width": 159,
+            "height": 86
+          }
+        },
+        {
+          "cell": {
+            "x": 0,
+            "y": 940,
+            "width": 314,
+            "height": 314
+          },
+          "bounds": {
+            "x": 75,
+            "y": 1055,
+            "width": 174,
+            "height": 92
+          }
+        },
+        {
+          "cell": {
+            "x": 314,
+            "y": 940,
+            "width": 313,
+            "height": 314
+          },
+          "bounds": {
+            "x": 399,
+            "y": 1044,
+            "width": 150,
+            "height": 102
+          }
+        },
+        {
+          "cell": {
+            "x": 627,
+            "y": 940,
+            "width": 313,
+            "height": 314
+          },
+          "bounds": {
+            "x": 689,
+            "y": 1048,
+            "width": 195,
+            "height": 91
+          }
+        },
+        {
+          "cell": {
+            "x": 940,
+            "y": 940,
+            "width": 314,
+            "height": 314
+          },
+          "bounds": {
+            "x": 1026,
+            "y": 1033,
+            "width": 148,
+            "height": 102
+          }
+        }
+      ],
+      "referenceBounds": {
+        "width": 129,
+        "height": 93
+      }
+    },
+    "branch-cleanup": {
+      "file": "assets/branch-cleanup.png",
+      "width": 1671,
+      "height": 941,
+      "sha256": "58abbc699ccf9a40f5c507fce4f71c6a355d1509c7dca51554280eb5939eb6db",
+      "decodedBytes": 6289644,
+      "mime": "image/png",
+      "transparentFraction": 0,
+      "frames": [
+        {
+          "bounds": {
+            "x": 0,
+            "y": 0,
+            "width": 1671,
+            "height": 941
+          }
+        }
+      ],
+      "referenceBounds": {
+        "width": 1671,
+        "height": 941
+      }
+    },
+    "canopy-top-extension": {
+      "file": "assets/canopy-top-extension.png",
+      "width": 1602,
+      "height": 981,
+      "sha256": "b7e43237a4bc6728fab49dc2fc460929074773db1f671afc761e285b038f874e",
+      "decodedBytes": 6286248,
+      "mime": "image/png",
+      "transparentFraction": 0.7873,
+      "frames": [
+        {
+          "bounds": {
+            "x": 0,
+            "y": 0,
+            "width": 1602,
+            "height": 981
+          }
+        }
+      ],
+      "referenceBounds": {
+        "width": 1602,
+        "height": 981
+      }
+    }
+  },
+  "animation": {
+    "fireFps": 4,
+    "fireCrossfade": "premultiplied additive interpolation",
+    "character": "Continuous seated idle with planted boots, chest/shoulder breathing, small head and upper-body shifts, and smoothly blended eye-only blinks.",
+    "sky": "fixed supplied image; no sky layer or sky movement",
+    "canopy": "Seamless 16-second master cycle with 3 main sways, 5 secondary gusts and 8 leaf flutters; matching position and velocity at the join.",
+    "loopSeconds": 16,
+    "smokeFps": 4.5,
+    "previewFps": 60,
+    "gifFps": 25
+  },
+  "placements": {
+    "survivor": {
+      "x": 497,
+      "y": 755,
+      "width": 225,
+      "height": 388,
+      "eyes": [
+        {
+          "x": 533,
+          "y": 505,
+          "rx": 11,
+          "ry": 18
+        },
+        {
+          "x": 565,
+          "y": 493,
+          "rx": 9,
+          "ry": 17
+        }
+      ],
+      "poseWidth": 300,
+      "poseHeight": 432,
+      "poseGround": 420,
+      "stripHeight": 12,
+      "breathCycles": 4,
+      "settleCycles": 1,
+      "headCycles": 2,
+      "breathLift": 3.5,
+      "headShift": 4,
+      "torsoShift": 2,
+      "headLean": 0.02,
+      "blinkStarts": [
+        4.6,
+        10.9
+      ],
+      "blinkDuration": 0.3
+    },
+    "fire": {
+      "x": 730,
+      "y": 730,
+      "planeWidth": 210,
+      "planeHeight": 310,
+      "rootFraction": 0.85
+    },
+    "canopy": {
+      "rootX": 58,
+      "rootY": 194,
+      "span": 610,
+      "sourceScaleX": 0.67,
+      "sourceScaleY": 0.9,
+      "sourceX": 0,
+      "sourceY": -14,
+      "textureWidth": 720,
+      "textureHeight": 280,
+      "stripWidth": 24,
+      "bendPixels": 38,
+      "tipFlutterPixels": 3,
+      "trunkOcclusion": [
+        [
+          0,
+          130
+        ],
+        [
+          78,
+          130
+        ],
+        [
+          64,
+          180
+        ],
+        [
+          42,
+          250
+        ],
+        [
+          0,
+          320
+        ]
+      ],
+      "secondaryBendPixels": 7,
+      "bendEase": 0.16,
+      "topOverscan": 192,
+      "extensionSourceTop": 200,
+      "extensionBlendSource": 64,
+      "swayCycles": 3,
+      "secondaryCycles": 5,
+      "flutterCycles": 8
+    }
+  },
+  "reconstruction": [
+    {
+      "name": "character",
+      "feather": 9,
+      "points": [
+        [
+          417,
+          377
+        ],
+        [
+          458,
+          361
+        ],
+        [
+          516,
+          361
+        ],
+        [
+          552,
+          370
+        ],
+        [
+          579,
+          390
+        ],
+        [
+          597,
+          420
+        ],
+        [
+          603,
+          464
+        ],
+        [
+          593,
+          505
+        ],
+        [
+          595,
+          539
+        ],
+        [
+          606,
+          573
+        ],
+        [
+          614,
+          614
+        ],
+        [
+          604,
+          659
+        ],
+        [
+          605,
+          709
+        ],
+        [
+          584,
+          740
+        ],
+        [
+          538,
+          756
+        ],
+        [
+          489,
+          764
+        ],
+        [
+          413,
+          759
+        ],
+        [
+          386,
+          744
+        ],
+        [
+          378,
+          705
+        ],
+        [
+          376,
+          653
+        ],
+        [
+          373,
+          613
+        ],
+        [
+          371,
+          571
+        ],
+        [
+          378,
+          538
+        ],
+        [
+          384,
+          510
+        ],
+        [
+          383,
+          469
+        ],
+        [
+          390,
+          421
+        ]
+      ]
+    },
+    {
+      "name": "fire-and-smoke",
+      "feather": 17,
+      "points": [
+        [
+          631,
+          731
+        ],
+        [
+          626,
+          662
+        ],
+        [
+          635,
+          607
+        ],
+        [
+          646,
+          551
+        ],
+        [
+          655,
+          508
+        ],
+        [
+          674,
+          477
+        ],
+        [
+          739,
+          465
+        ],
+        [
+          789,
+          478
+        ],
+        [
+          834,
+          509
+        ],
+        [
+          836,
+          591
+        ],
+        [
+          836,
+          660
+        ],
+        [
+          843,
+          721
+        ],
+        [
+          812,
+          737
+        ]
+      ]
+    },
+    {
+      "name": "canopy",
+      "feather": 12,
+      "points": [
+        [
+          0,
+          0
+        ],
+        [
+          662,
+          0
+        ],
+        [
+          654,
+          65
+        ],
+        [
+          580,
+          103
+        ],
+        [
+          498,
+          146
+        ],
+        [
+          424,
+          184
+        ],
+        [
+          319,
+          212
+        ],
+        [
+          229,
+          244
+        ],
+        [
+          148,
+          251
+        ],
+        [
+          73,
+          223
+        ],
+        [
+          0,
+          224
+        ]
+      ],
+      "asset": "branch-cleanup"
+    },
+    {
+      "name": "remove-redundant-background-fire-pit",
+      "asset": "branch-cleanup",
+      "feather": 14,
+      "points": [
+        [
+          799,
+          405
+        ],
+        [
+          991,
+          405
+        ],
+        [
+          1003,
+          484
+        ],
+        [
+          980,
+          499
+        ],
+        [
+          810,
+          496
+        ],
+        [
+          796,
+          467
+        ]
+      ]
+    }
+  ],
+  "fixedForeground": [
+    [
+      [
+        0,
+        120
+      ],
+      [
+        76,
+        120
+      ],
+      [
+        59,
+        193
+      ],
+      [
+        34,
+        298
+      ],
+      [
+        0,
+        421
+      ]
+    ],
+    [
+      [
+        622,
+        707
+      ],
+      [
+        738,
+        622
+      ],
+      [
+        754,
+        629
+      ],
+      [
+        749,
+        647
+      ],
+      [
+        642,
+        733
+      ],
+      [
+        624,
+        725
+      ]
+    ],
+    [
+      [
+        751,
+        651
+      ],
+      [
+        766,
+        640
+      ],
+      [
+        777,
+        648
+      ],
+      [
+        745,
+        680
+      ],
+      [
+        731,
+        672
+      ]
+    ],
+    [
+      [
+        712,
+        654
+      ],
+      [
+        726,
+        641
+      ],
+      [
+        809,
+        714
+      ],
+      [
+        793,
+        737
+      ],
+      [
+        780,
+        730
+      ]
+    ],
+    [
+      [
+        765,
+        672
+      ],
+      [
+        774,
+        663
+      ],
+      [
+        844,
+        704
+      ],
+      [
+        833,
+        721
+      ],
+      [
+        812,
+        713
+      ]
+    ],
+    [
+      [
+        723,
+        681
+      ],
+      [
+        735,
+        691
+      ],
+      [
+        701,
+        737
+      ],
+      [
+        682,
+        726
+      ]
+    ],
+    [
+      [
+        550,
+        730
+      ],
+      [
+        905,
+        730
+      ],
+      [
+        905,
+        790
+      ],
+      [
+        550,
+        790
+      ]
+    ]
+  ],
+  "fireOccluders": [
+    [
+      [
+        622,
+        707
+      ],
+      [
+        738,
+        622
+      ],
+      [
+        754,
+        629
+      ],
+      [
+        749,
+        647
+      ],
+      [
+        642,
+        733
+      ],
+      [
+        624,
+        725
+      ]
+    ],
+    [
+      [
+        751,
+        651
+      ],
+      [
+        766,
+        640
+      ],
+      [
+        777,
+        648
+      ],
+      [
+        745,
+        680
+      ],
+      [
+        731,
+        672
+      ]
+    ],
+    [
+      [
+        712,
+        654
+      ],
+      [
+        726,
+        641
+      ],
+      [
+        809,
+        714
+      ],
+      [
+        793,
+        737
+      ],
+      [
+        780,
+        730
+      ]
+    ],
+    [
+      [
+        765,
+        672
+      ],
+      [
+        774,
+        663
+      ],
+      [
+        844,
+        704
+      ],
+      [
+        833,
+        721
+      ],
+      [
+        812,
+        713
+      ]
+    ],
+    [
+      [
+        723,
+        681
+      ],
+      [
+        735,
+        691
+      ],
+      [
+        701,
+        737
+      ],
+      [
+        682,
+        726
+      ]
+    ],
+    [
+      [
+        550,
+        730
+      ],
+      [
+        905,
+        730
+      ],
+      [
+        905,
+        790
+      ],
+      [
+        550,
+        790
+      ]
+    ]
+  ],
+  "renderOrder": [
+    "fixed-supplied-scene",
+    "local-firelight",
+    "falling-leaves-behind-survivor",
+    "seated-character-idle",
+    "flames",
+    "original-fixed-firewood",
+    "smoke-and-embers",
+    "swaying-canopy",
+    "ground-leaves"
+  ],
+  "validation": {
+    "issues": [],
+    "totalSpriteCells": 62,
+    "textureDecodedBytes": 61929668,
+    "movingBranchAndLeafPixels": {
+      "branchAndLeaves": 236,
+      "mainTrunk": 0,
+      "headquarters": 0,
+      "sky": 0
+    },
+    "windZeroMaxChange": {
+      "branchAndLeaves": 0,
+      "mainTrunk": 0,
+      "headquarters": 0,
+      "sky": 0
+    },
+    "reducedMotionMaxChange": 0,
+    "backgroundPit": "Removed from the cleanup artwork and visually checked in the composite",
+    "windLayerIncludesWood": true,
+    "strongerSway": {
+      "measuredLeafCentroidTravelPixels": {
+        "previous": 3.28,
+        "updated": 27.16,
+        "ratio": 8.28
+      },
+      "fixedRegionsMaxChange": {
+        "trunk": 0,
+        "sky": 0,
+        "headquarters": 0
+      },
+      "windZeroMaxChange": 0
+    },
+    "canopyEdgeFix": {
+      "topOverscanPixels": 192,
+      "conservativeMaximumDownswingPixels": 81.6,
+      "highestPossibleTextureTopOnScreen": -110.4,
+      "cutEdgeAlwaysAboveViewport": true,
+      "maxPixelChangeOutsideCanopyExtension": {
+        "lowerBough": 1,
+        "restOfScene": 0
+      },
+      "visualReview": "Strong-wind downswing checked: added foliage covers the former flat crop edge",
+      "existingSwayPreserved": true,
+      "lowerBoughChannelTolerance": 1,
+      "passed": true
+    },
+    "seamlessIdle": {
+      "loopSeconds": 16,
+      "fullSceneClosureMaxDifference": 0,
+      "repeatCycleMaxDifference": 0,
+      "treeBoundaryMeanFrameChanges": {
+        "region": [
+          0,
+          0,
+          720,
+          280
+        ],
+        "beforeJoin": 1.3158746693121692,
+        "afterJoin": 1.3089285714285714,
+        "ratio": 0.9947213073968293
+      },
+      "windZeroMaxDifference": 0,
+      "characterMotionMaxDifference": 251,
+      "feetMaxDifference": 0,
+      "reducedMotionMaxDifference": 0,
+      "renderMemoryCheck": {
+        "runtime": "Skia CPU reference renderer",
+        "frames": 48,
+        "rssMiBRange": [
+          307,
+          311
+        ],
+        "scope": "Frame-reset profiling; not native iPhone performance"
+      }
+    }
+  }
+}

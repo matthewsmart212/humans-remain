@@ -1,0 +1,4 @@
+# Preserve these bounded preview textures and videos as ordinary Git blobs.
+*.png -filter -diff -merge -text
+*.jpeg -filter -diff -merge -text
+*.mp4 -filter -diff -merge -text

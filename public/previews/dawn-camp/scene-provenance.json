@@ -1,0 +1,79 @@
+{
+  "approvedSource": {
+    "filename": "DB60A651-99E0-4DE0-AFE1-923B9BBD97B2.jpeg",
+    "library_file_id": "libfile_c077fface17c8191890f4e6cd5c346ee",
+    "sha256": "916c90618e93228c8abd65e1679292b3fa3411c0c7c6ea28963e1703d54018b7",
+    "dimensions": [
+      1536,
+      864
+    ]
+  },
+  "method": "The original supplied JPEG remains the source. Local reconstruction removes baked animated subjects and the redundant distant fire pit. Approved wood, leaves and character artwork are reused. A shared 16-second phase drives seamless tree, fire, particles and character idle animation; the character uses the neutral body and eye-only blink patch without whole-body texture switching.",
+  "spriteSources": {
+    "approved-background": "916c90618e93228c8abd65e1679292b3fa3411c0c7c6ea28963e1703d54018b7",
+    "dawn-clean-plate": "74997bb3343765382b3f82045b8eab00c2c1ea6ff2f8adbf05aac3c8d3de30b0",
+    "autumn-canopy": "7053109f14816d6c66e6ce1ce34482ca3301decb06e45e304aade95f7d59291b",
+    "survivor-idle-8": "c3448d39bccc8acf3e7819fc7537af5896286eeffb457888b6dac14a3b914c51",
+    "campfire-flames-8": "cbbb699ebedabe2a3be02851f749ff6b1eff07a4e8724caf8105d4b5a03f7813",
+    "smoke-12": "df050fb54abe03f78aa70a6e4810ad4a857e9b9847711eeb4a8c02867372b34e",
+    "autumn-leaves-16": "f6df1a9e00e2df8a416158f0016f8b56f0ba23846292d09626d9d07d0a187a04",
+    "embers-and-dust-16": "835e64d4f2ca80937ee673122dece16e40eab3b0902283f6a8fe115c2eac00bf",
+    "branch-cleanup": "58abbc699ccf9a40f5c507fce4f71c6a355d1509c7dca51554280eb5939eb6db",
+    "canopy-top-extension": "b7e43237a4bc6728fab49dc2fc460929074773db1f671afc761e285b038f874e"
+  },
+  "revisions": [
+    {
+      "revision": "dawn-single-pit-with-wind-bough",
+      "changes": [
+        "remove redundant distant fire pit",
+        "replace leaf-only layer with complete woody bough and leafy canopy",
+        "bend branch and leaves together with a fixed root and lighter tip movement"
+      ]
+    },
+    {
+      "revision": "dawn-wider-continuous-branch-sway",
+      "changes": [
+        "spread motion across the whole visible limb",
+        "increase sway amplitude and shorten the main cycle",
+        "retain existing artwork, fixed root and tip flutter"
+      ],
+      "measuredLeafCentroidTravelPixels": {
+        "previous": 3.28,
+        "updated": 27.16,
+        "ratio": 8.28
+      }
+    },
+    {
+      "revision": "dawn-canopy-edge-overscan",
+      "changes": [
+        "add real upper-crown continuation",
+        "preserve the original lower bough art",
+        "keep the upper texture edge outside the full wind displacement envelope"
+      ],
+      "topOverscanLogicalPixels": 192
+    },
+    {
+      "revision": "seamless-tree-and-character-idle",
+      "changes": [
+        "synchronize all motion to a seamless 16-second master cycle",
+        "match tree pose and motion at the loop boundary",
+        "add continuous character breathing and upper-body/head settling",
+        "blend eye-only blinks and keep boots planted",
+        "render the main video at 60 fps"
+      ],
+      "validation": {
+        "loopSeconds": 16,
+        "fullSceneClosureMaxDifference": 0,
+        "repeatCycleMaxDifference": 0,
+        "treeBoundaryMeanFrameChanges": {
+          "beforeJoin": 1.092929945054945,
+          "afterJoin": 1.0867239010989012,
+          "ratio": 0.994321645239822
+        },
+        "characterMotionMaxDifference": 250,
+        "feetMaxDifference": 0,
+        "reducedMotionMaxDifference": 0
+      }
+    }
+  ]
+}

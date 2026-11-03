@@ -1,0 +1,29 @@
+{
+  "loopSeconds": 16,
+  "fullSceneClosureMaxDifference": 0,
+  "repeatCycleMaxDifference": 0,
+  "treeBoundaryMeanFrameChanges": {
+    "region": [
+      0,
+      0,
+      720,
+      280
+    ],
+    "beforeJoin": 1.3158746693121692,
+    "afterJoin": 1.3089285714285714,
+    "ratio": 0.9947213073968293
+  },
+  "windZeroMaxDifference": 0,
+  "characterMotionMaxDifference": 251,
+  "feetMaxDifference": 0,
+  "reducedMotionMaxDifference": 0,
+  "renderMemoryCheck": {
+    "runtime": "Skia CPU reference renderer",
+    "frames": 48,
+    "rssMiBRange": [
+      307,
+      311
+    ],
+    "scope": "Frame-reset profiling; not native iPhone performance"
+  }
+}

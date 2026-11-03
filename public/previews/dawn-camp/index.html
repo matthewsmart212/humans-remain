@@ -1,0 +1,151 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Humans Remain — animated camp</title><style>
+*{box-sizing:border-box}body{margin:0;padding:20px;background:#08181d;color:#f0e1bd;font:15px/1.5 system-ui,sans-serif}main{max-width:1500px;margin:0 auto}canvas{display:block;width:100%;height:auto;background:#08181d;aspect-ratio:1536/864}header{display:flex;justify-content:space-between;align-items:baseline;gap:20px;margin-bottom:12px}h1{font-size:18px;font-weight:600;margin:0}header p{margin:0;color:#abbeb5;font-size:13px}.controls{display:flex;flex-wrap:wrap;align-items:center;gap:16px;margin:16px 0}button,select{font:inherit;background:#183c3d;color:#f0e1bd;border:1px solid #84947d;border-radius:7px;min-height:44px;padding:8px 14px}label{display:flex;align-items:center;gap:7px;min-height:44px}input[type=checkbox]{width:18px;height:18px;accent-color:#dbb476}details{color:#abbeb5;margin-top:14px}summary{cursor:pointer;min-height:44px;padding:9px 0}.layers{display:flex;flex-wrap:wrap;gap:8px 18px}footer{color:#abbeb5;font-size:13px;margin-top:12px}@media(max-width:600px){body{padding:10px}header{display:block}header p{margin-top:4px}.controls{gap:10px}}
+</style></head><body><main><header><h1>Humans Remain · dawn camp</h1><p>Seamless 16-second loop</p></header><canvas id="camp" width="1536" height="864" role="img" aria-label="Dawn camp with smoothly swaying orange leaves, a breathing and blinking survivor and an animated foreground fire"></canvas><div class="controls"><button id="pause" type="button">Pause motion</button><label>Wind <select id="wind"><option value="0">Still</option><option value="1" selected>Gentle</option><option value="1.6">Breezy</option></select></label><label><input id="survivor" type="checkbox" checked>Seated survivor</label></div><details><summary>Preview individual layers</summary><div class="layers"><label><input data-layer="fire" type="checkbox" checked>Fire</label><label><input data-layer="smoke" type="checkbox" checked>Smoke</label><label><input data-layer="branches" type="checkbox" checked>Branches</label><label><input data-layer="leaves" type="checkbox" checked>Leaves</label><label><input data-layer="particles" type="checkbox" checked>Particles</label><label><input data-layer="lighting" type="checkbox" checked>Lighting</label></div></details><footer>Your selected dawn background with animated fire, leaves and seated character. Menus, logo and player stats are intentionally absent.</footer></main><script>/* Dawn-camp renderer. The supplied scene stays fixed outside local animation regions. */
+(function(root){
+'use strict';
+const TAU=Math.PI*2,clamp=(n,a=0,b=1)=>Math.max(a,Math.min(b,n)),fract=n=>n-Math.floor(n);
+const smooth=n=>{n=clamp(n);return n*n*(3-2*n);};
+const hash=n=>fract(Math.sin(n*127.1+311.7)*43758.5453123);
+function createCampRenderer(ctx,manifest,images){
+ const W=manifest.scene.width,H=manifest.scene.height,assets=manifest.assets,LOOP=manifest.animation.loopSeconds;
+ const makeSurface=(w,h)=>{const c=typeof document!=='undefined'?document.createElement('canvas'):root.createCampSurface?.(w,h);if(c){c.width=w;c.height=h;}return c;};
+ function polygon(g,points,append=false){if(!append)g.beginPath();points.forEach(([x,y],i)=>i?g.lineTo(x,y):g.moveTo(x,y));g.closePath();}
+ const original=images['approved-background'],clean=images['dawn-clean-plate'];
+ const scene=makeSurface(W,H),sg=scene.getContext('2d');sg.drawImage(original,0,0,W,H);
+ for(const patch of manifest.reconstruction){
+  const mask=makeSurface(W,H),mg=mask.getContext('2d');mg.fillStyle='#fff';mg.shadowColor='#fff';mg.shadowBlur=patch.feather;polygon(mg,patch.points);mg.fill();
+  const layer=makeSurface(W,H),g=layer.getContext('2d');g.drawImage(images[patch.asset]??clean,0,0,W,H);g.globalCompositeOperation='destination-in';g.drawImage(mask,0,0);sg.drawImage(layer,0,0);
+ }
+ // Restore the supplied tree trunk and static firewood, preserving their pixels.
+ for(const points of manifest.fixedForeground){sg.save();polygon(sg,points);sg.clip();sg.drawImage(original,0,0,W,H);sg.restore();}
+ const bp=manifest.placements.canopy,ba=assets['autumn-canopy'];
+ const margin=bp.topOverscan??0;
+ const bough=makeSurface(bp.textureWidth,bp.textureHeight+margin),bg=bough.getContext('2d');
+ if(images['canopy-top-extension']){
+  // Add only the newly painted crown above the original asset. Its overlap
+  // fades under the approved leaves; the lower bough keeps the original pixels.
+  const cap=makeSurface(bp.textureWidth,bough.height),cg=cap.getContext('2d');
+  cg.drawImage(images['canopy-top-extension'],bp.sourceX,margin+bp.sourceY-bp.extensionSourceTop*bp.sourceScaleY,ba.width*bp.sourceScaleX,(ba.height+bp.extensionSourceTop)*bp.sourceScaleY);
+  const fadeStart=margin+bp.sourceY,fadeEnd=fadeStart+bp.extensionBlendSource*bp.sourceScaleY;
+  const fade=cg.createLinearGradient(0,fadeStart,0,fadeEnd);fade.addColorStop(0,'rgba(255,255,255,1)');fade.addColorStop(1,'rgba(255,255,255,0)');
+  cg.globalCompositeOperation='destination-in';cg.fillStyle=fade;cg.fillRect(0,0,cap.width,cap.height);bg.drawImage(cap,0,0);
+ }
+ bg.drawImage(images['autumn-canopy'],bp.sourceX,bp.sourceY+margin,ba.width*bp.sourceScaleX,ba.height*bp.sourceScaleY);
+ function boughOffset(x,t,wind){
+  const q=clamp((x-bp.rootX)/bp.span);
+  // Move the full visible limb, with a little extra flex toward its tips.
+  // A mostly linear weight replaces the old tip-only quadratic movement.
+  const weight=q*(1-bp.bendEase+bp.bendEase*q);
+  const sway=Math.sin(TAU*t/LOOP*bp.swayCycles)*bp.bendPixels;
+  const gust=Math.sin(TAU*t/LOOP*bp.secondaryCycles+.6)*bp.secondaryBendPixels;
+  const flutter=Math.sin(TAU*t/LOOP*bp.flutterCycles-x*.021)*bp.tipFlutterPixels*q;
+  return wind*((sway+gust)*weight+flutter);
+ }
+ function windBranch(t,wind){
+  // Adjacent 24-pixel strips share endpoints, creating a continuous bend. The
+  // root stays fixed; wood and leaves use the same deformation field.
+  for(let x=0;x<bough.width;x+=bp.stripWidth){
+   const width=Math.min(bp.stripWidth,bough.width-x),left=boughOffset(x,t,wind),right=boughOffset(x+width,t,wind),slope=(right-left)/width;
+   ctx.save();ctx.transform(1,slope,0,1,0,left-slope*x);
+   ctx.drawImage(bough,x,0,width,bough.height,x,-margin,width,bough.height);ctx.restore();
+  }
+  // Hide the joint inside the fixed trunk, keeping the bough visibly attached.
+  ctx.save();polygon(ctx,bp.trunkOcclusion);ctx.clip();ctx.drawImage(original,0,0,W,H);ctx.restore();
+ }
+ const fp=manifest.placements.fire,flame=makeSurface(fp.planeWidth,fp.planeHeight),fg=flame.getContext('2d');
+ function sprite(key,index,x,y,width,opts={}){
+  const a=assets[key],im=images[key];if(!a||!im)return;
+  const f=a.frames[(index%a.frames.length+a.frames.length)%a.frames.length],b=f.bounds;if(!b)return;
+  const scale=width/a.referenceBounds.width,dw=b.width*scale,dh=opts.height??b.height*scale;
+  ctx.save();ctx.translate(x,y);if(opts.rotation)ctx.rotate(opts.rotation);ctx.scale(opts.scaleX??1,opts.scaleY??1);ctx.globalAlpha=opts.alpha??1;if(opts.blend)ctx.globalCompositeOperation=opts.blend;
+  ctx.drawImage(im,b.x,b.y,b.width,b.height,-dw*(opts.anchorX??.5),-dh*(opts.anchorY??1),dw,dh);ctx.restore();
+ }
+ function glow(x,y,rx,ry,alpha,colour='255,126,29'){
+  ctx.save();ctx.translate(x,y);ctx.scale(rx,ry);const g=ctx.createRadialGradient(0,0,0,0,0,1);g.addColorStop(0,`rgba(${colour},${alpha})`);g.addColorStop(.45,`rgba(${colour},${alpha*.3})`);g.addColorStop(1,`rgba(${colour},0)`);ctx.globalCompositeOperation='screen';ctx.fillStyle=g;ctx.fillRect(-1,-1,2,2);ctx.restore();
+ }
+ // Cache the approved neutral body and a transparent closed-eye patch once.
+ // The eye patch is composited before deformation, so it follows the face.
+ const cp=manifest.placements.survivor,ca=assets['survivor-idle-8'];
+ const neutral=makeSurface(cp.poseWidth,cp.poseHeight),closedEyes=makeSurface(cp.poseWidth,cp.poseHeight),characterPose=makeSurface(cp.poseWidth,cp.poseHeight);
+ function paintCharacter(g,index){
+  const b=ca.frames[index].bounds,dw=b.width*cp.width/ca.referenceBounds.width;
+  g.drawImage(images['survivor-idle-8'],b.x,b.y,b.width,b.height,(cp.poseWidth-dw)/2,cp.poseGround-cp.height,dw,cp.height);
+ }
+ paintCharacter(neutral.getContext('2d'),0);
+ const eg=closedEyes.getContext('2d');eg.save();eg.beginPath();
+ for(const e of cp.eyes)eg.ellipse(e.x-cp.x+cp.poseWidth/2,e.y-cp.y+cp.poseGround,e.rx,e.ry,0,0,TAU);
+ eg.clip();paintCharacter(eg,5);eg.restore();
+ function blinkAmount(t){
+  let amount=0;
+  for(const start of cp.blinkStarts){const q=(t-start)/cp.blinkDuration;if(q>=0&&q<1){const value=q<.3?smooth(q/.3):q<.55?1:1-smooth((q-.55)/.45);amount=Math.max(amount,value);}}
+  return amount;
+ }
+ function characterOffset(y,t){
+  const phase=TAU*t/LOOP,breath=(1-Math.cos(phase*cp.breathCycles))*.5;
+  const upper=smooth((cp.poseGround-62-y)/164),head=1-smooth((y-188)/86);
+  const settle=Math.sin(phase*cp.settleCycles),nod=Math.sin(phase*cp.headCycles);
+  return {x:upper*cp.torsoShift*settle+head*(cp.headShift*settle+cp.headLean*nod*(220-y)),y:-upper*cp.breathLift*breath-head*(1.3*nod+.7*breath)};
+ }
+ function survivor(t){
+  ctx.save();ctx.translate(cp.x,cp.y+1);ctx.scale(105,12);const shadow=ctx.createRadialGradient(0,0,0,0,0,1);shadow.addColorStop(0,'rgba(31,20,12,.32)');shadow.addColorStop(1,'rgba(31,20,12,0)');ctx.fillStyle=shadow;ctx.fillRect(-1,-1,2,2);ctx.restore();
+  const blink=blinkAmount(t);let texture=neutral;
+  if(blink>0){const g=characterPose.getContext('2d');g.reset?.();g.clearRect(0,0,cp.poseWidth,cp.poseHeight);g.globalAlpha=1;g.drawImage(neutral,0,0);g.globalAlpha=blink;g.drawImage(closedEyes,0,0);g.globalAlpha=1;texture=characterPose;}
+  ctx.save();ctx.translate(cp.x-cp.poseWidth/2,cp.y-cp.poseGround);
+  // Smooth connected strips move the upper body while the feet remain planted.
+  for(let y=0;y<cp.poseHeight;y+=cp.stripHeight){
+   const h=Math.min(cp.stripHeight,cp.poseHeight-y),a=characterOffset(y,t),b=characterOffset(y+h,t),shear=(b.x-a.x)/h,scaleY=1+(b.y-a.y)/h;
+   ctx.save();ctx.transform(1,0,shear,scaleY,a.x-shear*y,a.y+(1-scaleY)*y);
+   // Small overlap prevents antialiasing cracks between bent horizontal strips.
+   const top=Math.max(0,y-.9),bottom=Math.min(cp.poseHeight,y+h+.9);
+   ctx.drawImage(texture,0,top,cp.poseWidth,bottom-top,0,top,cp.poseWidth,bottom-top);ctx.restore();
+  }
+  ctx.restore();
+ }
+ function fire(t){
+  const phase=t*manifest.animation.fireFps,frame=Math.floor(phase),mix=smooth(phase-frame),a=assets['campfire-flames-8'];
+  fg.reset?.();fg.clearRect(0,0,fp.planeWidth,fp.planeHeight);fg.globalCompositeOperation='lighter';
+  for(const[i,alpha]of[[frame,1-mix],[frame+1,mix]]){const c=a.frames[i%a.frames.length].cell;fg.globalAlpha=alpha;fg.drawImage(images['campfire-flames-8'],c.x,c.y,c.width,c.height,0,0,fp.planeWidth,fp.planeHeight);}
+  fg.globalAlpha=1;fg.globalCompositeOperation='source-over';ctx.save();ctx.beginPath();ctx.rect(fp.x-fp.planeWidth/2-3,fp.y-fp.planeHeight,fp.planeWidth+6,fp.planeHeight);ctx.clip();ctx.drawImage(flame,fp.x-fp.planeWidth/2,fp.y-fp.planeHeight*fp.rootFraction);ctx.restore();
+  // Each solid log has its own trace; gaps continue to show moving flames.
+  ctx.save();ctx.beginPath();for(const points of manifest.fireOccluders){polygon(ctx,points,true);}ctx.clip();ctx.drawImage(original,0,0,W,H);ctx.restore();
+ }
+ function leafGroup(t,wind,fallingGroup){for(let j=fallingGroup?0:8;j<(fallingGroup?8:12);j++){const q=fract(t/LOOP+hash(j+35)),falling=j<8,x=falling?45+hash(j+13)*535+q*190*wind:30+q*(W+60),y=falling?-35+q*(H+90):752+hash(j+5)*72+Math.sin(q*TAU*3+j)*9,alpha=smooth(q*7)*smooth((1-q)*7)*.85*clamp(wind);sprite('autumn-leaves-16',Math.floor(hash(j+1)*4)*4+Math.floor(q*12+j)%4,x+Math.sin(q*8+j)*14,y,10+hash(j+10)*13,{alpha,rotation:q*TAU*1.8+j,anchorY:.5,scaleX:.45+Math.abs(Math.sin(q*15+j))*.55});}}
+ function draw(t=0,settings={}){
+  if(settings.motion===false)t=0;else t=((t%LOOP)+LOOP)%LOOP;const wind=clamp(settings.wind??1,0,1.7);
+  ctx.reset?.();ctx.save();ctx.setTransform(1,0,0,1,0,0);ctx.clearRect(0,0,ctx.canvas.width,ctx.canvas.height);ctx.scale(ctx.canvas.width/W,ctx.canvas.height/H);ctx.imageSmoothingEnabled=true;ctx.drawImage(scene,0,0);
+  if(settings.lighting!==false){const pulse=.92+.035*Math.sin(TAU*t/LOOP*7)+.02*Math.sin(TAU*t/LOOP*14);glow(fp.x,fp.y+36,232,79,.065*pulse);glow(fp.x,fp.y-85,83,116,.04*pulse);}
+  if(settings.leaves!==false)leafGroup(t,wind,true);
+  if(settings.survivor!==false)survivor(t);if(settings.fire!==false)fire(t);
+  if(settings.smoke!==false){for(let j=0;j<2;j++){
+   const life=j?LOOP:LOOP/2,q=fract(t/life+j*.43),opacity=Math.pow(Math.sin(q*Math.PI),2)*.14;
+   const phase=t*manifest.animation.smokeFps+j*1.7,index=Math.floor(phase),mix=smooth(phase-index);
+   for(const [f,weight]of [[index,1-mix],[index+1,mix]])sprite('smoke-12',f%12,fp.x+q*26*wind,fp.y-124-q*130,58+q*70,{alpha:opacity*weight});
+  }}
+  if(settings.particles!==false){for(let j=0;j<19;j++){
+   const life=hash(j+12)>.45?LOOP/4:LOOP/2,q=fract(t/life+hash(j+22));
+   sprite('embers-and-dust-16',j%8,fp.x+(hash(j+19)-.5)*68+Math.sin(q*6+j)*9+q*12*wind,fp.y-54-q*(112+hash(j+7)*100),2+hash(j+3)*3,{alpha:Math.pow(Math.sin(q*Math.PI),2)*.75,anchorY:.5,blend:'screen'});
+  }}
+  if(settings.branches!==false)windBranch(t,wind);
+  if(settings.leaves!==false)leafGroup(t,wind,false);
+  ctx.restore();
+ }
+ return{draw,width:W,height:H};
+}
+root.createCampRenderer=createCampRenderer;if(typeof module!=='undefined')module.exports={createCampRenderer};
+})(typeof globalThis!=='undefined'?globalThis:this);
+</script><script>
+const manifest={"version":2,"revision":"seamless-tree-and-character-idle","title":"Humans Remain — Dawn Camp","scene":{"width":1536,"height":864},"assets":{"approved-background":{"file":"assets/approved-background.jpeg","width":1536,"height":864,"sha256":"916c90618e93228c8abd65e1679292b3fa3411c0c7c6ea28963e1703d54018b7","decodedBytes":5308416,"mime":"image/jpeg","transparentFraction":0,"frames":[{"bounds":{"x":0,"y":0,"width":1536,"height":864}}],"referenceBounds":{"width":1536,"height":864}},"dawn-clean-plate":{"file":"assets/dawn-clean-plate.png","width":1672,"height":941,"sha256":"74997bb3343765382b3f82045b8eab00c2c1ea6ff2f8adbf05aac3c8d3de30b0","decodedBytes":6293408,"mime":"image/png","transparentFraction":0,"frames":[{"bounds":{"x":0,"y":0,"width":1672,"height":941}}],"referenceBounds":{"width":1672,"height":941}},"autumn-canopy":{"file":"assets/autumn-canopy.png","width":1672,"height":941,"sha256":"7053109f14816d6c66e6ce1ce34482ca3301decb06e45e304aade95f7d59291b","decodedBytes":6293408,"mime":"image/png","transparentFraction":0.9091,"frames":[{"bounds":{"x":0,"y":0,"width":1672,"height":941}}],"referenceBounds":{"width":1672,"height":941}},"survivor-idle-8":{"file":"assets/survivor-idle-8.png","width":1774,"height":887,"sha256":"c3448d39bccc8acf3e7819fc7537af5896286eeffb457888b6dac14a3b914c51","decodedBytes":6294152,"mime":"image/png","transparentFraction":0.5881,"columns":4,"rows":2,"frames":[{"cell":{"x":0,"y":0,"width":444,"height":444},"bounds":{"x":92,"y":8,"width":251,"height":429}},{"cell":{"x":444,"y":0,"width":443,"height":444},"bounds":{"x":536,"y":8,"width":251,"height":429}},{"cell":{"x":887,"y":0,"width":443,"height":444},"bounds":{"x":979,"y":8,"width":251,"height":429}},{"cell":{"x":1330,"y":0,"width":444,"height":444},"bounds":{"x":1424,"y":10,"width":250,"height":427}},{"cell":{"x":0,"y":444,"width":444,"height":443},"bounds":{"x":92,"y":455,"width":251,"height":425}},{"cell":{"x":444,"y":444,"width":443,"height":443},"bounds":{"x":536,"y":455,"width":251,"height":425}},{"cell":{"x":887,"y":444,"width":443,"height":443},"bounds":{"x":979,"y":455,"width":251,"height":425}},{"cell":{"x":1330,"y":444,"width":444,"height":443},"bounds":{"x":1423,"y":453,"width":251,"height":427}}],"referenceBounds":{"width":251,"height":427}},"campfire-flames-8":{"file":"assets/campfire-flames-8.png","width":1774,"height":887,"sha256":"cbbb699ebedabe2a3be02851f749ff6b1eff07a4e8724caf8105d4b5a03f7813","decodedBytes":6294152,"mime":"image/png","transparentFraction":0.7061,"columns":4,"rows":2,"frames":[{"cell":{"x":0,"y":0,"width":444,"height":444},"bounds":{"x":54,"y":79,"width":333,"height":300}},{"cell":{"x":444,"y":0,"width":443,"height":444},"bounds":{"x":495,"y":49,"width":339,"height":329}},{"cell":{"x":887,"y":0,"width":443,"height":444},"bounds":{"x":936,"y":23,"width":340,"height":355}},{"cell":{"x":1330,"y":0,"width":444,"height":444},"bounds":{"x":1377,"y":33,"width":339,"height":347}},{"cell":{"x":0,"y":444,"width":444,"height":443},"bounds":{"x":52,"y":492,"width":337,"height":329}},{"cell":{"x":444,"y":444,"width":443,"height":443},"bounds":{"x":498,"y":453,"width":339,"height":369}},{"cell":{"x":887,"y":444,"width":443,"height":443},"bounds":{"x":941,"y":491,"width":331,"height":331}},{"cell":{"x":1330,"y":444,"width":444,"height":443},"bounds":{"x":1385,"y":544,"width":334,"height":278}}],"referenceBounds":{"width":338,"height":330}},"smoke-12":{"file":"assets/smoke-12.png","width":1448,"height":1086,"sha256":"df050fb54abe03f78aa70a6e4810ad4a857e9b9847711eeb4a8c02867372b34e","decodedBytes":6290112,"mime":"image/png","transparentFraction":0.8223,"columns":4,"rows":3,"frames":[{"cell":{"x":0,"y":0,"width":362,"height":362},"bounds":{"x":128,"y":113,"width":98,"height":242}},{"cell":{"x":362,"y":0,"width":362,"height":362},"bounds":{"x":474,"y":86,"width":170,"height":269}},{"cell":{"x":724,"y":0,"width":362,"height":362},"bounds":{"x":832,"y":57,"width":178,"height":298}},{"cell":{"x":1086,"y":0,"width":362,"height":362},"bounds":{"x":1192,"y":42,"width":202,"height":313}},{"cell":{"x":0,"y":362,"width":362,"height":362},"bounds":{"x":105,"y":396,"width":230,"height":322}},{"cell":{"x":362,"y":362,"width":362,"height":362},"bounds":{"x":465,"y":388,"width":238,"height":329}},{"cell":{"x":724,"y":362,"width":362,"height":362},"bounds":{"x":818,"y":377,"width":248,"height":340}},{"cell":{"x":1086,"y":362,"width":362,"height":362},"bounds":{"x":1166,"y":366,"width":249,"height":351}},{"cell":{"x":0,"y":724,"width":362,"height":362},"bounds":{"x":84,"y":726,"width":252,"height":353}},{"cell":{"x":362,"y":724,"width":362,"height":362},"bounds":{"x":456,"y":764,"width":217,"height":315}},{"cell":{"x":724,"y":724,"width":362,"height":362},"bounds":{"x":828,"y":806,"width":163,"height":273}},{"cell":{"x":1086,"y":724,"width":362,"height":362},"bounds":{"x":1199,"y":812,"width":110,"height":267}}],"referenceBounds":{"width":209.5,"height":314}},"autumn-leaves-16":{"file":"assets/autumn-leaves-16.png","width":1254,"height":1254,"sha256":"f6df1a9e00e2df8a416158f0016f8b56f0ba23846292d09626d9d07d0a187a04","decodedBytes":6290064,"mime":"image/png","transparentFraction":0.7523,"columns":4,"rows":4,"frames":[{"cell":{"x":0,"y":0,"width":314,"height":314},"bounds":{"x":35,"y":25,"width":267,"height":269}},{"cell":{"x":314,"y":0,"width":313,"height":314},"bounds":{"x":357,"y":38,"width":259,"height":248}},{"cell":{"x":627,"y":0,"width":313,"height":314},"bounds":{"x":712,"y":40,"width":143,"height":254}},{"cell":{"x":940,"y":0,"width":314,"height":314},"bounds":{"x":947,"y":26,"width":265,"height":266}},{"cell":{"x":0,"y":314,"width":314,"height":313},"bounds":{"x":57,"y":330,"width":214,"height":273}},{"cell":{"x":314,"y":314,"width":313,"height":313},"bounds":{"x":370,"y":346,"width":222,"height":252}},{"cell":{"x":627,"y":314,"width":313,"height":313},"bounds":{"x":714,"y":339,"width":141,"height":264}},{"cell":{"x":940,"y":314,"width":314,"height":313},"bounds":{"x":979,"y":330,"width":212,"height":273}},{"cell":{"x":0,"y":627,"width":314,"height":313},"bounds":{"x":72,"y":642,"width":212,"height":272}},{"cell":{"x":314,"y":627,"width":313,"height":313},"bounds":{"x":377,"y":654,"width":208,"height":250}},{"cell":{"x":627,"y":627,"width":313,"height":313},"bounds":{"x":711,"y":651,"width":133,"height":262}},{"cell":{"x":940,"y":627,"width":314,"height":313},"bounds":{"x":975,"y":642,"width":205,"height":271}},{"cell":{"x":0,"y":940,"width":314,"height":314},"bounds":{"x":33,"y":944,"width":273,"height":276}},{"cell":{"x":314,"y":940,"width":313,"height":314},"bounds":{"x":351,"y":965,"width":256,"height":236}},{"cell":{"x":627,"y":940,"width":313,"height":314},"bounds":{"x":700,"y":960,"width":152,"height":263}},{"cell":{"x":940,"y":940,"width":314,"height":314},"bounds":{"x":950,"y":947,"width":271,"height":267}}],"referenceBounds":{"width":213,"height":265}},"embers-and-dust-16":{"file":"assets/embers-and-dust-16.png","width":1254,"height":1254,"sha256":"835e64d4f2ca80937ee673122dece16e40eab3b0902283f6a8fe115c2eac00bf","decodedBytes":6290064,"mime":"image/png","transparentFraction":0.9141,"columns":4,"rows":4,"frames":[{"cell":{"x":0,"y":0,"width":314,"height":314},"bounds":{"x":122,"y":130,"width":73,"height":81}},{"cell":{"x":314,"y":0,"width":313,"height":314},"bounds":{"x":436,"y":128,"width":86,"height":85}},{"cell":{"x":627,"y":0,"width":313,"height":314},"bounds":{"x":740,"y":131,"width":75,"height":79}},{"cell":{"x":940,"y":0,"width":314,"height":314},"bounds":{"x":1049,"y":122,"width":91,"height":101}},{"cell":{"x":0,"y":314,"width":314,"height":313},"bounds":{"x":120,"y":413,"width":81,"height":109}},{"cell":{"x":314,"y":314,"width":313,"height":313},"bounds":{"x":419,"y":426,"width":110,"height":94}},{"cell":{"x":627,"y":314,"width":313,"height":313},"bounds":{"x":740,"y":426,"width":95,"height":96}},{"cell":{"x":940,"y":314,"width":314,"height":313},"bounds":{"x":1057,"y":430,"width":84,"height":85}},{"cell":{"x":0,"y":627,"width":314,"height":313},"bounds":{"x":70,"y":730,"width":189,"height":95}},{"cell":{"x":314,"y":627,"width":313,"height":313},"bounds":{"x":375,"y":721,"width":179,"height":108}},{"cell":{"x":627,"y":627,"width":313,"height":313},"bounds":{"x":677,"y":740,"width":210,"height":87}},{"cell":{"x":940,"y":627,"width":314,"height":313},"bounds":{"x":1015,"y":741,"width":159,"height":86}},{"cell":{"x":0,"y":940,"width":314,"height":314},"bounds":{"x":75,"y":1055,"width":174,"height":92}},{"cell":{"x":314,"y":940,"width":313,"height":314},"bounds":{"x":399,"y":1044,"width":150,"height":102}},{"cell":{"x":627,"y":940,"width":313,"height":314},"bounds":{"x":689,"y":1048,"width":195,"height":91}},{"cell":{"x":940,"y":940,"width":314,"height":314},"bounds":{"x":1026,"y":1033,"width":148,"height":102}}],"referenceBounds":{"width":129,"height":93}},"branch-cleanup":{"file":"assets/branch-cleanup.png","width":1671,"height":941,"sha256":"58abbc699ccf9a40f5c507fce4f71c6a355d1509c7dca51554280eb5939eb6db","decodedBytes":6289644,"mime":"image/png","transparentFraction":0,"frames":[{"bounds":{"x":0,"y":0,"width":1671,"height":941}}],"referenceBounds":{"width":1671,"height":941}},"canopy-top-extension":{"file":"assets/canopy-top-extension.png","width":1602,"height":981,"sha256":"b7e43237a4bc6728fab49dc2fc460929074773db1f671afc761e285b038f874e","decodedBytes":6286248,"mime":"image/png","transparentFraction":0.7873,"frames":[{"bounds":{"x":0,"y":0,"width":1602,"height":981}}],"referenceBounds":{"width":1602,"height":981}}},"animation":{"fireFps":4,"fireCrossfade":"premultiplied additive interpolation","character":"Continuous seated idle with planted boots, chest/shoulder breathing, small head and upper-body shifts, and smoothly blended eye-only blinks.","sky":"fixed supplied image; no sky layer or sky movement","canopy":"Seamless 16-second master cycle with 3 main sways, 5 secondary gusts and 8 leaf flutters; matching position and velocity at the join.","loopSeconds":16,"smokeFps":4.5,"previewFps":60,"gifFps":25},"placements":{"survivor":{"x":497,"y":755,"width":225,"height":388,"eyes":[{"x":533,"y":505,"rx":11,"ry":18},{"x":565,"y":493,"rx":9,"ry":17}],"poseWidth":300,"poseHeight":432,"poseGround":420,"stripHeight":12,"breathCycles":4,"settleCycles":1,"headCycles":2,"breathLift":3.5,"headShift":4,"torsoShift":2,"headLean":0.02,"blinkStarts":[4.6,10.9],"blinkDuration":0.3},"fire":{"x":730,"y":730,"planeWidth":210,"planeHeight":310,"rootFraction":0.85},"canopy":{"rootX":58,"rootY":194,"span":610,"sourceScaleX":0.67,"sourceScaleY":0.9,"sourceX":0,"sourceY":-14,"textureWidth":720,"textureHeight":280,"stripWidth":24,"bendPixels":38,"tipFlutterPixels":3,"trunkOcclusion":[[0,130],[78,130],[64,180],[42,250],[0,320]],"secondaryBendPixels":7,"bendEase":0.16,"topOverscan":192,"extensionSourceTop":200,"extensionBlendSource":64,"swayCycles":3,"secondaryCycles":5,"flutterCycles":8}},"reconstruction":[{"name":"character","feather":9,"points":[[417,377],[458,361],[516,361],[552,370],[579,390],[597,420],[603,464],[593,505],[595,539],[606,573],[614,614],[604,659],[605,709],[584,740],[538,756],[489,764],[413,759],[386,744],[378,705],[376,653],[373,613],[371,571],[378,538],[384,510],[383,469],[390,421]]},{"name":"fire-and-smoke","feather":17,"points":[[631,731],[626,662],[635,607],[646,551],[655,508],[674,477],[739,465],[789,478],[834,509],[836,591],[836,660],[843,721],[812,737]]},{"name":"canopy","feather":12,"points":[[0,0],[662,0],[654,65],[580,103],[498,146],[424,184],[319,212],[229,244],[148,251],[73,223],[0,224]],"asset":"branch-cleanup"},{"name":"remove-redundant-background-fire-pit","asset":"branch-cleanup","feather":14,"points":[[799,405],[991,405],[1003,484],[980,499],[810,496],[796,467]]}],"fixedForeground":[[[0,120],[76,120],[59,193],[34,298],[0,421]],[[622,707],[738,622],[754,629],[749,647],[642,733],[624,725]],[[751,651],[766,640],[777,648],[745,680],[731,672]],[[712,654],[726,641],[809,714],[793,737],[780,730]],[[765,672],[774,663],[844,704],[833,721],[812,713]],[[723,681],[735,691],[701,737],[682,726]],[[550,730],[905,730],[905,790],[550,790]]],"fireOccluders":[[[622,707],[738,622],[754,629],[749,647],[642,733],[624,725]],[[751,651],[766,640],[777,648],[745,680],[731,672]],[[712,654],[726,641],[809,714],[793,737],[780,730]],[[765,672],[774,663],[844,704],[833,721],[812,713]],[[723,681],[735,691],[701,737],[682,726]],[[550,730],[905,730],[905,790],[550,790]]],"renderOrder":["fixed-supplied-scene","local-firelight","falling-leaves-behind-survivor","seated-character-idle","flames","original-fixed-firewood","smoke-and-embers","swaying-canopy","ground-leaves"],"validation":{"issues":[],"totalSpriteCells":62,"textureDecodedBytes":61929668,"movingBranchAndLeafPixels":{"branchAndLeaves":236,"mainTrunk":0,"headquarters":0,"sky":0},"windZeroMaxChange":{"branchAndLeaves":0,"mainTrunk":0,"headquarters":0,"sky":0},"reducedMotionMaxChange":0,"backgroundPit":"Removed from the cleanup artwork and visually checked in the composite","windLayerIncludesWood":true,"strongerSway":{"measuredLeafCentroidTravelPixels":{"previous":3.28,"updated":27.16,"ratio":8.28},"fixedRegionsMaxChange":{"trunk":0,"sky":0,"headquarters":0},"windZeroMaxChange":0},"canopyEdgeFix":{"topOverscanPixels":192,"conservativeMaximumDownswingPixels":81.6,"highestPossibleTextureTopOnScreen":-110.4,"cutEdgeAlwaysAboveViewport":true,"maxPixelChangeOutsideCanopyExtension":{"lowerBough":1,"restOfScene":0},"visualReview":"Strong-wind downswing checked: added foliage covers the former flat crop edge","existingSwayPreserved":true,"lowerBoughChannelTolerance":1,"passed":true},"seamlessIdle":{"loopSeconds":16,"fullSceneClosureMaxDifference":0,"repeatCycleMaxDifference":0,"treeBoundaryMeanFrameChanges":{"region":[0,0,720,280],"beforeJoin":1.3158746693121692,"afterJoin":1.3089285714285714,"ratio":0.9947213073968293},"windZeroMaxDifference":0,"characterMotionMaxDifference":251,"feetMaxDifference":0,"reducedMotionMaxDifference":0,"renderMemoryCheck":{"runtime":"Skia CPU reference renderer","frames":48,"rssMiBRange":[307,311],"scope":"Frame-reset profiling; not native iPhone performance"}}}};
+const sources={"approved-background":"assets/approved-background.jpeg","dawn-clean-plate":"assets/dawn-clean-plate.png","autumn-canopy":"assets/autumn-canopy.png","survivor-idle-8":"assets/survivor-idle-8.png","campfire-flames-8":"assets/campfire-flames-8.png","smoke-12":"assets/smoke-12.png","autumn-leaves-16":"assets/autumn-leaves-16.png","embers-and-dust-16":"assets/embers-and-dust-16.png","branch-cleanup":"assets/branch-cleanup.png","canopy-top-extension":"assets/canopy-top-extension.png"};
+
+const images={},canvas=document.getElementById('camp'),ctx=canvas.getContext('2d');
+const settings={motion:!matchMedia('(prefers-reduced-motion: reduce)').matches,wind:1,survivor:true};
+let renderer,clock=0,last=0,visible=!document.hidden,dirty=true;
+function syncPause(){document.getElementById('pause').textContent=settings.motion?'Pause motion':'Play motion';document.getElementById('pause').setAttribute('aria-pressed',String(!settings.motion));}
+document.getElementById('pause').onclick=()=>{settings.motion=!settings.motion;last=0;dirty=true;syncPause();};syncPause();
+document.getElementById('wind').onchange=e=>{settings.wind=Number(e.target.value);dirty=true;};
+document.getElementById('survivor').onchange=e=>{settings.survivor=e.target.checked;dirty=true;};
+document.querySelectorAll('[data-layer]').forEach(e=>e.onchange=()=>{settings[e.dataset.layer]=e.checked;dirty=true;});
+document.addEventListener('visibilitychange',()=>{visible=!document.hidden;last=0;dirty=true;});
+Promise.all(Object.entries(sources).map(([k,src])=>new Promise((resolve,reject)=>{const im=new Image();im.onload=()=>{images[k]=im;resolve();};im.onerror=()=>reject(new Error('Unable to load '+k));im.src=src;}))).then(()=>{renderer=createCampRenderer(ctx,manifest,images);window.campPreview={renderer,manifest,settings};requestAnimationFrame(tick);}).catch(e=>{canvas.insertAdjacentHTML('afterend','<p>'+e.message+'</p>');});
+function tick(now){if(visible){if(last&&settings.motion)clock+=Math.min((now-last)/1000,.1);last=now;if(settings.motion||dirty){renderer.draw(clock,{...settings,motion:true});dirty=false;}}requestAnimationFrame(tick);}
+</script></body></html>
