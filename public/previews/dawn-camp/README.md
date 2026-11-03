@@ -4,7 +4,7 @@ The selected dawn camp now runs on a **seamless 16-second master cycle**. The tr
 
 ## Preview
 
-The published `watch.html` is a lightweight looping video preview. The full interactive sprite renderer and all masters remain in this source folder and the downloadable kit. Only the watch page and two videos enter the live deployment.
+The published `watch.html` is a lightweight looping video preview. The full interactive sprite renderer and all masters remain in this source folder and the downloadable kit. Only the watch page enters the live deployment; its videos stream from the immutable shared-repository version.
 
 Open `index.html` in a modern browser. It loads local files without external requests. Pause the animation, change wind, toggle the seated survivor, or isolate layers. Reduced-motion preferences start paused; hidden tabs stop drawing. The standalone HTML embeds the same assets.
 
