@@ -1,7 +1,7 @@
 import {drawBuildingCondition} from './building-condition-renderer';
 import {headquartersCutawayAmount,clipHeadquartersLayer,clipHeadquartersDoorway} from './headquarters-cutaway';
 import {headquartersWallMasks,clipWallsOutsideHeadquarters} from './headquarters-wall-mask';
-import {HQ_SOUTH_INTERIOR,HQ_SOUTH_RUIN,HQ_FOUNDATION_DRESSING} from './headquarters-south-art';
+import {HQ_SOUTH_INTERIOR,HQ_SOUTH_RUIN,HQ_FOUNDATION_DRESSING,HQ_SOUTH_GROUND_OPACITY} from './headquarters-south-art';
 import {headquartersRoofBottom,withinRoofApproach,headquartersRaidVisible} from './headquarters-roof';
 import {campBuildingArt} from './camp-restoration';
 import {drawProgressionMarkers} from './progression-renderer';
@@ -104,7 +104,7 @@ export function placedDrawables(ctx:CanvasRenderingContext2D,imgs:Record<string,
   const animatePlant=!!a.foliage&&(viewport?.scale??1)>=.42&&!!w.foliageMotions?.[p.id];
   const drawBase=()=>{if(southHQ){
    const ground=a.ground,soil=ground&&imgs[assetImageKey(ground.image)];
-   if(ground&&soil){const [x,y,width,height]=ground.rect;ctx.drawImage(soil,b.x+x*b.width,b.y+y*b.height,width*b.width,height*b.height)}
+   if(ground&&soil){const [x,y,width,height]=ground.rect;ctx.save();ctx.globalAlpha*=HQ_SOUTH_GROUND_OPACITY;ctx.drawImage(soil,b.x+x*b.width,b.y+y*b.height,width*b.width,height*b.height);ctx.restore()}
    drawCampContact(ctx,p,a);
    if(!roofImage){ctx.drawImage(im,b.x,b.y,b.width,b.height);return}
    ctx.save();clipHeadquartersLayer(ctx,b,false);ctx.drawImage(roofImage,b.x,b.y,b.width,b.height);ctx.restore();

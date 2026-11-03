@@ -5,6 +5,9 @@ import type {AssetCollision} from './asset-collision';
 export const HQ_SOUTH_ROOT='/survival/headquarters-south-v1';
 export const HQ_SOUTH_INTERIOR=HQ_SOUTH_ROOT+'/cutaway-v3.webp';
 export const HQ_SOUTH_GROUND=HQ_SOUTH_ROOT+'/settled-ground-v6.webp';
+// Let the actual map stones/leaves show through the disturbed soil. Keep the
+// masonry/roots opaque: only the broad terrain dressing should mix with ground.
+export const HQ_SOUTH_GROUND_OPACITY=.36;
 export const HQ_SOUTH_FOOTING=HQ_SOUTH_ROOT+'/rooted-footing-v6.webp';
 /** Reuse the camp's low foliage at the masonry feet. These are decorative
  * parts of the building, so they follow owner transforms without new blockers. */

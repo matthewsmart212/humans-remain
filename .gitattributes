@@ -56,3 +56,4 @@ docs/qa/circular-wall-ne-v3/**/*.jpeg -filter -diff -merge -text
 docs/qa/headquarters-doorway-v5/*.webp -filter -diff -merge
 
 /docs/qa/headquarters-ground-v6/** -filter -diff -merge -text
+/docs/qa/headquarters-terrain-v7/** -filter -diff -merge -text
