@@ -21,3 +21,8 @@ dist/
 .expo/
 .openai/qa/
 performance-logs/
+# Synchronization scratch files are never game source or runtime assets.
+.rsync-tmp/
+.rsync-partial/
+.DS_Store
+._*

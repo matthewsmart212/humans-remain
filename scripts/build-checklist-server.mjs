@@ -3,7 +3,7 @@ import path from 'node:path';
 import assert from 'node:assert/strict';
 import {execFileSync} from 'node:child_process';
 import {build} from 'esbuild';
-import {finalizePublishAssets} from './finalize-publish-assets.mjs';
+import {finalizePublishAssets,isTemporaryPublishPath} from './finalize-publish-assets.mjs';
 // Only generated output is replaced. Game source and artwork remain untouched.
 fs.rmSync('dist',{recursive:true,force:true});
 execFileSync(process.execPath,['scripts/build-world-plan.mjs'],{stdio:'inherit'});
@@ -22,14 +22,13 @@ const temporaryArtArchive=fs.mkdtempSync('.sites-runtime/temporary-art-build-');
 function excludeTemporaryArt(directory){
  for(const entry of fs.readdirSync(directory,{withFileTypes:true})){
   const source=path.join(directory,entry.name);
-  if(entry.isDirectory()){excludeTemporaryArt(source);continue}
-  if(!/^\..+\.(?:png|jpe?g|webp|zip)\.[A-Za-z0-9]{6}$/.test(entry.name))continue;
+  if(!isTemporaryPublishPath(entry.name)){if(entry.isDirectory())excludeTemporaryArt(source);continue}
   const destination=path.join(temporaryArtArchive,path.relative('dist/client',source));
   fs.mkdirSync(path.dirname(destination),{recursive:true});fs.renameSync(source,destination);
   assert(!fs.existsSync(source),'Temporary artwork remained in publish bundle: '+source);
  }
 }
-excludeTemporaryArt('dist/client/survival');
+excludeTemporaryArt('dist/client');
 // Retired exports now live under artwork-archive/retired-runtime. Keep these
 // defensive exclusions in case a historical generation script is rerun.
 // Retired sector artwork stays recoverable in source/history, never in the

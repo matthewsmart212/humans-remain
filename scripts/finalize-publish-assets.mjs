@@ -2,6 +2,14 @@ import fs from 'node:fs';
 import path from 'node:path';
 import assert from 'node:assert/strict';
 
+// Interrupted copies can leave complete old exports under synchronization
+// folders, or partial copies beside the real files. Neither is a runtime URL.
+export function isTemporaryPublishPath(relative){
+ return relative.split(/[\\/]/).some(name=>
+  ['.rsync-tmp','.rsync-partial','.DS_Store'].includes(name)||name.startsWith('._')||
+  /^\..+\.(?:png|jpe?g|webp|zip|json|mp4|wasm)\.[A-Za-z0-9]{6}$/.test(name));
+}
+
 /** Assemble a fresh output tree containing only the selected exports. This
  * also prevents a later packaging walk from rediscovering retired entries in
  * a reused output directory. Original artwork remains in public/source. */
@@ -27,7 +35,7 @@ export function finalizePublishAssets(circularWallImages,historicalPublishExport
   const relative=path.relative(source,filename).split(path.sep).join('/');
   const url=relative.startsWith('client/')?'/'+relative.slice(7):'';
   const previewSource=url.startsWith('/previews/dawn-camp/')&&fs.statSync(filename).isFile()&&!['watch.html','preview-poster.webp'].includes(path.basename(filename));
-  const unused=previewSource||url.startsWith('/api/asset-files/')||retired.some(old=>url===old||url.startsWith(old+'/'))||
+  const unused=isTemporaryPublishPath(relative)||previewSource||url.startsWith('/api/asset-files/')||retired.some(old=>url===old||url.startsWith(old+'/'))||
    wallFolders.some(folder=>url.startsWith('/survival/'+folder+'/'))&&fs.statSync(filename).isFile()&&!circularWallImages.has(url);
   if(unused){excluded++;if(fs.statSync(filename).isFile())bytes+=fs.statSync(filename).size;return false}
   return true;
@@ -40,7 +48,7 @@ export function finalizePublishAssets(circularWallImages,historicalPublishExport
  // Move those individual extras away so packaging sees precisely this build.
  const selected=new Set();
  function visitFiles(directory,visit){for(const entry of fs.readdirSync(directory,{withFileTypes:true})){const file=path.join(directory,entry.name);if(entry.isDirectory())visitFiles(file,visit);else if(entry.isFile())visit(file)}}
- visitFiles(target,file=>selected.add(path.relative(target,file)));
+ visitFiles(target,file=>{const relative=path.relative(target,file);assert(!isTemporaryPublishPath(relative),'Temporary file remained in publish tree: '+relative);selected.add(relative)});
  const previous=fs.mkdtempSync(path.resolve('.sites-runtime/previous-dist-'));
  fs.renameSync(source,path.join(previous,'dist'));fs.renameSync(target,source);
  visitFiles(source,file=>{const relative=path.relative(source,file);if(selected.has(relative))return;const destination=path.join(previous,'extra',relative);fs.mkdirSync(path.dirname(destination),{recursive:true});fs.renameSync(file,destination);assert(!fs.existsSync(file),'Unselected export remained: '+relative)});
