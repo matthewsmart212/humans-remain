@@ -1,0 +1,57 @@
+{
+  "8caea3c8-c9b1-4f32-9a99-24004a9e5c99": {
+    "repositoryPath": "public/api/asset-files/8caea3c8-c9b1-4f32-9a99-24004a9e5c99",
+    "sha256": "e019fc360bb9579c5bcf87770a44f62adcc42e1a60dada8a3567df787243b95a",
+    "bytes": 1315112
+  },
+  "0e6f4385-99d4-4bd1-990e-1f3cb3fa87ea": {
+    "repositoryPath": "public/api/asset-files/0e6f4385-99d4-4bd1-990e-1f3cb3fa87ea",
+    "sha256": "3765cb253322eeb11fef91a2bc8ca3aa8a2b0a320609ce16cfbe6ea59de50d42",
+    "bytes": 1370172
+  },
+  "33c670e0-ef26-487e-b46f-230d28a66446": {
+    "repositoryPath": "public/api/asset-files/33c670e0-ef26-487e-b46f-230d28a66446",
+    "sha256": "a2e6a0d2ef8168b38410e029acdd869862e769d01ed5f85ffb6aeca3c4f9f748",
+    "bytes": 1379387
+  },
+  "c63dbbf8-c089-49b4-9559-94f40439ab97": {
+    "repositoryPath": "public/api/asset-files/c63dbbf8-c089-49b4-9559-94f40439ab97",
+    "sha256": "23104dbfbb93891d9b7ae9de2da955a6fd73774590cf0a0137d3544abc85d86a",
+    "bytes": 1379348
+  },
+  "f24d5a53-da03-4ef1-81c3-84bbfda7f56f": {
+    "repositoryPath": "public/api/asset-files/f24d5a53-da03-4ef1-81c3-84bbfda7f56f",
+    "sha256": "4fca3e5f65bb8659c7ca8b53f0ac487edda3b1788d3f8af4c5f4e7972c1eeed8",
+    "bytes": 1380142
+  },
+  "71d702cf-d32a-45da-9f28-ef28d1d5dc36": {
+    "repositoryPath": "public/api/asset-files/71d702cf-d32a-45da-9f28-ef28d1d5dc36",
+    "sha256": "1c0493c438e0e965927e363f12ac186314a5a13a0573a25a0b2935c11e420d27",
+    "bytes": 1382935
+  },
+  "10f7b0ab-a198-4373-a434-bfe90aacec5d": {
+    "repositoryPath": "public/api/asset-files/10f7b0ab-a198-4373-a434-bfe90aacec5d",
+    "sha256": "c5ccb6d50e27b3c93a31e50250cf1d42ce9cce955e7a4ef65c9d7080a401fb2a",
+    "bytes": 1383919
+  },
+  "18bea2f8-1dd6-4d86-b767-89473f47eda6": {
+    "repositoryPath": "public/api/asset-files/18bea2f8-1dd6-4d86-b767-89473f47eda6",
+    "sha256": "6082f61e9b52c43384bc9a07c6a5e7291aca83d4b4ef78b389464fe69617986d",
+    "bytes": 1382012
+  },
+  "c9095651-2b46-40dd-8eaf-c73ea3ee5f5b": {
+    "repositoryPath": "public/api/asset-files/c9095651-2b46-40dd-8eaf-c73ea3ee5f5b",
+    "sha256": "1096cdaa8c3db2311fd2c19714f2f96f1782d1ec7269573881eba72c894bb7d4",
+    "bytes": 1377590
+  },
+  "646cd6ce-36e6-406f-925a-ecb2c3e091d5": {
+    "repositoryPath": "public/api/asset-files/646cd6ce-36e6-406f-925a-ecb2c3e091d5",
+    "sha256": "6e1b085bc72ba4a1e3c7ff383cf056efccd4467e4e99d3aac14bf34c67d38803",
+    "bytes": 1458128
+  },
+  "9ef30c30-c753-4e59-8d9e-a20c011bd0c6": {
+    "repositoryPath": "public/api/asset-files/9ef30c30-c753-4e59-8d9e-a20c011bd0c6",
+    "sha256": "7b6d14828df844eebb7af7f3f4cfbf7fcb96a8897fa14d5f2d03ee2d953a3046",
+    "bytes": 5546666
+  }
+}
