@@ -1,3 +1,4 @@
+import NativeStartingScreen from './StartingScreen';
 import {prepareSavedCampArtwork} from '../src/run-save';
 import {NativeRunSaveStore} from './run-save-store';
 import {NativeFrameWorkScheduler} from './frame-work-scheduler';
@@ -47,9 +48,9 @@ declare const process:{env:Partial<Record<'EXPO_PUBLIC_GAME_SOURCE_COMMIT'|'EXPO
 type Mode='loading'|'playing'|'paused'|'bag'|'map'|'error';
 type Runtime={renderer:Awaited<ReturnType<typeof createNativeRenderer>>;outdoor:OutdoorTerrainStream;resources:SceneResourceCache;travel:SceneTravel;saved:SavedWorld;reduced:boolean};
 const zero=()=>({x:0,y:0});
-export default function App(){return <GestureHandlerRootView style={{flex:1}}><SafeAreaProvider><Game/></SafeAreaProvider></GestureHandlerRootView>}
+export default function App(){const [entered,setEntered]=useState(false);return <GestureHandlerRootView style={{flex:1}}><SafeAreaProvider>{entered?<Game onHome={()=>setEntered(false)}/>:<NativeStartingScreen onPlay={()=>setEntered(true)}/>}</SafeAreaProvider></GestureHandlerRootView>}
 
-function Game(){
+function Game({onHome}:{onHome:()=>void}){
  const {width,height}=useWindowDimensions(),safe=useSafeAreaInsets(),dimensions=useRef({width,height});dimensions.current={width,height};
  const world=useRef<World|null>(null),runtime=useRef<Runtime|null>(null),input=useRef(zero()),sprint=useRef(false),swing=useRef(false),enabled=useRef(false),modeRef=useRef<Mode>('loading');
  const playView=useRef({...PLAY_VIEW});
@@ -221,6 +222,7 @@ function Game(){
     {mode==='paused'&&<View style={[s.menu,wide&&s.menuWide]}>
      {w?.phase!=='over'&&!saveBlocked.current&&button('Resume',()=>{clear();change('playing');saveRun()},false,wide&&s.menuItem)}
      {button('New Survival run',newRun,false,wide&&s.menuItem)}
+     {button('Starting screen',()=>{clear();saveRun();void saveStore.flush().then(onHome)},false,wide&&s.menuItem)}
      <Text style={s.section}>SETTINGS · PERFORMANCE</Text>
      <NativePerformanceMenuOptions recorder={gamePerformance} onOpen={()=>setPerformanceOpen(true)} style={wide&&s.menuItem}/>
     </View>}

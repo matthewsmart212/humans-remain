@@ -1,0 +1,38 @@
+[
+  {
+    "name": "furnace-idle",
+    "width": 1254,
+    "height": 1254,
+    "bytes": 467340
+  },
+  {
+    "name": "furnace-broken",
+    "width": 1254,
+    "height": 1254,
+    "bytes": 408150
+  },
+  {
+    "name": "warehouse-full",
+    "width": 1254,
+    "height": 1254,
+    "bytes": 431722
+  },
+  {
+    "name": "warehouse-empty",
+    "width": 1254,
+    "height": 1254,
+    "bytes": 339110
+  },
+  {
+    "name": "warehouse-half",
+    "width": 1254,
+    "height": 1254,
+    "bytes": 330888
+  },
+  {
+    "name": "warehouse-broken",
+    "width": 1254,
+    "height": 1254,
+    "bytes": 451040
+  }
+]

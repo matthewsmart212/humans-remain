@@ -14,7 +14,7 @@ import {packWeight} from '../src/expedition-inventory';
 import {canPayMaterials} from '../src/camp-materials';
 import {costRows,RESTORE_FURNACE_COST} from '../src/run-progression';
 type Props={world:World;width:number;height:number;safe:{top:number;bottom:number;left:number;right:number};onClose:()=>void;onChange:()=>void};
-const furnaceArt=require('../public/survival/ironworks-v1/camp-furnace.png');
+const furnaceArt=require('../public/survival/camp-craft-v2/furnace-idle.webp');
 const textures:Record<string,number>={
  '/survival/ui-field-kit-v1/logs.png':require('../public/survival/ui-field-kit-v1/logs.png'),
  '/survival/headquarters-menu-v1/camp-plan.webp':require('../public/survival/headquarters-menu-v1/camp-plan.webp'),

@@ -16,6 +16,7 @@ export function finalizePublishAssets(circularWallImages,historicalPublishExport
  const retired=[...historicalPublishExports,...redirected,
   '/survival/headquarters-south-v1/interior.webp','/survival/headquarters-south-v1/ruined-interior.webp','/survival/headquarters-south-v1/cutaway.webp','/survival/headquarters-south-v1/ruined-cutaway.webp',
   '/survival/headquarters-south-v1/ground-contact-v4.webp','/survival/headquarters-south-v1/ground-contact-v5.webp',
+  '/planning/built-river-features-v4.webp','/planning/river-features-detail.webp','/survival/camp-worksites-v3',
   '/survival/predators-v1/sprite-pack.zip','/survival/trees-v1',
   '/survival/maps/consistent-terrain-v1','/survival/world-ground-v1',
   '/survival/road-materials-v1','/survival/world-ground-v2/olive.webp',
@@ -25,7 +26,7 @@ export function finalizePublishAssets(circularWallImages,historicalPublishExport
  fs.cpSync(source,target,{recursive:true,filter:filename=>{
   const relative=path.relative(source,filename).split(path.sep).join('/');
   const url=relative.startsWith('client/')?'/'+relative.slice(7):'';
-  const previewSource=url.startsWith('/previews/dawn-camp/')&&fs.statSync(filename).isFile()&&path.basename(filename)!=='watch.html';
+  const previewSource=url.startsWith('/previews/dawn-camp/')&&fs.statSync(filename).isFile()&&!['watch.html','preview-poster.webp'].includes(path.basename(filename));
   const unused=previewSource||url.startsWith('/api/asset-files/')||retired.some(old=>url===old||url.startsWith(old+'/'))||
    wallFolders.some(folder=>url.startsWith('/survival/'+folder+'/'))&&fs.statSync(filename).isFile()&&!circularWallImages.has(url);
   if(unused){excluded++;if(fs.statSync(filename).isFile())bytes+=fs.statSync(filename).size;return false}
@@ -34,7 +35,14 @@ export function finalizePublishAssets(circularWallImages,historicalPublishExport
  for(const url of circularWallImages)assert(fs.existsSync(path.join(target,'client'+url)),'Required wall: '+url);
  for(const file of ['cutaway-v3','exterior','ruined-cutaway-v3','ruined','settled-ground-v6','rooted-footing-v6'])assert(fs.existsSync(path.join(target,'client/survival/headquarters-south-v1',file+'.webp')),'Required headquarters state: '+file);
  for(const url of retired)assert(!fs.existsSync(path.join(target,'client'+url)),'Retired export cannot enter the final publish tree: '+url);
+ // Record the selected files before replacing the canonical output directory.
+ // Some restored workspaces merge old directory entries back after a rename.
+ // Move those individual extras away so packaging sees precisely this build.
+ const selected=new Set();
+ function visitFiles(directory,visit){for(const entry of fs.readdirSync(directory,{withFileTypes:true})){const file=path.join(directory,entry.name);if(entry.isDirectory())visitFiles(file,visit);else if(entry.isFile())visit(file)}}
+ visitFiles(target,file=>selected.add(path.relative(target,file)));
  const previous=fs.mkdtempSync(path.resolve('.sites-runtime/previous-dist-'));
  fs.renameSync(source,path.join(previous,'dist'));fs.renameSync(target,source);
+ visitFiles(source,file=>{const relative=path.relative(source,file);if(selected.has(relative))return;const destination=path.join(previous,'extra',relative);fs.mkdirSync(path.dirname(destination),{recursive:true});fs.renameSync(file,destination);assert(!fs.existsSync(file),'Unselected export remained: '+relative)});
  console.log(JSON.stringify({finalPublishTree:true,excludedRediscoveredExports:excluded,excludedBytes:bytes}));
 }

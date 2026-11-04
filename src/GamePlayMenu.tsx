@@ -28,7 +28,7 @@ export default function GamePlayMenu({paused,fullscreen,hideButton=false,defeate
     <button type="button" autoFocus={defeated} {...tap(()=>setConfirmNew(true))}><RotateCcw size={18}/>New Survival run</button>
     {survival&&onSandbox&&<button type="button" {...tap(onSandbox)}>Open testing sandbox</button>}
     <button type="button" {...tap(onExpand)}>{fullscreen?<Minimize2 size={18}/>:<Maximize2 size={18}/>}<span>{fullscreen?'Exit full screen':'Full screen'}</span></button>
-    <button type="button" className="game-return" {...tap(onExit)}><ArrowLeft size={18}/>Return to Build</button>
+    <button type="button" className="game-return" {...tap(onExit)}><ArrowLeft size={18}/>Starting screen</button>
     </>}
    </section>}
   </dialog>

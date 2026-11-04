@@ -1,0 +1,17 @@
+{
+  "passed": true,
+  "snapshotRevision": 86,
+  "placements": 3417,
+  "productionNativeRenderer": true,
+  "offline": true,
+  "pictures": [
+    "camp-overview-repaired.webp",
+    "furnace-repaired.webp",
+    "furnace-active.webp",
+    "furnace-ruined.webp",
+    "warehouse-repaired.webp",
+    "warehouse-active.webp",
+    "warehouse-ruined.webp"
+  ],
+  "physicalIPhoneTested": false
+}

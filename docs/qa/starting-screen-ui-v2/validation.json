@@ -1,0 +1,25 @@
+{
+  "web_typecheck": "passed",
+  "native_typecheck": "passed",
+  "expo_ios_production_export": "passed",
+  "browser_ui_review": {
+    "surface": "actual shared StartingScreen and GameStart components in a temporary isolated preview harness",
+    "viewports": [
+      "desktop 1363x936",
+      "landscape 844x390",
+      "portrait 390x844"
+    ],
+    "passed": [
+      "logo/icons/profile/font render",
+      "Customise opens and saves existing survivor name",
+      "Settings opens and animation toggles off/on",
+      "Play invokes the existing entry callback",
+      "Friends remains disabled",
+      "portrait editor action separated from profile",
+      "landscape menu and profile fit"
+    ]
+  },
+  "preview_limit": "The Vite-only managed preview does not provide live artwork API routes; full world loading is checked against the published Site, not the isolated UI harness.",
+  "physical_ios_runtime": "not available in this environment",
+  "profile_progress": "Existing initial Level 1 and 0/1000 XP retained; mockup values are not invented player progress."
+}

@@ -1,3 +1,4 @@
+import {placeCampWorksites} from './camp-worksites-placement';
 import {expandHeadquartersSpace} from './headquarters-space';
 import {refineCampVegetation} from './camp-vegetation';
 import {grantStarterPickaxe} from './player-gear';
@@ -55,7 +56,7 @@ function nearbyClearGround(layout:WorldLayout,from:SavedPoint):SavedPoint|undefi
  * perimeter, retaining all run state and safe camp return points. */
 export function migrateSavedCampPerimeter(w:World,route:{sceneId:string;spawn:SavedPoint}[]){
  if(!w.layout)return false;
- const next=expandHeadquartersSpace(fitHeadquartersInterior(placeSouthFacingHeadquarters(addApprovedCampPerimeter(w.layout))));if(next===w.layout)return false;
+ const next=placeCampWorksites(expandHeadquartersSpace(fitHeadquartersInterior(placeSouthFacingHeadquarters(addApprovedCampPerimeter(w.layout)))));if(next===w.layout)return false;
  const previous=new Map(w.layout.items.map(p=>[p.id,p]));
  const added=next.items.filter(p=>{
   const old=previous.get(p.id);

@@ -1,0 +1,134 @@
+{
+  "mode": "before",
+  "sourceRevision": 80,
+  "sourceFile": "revision80-layout-overrides.json",
+  "sourcePerimeterVersion": 6,
+  "renderedPerimeterVersion": 7,
+  "placementCount": 4548,
+  "visiblePlacementCount": 354,
+  "imageURL": "/survival/camp-circular-wall-weathered-v1/wall-15.webp",
+  "wallPair": [
+    {
+      "id": "camp-circular-wall-v1-15",
+      "assetId": "camp_circular_wall_15",
+      "x": 884.9512019937883,
+      "y": 149.34589466936268,
+      "scale": 1,
+      "locked": true,
+      "solid": true,
+      "allowTransparency": true,
+      "roof": "auto",
+      "role": "prop"
+    },
+    {
+      "id": "camp-circular-wall-v1-16",
+      "assetId": "camp_circular_wall_16",
+      "x": 1396.2685560223163,
+      "y": -44.783235332367894,
+      "scale": 1,
+      "locked": true,
+      "solid": true,
+      "allowTransparency": true,
+      "roof": "auto",
+      "role": "prop"
+    }
+  ],
+  "camera": {
+    "width": 1536,
+    "height": 709,
+    "scale": 0.6,
+    "translation": {
+      "x": -36,
+      "y": 303
+    },
+    "world": {
+      "x": 60,
+      "y": -505,
+      "width": 2560,
+      "height": 1181.6666666666667,
+      "scale": 1.2
+    }
+  },
+  "player": {
+    "x": 1340,
+    "y": 121.2833333333334
+  },
+  "decodedImages": 244,
+  "productionNativeRenderer": true,
+  "terrainStreams": {
+    "graphics": {
+      "backend": "native-skia",
+      "shaderFieldBytes": 21577728
+    },
+    "roads": {
+      "bytes": 10675008,
+      "missing": 0,
+      "residentBytes": 10675008,
+      "pendingBytes": 0,
+      "budgetBytes": 50331648,
+      "resident": 10,
+      "pending": 0,
+      "wanted": 10,
+      "visible": 1,
+      "requested": 10,
+      "completed": 10,
+      "failures": 0,
+      "evictions": 0,
+      "rapidEvictions": 0,
+      "recentReloads": 0,
+      "missingDetails": [],
+      "missingDetailsOmitted": 0
+    },
+    "camp": {
+      "bytes": 24826880,
+      "missing": 0,
+      "residentBytes": 24826880,
+      "pendingBytes": 0,
+      "budgetBytes": 25165824,
+      "resident": 23,
+      "pending": 0,
+      "wanted": 23,
+      "visible": 18,
+      "requested": 23,
+      "completed": 23,
+      "failures": 0,
+      "evictions": 0,
+      "rapidEvictions": 0,
+      "recentReloads": 0,
+      "missingDetails": [],
+      "missingDetailsOmitted": 0
+    },
+    "rivers": {
+      "bytes": 0,
+      "missing": 0,
+      "residentBytes": 0,
+      "pendingBytes": 0,
+      "budgetBytes": 20971520,
+      "resident": 0,
+      "pending": 0,
+      "wanted": 0,
+      "visible": 0,
+      "requested": 0,
+      "completed": 0,
+      "failures": 0,
+      "evictions": 0,
+      "rapidEvictions": 0,
+      "recentReloads": 0,
+      "missingDetails": [],
+      "missingDetailsOmitted": 0
+    },
+    "artwork": {
+      "active": 0,
+      "queued": 0,
+      "queuedForeground": 0,
+      "cachedImages": 243,
+      "warming": 0,
+      "warmQueue": []
+    }
+  },
+  "state": "Initial abandoned-camp restoration state inferred from screenshot, with the captured live draft placements unchanged except the actual migration in after mode. Random expedition loot and wildlife are omitted because the player run state is not part of the captured editor draft.",
+  "limitations": [
+    "CanvasKit software rendering of the production native renderer; this is not an iPhone device performance test.",
+    "React HUD overlays are omitted; the game world, depth ordering, HQ, foliage and terrain use production code."
+  ]
+}

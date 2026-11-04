@@ -1,8 +1,8 @@
 {
   "passed": true,
-  "placements": 4465,
-  "bundledImages": 1742,
-  "startupDecoded": 308,
+  "placements": 3417,
+  "bundledImages": 1846,
+  "startupDecoded": 378,
   "portraitAndLandscapePictures": 4,
   "heldFoodPictures": 2,
   "chickenPictures": 2,
@@ -37,9 +37,9 @@
     1
   ],
   "checks": [
-    "saved draft rather than retired applied world",
+    "packaged game world without editor APIs or cached drafts",
     "matching approved migrations",
-    "cached and bundled offline fallback",
+    "bundled offline launch",
     "isolated play snapshot",
     "all chopping/animation states bundled",
     "backpack and dropped-item artwork bundled offline",

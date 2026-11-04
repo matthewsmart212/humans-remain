@@ -1,0 +1,40 @@
+{
+  "reference": "approved-ui-reference.jpeg",
+  "brief": "Match the previously approved starting-screen UI while retaining the approved animated camp background and menu behavior.",
+  "images": {
+    "logo-master.png": {
+      "tool": "built-in imagegen",
+      "prompt": "Faithfully reproduce only the compact top-left HUMANS / indented REMAIN logo from the approved reference: weathered cream hand-cut letters, prominent H and R, orange pine silhouettes merging into a tapered brush underline, genuine transparent alpha, no scene or UI. Preserve the reference design rather than redesigning it.",
+      "runtime": "public/survival/starting-screen-ui-v2/humans-remain-logo.png",
+      "export_width": 648
+    },
+    "profile-master.png": {
+      "tool": "built-in imagegen",
+      "prompt": "Preserve the exact in-game chibi boy face, messy brown hair, eyes, head angle, orange jacket and cream collar; remove the map-portrait medallion and background. Match the reference lower-left borderless head-and-shoulders crop on genuine transparent alpha.",
+      "runtime": "public/survival/starting-screen-ui-v2/survivor-profile.png",
+      "export_width": 270
+    }
+  },
+  "icons": {
+    "source": "src/start-screen-icons.ts",
+    "view_box": [
+      0,
+      0,
+      48,
+      48
+    ],
+    "png_dimensions": [
+      144,
+      144
+    ],
+    "colour": "#f1dfad"
+  },
+  "font": {
+    "upstream": "https://github.com/google/fonts/tree/main/ofl/cinzel",
+    "license": "SIL Open Font License 1.1",
+    "weight": 600,
+    "static_family": "Camp Menu",
+    "runtime_family": "CampMenu"
+  },
+  "production_exports": "Downscaled and PNG-encoded from the unchanged generated masters; transparency retained."
+}

@@ -1,0 +1,196 @@
+{
+  "result": "pass",
+  "source": "Built-in ImageGen edit; stonework registered inside the original foundation mask",
+  "originalImage": "public/survival/camp-circular-wall-weathered-v1/wall-15.png",
+  "originalSha256": "f2966e7c2b118193269023656dafba54b5693db9c16a744e5b7e20204ae19c8d",
+  "generatedImage": "generated/wall-15-stonework.png",
+  "generatedSha256": "942bfbdcc022bdad2d5c33a65e732d23979c152b83318f419e6ad41d149be08b",
+  "sourceBounds": {
+    "left": 35,
+    "top": 36,
+    "width": 1187,
+    "height": 1183
+  },
+  "targetBounds": {
+    "left": 20,
+    "top": 20,
+    "width": 630,
+    "height": 632
+  },
+  "size": [
+    670,
+    672
+  ],
+  "foundationMask": [
+    [
+      109,
+      581
+    ],
+    [
+      121,
+      562
+    ],
+    [
+      146,
+      546
+    ],
+    [
+      181,
+      525
+    ],
+    [
+      217,
+      505
+    ],
+    [
+      252,
+      485
+    ],
+    [
+      288,
+      463
+    ],
+    [
+      323,
+      441
+    ],
+    [
+      349,
+      423
+    ],
+    [
+      355,
+      410
+    ],
+    [
+      378,
+      400
+    ],
+    [
+      399,
+      386
+    ],
+    [
+      436,
+      366
+    ],
+    [
+      473,
+      347
+    ],
+    [
+      510,
+      326
+    ],
+    [
+      548,
+      303
+    ],
+    [
+      585,
+      281
+    ],
+    [
+      621,
+      263
+    ],
+    [
+      638,
+      257
+    ],
+    [
+      647,
+      269
+    ],
+    [
+      647,
+      327
+    ],
+    [
+      113,
+      650
+    ],
+    [
+      102,
+      635
+    ],
+    [
+      102,
+      604
+    ]
+  ],
+  "protectedPostHulls": [
+    [
+      [
+        15,
+        300
+      ],
+      [
+        125,
+        300
+      ],
+      [
+        125,
+        555
+      ],
+      [
+        106,
+        578
+      ],
+      [
+        102,
+        625
+      ],
+      [
+        74,
+        657
+      ],
+      [
+        15,
+        600
+      ]
+    ],
+    [
+      [
+        286,
+        105
+      ],
+      [
+        403,
+        105
+      ],
+      [
+        400,
+        387
+      ],
+      [
+        376,
+        411
+      ],
+      [
+        346,
+        412
+      ],
+      [
+        329,
+        393
+      ]
+    ]
+  ],
+  "changedPixels": 33735,
+  "visibleChangedPixels": 33735,
+  "protectedPixelsVerified": 404333,
+  "changedBounds": [
+    102,
+    257,
+    646,
+    645
+  ],
+  "allAlphaBytesIdentical": true,
+  "allPixelsOutsideFoundationIdentical": true,
+  "timberPreserved": true,
+  "pngSha256": "f0923efd23a2e894acfd66333fccbf3e3247a2f3da6d2e7e5ad01cdb4c6d5684",
+  "webpSha256": "84392ce462c60a0d5e4e06626c700e9b556cc4e6ab37e95950277bc05774c30e",
+  "losslessVisiblePixelsVerified": true,
+  "placementAndCollisionChanges": 0
+}

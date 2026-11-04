@@ -1,0 +1,42 @@
+{
+  "result": "pass",
+  "baselineGithubCommit": "fdf97d2f7798731c776a98a74d6c638771e380f4",
+  "section": "camp_circular_wall_15",
+  "onlyRuntimeMetadataChange": "image URL",
+  "allOtherSectionsAndGeometryPreserved": true,
+  "layoutAndSnapshotUnchanged": true,
+  "typecheck": {
+    "command": "npm run typecheck",
+    "exitCode": 0
+  },
+  "layout": {
+    "command": "node scripts/check-circular-wall-layout.mjs",
+    "exitCode": 0,
+    "roadSamples": 777,
+    "entranceRoutes": 6
+  },
+  "runtime": {
+    "command": "node scripts/check-circular-wall-runtime.mjs",
+    "exitCode": 0,
+    "savedProgressPreserved": true,
+    "northeastSavedLayoutFixRetained": true
+  },
+  "native": {
+    "command": "node scripts/check-circular-wall-native.mjs docs/qa/circular-wall-nw-v1",
+    "exitCode": 0,
+    "registeredCircularWallImages": 18,
+    "legacyWallImages": 24
+  },
+  "productionRendererDifference": {
+    "changedPixels": 5966,
+    "bounds": [
+      395,
+      321,
+      628,
+      486
+    ],
+    "confinedToNorthwestWall": true
+  },
+  "registration": "artwork-archive/circular-wall-nw-v1/registration-report.json",
+  "physicalDeviceTested": false
+}

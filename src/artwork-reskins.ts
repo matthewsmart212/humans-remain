@@ -1,3 +1,4 @@
+import {resolveWorksiteWarehouse} from './camp-worksites-art';
 import {resolveAnimationDefaults} from './asset-animation-defaults';
 import type {ArtworkRecord} from './artwork-model';
 import manifest from './wall-artwork-replacements.json';
@@ -12,6 +13,7 @@ const replacements=[...manifest,...campManifest] as {entryId:string;sourceId:str
  */
 export function resolveArtworkReskin(record:ArtworkRecord):ArtworkRecord{
  record=resolveSouthHeadquarters(resolveAnimationDefaults(record));
+ const worksite=resolveWorksiteWarehouse(record);if(worksite!==record)return worksite;
  // Registered ground-edge refreshes retain the original architectural pixels.
  // Animated bunker frames are an all-or-nothing match so a later owner upload
  // never becomes mixed with this particular three-frame doorway sequence.

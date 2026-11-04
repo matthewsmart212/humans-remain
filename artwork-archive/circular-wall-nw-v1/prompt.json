@@ -1,0 +1,17 @@
+{
+  "mode": "built-in ImageGen edit",
+  "useCase": "precise-object-edit",
+  "editTarget": "public/survival/camp-circular-wall-weathered-v1/wall-15.png",
+  "materialReference": "public/survival/camp-circular-wall-weathered-v1/wall-16.png",
+  "context": "User screenshot IMG_9832.jpeg, north-west camp wall seam",
+  "request": "Replace the small tidy squared multi-course brickwork at the base of wall 15 with the larger rough irregular moss-covered stones of wall 16. Match grey-brown colours, warm rough highlights, cracks, block scale and moss. Preserve the foundation silhouette, both endpoints, dark timber, posts, spikes, rails, metal collars and rivets, curved arc, upright heights, transparency and registration. No terrain or extra objects. Return one transparent sprite.",
+  "invariantsEnforcedByRegistration": [
+    "Original canvas and dimensions",
+    "Every original alpha byte",
+    "All pixels outside the foundation material mask",
+    "Both protected timber post hulls",
+    "All existing placement and collision metadata"
+  ],
+  "output": "generated/wall-15-stonework.png",
+  "generatedFile": "exec-216e56b1-9630-4ca0-91bb-5db316ac1cd5.png"
+}

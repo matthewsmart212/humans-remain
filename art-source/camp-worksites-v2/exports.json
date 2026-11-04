@@ -1,0 +1,32 @@
+[
+  {
+    "name": "furnace",
+    "size": 768,
+    "bytes": 214890
+  },
+  {
+    "name": "furnace-ruined",
+    "size": 768,
+    "bytes": 181942
+  },
+  {
+    "name": "warehouse-empty",
+    "size": 1024,
+    "bytes": 399360
+  },
+  {
+    "name": "warehouse-half",
+    "size": 1024,
+    "bytes": 324040
+  },
+  {
+    "name": "warehouse-full",
+    "size": 1024,
+    "bytes": 334468
+  },
+  {
+    "name": "warehouse-ruined",
+    "size": 1024,
+    "bytes": 304260
+  }
+]

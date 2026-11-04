@@ -1,16 +1,16 @@
 import React,{useState} from 'react';
 import type {World} from './survival-engine';
 import {WAREHOUSE_ART,warehouseLevel,type WarehouseMaterial} from './warehouse';
-import {WAREHOUSE_MASKS} from './warehouse-renderer';
+import {warehouseStockMask} from './warehouse-renderer';
 import {transferWarehouse,warehouseView} from './warehouse-storage';
 import {warehouseInventoryItems,warehouseMaterialForItem} from './warehouse-inventory';
-import {packLoad} from './expedition-inventory';
+import {packLoad,storedCount} from './expedition-inventory';
 import {fieldKitArt} from './field-kit';
 import {InventoryGrid,InventoryDetail} from './InventoryUI';
 import StationMenu from './StationMenu';
 import './warehouse.css';
 
-export function WarehousePicture({world}:{world:World}){return <div className="warehouse-picture" aria-hidden="true"><img src={WAREHOUSE_ART.full} alt=""/>{(['pallets','scrap'] as const).map(id=>{const level=warehouseLevel(world.stock[id],id);return level<2&&<img key={id} src={level?WAREHOUSE_ART.half:WAREHOUSE_ART.empty} alt="" style={{clipPath:`polygon(${WAREHOUSE_MASKS[id].map(([x,y])=>`${x*100}% ${y*100}%`).join(',')})`}}/>})}</div>}
+export function WarehousePicture({world}:{world:World}){return <div className="warehouse-picture" aria-hidden="true"><img src={WAREHOUSE_ART.empty} alt=""/>{(['pallets','stone','scrap'] as const).map(id=>{const level=warehouseLevel(storedCount(world,id),id);return level>0&&<img key={id} src={level===1?WAREHOUSE_ART.half:WAREHOUSE_ART.full} alt="" style={{clipPath:`polygon(${warehouseStockMask(id).map(([x,y])=>`${x*100}% ${y*100}%`).join(',')})`}}/>})}</div>}
 
 export default function WarehousePanel({world,onClose,onChange}:{world:World;onClose:()=>void;onChange:()=>void}){
  const [selected,setSelected]=useState<WarehouseMaterial>('pallets'),[taking,setTaking]=useState(true),[message,setMessage]=useState('');

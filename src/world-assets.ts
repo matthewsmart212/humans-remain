@@ -1,3 +1,4 @@
+import {FURNACE_COLLISION} from './camp-worksites-art';
 import {restorationImages} from './camp-restoration';
 import {withSouthHeadquartersGeometry,HQ_SOUTH_INTERIOR,HQ_FOUNDATION_DRESSING} from './headquarters-south-art';
 import {IRONWORKS_WORLD_ART,FURNACE_ID} from './ironworks-data';
@@ -92,7 +93,7 @@ for(const e of entries.filter(e=>e.image&&!e.canonicalArt&&!e.id.startsWith('map
  const forage=FORAGE_ART.find(f=>f.id===e.id);
  if(forage){a.anchor=forage.anchor.map((v,i)=>v*forage.size[i]);a.solid=forage.kind==='apple';a.body=a.solid?[{x:0,y:-8,hw:20,hh:15}]:[];a.foliage=forage.kind==='berries';a.allowTransparency=a.solid;a.note=`Pick ${forage.kind==='berries'?'berries':'apples'} nearby with the action button. Fruit regrows after ${forage.regrowDays} dawns.`;}
  const ironworks=IRONWORKS_WORLD_ART.find(f=>f.id===e.id);
- if(ironworks){a.anchor=ironworks.anchor.map((v,i)=>v*ironworks.size[i]);a.width=ironworks.worldWidth;a.height=a.width*ironworks.size[1]/ironworks.size[0];a.body=e.id===FURNACE_ID?[{x:-15,y:-29,hw:61,hh:31},{x:76,y:-21,hw:27,hh:24}]:[{x:0,y:-13,hw:72,hh:27}];a.solid=true;a.allowTransparency=false;a.note=e.id===FURNACE_ID?'Smelt ore or recycle scrap with log fuel. Collect ingots, craft gear and reinforce the bellows.':'Iron-veined boulder · metal pickaxe required · guaranteed iron ore and stone.';}
+ if(ironworks){a.anchor=ironworks.anchor.map((v,i)=>v*ironworks.size[i]);a.width=ironworks.worldWidth;a.height=a.width*ironworks.size[1]/ironworks.size[0];a.body=e.id===FURNACE_ID?[{x:-15,y:-29,hw:61,hh:31},{x:76,y:-21,hw:27,hh:24}]:[{x:0,y:-13,hw:72,hh:27}];if(e.id===FURNACE_ID){a.body=[];a.collision=FURNACE_COLLISION;}a.solid=true;a.allowTransparency=false;a.note=e.id===FURNACE_ID?'Smelt ore or recycle scrap with log fuel. Collect ingots, craft gear and reinforce the bellows.':'Iron-veined boulder · metal pickaxe required · guaranteed iron ore and stone.';}
  if(GARDEN_ART.some(g=>g.id===e.id)){a.anchor=GARDEN_ANCHOR.map((v,i)=>v*crop[i+2]);a.body=[];a.collision=GARDEN_COLLISION;a.allowTransparency=false;a.note='Camp garden artwork · choose Broken or tiers 1–3 in Build. Farming and repair gameplay will be connected separately.';}
  if(role==='generator')a.body=[{x:0,y:-10,hw:48,hh:35}];
  add(withSouthHeadquartersGeometry(a),['crate','search'].includes(role)?false:true);

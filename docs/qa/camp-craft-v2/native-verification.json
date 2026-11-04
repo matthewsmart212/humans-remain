@@ -1,0 +1,19 @@
+{
+  "passed": true,
+  "snapshotRevision": 86,
+  "placements": 3417,
+  "productionNativeRenderer": true,
+  "offline": true,
+  "pictures": [
+    "camp-overview-repaired.png",
+    "furnace-repaired.png",
+    "furnace-partial.png",
+    "furnace-active.png",
+    "furnace-ruined.png",
+    "warehouse-repaired.png",
+    "warehouse-partial.png",
+    "warehouse-active.png",
+    "warehouse-ruined.png"
+  ],
+  "physicalIPhoneTested": false
+}
