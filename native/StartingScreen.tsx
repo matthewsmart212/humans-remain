@@ -12,6 +12,8 @@ import {START_PROFILE_KEY,DEFAULT_START_PROFILE,readStartProfile,type StartProfi
 const menuArtwork:StartScreenArtwork={
  logo:require('../public/survival/starting-screen-ui-v2/humans-remain-logo.png'),
  selectionGlow:require('../public/survival/starting-screen-ui-v2/play-selection-glow.png'),
+ expeditionScene:require('../public/survival/expedition-menu-v1/camp-gate.webp'),
+ cardTexture:require('../public/survival/ui-field-kit-v1/utility-panel.png'),
  icons:{
   play:require('../public/survival/starting-screen-ui-v2/play.png'),
   friends:require('../public/survival/starting-screen-ui-v2/friends.png'),

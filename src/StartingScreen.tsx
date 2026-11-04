@@ -3,6 +3,7 @@ import {View,Text,Pressable,TextInput,Image,ScrollView,StyleSheet,Platform,type 
 import type {StartProfile} from './start-profile';
 import {START_SCREEN_MENU_FONT,type StartScreenArtwork} from './start-screen-art';
 import type {StartScreenIconName} from './start-screen-icons';
+import ExpeditionMenu from './ExpeditionMenu';
 
 type Props={width:number;height:number;safe?:{top:number;bottom:number;left:number;right:number};background:React.ReactNode;shade:React.ReactNode;portrait:ImageSourcePropType;artwork:StartScreenArtwork;fontFamily?:string;profile:StartProfile;onProfile:(p:StartProfile)=>void;onPlay:()=>void;onBack?:()=>void;busy?:boolean;notice?:string;playDisabled?:boolean};
 type Panel='customise'|'upgrades'|'settings'|null;
@@ -14,19 +15,8 @@ export default function StartingScreen({width,height,safe={top:0,bottom:0,left:0
  // The approved 1536px composition is the common artboard for web and iOS.
  const scale=portraitMode?Math.min(availableWidth/650,1):Math.min(availableWidth/1536,availableHeight/710,1.4);
  const unit=(value:number)=>value*scale;
- const menuWidth=portraitMode?Math.min(availableWidth*.83,400):unit(400);
+ const menuWidth=portraitMode?Math.min(availableWidth*.83,420):unit(420);
  const icon=(name:StartScreenIconName,size:number,style?:object)=><Image accessibilityIgnoresInvertColors source={artwork.icons[name]} resizeMode="contain" style={[{width:unit(size),height:unit(size)},style]}/>;
- const item=(label:string,iconName:StartScreenIconName,onPress:()=>void,primary=false,disabled=false,detail?:string)=>{
-  const friends=iconName==='friends',rowHeight=primary?88:friends?104:iconName==='upgrades'?92:80;
-  return <Pressable accessibilityRole="button" accessibilityLabel={label} accessibilityState={{disabled:disabled||busy}} disabled={disabled||busy} onPress={onPress} style={({pressed})=>[s.item,{height:Math.max(44,unit(rowHeight)),paddingTop:unit(primary?18:friends?10:0),paddingBottom:unit(iconName==='upgrades'?12:0)},pressed&&s.pressed,(busy||disabled&&!friends)&&s.busy]}>
-   {primary&&<Image pointerEvents="none" source={artwork.selectionGlow} resizeMode="stretch" style={[s.selectionGlow,{height:unit(116),bottom:unit(-27)}]}/>}
-   <View style={[s.itemRow,{minHeight:unit(45)}]}>
-    <View style={{width:unit(58),alignItems:'flex-start',justifyContent:'center'}}>{icon(iconName,primary?28:45,primary?{marginLeft:unit(12)}:undefined)}</View>
-    <Text numberOfLines={1} style={[s.itemText,{fontFamily,fontSize:unit(primary?36:friends?24:29),lineHeight:unit(primary?46:friends?34:40),letterSpacing:unit(primary?3.8:friends?2.1:3),marginLeft:unit(primary?12:17)},friends&&s.friendsText,primary&&s.primaryText]}>{label}</Text>
-   </View>
-   {detail&&<View style={[s.comingSoon,{marginLeft:unit(80),gap:unit(10),marginTop:unit(1)}]}>{icon('lock',14)}<Text style={[s.detail,{fontFamily,fontSize:unit(13),lineHeight:unit(20),letterSpacing:unit(4.4)}]}>{detail}</Text></View>}
-  </Pressable>;
- };
  const action=(label:string,fn:()=>void)=><Pressable accessibilityRole="button" onPress={fn} style={({pressed})=>[s.action,pressed&&s.pressed]}><Text style={s.actionText}>{label}</Text></Pressable>;
  return <View accessibilityLabel="Humans Remain starting screen" style={s.root}>
   {background}{shade}
@@ -34,11 +24,8 @@ export default function StartingScreen({width,height,safe={top:0,bottom:0,left:0
    <Image accessibilityLabel="Humans Remain" source={artwork.logo} resizeMode="contain" style={{width:portraitMode?190:unit(216),height:portraitMode?84:unit(95)}}/>
   </View>
   <Pressable accessibilityRole="button" accessibilityLabel="Starting screen settings" disabled={busy} onPress={()=>setPanel('settings')} hitSlop={8} style={[s.settings,{right:safe.right+availableWidth*.024,top:safe.top+availableHeight*.05,width:Math.max(44,unit(48)),height:Math.max(44,unit(48))}]}>{icon('settings',35)}</Pressable>
-  <View style={[s.menu,{right:safe.right+availableWidth*(portraitMode?.085:.03),top:safe.top+availableHeight*(portraitMode?.34:.283),width:menuWidth}]}>
-   {item('PLAY','play',onPlay,true,playDisabled)}
-   {item('PLAY WITH FRIENDS!','friends',()=>{},false,true,'COMING SOON')}
-   {item('CUSTOMISE','customise',()=>{setName(profile.name);setPanel('customise')})}
-   {item('UPGRADES','upgrades',()=>setPanel('upgrades'))}
+  <View style={[s.menu,{right:safe.right+availableWidth*(portraitMode?.085:.03),top:safe.top+availableHeight*(portraitMode?.30:.15),width:menuWidth}]}>
+   <ExpeditionMenu width={menuWidth} maxHeight={availableHeight*(portraitMode?.53:.67)} fontFamily={fontFamily} artwork={artwork} busy={busy} playDisabled={playDisabled} onPlay={onPlay} onCustomise={()=>{setName(profile.name);setPanel('customise')}} onUpgrades={()=>setPanel('upgrades')}/>
   </View>
   <View style={[s.stats,{left:safe.left+availableWidth*.055,right:safe.right+availableWidth*.053,bottom:safe.bottom+availableHeight*.056,paddingBottom:unit(6),gap:unit(12)}]}>
    <Image source={portrait} resizeMode="contain" style={{width:unit(90),height:unit(82),transform:[{translateY:unit(3)}]}}/>
@@ -64,10 +51,8 @@ const s=StyleSheet.create({
  root:{position:'absolute',top:0,left:0,right:0,bottom:0,backgroundColor:'#071b1d',zIndex:1000,overflow:'hidden'},
  logo:{position:'absolute'},
  settings:{backgroundColor:'transparent',borderWidth:0,padding:0,position:'absolute',alignItems:'center',justifyContent:'center'},
- menu:{position:'absolute',borderTopWidth:1,borderTopColor:'#ba98524d'},
- item:{backgroundColor:'transparent',borderWidth:0,borderRadius:0,paddingHorizontal:0,borderBottomWidth:1,borderBottomColor:'#b79a5342',justifyContent:'center',overflow:'visible'},
- selectionGlow:{position:'absolute',left:0,width:'100%'},pressed:{backgroundColor:'#d995261c'},busy:{opacity:.48},itemRow:{flexDirection:'row',alignItems:'center'},itemText:{color:'#f1dfad',flexShrink:1},friendsText:{color:'#d6bea0'},primaryText:{color:'#fff0bf',textShadowColor:'#e77a14',textShadowRadius:12,textShadowOffset:{width:0,height:0}},
- comingSoon:{flexDirection:'row',alignItems:'center',opacity:.84},detail:{color:'#d5bea0',fontSize:12,letterSpacing:3},noticeBanner:{position:'absolute',paddingHorizontal:12,paddingVertical:8,gap:5,backgroundColor:'#061c1ee8',borderRadius:5},notice:{color:'#ffe2b8',fontSize:13,lineHeight:18},
+ menu:{position:'absolute'},
+ pressed:{backgroundColor:'#d995261c'},detail:{color:'#d5bea0',fontSize:12,letterSpacing:3},noticeBanner:{position:'absolute',paddingHorizontal:12,paddingVertical:8,gap:5,backgroundColor:'#061c1ee8',borderRadius:5},notice:{color:'#ffe2b8',fontSize:13,lineHeight:18},
  stats:{position:'absolute',flexDirection:'row',alignItems:'center',borderBottomWidth:1,borderBottomColor:'#ad8e5770'},identity:{},nameRow:{flexDirection:'row',alignItems:'center'},name:{color:'#f2dfb0'},level:{color:'#f5ae35'},xpRow:{flexDirection:'row',alignItems:'center'},xp:{borderWidth:1,borderColor:'#cfaa5c',backgroundColor:'#081d1fc9',overflow:'hidden'},xpFill:{height:'100%',width:0,backgroundColor:'#ffa312',borderRadius:8},xpText:{color:'#f1dfad'},back:{backgroundColor:'transparent',borderWidth:0,marginLeft:'auto',padding:12},backText:{color:'#d3c5a1'},
  modal:{position:'absolute',top:0,bottom:0,left:0,right:0,backgroundColor:'#031315c9',alignItems:'center',justifyContent:'center'},dialog:{width:'100%',maxWidth:510,maxHeight:'100%',flexGrow:0,backgroundColor:'#102e2ff5',borderColor:'#a38a60',borderWidth:1,borderRadius:14},dialogContent:{padding:22,gap:16},panelHeader:{flexDirection:'row',alignItems:'center',justifyContent:'space-between',gap:12},panelTitle:{fontFamily:serif,color:'#f2dbb1',fontSize:25,fontWeight:'700'},close:{backgroundColor:'transparent',borderWidth:0,padding:0,width:44,height:44,alignItems:'center',justifyContent:'center'},closeText:{color:'#f2dbb1',fontSize:30},preview:{flexDirection:'row',gap:20,alignItems:'center'},previewPortrait:{width:80,height:80},body:{color:'#f2dfbb',fontSize:17,lineHeight:24},muted:{color:'#bdc4ae',fontSize:14,lineHeight:22},label:{color:'#e6c997',fontSize:11,letterSpacing:2},input:{borderWidth:1,borderColor:'#8c805c',borderRadius:7,padding:12,color:'#f2dfbb',fontSize:18,backgroundColor:'#061d1e'},action:{minHeight:46,padding:12,borderWidth:1,borderColor:'#c99b54',borderRadius:8,backgroundColor:'#8b542b44',alignItems:'center',justifyContent:'center'},actionText:{color:'#ffe4b2',fontSize:16,fontWeight:'700'},upgrade:{gap:5,paddingVertical:12,borderTopWidth:1,borderTopColor:'#8c805c55'},upgradeTitle:{fontFamily:serif,color:'#e7c68a',fontSize:17}
 });
