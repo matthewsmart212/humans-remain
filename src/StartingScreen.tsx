@@ -36,7 +36,7 @@ export default function StartingScreen({width,height,safe={top:0,bottom:0,left:0
   <Pressable accessibilityRole="button" accessibilityLabel="Starting screen settings" disabled={busy} onPress={()=>setPanel('settings')} hitSlop={8} style={[s.settings,{right:safe.right+availableWidth*.024,top:safe.top+availableHeight*.05,width:Math.max(44,unit(48)),height:Math.max(44,unit(48))}]}>{icon('settings',35)}</Pressable>
   <View style={[s.menu,{right:safe.right+availableWidth*(portraitMode?.085:.03),top:safe.top+availableHeight*(portraitMode?.34:.283),width:menuWidth}]}>
    {item('PLAY','play',onPlay,true,playDisabled)}
-   {item('PLAY WITH FRIENDS','friends',()=>{},false,true,'COMING SOON')}
+   {item('PLAY WITH FRIENDS!','friends',()=>{},false,true,'COMING SOON')}
    {item('CUSTOMISE','customise',()=>{setName(profile.name);setPanel('customise')})}
    {item('UPGRADES','upgrades',()=>setPanel('upgrades'))}
   </View>
