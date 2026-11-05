@@ -124,7 +124,7 @@ export default function WorldEditor(){
  const world=useRef<World>({...createWorld(layout),editorPreview:true}),canvas=useRef<HTMLCanvasElement>(null),keys=useRef(new Set<string>()),renderer=useRef<Awaited<ReturnType<typeof import('./skia-web')['createWebWorld']>>|undefined>(undefined);
  const [ready,setReady]=useState(false),[error,setError]=useState(''),[status,setStatus]=useState('Opening local draft…'),[cloudLoaded,setCloudLoaded]=useState(false),[busy,setBusy]=useState(false),revision=useRef(0),savingRef=useRef(false);
  const [preparingMode,setPreparingMode]=useState<'walk'|'play'|null>(null),modeRequest=useRef(0);
- const [startScreen,setStartScreen]=useState(()=>location.hash==='#game'||location.hash==='#start'),[enteringGame,setEnteringGame]=useState(false),startingGame=useRef(false),[startNotice,setStartNotice]=useState(''),[startProgress,setStartProgress]=useState<number>();
+ const [startScreen,setStartScreen]=useState(true),[enteringGame,setEnteringGame]=useState(false),startingGame=useRef(false),[startNotice,setStartNotice]=useState(''),[startProgress,setStartProgress]=useState<number>();
  const startingWorld=useRef({ready:false,error:'',loaded:0,total:0});
  const enterPreparedWorld=useRef<()=>Promise<boolean|undefined>>(async()=>false);
  const [loadAttempt,setLoadAttempt]=useState(0),[loadProgress,setLoadProgress]=useState<ArtworkProgress&{stage:string}>({loaded:0,total:0,stage:'Opening your saved draft…'}),[terrainDetail,setTerrainDetail]=useState<'loading'|'ready'|'error'>('loading'),[detailProgress,setDetailProgress]=useState<ArtworkProgress>({loaded:0,total:4});

@@ -21,12 +21,11 @@ export default function ExpeditionMenu({width,maxHeight,artwork,busy,playDisable
  const scale=Math.min(width/COMPOSITION.width,maxHeight/COMPOSITION.height);
  const callbacks={play:onPlay,customise:onCustomise,upgrades:onUpgrades,friends:undefined};
  return <View accessibilityLabel="Expedition menu" style={{width:COMPOSITION.width*scale,height:COMPOSITION.height*scale,alignSelf:'flex-end'}}>
-  <View pointerEvents="none" style={[s.backdrop,{top:-12*scale,bottom:-12*scale,left:-12*scale,right:-12*scale,borderRadius:18*scale,boxShadow:`0 0 ${18*scale}px ${10*scale}px #03171960`}]}/>
   {(Object.keys(CARDS) as Card[]).map(key=>{
    const card=CARDS[key],disabled=key==='friends'||busy||(key==='play'&&playDisabled);
    return <Pressable key={key} accessibilityRole="button" accessibilityLabel={card.label} accessibilityState={{disabled}} disabled={disabled} onPress={callbacks[key]} onFocus={()=>setFocused(key)} onBlur={()=>setFocused(null)} hitSlop={2} style={({pressed})=>[s.card,{left:card.left*scale,top:card.top*scale,width:card.width*scale,height:card.height*scale,borderRadius:3*scale},pressed&&s.pressed,(busy||(key==='play'&&playDisabled))&&s.busy]}>
     <Image accessible={false} pointerEvents="none" source={artwork.expeditionCards} resizeMode="stretch" style={{position:'absolute',left:-card.x*scale,top:-card.y*scale,width:ATLAS.width*scale,height:ATLAS.height*scale}}/>
-    {focused===key&&<View pointerEvents="none" style={[StyleSheet.absoluteFill,s.focus]}/>}
+    {focused===key&&key!=='play'&&<View pointerEvents="none" style={[StyleSheet.absoluteFill,s.focus]}/>}
    </Pressable>;
   })}
  </View>;

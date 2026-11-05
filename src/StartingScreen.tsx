@@ -31,17 +31,20 @@ export default function StartingScreen({width,height,safe={top:0,bottom:0,left:0
  const gutter=availableWidth*.055;
  const bottomBaseline=safe.bottom+availableHeight*.056;
  const menuWidth=portraitMode?Math.min(availableWidth*.83,420):unit(430);
+ const panelWidth=Math.min(menuWidth,availableHeight*(portraitMode?.53:.67)*516/599);
+ const panelHeight=Math.min(menuWidth*599/516,availableHeight*(portraitMode?.53:.67));
  const icon=(name:StartScreenIconName,size:number,style?:object)=><Image accessibilityIgnoresInvertColors source={artwork.icons[name]} resizeMode="contain" style={[{width:unit(size),height:unit(size)},style]}/>;
  const action=(label:string,fn:()=>void)=><Pressable accessibilityRole="button" onPress={fn} style={({pressed})=>[s.action,pressed&&s.pressed]}><Text style={s.actionText}>{label}</Text></Pressable>;
  return <Animated.View accessibilityLabel="Humans Remain starting screen" style={[s.root,{opacity:sceneOpacity}]}>
   {background}{shade}
   <Image accessible={false} pointerEvents="none" source={artwork.expeditionLoading} style={{position:'absolute',width:1,height:1,opacity:0}}/>
-  <View pointerEvents="none" style={[s.logo,{left:safe.left+gutter,top:safe.top+availableHeight*.077}]}>
+  <View pointerEvents="none" style={[s.logo,{left:width-safe.right-gutter-panelWidth,top:safe.top+availableHeight*.077}]}>
    <Image accessibilityLabel="Humans Remain" source={artwork.logo} resizeMode="contain" style={{width:portraitMode?190:unit(216),height:portraitMode?84:unit(95)}}/>
   </View>
   <Pressable accessibilityRole="button" accessibilityLabel="Starting screen settings" disabled={busy||loading} onPress={()=>setPanel('settings')} hitSlop={8} style={[s.settings,{right:safe.right+gutter,top:safe.top+availableHeight*.05,width:Math.max(44,unit(48)),height:Math.max(44,unit(48))}]}>{icon('settings',35)}</Pressable>
   <View style={[s.menu,{right:safe.right+gutter,bottom:portraitMode?bottomBaseline+unit(128):bottomBaseline,width:menuWidth}]}>
-   <View style={{width:Math.min(menuWidth,availableHeight*(portraitMode?.53:.67)*516/599),height:Math.min(menuWidth*599/516,availableHeight*(portraitMode?.53:.67)),alignSelf:'flex-end'}}>
+   <View style={{width:panelWidth,height:panelHeight,alignSelf:'flex-end'}}>
+   <View pointerEvents="none" style={{position:'absolute',top:-unit(18),bottom:-unit(18),left:-unit(18),right:-unit(18),borderRadius:unit(28),backgroundColor:'#020c0f18',boxShadow:`0 0 ${unit(36)}px ${unit(24)}px #020b0fb0`}}/>
    <Animated.View pointerEvents={loading?'none':'auto'} accessibilityElementsHidden={loading} importantForAccessibility={loading?'no-hide-descendants':'auto'} style={[StyleSheet.absoluteFill,{opacity:transition.interpolate({inputRange:[0,1],outputRange:[1,0]}),transform:[{translateY:transition.interpolate({inputRange:[0,1],outputRange:[0,-unit(10)]})}]}]}>
    <ExpeditionMenu width={menuWidth} maxHeight={availableHeight*(portraitMode?.53:.67)} fontFamily={fontFamily} artwork={artwork} busy={busy} playDisabled={playDisabled} onPlay={play} onCustomise={()=>{setName(profile.name);setPanel('customise')}} onUpgrades={()=>setPanel('upgrades')}/>
    </Animated.View>

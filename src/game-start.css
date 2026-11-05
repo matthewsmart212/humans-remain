@@ -3,5 +3,5 @@
 .game-start-scene{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;pointer-events:none}
 .game-start-shade{position:absolute;inset:0;pointer-events:none;background:linear-gradient(90deg,transparent 58%,#05191b38 71%,#05191bc4 100%),linear-gradient(0deg,#06191be0,transparent 26%)}
 .game-start [role=button]:focus-visible{outline:2px solid #ffc66c;outline-offset:4px}
-.game-start [aria-label="PLAY"]:focus-visible{outline:none;background-color:#ffae1818}
+.game-start [aria-label="PLAY"]:focus,.game-start [aria-label="PLAY"]:focus-visible{outline:none;box-shadow:none;background-color:transparent}
 @media(orientation:portrait){.game-start-shade{background:linear-gradient(0deg,#05191bfa 2%,#05191bd9 43%,#05191b22 80%)}}
