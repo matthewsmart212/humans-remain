@@ -1,3 +1,4 @@
+import {waitForStartingWorld} from './start-world-ready';
 import GameStart from './GameStart';
 import {RUN_SAVE_KEY,encodeRun,decodeRun,prepareSavedCampArtwork} from './run-save';
 import {spawnPlayCreature,spawnImages,clearPlaySpawns,type SpawnKind} from './play-spawns';
@@ -124,7 +125,10 @@ export default function WorldEditor(){
  const [ready,setReady]=useState(false),[error,setError]=useState(''),[status,setStatus]=useState('Opening local draft…'),[cloudLoaded,setCloudLoaded]=useState(false),[busy,setBusy]=useState(false),revision=useRef(0),savingRef=useRef(false);
  const [preparingMode,setPreparingMode]=useState<'walk'|'play'|null>(null),modeRequest=useRef(0);
  const [startScreen,setStartScreen]=useState(()=>location.hash==='#game'||location.hash==='#start'),[enteringGame,setEnteringGame]=useState(false),startingGame=useRef(false),[startNotice,setStartNotice]=useState(''),[startProgress,setStartProgress]=useState<number>();
+ const startingWorld=useRef({ready:false,error:'',loaded:0,total:0});
+ const enterPreparedWorld=useRef<()=>Promise<boolean|undefined>>(async()=>false);
  const [loadAttempt,setLoadAttempt]=useState(0),[loadProgress,setLoadProgress]=useState<ArtworkProgress&{stage:string}>({loaded:0,total:0,stage:'Opening your saved draft…'}),[terrainDetail,setTerrainDetail]=useState<'loading'|'ready'|'error'>('loading'),[detailProgress,setDetailProgress]=useState<ArtworkProgress>({loaded:0,total:4});
+ startingWorld.current={ready,error,loaded:loadProgress.loaded,total:loadProgress.total};
  const canEdit=access.state==='owner'&&cloudLoaded;
  const [mode,setMode]=useState<'edit'|'walk'|'play'>('edit'),modeRef=useRef(mode),[search,setSearch]=useState(''),[group,setGroup]=useState('all'),[selected,setSelected]=useState<string|null>(null),[placing,setPlacing]=useState<string|null>(null),placingRef=useRef<string|null>(null),placementEpoch=useRef(0);
  const [view,setView]=useState<EditorView>({x:layout.spawn.x,y:layout.spawn.y,zoom:mobile?1:.78,follow:mobile,grid:false,collision:false,selected:null,ghost:null,placingSpawn:false}),viewRef=useRef(view);
@@ -257,6 +261,7 @@ export default function WorldEditor(){
    setRoute('#game');setStartProgress(1);return true;
   }catch(e){stopPlay();setRoute('#start');throw e}
  };
+ enterPreparedWorld.current=enterPlay;
  const startPlay=()=>{if(modeRef.current==='play')return;cancelGesture();cancelPlace();clearInput();setToolsOpen(false);setAssetBrowser(false);setHelpOpen(false);setStartNotice('');setStartScreen(true);setRoute('#start')};
  const enterFromStart=async()=>{
   if(startingGame.current)return;
@@ -264,7 +269,7 @@ export default function WorldEditor(){
   // Paint the panel transition before preparation can occupy the JS thread.
   await new Promise<void>(resolve=>setTimeout(resolve,440));
   let entered=false;
-  try{entered=!!await enterPlay();if(!entered)setStartNotice('Your world could not prepare yet. Press Play to try again.')}
+  try{await waitForStartingWorld(()=>startingWorld.current,setStartProgress);entered=!!await enterPreparedWorld.current();if(!entered)setStartNotice('Your world could not prepare yet. Press Play to try again.')}
   catch(e){setStartNotice(e instanceof Error?e.message:String(e))}
   finally{if(!entered){startingGame.current=false;setEnteringGame(false);setStartProgress(undefined)}}
  };
@@ -546,7 +551,7 @@ if(k==='e'){e.preventDefault();if(!e.repeat){const gate=nearbyGate(world.current
    <button className="studio-world-plan" title="Open the world plan in a new tab" onClick={()=>{clearInput();window.open('/world-plan.html','_blank','noopener,noreferrer')}}><MapPin size={17}/><span>World plan</span></button>
    <button className="studio-help-button" aria-label="Controls and shortcuts" onClick={()=>{clearInput();setHelpOpen(true)}}><HelpCircle size={18}/>{mobile&&<span>Controls & help</span>}</button></>;
  return <main className="world-editor camp-studio" style={mobile?{height:display.height,'--studio-viewport-height':`${display.height}px`} as React.CSSProperties:undefined} data-map-open={mapOpen} data-mobile={mobile} data-tools-open={toolsOpen} data-mobile-dock={toolsOpen||(mode==='play'?monitorOpen:libraryOpen||(mode==='edit'&&inspectorOpen))} data-library-open={libraryOpen} data-monitor-open={monitorOpen} data-inspector-open={inspectorOpen} data-mode={mode} data-objects={layout.items.length}>
-  {startScreen&&<GameStart onPlay={()=>void enterFromStart()} onBack={closeStart} busy={enteringGame} loadingProgress={startProgress} onLoadingComplete={finishStart} playDisabled={!ready||!!error} notice={startNotice||error}/> }
+  {startScreen&&<GameStart onPlay={()=>void enterFromStart()} onBack={closeStart} busy={enteringGame} loadingProgress={startProgress} onLoadingComplete={finishStart} playDisabled={!!error} notice={startNotice||error}/> }
   <EditorOnly playing={mode==='play'}>
   <header className="we-top studio-top">
    <button className="studio-brand" aria-label="Humans Remain — world settings" title="World settings" onClick={()=>openPanel('world')}><Box size={23}/><span>HUMANS<span>REMAIN</span></span></button>
