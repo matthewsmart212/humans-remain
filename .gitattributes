@@ -130,3 +130,6 @@ docs/qa/headquarters-doorway-v5/*.webp -filter -diff -merge
 /public/survival/starting-screen-ui-v2/survivor-profile.png -filter -diff -merge -text
 /public/survival/starting-screen-ui-v2/upgrades.png -filter -diff -merge -text
 
+
+# Small optimized UI atlas is bundled directly for browser and Expo.
+public/survival/expedition-menu-v2/approved-cards.webp -filter -diff -merge

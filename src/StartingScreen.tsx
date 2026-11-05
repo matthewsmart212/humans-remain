@@ -15,7 +15,7 @@ export default function StartingScreen({width,height,safe={top:0,bottom:0,left:0
  // The approved 1536px composition is the common artboard for web and iOS.
  const scale=portraitMode?Math.min(availableWidth/650,1):Math.min(availableWidth/1536,availableHeight/710,1.4);
  const unit=(value:number)=>value*scale;
- const menuWidth=portraitMode?Math.min(availableWidth*.83,420):unit(420);
+ const menuWidth=portraitMode?Math.min(availableWidth*.83,420):unit(430);
  const icon=(name:StartScreenIconName,size:number,style?:object)=><Image accessibilityIgnoresInvertColors source={artwork.icons[name]} resizeMode="contain" style={[{width:unit(size),height:unit(size)},style]}/>;
  const action=(label:string,fn:()=>void)=><Pressable accessibilityRole="button" onPress={fn} style={({pressed})=>[s.action,pressed&&s.pressed]}><Text style={s.actionText}>{label}</Text></Pressable>;
  return <View accessibilityLabel="Humans Remain starting screen" style={s.root}>

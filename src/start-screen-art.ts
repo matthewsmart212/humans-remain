@@ -5,8 +5,7 @@ import type {StartScreenIconName} from './start-screen-icons';
 export type StartScreenArtwork={
  logo:ImageSourcePropType;
  selectionGlow:ImageSourcePropType;
- expeditionScene:ImageSourcePropType;
- cardTexture:ImageSourcePropType;
+ expeditionCards:ImageSourcePropType;
  icons:Record<StartScreenIconName,ImageSourcePropType>;
 };
 export const START_SCREEN_MENU_FONT='CampMenu';
@@ -14,7 +13,6 @@ const uri=(name:string)=>({uri:`/survival/starting-screen-ui-v2/${name}.png`});
 export const WEB_START_SCREEN_ART:StartScreenArtwork={
  logo:uri('humans-remain-logo'),
  selectionGlow:uri('play-selection-glow'),
- expeditionScene:{uri:'/survival/expedition-menu-v1/camp-gate.webp'},
- cardTexture:{uri:'/survival/ui-field-kit-v1/utility-panel.png'},
+ expeditionCards:{uri:'/survival/expedition-menu-v2/approved-cards.webp'},
  icons:{play:uri('play'),friends:uri('friends'),customise:uri('customise'),upgrades:uri('upgrades'),lock:uri('lock'),settings:uri('settings')},
 };
