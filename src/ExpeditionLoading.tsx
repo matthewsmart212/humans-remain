@@ -1,5 +1,6 @@
 import React,{useEffect,useRef,useState} from 'react';
 import {Animated,Easing,Image,Platform,StyleSheet,Text,View,type ImageSourcePropType} from 'react-native';
+import {nextLoadingProgress} from './loading-presentation';
 
 // The approved loading mockup, cropped without redrawing its artwork. Live
 // progress uses the same atlas's empty track, ember fill and teal texture.
@@ -9,9 +10,23 @@ export default function ExpeditionLoading({width,height,artwork,progress,reduced
  const scale=Math.min(width/ART.width,height/ART.height),w=ART.width*scale,h=ART.height*scale;
  const target=Math.max(0,Math.min(1,progress)),amount=useRef(new Animated.Value(target)).current;
  const pulse=useRef(new Animated.Value(1)).current;
+ const actual=useRef(target);actual.current=target;
+ const presented=useRef(target),captionOpacity=useRef(new Animated.Value(1)).current;
+ const [caption,setCaption]=useState('Getting your camp ready'),[dots,setDots]=useState(1);
  const [display,setDisplay]=useState(Math.round(target*100));
  useEffect(()=>{const listener=amount.addListener(({value})=>setDisplay(Math.round(value*100)));return()=>amount.removeListener(listener)},[amount]);
- useEffect(()=>{const animation=Animated.timing(amount,{toValue:target,duration:reducedMotion?0:380,easing:Easing.out(Easing.cubic),useNativeDriver:false});animation.start();return()=>animation.stop()},[amount,target,reducedMotion]);
+ useEffect(()=>{
+  let last=Date.now();
+  const timer=setInterval(()=>{const now=Date.now();presented.current=nextLoadingProgress(presented.current,actual.current,now-last);last=now;Animated.timing(amount,{toValue:presented.current,duration:reducedMotion?0:100,easing:Easing.linear,useNativeDriver:false}).start()},100);
+  return()=>{clearInterval(timer);amount.stopAnimation()};
+ },[amount,reducedMotion]);
+ useEffect(()=>{
+  let index=0;
+  const messages=target===1?['Your expedition is ready']:target<.25?['Getting your camp ready','Unpacking your supplies','Preparing your expedition']:['Bringing the world to life','Preparing the paths ahead','Getting your survivor ready'];
+  const change=()=>{captionOpacity.setValue(reducedMotion?1:0);setCaption(messages[index++%messages.length]);Animated.timing(captionOpacity,{toValue:1,duration:reducedMotion?0:360,useNativeDriver:Platform.OS!=='web'}).start()};
+  change();const timer=setInterval(change,2800);return()=>{clearInterval(timer);captionOpacity.stopAnimation()};
+ },[target===1,target<.25,reducedMotion,captionOpacity]);
+ useEffect(()=>{if(reducedMotion)return;const timer=setInterval(()=>setDots(n=>n%3+1),500);return()=>clearInterval(timer)},[reducedMotion]);
  useEffect(()=>{if(reducedMotion||target===1){pulse.setValue(1);return}const animation=Animated.loop(Animated.sequence([Animated.timing(pulse,{toValue:.55,duration:850,useNativeDriver:Platform.OS!=='web'}),Animated.timing(pulse,{toValue:1,duration:850,useNativeDriver:Platform.OS!=='web'})]));animation.start();return()=>animation.stop()},[pulse,reducedMotion,target===1]);
  const image=(x:number,y:number,partWidth:number,partHeight:number,left:number,top:number,outWidth=partWidth,outHeight=partHeight)=>{
   const sx=outWidth/partWidth*scale,sy=outHeight/partHeight*scale;
@@ -20,6 +35,8 @@ export default function ExpeditionLoading({width,height,artwork,progress,reduced
  const stage=target===1?2:target<.25?0:1;
  return <View accessibilityRole="progressbar" accessibilityLabel="Preparing your world" aria-valuemin={0} aria-valuemax={100} aria-valuenow={display} aria-valuetext={`${display} percent. ${target===1?'Ready':stage===0?'Getting your camp ready':'Preparing your world'}`} accessibilityValue={{min:0,max:100,now:display,text:`${display} percent. ${target===1?'Ready':stage===0?'Getting your camp ready':'Preparing your world'}`}} style={{width:w,height:h,alignSelf:'flex-end'}}>
   <Image accessible={false} source={artwork} resizeMode="stretch" style={StyleSheet.absoluteFill}/>
+  {image(40,425,420,20,40,268,420,39)}
+  <Animated.Text accessible={false} style={{position:'absolute',left:40*scale,top:271*scale,width:420*scale,textAlign:'center',fontFamily:Platform.OS==='ios'?'Georgia':Platform.OS==='web'?'Georgia, serif':'serif',fontStyle:'italic',fontSize:21*scale,lineHeight:28*scale,color:'#efdfb6',opacity:captionOpacity}}>{caption}{target===1?'':'.'.repeat(reducedMotion?1:dots)}</Animated.Text>
   {/* Cover only the live regions, keeping the original frame and lettering. */}
   {image(295,325,100,23,38,325,362,23)}
   <Animated.View style={{position:'absolute',left:38*scale,top:325*scale,height:23*scale,width:amount.interpolate({inputRange:[0,1],outputRange:[0,362*scale]}),overflow:'hidden',borderRadius:7*scale}}>

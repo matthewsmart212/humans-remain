@@ -18,7 +18,7 @@ export default function StartingScreen({width,height,safe={top:0,bottom:0,left:0
  useEffect(()=>{
   if(loadingProgress!==1){sceneOpacity.setValue(1);return}
   // Let the real completed progress settle before revealing the prepared frame.
-  const animation=Animated.sequence([Animated.delay(reducedMotion?0:550),Animated.timing(sceneOpacity,{toValue:0,duration:reducedMotion?0:360,easing:Easing.inOut(Easing.cubic),useNativeDriver:Platform.OS!=='web'})]);
+  const animation=Animated.sequence([Animated.delay(1550),Animated.timing(sceneOpacity,{toValue:0,duration:reducedMotion?0:360,easing:Easing.inOut(Easing.cubic),useNativeDriver:Platform.OS!=='web'})]);
   animation.start(({finished})=>{if(finished)complete.current?.()});return()=>animation.stop();
  },[loadingProgress===1,reducedMotion,sceneOpacity]);
  const play=()=>{if(!busy&&!loading&&!playDisabled){setPanel(null);onPlay()}};
