@@ -18,11 +18,21 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 45
     steps:
-      - name: Checkout source and Git LFS artwork
+      - name: Checkout source without automatic LFS download
         uses: actions/checkout@v4
+        env:
+          GIT_LFS_SKIP_SMUDGE: '1'
         with:
-          lfs: true
+          lfs: false
           fetch-depth: 1
+
+      - name: Identify missing LFS asset and restore artwork
+        shell: bash
+        run: |
+          echo 'Checking which tracked path references the missing LFS object...'
+          git grep -l 'd70a1081c01b2f20464687079bd8a992999f30631cc457f2cb4de5d7ca8bd380' HEAD -- || true
+          echo 'Downloading required LFS artwork. Deployment stops if any asset is missing.'
+          git lfs pull
 
       - name: Set up Node.js
         uses: actions/setup-node@v4
