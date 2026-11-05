@@ -1,0 +1,54 @@
+name: Deploy Humans Remain Web
+
+# First-run manual testing. Enable push-to-main after Cloudflare credentials,
+# D1/R2 bindings, and the initial site validation are complete.
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: humans-remain-web-deployment
+  cancel-in-progress: true
+
+jobs:
+  deploy:
+    name: Build and deploy web
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    steps:
+      - name: Checkout source and Git LFS artwork
+        uses: actions/checkout@v4
+        with:
+          lfs: true
+          fetch-depth: 1
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22.13.1'
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Verify Cloudflare credentials are configured
+        env:
+          CF_TOKEN_PRESENT: ${{ secrets.CLOUDFLARE_API_TOKEN != '' }}
+          CF_ACCOUNT_PRESENT: ${{ secrets.CLOUDFLARE_ACCOUNT_ID != '' }}
+        run: |
+          if [ "$CF_TOKEN_PRESENT" != "true" ] || [ "$CF_ACCOUNT_PRESENT" != "true" ]; then
+            echo "::error::Add CLOUDFLARE_API_TOKEN and CLOUDFLARE_ACCOUNT_ID to repository Actions secrets."
+            exit 1
+          fi
+
+      - name: Build web client and Worker
+        run: npm run build
+
+      - name: Deploy to Cloudflare Workers
+        uses: cloudflare/wrangler-action@v4
+        with:
+          apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          command: deploy
