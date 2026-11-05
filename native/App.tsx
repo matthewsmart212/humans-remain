@@ -48,9 +48,21 @@ declare const process:{env:Partial<Record<'EXPO_PUBLIC_GAME_SOURCE_COMMIT'|'EXPO
 type Mode='loading'|'playing'|'paused'|'bag'|'map'|'error';
 type Runtime={renderer:Awaited<ReturnType<typeof createNativeRenderer>>;outdoor:OutdoorTerrainStream;resources:SceneResourceCache;travel:SceneTravel;saved:SavedWorld;reduced:boolean};
 const zero=()=>({x:0,y:0});
-export default function App(){const [entered,setEntered]=useState(false);return <GestureHandlerRootView style={{flex:1}}><SafeAreaProvider>{entered?<Game onHome={()=>setEntered(false)}/>:<NativeStartingScreen onPlay={()=>setEntered(true)}/>}</SafeAreaProvider></GestureHandlerRootView>}
+export default function App(){
+ const [entered,setEntered]=useState(false),[launched,setLaunched]=useState(false),[loadingProgress,setLoadingProgress]=useState<number>(),[loadError,setLoadError]=useState('');
+ const launchTimer=useRef<ReturnType<typeof setTimeout>|undefined>(undefined),starting=useRef(false);
+ useEffect(()=>()=>clearTimeout(launchTimer.current),[]);
+ const start=()=>{if(starting.current)return;starting.current=true;setLoadError('');setLoadingProgress(.04);launchTimer.current=setTimeout(()=>setLaunched(true),440)};
+ const home=()=>{setEntered(false);setLaunched(false);setLoadingProgress(undefined);starting.current=false};
+ const failed=useCallback((message:string)=>{setLoadError(message+' Press Play to try again.');setLoadingProgress(undefined);setLaunched(false);starting.current=false},[]);
+ return <GestureHandlerRootView style={{flex:1}}><SafeAreaProvider>
+  {launched&&<Game onHome={home} entryVisible={entered} onBootProgress={setLoadingProgress} onBootError={failed}/>}
+  {!entered&&<View style={StyleSheet.absoluteFill}><NativeStartingScreen onPlay={start} loadingProgress={loadingProgress} loadError={loadError} onLoadingComplete={()=>setEntered(true)}/></View>}
+ </SafeAreaProvider></GestureHandlerRootView>;
+}
 
-function Game({onHome}:{onHome:()=>void}){
+function Game({onHome,entryVisible,onBootProgress,onBootError}:{onHome:()=>void;entryVisible:boolean;onBootProgress:(progress:number)=>void;onBootError:(message:string)=>void}){
+ const entryVisibleRef=useRef(entryVisible);entryVisibleRef.current=entryVisible;
  const {width,height}=useWindowDimensions(),safe=useSafeAreaInsets(),dimensions=useRef({width,height});dimensions.current={width,height};
  const world=useRef<World|null>(null),runtime=useRef<Runtime|null>(null),input=useRef(zero()),sprint=useRef(false),swing=useRef(false),enabled=useRef(false),modeRef=useRef<Mode>('loading');
  const playView=useRef({...PLAY_VIEW});
@@ -124,7 +136,7 @@ function Game({onHome}:{onHome:()=>void}){
    raf=0;if(!live||!appActive||!local||!world.current)return;
    const frameStart=performance.now();
    try{
-    const r=local,w=world.current,playing=modeRef.current==='playing',tracked=gamePerformance.beginFrame(now,playing?'playing':modeRef.current==='bag'?'bag':'paused'),updateStarted=tracked?performance.now():0,frameIntervalMs=last&&now>last?Math.min(1000/60,now-last):1000/60,dt=playing&&last?Math.min(.1,(now-last)/1000):0;last=now;let simulationSteps=0;
+    const r=local,w=world.current,playing=modeRef.current==='playing'&&entryVisibleRef.current,tracked=gamePerformance.beginFrame(now,playing?'playing':modeRef.current==='bag'?'bag':'paused'),updateStarted=tracked?performance.now():0,frameIntervalMs=last&&now>last?Math.min(1000/60,now-last):1000/60,dt=playing&&last?Math.min(.1,(now-last)/1000):0;last=now;let simulationSteps=0;
     if(activeWorld!==w){activeWorld=w;acc=0;previous=undefined;lastTerrain=0}
     stepCampLighting(w,dt);stepWeather(w,dt);acc+=dt;if(!playing)acc=0;
     while(acc>=STEP){const current:World=world.current!;previous=samplePlayer(current);simulationSteps++;
@@ -168,18 +180,21 @@ function Game({onHome}:{onHome:()=>void}){
      const reduced=await stage('Read accessibility settings',()=>AccessibilityInfo.isReduceMotionEnabled());
      const saved=await stage('Open game world',loadGameWorld);
      if(!live)return;
-     setStatus('Preparing game…');
+     onBootProgress(.2);setStatus('Preparing game…');
      renderer=await stage('Open renderer',()=>createNativeRenderer(playView.current,gamePerformance,preparation));if(!live){renderer.dispose();return}
      // Complete placed animations, chopping, stumps and movement before Play.
      // Detailed terrain uses bounded native lookahead and a startup buffer.
      await stage('Warm artwork',()=>renderer!.warmImages({...EDITOR_IMAGE_SOURCES,...editorTerrainDetail(saved.layout.terrainImage),...requiredImages(saved.layout.items.map(p=>p.assetId),saved.layout.terrainImage)}));
      if(!live){renderer?.dispose();return}
+     onBootProgress(.65);
      const resources=await stage('Open scenes',()=>new SceneResourceCache(SCENES,renderer!.warmImages,renderer!.releaseImages)),outdoor=new OutdoorTerrainStream(renderer.warmImages,renderer.releaseImages,setStatus);
      if(!live){resources.dispose();outdoor.dispose();renderer?.dispose();return}
      local={renderer,resources,outdoor,saved,reduced,travel:undefined as unknown as SceneTravel};runtime.current=local;await stage('Restore survival',()=>restoreSurvival(local!));
+     onBootProgress(.82);
      const w=world.current!,size=dimensions.current,c=editorCamera(size.width,size.height,w,playView.current,1);
-     await stage('Settle terrain',async()=>{outdoor.update({x:c.x,y:c.y,width:size.width/c.scale,height:size.height/c.scale},w.player,usesPaintedHomeTerrain(w.layout?.terrainImage));await outdoor.settled();w.outdoorReady=outdoor.ready});
+     await stage('Settle terrain',async()=>{outdoor.update({x:c.x,y:c.y,width:size.width/c.scale,height:size.height/c.scale},w.player,usesPaintedHomeTerrain(w.layout?.terrainImage));await outdoor.settled();if(outdoor.error)throw Error('The path ahead could not load.');w.outdoorReady=outdoor.ready});
      if(!live){stop();return}
+     onBootProgress(.92);
      await stage('Prepare nearby detail',()=>renderer!.prepareTerrain(w,size.width,size.height));
      if(!live){stop();return}
      // Present a complete first frame before removing the loading screen.
@@ -188,9 +203,10 @@ function Game({onHome}:{onHome:()=>void}){
      saveStore.prepare(local!.travel);
      renderer!.setFrameManaged(true);
      setStatus('');change(!appActive||saveBlocked.current||w.phase==='over'?'paused':'playing');
+     onBootProgress(1);
      if(appActive)raf=requestAnimationFrame(frame);
    }catch(e){stop();throw e}
-  })().catch(e=>{if(!live)return;console.error('Unable to open game',e);setError(e instanceof Error?e.message:String(e));change('error')});
+  })().catch(e=>{if(!live)return;console.error('Unable to open game',e);setError(e instanceof Error?e.message:String(e));change('error');onBootError(e instanceof Error?e.message:String(e))});
   const subscription=AppState.addEventListener('change',state=>{appActive=state==='active';last=0;acc=0;if(!appActive){pause();gamePerformance.setActivity('background',performance.now());cancelAnimationFrame(raf);raf=0}else if(local&&!raf){gamePerformance.setActivity('paused',performance.now());raf=requestAnimationFrame(frame)}});
   const memoryWarning=AppState.addEventListener('memoryWarning',()=>{gamePerformance.trace(performance.now(),'native-memory-warning',0,{atlasZoom:continuousZoom.current,mapVisible:mapVisible.current});});
   const accessibility=AccessibilityInfo.addEventListener('reduceMotionChanged',reduced=>{if(local)local.reduced=reduced;if(world.current?.weather)world.current.weather.reducedMotion=reduced});

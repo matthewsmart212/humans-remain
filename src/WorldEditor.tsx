@@ -123,7 +123,7 @@ export default function WorldEditor(){
  const world=useRef<World>({...createWorld(layout),editorPreview:true}),canvas=useRef<HTMLCanvasElement>(null),keys=useRef(new Set<string>()),renderer=useRef<Awaited<ReturnType<typeof import('./skia-web')['createWebWorld']>>|undefined>(undefined);
  const [ready,setReady]=useState(false),[error,setError]=useState(''),[status,setStatus]=useState('Opening local draft…'),[cloudLoaded,setCloudLoaded]=useState(false),[busy,setBusy]=useState(false),revision=useRef(0),savingRef=useRef(false);
  const [preparingMode,setPreparingMode]=useState<'walk'|'play'|null>(null),modeRequest=useRef(0);
- const [startScreen,setStartScreen]=useState(()=>location.hash==='#game'||location.hash==='#start'),[enteringGame,setEnteringGame]=useState(false),startingGame=useRef(false),[startNotice,setStartNotice]=useState('');
+ const [startScreen,setStartScreen]=useState(()=>location.hash==='#game'||location.hash==='#start'),[enteringGame,setEnteringGame]=useState(false),startingGame=useRef(false),[startNotice,setStartNotice]=useState(''),[startProgress,setStartProgress]=useState<number>();
  const [loadAttempt,setLoadAttempt]=useState(0),[loadProgress,setLoadProgress]=useState<ArtworkProgress&{stage:string}>({loaded:0,total:0,stage:'Opening your saved draft…'}),[terrainDetail,setTerrainDetail]=useState<'loading'|'ready'|'error'>('loading'),[detailProgress,setDetailProgress]=useState<ArtworkProgress>({loaded:0,total:4});
  const canEdit=access.state==='owner'&&cloudLoaded;
  const [mode,setMode]=useState<'edit'|'walk'|'play'>('edit'),modeRef=useRef(mode),[search,setSearch]=useState(''),[group,setGroup]=useState('all'),[selected,setSelected]=useState<string|null>(null),[placing,setPlacing]=useState<string|null>(null),placingRef=useRef<string|null>(null),placementEpoch=useRef(0);
@@ -242,16 +242,33 @@ export default function WorldEditor(){
  const enterPlay=async()=>{
   if(!ready||tierBusyRef.current||terrainBusy||modeRef.current==='play')return;
   if(!await prepareMode('play',true))return false;
+  setStartProgress(.25);
   cancelGesture();cancelPlace();backToCamp();
   try{
    editSession.current={world:world.current,view:{...viewRef.current},libraryOpen,inspectorOpen};
-   modeRef.current='play';setMode('play');await restoreSurvival();
+   modeRef.current='play';setMode('play');setStartProgress(.35);await restoreSurvival();
+   setStartProgress(.85);
+   const el=canvas.current!,r=renderer.current!,w=world.current,c=editorCamera(el.width||el.clientWidth,el.height||el.clientHeight,w,viewRef.current);
+   const outdoor=outdoorTerrain.current;
+   if(outdoor&&!w.scene){outdoor.retry();outdoor.update({x:c.x,y:c.y,width:(el.width||el.clientWidth)/c.scale,height:(el.height||el.clientHeight)/c.scale},w.player,usesPaintedHomeTerrain(w.layout?.terrainImage));await outdoor.settled();if(outdoor.error)throw Error('The path ahead could not load. Press Play to try again.');w.outdoorReady=outdoor.ready}
+   setStartProgress(.96);await r.prepareTerrain(w);r.draw(w);
+   await new Promise<void>(resolve=>requestAnimationFrame(()=>resolve()));
    setLibraryOpen(false);setInspectorOpen(false);setAskClear(false);setToolsOpen(false);setMonitorOpen(false);setPanTool(false);setAssetBrowser(false);setHelpOpen(false);setCollisionEdit(null);setMessage('');
-   setRoute('#game');setStartScreen(false);canvas.current?.focus({preventScroll:true});return true;
-  }catch(e){stopPlay();setStartNotice((e as Error).message);setRoute('#start');return false}
+   setRoute('#game');setStartProgress(1);return true;
+  }catch(e){stopPlay();setRoute('#start');throw e}
  };
  const startPlay=()=>{if(modeRef.current==='play')return;cancelGesture();cancelPlace();clearInput();setToolsOpen(false);setAssetBrowser(false);setHelpOpen(false);setStartNotice('');setStartScreen(true);setRoute('#start')};
- const enterFromStart=async()=>{if(startingGame.current)return;startingGame.current=true;setEnteringGame(true);setStartNotice('');try{const entered=await enterPlay();if(!entered)setStartNotice('Your world could not prepare yet. Press Play to try again.')}catch(e){setStartNotice(e instanceof Error?e.message:String(e))}finally{startingGame.current=false;setEnteringGame(false)}};
+ const enterFromStart=async()=>{
+  if(startingGame.current)return;
+  startingGame.current=true;setEnteringGame(true);setStartNotice('');setStartProgress(.04);
+  // Paint the panel transition before preparation can occupy the JS thread.
+  await new Promise<void>(resolve=>setTimeout(resolve,440));
+  let entered=false;
+  try{entered=!!await enterPlay();if(!entered)setStartNotice('Your world could not prepare yet. Press Play to try again.')}
+  catch(e){setStartNotice(e instanceof Error?e.message:String(e))}
+  finally{if(!entered){startingGame.current=false;setEnteringGame(false);setStartProgress(undefined)}}
+ };
+ const finishStart=()=>{if(startProgress!==1)return;setStartScreen(false);setStartProgress(undefined);setEnteringGame(false);startingGame.current=false;canvas.current?.focus({preventScroll:true})};
  const closeStart=()=>{if(startingGame.current)return;setStartScreen(false);setRoute('#editor')};
  const restartPlay=()=>{gamePerformance.stop(performance.now(),'New Survival run');try{clearInput();world.current=createCampPlaySession(layoutRef.current,undefined,'survival');bindTravel(world.current);saveBlocked.current=false;setSaveNotice('');setPaused(false);setAxeEquipped(true);updateView({playing:true,follow:true,zoom:1,x:world.current.player.x,y:world.current.player.y});saveRun();canvas.current?.focus({preventScroll:true})}catch(e){show((e as Error).message)}};
  const openSandbox=()=>{saveRun();clearInput();world.current=createCampPlaySession(layoutRef.current);bindTravel(world.current);setSaveNotice('Sandbox changes do not replace your Survival save. Spawn tools are in this menu.');setPaused(true);updateView({playing:true,follow:true,zoom:1,x:world.current.player.x,y:world.current.player.y})};
@@ -529,7 +546,7 @@ if(k==='e'){e.preventDefault();if(!e.repeat){const gate=nearbyGate(world.current
    <button className="studio-world-plan" title="Open the world plan in a new tab" onClick={()=>{clearInput();window.open('/world-plan.html','_blank','noopener,noreferrer')}}><MapPin size={17}/><span>World plan</span></button>
    <button className="studio-help-button" aria-label="Controls and shortcuts" onClick={()=>{clearInput();setHelpOpen(true)}}><HelpCircle size={18}/>{mobile&&<span>Controls & help</span>}</button></>;
  return <main className="world-editor camp-studio" style={mobile?{height:display.height,'--studio-viewport-height':`${display.height}px`} as React.CSSProperties:undefined} data-map-open={mapOpen} data-mobile={mobile} data-tools-open={toolsOpen} data-mobile-dock={toolsOpen||(mode==='play'?monitorOpen:libraryOpen||(mode==='edit'&&inspectorOpen))} data-library-open={libraryOpen} data-monitor-open={monitorOpen} data-inspector-open={inspectorOpen} data-mode={mode} data-objects={layout.items.length}>
-  {startScreen&&<GameStart onPlay={()=>void enterFromStart()} onBack={closeStart} busy={enteringGame} playDisabled={!ready||!!error} notice={startNotice||error}/> }
+  {startScreen&&<GameStart onPlay={()=>void enterFromStart()} onBack={closeStart} busy={enteringGame} loadingProgress={startProgress} onLoadingComplete={finishStart} playDisabled={!ready||!!error} notice={startNotice||error}/> }
   <EditorOnly playing={mode==='play'}>
   <header className="we-top studio-top">
    <button className="studio-brand" aria-label="Humans Remain — world settings" title="World settings" onClick={()=>openPanel('world')}><Box size={23}/><span>HUMANS<span>REMAIN</span></span></button>

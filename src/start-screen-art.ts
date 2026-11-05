@@ -6,6 +6,7 @@ export type StartScreenArtwork={
  logo:ImageSourcePropType;
  selectionGlow:ImageSourcePropType;
  expeditionCards:ImageSourcePropType;
+ expeditionLoading:ImageSourcePropType;
  icons:Record<StartScreenIconName,ImageSourcePropType>;
 };
 export const START_SCREEN_MENU_FONT='CampMenu';
@@ -14,5 +15,6 @@ export const WEB_START_SCREEN_ART:StartScreenArtwork={
  logo:uri('humans-remain-logo'),
  selectionGlow:uri('play-selection-glow'),
  expeditionCards:{uri:'/survival/expedition-menu-v2/approved-cards.webp'},
+ expeditionLoading:{uri:'/survival/expedition-menu-v2/loading-panel.webp'},
  icons:{play:uri('play'),friends:uri('friends'),customise:uri('customise'),upgrades:uri('upgrades'),lock:uri('lock'),settings:uri('settings')},
 };

@@ -1,15 +1,27 @@
-import React,{useState} from 'react';
-import {View,Text,Pressable,TextInput,Image,ScrollView,StyleSheet,Platform,type ImageSourcePropType} from 'react-native';
+import React,{useEffect,useRef,useState} from 'react';
+import {View,Text,Pressable,TextInput,Image,ScrollView,StyleSheet,Platform,Animated,Easing,type ImageSourcePropType} from 'react-native';
 import type {StartProfile} from './start-profile';
 import {START_SCREEN_MENU_FONT,type StartScreenArtwork} from './start-screen-art';
 import type {StartScreenIconName} from './start-screen-icons';
 import ExpeditionMenu from './ExpeditionMenu';
+import ExpeditionLoading from './ExpeditionLoading';
 
-type Props={width:number;height:number;safe?:{top:number;bottom:number;left:number;right:number};background:React.ReactNode;shade:React.ReactNode;portrait:ImageSourcePropType;artwork:StartScreenArtwork;fontFamily?:string;profile:StartProfile;onProfile:(p:StartProfile)=>void;onPlay:()=>void;onBack?:()=>void;busy?:boolean;notice?:string;playDisabled?:boolean};
+type Props={width:number;height:number;safe?:{top:number;bottom:number;left:number;right:number};background:React.ReactNode;shade:React.ReactNode;portrait:ImageSourcePropType;artwork:StartScreenArtwork;fontFamily?:string;profile:StartProfile;onProfile:(p:StartProfile)=>void;onPlay:()=>void;onBack?:()=>void;busy?:boolean;notice?:string;playDisabled?:boolean;loadingProgress?:number;reducedMotion?:boolean;onLoadingComplete?:()=>void};
 type Panel='customise'|'upgrades'|'settings'|null;
 const serif=Platform.OS==='ios'?'Georgia':Platform.OS==='web'?'Georgia, serif':'serif';
-export default function StartingScreen({width,height,safe={top:0,bottom:0,left:0,right:0},background,shade,portrait,artwork,fontFamily=START_SCREEN_MENU_FONT,profile,onProfile,onPlay,onBack,busy=false,notice='',playDisabled=false}:Props){
+export default function StartingScreen({width,height,safe={top:0,bottom:0,left:0,right:0},background,shade,portrait,artwork,fontFamily=START_SCREEN_MENU_FONT,profile,onProfile,onPlay,onBack,busy=false,notice='',playDisabled=false,loadingProgress,reducedMotion=false,onLoadingComplete}:Props){
  const [panel,setPanel]=useState<Panel>(null),[name,setName]=useState(profile.name);
+ const loading=loadingProgress!==undefined;
+ const transition=useRef(new Animated.Value(loading?1:0)).current,sceneOpacity=useRef(new Animated.Value(1)).current;
+ const complete=useRef(onLoadingComplete);complete.current=onLoadingComplete;
+ useEffect(()=>{const animation=Animated.timing(transition,{toValue:loading?1:0,duration:reducedMotion?0:420,easing:Easing.inOut(Easing.cubic),useNativeDriver:Platform.OS!=='web'});animation.start();return()=>animation.stop()},[loading,reducedMotion,transition]);
+ useEffect(()=>{
+  if(loadingProgress!==1){sceneOpacity.setValue(1);return}
+  // Let the real completed progress settle before revealing the prepared frame.
+  const animation=Animated.sequence([Animated.delay(reducedMotion?0:550),Animated.timing(sceneOpacity,{toValue:0,duration:reducedMotion?0:360,easing:Easing.inOut(Easing.cubic),useNativeDriver:Platform.OS!=='web'})]);
+  animation.start(({finished})=>{if(finished)complete.current?.()});return()=>animation.stop();
+ },[loadingProgress===1,reducedMotion,sceneOpacity]);
+ const play=()=>{if(!busy&&!loading&&!playDisabled){setPanel(null);onPlay()}};
  const portraitMode=height>width;
  const availableWidth=Math.max(1,width-safe.left-safe.right),availableHeight=Math.max(1,height-safe.top-safe.bottom);
  // The approved 1536px composition is the common artboard for web and iOS.
@@ -21,14 +33,20 @@ export default function StartingScreen({width,height,safe={top:0,bottom:0,left:0
  const menuWidth=portraitMode?Math.min(availableWidth*.83,420):unit(430);
  const icon=(name:StartScreenIconName,size:number,style?:object)=><Image accessibilityIgnoresInvertColors source={artwork.icons[name]} resizeMode="contain" style={[{width:unit(size),height:unit(size)},style]}/>;
  const action=(label:string,fn:()=>void)=><Pressable accessibilityRole="button" onPress={fn} style={({pressed})=>[s.action,pressed&&s.pressed]}><Text style={s.actionText}>{label}</Text></Pressable>;
- return <View accessibilityLabel="Humans Remain starting screen" style={s.root}>
+ return <Animated.View accessibilityLabel="Humans Remain starting screen" style={[s.root,{opacity:sceneOpacity}]}>
   {background}{shade}
+  <Image accessible={false} pointerEvents="none" source={artwork.expeditionLoading} style={{position:'absolute',width:1,height:1,opacity:0}}/>
   <View pointerEvents="none" style={[s.logo,{left:safe.left+gutter,top:safe.top+availableHeight*.077}]}>
    <Image accessibilityLabel="Humans Remain" source={artwork.logo} resizeMode="contain" style={{width:portraitMode?190:unit(216),height:portraitMode?84:unit(95)}}/>
   </View>
-  <Pressable accessibilityRole="button" accessibilityLabel="Starting screen settings" disabled={busy} onPress={()=>setPanel('settings')} hitSlop={8} style={[s.settings,{right:safe.right+gutter,top:safe.top+availableHeight*.05,width:Math.max(44,unit(48)),height:Math.max(44,unit(48))}]}>{icon('settings',35)}</Pressable>
+  <Pressable accessibilityRole="button" accessibilityLabel="Starting screen settings" disabled={busy||loading} onPress={()=>setPanel('settings')} hitSlop={8} style={[s.settings,{right:safe.right+gutter,top:safe.top+availableHeight*.05,width:Math.max(44,unit(48)),height:Math.max(44,unit(48))}]}>{icon('settings',35)}</Pressable>
   <View style={[s.menu,{right:safe.right+gutter,bottom:portraitMode?bottomBaseline+unit(128):bottomBaseline,width:menuWidth}]}>
-   <ExpeditionMenu width={menuWidth} maxHeight={availableHeight*(portraitMode?.53:.67)} fontFamily={fontFamily} artwork={artwork} busy={busy} playDisabled={playDisabled} onPlay={onPlay} onCustomise={()=>{setName(profile.name);setPanel('customise')}} onUpgrades={()=>setPanel('upgrades')}/>
+   <View style={{width:Math.min(menuWidth,availableHeight*(portraitMode?.53:.67)*516/599),height:Math.min(menuWidth*599/516,availableHeight*(portraitMode?.53:.67)),alignSelf:'flex-end'}}>
+   <Animated.View pointerEvents={loading?'none':'auto'} accessibilityElementsHidden={loading} importantForAccessibility={loading?'no-hide-descendants':'auto'} style={[StyleSheet.absoluteFill,{opacity:transition.interpolate({inputRange:[0,1],outputRange:[1,0]}),transform:[{translateY:transition.interpolate({inputRange:[0,1],outputRange:[0,-unit(10)]})}]}]}>
+   <ExpeditionMenu width={menuWidth} maxHeight={availableHeight*(portraitMode?.53:.67)} fontFamily={fontFamily} artwork={artwork} busy={busy} playDisabled={playDisabled} onPlay={play} onCustomise={()=>{setName(profile.name);setPanel('customise')}} onUpgrades={()=>setPanel('upgrades')}/>
+   </Animated.View>
+   {loading&&<Animated.View pointerEvents="none" style={[StyleSheet.absoluteFill,{opacity:transition,transform:[{translateY:transition.interpolate({inputRange:[0,1],outputRange:[unit(12),0]})}]}]}><ExpeditionLoading width={Math.min(menuWidth,availableHeight*(portraitMode?.53:.67)*516/599)} height={Math.min(menuWidth*599/516,availableHeight*(portraitMode?.53:.67))} artwork={artwork.expeditionLoading} progress={loadingProgress} reducedMotion={reducedMotion}/></Animated.View>}
+   </View>
   </View>
   <View style={[s.stats,{left:safe.left+gutter,right:safe.right+gutter,bottom:bottomBaseline,paddingBottom:unit(6),gap:unit(12)}]}>
    <Image source={portrait} resizeMode="contain" style={{width:unit(90),height:unit(82),transform:[{translateY:unit(3)}]}}/>
@@ -38,17 +56,17 @@ export default function StartingScreen({width,height,safe={top:0,bottom:0,left:0
    </View>
 
   </View>
-  {(!!notice||busy)&&<View pointerEvents="none" style={[s.noticeBanner,{top:safe.top+8,left:safe.left+availableWidth*.28,right:safe.right+availableWidth*.11}]}>
+  {(!!notice||busy&&!loading)&&<View pointerEvents="none" style={[s.noticeBanner,{top:safe.top+8,left:safe.left+availableWidth*.28,right:safe.right+availableWidth*.11}]}>
    {!!notice&&<Text accessibilityRole="alert" style={s.notice}>{notice}</Text>}
-   {busy&&<Text accessibilityLiveRegion="polite" style={s.detail}>Preparing your world…</Text>}
+   {busy&&!loading&&<Text accessibilityLiveRegion="polite" style={s.detail}>Preparing your world…</Text>}
   </View>}
   {panel&&<View accessibilityViewIsModal style={[s.modal,{paddingTop:safe.top+12,paddingBottom:safe.bottom+12,paddingLeft:safe.left+20,paddingRight:safe.right+20}]}>
    <ScrollView style={s.dialog} contentContainerStyle={s.dialogContent} keyboardShouldPersistTaps="handled">
     <View style={s.panelHeader}><Text accessibilityRole="header" style={s.panelTitle}>{panel==='customise'?'Your survivor':panel==='upgrades'?'Camp upgrades':'Settings'}</Text><Pressable accessibilityRole="button" accessibilityLabel="Close panel" onPress={()=>setPanel(null)} style={s.close}><Text style={s.closeText}>×</Text></Pressable></View>
-    {panel==='customise'?<><View style={s.preview}><Image source={portrait} resizeMode="contain" style={s.previewPortrait}/><View><Text style={s.body}>Original survivor</Text><Text style={s.muted}>More outfits coming soon</Text></View></View><Text style={s.label}>SURVIVOR NAME</Text><TextInput accessibilityLabel="Survivor name" value={name} maxLength={20} onChangeText={setName} autoCapitalize="words" autoCorrect={false} returnKeyType="done" style={s.input}/>{action('Save survivor',()=>{onProfile({...profile,name:name.trim()||'Survivor'});setPanel(null)})}</>:panel==='upgrades'?<><Text style={s.body}>Build a place worth defending.</Text><Text style={s.muted}>Repair Headquarters to reach Camp Level 1. Gather resources in camp storage, then use Camp Plans inside Headquarters to unlock the next level, buildings and tools.</Text><View style={s.upgrade}><Text style={s.upgradeTitle}>01  MAKESHIFT CAMP</Text><Text style={s.muted}>Repair the camp and restore its facilities.</Text></View><View style={s.upgrade}><Text style={s.upgradeTitle}>02  WORKING CAMP</Text><Text style={s.muted}>Expand your camp through Headquarters.</Text></View>{action('Enter camp',onPlay)}</>:<><Text style={s.body}>Camp animation</Text><Text style={s.muted}>Wind, fire and survivor idle on the starting screen. Your device’s reduced motion setting also applies.</Text>{action(profile.motion?'Animation: On':'Animation: Off',()=>onProfile({...profile,motion:!profile.motion}))}<Text style={s.muted}>Survivor name and preferences are saved on this device. Survival progress continues to use your existing save.</Text>{onBack&&action('World editor',()=>{setPanel(null);onBack()})}</>}
+    {panel==='customise'?<><View style={s.preview}><Image source={portrait} resizeMode="contain" style={s.previewPortrait}/><View><Text style={s.body}>Original survivor</Text><Text style={s.muted}>More outfits coming soon</Text></View></View><Text style={s.label}>SURVIVOR NAME</Text><TextInput accessibilityLabel="Survivor name" value={name} maxLength={20} onChangeText={setName} autoCapitalize="words" autoCorrect={false} returnKeyType="done" style={s.input}/>{action('Save survivor',()=>{onProfile({...profile,name:name.trim()||'Survivor'});setPanel(null)})}</>:panel==='upgrades'?<><Text style={s.body}>Build a place worth defending.</Text><Text style={s.muted}>Repair Headquarters to reach Camp Level 1. Gather resources in camp storage, then use Camp Plans inside Headquarters to unlock the next level, buildings and tools.</Text><View style={s.upgrade}><Text style={s.upgradeTitle}>01  MAKESHIFT CAMP</Text><Text style={s.muted}>Repair the camp and restore its facilities.</Text></View><View style={s.upgrade}><Text style={s.upgradeTitle}>02  WORKING CAMP</Text><Text style={s.muted}>Expand your camp through Headquarters.</Text></View>{action('Enter camp',play)}</>:<><Text style={s.body}>Camp animation</Text><Text style={s.muted}>Wind, fire and survivor idle on the starting screen. Your device’s reduced motion setting also applies.</Text>{action(profile.motion?'Animation: On':'Animation: Off',()=>onProfile({...profile,motion:!profile.motion}))}<Text style={s.muted}>Survivor name and preferences are saved on this device. Survival progress continues to use your existing save.</Text>{onBack&&action('World editor',()=>{setPanel(null);onBack()})}</>}
    </ScrollView>
   </View>}
- </View>;
+ </Animated.View>;
 }
 const s=StyleSheet.create({
  root:{position:'absolute',top:0,left:0,right:0,bottom:0,backgroundColor:'#071b1d',zIndex:1000,overflow:'hidden'},

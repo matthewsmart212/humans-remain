@@ -96,6 +96,11 @@ export async function createWebWorld(canvas:HTMLCanvasElement,showcase:WorldDraw
   warmImages,
   releaseImages,
   prepareGameplay:(w:World)=>gameplay.update(gameplayImageSources(w),performance.now(),true),
+  async prepareTerrain(w:World){
+   this.draw(w);
+   await Promise.all([roads.settled(),camp.settled(),rivers.settled()]);
+   if(roads.visibleMissing||camp.visibleMissing||rivers.visibleMissing)throw Error('Nearby terrain could not load. Press Play to try again.');
+  },
   updateGameplay:(w:World,active:boolean)=>{void gameplay.update(active?gameplayImageSources(w):{}).catch(()=>{/* A later update retries interrupted optional artwork. */})},
   setActive(active:boolean){drawingSurface.setActive(active);if(!active)gameplay.clear()},
   textureStats:()=>{const now=performance.now();return {graphics:{...drawingSurface.stats(),shaderFieldBytes:adapter.shaderFieldBytes()},roads:roads.stats(),camp:camp.stats(),rivers:rivers.stats(),artwork:{...loader.stats(),warming:warming.size,loading:[...loading].slice(0,12).map(([key,value])=>({key,stage:value.stage,ageMs:Math.round(now-value.since)})),warmQueue:[...warming.keys()].slice(0,12).map(key=>({key,priority:urgentWarm.has(key)?'foreground':'background',ageMs:Math.round(now-(warmSince.get(key)||now))}))}}},
