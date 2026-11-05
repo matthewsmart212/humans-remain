@@ -26,14 +26,19 @@ jobs:
           lfs: false
           fetch-depth: 1
 
-      - name: Identify missing LFS asset and restore artwork
+      - name: Restore artwork without missing legacy camp-gate
         shell: bash
         run: |
-          echo 'Checking which tracked path references the missing LFS object...'
-          git grep -l 'd70a1081c01b2f20464687079bd8a992999f30631cc457f2cb4de5d7ca8bd380' HEAD -- || true
-          echo 'Downloading required LFS artwork. Deployment stops if any asset is missing.'
-          git lfs pull
-
+          legacy='public/survival/expedition-menu-v1/camp-gate.webp'
+          if git grep -n -F 'expedition-menu-v1/camp-gate.webp' HEAD -- src server native scripts; then
+            echo "::error::Legacy camp-gate is still referenced by runtime source; cannot omit safely."
+            exit 1
+          fi
+          echo "Skipping only unused legacy LFS path: $legacy"
+          git lfs pull --exclude="$legacy"
+          # Keep the original LFS pointer committed for future restoration, but
+          # do not accidentally publish its 130-byte pointer as a WebP image.
+          rm -f "$legacy"
       - name: Set up Node.js
         uses: actions/setup-node@v4
         with:
