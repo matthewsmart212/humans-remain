@@ -61,6 +61,11 @@ jobs:
             exit 1
           fi
 
+      - name: Extract approved menu plaques with transparent backgrounds
+        run: |
+          python3 -m pip install --user Pillow==11.3.0
+          python3 scripts/extract-expedition-panels.py
+
       - name: Build web client and Worker
         run: npm run build
 
