@@ -16,7 +16,6 @@ import {AppState,Image,Platform,StyleSheet,View,type ImageSourcePropType} from '
  */
 const SCENE={width:1536,height:864};
 const ATLAS={columns:7,rows:6,frames:42};
-const FRAME={width:360,height:504};
 const OUTPUT={width:384,height:538}; // modest overscan; no aggressive 400x560 upscale
 const GROUND={x:497,y:755,withinFrame:513};
 const FINAL_POSE_HOLD_MS=380;
@@ -42,7 +41,6 @@ export default function SurvivorPreparation({width,height,active,reducedMotion,o
  const [matteLoaded,setMatteLoaded]=useState(false);
  const [failed,setFailed]=useState(false);
  const [frame,setFrame]=useState(0);
- const [complete,setComplete]=useState(false);
  const finished=useRef(false);
  const callback=useRef(onFinished);
  callback.current=onFinished;
@@ -50,12 +48,11 @@ export default function SurvivorPreparation({width,height,active,reducedMotion,o
  const report=()=>{
   if(finished.current)return;
   finished.current=true;
-  setComplete(true);
   callback.current();
  };
 
  useEffect(()=>{
-  if(!active){finished.current=false;setFrame(0);setComplete(false);return;}
+  if(!active){finished.current=false;setFrame(0);return;}
   if(failed){report();return;}
   if(!ready)return;
 
