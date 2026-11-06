@@ -19,6 +19,8 @@ export default function GameStart({onPlay,onBack,busy,notice,playDisabled,loadin
    '/survival/expedition-menu-v2/approved-cards.webp',
    '/survival/starting-screen-ui-v2/survivor-profile.png',
    '/survival/starting-screen-ui-v2/settings.png',
+   '/survival/start-prepare-v1/prepare-atlas.png',
+   '/previews/dawn-camp/assets/dawn-clean-plate.png',
   ];
   const loads=sources.map(src=>new Promise<void>(resolve=>{
    const img=new window.Image();

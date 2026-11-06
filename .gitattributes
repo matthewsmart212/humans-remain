@@ -134,3 +134,6 @@ docs/qa/headquarters-doorway-v5/*.webp -filter -diff -merge
 # Small optimized UI atlas is bundled directly for browser and Expo.
 public/survival/expedition-menu-v2/approved-cards.webp -filter -diff -merge
 public/survival/expedition-menu-v2/loading-panel.webp -filter -diff -merge
+
+# Loading-character atlas is a small checked-in PNG, not an LFS pointer.
+/public/survival/start-prepare-v1/*.png -filter -diff -merge -text

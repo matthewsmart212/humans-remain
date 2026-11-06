@@ -79,3 +79,10 @@
   background:radial-gradient(ellipse 54% 57% at 52% 50%,rgba(3,18,21,.35),transparent 100%);
   filter:blur(23px);
 }
+
+/* Feather the cleared seated-character area over the live camp video on web.
+   The actual sprite keeps its own fixed cell/feet anchor on both platforms. */
+.game-start #survivor-prepare-clean-patch{
+  -webkit-mask-image:radial-gradient(ellipse 77% 71% at 50% 50%,black 55%,transparent 96%);
+  mask-image:radial-gradient(ellipse 77% 71% at 50% 50%,black 55%,transparent 96%);
+}
