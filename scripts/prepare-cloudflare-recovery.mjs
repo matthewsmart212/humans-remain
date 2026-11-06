@@ -31,7 +31,17 @@ for(const f of files.values()){
  const fields=[f.id,f.entryId,f.objectKey,f.name,f.mime,f.width,f.height,f.bytes,1,snapshot.layout.updatedAt];
  sql.push('INSERT OR IGNORE INTO asset_art_files (id,entry_id,object_key,name,mime,width,height,bytes,published,created_at) SELECT '+fields.map(v=>typeof v==='number'?v:q(v)).join(',')+' WHERE'+guarded+';');
 }
-sql.push('UPDATE world_layout SET draft_json='+q(JSON.stringify(snapshot.layout))+',applied_json='+q(JSON.stringify(snapshot.layout))+',revision='+Number(snapshot.revision)+',updated_at='+q(snapshot.layout.updatedAt)+' WHERE id=\'main\' AND revision=0 AND draft_json IS NULL AND applied_json IS NULL;');
+// D1 limits SQL statement size. Stage the layout as small ordered fragments,
+// then assemble it entirely inside SQLite. Never overwrite an existing world.
+const layoutJSON=JSON.stringify(snapshot.layout);
+const layoutChunks=[];
+for(let i=0;i<layoutJSON.length;i+=12000)layoutChunks.push(layoutJSON.slice(i,i+12000));
+sql.push('CREATE TABLE IF NOT EXISTS _humans_remain_recovery_chunks (part INTEGER PRIMARY KEY, payload TEXT NOT NULL);');
+sql.push('DELETE FROM _humans_remain_recovery_chunks;');
+for(let i=0;i<layoutChunks.length;i++)sql.push('INSERT INTO _humans_remain_recovery_chunks (part,payload) VALUES ('+i+','+q(layoutChunks[i])+');');
+const reconstructed='(SELECT GROUP_CONCAT(payload,\'\') FROM (SELECT payload FROM _humans_remain_recovery_chunks ORDER BY part))';
+sql.push('UPDATE world_layout SET draft_json='+reconstructed+',applied_json='+reconstructed+',revision='+Number(snapshot.revision)+',updated_at='+q(snapshot.layout.updatedAt)+' WHERE id=\'main\' AND revision=0 AND draft_json IS NULL AND applied_json IS NULL AND (SELECT COUNT(*) FROM _humans_remain_recovery_chunks)='+layoutChunks.length+';');
+sql.push('DROP TABLE _humans_remain_recovery_chunks;');
 fs.mkdirSync('.cloudflare-recovery',{recursive:true});
 fs.writeFileSync('.cloudflare-recovery/seed.sql',sql.join('\n')+'\n');
 fs.writeFileSync('.cloudflare-recovery/files.json',JSON.stringify([...files.values()],null,2));
