@@ -6,6 +6,8 @@ export type StartScreenArtwork={
  logo:ImageSourcePropType;
  selectionGlow:ImageSourcePropType;
  expeditionCards:ImageSourcePropType;
+ /** Optional individual transparent plaques; keep the atlas fallback for native. */
+ expeditionPanels?:Record<'play'|'customise'|'upgrades'|'friends',ImageSourcePropType>;
  expeditionLoading:ImageSourcePropType;
  icons:Record<StartScreenIconName,ImageSourcePropType>;
 };
