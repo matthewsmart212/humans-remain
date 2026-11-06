@@ -61,10 +61,15 @@ jobs:
             exit 1
           fi
 
+      - name: Set up Python for panel extraction
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
       - name: Extract approved menu plaques with transparent backgrounds
         run: |
-          python3 -m pip install --user Pillow==11.3.0
-          python3 scripts/extract-expedition-panels.py
+          python -m pip install Pillow==11.3.0
+          python scripts/extract-expedition-panels.py
 
       - name: Build web client and Worker
         run: npm run build
