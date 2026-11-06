@@ -6,15 +6,9 @@
 .game-start [aria-label="PLAY"]:focus,.game-start [aria-label="PLAY"]:focus-visible{outline:none!important;outline-offset:0!important;box-shadow:none!important;background-color:transparent}
 @media(orientation:portrait){.game-start-shade{background:linear-gradient(0deg,#05191bfa 2%,#05191bd9 43%,#05191b22 80%)}}
 
-/* The cards are now separate plaques, not cropped from the concept art.
-   Keep their own shadows and let the live camp show in every gap. */
-.game-start [aria-label="Expedition menu"]{isolation:isolate}
-.game-start [aria-label="Expedition menu"]::before{
- content:"";position:absolute;inset:-12% -8%;z-index:-1;pointer-events:none;
- background:radial-gradient(ellipse at 52% 52%,rgba(8,32,33,.55) 0%,rgba(8,32,33,.26) 52%,transparent 76%);
- filter:blur(24px)
-}
-.game-start [aria-label="Expedition menu"] [role="button"]{
- box-shadow:0 7px 16px rgba(0,0,0,.48),inset 0 1px 8px rgba(189,172,115,.12)
-}
-.game-start [aria-label="Expedition menu"] [role="button"]:focus:not(:focus-visible){outline:none}
+/* Atlas cards are rectangular crops of a full-scene mock-up. Clip their
+   background corners so the live animated camp remains visible around signs.
+   Apply to the actual DOM buttons (RN-web does not guarantee clipPath forwarding). */
+.game-start [aria-label="PLAY"]{clip-path:polygon(5% 1%,93% 1%,98% 5%,100% 10%,100% 90%,97% 96%,94% 99%,6% 99%,1% 95%,0% 88%,0% 12%,2% 5%)}
+.game-start [aria-label="CUSTOMISE"],.game-start [aria-label="UPGRADES"]{clip-path:polygon(5% 2%,94% 2%,99% 7%,99% 90%,94% 99%,6% 99%,1% 93%,1% 8%)}
+.game-start [aria-label^="PLAY WITH FRIENDS!"]{clip-path:polygon(3% 2%,97% 2%,100% 12%,100% 88%,97% 99%,3% 99%,0% 90%,0% 10%)}
