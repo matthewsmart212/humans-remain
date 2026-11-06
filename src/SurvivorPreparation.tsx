@@ -70,7 +70,7 @@ export default function SurvivorPreparation({width,height,active,reducedMotion,o
    if(stopped)return;
    // Never jump across a block of frames after iOS is suspended or a JS
    // startup task stalls. Holding the current frame is better than a pose pop.
-   if(AppState.currentState!=='active'||(Platform.OS==='web'&&typeof document!=='undefined'&&document.hidden)){
+   if((Platform.OS!=='web'&&AppState.currentState!=='active')||(Platform.OS==='web'&&typeof document!=='undefined'&&document.hidden)){
     timeout=setTimeout(advance,120);return;
    }
    if(step>=ATLAS.frames-1){
