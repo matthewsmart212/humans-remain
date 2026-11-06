@@ -1,28 +1,47 @@
-import React,{useEffect,useState} from 'react';
+import React,{useCallback,useEffect,useRef,useState} from 'react';
 import GameStart from './GameStart';
+import WorldEditor,{type ExternalStartActions,type ExternalStartState} from './WorldEditor';
 import {fetchArtwork,installImportedArt} from './imported-art';
 
 /**
- * The game must hydrate imported artwork BEFORE the world editor mounts:
- * otherwise unknown custom IDs could invalidate a saved camp.
+ * Hydrate imported assets before mounting the world. A saved camp must never
+ * be parsed while its custom asset IDs are unknown.
  *
- * Show the actual starting screen during that short preparation instead of
- * flashing a separate "Loading your asset library" page. Play remains disabled
- * until the saved artwork registry is installed and the real game mounts.
+ * The starting screen deliberately lives OUTSIDE that conditional world mount,
+ * so Safari does not destroy/recreate its video and imagery when hydration ends.
  */
-export default function AssetWorldGate({children}:{children:React.ReactNode}){
+export default function AssetWorldGate(){
  const [ready,setReady]=useState(false),[error,setError]=useState(''),[retry,setRetry]=useState(0);
+ const [start,setStart]=useState<ExternalStartState|null>(null);
+ const controls=useRef<ExternalStartActions>({play:()=>{},back:()=>{},complete:()=>{}});
+ const syncActions=useCallback((actions:ExternalStartActions)=>{controls.current=actions},[]);
+ const syncStart=useCallback((next:ExternalStartState)=>{
+  setStart(previous=>previous?.visible===next.visible&&previous.busy===next.busy&&previous.progress===next.progress&&previous.notice===next.notice&&previous.disabled===next.disabled?previous:next);
+ },[]);
  useEffect(()=>{
-  let live=true;
+  let active=true;
   setError('');
   fetchArtwork().then(({records})=>{
-   if(live){installImportedArt(records);setReady(true)}
-  }).catch(e=>{if(live)setError(e instanceof Error?e.message:String(e))});
-  return()=>{live=false};
+   if(active){installImportedArt(records);setReady(true)}
+  }).catch(e=>{if(active)setError(e instanceof Error?e.message:String(e))});
+  return()=>{active=false};
  },[retry]);
- if(ready)return <>{children}</>;
- if(error)return <div className="art-gate"><h2>Artwork unavailable</h2><p>{error}</p><button onClick={()=>setRetry(n=>n+1)}>Retry loading</button></div>;
- // This is the same visual start screen that WorldEditor presents once ready,
- // not an extra loading page. Do not allow Play before the artwork is safe.
- return <GameStart onPlay={()=>{}} busy={false} playDisabled onLoadingComplete={()=>{}}/>;
+ return <>
+  {ready&&<WorldEditor externalStart onExternalStartState={syncStart} onExternalStartActions={syncActions}/>}
+  {(!ready||start?.visible!==false)&&
+   <GameStart
+    gameMounted={ready}
+    onPlay={()=>controls.current.play()}
+    onBack={()=>controls.current.back()}
+    onLoadingComplete={()=>controls.current.complete()}
+    busy={ready&&!!start?.busy}
+    loadingProgress={ready?start?.progress:undefined}
+    playDisabled={!ready||!start||start.disabled||!!error}
+    notice={ready?start?.notice:undefined}
+   />}
+  {!!error&&!ready&&<div className="art-gate" role="alert" style={{zIndex:1200}}>
+   <h2>Artwork unavailable</h2><p>{error}</p>
+   <button onClick={()=>setRetry(n=>n+1)}>Retry loading</button>
+  </div>}
+ </>;
 }
