@@ -50,3 +50,32 @@
     radial-gradient(ellipse 49% 53% at 72% 68%,rgba(3,17,21,.31),transparent 100%);
   filter:blur(24px);
 }
+
+/* Match the expedition group's dark teal, softly fading mist behind the
+   top-left logo. This is its own non-interactive layer, not a square card,
+   and leaves the original illustrated logo crisp. */
+.game-start #start-logo-atmosphere{
+  overflow:visible!important;
+  pointer-events:none;
+}
+.game-start #start-logo-atmosphere::before,
+.game-start #start-logo-atmosphere::after{
+  content:"";
+  position:absolute;
+  inset:-60px;
+  pointer-events:none;
+  border-radius:48%;
+}
+.game-start #start-logo-atmosphere::before{
+  background:
+    radial-gradient(ellipse 65% 70% at 50% 50%,rgba(5,25,27,.82) 0%,rgba(7,29,31,.68) 38%,rgba(7,29,31,.36) 67%,transparent 100%),
+    radial-gradient(ellipse 54% 49% at 31% 60%,rgba(14,44,45,.3),transparent 100%);
+  filter:blur(15px);
+  -webkit-mask-image:radial-gradient(ellipse 72% 75% at 50% 50%,#000 43%,transparent 100%);
+  mask-image:radial-gradient(ellipse 72% 75% at 50% 50%,#000 43%,transparent 100%);
+}
+.game-start #start-logo-atmosphere::after{
+  inset:-45px -52px;
+  background:radial-gradient(ellipse 54% 57% at 52% 50%,rgba(3,18,21,.35),transparent 100%);
+  filter:blur(23px);
+}
