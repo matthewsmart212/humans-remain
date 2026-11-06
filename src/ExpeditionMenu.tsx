@@ -27,7 +27,7 @@ export default function ExpeditionMenu({width,maxHeight,fontFamily,artwork,busy,
   {(Object.keys(CARDS) as Card[]).map(key=>{
    const card=CARDS[key],disabled=key==='friends'||busy||(key==='play'&&playDisabled),isPlay=key==='play',isFriends=key==='friends';
    const position={left:card.left*scale,top:card.top*scale,width:card.width*scale,height:card.height*scale};
-   return <Pressable key={key} accessibilityRole="button" accessibilityLabel={card.label} accessibilityState={{disabled}} disabled={disabled} onPress={callbacks[key]} hitSlop={2} style={({pressed,focused})=>[s.card,position,{borderRadius:Math.max(7,9*scale),opacity:pressed?.84:disabled&&!isFriends?.68:1},focused&&s.focus]}>
+   return <Pressable key={key} accessibilityRole="button" accessibilityLabel={card.label} accessibilityState={{disabled}} disabled={disabled} onPress={callbacks[key]} hitSlop={2} style={({pressed,focused})=>[s.card,position,{borderRadius:Math.max(7,9*scale),opacity:pressed ? 0.84 : disabled && !isFriends ? 0.68 : 1},focused&&s.focus]}>
     <View pointerEvents="none" style={[StyleSheet.absoluteFill,s.borderOuter,{borderRadius:Math.max(7,9*scale),borderWidth:Math.max(2,3*scale)}]}/>
     <View pointerEvents="none" style={[s.innerFrame,{top:9*scale,bottom:9*scale,left:9*scale,right:9*scale,borderRadius:Math.max(4,6*scale),borderWidth:Math.max(1,scale)}]}/>
     <View pointerEvents="none" style={[s.corner,{left:5*scale,top:5*scale,width:9*scale,height:9*scale,borderRadius:5*scale}]}/>
