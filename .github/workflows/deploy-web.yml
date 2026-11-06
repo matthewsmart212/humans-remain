@@ -1,8 +1,11 @@
 name: Deploy Humans Remain Web
 
-# First-run manual testing. Enable push-to-main after Cloudflare credentials,
-# D1/R2 bindings, and the initial site validation are complete.
+# Automatically deploy the latest main branch to Cloudflare after every push.
+# Manual dispatch remains available for redeploying the current commit.
 on:
+  push:
+    branches:
+      - main
   workflow_dispatch:
 
 permissions:
