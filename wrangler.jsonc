@@ -13,7 +13,14 @@
     {
       "binding": "DB",
       "database_name": "humans-remain-db",
-      "database_id": "cedee92c-d485-42b1-9a7e-ada02f209340"
+      "database_id": "cedee92c-d485-42b1-9a7e-ada02f209340",
+      "migrations_dir": "drizzle"
+    }
+  ],
+  "r2_buckets": [
+    {
+      "binding": "ARTWORK",
+      "bucket_name": "humans-remain-artwork"
     }
   ]
 }
