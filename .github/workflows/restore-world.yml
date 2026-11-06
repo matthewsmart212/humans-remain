@@ -1,0 +1,63 @@
+name: Restore Humans Remain World Snapshot
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  restore:
+    name: Restore world and artwork to new Cloudflare storage
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    steps:
+      - name: Checkout repo without automatic LFS
+        uses: actions/checkout@v4
+        env:
+          GIT_LFS_SKIP_SMUDGE: '1'
+        with:
+          lfs: false
+          fetch-depth: 1
+
+      - name: Restore LFS assets except missing unused legacy file
+        run: |
+          git lfs pull --exclude='public/survival/expedition-menu-v1/camp-gate.webp'
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22.13.1'
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Prepare guarded snapshot and verify source artwork
+        run: node scripts/prepare-cloudflare-recovery.mjs
+
+      - name: Upload imported images to R2
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+        run: |
+          node -e "const fs=require('fs');const list=require('./.cloudflare-recovery/files.json');for(const f of list)console.log(f.id, f.bytes, f.objectKey);"
+          node --input-type=module <<'EOF'
+          import {readFileSync} from 'node:fs';
+          import {spawnSync} from 'node:child_process';
+          const files=JSON.parse(readFileSync('.cloudflare-recovery/files.json','utf8'));
+          for(const f of files){
+            const args=['--yes','wrangler@4','r2','object','put','humans-remain-artwork/'+f.objectKey,'--file='+f.source,'--remote'];
+            const result=spawnSync('npx',args,{stdio:'inherit'});
+            if(result.status!==0)process.exit(result.status||1);
+          }
+          EOF
+
+      - name: Seed only empty D1 world (preserve existing saved worlds)
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+        run: npx --yes wrangler@4 d1 execute humans-remain-db --remote --file=.cloudflare-recovery/seed.sql
+
+      - name: Report recovery
+        run: echo 'Snapshot restoration submitted. Check the website and D1 rows before considering it complete.'
