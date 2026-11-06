@@ -38,8 +38,9 @@ export default function StartingScreen({width,height,safe={top:0,bottom:0,left:0
  return <Animated.View accessibilityLabel="Humans Remain starting screen" style={[s.root,{opacity:sceneOpacity}]}>
   {background}{shade}
   <Image accessible={false} pointerEvents="none" source={artwork.expeditionLoading} style={{position:'absolute',width:1,height:1,opacity:0}}/>
-  <View pointerEvents="none" style={[s.logo,{left:safe.left+(availableWidth-(portraitMode?190:unit(216)))/2,top:safe.top+availableHeight*.077}]}>
-   <Image accessibilityLabel="Humans Remain" source={artwork.logo} resizeMode="contain" style={{width:portraitMode?190:unit(216),height:portraitMode?84:unit(95)}}/>
+  <View pointerEvents="none" style={[s.logo,{left:safe.left+gutter,top:safe.top+availableHeight*.05,width:portraitMode?190:unit(216),height:portraitMode?84:unit(95)}]}>
+   <View nativeID="start-logo-atmosphere" pointerEvents="none" style={[StyleSheet.absoluteFill,...(Platform.OS==='web'?[]:[{borderRadius:unit(28),backgroundColor:'#102e2f35',shadowColor:'#061a1c',shadowOpacity:.6,shadowRadius:unit(30)}])]} />
+   <Image accessibilityLabel="Humans Remain" source={artwork.logo} resizeMode="contain" style={{width:'100%',height:'100%'}}/>
   </View>
   <Pressable accessibilityRole="button" accessibilityLabel="Starting screen settings" disabled={busy||loading} onPress={()=>setPanel('settings')} hitSlop={8} style={[s.settings,{right:safe.right+gutter,top:safe.top+availableHeight*.05,width:Math.max(44,unit(48)),height:Math.max(44,unit(48))}]}>{icon('settings',35)}</Pressable>
   <View style={[s.menu,{right:safe.right+gutter,bottom:portraitMode?bottomBaseline+unit(128):bottomBaseline,width:menuWidth}]}>
