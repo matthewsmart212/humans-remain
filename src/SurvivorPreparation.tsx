@@ -23,9 +23,9 @@ const cleanLayer:ImageSourcePropType=Platform.OS==='web'
 
 type Props={width:number;height:number;reducedMotion:boolean;onFinished:()=>void};
 const transitions=[
- {hold:240,duration:510}, // Seated -> lean forward
- {hold:120,duration:720}, // Push off the ground -> rise
- {hold:150,duration:650}, // Strap secure -> knife ready
+ {hold:420,duration:160}, // Seated -> lean forward
+ {hold:560,duration:180}, // Push off the ground -> rise
+ {hold:600,duration:160}, // Strap secure -> knife ready
 ] as const;
 
 export default function SurvivorPreparation({width,height,reducedMotion,onFinished}:Props){
