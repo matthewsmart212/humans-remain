@@ -4,12 +4,9 @@ import type {StartScreenArtwork} from './start-screen-art';
 
 type Props={width:number;maxHeight:number;fontFamily:string;artwork:StartScreenArtwork;busy:boolean;playDisabled:boolean;onPlay:()=>void;onCustomise:()=>void;onUpgrades:()=>void};
 type Card='play'|'customise'|'upgrades'|'friends';
-// Use the approved artwork directly. Each view clips one card from the same
-// cached image, preserving the reference's illustration, lettering and bevels.
-// The camp surrounding these cards continues to use the existing animated scene.
-// Mask the rectangular atlas crops to the actual plaque silhouettes, so pixels
-// from the original mock-up's background cannot cover our live camp scene.
-// These masks are web-only: React Native does not implement CSS clip-path on iOS.
+// The approved illustrated menu is unchanged. On web, use transparently
+// extracted individual signs rather than clips of an opaque full-scene mock-up.
+// Keep the existing atlas fallback for native until extracted files are bundled.
 const ATLAS={width:1846,height:852};
 const COMPOSITION={width:516,height:599};
 const CARD_MASKS:Record<Card,string>={
@@ -32,11 +29,14 @@ export default function ExpeditionMenu({width,maxHeight,artwork,busy,playDisable
  return <View accessibilityLabel="Expedition menu" style={{width:COMPOSITION.width*scale,height:COMPOSITION.height*scale,alignSelf:'flex-end'}}>
   {(Object.keys(CARDS) as Card[]).map(key=>{
    const card=CARDS[key],disabled=key==='friends'||busy||(key==='play'&&playDisabled);
-   return <Pressable key={key} accessibilityRole="button" accessibilityLabel={card.label} accessibilityState={{disabled}} disabled={disabled} onPress={callbacks[key]} onFocus={()=>setFocused(key)} onBlur={()=>setFocused(null)} hitSlop={2} style={({pressed})=>[s.card,{left:card.left*scale,top:card.top*scale,width:card.width*scale,height:card.height*scale,borderRadius:3*scale,...(typeof document!=='undefined'?{clipPath:CARD_MASKS[key]}:{})},pressed&&s.pressed,(busy||(key==='play'&&playDisabled))&&s.busy]}>
-    <Image accessible={false} pointerEvents="none" source={artwork.expeditionCards} resizeMode="stretch" style={{position:'absolute',left:-card.x*scale,top:-card.y*scale,width:ATLAS.width*scale,height:ATLAS.height*scale}}/>
+   const separate=typeof document!=='undefined'&&artwork.expeditionPanels;
+   return <Pressable key={key} accessibilityRole="button" accessibilityLabel={card.label} accessibilityState={{disabled}} disabled={disabled} onPress={callbacks[key]} onFocus={()=>setFocused(key)} onBlur={()=>setFocused(null)} hitSlop={2} style={({pressed})=>[s.card,{left:card.left*scale,top:card.top*scale,width:card.width*scale,height:card.height*scale,...(!separate?{overflow:'hidden' as const,borderRadius:3*scale,...(typeof document!=='undefined'?{clipPath:CARD_MASKS[key]}:{})}:{overflow:'visible' as const})},pressed&&s.pressed,(busy||(key==='play'&&playDisabled))&&s.busy]}>
+    {separate
+      ? <Image accessible={false} pointerEvents="none" source={artwork.expeditionPanels![key]} resizeMode="stretch" style={{position:'absolute',left:0,top:0,width:card.width*scale,height:card.height*scale}}/>
+      : <Image accessible={false} pointerEvents="none" source={artwork.expeditionCards} resizeMode="stretch" style={{position:'absolute',left:-card.x*scale,top:-card.y*scale,width:ATLAS.width*scale,height:ATLAS.height*scale}}/>}
     {focused===key&&key!=='play'&&<View pointerEvents="none" style={[StyleSheet.absoluteFill,s.focus]}/>}
    </Pressable>;
   })}
  </View>;
 }
-const s=StyleSheet.create({backdrop:{position:'absolute',backgroundColor:'#04191b45'},card:{position:'absolute',overflow:'hidden',backgroundColor:'transparent'},pressed:{opacity:.82},busy:{opacity:.5},focus:{borderWidth:2,borderColor:'#ffda83',borderRadius:3}});
+const s=StyleSheet.create({backdrop:{position:'absolute',backgroundColor:'#04191b45'},card:{position:'absolute',backgroundColor:'transparent'},pressed:{opacity:.82},busy:{opacity:.5},focus:{borderWidth:2,borderColor:'#ffda83',borderRadius:3}});
