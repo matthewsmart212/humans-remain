@@ -40,7 +40,7 @@ export default function StartingScreen({width,height,safe={top:0,bottom:0,left:0
  const action=(label:string,fn:()=>void)=><Pressable accessibilityRole="button" onPress={fn} style={({pressed})=>[s.action,pressed&&s.pressed]}><Text style={s.actionText}>{label}</Text></Pressable>;
  return <Animated.View accessibilityLabel="Humans Remain starting screen" style={[s.root,{opacity:sceneOpacity}]}>
   {background}{shade}
-  {loading&&<SurvivorPreparation width={width} height={height} reducedMotion={reducedMotion} onFinished={()=>setCharacterFinished(true)}/>}
+  <SurvivorPreparation width={width} height={height} active={loading} reducedMotion={reducedMotion} onFinished={()=>setCharacterFinished(true)}/>
   <Image accessible={false} pointerEvents="none" source={artwork.expeditionLoading} style={{position:'absolute',width:1,height:1,opacity:0}}/>
   <View pointerEvents="none" style={[s.logo,{left:safe.left+gutter,top:safe.top+availableHeight*.05,width:portraitMode?190:unit(216),height:portraitMode?84:unit(95)}]}>
    <View nativeID="start-logo-atmosphere" pointerEvents="none" style={[StyleSheet.absoluteFill,...(Platform.OS==='web'?[]:[{borderRadius:unit(28),backgroundColor:'#102e2f35',shadowColor:'#061a1c',shadowOpacity:.6,shadowRadius:unit(30)}])]} />

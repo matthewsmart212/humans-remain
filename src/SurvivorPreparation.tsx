@@ -1,26 +1,25 @@
 import React,{useEffect,useRef,useState} from 'react';
-import {Animated,Easing,Image,Platform,StyleSheet,View,type ImageSourcePropType} from 'react-native';
+import {AppState,Image,Platform,StyleSheet,View,type ImageSourcePropType} from 'react-native';
 
 /**
- * Cinematic Play -> Loading survivor animation.
+ * Play -> expedition: keep the original survivor, camp fire and scenery in
+ * their exact 1536x864 registration. This is one opaque pose at a time; never
+ * crossfade characters or composite a second survivor over the camp video.
  *
- * The source is one 7x6 atlas of 42 individually aligned and alpha-cleaned
- * frames. Unlike the earlier 4-illustration crossfade, only ONE fully opaque
- * pose is shown at any instant. The feet share a stable 1536x864 ground anchor
- * so changing poses never moves or rescales the character's viewport.
+ * Decode both textures while the main menu is still open. The old loader
+ * mounted them only *after* Play was pressed, causing the seated character to
+ * pop/overlap with the preparation pose on slower phones.
  *
- * The original camp video contains a seated character. A precomposited clean
- * matte must be decoded before showing the new survivor, otherwise both appear.
- * World boot readiness is handled independently by StartingScreen; completion
- * is reported only after the LAST frame has actually had time to display.
+ * The artwork currently ships as a 7x6 atlas. It must be replaced with newly
+ * drawn high-resolution, character-registered frames to improve its internal
+ * facial and clothing detail; upscaling this texture is not a quality fix.
  */
 const SCENE={width:1536,height:864};
-const CELL={width:360,height:504};
-const OUTPUT={width:400,height:560};
-const FOOT={x:497,y:755};
-const ORIGINAL_FOOT_IN_CELL=534;
-const COLUMNS=7,ROWS=6,FRAMES=42;
-const FRAME_MS=65;
+const ATLAS={columns:7,rows:6,frames:42};
+const OUTPUT={width:384,height:538}; // modest overscan; no aggressive 400x560 upscale
+const GROUND={x:497,y:755,withinFrame:513};
+const FINAL_POSE_HOLD_MS=380;
+
 const atlas:ImageSourcePropType=Platform.OS==='web'
  ? {uri:'/survival/start-prepare-v4/survivor-prepare.webp'}
  : require('../public/survival/start-prepare-v4/survivor-prepare.webp');
@@ -28,59 +27,87 @@ const cleanLayer:ImageSourcePropType=Platform.OS==='web'
  ? {uri:'/survival/start-prepare-v2/remove-seated-survivor.png'}
  : require('../public/survival/start-prepare-v2/remove-seated-survivor.png');
 
-type Props={width:number;height:number;reducedMotion:boolean;onFinished:()=>void};
-export default function SurvivorPreparation({width,height,reducedMotion,onFinished}:Props){
- const [atlasLoaded,setAtlasLoaded]=useState(false),[matteLoaded,setMatteLoaded]=useState(false);
- const [failed,setFailed]=useState(false),[frame,setFrame]=useState(0),[complete,setComplete]=useState(false);
- const finishedRef=useRef(false),callbackRef=useRef(onFinished);
- const breathe=useRef(new Animated.Value(0)).current;
- callbackRef.current=onFinished;
+/** Ease into the movement, rise with purpose, then settle into the last pose. */
+export function preparationFrameDuration(frame:number):number{
+ if(frame<5)return 90;
+ if(frame<17)return 68;
+ if(frame<28)return 57;
+ if(frame<37)return 76;
+ return 100;
+}
+type Props={width:number;height:number;active:boolean;reducedMotion:boolean;onFinished:()=>void};
+export default function SurvivorPreparation({width,height,active,reducedMotion,onFinished}:Props){
+ const [atlasLoaded,setAtlasLoaded]=useState(false);
+ const [matteLoaded,setMatteLoaded]=useState(false);
+ const [failed,setFailed]=useState(false);
+ const [frame,setFrame]=useState(0);
+ const finished=useRef(false);
+ const callback=useRef(onFinished);
+ callback.current=onFinished;
  const ready=atlasLoaded&&matteLoaded;
- const reportFinished=()=>{
-  if(finishedRef.current)return;
-  finishedRef.current=true;
-  setComplete(true);
-  callbackRef.current();
+ const report=()=>{
+  if(finished.current)return;
+  finished.current=true;
+  callback.current();
  };
+
  useEffect(()=>{
-  if(failed){reportFinished();return;}
+  if(!active){finished.current=false;setFrame(0);return;}
+  if(failed){report();return;}
   if(!ready)return;
-  if(reducedMotion){setFrame(FRAMES-1);reportFinished();return;}
-  const started=Date.now();
-  const tick=()=>{
-   const elapsed=Math.max(0,Date.now()-started);
-   if(elapsed>=FRAMES*FRAME_MS){setFrame(FRAMES-1);reportFinished();return true;}
-   setFrame(Math.min(FRAMES-1,Math.floor(elapsed/FRAME_MS)));
-   return false;
+
+  // A new run always starts from the same anchored original survivor pose.
+  setFrame(0);
+  if(reducedMotion){
+   setFrame(ATLAS.frames-1);
+   // Allow the last frame to commit before world transition is permitted.
+   const task=setTimeout(report,FINAL_POSE_HOLD_MS);
+   return()=>clearTimeout(task);
+  }
+  let stopped=false,step=0;
+  let timeout:ReturnType<typeof setTimeout>;
+  const advance=()=>{
+   if(stopped)return;
+   // Never jump across a block of frames after iOS is suspended or a JS
+   // startup task stalls. Holding the current frame is better than a pose pop.
+   if((Platform.OS!=='web'&&AppState.currentState!=='active')||(Platform.OS==='web'&&typeof document!=='undefined'&&document.hidden)){
+    timeout=setTimeout(advance,120);return;
+   }
+   if(step>=ATLAS.frames-1){
+    timeout=setTimeout(()=>{if(!stopped)report();},FINAL_POSE_HOLD_MS);
+    return;
+   }
+   step+=1;
+   setFrame(step);
+   timeout=setTimeout(advance,preparationFrameDuration(step));
   };
-  // Elapsed-time playback prevents iOS world startup work from queuing and
-  // replaying dozens of late frames. Never finish before frame 42 has displayed.
-  const interval=setInterval(()=>{if(tick())clearInterval(interval);},Math.floor(FRAME_MS/2));
-  tick();
-  return()=>clearInterval(interval);
- },[ready,failed,reducedMotion]);
- useEffect(()=>{
-  if(!complete||reducedMotion||failed)return;
-  const animation=Animated.loop(Animated.sequence([
-   Animated.timing(breathe,{toValue:1,duration:1850,easing:Easing.inOut(Easing.sin),useNativeDriver:Platform.OS!=='web'}),
-   Animated.timing(breathe,{toValue:0,duration:1850,easing:Easing.inOut(Easing.sin),useNativeDriver:Platform.OS!=='web'}),
-  ]));
-  animation.start();return()=>animation.stop();
- },[complete,reducedMotion,failed,breathe]);
+  timeout=setTimeout(advance,preparationFrameDuration(0));
+  return()=>{stopped=true;clearTimeout(timeout);};
+ },[active,ready,failed,reducedMotion]);
 
  const scale=Math.max(width/SCENE.width,height/SCENE.height);
- const originX=(width-SCENE.width*scale)/2,originY=(height-SCENE.height*scale)/2;
- const cw=OUTPUT.width*scale,ch=OUTPUT.height*scale;
- const x=originX+(FOOT.x-OUTPUT.width/2)*scale;
- const y=originY+(FOOT.y-ORIGINAL_FOOT_IN_CELL)*scale;
+ const left=(width-SCENE.width*scale)/2;
+ const top=(height-SCENE.height*scale)/2;
+ const w=OUTPUT.width*scale,h=OUTPUT.height*scale;
+ const x=left+(GROUND.x-OUTPUT.width/2)*scale;
+ const y=top+(GROUND.y-GROUND.withinFrame)*scale;
+ const frameX=frame%ATLAS.columns;
+ const frameY=Math.floor(frame/ATLAS.columns);
+
  return <View pointerEvents="none" accessibilityElementsHidden importantForAccessibility="no-hide-descendants" style={StyleSheet.absoluteFill}>
+  {/* Preload on the menu, not at the moment Play is pressed. */}
   <Image accessible={false} source={atlas} onLoad={()=>setAtlasLoaded(true)} onError={()=>setFailed(true)} style={styles.preload}/>
   <Image accessible={false} source={cleanLayer} onLoad={()=>setMatteLoaded(true)} onError={()=>setFailed(true)} style={styles.preload}/>
-  {ready&&!failed&&<>
-   <Image accessible={false} source={cleanLayer} resizeMode="stretch" style={{position:'absolute',left:originX,top:originY,width:SCENE.width*scale,height:SCENE.height*scale}}/>
-   <Animated.View style={{position:'absolute',left:x,top:y,width:cw,height:ch,overflow:'hidden',transform:[{translateY:breathe.interpolate({inputRange:[0,1],outputRange:[0,-1.5*scale]})}]}}>
-    <Image accessible={false} source={atlas} resizeMode="stretch" style={{position:'absolute',left:-(frame%COLUMNS)*cw,top:-Math.floor(frame/COLUMNS)*ch,width:COLUMNS*cw,height:ROWS*ch}}/>
-   </Animated.View>
+  {active&&ready&&!failed&&<>
+   {/* Masks only the baked-in seated subject. The scene continues animating. */}
+   <Image accessible={false} source={cleanLayer} resizeMode="stretch" style={{position:'absolute',left,top,width:SCENE.width*scale,height:SCENE.height*scale}}/>
+   <View style={{position:'absolute',left:x,top:y,width:w,height:h,overflow:'hidden'}}>
+    <Image accessible={false} source={atlas} resizeMode="stretch" style={{
+     position:'absolute',
+     left:-frameX*w,top:-frameY*h,
+     width:ATLAS.columns*w,height:ATLAS.rows*h,
+    }}/>
+   </View>
   </>}
  </View>;
 }
