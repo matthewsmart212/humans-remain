@@ -19,7 +19,7 @@ export default function GameStart({onPlay,onBack,busy,notice,playDisabled,loadin
    '/survival/expedition-menu-v2/approved-cards.webp',
    '/survival/starting-screen-ui-v2/survivor-profile.png',
    '/survival/starting-screen-ui-v2/settings.png',
-   '/survival/start-prepare-v2/preparation-poses.png',
+   '/survival/start-prepare-v4/survivor-prepare.webp',
    '/survival/start-prepare-v2/remove-seated-survivor.png',
   ];
   const loads=sources.map(src=>new Promise<void>(resolve=>{

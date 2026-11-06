@@ -140,3 +140,6 @@ public/survival/expedition-menu-v2/loading-panel.webp -filter -diff -merge
 
 # Full-resolution survivor transition textures are small direct blobs.
 /public/survival/start-prepare-v2/*.png -filter -diff -merge -text
+
+# One decoded WEBP atlas (7 columns × 6 rows) for the one-character loading animation.
+/public/survival/start-prepare-v4/*.webp -filter -diff -merge -text
