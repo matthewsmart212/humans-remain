@@ -89,7 +89,10 @@ import {SCENES,sceneId,sceneName,sceneSize,invalidateScenePortals} from './world
 
 function ArtThumb({asset}:{asset:WorldAsset}){const clip=useId();const [x,y,width,height]=asset.crop;return <svg viewBox={asset.crop.join(' ')} aria-hidden="true" preserveAspectRatio="xMidYMid meet"><defs><clipPath id={clip}><rect x={x} y={y} width={width} height={height}/></clipPath></defs><image clipPath={`url(#${clip})`} href={asset.image} width={imageDimensions[asset.image]?.[0]} height={imageDimensions[asset.image]?.[1]}/></svg>}
 const clone=(l:WorldLayout):WorldLayout=>JSON.parse(JSON.stringify(l));
-export default function WorldEditor(){
+export type ExternalStartState={visible:boolean;busy:boolean;progress?:number;notice:string;disabled:boolean};
+export type ExternalStartActions={play:()=>void;back:()=>void;complete:()=>void};
+type WorldEditorProps={externalStart?:boolean;onExternalStartState?:(state:ExternalStartState)=>void;onExternalStartActions?:(actions:ExternalStartActions)=>void};
+export default function WorldEditor({externalStart=false,onExternalStartState,onExternalStartActions}:WorldEditorProps={}){
  const access=useEditorAccess('/#editor');
  const mobile=useMobileEditor(),[libraryOpen,setLibraryOpen]=useState(!mobile),[inspectorOpen,setInspectorOpen]=useState(!mobile),[libraryTab,setLibraryTab]=useState<'scene'|'assets'|'world'>('scene'),[panTool,setPanTool]=useState(false);
  const display=useEditorDisplay(mobile);
@@ -125,6 +128,7 @@ export default function WorldEditor(){
  const [ready,setReady]=useState(false),[error,setError]=useState(''),[status,setStatus]=useState('Opening local draft…'),[cloudLoaded,setCloudLoaded]=useState(false),[busy,setBusy]=useState(false),revision=useRef(0),savingRef=useRef(false);
  const [preparingMode,setPreparingMode]=useState<'walk'|'play'|null>(null),modeRequest=useRef(0);
  const [startScreen,setStartScreen]=useState(true),[enteringGame,setEnteringGame]=useState(false),startingGame=useRef(false),[startNotice,setStartNotice]=useState(''),[startProgress,setStartProgress]=useState<number>();
+ const externalStartActions=useRef<ExternalStartActions>({play:()=>{},back:()=>{},complete:()=>{}});
  const startingWorld=useRef({ready:false,error:'',loaded:0,total:0});
  const enterPreparedWorld=useRef<()=>Promise<boolean|undefined>>(async()=>false);
  const [loadAttempt,setLoadAttempt]=useState(0),[loadProgress,setLoadProgress]=useState<ArtworkProgress&{stage:string}>({loaded:0,total:0,stage:'Opening your saved draft…'}),[terrainDetail,setTerrainDetail]=useState<'loading'|'ready'|'error'>('loading'),[detailProgress,setDetailProgress]=useState<ArtworkProgress>({loaded:0,total:4});
@@ -275,6 +279,20 @@ export default function WorldEditor(){
  };
  const finishStart=()=>{if(startProgress!==1)return;setStartScreen(false);setStartProgress(undefined);setEnteringGame(false);startingGame.current=false;canvas.current?.focus({preventScroll:true})};
  const closeStart=()=>{if(startingGame.current)return;setStartScreen(false);setRoute('#editor')};
+ // Keep the parent's startup overlay and video mounted while the artwork
+ // registry hydrates and the renderer prepares behind it.
+ externalStartActions.current={play:enterFromStart,back:closeStart,complete:finishStart};
+ useEffect(()=>{
+  onExternalStartActions?.({
+   play:()=>externalStartActions.current.play(),
+   back:()=>externalStartActions.current.back(),
+   complete:()=>externalStartActions.current.complete(),
+  });
+ },[onExternalStartActions]);
+ useEffect(()=>{
+  onExternalStartState?.({visible:startScreen,busy:enteringGame,progress:startProgress,notice:startNotice||error,disabled:!!error});
+ },[onExternalStartState,startScreen,enteringGame,startProgress,startNotice,error]);
+
  const restartPlay=()=>{gamePerformance.stop(performance.now(),'New Survival run');try{clearInput();world.current=createCampPlaySession(layoutRef.current,undefined,'survival');bindTravel(world.current);saveBlocked.current=false;setSaveNotice('');setPaused(false);setAxeEquipped(true);updateView({playing:true,follow:true,zoom:1,x:world.current.player.x,y:world.current.player.y});saveRun();canvas.current?.focus({preventScroll:true})}catch(e){show((e as Error).message)}};
  const openSandbox=()=>{saveRun();clearInput();world.current=createCampPlaySession(layoutRef.current);bindTravel(world.current);setSaveNotice('Sandbox changes do not replace your Survival save. Spawn tools are in this menu.');setPaused(true);updateView({playing:true,follow:true,zoom:1,x:world.current.player.x,y:world.current.player.y})};
  const pauseGame=()=>{clearInput();gamePerformance.setActivity('paused',performance.now());setPaused(true);saveRun()};
@@ -551,7 +569,7 @@ if(k==='e'){e.preventDefault();if(!e.repeat){const gate=nearbyGate(world.current
    <button className="studio-world-plan" title="Open the world plan in a new tab" onClick={()=>{clearInput();window.open('/world-plan.html','_blank','noopener,noreferrer')}}><MapPin size={17}/><span>World plan</span></button>
    <button className="studio-help-button" aria-label="Controls and shortcuts" onClick={()=>{clearInput();setHelpOpen(true)}}><HelpCircle size={18}/>{mobile&&<span>Controls & help</span>}</button></>;
  return <main className="world-editor camp-studio" style={mobile?{height:display.height,'--studio-viewport-height':`${display.height}px`} as React.CSSProperties:undefined} data-map-open={mapOpen} data-mobile={mobile} data-tools-open={toolsOpen} data-mobile-dock={toolsOpen||(mode==='play'?monitorOpen:libraryOpen||(mode==='edit'&&inspectorOpen))} data-library-open={libraryOpen} data-monitor-open={monitorOpen} data-inspector-open={inspectorOpen} data-mode={mode} data-objects={layout.items.length}>
-  {startScreen&&<GameStart onPlay={()=>void enterFromStart()} onBack={closeStart} busy={enteringGame} loadingProgress={startProgress} onLoadingComplete={finishStart} playDisabled={!!error} notice={startNotice||error}/> }
+  {startScreen&&!externalStart&&<GameStart onPlay={()=>void enterFromStart()} onBack={closeStart} busy={enteringGame} loadingProgress={startProgress} onLoadingComplete={finishStart} playDisabled={!!error} notice={startNotice||error}/> }
   <EditorOnly playing={mode==='play'}>
   <header className="we-top studio-top">
    <button className="studio-brand" aria-label="Humans Remain — world settings" title="World settings" onClick={()=>openPanel('world')}><Box size={23}/><span>HUMANS<span>REMAIN</span></span></button>
