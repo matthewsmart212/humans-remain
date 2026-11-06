@@ -4,7 +4,7 @@ import {Animated,Easing,Image,Platform,StyleSheet,View,type ImageSourcePropType}
 /**
  * The original survivor is baked into the camp video, not a separate view.
  * Overlay the retouched, feathered scene pixels FIRST; only then draw one
- * aligned, high-resolution survivor from four individually authored poses.
+ * aligned, high-resolution survivor from the approved original seated frame and three full-resolution preparation poses.
  *
  * Both textures are preloaded before replacing the video survivor. A slow
  * device never sees two characters or an empty loading pose. This is a
@@ -12,7 +12,7 @@ import {Animated,Easing,Image,Platform,StyleSheet,View,type ImageSourcePropType}
  */
 const SCENE={width:1536,height:864};
 const CELL={width:540,height:600};
-const FOOT={x:497,y:725};
+const FOOT={x:497,y:755};
 const CHARACTER_SCALE=.65;
 const artwork:ImageSourcePropType=Platform.OS==='web'
  ? {uri:'/survival/start-prepare-v2/preparation-poses.png'}
