@@ -36,9 +36,9 @@ export async function fetchArtworkBytes(url:string,signal?:AbortSignal,timeoutMs
     return new Uint8Array(await response.arrayBuffer());
    }catch(error){
     if(controller.signal.aborted)throw aborted(controller.signal);
-    const network=error instanceof TypeError||error instanceof Error&&error.name==='NetworkError';
+    const network=error instanceof TypeError||error instanceof Error&&['NetworkError','AbortError'].includes(error.name);
     if(attempt>=2||!retryable&&!network){
-     if(network)throw new TypeError('An artwork download was interrupted. Check your connection and retry.',{cause:error});
+     if(network)throw new TypeError('An artwork download was interrupted after multiple attempts. Check your connection and retry.',{cause:error});
      throw error;
     }
     await new Promise<void>((resolve,reject)=>{
