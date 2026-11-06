@@ -1,86 +1,87 @@
 import React,{useEffect,useRef,useState} from 'react';
-import {Animated,Easing,Image,Platform,View,type ImageSourcePropType} from 'react-native';
+import {Animated,Easing,Image,Platform,StyleSheet,View,type ImageSourcePropType} from 'react-native';
 
 /**
- * The 32 frames share a single fixed 222x228 cell. Do NOT trim/recenter individual
- * frames: the stable canvas, ground baseline and headroom prevent the old jitter.
- * Playback starts only after the atlas is decoded; real world readiness is a
- * separate condition in StartingScreen.
+ * The original survivor is baked into the camp video, not a separate view.
+ * Overlay the retouched, feathered scene pixels FIRST; only then draw one
+ * aligned, high-resolution survivor from four individually authored poses.
+ *
+ * Both textures are preloaded before replacing the video survivor. A slow
+ * device never sees two characters or an empty loading pose. This is a
+ * short cinematic pose transition, NOT low-resolution sprite frame playback.
  */
-const CELL_WIDTH=222,CELL_HEIGHT=228,COLUMNS=8,FRAMES=32,FRAME_MS=90;
-const SCENE_WIDTH=1536,SCENE_HEIGHT=864;
-const atlas:ImageSourcePropType=Platform.OS==='web'
- ? {uri:'/survival/start-prepare-v1/prepare-atlas.png'}
- : require('../public/survival/start-prepare-v1/prepare-atlas.png');
-const cleanPlate:ImageSourcePropType=Platform.OS==='web'
- ? {uri:'/previews/dawn-camp/assets/dawn-clean-plate.png'}
- : require('../public/previews/dawn-camp/assets/dawn-clean-plate.png');
+const SCENE={width:1536,height:864};
+const CELL={width:540,height:600};
+const FOOT={x:497,y:725};
+const CHARACTER_SCALE=.65;
+const artwork:ImageSourcePropType=Platform.OS==='web'
+ ? {uri:'/survival/start-prepare-v2/preparation-poses.png'}
+ : require('../public/survival/start-prepare-v2/preparation-poses.png');
+const cleanLayer:ImageSourcePropType=Platform.OS==='web'
+ ? {uri:'/survival/start-prepare-v2/remove-seated-survivor.png'}
+ : require('../public/survival/start-prepare-v2/remove-seated-survivor.png');
 
 type Props={width:number;height:number;reducedMotion:boolean;onFinished:()=>void};
-export const SURVIVOR_PREPARATION_MS=FRAMES*FRAME_MS;
+const transitions=[
+ {hold:240,duration:510}, // Seated -> lean forward
+ {hold:120,duration:720}, // Push off the ground -> rise
+ {hold:150,duration:650}, // Strap secure -> knife ready
+] as const;
 
 export default function SurvivorPreparation({width,height,reducedMotion,onFinished}:Props){
- const [assetReady,setAssetReady]=useState(false),[assetFailed,setAssetFailed]=useState(false);
- const [frame,setFrame]=useState(0),[done,setDone]=useState(false);
- const completed=useRef(false),callback=useRef(onFinished);
- const breath=useRef(new Animated.Value(0)).current;
- callback.current=onFinished;
+ const [imagesLoaded,setImagesLoaded]=useState({poses:false,clean:false});
+ const [imageFailed,setImageFailed]=useState(false);
+ const [complete,setComplete]=useState(false);
+ const opacity=useRef([new Animated.Value(1),new Animated.Value(0),new Animated.Value(0),new Animated.Value(0)]).current;
+ const breathe=useRef(new Animated.Value(0)).current;
+ const completed=useRef(false);
+ const cb=useRef(onFinished);cb.current=onFinished;
+ const ready=imagesLoaded.poses&&imagesLoaded.clean;
+ const finish=()=>{if(completed.current)return;completed.current=true;setComplete(true);cb.current()};
  useEffect(()=>{
-  if(!reducedMotion&&!assetReady&&!assetFailed)return;
-  if(reducedMotion||assetFailed){
-   setFrame(FRAMES-1);
-   setDone(true);
-   if(!completed.current){completed.current=true;callback.current();}
-   return;
+  if(!ready&&!imageFailed)return;
+  if(imageFailed){finish();return}
+  if(reducedMotion){opacity.forEach((v,i)=>v.setValue(i===3?1:0));finish();return}
+  const stages:Animated.CompositeAnimation[]=[];
+  for(let i=0;i<3;i++){
+   stages.push(Animated.delay(transitions[i].hold));
+   stages.push(Animated.parallel([
+    Animated.timing(opacity[i],{toValue:0,duration:transitions[i].duration,easing:Easing.inOut(Easing.cubic),useNativeDriver:Platform.OS!=='web'}),
+    Animated.timing(opacity[i+1],{toValue:1,duration:transitions[i].duration,easing:Easing.inOut(Easing.cubic),useNativeDriver:Platform.OS!=='web'}),
+   ]));
   }
-  const started=Date.now();
-  const tick=()=>{
-   const elapsed=Math.max(0,Date.now()-started);
-   if(elapsed>=SURVIVOR_PREPARATION_MS){
-    setFrame(FRAMES-1);
-    setDone(true);
-    if(!completed.current){completed.current=true;callback.current();}
-    return true;
-   }
-   setFrame(Math.min(FRAMES-1,Math.floor(elapsed/FRAME_MS)));
-   return false;
-  };
-  // A monotonic elapsed-time clock avoids a slow iPhone or background tab
-  // replaying every skipped sprite and making the loading screen stutter.
-  const timer=setInterval(()=>{if(tick())clearInterval(timer)},30);
-  tick();
-  return()=>clearInterval(timer);
- },[assetReady,assetFailed,reducedMotion]);
+  stages.push(Animated.delay(200));
+  const animation=Animated.sequence(stages);
+  animation.start(({finished})=>{if(finished)finish()});
+  return()=>animation.stop();
+ },[ready,imageFailed,reducedMotion,opacity]);
  useEffect(()=>{
-  if(!done||reducedMotion)return;
-  const cycle=Animated.loop(Animated.sequence([
-   Animated.timing(breath,{toValue:1,duration:1700,easing:Easing.inOut(Easing.sin),useNativeDriver:Platform.OS!=='web'}),
-   Animated.timing(breath,{toValue:0,duration:1700,easing:Easing.inOut(Easing.sin),useNativeDriver:Platform.OS!=='web'})
+  if(!complete||reducedMotion||imageFailed)return;
+  const animation=Animated.loop(Animated.sequence([
+   Animated.timing(breathe,{toValue:1,duration:1700,easing:Easing.inOut(Easing.sin),useNativeDriver:Platform.OS!=='web'}),
+   Animated.timing(breathe,{toValue:0,duration:1700,easing:Easing.inOut(Easing.sin),useNativeDriver:Platform.OS!=='web'}),
   ]));
-  cycle.start();
-  return()=>cycle.stop();
- },[done,reducedMotion,breath]);
+  animation.start();return()=>animation.stop();
+ },[complete,reducedMotion,imageFailed,breathe]);
 
- // Match the original 1536x864 "cover" video coordinate system on browsers
- // and landscape iOS, rather than positioning by arbitrary percentages.
- const scale=Math.max(width/SCENE_WIDTH,height/SCENE_HEIGHT);
- const offsetX=(width-SCENE_WIDTH*scale)/2,offsetY=(height-SCENE_HEIGHT*scale)/2;
- const spriteScale=scale*2;
- const cellW=CELL_WIDTH*spriteScale,cellH=CELL_HEIGHT*spriteScale;
- const baseX=497,baseY=755;
- const left=offsetX+baseX*scale-cellW/2;
- // The last 9 transparent pixels beneath each foot are shared by every cell.
- const top=offsetY+baseY*scale-cellH+9*spriteScale;
- const patchX=325,patchY=296,patchW=342,patchH=490;
- return <View pointerEvents="none" accessibilityElementsHidden importantForAccessibility="no-hide-descendants" style={{position:'absolute',top:0,bottom:0,left:0,right:0,overflow:'hidden'}}>
-  {/* Only replace the seated character region; the fire and moving foliage
-      outside it stay on the original animated camp video. */}
-  {assetReady&&<View nativeID="survivor-prepare-clean-patch" style={{position:'absolute',left:offsetX+patchX*scale,top:offsetY+patchY*scale,width:patchW*scale,height:patchH*scale,overflow:'hidden',borderRadius:36*scale}}>
-   <Image accessible={false} source={cleanPlate} resizeMode="stretch" style={{position:'absolute',left:-patchX*scale,top:-patchY*scale,width:SCENE_WIDTH*scale,height:SCENE_HEIGHT*scale}}/>
-  </View>}
-  <Animated.View style={{position:'absolute',left,top,width:cellW,height:cellH,overflow:'hidden',transform:[{translateY:breath.interpolate({inputRange:[0,1],outputRange:[0,-1.5*scale]})}]}}>
-   <Image accessible={false} source={atlas} resizeMode="stretch" onLoad={()=>setAssetReady(true)} onError={()=>setAssetFailed(true)}
-    style={{position:'absolute',left:-(frame%COLUMNS)*cellW,top:-Math.floor(frame/COLUMNS)*cellH,width:COLUMNS*cellW,height:4*cellH,opacity:assetReady?1:0}}/>
-  </Animated.View>
+ // The background video uses "cover", not contain. Tie both sprites and the
+ // repair matte to the same 1536x864 camera for landscape web AND Expo iOS.
+ const scale=Math.max(width/SCENE.width,height/SCENE.height);
+ const left=(width-SCENE.width*scale)/2,top=(height-SCENE.height*scale)/2;
+ const cw=CELL.width*CHARACTER_SCALE*scale,ch=CELL.height*CHARACTER_SCALE*scale;
+ const spriteX=left+FOOT.x*scale-cw/2,spriteY=top+FOOT.y*scale-ch;
+ return <View pointerEvents="none" accessibilityElementsHidden importantForAccessibility="no-hide-descendants" style={StyleSheet.absoluteFill}>
+  {/* Load both images BEFORE covering the seated character in the video. */}
+  <Image accessible={false} source={artwork} onLoad={()=>setImagesLoaded(s=>({...s,poses:true}))} onError={()=>setImageFailed(true)} style={styles.hidden}/>
+  <Image accessible={false} source={cleanLayer} onLoad={()=>setImagesLoaded(s=>({...s,clean:true}))} onError={()=>setImageFailed(true)} style={styles.hidden}/>
+  {ready&&!imageFailed&&<>
+   <Image accessible={false} source={cleanLayer} resizeMode="stretch" style={{position:'absolute',left,top,width:SCENE.width*scale,height:SCENE.height*scale}}/>
+   <Animated.View style={{position:'absolute',left:spriteX,top:spriteY,width:cw,height:ch,transform:[{translateY:breathe.interpolate({inputRange:[0,1],outputRange:[0,-1.4*scale]})}]}}>
+    {opacity.map((value,i)=><Animated.View key={i} style={{position:'absolute',left:0,top:0,width:cw,height:ch,overflow:'hidden',opacity:value}}>
+     <Image accessible={false} source={artwork} resizeMode="stretch" style={{position:'absolute',left:-(i%2)*cw,top:-Math.floor(i/2)*ch,width:cw*2,height:ch*2}}/>
+    </Animated.View>)}
+   </Animated.View>
+  </>}
  </View>;
 }
+const styles=StyleSheet.create({hidden:{position:'absolute',width:1,height:1,opacity:0}});

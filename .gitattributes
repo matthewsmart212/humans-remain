@@ -137,3 +137,6 @@ public/survival/expedition-menu-v2/loading-panel.webp -filter -diff -merge
 
 # Loading-character atlas is a small checked-in PNG, not an LFS pointer.
 /public/survival/start-prepare-v1/*.png -filter -diff -merge -text
+
+# Full-resolution survivor transition textures are small direct blobs.
+/public/survival/start-prepare-v2/*.png -filter -diff -merge -text
