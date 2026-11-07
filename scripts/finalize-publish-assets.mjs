@@ -47,6 +47,11 @@ export function finalizePublishAssets(circularWallImages,historicalPublishExport
   assert(fs.existsSync(pathToMedia)&&fs.statSync(pathToMedia).size>1024,
    'Required start-screen media missing from publish bundle: '+pathToMedia);
  }
+ // The menu must never deploy without its soundtrack: a missing MP3 was
+ // previously indistinguishable from an autoplay failure on Safari.
+ const soundtrack=path.join(target,'client/audio/start-menu.mp3');
+ assert(fs.existsSync(soundtrack)&&fs.statSync(soundtrack).size>100000,
+  'Required start-screen soundtrack missing from publish bundle: '+soundtrack);
  for(const url of circularWallImages)assert(fs.existsSync(path.join(target,'client'+url)),'Required wall: '+url);
  for(const file of ['cutaway-v3','exterior','ruined-cutaway-v3','ruined','settled-ground-v6','rooted-footing-v6'])assert(fs.existsSync(path.join(target,'client/survival/headquarters-south-v1',file+'.webp')),'Required headquarters state: '+file);
  for(const url of retired)assert(!fs.existsSync(path.join(target,'client'+url)),'Retired export cannot enter the final publish tree: '+url);
