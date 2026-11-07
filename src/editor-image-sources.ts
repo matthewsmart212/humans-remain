@@ -40,11 +40,20 @@ export const EDITOR_IMAGE_SOURCES:Record<string,string>={...REPAIR_HAMMER_IMAGES
 // frames cannot block opening the world. Play prepares only the current run.
 export const EDITOR_ENTRY_IMAGES:Record<string,string>={...IRONWORKS_IMAGES,...SCRAP_IMAGES,...WAREHOUSE_IMAGES,...CAMPFIRE_ART,survivorBase:SURVIVOR_IMAGE_SOURCES.survivorBase,survivorRear:SURVIVOR_IMAGE_SOURCES.survivorRear,...AXE_IMAGE_SOURCES,homeGround:HOME_TERRAIN.image};
 export const EDITOR_MOVEMENT_IMAGES=Object.fromEntries(Object.entries(EDITOR_IMAGE_SOURCES).filter(([key])=>!(key in EDITOR_ENTRY_IMAGES)));
-export const editorEntryArtwork=(layout:WorldLayout)=>requiredImages(layout.items.map(p=>p.assetId),layout.terrainImage,{animationFrames:false});
+/** Prioritise camp assets near spawn instead of holding up the start screen
+ * while hundreds of distant world images download on mobile Safari.
+ */
+const nearby=(layout:WorldLayout,center:{x:number;y:number},radius:number)=>layout.items.filter(p=>Math.abs(p.x-center.x)<=radius&&Math.abs(p.y-center.y)<=radius).map(p=>p.assetId);
+export const editorEntryArtwork=(layout:WorldLayout,nearSpawnRadius?:number)=>requiredImages(
+ nearSpawnRadius===undefined?layout.items.map(p=>p.assetId):nearby(layout,layout.spawn,nearSpawnRadius),
+ layout.terrainImage,{animationFrames:false}
+);
 export const editorTerrainDetail=(terrain?:{url:string})=>usesPaintedHomeTerrain(terrain)?{...WORLD_GROUND_MATERIAL_SOURCES,...WORLD_ROAD_MATERIAL_SOURCES,...ROAD_OVERVIEW_IMAGES,...RIVER_PREVIEW_IMAGES,...RIVER_MOTION_IMAGES}:{};
 
 type ArtworkRenderer={loadImages:(sources:Record<string,string>,progress?:((p:ArtworkProgress)=>void),priority?:ArtworkPriority)=>Promise<void>;warmImages:(sources:Record<string,string>,priority?:ArtworkPriority)=>Promise<void>};
 /** A Play/Walk request promotes these shared jobs ahead of optional map detail. */
-export async function prepareEditorMovement(renderer:ArtworkRenderer,layout:WorldLayout,priority:ArtworkPriority='foreground'){
- await Promise.all([renderer.loadImages(requiredImages(layout.items.map(p=>p.assetId),layout.terrainImage),undefined,priority),renderer.warmImages(PLAYER_MOVEMENT_IMAGES,priority)]);
+export async function prepareEditorMovement(renderer:ArtworkRenderer,layout:WorldLayout,priority:ArtworkPriority='foreground',center=layout.spawn){
+ // Walking only needs nearby objects; movement never waits on distant scenery.
+ const near=requiredImages(nearby(layout,center,1650),layout.terrainImage,{animationFrames:false});
+ await Promise.all([renderer.loadImages(near,undefined,priority),renderer.warmImages(PLAYER_MOVEMENT_IMAGES,priority)]);
 }
