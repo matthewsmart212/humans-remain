@@ -82,7 +82,7 @@ const s=StyleSheet.create({
  root:{position:'absolute',top:0,left:0,right:0,bottom:0,backgroundColor:'#071b1d',zIndex:1000,overflow:'hidden'},
  logo:{position:'absolute'},
  settings:{backgroundColor:'transparent',borderWidth:0,padding:0,position:'absolute',alignItems:'flex-end',justifyContent:'center'},
- soundToggle:{position:'absolute',alignItems:'center',justifyContent:'center',borderColor:'#d0b17c55',borderWidth:1,borderRadius:12,backgroundColor:'#071b1db0'},
+ soundToggle:{position:'absolute',alignItems:'center',justifyContent:'center',backgroundColor:'transparent',borderWidth:0,padding:0},
  menu:{position:'absolute'},
  pressed:{backgroundColor:'#d995261c'},detail:{color:'#d5bea0',fontSize:12,letterSpacing:3},noticeBanner:{position:'absolute',paddingHorizontal:12,paddingVertical:8,gap:5,backgroundColor:'#061c1ee8',borderRadius:5},notice:{color:'#ffe2b8',fontSize:13,lineHeight:18},
  stats:{position:'absolute',flexDirection:'row',alignItems:'center',borderBottomWidth:1,borderBottomColor:'#ad8e5770'},identity:{},nameRow:{flexDirection:'row',alignItems:'center'},name:{color:'#f2dfb0'},level:{color:'#f5ae35'},xpRow:{flexDirection:'row',alignItems:'center'},xp:{borderWidth:1,borderColor:'#cfaa5c',backgroundColor:'#081d1fc9',overflow:'hidden'},xpFill:{height:'100%',width:0,backgroundColor:'#ffa312',borderRadius:8},xpText:{color:'#f1dfad'},
