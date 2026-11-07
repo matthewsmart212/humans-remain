@@ -1,0 +1,31 @@
+name: Import approved start-screen soundtrack
+on:
+  push:
+    branches: [main]
+    paths:
+      - scripts/import-start-menu-music.py
+      - .github/workflows/import-start-menu-music.yml
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  import-soundtrack:
+    if: github.actor != 'github-actions[bot]'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: true
+      - name: Fetch and verify approved Sonican soundtrack
+        run: python3 scripts/import-start-menu-music.py
+      - name: Commit bundled start-screen audio
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add public/audio/start-menu.mp3
+          if ! git diff --cached --quiet; then
+            git commit -m "Bundle the approved Sonican start-screen soundtrack"
+            git push origin HEAD:main
+          fi
