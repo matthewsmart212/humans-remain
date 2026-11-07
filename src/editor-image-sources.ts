@@ -17,6 +17,7 @@ import {RIVER_PREVIEW_IMAGES,RIVER_MOTION_IMAGES} from './river-art';
 import {BONFIRE_FOOD_IMAGES} from './bonfire-food-art';
 import {CAMPFIRE_ART} from './campfire-art';
 import {SURVIVOR_IMAGE_SOURCES} from './survivor-art';
+import {ENGINEER_IMAGE_SOURCES} from './engineer-sprites';
 import {SCRAP_IMAGES} from './scrap-salvage';
 import {WAREHOUSE_IMAGES} from './warehouse';
 import {AXE_IMAGE_SOURCES} from './axe-renderer';
@@ -33,7 +34,7 @@ import {PLAYER_MOVEMENT_IMAGES} from './gameplay-artwork';
 // The editor has no legacy factory scene, monsters, spare hearth tiers or asset-yard backdrops.
 // Placed art is supplied separately by requiredImages(), including roofs and every animated frame.
 export const RAID_IMAGE_SOURCES:Record<string,string>=Object.assign({},...Array.from(new Set(NIGHT_WAVES.flat())).map(kind=>spawnImages(kind)));
-export const EDITOR_IMAGE_SOURCES:Record<string,string>={...REPAIR_HAMMER_IMAGES,...RAID_IMAGE_SOURCES,...IRONWORKS_IMAGES,...FURNACE_FIRE_IMAGES,...MINING_IMAGES,...PROVISION_IMAGES,...BOW_IMAGES,...SWORD_IMAGES,...SPEAR_IMAGES,...KNIFE_IMAGES,...SCRAP_IMAGES,...WAREHOUSE_IMAGES,torch:'/survival/equipment/torch-v1.png',...CHICKEN_IMAGES,...RABBIT_IMAGES,...DEER_IMAGES,...PREDATOR_IMAGES,...CAMPFIRE_ART,...BONFIRE_FOOD_IMAGES,...RABBIT_FOOD_IMAGES,...VENISON_FOOD_IMAGES,bagScrap:'/survival/ui-backpack-v1/scrap.png',bagFuel:'/survival/ui-backpack-v1/fuel.png',...SURVIVOR_IMAGE_SOURCES,...AXE_IMAGE_SOURCES,...RUNNER_AXE_IMAGE_SOURCES,homeGround:HOME_TERRAIN.image};
+export const EDITOR_IMAGE_SOURCES:Record<string,string>={...REPAIR_HAMMER_IMAGES,...RAID_IMAGE_SOURCES,...IRONWORKS_IMAGES,...FURNACE_FIRE_IMAGES,...MINING_IMAGES,...PROVISION_IMAGES,...BOW_IMAGES,...SWORD_IMAGES,...SPEAR_IMAGES,...KNIFE_IMAGES,...SCRAP_IMAGES,...WAREHOUSE_IMAGES,torch:'/survival/equipment/torch-v1.png',...CHICKEN_IMAGES,...RABBIT_IMAGES,...DEER_IMAGES,...PREDATOR_IMAGES,...CAMPFIRE_ART,...BONFIRE_FOOD_IMAGES,...RABBIT_FOOD_IMAGES,...VENISON_FOOD_IMAGES,bagScrap:'/survival/ui-backpack-v1/scrap.png',bagFuel:'/survival/ui-backpack-v1/fuel.png',...SURVIVOR_IMAGE_SOURCES,...ENGINEER_IMAGE_SOURCES,...AXE_IMAGE_SOURCES,...RUNNER_AXE_IMAGE_SOURCES,homeGround:HOME_TERRAIN.image};
 // Build opens with placed objects, the camp overview, its static cooking and
 // storage props, and the idle player. Spare weapons, food and furnace animation
 // frames cannot block opening the world. Play prepares only the current run.

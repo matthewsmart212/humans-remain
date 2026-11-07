@@ -1,0 +1,14 @@
+{
+  "version": 1,
+  "columns": 4,
+  "rows": 4,
+  "cell": 314,
+  "imageDimensions": [1256, 1256],
+  "imageSheets": {
+    "front.webp": ["down", "down-right", "right", "up-right"],
+    "rear.webp": ["up", "up-left", "left", "down-left"]
+  },
+  "columnsMeaning": ["idle", "walk-left", "walk-right", "punch"],
+  "anchor": [157, 297],
+  "scale": 0.42
+}
