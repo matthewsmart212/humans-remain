@@ -219,7 +219,7 @@ export default function WorldEditor({externalStart=false,onExternalStartState,on
  const prepareMode=async(next:'walk'|'play',fromStart=false)=>{
   const r=renderer.current;if(!ready||!r||tierBusyRef.current||terrainBusy)return false;
   const request=++modeRequest.current;setPreparingMode(next);clearInput();
-  try{await prepareEditorMovement(r,layoutRef.current,'foreground',world.current.player);return request===modeRequest.current&&renderer.current===r&&(!blockedInput.current||fromStart&&startScreen)&&!tierBusyRef.current}
+  try{const role=readStartProfile(localStorage.getItem(START_PROFILE_KEY)).role;await prepareEditorMovement(r,layoutRef.current,'foreground',world.current.player,role);return request===modeRequest.current&&renderer.current===r&&(!blockedInput.current||fromStart&&startScreen)&&!tierBusyRef.current}
   catch{if(request===modeRequest.current&&renderer.current===r)show('Movement artwork could not load. Your editor is ready; press Walk or Play to retry.');return false}
   finally{if(request===modeRequest.current&&renderer.current===r)setPreparingMode(null)}
  };
