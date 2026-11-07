@@ -45,6 +45,10 @@ export function hunterCycle(direction:Direction,distance:number,running:boolean)
  const absolute=((distance%(112*6))+(112*6))%(112*6);
  const row=Math.floor(absolute/112),progress=(absolute%112)/112;
  const column=Math.min(5,Math.floor(progress*6)),frameIndex=row*6+column;
+ // Tool grips, melee attachments and torch positions have four registered
+ // phases. The Hunter artwork itself has six distinct poses per stride.
+ // Keep all six painted poses, but report a compatible 0..3 grip phase.
+ const gripFrame=Math.min(3,Math.floor(column*4/6));
  return {sprite:HUNTER_ART[direction].walk[frameIndex],mirror:VIEWS[direction].mirror,
-  frame:column,bob:-(running?.55:.2)*(1-Math.cos(progress*Math.PI*4))};
+  frame:gripFrame,bob:-(running?.55:.2)*(1-Math.cos(progress*Math.PI*4))};
 }
