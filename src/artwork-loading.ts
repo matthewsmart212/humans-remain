@@ -8,48 +8,72 @@ export function artworkFailureDetails(error:unknown){
  return {errorName:name.slice(0,40),failure:name==='AbortError'?'aborted':status?'http':/stalled|too long|timeout/i.test(message)?'timeout':name==='TypeError'?'network-or-api':'decode-or-render',httpStatus:status?Number(status):0};
 }
 
-/** Includes response bodies and module initialization: a stalled operation cannot hide the editor forever. */
-export function loadingDeadline<T>(task:Promise<T>,timeoutMs:number,signal?:AbortSignal,message='Loading took too long. Please retry.'){
- return new Promise<T>((resolve,reject)=>{
-  let finished=false;const finish=(error:unknown,value?:T)=>{if(finished)return;finished=true;clearTimeout(timer);signal?.removeEventListener('abort',cancel);error?reject(error):resolve(value!)};
-  const cancel=()=>finish(aborted(signal)),timer=setTimeout(()=>finish(new Error(message)),timeoutMs);
-  task.then(value=>finish(null,value),error=>finish(error));signal?.addEventListener('abort',cancel,{once:true});if(signal?.aborted)cancel();
- });
-}
+/** Bound the total request, but restart the HTTP attempt if it stalls.
+ * Mobile Safari can leave fetch() or its response body pending indefinitely.
+ * Progress chunks reset the inactivity clock on a legitimately slow download.
+ */
+const retryPause=(delay:number,signal?:AbortSignal)=>new Promise<void>((resolve,reject)=>{
+ if(signal?.aborted){reject(aborted(signal));return}
+ let timer:ReturnType<typeof setTimeout>;
+ const stop=()=>{clearTimeout(timer);reject(aborted(signal))};
+ const finish=()=>{signal?.removeEventListener('abort',stop);resolve()};
+ timer=setTimeout(finish,delay);signal?.addEventListener('abort',stop,{once:true});
+});
 
-export async function fetchArtworkBytes(url:string,signal?:AbortSignal,timeoutMs=45000){
- const controller=new AbortController(),cancel=()=>controller.abort(aborted(signal));signal?.addEventListener('abort',cancel,{once:true});if(signal?.aborted)cancel();
- try{return await loadingDeadline((async()=>{
-  // Safari reports interrupted requests (including response bodies) as
-  // TypeError: Load failed. Retry this image without discarding the rest of
-  // the camp. All attempts and backoff share the original bounded deadline.
-  for(let attempt=0;;attempt++){
-   if(controller.signal.aborted)throw aborted(controller.signal);
-   let retryable=false;
-   try{
-    const response=await fetch(url,{signal:controller.signal});
-    if(!response.ok){
-     retryable=response.status===408||response.status===429||response.status>=500;
-     void response.body?.cancel().catch(()=>{});
-     throw new Error(`An artwork download failed (${response.status}). Please retry.`);
-    }
-    return new Uint8Array(await response.arrayBuffer());
-   }catch(error){
-    if(controller.signal.aborted)throw aborted(controller.signal);
-    const network=error instanceof TypeError||error instanceof Error&&['NetworkError','AbortError'].includes(error.name);
-    if(attempt>=2||!retryable&&!network){
-     if(network)throw new TypeError('An artwork download was interrupted after multiple attempts. Check your connection and retry.',{cause:error});
-     throw error;
-    }
-    await new Promise<void>((resolve,reject)=>{
-     const done=()=>{controller.signal.removeEventListener('abort',stop);resolve()},timer=setTimeout(done,250*2**attempt);
-     const stop=()=>{clearTimeout(timer);controller.signal.removeEventListener('abort',stop);reject(aborted(controller.signal))};
-     controller.signal.addEventListener('abort',stop,{once:true});if(controller.signal.aborted)stop();
-    });
+export async function fetchArtworkBytes(url:string,signal?:AbortSignal,timeoutMs=90000):Promise<Uint8Array<ArrayBuffer>>{
+ const deadline=Date.now()+timeoutMs;
+ const stalled=()=>new Error('An artwork download stalled. Please retry.');
+ let previous:unknown;
+ for(let attempt=0;attempt<3;attempt++){
+  if(signal?.aborted)throw aborted(signal);
+  const budget=deadline-Date.now();
+  if(budget<=0)break;
+  const request=new AbortController(),parentCancelled=()=>request.abort(aborted(signal));
+  signal?.addEventListener('abort',parentCancelled,{once:true});
+  let idleTimer:ReturnType<typeof setTimeout>|undefined;
+  let timedOut=false,retryable=false;
+  const expire=()=>{timedOut=true;request.abort(stalled())};
+  const absoluteTimer=setTimeout(expire,budget);
+  // An inactivity budget, not a per-image-size deadline.
+  const pulse=()=>{clearTimeout(idleTimer);idleTimer=setTimeout(expire,Math.min(22000,Math.max(1,deadline-Date.now())))};
+  try{
+   pulse();
+   const response=await fetch(url,{signal:request.signal,cache:attempt?'reload':'default'});
+   if(!response.ok){
+    retryable=response.status===408||response.status===429||response.status>=500;
+    void response.body?.cancel().catch(()=>{});
+    throw new Error(`An artwork download failed (${response.status}). Please retry.`);
    }
+   pulse();
+   if(response.body&&typeof response.body.getReader==='function'){
+    const reader=response.body.getReader(),chunks:Uint8Array[]=[];
+    let length=0;
+    try{
+     while(true){
+      const part=await reader.read();
+      if(part.done)break;
+      if(part.value?.byteLength){chunks.push(part.value);length+=part.value.byteLength;pulse()}
+     }
+    }finally{reader.releaseLock()}
+    const result=new Uint8Array(length);let offset=0;
+    for(const chunk of chunks){result.set(chunk,offset);offset+=chunk.byteLength}
+    return result;
+   }
+   return new Uint8Array(await response.arrayBuffer());
+  }catch(error){
+   if(signal?.aborted)throw aborted(signal);
+   const network=error instanceof TypeError||error instanceof Error&&['NetworkError','AbortError'].includes(error.name);
+   retryable=retryable||timedOut||network;
+   previous=timedOut?stalled():network?new TypeError('An artwork download was interrupted. Please retry.',{cause:error}):error;
+   if(!retryable||attempt===2||Date.now()>=deadline)throw previous;
+  }finally{
+   clearTimeout(absoluteTimer);clearTimeout(idleTimer);
+   signal?.removeEventListener('abort',parentCancelled);
+   request.abort();
   }
- })(),timeoutMs,controller.signal,'An artwork download stalled. Please retry.');
- }finally{controller.abort();signal?.removeEventListener('abort',cancel)}
+  await retryPause(450*(attempt+1),signal);
+ }
+ throw previous??stalled();
 }
 
 /** One small queue for startup, background terrain and newly placed assets; shared URLs decode once. */
