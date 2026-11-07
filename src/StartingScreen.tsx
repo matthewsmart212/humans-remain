@@ -5,7 +5,7 @@ import {START_SCREEN_MENU_FONT,type StartScreenArtwork} from './start-screen-art
 import type {StartScreenIconName} from './start-screen-icons';
 import ExpeditionMenu from './ExpeditionMenu';
 import ExpeditionLoading from './ExpeditionLoading';
-import {Canvas,Path} from '@shopify/react-native-skia';
+
 
 type Props={width:number;height:number;safe?:{top:number;bottom:number;left:number;right:number};background:React.ReactNode;shade:React.ReactNode;portrait:ImageSourcePropType;artwork:StartScreenArtwork;fontFamily?:string;profile:StartProfile;onProfile:(p:StartProfile)=>void;onPlay:()=>void;onBack?:()=>void;busy?:boolean;notice?:string;playDisabled?:boolean;loadingProgress?:number;reducedMotion?:boolean;onLoadingComplete?:()=>void};
 type Panel='customise'|'upgrades'|'settings'|null;
@@ -44,12 +44,9 @@ export default function StartingScreen({width,height,safe={top:0,bottom:0,left:0
    <Image accessibilityLabel="Humans Remain" source={artwork.logo} resizeMode="contain" style={{width:'100%',height:'100%'}}/>
   </View>
   <Pressable accessibilityRole="switch" accessibilityLabel={profile.muted?'Unmute menu music':'Mute menu music'} accessibilityState={{checked:!profile.muted}} onPress={()=>onProfile({...profile,muted:!profile.muted})} hitSlop={6} style={[s.soundToggle,{right:safe.right+gutter+Math.max(44,unit(48))+unit(12),top:safe.top+availableHeight*.05,width:Math.max(44,unit(48)),height:Math.max(44,unit(48))}]}>
-   <Canvas pointerEvents="none" style={{width:Math.max(32,unit(35)),height:Math.max(32,unit(35))}}>
-    <Path path="M4 13 H9 L16 7 V29 L9 23 H4 Z" color="#dfc99e" style="stroke" strokeWidth={2.1} strokeJoin="round" strokeCap="round"/>
-    {profile.muted
-     ?<Path path="M21 13 L30 23 M30 13 L21 23" color="#dfc99e" style="stroke" strokeWidth={2.5} strokeCap="round"/>
-     :<><Path path="M21 13 Q26 18 21 23" color="#dfc99e" style="stroke" strokeWidth={2.1} strokeCap="round"/><Path path="M25 8 Q35 18 25 28" color="#dfc99e" style="stroke" strokeWidth={2.1} strokeCap="round"/></>}
-   </Canvas>
+   <View pointerEvents="none" style={{width:35,height:35,alignItems:'center',justifyContent:'center'}}>
+    <Text style={{color:'#dfc99e',fontSize:27,fontWeight:'400',lineHeight:35}}>{profile.muted?'♩':'♫'}</Text>
+   </View>
   </Pressable>
   <Pressable accessibilityRole="button" accessibilityLabel="Starting screen settings" disabled={busy||loading} onPress={()=>setPanel('settings')} hitSlop={8} style={[s.settings,{right:safe.right+gutter,top:safe.top+availableHeight*.05,width:Math.max(44,unit(48)),height:Math.max(44,unit(48))}]}>{icon('settings',35)}</Pressable>
   <View style={[s.menu,{right:safe.right+gutter,bottom:portraitMode?bottomBaseline+unit(128):bottomBaseline,width:menuWidth}]}>
