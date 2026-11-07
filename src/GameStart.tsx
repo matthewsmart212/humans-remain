@@ -7,6 +7,7 @@ import './game-start.css';
 export default function GameStart({onPlay,onBack,busy,notice,playDisabled,loadingProgress,onLoadingComplete,gameMounted=false}:{onPlay:()=>void;onBack:()=>void;busy:boolean;notice?:string;playDisabled?:boolean;loadingProgress?:number;onLoadingComplete:()=>void;gameMounted?:boolean}){
  const [size,setSize]=useState(()=>({width:innerWidth,height:innerHeight})),[profile,setProfile]=useState(()=>{try{return readStartProfile(localStorage.getItem(START_PROFILE_KEY))}catch{return readStartProfile(null)}}),[reduced,setReduced]=useState(()=>matchMedia('(prefers-reduced-motion: reduce)').matches),[saveNotice,setSaveNotice]=useState('');
  const video=useRef<HTMLVideoElement>(null);
+ const startMusic=useRef<null|(()=>void)>(null),muteRef=useRef(profile.muted);muteRef.current=profile.muted;
  // The video is the whole camp scene, including the survivor and fire.
  // There is no second character image or sprite overlay during Play.
  // Safari can paint the React Native text before its images have decoded.
@@ -34,7 +35,43 @@ export default function GameStart({onPlay,onBack,busy,notice,playDisabled,loadin
  },[]);
  useEffect(()=>{const resize=()=>setSize({width:innerWidth,height:innerHeight}),media=matchMedia('(prefers-reduced-motion: reduce)'),motion=()=>setReduced(media.matches);addEventListener('resize',resize);media.addEventListener('change',motion);return()=>{removeEventListener('resize',resize);media.removeEventListener('change',motion)}},[]);
  useEffect(()=>{const sync=()=>{if(document.hidden||reduced||!profile.motion)video.current?.pause();else void video.current?.play().catch(()=>{})};sync();document.addEventListener('visibilitychange',sync);return()=>{video.current?.pause();document.removeEventListener('visibilitychange',sync)}},[profile.motion,reduced]);
- const save=(next:StartProfile)=>{setProfile(next);try{localStorage.setItem(START_PROFILE_KEY,JSON.stringify(next));setSaveNotice('')}catch{setSaveNotice('Your name and preferences could not be saved on this device.')}};
+ const save=(next:StartProfile)=>{if(profile.muted&&!next.muted){muteRef.current=false;startMusic.current?.()}else muteRef.current=next.muted;setProfile(next);try{localStorage.setItem(START_PROFILE_KEY,JSON.stringify(next));setSaveNotice('')}catch{setSaveNotice('Your name and preferences could not be saved on this device.')}};
+ // Dedicated audio element: the start-scene video stays silent and independent.
+ // Use Web Audio gain for a real fade on iOS Safari (HTMLMediaElement.volume
+ // cannot be changed programmatically there). Retry playback on a user gesture
+ // because browsers intentionally block unprompted audio autoplay.
+ useEffect(()=>{
+  const audio=new Audio('/audio/start-menu.mp3');audio.loop=true;audio.preload='auto';audio.volume=0;
+  let context:AudioContext|null=null,gain:GainNode|null=null,raf=0,started=false,progress=0,disposed=false;
+  try{
+   const Ctx=window.AudioContext;
+   if(Ctx){context=new Ctx();gain=context.createGain();gain.gain.value=0;const source=context.createMediaElementSource(audio);source.connect(gain);gain.connect(context.destination)}
+  }catch{context=null;gain=null}
+  const setLevel=(level:number)=>{progress=level;if(gain)gain.gain.value=muteRef.current?0:level;else audio.volume=muteRef.current?0:level};
+  const fade=(time:number)=>{
+   if(disposed)return;
+   if(!started){started=true;fadeStarted=time}
+   setLevel(Math.min(1,(time-fadeStarted)/3000));
+   if(progress<1)raf=requestAnimationFrame(fade);
+  };
+  let fadeStarted=0;
+  const play=()=>{
+   if(disposed||document.hidden||muteRef.current)return;
+   if(context&&context.state==='suspended')void context.resume().catch(()=>{});
+   if(!audio.paused)return;
+   void audio.play().then(()=>{if(!disposed&&!started&&!raf)raf=requestAnimationFrame(fade)}).catch(()=>{});
+  };
+  const onVisible=()=>{if(document.hidden)audio.pause();else play()};
+  const onInteraction=()=>play();
+  startMusic.current=play;
+  document.addEventListener('visibilitychange',onVisible);
+  document.addEventListener('pointerdown',onInteraction,{capture:true});
+  document.addEventListener('touchstart',onInteraction,{capture:true});
+  document.addEventListener('keydown',onInteraction,{capture:true});
+  play();
+  return()=>{disposed=true;startMusic.current=null;cancelAnimationFrame(raf);document.removeEventListener('visibilitychange',onVisible);document.removeEventListener('pointerdown',onInteraction,true);document.removeEventListener('touchstart',onInteraction,true);document.removeEventListener('keydown',onInteraction,true);audio.pause();audio.removeAttribute('src');audio.load();if(context)void context.close().catch(()=>{})};
+ },[]);
+ useEffect(()=>{if(startMusic.current&&!profile.muted)startMusic.current();},[profile.muted]);
  useEffect(()=>{const editor=document.querySelector('main.world-editor');editor?.setAttribute('inert','');return()=>editor?.removeAttribute('inert')},[gameMounted]);
  return createPortal(<div className="game-start" style={{opacity:visualsReady?1:0,transition:'opacity 180ms ease-out',...(loadingProgress===1?{backgroundColor:'transparent',backgroundImage:'none'}:{})}} onKeyDown={e=>e.stopPropagation()}>
   <StartingScreen {...size} profile={profile} onProfile={save} onPlay={onPlay} onBack={onBack} busy={busy} loadingProgress={loadingProgress} reducedMotion={reduced||!profile.motion} onLoadingComplete={onLoadingComplete} playDisabled={playDisabled} notice={notice||saveNotice} artwork={WEB_START_SCREEN_ART} portrait={{uri:'/survival/starting-screen-ui-v2/survivor-profile.png'}}
