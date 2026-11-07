@@ -1,0 +1,161 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Survivor Reference Studio — Humans Remain</title>
+<style>
+:root{color-scheme:dark;--bg:#091719;--card:#142426;--border:#354649;--text:#f1e9d8;--sub:#b1b9b4;--accent:#e6bb70}
+*{box-sizing:border-box}html{font-family:system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}body{margin:0;background:radial-gradient(circle at 65% -8%,#253c3b 0%,var(--bg) 55%);color:var(--text);padding:32px 22px 80px}
+main{max-width:1180px;margin:0 auto}header{display:flex;justify-content:space-between;align-items:start;gap:20px;flex-wrap:wrap}.eyebrow{font-size:12px;letter-spacing:.22em;text-transform:uppercase;color:var(--accent);font-weight:800}
+h1{margin:12px 0;font-size:clamp(29px,4vw,48px);letter-spacing:-.04em;line-height:1.08}p{line-height:1.6;color:var(--sub);max-width:750px;margin:8px 0}a{color:var(--accent)}
+.badge{border:1px solid #5a715f;background:#21372b;border-radius:30px;color:#cde2b7;padding:9px 14px;font-size:12px;font-weight:700}
+section{margin-top:24px;background:#102124;border:1px solid var(--border);border-radius:18px;padding:22px;box-shadow:0 18px 30px #0003}
+h2{font-size:19px;margin:0 0 12px}h3{font-size:13px;text-transform:uppercase;letter-spacing:.12em;color:var(--sub);margin:0 0 10px}
+.controls{display:flex;gap:14px;align-items:end;flex-wrap:wrap}.control{min-width:175px;flex:1}label{font-size:12px;color:var(--sub);font-weight:700;display:block;margin-bottom:8px}
+select,input{border:1px solid #53615f;border-radius:9px;background:#192e2f;color:var(--text);padding:12px;width:100%;font-size:14px}button{border:0;background:var(--accent);color:#201a10;padding:13px 18px;border-radius:10px;font-weight:800;cursor:pointer;font-size:14px}button.secondary{background:#2c4242;color:var(--text);border:1px solid #5f7978}button:hover{filter:brightness(1.08)}button:disabled{opacity:.45;cursor:wait}
+.layout{display:grid;grid-template-columns:1fr 1fr;gap:20px;align-items:start}
+@media(max-width:750px){.layout{grid-template-columns:1fr}body{padding:18px 12px 60px}section{padding:14px}}
+.preview{display:flex;align-items:center;justify-content:center;min-height:245px;background:repeating-conic-gradient(#213335 0% 25%,#182a2b 0% 50%) 50%/32px 32px;border-radius:12px;overflow:hidden;border:1px solid #364c4e}
+canvas{display:block;width:100%;height:auto;object-fit:contain}.info{font-size:13px;color:var(--sub);margin-top:12px}
+#status{font-size:13px;color:#f5d6a2;min-height:20px}.downloads{display:flex;gap:12px;flex-wrap:wrap;margin-top:16px}
+.note{font-size:12px;color:#9eadab}.footer{margin-top:28px;color:#8fa2a0;font-size:13px}.source-list{margin:0;padding-left:20px;color:var(--sub);font-size:13px;line-height:1.9}
+</style>
+</head>
+<body>
+<main>
+<header>
+<div><div class="eyebrow">HUMANS REMAIN • CHARACTER ART PIPELINE</div><h1>Survivor / Master Reference</h1>
+<p>A source-accurate turnaround assembled from the <strong>existing in-game Survivor atlases</strong>. No generative redrawing, no wardrobe changes, no new anatomy.</p></div>
+<span class="badge">Original Game Assets</span>
+</header>
+<section>
+<h2>Individual pose — best starting image for Ludo.ai</h2>
+<div class="layout">
+<div>
+<div class="controls">
+<div class="control"><label for="direction">Direction</label><select id="direction"></select></div>
+<div class="control"><label for="pose">Pose</label><select id="pose"><option value="idle">Idle / standing</option><option value="walk0">Walking 1</option><option value="walk1">Walking 2</option><option value="walk2">Walking 3</option><option value="walk3">Walking 4</option><option value="punch">Punch / unarmed attack</option></select></div>
+</div>
+<p class="info">Start with <strong>South · Idle</strong> for a single-character transparent PNG. The sprite retains your game’s elevated camera angle.</p>
+<div class="downloads"><button id="downloadPose" disabled>Download selected pose (PNG)</button></div>
+<p class="note">Walking examples use the active walk-cycle source atlases. In gameplay, additional leg compositing may change the final animated silhouette.</p>
+</div>
+<div class="preview"><canvas id="poseCanvas" width="768" height="768" aria-label="Selected survivor pose"></canvas></div>
+</div>
+</section>
+<section>
+<h2>Eight-direction turnaround</h2>
+<p>Every direction includes the survivor's real idle pose and four walking source frames, aligned by the same feet anchor used in the game.</p>
+<div class="preview" style="margin-top:16px"><canvas id="sheetCanvas" width="2800" height="1950" aria-label="Eight-direction survivor turnaround"></canvas></div>
+<div class="downloads"><button id="downloadSheet" disabled>Download full reference sheet (PNG)</button><button id="downloadIdle" class="secondary" disabled>Download eight idle views (PNG)</button></div>
+</section>
+<section>
+<h2>Source and integrity</h2>
+<ul class="source-list">
+<li>Idle and punch: <code>src/survivor-art.ts</code> using <code>motion-a-v1.webp</code> and <code>motion-b-v1.webp</code>.</li>
+<li>Walk references: <code>src/runner-cycle-frames.json</code> with the production walk frame selection from <code>src/runner-cycles.ts</code>.</li>
+<li>West-facing poses mirror the same painted east-facing art, just like the game's player renderer.</li>
+<li>All exports are created by cropping existing art. Nothing is AI-generated or repainted.</li>
+</ul>
+<p class="note">If opened outside the Humans Remain web server, the assets may not load. Run the game with <code>npm run dev</code> and open <code>/tools/survivor-reference.html</code> on the local development server.</p>
+<p id="status" role="status">Loading Survivor sprite atlases…</p>
+</section>
+<div class="footer">Art source: Humans Remain • Reference export utility • Exported portraits have transparent backgrounds.</div>
+</main>
+<script>
+const DATA = {"art":{"down":{"idle":{"sheet":"survivorBase","crop":[56,15,200,291],"anchor":[99,286],"scale":0.39575972},"walk":[{"sheet":"survivorBase","crop":[365,14,200,297],"anchor":[99,286],"scale":0.39575972},{"sheet":"survivorBase","crop":[674,21,197,291],"anchor":[98,286],"scale":0.39575972}],"punch":{"sheet":"survivorBase","crop":[1000,16,196,287],"anchor":[96,286],"scale":0.39575972}},"down-right":{"idle":{"sheet":"survivorBase","crop":[59,320,203,292],"anchor":[102,287],"scale":0.3943662},"walk":[{"sheet":"survivorBase","crop":[367,318,206,296],"anchor":[103,287],"scale":0.3943662},{"sheet":"survivorBase","crop":[679,321,202,296],"anchor":[100,287],"scale":0.3943662}],"punch":{"sheet":"survivorBase","crop":[1001,320,203,295],"anchor":[100,287],"scale":0.3943662}},"right":{"idle":{"sheet":"survivorBase","crop":[56,629,198,297],"anchor":[100,292],"scale":0.38754325},"walk":[{"sheet":"survivorBase","crop":[379,628,196,293],"anchor":[100,293],"scale":0.38754325},{"sheet":"survivorBase","crop":[678,627,209,295],"anchor":[103,292],"scale":0.38754325}],"punch":{"sheet":"survivorBase","crop":[997,628,213,299],"anchor":[98,292],"scale":0.38754325}},"up-right":{"idle":{"sheet":"survivorBase","crop":[61,931,197,293],"anchor":[100,288],"scale":0.39298246},"walk":[{"sheet":"survivorBase","crop":[372,929,211,300],"anchor":[100,288],"scale":0.39298246},{"sheet":"survivorBase","crop":[683,930,194,297],"anchor":[99,288],"scale":0.39298246}],"punch":{"sheet":"survivorBase","crop":[998,928,228,302],"anchor":[105,288],"scale":0.39298246}},"up":{"idle":{"sheet":"survivorRear","crop":[111,22,194,260],"anchor":[98,255],"scale":0.44444444},"walk":[{"sheet":"survivorRear","crop":[413,23,198,265],"anchor":[99,255],"scale":0.44444444},{"sheet":"survivorRear","crop":[717,19,196,272],"anchor":[97,255],"scale":0.44444444}],"punch":{"sheet":"survivorRear","crop":[1009,18,202,264],"anchor":[107,259],"scale":0.44444444}},"up-left":{"idle":{"sheet":"survivorRear","crop":[103,306,201,265],"anchor":[96,260],"scale":0.43579767},"walk":[{"sheet":"survivorRear","crop":[415,304,194,273],"anchor":[92,260],"scale":0.43579767},{"sheet":"survivorRear","crop":[728,312,188,263],"anchor":[91,260],"scale":0.43579767}],"punch":{"sheet":"survivorRear","crop":[995,304,228,268],"anchor":[117,260],"scale":0.43579767}},"left":{"idle":{"sheet":"survivorRear","crop":[93,590,205,280],"anchor":[101,275],"scale":0.41176471},"walk":[{"sheet":"survivorRear","crop":[411,589,207,278],"anchor":[97,275],"scale":0.41176471},{"sheet":"survivorRear","crop":[716,590,207,278],"anchor":[99,275],"scale":0.41176471}],"punch":{"sheet":"survivorRear","crop":[1009,592,230,276],"anchor":[119,275],"scale":0.41176471}},"down-left":{"idle":{"sheet":"survivorRear","crop":[94,880,213,283],"anchor":[103,278],"scale":0.40727273},"walk":[{"sheet":"survivorRear","crop":[399,882,212,284],"anchor":[105,278],"scale":0.40727273},{"sheet":"survivorRear","crop":[712,884,214,282],"anchor":[104,278],"scale":0.40727273}],"punch":{"sheet":"survivorRear","crop":[1018,887,228,276],"anchor":[115,278],"scale":0.40727273}}},"cycles":{"down":[{"sheet":"runnerCycleDown","crop":[68,12,215,312],"anchor":[107,303.1026],"scale":0.37320574},{"sheet":"runnerCycleDown","crop":[379,15,219,307],"anchor":[108.5,307.4103],"scale":0.36792453},{"sheet":"runnerCycleDown","crop":[677,15,216,309],"anchor":[107,303.1026],"scale":0.37320574},{"sheet":"runnerCycleDown","crop":[980,14,219,308],"anchor":[109,308.8462],"scale":0.36619718},{"sheet":"runnerCycleDown","crop":[66,326,219,307],"anchor":[108.5,307.4103],"scale":0.36792453},{"sheet":"runnerCycleDown","crop":[375,328,220,305],"anchor":[109.5,310.2821],"scale":0.36448598},{"sheet":"runnerCycleDown","crop":[676,325,218,307],"anchor":[109,305.9744],"scale":0.36966825},{"sheet":"runnerCycleDown","crop":[979,328,221,305],"anchor":[110,311.7179],"scale":0.3627907},{"sheet":"runnerCycleDown","crop":[65,638,219,300],"anchor":[109,305.9744],"scale":0.36966825},{"sheet":"runnerCycleDown","crop":[373,639,223,294],"anchor":[111.5,313.1538],"scale":0.36111111},{"sheet":"runnerCycleDown","crop":[678,638,222,296],"anchor":[110,311.7179],"scale":0.3627907},{"sheet":"runnerCycleDown","crop":[984,638,222,283],"anchor":[110.5,310.2821],"scale":0.36448598},{"sheet":"runnerCycleDown","crop":[65,934,222,300],"anchor":[111,311.7179],"scale":0.3627907},{"sheet":"runnerCycleDown","crop":[372,936,223,295],"anchor":[110.5,313.1538],"scale":0.36111111},{"sheet":"runnerCycleDown","crop":[676,933,225,301],"anchor":[112,317.4615],"scale":0.35616438},{"sheet":"runnerCycleDown","crop":[984,934,223,287],"anchor":[111,314.5897],"scale":0.359447}],"down-right":[{"sheet":"runnerCycleDownRight","crop":[75,18,219,305],"anchor":[109,305.9744],"scale":0.36966825},{"sheet":"runnerCycleDownRight","crop":[385,28,212,292],"anchor":[105.5,298.7949],"scale":0.37864078},{"sheet":"runnerCycleDownRight","crop":[681,19,212,303],"anchor":[105.5,295.9231],"scale":0.38235294},{"sheet":"runnerCycleDownRight","crop":[983,14,213,301],"anchor":[106,297.359],"scale":0.3804878},{"sheet":"runnerCycleDownRight","crop":[78,325,221,298],"anchor":[109.5,310.2821],"scale":0.36448598},{"sheet":"runnerCycleDownRight","crop":[388,330,219,285],"anchor":[109,308.8462],"scale":0.36619718},{"sheet":"runnerCycleDownRight","crop":[687,324,222,304],"anchor":[110,311.7179],"scale":0.3627907},{"sheet":"runnerCycleDownRight","crop":[999,323,219,296],"anchor":[109,308.8462],"scale":0.36619718},{"sheet":"runnerCycleDownRight","crop":[74,635,236,287],"anchor":[123.5,313.1538],"scale":0.36111111},{"sheet":"runnerCycleDownRight","crop":[384,632,233,289],"anchor":[120,317.4615],"scale":0.35616438},{"sheet":"runnerCycleDownRight","crop":[677,629,251,292],"anchor":[137,317.4615],"scale":0.35616438},{"sheet":"runnerCycleDownRight","crop":[1004,622,228,278],"anchor":[117.5,307.4103],"scale":0.36792453},{"sheet":"runnerCycleDownRight","crop":[63,922,250,297],"anchor":[138.5,313.1538],"scale":0.36111111},{"sheet":"runnerCycleDownRight","crop":[394,929,226,290],"anchor":[113,314.5897],"scale":0.359447},{"sheet":"runnerCycleDownRight","crop":[670,923,260,296],"anchor":[146,320.3333],"scale":0.35294118},{"sheet":"runnerCycleDownRight","crop":[1006,922,232,287],"anchor":[118,317.4615],"scale":0.35616438}],"right":[{"sheet":"runnerCycleRight","crop":[74,15,208,308],"anchor":[103.5,293.0513],"scale":0.38613861},{"sheet":"runnerCycleRight","crop":[383,12,210,311],"anchor":[104.5,293.0513],"scale":0.38613861},{"sheet":"runnerCycleRight","crop":[683,12,214,311],"anchor":[106,300.2308],"scale":0.37681159},{"sheet":"runnerCycleRight","crop":[989,15,209,308],"anchor":[104,294.4872],"scale":0.38423645},{"sheet":"runnerCycleRight","crop":[72,328,209,302],"anchor":[104,294.4872],"scale":0.38423645},{"sheet":"runnerCycleRight","crop":[383,326,210,303],"anchor":[104.5,295.9231],"scale":0.38235294},{"sheet":"runnerCycleRight","crop":[680,327,215,302],"anchor":[107,300.2308],"scale":0.37681159},{"sheet":"runnerCycleRight","crop":[996,327,206,302],"anchor":[102.5,290.1795],"scale":0.39},{"sheet":"runnerCycleRight","crop":[47,640,260,287],"anchor":[149,308.8462],"scale":0.36619718},{"sheet":"runnerCycleRight","crop":[402,638,225,291],"anchor":[116,305.9744],"scale":0.36966825},{"sheet":"runnerCycleRight","crop":[679,635,248,291],"anchor":[140,303.1026],"scale":0.37320574},{"sheet":"runnerCycleRight","crop":[978,634,261,284],"anchor":[153,303.1026],"scale":0.37320574},{"sheet":"runnerCycleRight","crop":[59,936,232,300],"anchor":[123.5,301.6667],"scale":0.375},{"sheet":"runnerCycleRight","crop":[394,938,219,299],"anchor":[108.5,307.4103],"scale":0.36792453},{"sheet":"runnerCycleRight","crop":[684,938,236,298],"anchor":[127.5,301.6667],"scale":0.375},{"sheet":"runnerCycleRight","crop":[986,937,239,291],"anchor":[132,300.2308],"scale":0.37681159}],"up-right":[{"sheet":"runnerCycleUpRight","crop":[78,20,203,287],"anchor":[101,283],"scale":0.4},{"sheet":"runnerCycleUpRight","crop":[396,23,200,290],"anchor":[99.5,281.5641],"scale":0.40206186},{"sheet":"runnerCycleUpRight","crop":[710,26,199,284],"anchor":[99,280.1282],"scale":0.40414508},{"sheet":"runnerCycleUpRight","crop":[1023,23,199,284],"anchor":[99.5,278.6923],"scale":0.40625},{"sheet":"runnerCycleUpRight","crop":[80,319,204,293],"anchor":[101.5,287.3077],"scale":0.39393939},{"sheet":"runnerCycleUpRight","crop":[394,321,201,288],"anchor":[100.5,281.5641],"scale":0.40206186},{"sheet":"runnerCycleUpRight","crop":[708,323,201,289],"anchor":[99.5,281.5641],"scale":0.40206186},{"sheet":"runnerCycleUpRight","crop":[1019,322,203,282],"anchor":[101,285.8718],"scale":0.39593909},{"sheet":"runnerCycleUpRight","crop":[86,619,215,290],"anchor":[112.5,284.4359],"scale":0.39795918},{"sheet":"runnerCycleUpRight","crop":[409,619,206,282],"anchor":[105,280.1282],"scale":0.40414508},{"sheet":"runnerCycleUpRight","crop":[705,621,223,284],"anchor":[124,277.2564],"scale":0.40837696},{"sheet":"runnerCycleUpRight","crop":[1012,617,221,275],"anchor":[117,288.7436],"scale":0.3919598},{"sheet":"runnerCycleUpRight","crop":[85,911,214,303],"anchor":[109,294.4872],"scale":0.38423645},{"sheet":"runnerCycleUpRight","crop":[411,913,205,284],"anchor":[102,288.7436],"scale":0.3919598},{"sheet":"runnerCycleUpRight","crop":[717,912,216,297],"anchor":[111,294.4872],"scale":0.38423645},{"sheet":"runnerCycleUpRight","crop":[1021,913,217,281],"anchor":[114,288.7436],"scale":0.3919598}],"up":[{"sheet":"runnerCycleUp","crop":[74,16,207,293],"anchor":[103,288.7436],"scale":0.3919598},{"sheet":"runnerCycleUp","crop":[377,19,207,290],"anchor":[103,291.6154],"scale":0.3880597},{"sheet":"runnerCycleUp","crop":[685,18,209,291],"anchor":[104.5,293.0513],"scale":0.38613861},{"sheet":"runnerCycleUp","crop":[994,18,209,281],"anchor":[104.5,293.0513],"scale":0.38613861},{"sheet":"runnerCycleUp","crop":[70,318,208,286],"anchor":[103,291.6154],"scale":0.3880597},{"sheet":"runnerCycleUp","crop":[383,313,210,290],"anchor":[105,294.4872],"scale":0.38423645},{"sheet":"runnerCycleUp","crop":[693,318,211,283],"anchor":[105,297.359],"scale":0.3804878},{"sheet":"runnerCycleUp","crop":[1003,315,211,286],"anchor":[104.5,295.9231],"scale":0.38235294},{"sheet":"runnerCycleUp","crop":[70,611,211,286],"anchor":[104.5,295.9231],"scale":0.38235294},{"sheet":"runnerCycleUp","crop":[387,618,211,271],"anchor":[105.5,295.9231],"scale":0.38235294},{"sheet":"runnerCycleUp","crop":[695,612,211,283],"anchor":[105,297.359],"scale":0.3804878},{"sheet":"runnerCycleUp","crop":[1008,612,212,277],"anchor":[105.5,298.7949],"scale":0.37864078},{"sheet":"runnerCycleUp","crop":[75,904,208,290],"anchor":[104,291.6154],"scale":0.3880597},{"sheet":"runnerCycleUp","crop":[386,900,217,290],"anchor":[107.5,304.5385],"scale":0.37142857},{"sheet":"runnerCycleUp","crop":[697,901,218,303],"anchor":[108,305.9744],"scale":0.36966825},{"sheet":"runnerCycleUp","crop":[1007,904,214,278],"anchor":[106.5,301.6667],"scale":0.375}]},"walkSequences":{"down":[0,2,4,6],"down-right":[0,1,6,5],"right":[0,1,4,5],"up-right":[0,2,1,3],"up":[0,1,3,2]},"facing":{"down":["down",false],"down-right":["down-right",false],"right":["right",false],"up-right":["up-right",false],"up":["up",false],"up-left":["up-right",true],"left":["right",true],"down-left":["down-right",true]}};
+const SHEETS = {
+ survivorBase:'/survival/scrap-runner/motion-a-v1.webp',
+ survivorRear:'/survival/scrap-runner/motion-b-v1.webp',
+ runnerCycleDown:'/survival/scrap-runner/scrap-runner-down-walk-sprint-v1.webp',
+ runnerCycleDownRight:'/survival/scrap-runner/scrap-runner-down-right-walk-sprint-v1.webp',
+ runnerCycleRight:'/survival/scrap-runner/scrap-runner-right-walk-sprint-v1.webp',
+ runnerCycleUpRight:'/survival/scrap-runner/scrap-runner-up-right-walk-sprint-v1.webp',
+ runnerCycleUp:'/survival/scrap-runner/scrap-runner-up-walk-sprint-v1.webp'
+};
+const ORDER=['down','down-right','right','up-right','up','up-left','left','down-left'];
+const NAMES={'down':'South / front','down-right':'South-east','right':'East / right','up-right':'North-east','up':'North / back','up-left':'North-west','left':'West / left','down-left':'South-west'};
+const el=id=>document.getElementById(id);
+const images={};
+const panels=[el('downloadPose'),el('downloadSheet'),el('downloadIdle')];
+function source(direction,pose){
+ const [view,mirrored]=DATA.facing[direction];
+ if(pose==='idle'||pose==='punch')return {sprite:DATA.art[view][pose],mirror:mirrored};
+ const frame=Number(pose.replace('walk',''));
+ const index=DATA.walkSequences[view][Math.max(0,Math.min(3,frame))];
+ return {sprite:DATA.cycles[view][index],mirror:mirrored};
+}
+function drawCharacter(ctx,direction,pose,x,footY,multiplier){
+ const {sprite,mirror}=source(direction,pose);
+ const img=images[sprite.sheet];
+ if(!img)return;
+ const [sx,sy,sw,sh]=sprite.crop;
+ const k=sprite.scale*multiplier;
+ ctx.save();ctx.translate(x,footY);
+ if(mirror)ctx.scale(-1,1);
+ ctx.drawImage(img,sx,sy,sw,sh,-sprite.anchor[0]*k,-sprite.anchor[1]*k,sw*k,sh*k);
+ ctx.restore();
+}
+function text(ctx,string,x,y,size,color,bold){
+ ctx.fillStyle=color;ctx.font=(bold?'800 ':'500 ')+size+'px system-ui,sans-serif';
+ ctx.fillText(string,x,y);
+}
+function roundedRect(ctx,x,y,w,h,r){ctx.beginPath();ctx.roundRect(x,y,w,h,r)}
+function drawPose(){
+ const c=el('poseCanvas'),ctx=c.getContext('2d');
+ ctx.clearRect(0,0,c.width,c.height);
+ drawCharacter(ctx,el('direction').value,el('pose').value,384,685,2.05);
+}
+function drawTurnaround(canvas,idlesOnly){
+ const ctx=canvas.getContext('2d'),W=canvas.width,H=canvas.height;
+ ctx.fillStyle='#0d1c1e';ctx.fillRect(0,0,W,H);
+ text(ctx,'HUMANS REMAIN',78,85,34,'#e6bb70',true);
+ text(ctx,'SURVIVOR / ORIGINAL CHARACTER REFERENCE',78,146,51,'#f5e9d3',true);
+ text(ctx,'SOURCE-ACCURATE 8-DIRECTION TURNAROUND  •  ELEVATED TOP-DOWN VIEW',80,185,22,'#b4c3bf',false);
+ for(let i=0;i<ORDER.length;i++){
+   const dir=ORDER[i],col=i%4,row=Math.floor(i/4),x=70+col*670,y=222+row*837;
+   ctx.fillStyle='#172b2d';roundedRect(ctx,x,y,650,808,23);ctx.fill();
+   ctx.strokeStyle='#385052';ctx.lineWidth=2;ctx.stroke();
+   text(ctx,NAMES[dir].toUpperCase(),x+30,y+48,25,'#f4e6c9',true);
+   ctx.strokeStyle='#3b5555';ctx.beginPath();ctx.moveTo(x+30,y+74);ctx.lineTo(x+620,y+74);ctx.stroke();
+   drawCharacter(ctx,dir,'idle',x+325,y+518,1.42);
+   text(ctx,'IDLE',x+30,y+554,20,'#e6bb70',true);
+   if(!idlesOnly){
+     ctx.fillStyle='#23383a';roundedRect(ctx,x+22,y+584,606,190,14);ctx.fill();
+     for(let f=0;f<4;f++){const cx=x+102+f*149;drawCharacter(ctx,dir,'walk'+f,cx,y+737,.61);text(ctx,'0'+(f+1),cx-16,y+765,17,'#b5c7be',false)}
+     text(ctx,'WALK SOURCE FRAMES',x+30,y+605,16,'#b5c7be',true);
+   }
+ }
+ text(ctx,'Original Survivor • sprite crops and mirrored views from live game data',78,H-32,20,'#9eada9',false);
+}
+function save(canvas,name){
+ canvas.toBlob(blob=>{if(!blob){el('status').textContent='PNG export failed.';return}
+ const url=URL.createObjectURL(blob),a=document.createElement('a');a.href=url;a.download=name;
+ document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),2000);
+ },'image/png');
+}
+async function loadAll(){
+ try{
+   await Promise.all(Object.entries(SHEETS).map(([key,path])=>new Promise((resolve,reject)=>{
+     const im=new Image();
+     im.onload=()=>{images[key]=im;resolve()};
+     im.onerror=()=>reject(new Error('Could not load '+path));
+     im.src=path;
+   })));
+   drawPose();drawTurnaround(el('sheetCanvas'),false);
+   panels.forEach(b=>b.disabled=false);
+   el('status').textContent='All seven original art atlases loaded. PNG exports are ready.';
+ }catch(e){el('status').textContent=e.message+'. Open this utility from the running game server.'}
+}
+for(const dir of ORDER){const option=document.createElement('option');option.value=dir;option.textContent=NAMES[dir];el('direction').appendChild(option)}
+el('direction').value='down';
+el('direction').addEventListener('change',drawPose);
+el('pose').addEventListener('change',drawPose);
+el('downloadPose').addEventListener('click',()=>save(el('poseCanvas'),'humans-remain-survivor-'+el('direction').value+'-'+el('pose').value+'.png'));
+el('downloadSheet').addEventListener('click',()=>save(el('sheetCanvas'),'humans-remain-survivor-master-reference.png'));
+el('downloadIdle').addEventListener('click',()=>{const c=document.createElement('canvas');c.width=2800;c.height=1950;drawTurnaround(c,true);save(c,'humans-remain-survivor-idle-turnaround.png')});
+loadAll();
+</script>
+</body>
+</html>
