@@ -5,7 +5,6 @@ import {START_SCREEN_MENU_FONT,type StartScreenArtwork} from './start-screen-art
 import type {StartScreenIconName} from './start-screen-icons';
 import ExpeditionMenu from './ExpeditionMenu';
 import ExpeditionLoading from './ExpeditionLoading';
-import SurvivorPreparation from './SurvivorPreparation';
 
 type Props={width:number;height:number;safe?:{top:number;bottom:number;left:number;right:number};background:React.ReactNode;shade:React.ReactNode;portrait:ImageSourcePropType;artwork:StartScreenArtwork;fontFamily?:string;profile:StartProfile;onProfile:(p:StartProfile)=>void;onPlay:()=>void;onBack?:()=>void;busy?:boolean;notice?:string;playDisabled?:boolean;loadingProgress?:number;reducedMotion?:boolean;onLoadingComplete?:()=>void};
 type Panel='customise'|'upgrades'|'settings'|null;
@@ -13,17 +12,15 @@ const serif=Platform.OS==='ios'?'Georgia':Platform.OS==='web'?'Georgia, serif':'
 export default function StartingScreen({width,height,safe={top:0,bottom:0,left:0,right:0},background,shade,portrait,artwork,fontFamily=START_SCREEN_MENU_FONT,profile,onProfile,onPlay,onBack,busy=false,notice='',playDisabled=false,loadingProgress,reducedMotion=false,onLoadingComplete}:Props){
  const [panel,setPanel]=useState<Panel>(null),[name,setName]=useState(profile.name);
  const loading=loadingProgress!==undefined;
- const [characterFinished,setCharacterFinished]=useState(false);
- useEffect(()=>{if(!loading)setCharacterFinished(false)},[loading]);
  const transition=useRef(new Animated.Value(loading?1:0)).current,sceneOpacity=useRef(new Animated.Value(1)).current;
  const complete=useRef(onLoadingComplete);complete.current=onLoadingComplete;
  useEffect(()=>{const animation=Animated.timing(transition,{toValue:loading?1:0,duration:reducedMotion?0:420,easing:Easing.inOut(Easing.cubic),useNativeDriver:Platform.OS!=='web'});animation.start();return()=>animation.stop()},[loading,reducedMotion,transition]);
  useEffect(()=>{
-  if(loadingProgress!==1||!characterFinished){sceneOpacity.setValue(1);return}
-  // Let the real completed progress settle before revealing the prepared frame.
+  if(loadingProgress!==1){sceneOpacity.setValue(1);return}
+  // The legacy stand-up atlas has been removed; enter when the world is ready.
   const animation=Animated.sequence([Animated.delay(550),Animated.timing(sceneOpacity,{toValue:0,duration:reducedMotion?0:360,easing:Easing.inOut(Easing.cubic),useNativeDriver:Platform.OS!=='web'})]);
   animation.start(({finished})=>{if(finished)complete.current?.()});return()=>animation.stop();
- },[loadingProgress===1,characterFinished,reducedMotion,sceneOpacity]);
+ },[loadingProgress===1,reducedMotion,sceneOpacity]);
  const play=()=>{if(!busy&&!loading&&!playDisabled){setPanel(null);onPlay()}};
  const portraitMode=height>width;
  const availableWidth=Math.max(1,width-safe.left-safe.right),availableHeight=Math.max(1,height-safe.top-safe.bottom);
@@ -40,7 +37,6 @@ export default function StartingScreen({width,height,safe={top:0,bottom:0,left:0
  const action=(label:string,fn:()=>void)=><Pressable accessibilityRole="button" onPress={fn} style={({pressed})=>[s.action,pressed&&s.pressed]}><Text style={s.actionText}>{label}</Text></Pressable>;
  return <Animated.View accessibilityLabel="Humans Remain starting screen" style={[s.root,{opacity:sceneOpacity}]}>
   {background}{shade}
-  <SurvivorPreparation width={width} height={height} active={loading} reducedMotion={reducedMotion} onFinished={()=>setCharacterFinished(true)}/>
   <Image accessible={false} pointerEvents="none" source={artwork.expeditionLoading} style={{position:'absolute',width:1,height:1,opacity:0}}/>
   <View pointerEvents="none" style={[s.logo,{left:safe.left+gutter,top:safe.top+availableHeight*.05,width:portraitMode?190:unit(216),height:portraitMode?84:unit(95)}]}>
    <View nativeID="start-logo-atmosphere" pointerEvents="none" style={[StyleSheet.absoluteFill,...(Platform.OS==='web'?[]:[{borderRadius:unit(28),backgroundColor:'#102e2f35',shadowColor:'#061a1c',shadowOpacity:.6,shadowRadius:unit(30)}])]} />
