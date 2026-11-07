@@ -1,4 +1,6 @@
 import type {World} from './survival-engine';
+import type {SurvivorRoleId} from './survivor-roles';
+import {requiredImages} from './world-assets';
 import {wavePlan} from './camp-siege';
 import {spawnImages,type SpawnKind} from './play-spawns';
 import {RUNNER_AXE_IMAGE_SOURCES} from './runner-axe-art';
@@ -19,6 +21,15 @@ import {RABBIT_FOOD_IMAGES,VENISON_FOOD_IMAGES} from './food-items';
 
 /** Small, shared player/food set. Other animation families have a live owner. */
 export const PLAYER_MOVEMENT_IMAGES:Record<string,string>={...RUNNER_CYCLE_SOURCES,...ENGINEER_IMAGE_SOURCES,...REPAIR_HAMMER_IMAGES,...PROVISION_IMAGES,...BONFIRE_FOOD_IMAGES,...RABBIT_FOOD_IMAGES,...VENISON_FOOD_IMAGES,stone:MINING_IMAGES.stone,torch:'/survival/equipment/torch-v1.png',bagScrap:'/survival/ui-backpack-v1/scrap.png',bagFuel:'/survival/ui-backpack-v1/fuel.png'};
+/** Do not download all the other characters' atlases to start a Hunter run. */
+export function playerMovementImagesForRole(role:SurvivorRoleId):Record<string,string>{
+ return {
+  ...(role==='hunter'?HUNTER_IMAGE_SOURCES:role==='engineer'?ENGINEER_IMAGE_SOURCES:RUNNER_CYCLE_SOURCES),
+  ...REPAIR_HAMMER_IMAGES,
+  stone:MINING_IMAGES.stone,
+  torch:'/survival/equipment/torch-v1.png'
+ };
+}
 const equipment:Record<string,string>={...MINING_IMAGES,...KNIFE_IMAGES,...SWORD_IMAGES,...SPEAR_IMAGES};
 /** Prefetch carried tools and nearby creatures, preserving the original art. */
 export function gameplayImageSources(w:World):Record<string,string>{
@@ -45,6 +56,18 @@ export function gameplayImageSources(w:World):Record<string,string>{
  for(const kind of kinds)Object.assign(out,spawnImages(kind));
  if(w.stationPanel==='furnace'||Object.values(w.ironworks?.stations??{}).some(furnaceWorking))Object.assign(out,FURNACE_FIRE_IMAGES);
  return out;
+}
+
+/** Stream placed camp art close to the player instead of requiring every
+ * distant image before Play. Keep a broad lookahead for sprinting and iOS-like
+ * landscape camera framing. The current world layout is not changed.
+ */
+export function nearbyPlacedArtwork(w:World,animationFrames=false):Record<string,string>{
+ const layout=w.layout;
+ if(!layout||w.scene)return {};
+ const {x,y}=w.player;
+ const ids=layout.items.filter(p=>Math.abs(p.x-x)<1650&&Math.abs(p.y-y)<1650).map(p=>p.assetId);
+ return requiredImages(ids,layout.terrainImage,{animationFrames});
 }
 
 /** Retire unused families; late loads never resurrect abandoned artwork. */

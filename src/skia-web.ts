@@ -20,7 +20,7 @@ import type {TerrainView} from './outdoor-terrain';
 import {TERRAIN_CHUNK_IMAGES,streamPatches,RIVER_TEXTURE_SIZES} from './terrain-stream-art';
 import type {GamePerformanceRecorder,PerformancePhase} from './performance-recording';
 import {observeBrowserPerformance} from './browser-performance';
-import {GameplayArtwork,gameplayImageSources,PLAYER_MOVEMENT_IMAGES} from './gameplay-artwork';
+import {GameplayArtwork,gameplayImageSources,nearbyPlacedArtwork,PLAYER_MOVEMENT_IMAGES} from './gameplay-artwork';
 type LoadOptions={sources?:Record<string,string>;streamRoads?:boolean;streamRivers?:boolean;signal?:AbortSignal;diagnostics?:GamePerformanceRecorder;onProgress?:(stage:string,progress?:ArtworkProgress)=>void};
 let graphics:Promise<void>|undefined;
 async function loadGraphics(signal?:AbortSignal){
@@ -58,7 +58,11 @@ export async function createWebWorld(canvas:HTMLCanvasElement,showcase:WorldDraw
   if(decoded.bitmap)bitmaps.set(decoded.image,decoded.bitmap);
   if(diagnostics?.recording)diagnostics.trace(decodeStart,'decode',performance.now()-decodeStart,{key,mode:decoded.mode,fallback:decoded.fallback||'none',width:decoded.image.width(),height:decoded.image.height()},session);
   return decoded.image;
-  }catch(error){if(diagnostics?.recording)diagnostics.trace(started,'artwork-failed',performance.now()-started,{key,stage:loading.get(key)?.stage||'unknown',aborted:signal.aborted,...artworkFailureDetails(error)},session);throw error}finally{loading.delete(key)}
+  }catch(error){
+   if(!signal.aborted)console.warn('[Artwork] Failed:',key,loading.get(key)?.stage||'unknown',artworkFailureDetails(error));
+   if(diagnostics?.recording)diagnostics.trace(started,'artwork-failed',performance.now()-started,{key,stage:loading.get(key)?.stage||'unknown',aborted:signal.aborted,...artworkFailureDetails(error)},session);
+   throw error;
+  }finally{loading.delete(key)}
  },im=>{adapter?.releaseImage(im);try{im.dispose()}finally{bitmaps.get(im)?.close();bitmaps.delete(im)}});
  // Decoded images are private until their requested preparation is complete.
  // In particular, streamed detail cannot bypass the one-texture-per-frame queue
@@ -95,13 +99,13 @@ export async function createWebWorld(canvas:HTMLCanvasElement,showcase:WorldDraw
   loadImages,
   warmImages,
   releaseImages,
-  prepareGameplay:(w:World)=>gameplay.update(gameplayImageSources(w),performance.now(),true),
+  prepareGameplay:(w:World)=>gameplay.update({...gameplayImageSources(w),...nearbyPlacedArtwork(w)},performance.now(),true),
   async prepareTerrain(w:World){
    this.draw(w);
    await Promise.all([roads.settled(),camp.settled(),rivers.settled()]);
    if(roads.visibleMissing||camp.visibleMissing||rivers.visibleMissing)throw Error('Nearby terrain could not load. Press Play to try again.');
   },
-  updateGameplay:(w:World,active:boolean)=>{void gameplay.update(active?gameplayImageSources(w):{}).catch(()=>{/* A later update retries interrupted optional artwork. */})},
+  updateGameplay:(w:World,active:boolean)=>{void gameplay.update(active?{...gameplayImageSources(w),...nearbyPlacedArtwork(w,true)}:{}).catch(()=>{/* A later update retries interrupted optional artwork. */})},
   setActive(active:boolean){drawingSurface.setActive(active);if(!active)gameplay.clear()},
   textureStats:()=>{const now=performance.now();return {graphics:{...drawingSurface.stats(),shaderFieldBytes:adapter.shaderFieldBytes()},roads:roads.stats(),camp:camp.stats(),rivers:rivers.stats(),artwork:{...loader.stats(),warming:warming.size,loading:[...loading].slice(0,12).map(([key,value])=>({key,stage:value.stage,ageMs:Math.round(now-value.since)})),warmQueue:[...warming.keys()].slice(0,12).map(key=>({key,priority:urgentWarm.has(key)?'foreground':'background',ageMs:Math.round(now-(warmSince.get(key)||now))}))}}},
   draw(w:World,overview=false){if(disposed)return;
