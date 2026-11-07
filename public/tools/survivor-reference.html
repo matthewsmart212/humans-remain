@@ -105,7 +105,7 @@ function roundedRect(ctx,x,y,w,h,r){ctx.beginPath();ctx.roundRect(x,y,w,h,r)}
 function drawPose(){
  const c=el('poseCanvas'),ctx=c.getContext('2d');
  ctx.clearRect(0,0,c.width,c.height);
- drawCharacter(ctx,el('direction').value,el('pose').value,384,685,2.05);
+ drawCharacter(ctx,el('direction').value,el('pose').value,384,685,5.1);
 }
 function drawTurnaround(canvas,idlesOnly){
  const ctx=canvas.getContext('2d'),W=canvas.width,H=canvas.height;
@@ -119,12 +119,12 @@ function drawTurnaround(canvas,idlesOnly){
    ctx.strokeStyle='#385052';ctx.lineWidth=2;ctx.stroke();
    text(ctx,NAMES[dir].toUpperCase(),x+30,y+48,25,'#f4e6c9',true);
    ctx.strokeStyle='#3b5555';ctx.beginPath();ctx.moveTo(x+30,y+74);ctx.lineTo(x+620,y+74);ctx.stroke();
-   drawCharacter(ctx,dir,'idle',x+325,y+518,1.42);
+   drawCharacter(ctx,dir,'idle',x+325,y+518,3.05);
    text(ctx,'IDLE',x+30,y+554,20,'#e6bb70',true);
    if(!idlesOnly){
      ctx.fillStyle='#23383a';roundedRect(ctx,x+22,y+584,606,190,14);ctx.fill();
-     for(let f=0;f<4;f++){const cx=x+102+f*149;drawCharacter(ctx,dir,'walk'+f,cx,y+737,.61);text(ctx,'0'+(f+1),cx-16,y+765,17,'#b5c7be',false)}
-     text(ctx,'WALK SOURCE FRAMES',x+30,y+605,16,'#b5c7be',true);
+     for(let f=0;f<4;f++){const cx=x+102+f*149;drawCharacter(ctx,dir,'walk'+f,cx,y+775,1.56);text(ctx,'0'+(f+1),cx-16,y+798,17,'#b5c7be',false)}
+     text(ctx,'WALK SOURCE FRAMES',x+30,y+580,16,'#b5c7be',true);
    }
  }
  text(ctx,'Original Survivor • sprite crops and mirrored views from live game data',78,H-32,20,'#9eada9',false);
