@@ -4,6 +4,7 @@ on:
     branches: [main]
     paths:
       - scripts/import-start-menu-music.py
+      - public/audio/README.md
       - .github/workflows/import-start-menu-music.yml
   workflow_dispatch:
 
