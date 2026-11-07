@@ -1,5 +1,6 @@
 import NativeStartingScreen from './StartingScreen';
 import type {SurvivorRoleId} from '../src/survivor-roles';
+import {HUNTER_IMAGE_SOURCES} from '../src/hunter-sprites';
 import {NativeFrameWorkScheduler} from './frame-work-scheduler';
 import {stationMenuAnimating,stationMenuRevision} from '../src/station-menu-layout';
 import {normalizeAtlasZoom,settleAtlasZoom} from '../src/continuous-zoom-state';
@@ -168,7 +169,7 @@ function Game({role,onHome,entryVisible,onBootProgress,onBootError}:{role:Surviv
      renderer=await stage('Open renderer',()=>createNativeRenderer(playView.current,gamePerformance,preparation));if(!live){renderer.dispose();return}
      // Complete placed animations, chopping, stumps and movement before Play.
      // Detailed terrain uses bounded native lookahead and a startup buffer.
-     await stage('Warm artwork',()=>renderer!.warmImages({...EDITOR_IMAGE_SOURCES,...editorTerrainDetail(saved.layout.terrainImage),...requiredImages(saved.layout.items.map(p=>p.assetId),saved.layout.terrainImage)}));
+     await stage('Warm artwork',()=>renderer!.warmImages({...EDITOR_IMAGE_SOURCES,...(role==='hunter'?HUNTER_IMAGE_SOURCES:{}),...editorTerrainDetail(saved.layout.terrainImage),...requiredImages(saved.layout.items.map(p=>p.assetId),saved.layout.terrainImage)}));
      if(!live){renderer?.dispose();return}
      onBootProgress(.65);
      const resources=await stage('Open scenes',()=>new SceneResourceCache(SCENES,renderer!.warmImages,renderer!.releaseImages)),outdoor=new OutdoorTerrainStream(renderer.warmImages,renderer.releaseImages,setStatus);

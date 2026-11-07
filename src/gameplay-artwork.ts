@@ -4,6 +4,7 @@ import {spawnImages,type SpawnKind} from './play-spawns';
 import {RUNNER_AXE_IMAGE_SOURCES} from './runner-axe-art';
 import {RUNNER_CYCLE_SOURCES} from './runner-cycles';
 import {ENGINEER_IMAGE_SOURCES} from './engineer-sprites';
+import {HUNTER_IMAGE_SOURCES} from './hunter-sprites';
 import {BOW_IMAGES} from './bow-art';
 import {SWORD_IMAGES} from './swords';
 import {SPEAR_IMAGES} from './spears';
@@ -22,6 +23,7 @@ const equipment:Record<string,string>={...MINING_IMAGES,...KNIFE_IMAGES,...SWORD
 /** Prefetch carried tools and nearby creatures, preserving the original art. */
 export function gameplayImageSources(w:World):Record<string,string>{
  const out:Record<string,string>={},gear=new Set(Object.entries(w.gear?.bag??{}).filter(([,count])=>!!count).map(([id])=>id));
+ if(w.survivorRole==='hunter')Object.assign(out,HUNTER_IMAGE_SOURCES);
  if(w.player.equipped)gear.add(w.player.equipped);
  for(const drop of w.loot)gear.add(drop.kind);
  for(const id of gear){
