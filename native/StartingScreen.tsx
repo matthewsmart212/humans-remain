@@ -24,14 +24,14 @@ const menuArtwork:StartScreenArtwork={
  },
 };
 const menuFonts={[START_SCREEN_MENU_FONT]:require('../public/fonts/camp-menu-semibold.ttf')};
-const menuPoster=require('../public/previews/dawn-camp/preview-poster.png');
+const menuPoster=require('../public/previews/dawn-camp/start-scene-poster.jpg');
 
 export default function NativeStartingScreen({onPlay,loadingProgress,onLoadingComplete,loadError=''}:{onPlay:()=>void;loadingProgress?:number;onLoadingComplete:()=>void;loadError?:string}){
  const {width,height}=useWindowDimensions(),safe=useSafeAreaInsets();
  const [fontsLoaded,fontError]=useFonts(menuFonts);
  const [profile,setProfile]=useState(DEFAULT_START_PROFILE),[loaded,setLoaded]=useState(false),[reduced,setReduced]=useState(true),[firstFrame,setFirstFrame]=useState(false),[notice,setNotice]=useState('');
  const writes=useRef(Promise.resolve());
- const player=useVideoPlayer(require('../public/previews/dawn-camp/preview.mp4'),p=>{p.loop=true;p.muted=true;p.staysActiveInBackground=false});
+ const player=useVideoPlayer(require('../public/previews/dawn-camp/start-scene.mp4'),p=>{p.loop=true;p.muted=true;p.staysActiveInBackground=false});
  useEffect(()=>{let live=true;void AsyncStorage.getItem(START_PROFILE_KEY).then(text=>{if(live)setProfile(readStartProfile(text))}).catch(()=>{if(live)setNotice('Your survivor preferences could not be read.')}).finally(()=>{if(live)setLoaded(true)});return()=>{live=false}},[]);
  useEffect(()=>{let live=true,changed=false;void AccessibilityInfo.isReduceMotionEnabled().then(value=>{if(live&&!changed)setReduced(value)}).catch(()=>{});const subscription=AccessibilityInfo.addEventListener('reduceMotionChanged',value=>{changed=true;setReduced(value)});return()=>{live=false;subscription.remove()}},[]);
  useEffect(()=>{const sync=()=>{if(loaded&&profile.motion&&!reduced&&AppState.currentState==='active')player.play();else player.pause()};sync();const subscription=AppState.addEventListener('change',sync);return()=>{subscription.remove();player.pause()}},[player,profile.motion,reduced,loaded]);
