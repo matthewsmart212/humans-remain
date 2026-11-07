@@ -43,20 +43,20 @@ def audio_url(page):
     html_text = read(page).decode("utf-8", "replace")
     # The track's own detail page may embed the source in its initial JSON.
     for key in ("__BOOTSTRAP__",):
-        m = re.search(r"window\\." + key + r"\\s*=\\s*({.*?});", html_text, re.S)
+        m = re.search(r"window\." + key + r"\s*=\s*({.*?});", html_text, re.S)
         if m:
             try:
                 source = locate(json.loads(m.group(1)))
                 if source: return urllib.parse.urljoin(page, source)
             except ValueError:
                 pass
-    m = re.search(r"window\\.__BOOTSTRAP_URL__\\s*=\\s*[\"']([^\"']+)[\"']", html_text)
+    m = re.search(r"window\.__BOOTSTRAP_URL__\s*=\s*[\"']([^\"']+)[\"']", html_text)
     if m:
         bootstrap = urllib.parse.urljoin(page, html.unescape(m.group(1)))
         source = locate(json.loads(read(bootstrap)))
         if source: return urllib.parse.urljoin(page, source)
     # Last resort: source URLs already included in markup; verify by SHA below.
-    matches = re.findall(r"https?://cdn\\.pixabay\\.com/(?:audio|download/audio)/[^\\s\"'<>\\\\]+?\\.mp3(?:\\?[^\\s\"'<>\\\\]*)?", html_text)
+    matches = re.findall(r"https?://cdn\.pixabay\.com/(?:audio|download/audio)/[^\s\"'<>\\]+?\.mp3(?:\?[^\s\"'<>\\]*)?", html_text)
     return html.unescape(matches[0]) if matches else None
 
 if OUTPUT.exists() and hashlib.sha256(OUTPUT.read_bytes()).hexdigest() == EXPECTED_SHA256:
