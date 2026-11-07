@@ -23,7 +23,12 @@ export function axeAttachment(w:World,direction:Direction,pose:string,cycle?:{fr
  const running=(w.player.runBlend??0)>.45;
  const canonical=direction.replace('left','right') as Direction;
  const view=direction==='left'?'right':canonical;
- const hand=cycle?CARRY[view][running?'run':'walk'][cycle.frame]:(pose==='punch'?STRIKE[direction]:IDLE[direction]);
+ // Tool attachment atlases have four registered grips. Never index them with
+ // an arbitrary character sprite count: a missing hand would break every
+ // subsequent Canvas/Skia draw while the player walks.
+ const grips=CARRY[view][running?'run':'walk'];
+ const gripIndex=cycle?Math.max(0,Math.min(grips.length-1,Number.isFinite(cycle.frame)?Math.floor(cycle.frame):0)):0;
+ const hand=cycle?grips[gripIndex]:(pose==='punch'?STRIKE[direction]:IDLE[direction]);
  const localDirection=cycle?.mirror?view:direction;
  const elapsed=w.axeSwing?timeOf(w)-w.axeSwing.started:-1;
  const spec=axeProfile(w.axeSwing),returning=w.axeSwing?.cut===2;
