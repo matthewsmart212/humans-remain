@@ -1,4 +1,5 @@
 import type {World} from './survival-engine';
+import {requiredImages} from './world-assets';
 import {wavePlan} from './camp-siege';
 import {spawnImages,type SpawnKind} from './play-spawns';
 import {RUNNER_AXE_IMAGE_SOURCES} from './runner-axe-art';
@@ -45,6 +46,18 @@ export function gameplayImageSources(w:World):Record<string,string>{
  for(const kind of kinds)Object.assign(out,spawnImages(kind));
  if(w.stationPanel==='furnace'||Object.values(w.ironworks?.stations??{}).some(furnaceWorking))Object.assign(out,FURNACE_FIRE_IMAGES);
  return out;
+}
+
+/** Stream placed camp art close to the player instead of requiring every
+ * distant image before Play. Keep a broad lookahead for sprinting and iOS-like
+ * landscape camera framing. The current world layout is not changed.
+ */
+export function nearbyPlacedArtwork(w:World,animationFrames=false):Record<string,string>{
+ const layout=w.layout;
+ if(!layout||w.scene)return {};
+ const {x,y}=w.player;
+ const ids=layout.items.filter(p=>Math.abs(p.x-x)<1650&&Math.abs(p.y-y)<1650).map(p=>p.assetId);
+ return requiredImages(ids,layout.terrainImage,{animationFrames});
 }
 
 /** Retire unused families; late loads never resurrect abandoned artwork. */
