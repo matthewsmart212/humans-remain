@@ -1,0 +1,46 @@
+{
+  "version": 2,
+  "cellSize": [
+    314,
+    314
+  ],
+  "gameAnchor": [
+    157,
+    297
+  ],
+  "scale": 0.42,
+  "directionRows": {
+    "front": [
+      "down",
+      "down-right",
+      "right",
+      "up-right"
+    ],
+    "rear": [
+      "up",
+      "up-left",
+      "left",
+      "down-left"
+    ]
+  },
+  "textureColumns": {
+    "main": [
+      "idle",
+      "foot_contact_a",
+      "foot_contact_b",
+      "punch"
+    ],
+    "walking": [
+      "passing_a",
+      "passing_b"
+    ]
+  },
+  "gaitOrder": [
+    "foot_contact_a",
+    "passing_a",
+    "foot_contact_b",
+    "passing_b"
+  ],
+  "strideDistance": 112,
+  "note": "All artwork is repainted Engineer imagery. Atlases are independently registered to a common foot baseline, with offline-composed passing frames from the Engineer art only."
+}

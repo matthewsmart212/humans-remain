@@ -89,7 +89,7 @@ export default function GameStart({onPlay,onBack,busy,notice,playDisabled,loadin
  },[]);
  useEffect(()=>{const editor=document.querySelector('main.world-editor');editor?.setAttribute('inert','');return()=>editor?.removeAttribute('inert')},[gameMounted]);
  return createPortal(<div className="game-start" style={{opacity:visualsReady?1:0,transition:'opacity 180ms ease-out',...(loadingProgress===1?{backgroundColor:'transparent',backgroundImage:'none'}:{})}} onKeyDown={e=>e.stopPropagation()}>
-  <StartingScreen {...size} profile={profile} onProfile={save} onPlay={onPlay} onBack={onBack} busy={busy} loadingProgress={loadingProgress} reducedMotion={reduced||!profile.motion} onLoadingComplete={onLoadingComplete} playDisabled={playDisabled} notice={notice||saveNotice} artwork={WEB_START_SCREEN_ART} portrait={{uri:profile.role==='engineer'?'/survival/engineer-v1/portrait.webp':'/survival/starting-screen-ui-v2/survivor-profile.png'}}
+  <StartingScreen {...size} profile={profile} onProfile={save} onPlay={onPlay} onBack={onBack} busy={busy} loadingProgress={loadingProgress} reducedMotion={reduced||!profile.motion} onLoadingComplete={onLoadingComplete} playDisabled={playDisabled} notice={notice||saveNotice} artwork={WEB_START_SCREEN_ART} portrait={{uri:profile.role==='engineer'?'/survival/engineer-v2/portrait.webp':'/survival/starting-screen-ui-v2/survivor-profile.png'}}
    background={<video ref={video} className="game-start-scene" src="/previews/dawn-camp/start-scene.mp4" poster="/previews/dawn-camp/start-scene-poster.jpg" autoPlay={!reduced&&profile.motion} loop muted playsInline preload="auto" aria-hidden="true"/>}
    shade={<div className="game-start-shade"/>}/>
  </div>,document.body);
