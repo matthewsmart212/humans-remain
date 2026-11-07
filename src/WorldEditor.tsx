@@ -422,13 +422,21 @@ export default function WorldEditor({externalStart=false,onExternalStartState,on
      backgroundStarted=true;setReady(true);
      // Entry is complete only after the first useful canvas frame. Keep detail
      // downloads non-blocking; explicit Play/Walk requests promote their jobs.
-     void loadTerrainDetail(r);
+     if(!externalStart||!startScreen)void loadTerrainDetail(r);
     }
     frameMeter.current.record(now,drawMs,!document.hidden);raf=requestAnimationFrame(frame)
    };raf=requestAnimationFrame(frame);
   })().catch(e=>{clearTimeout(startupTimeout);controller.abort();if(alive)setError(e instanceof Error?e.message:'The artwork could not load. Please retry.');console.error(e)});
   return()=>{alive=false;modeRequest.current++;document.removeEventListener('visibilitychange',resetMeter);frameMeter.current.reset();clearTimeout(startupTimeout);controller.abort();cancelAnimationFrame(raf);travel.current?.dispose();travel.current=null;mapResources.current?.dispose();mapResources.current=null;outdoorTerrain.current?.dispose();outdoorTerrain.current=null;renderer.current?.dispose();renderer.current=undefined};
  },[loadAttempt]);
+ useEffect(()=>{
+  if(!externalStart||!ready||startScreen)return;
+  // Optional full-world textures must not compete with the start-screen
+  // atlas and gameplay preparation on mobile Safari. Terrain in view still
+  // streams on demand during loading; warm the overview after entering.
+  const timer=setTimeout(()=>{void loadTerrainDetail()},2200);
+  return()=>clearTimeout(timer);
+ },[externalStart,ready,startScreen]);
  useEffect(()=>{if(ready)void renderer.current?.loadImages(editorEntryArtwork(layoutRef.current)).catch(()=>show('A saved image could not load. Reload to retry.'))},[ready,layout.terrainImage?.url]);
  useEffect(()=>{if(ready)void loadTerrainDetail()},[layout.terrainImage?.url]);
  useEffect(()=>{
