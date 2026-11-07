@@ -35,7 +35,7 @@ export default function GameStart({onPlay,onBack,busy,notice,playDisabled,loadin
  },[]);
  useEffect(()=>{const resize=()=>setSize({width:innerWidth,height:innerHeight}),media=matchMedia('(prefers-reduced-motion: reduce)'),motion=()=>setReduced(media.matches);addEventListener('resize',resize);media.addEventListener('change',motion);return()=>{removeEventListener('resize',resize);media.removeEventListener('change',motion)}},[]);
  useEffect(()=>{const sync=()=>{if(document.hidden||reduced||!profile.motion)video.current?.pause();else void video.current?.play().catch(()=>{})};sync();document.addEventListener('visibilitychange',sync);return()=>{video.current?.pause();document.removeEventListener('visibilitychange',sync)}},[profile.motion,reduced]);
- const save=(next:StartProfile)=>{if(profile.muted&&!next.muted){muteRef.current=false;startMusic.current?.()}else muteRef.current=next.muted;setProfile(next);try{localStorage.setItem(START_PROFILE_KEY,JSON.stringify(next));setSaveNotice('')}catch{setSaveNotice('Your name and preferences could not be saved on this device.')}};
+ const save=(next:StartProfile)=>{muteRef.current=next.muted;startMusic.current?.();setProfile(next);try{localStorage.setItem(START_PROFILE_KEY,JSON.stringify(next));setSaveNotice('')}catch{setSaveNotice('Your name and preferences could not be saved on this device.')}};
  // Dedicated audio element: the start-scene video stays silent and independent.
  // Use Web Audio gain for a real fade on iOS Safari (HTMLMediaElement.volume
  // cannot be changed programmatically there). Retry playback on a user gesture
@@ -56,6 +56,7 @@ export default function GameStart({onPlay,onBack,busy,notice,playDisabled,loadin
   };
   let fadeStarted=0;
   const play=()=>{
+   setLevel(progress); // Apply mute immediately, even if the song is already playing.
    if(disposed||document.hidden||muteRef.current)return;
    if(context&&context.state==='suspended')void context.resume().catch(()=>{});
    if(!audio.paused)return;
