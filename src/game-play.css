@@ -48,3 +48,18 @@
  .camp-studio .game-spawn-card{min-height:63px;padding:6px;gap:5px}.game-spawn-card img{width:42px;height:42px}.game-spawn-card small{display:none}.game-spawn-card strong{font-size:13px}
  .camp-studio .game-spawn-utilities button{padding:8px 5px;gap:4px;font-size:11px}
 }
+
+/* Responsive paused-game character selection. No additional image downloads
+ * are triggered until a different character is selected. */
+.game-character-panel{display:flex;flex-direction:column;gap:11px;padding:21px}
+.game-character-panel h1{font-size:32px;margin:0}
+.game-character-panel>p{margin:0;font-size:13px;line-height:1.45;color:#d9d4b9;text-align:center}
+.game-character-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:9px}
+.camp-studio .game-pause-menu .game-character-grid button{display:flex;align-items:center;gap:9px;padding:11px;min-height:71px}
+.game-character-grid button[aria-pressed=true]{border-color:#edbf73!important;background:#3b5044!important}
+.game-character-grid button>span:nth-child(2){display:flex;flex-direction:column;align-items:flex-start;gap:3px;min-width:0;flex:1}
+.game-character-grid strong{font-size:15px}
+.game-character-grid small{font-size:11px;letter-spacing:0;text-align:left}
+.game-character-symbol{font-size:24px;color:#edbf73}
+.game-character-note{font-size:11px!important;color:#aeb9a8!important}
+@media(max-width:440px){.game-character-panel{padding:15px}.camp-studio .game-pause-menu .game-character-grid button{min-height:64px;padding:8px}.game-character-grid strong{font-size:13px}}
