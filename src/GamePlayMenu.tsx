@@ -18,12 +18,12 @@ export default function GamePlayMenu({paused,fullscreen,hideButton=false,defeate
   <dialog ref={dialog} className={`game-pause-menu${performanceOpen||spawnOpen?' performance-open':''}`} aria-labelledby={performanceOpen||spawnOpen?undefined:title} aria-label={performanceOpen?'Performance':spawnOpen?'Spawn':undefined} onKeyDown={e=>e.stopPropagation()} onKeyUp={e=>e.stopPropagation()} onCancel={e=>{e.preventDefault();if(performanceOpen)setPerformanceOpen(false);else if(spawnOpen)setSpawnOpen(false);else if(!defeated)onResume()}}>
    {paused&&spawnOpen&&spawns?<SpawnMenu controls={spawns} onBack={()=>setSpawnOpen(false)}/>:paused&&performanceOpen&&diagnostics?<GamePerformancePanel {...diagnostics} defeated={defeated} onBack={()=>setPerformanceOpen(false)}/>:<section>
     <small>HUMANS REMAIN · {survival?'SURVIVAL':'SANDBOX'}</small><h1 id={title}>{confirmNew?'Start a new run?':defeated?'Run ended':'Paused'}</h1>
-    {confirmNew?<><p>This replaces your saved Survival run on this device.</p><button type="button" className="game-resume" {...tap(()=>{setConfirmNew(false);onRestart()})}>Start new Survival run</button><button type="button" {...tap(()=>setConfirmNew(false))}>Keep current run</button></>:<>
+    {confirmNew?<><p>This starts a fresh run. Your permanently placed world assets stay unchanged.</p><button type="button" className="game-resume" {...tap(()=>{setConfirmNew(false);onRestart()})}>Start new Survival run</button><button type="button" {...tap(()=>setConfirmNew(false))}>Keep current run</button></>:<>
     {defeated&&<p>{cause||'Your health reached zero.'}</p>}
     {saveNotice&&<p role="status">{saveNotice}</p>}
-    {!saveNotice&&survival&&<p>Progress saves on this device.</p>}
+    {!saveNotice&&survival&&<p>Each Play begins a fresh survival run.</p>}
     {!defeated&&!saveBlocked&&<button type="button" className="game-resume" autoFocus {...tap(onResume)}><Play size={19}/>Resume game</button>}
-    {!survival&&onContinue&&<button type="button" {...tap(onContinue)}>Continue Survival</button>}
+    {!survival&&onContinue&&<button type="button" {...tap(onContinue)}>Start fresh Survival run</button>}
     {paused&&diagnostics&&<PerformanceMenuOptions recorder={diagnostics.recorder} onOpen={()=>setPerformanceOpen(true)} onSpawn={!defeated&&spawns?()=>setSpawnOpen(true):undefined}/>}
     <button type="button" autoFocus={defeated} {...tap(()=>setConfirmNew(true))}><RotateCcw size={18}/>New Survival run</button>
     {survival&&onSandbox&&<button type="button" {...tap(onSandbox)}>Open testing sandbox</button>}
