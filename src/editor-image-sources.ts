@@ -29,7 +29,8 @@ import {ROAD_OVERVIEW_IMAGES} from './world-road-pilot';
 import {requiredImages} from './world-assets';
 import type {WorldLayout} from './world-layout';
 import type {ArtworkPriority,ArtworkProgress} from './artwork-loading';
-import {PLAYER_MOVEMENT_IMAGES} from './gameplay-artwork';
+import {playerMovementImagesForRole} from './gameplay-artwork';
+import type {SurvivorRoleId} from './survivor-roles';
 
 // The editor has no legacy factory scene, monsters, spare hearth tiers or asset-yard backdrops.
 // Placed art is supplied separately by requiredImages(), including roofs and every animated frame.
@@ -52,8 +53,8 @@ export const editorTerrainDetail=(terrain?:{url:string})=>usesPaintedHomeTerrain
 
 type ArtworkRenderer={loadImages:(sources:Record<string,string>,progress?:((p:ArtworkProgress)=>void),priority?:ArtworkPriority)=>Promise<void>;warmImages:(sources:Record<string,string>,priority?:ArtworkPriority)=>Promise<void>};
 /** A Play/Walk request promotes these shared jobs ahead of optional map detail. */
-export async function prepareEditorMovement(renderer:ArtworkRenderer,layout:WorldLayout,priority:ArtworkPriority='foreground',center=layout.spawn){
+export async function prepareEditorMovement(renderer:ArtworkRenderer,layout:WorldLayout,priority:ArtworkPriority='foreground',center=layout.spawn,role:SurvivorRoleId='survivor'){
  // Walking only needs nearby objects; movement never waits on distant scenery.
  const near=requiredImages(nearby(layout,center,1650),layout.terrainImage,{animationFrames:false});
- await Promise.all([renderer.loadImages(near,undefined,priority),renderer.warmImages(PLAYER_MOVEMENT_IMAGES,priority)]);
+ await Promise.all([renderer.loadImages(near,undefined,priority),renderer.warmImages(playerMovementImagesForRole(role),priority)]);
 }
