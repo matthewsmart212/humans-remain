@@ -17,7 +17,7 @@ export type ReturnRoute={sceneId:string;spawn:SceneSpawn};
 type Trip={portal:ScenePortal;sceneId:string;spawn:SceneSpawn;returning:boolean};
 type Phase='idle'|'loading'|'out'|'in';
 export type TravelSnapshot={currentId:string;worlds:[string,World][];route:ReturnRoute[]};
-const SHARED_RUN_KEYS=['progression','cause','ironworks','gear','cycle','kit','combatTest','survivalEnabled','survival','weather','nightAmount','tick','phase','round','phaseLeft','survived','bag','loads','stock','tools','torchOn','hunger','thirst','cooked','cookedRabbit','cookedVenison','needsDamageAt','drinkReady','kills','scrap','revives','attackReady'] as const;
+const SHARED_RUN_KEYS=['survivorRole','progression','cause','ironworks','gear','cycle','kit','combatTest','survivalEnabled','survival','weather','nightAmount','tick','phase','round','phaseLeft','survived','bag','loads','stock','tools','torchOn','hunger','thirst','cooked','cookedRabbit','cookedVenison','needsDamageAt','drinkReady','kills','scrap','revives','attackReady'] as const;
 function shareRun(from:World,to:World){for(const key of SHARED_RUN_KEYS)(to as any)[key]=from[key]}
 
 /** A session keeps each map's local world, while player/run data travels with you.

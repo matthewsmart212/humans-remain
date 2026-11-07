@@ -1,6 +1,6 @@
 import {waitForStartingWorld} from './start-world-ready';
 import GameStart from './GameStart';
-import {RUN_SAVE_KEY,encodeRun,decodeRun,prepareSavedCampArtwork} from './run-save';
+import {START_PROFILE_KEY,readStartProfile} from './start-profile';
 import {spawnPlayCreature,spawnImages,clearPlaySpawns,type SpawnKind} from './play-spawns';
 import {BOMBER_IMAGE_SOURCES} from './bomber-sprites';
 import {normalizeAtlasZoom,settleAtlasZoom,atlasZoomTween} from './continuous-zoom-state';
@@ -222,7 +222,7 @@ export default function WorldEditor({externalStart=false,onExternalStartState,on
   catch{if(request===modeRequest.current&&renderer.current===r)show('Movement artwork could not load. Your editor is ready; press Walk or Play to retry.');return false}
   finally{if(request===modeRequest.current&&renderer.current===r)setPreparingMode(null)}
  };
- const saveRun=()=>{if(modeRef.current!=='play'||saveBlocked.current||!travel.current)return;try{const text=encodeRun(travel.current);if(text){localStorage.setItem(RUN_SAVE_KEY,text);setSaveNotice('')}}catch{setSaveNotice('Progress could not be saved on this device. Free some storage and try again.')}};
+ const saveRun=()=>{}; // Survival runs are session-only; the authored world is saved separately.
  saveRunRef.current=saveRun;
  const stopPlay=()=>{
   saveRun();
@@ -233,19 +233,16 @@ export default function WorldEditor({externalStart=false,onExternalStartState,on
   modeRef.current='edit';setMode('edit');setPaused(false);setToolsOpen(false);
   updateView({...saved.view,playing:false});setLibraryOpen(saved.libraryOpen);setInspectorOpen(saved.inspectorOpen);setAxeEquipped(world.current.player.equipped==='axe');setRoute('#editor');
  };
+ const selectedSurvivor=()=>{try{return readStartProfile(localStorage.getItem(START_PROFILE_KEY)).role}catch{return 'survivor' as const}};
  const restoreSurvival=async()=>{
-  setPaused(true);clearInput();
-  saveBlocked.current=false;setSaveNotice('');let snapshot:ReturnType<typeof decodeRun>|undefined;
-  try{const text=localStorage.getItem(RUN_SAVE_KEY);if(text)snapshot=decodeRun(text)}catch(e){saveBlocked.current=true;setSaveNotice(`${(e as Error).message} Your existing save has been kept. Choose New Survival run to replace it.`)}
-  const session=snapshot?.worlds.find(([id])=>id==='camp')?.[1]??createCampPlaySession(layoutRef.current,undefined,'survival');
-  // Keep the stored scene intact while its camp artwork and interior load.
-  if(snapshot)saveBlocked.current=true;
-  clearInput();world.current=session;bindTravel(session);
-  if(snapshot&&travel.current)try{await prepareSavedCampArtwork(snapshot,sources=>renderer.current!.loadImages(sources));await travel.current.restore(snapshot);saveBlocked.current=false}catch(e){saveBlocked.current=true;setSaveNotice(`Could not reopen the saved location: ${(e as Error).message}. Your save has been kept.`)}
-  await renderer.current?.prepareGameplay(world.current);
-  setPaused(document.hidden||saveBlocked.current||world.current.phase==='over');setAxeEquipped(true);
-  updateView({playing:true,follow:true,zoom:1,x:world.current.player.x,y:world.current.player.y});
-  saveRun();
+  setPaused(true);clearInput();saveBlocked.current=false;setSaveNotice('');
+  // Each Play snapshots the permanent authored layout into a fresh run.
+  const session=createCampPlaySession(layoutRef.current,undefined,'survival');
+  session.survivorRole=selectedSurvivor();
+  world.current=session;bindTravel(session);
+  await renderer.current?.prepareGameplay(session);
+  setPaused(document.hidden);setAxeEquipped(true);
+  updateView({playing:true,follow:true,zoom:1,x:session.player.x,y:session.player.y});
  };
  const enterPlay=async()=>{
   if(!ready||tierBusyRef.current||terrainBusy||modeRef.current==='play')return;
@@ -293,7 +290,7 @@ export default function WorldEditor({externalStart=false,onExternalStartState,on
   onExternalStartState?.({visible:startScreen,busy:enteringGame,progress:startProgress,notice:startNotice||error,disabled:!!error});
  },[onExternalStartState,startScreen,enteringGame,startProgress,startNotice,error]);
 
- const restartPlay=()=>{gamePerformance.stop(performance.now(),'New Survival run');try{clearInput();world.current=createCampPlaySession(layoutRef.current,undefined,'survival');bindTravel(world.current);saveBlocked.current=false;setSaveNotice('');setPaused(false);setAxeEquipped(true);updateView({playing:true,follow:true,zoom:1,x:world.current.player.x,y:world.current.player.y});saveRun();canvas.current?.focus({preventScroll:true})}catch(e){show((e as Error).message)}};
+ const restartPlay=()=>{gamePerformance.stop(performance.now(),'New Survival run');try{clearInput();world.current=createCampPlaySession(layoutRef.current,undefined,'survival');world.current.survivorRole=selectedSurvivor();bindTravel(world.current);saveBlocked.current=false;setSaveNotice('');setPaused(false);setAxeEquipped(true);updateView({playing:true,follow:true,zoom:1,x:world.current.player.x,y:world.current.player.y});saveRun();canvas.current?.focus({preventScroll:true})}catch(e){show((e as Error).message)}};
  const openSandbox=()=>{saveRun();clearInput();world.current=createCampPlaySession(layoutRef.current);bindTravel(world.current);setSaveNotice('Sandbox changes do not replace your Survival save. Spawn tools are in this menu.');setPaused(true);updateView({playing:true,follow:true,zoom:1,x:world.current.player.x,y:world.current.player.y})};
  const pauseGame=()=>{clearInput();gamePerformance.setActivity('paused',performance.now());setPaused(true);saveRun()};
  const resumeGame=async()=>{
@@ -597,7 +594,7 @@ if(k==='e'){e.preventDefault();if(!e.repeat){const gate=nearbyGate(world.current
   </aside>}
   <section className="we-world" aria-label={mode==='play'?'Playable world':'World viewport'}>
    <canvas ref={canvas} tabIndex={0} aria-label={mode==='edit'?'World canvas. Select an object to edit. Drag ground to pan, pinch or scroll to zoom.':'Play your camp. WASD or arrows to move, Shift to sprint, Space to act, Q to dodge, E to interact, hold R to repair with your hammer.'} onPointerDown={down} onPointerMove={move} onPointerUp={e=>up(e)} onPointerCancel={e=>up(e,true)} onLostPointerCapture={e=>up(e,true)} onContextMenu={e=>e.preventDefault()} onDragOver={e=>{e.preventDefault();e.dataTransfer.dropEffect=mode==='edit'?'copy':'none'}} onDrop={e=>{e.preventDefault();if(mode==='edit'&&ready&&!blockedInput.current){const id=e.dataTransfer.getData('application/safety-last-asset');if(ASSET_BY_ID.has(id))void place(id,point(e.clientX,e.clientY))}}} onWheel={e=>{if(modeRef.current!=='play'&&!blockedInput.current)updateView({zoom:Math.max(.06,Math.min(2,viewRef.current.zoom*(e.deltaY>0?.91:1.1)))})}}/>
-   {mode==='play'&&!startScreen&&<GamePlayMenu hideButton paused={paused} defeated={world.current.phase==='over'} cause={world.current.cause} survival={!!world.current.progression} saveNotice={saveNotice} saveBlocked={saveBlocked.current&&!!world.current.progression} onSandbox={openSandbox} onContinue={()=>void restoreSurvival()} spawns={world.current.progression?undefined:{onSpawn:async(kind,count)=>{const w=world.current,before=w.animals.length+w.enemies.length,message=await spawnEnemies(kind,count);if(world.current===w&&w.animals.length+w.enemies.length>before)resumeGame();return message},onClear:()=>clearPlaySpawns(world.current),onHeal:()=>restoreCombatHealth(world.current)}} diagnostics={{recorder:gamePerformance,onStart:startPerformanceRecording}} fullscreen={display.fullscreen} onPause={pauseGame} onResume={resumeGame} onRestart={restartPlay} onExit={()=>{stopPlay();startPlay()}} onExpand={()=>void display.expand()}/>}
+   {mode==='play'&&!startScreen&&<GamePlayMenu hideButton paused={paused} defeated={world.current.phase==='over'} cause={world.current.cause} survival={!!world.current.progression} saveNotice={saveNotice} saveBlocked={saveBlocked.current&&!!world.current.progression} onSandbox={openSandbox} onContinue={()=>void resumeGame()} spawns={world.current.progression?undefined:{onSpawn:async(kind,count)=>{const w=world.current,before=w.animals.length+w.enemies.length,message=await spawnEnemies(kind,count);if(world.current===w&&w.animals.length+w.enemies.length>before)resumeGame();return message},onClear:()=>clearPlaySpawns(world.current),onHeal:()=>restoreCombatHealth(world.current)}} diagnostics={{recorder:gamePerformance,onStart:startPerformanceRecording}} fullscreen={display.fullscreen} onPause={pauseGame} onResume={resumeGame} onRestart={restartPlay} onExit={()=>{stopPlay();startPlay()}} onExpand={()=>void display.expand()}/>}
    {mode==='play'&&!paused&&!bagOpen&&!mapOpen&&<GamePerformanceOverlay recorder={gamePerformance}/>}
    {mode==='play'&&<div className="game-play-feedback" aria-live="polite">
     {(outdoorStatus||travelStatus)&&!preparingMode&&<div role="status"><span>{travelStatus||outdoorStatus}</span>{(travel.current?.error||outdoorTerrain.current?.error)&&<button onClick={()=>{if(travel.current?.error)travel.current.retry();else outdoorTerrain.current?.retry()}}>Retry</button>}</div>}

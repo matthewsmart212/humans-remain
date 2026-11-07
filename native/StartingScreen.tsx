@@ -9,6 +9,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import StartingScreen from '../src/StartingScreen';
 import {START_SCREEN_MENU_FONT,type StartScreenArtwork} from '../src/start-screen-art';
 import {START_PROFILE_KEY,DEFAULT_START_PROFILE,readStartProfile,type StartProfile} from '../src/start-profile';
+import type {SurvivorRoleId} from '../src/survivor-roles';
 
 const menuArtwork:StartScreenArtwork={
  logo:require('../public/survival/starting-screen-ui-v2/humans-remain-logo.png'),
@@ -27,7 +28,7 @@ const menuArtwork:StartScreenArtwork={
 const menuFonts={[START_SCREEN_MENU_FONT]:require('../public/fonts/camp-menu-semibold.ttf')};
 const menuPoster=require('../public/previews/dawn-camp/start-scene-poster.jpg');
 
-export default function NativeStartingScreen({onPlay,loadingProgress,onLoadingComplete,loadError=''}:{onPlay:()=>void;loadingProgress?:number;onLoadingComplete:()=>void;loadError?:string}){
+export default function NativeStartingScreen({onPlay,loadingProgress,onLoadingComplete,loadError=''}:{onPlay:(role:SurvivorRoleId)=>void;loadingProgress?:number;onLoadingComplete:()=>void;loadError?:string}){
  const {width,height}=useWindowDimensions(),safe=useSafeAreaInsets();
  const [fontsLoaded,fontError]=useFonts(menuFonts);
  const [profile,setProfile]=useState(DEFAULT_START_PROFILE),[loaded,setLoaded]=useState(false),[reduced,setReduced]=useState(true),[firstFrame,setFirstFrame]=useState(false),[notice,setNotice]=useState('');
@@ -68,7 +69,7 @@ export default function NativeStartingScreen({onPlay,loadingProgress,onLoadingCo
  // Keep the approved poster visible until the bundled face is ready, avoiding a
  // one-frame system-font menu. A font error still opens the usable fallback UI.
  if(!fontsLoaded&&!fontError)return <View style={{flex:1,backgroundColor:'#071b1d'}}><StatusBar hidden/><Image source={menuPoster} resizeMode="cover" style={StyleSheet.absoluteFill}/></View>;
- return <View style={{flex:1}}><StatusBar hidden/><StartingScreen width={width} height={height} safe={safe} profile={profile} onProfile={save} onPlay={onPlay} busy={!loaded||loadingProgress!==undefined} loadingProgress={loadingProgress} reducedMotion={reduced||!profile.motion} onLoadingComplete={onLoadingComplete} notice={loadError||notice} artwork={menuArtwork} fontFamily={fontsLoaded?START_SCREEN_MENU_FONT:Platform.OS==='ios'?'Georgia':'serif'} portrait={require('../public/survival/starting-screen-ui-v2/survivor-profile.png')}
+ return <View style={{flex:1}}><StatusBar hidden/><StartingScreen width={width} height={height} safe={safe} profile={profile} onProfile={save} onPlay={()=>onPlay(profile.role)} busy={!loaded||loadingProgress!==undefined} loadingProgress={loadingProgress} reducedMotion={reduced||!profile.motion} onLoadingComplete={onLoadingComplete} notice={loadError||notice} artwork={menuArtwork} fontFamily={fontsLoaded?START_SCREEN_MENU_FONT:Platform.OS==='ios'?'Georgia':'serif'} portrait={require('../public/survival/starting-screen-ui-v2/survivor-profile.png')}
   background={<View pointerEvents="none" style={StyleSheet.absoluteFill}><Image source={menuPoster} resizeMode="cover" style={StyleSheet.absoluteFill}/><VideoView player={player} contentFit="cover" nativeControls={false} allowsPictureInPicture={false} fullscreenOptions={{enable:false}} onFirstFrameRender={()=>setFirstFrame(true)} style={[StyleSheet.absoluteFill,{opacity:firstFrame?1:0}]}/></View>}
   shade={<Canvas pointerEvents="none" style={StyleSheet.absoluteFill}><Rect x={0} y={0} width={width} height={height}><LinearGradient start={vec(0,0)} end={vec(width,0)} colors={['#05191b00','#05191b00','#05191b38','#05191bc4']} positions={[0,.58,.71,1]}/></Rect><Rect x={0} y={0} width={width} height={height}><LinearGradient start={vec(0,height)} end={vec(0,height*.74)} colors={['#06191be0','#06191b00']}/></Rect></Canvas>}/></View>;
 }

@@ -1,8 +1,6 @@
 import NativeStartingScreen from './StartingScreen';
-import {prepareSavedCampArtwork} from '../src/run-save';
-import {NativeRunSaveStore} from './run-save-store';
+import type {SurvivorRoleId} from '../src/survivor-roles';
 import {NativeFrameWorkScheduler} from './frame-work-scheduler';
-import type {TravelSnapshot} from '../src/scene-travel';
 import {stationMenuAnimating,stationMenuRevision} from '../src/station-menu-layout';
 import {normalizeAtlasZoom,settleAtlasZoom} from '../src/continuous-zoom-state';
 import {continuousMapCamera} from '../src/continuous-zoom';
@@ -12,7 +10,6 @@ import {SafeAreaProvider,useSafeAreaInsets} from 'react-native-safe-area-context
 import {Canvas,Picture,Skia,type SkPicture} from '@shopify/react-native-skia';
 import {useSharedValue} from 'react-native-reanimated';
 import {GestureHandlerRootView,GestureDetector} from 'react-native-gesture-handler';
-import AsyncStorage from '@react-native-async-storage/async-storage';
 import * as Haptics from 'expo-haptics';
 import * as Font from 'expo-font';
 import {createCampPlaySession,stepCampPlaySession,type SimulationProfiler} from '../src/studio-play';
@@ -49,19 +46,19 @@ type Mode='loading'|'playing'|'paused'|'bag'|'map'|'error';
 type Runtime={renderer:Awaited<ReturnType<typeof createNativeRenderer>>;outdoor:OutdoorTerrainStream;resources:SceneResourceCache;travel:SceneTravel;saved:SavedWorld;reduced:boolean};
 const zero=()=>({x:0,y:0});
 export default function App(){
- const [entered,setEntered]=useState(false),[launched,setLaunched]=useState(false),[loadingProgress,setLoadingProgress]=useState<number>(),[loadError,setLoadError]=useState('');
+ const [entered,setEntered]=useState(false),[launched,setLaunched]=useState(false),[loadingProgress,setLoadingProgress]=useState<number>(),[loadError,setLoadError]=useState(''),[selectedRole,setSelectedRole]=useState<SurvivorRoleId>('survivor');
  const launchTimer=useRef<ReturnType<typeof setTimeout>|undefined>(undefined),starting=useRef(false);
  useEffect(()=>()=>clearTimeout(launchTimer.current),[]);
- const start=()=>{if(starting.current)return;starting.current=true;setLoadError('');setLoadingProgress(.04);launchTimer.current=setTimeout(()=>setLaunched(true),440)};
+ const start=(role:SurvivorRoleId)=>{if(starting.current)return;setSelectedRole(role);starting.current=true;setLoadError('');setLoadingProgress(.04);launchTimer.current=setTimeout(()=>setLaunched(true),440)};
  const home=()=>{setEntered(false);setLaunched(false);setLoadingProgress(undefined);starting.current=false};
  const failed=useCallback((message:string)=>{setLoadError(message+' Press Play to try again.');setLoadingProgress(undefined);setLaunched(false);starting.current=false},[]);
  return <GestureHandlerRootView style={{flex:1}}><SafeAreaProvider>
-  {launched&&<Game onHome={home} entryVisible={entered} onBootProgress={setLoadingProgress} onBootError={failed}/>}
+  {launched&&<Game role={selectedRole} onHome={home} entryVisible={entered} onBootProgress={setLoadingProgress} onBootError={failed}/>}
   {!entered&&<View style={StyleSheet.absoluteFill}><NativeStartingScreen onPlay={start} loadingProgress={loadingProgress} loadError={loadError} onLoadingComplete={()=>setEntered(true)}/></View>}
  </SafeAreaProvider></GestureHandlerRootView>;
 }
 
-function Game({onHome,entryVisible,onBootProgress,onBootError}:{onHome:()=>void;entryVisible:boolean;onBootProgress:(progress:number)=>void;onBootError:(message:string)=>void}){
+function Game({role,onHome,entryVisible,onBootProgress,onBootError}:{role:SurvivorRoleId;onHome:()=>void;entryVisible:boolean;onBootProgress:(progress:number)=>void;onBootError:(message:string)=>void}){
  const entryVisibleRef=useRef(entryVisible);entryVisibleRef.current=entryVisible;
  const {width,height}=useWindowDimensions(),safe=useSafeAreaInsets(),dimensions=useRef({width,height});dimensions.current={width,height};
  const world=useRef<World|null>(null),runtime=useRef<Runtime|null>(null),input=useRef(zero()),sprint=useRef(false),swing=useRef(false),enabled=useRef(false),modeRef=useRef<Mode>('loading');
@@ -81,21 +78,10 @@ function Game({onHome,entryVisible,onBootProgress,onBootError}:{onHome:()=>void;
  const settleZoom=(interrupted:boolean)=>{gamePerformance.trace(performance.now(),'native-pinch-end',0,{atlasZoom:continuousZoom.current,interrupted});const target=settleAtlasZoom(continuousZoom.current);if(target===continuousZoom.current)return;if(interrupted){pinch.stopAnimation();applyZoom(target)}else animateZoom(target,150)};
  const closeMap=useCallback(()=>animateZoom(.7),[]);
  const fieldKit=useMemo(()=>new FieldKitController(),[]);
- const saveStore=useMemo(()=>new NativeRunSaveStore({getItem:key=>AsyncStorage.getItem(key),setItem:(key,value)=>AsyncStorage.setItem(key,value)}),[]),saveBlocked=useRef(false),saveRunRef=useRef(()=>{}),[saveNotice,setSaveNotice]=useState('');
- const saveRun=(replaceUnreadable=false)=>{
-  const t=runtime.current?.travel;if(!t||saveBlocked.current)return;
-  const recording=gamePerformance.recording,session=gamePerformance.session,started=recording?performance.now():0;
-  try{
-   const prepared=saveStore.prepare(t),encodedAt=recording?performance.now():0;
-   if(recording)gamePerformance.trace(started,'native-save-encode',encodedAt-started,{characters:prepared?.text.length??0,layoutCharacters:prepared?.layoutCharacters??0,serializedLayouts:prepared?.serializedLayouts??0,format:'native-split-layouts'},session);
-   if(prepared)void saveStore.save(prepared,replaceUnreadable).then(()=>{
-    if(recording)gamePerformance.trace(encodedAt,'native-save-write',performance.now()-encodedAt,{ok:!saveStore.error},session);
-    setSaveNotice(saveStore.error);
-   });
-  }catch{setSaveNotice('Progress could not be saved on this device.')}
- };
+ const saveBlocked=useRef(false),saveRunRef=useRef(()=>{}),[saveNotice,setSaveNotice]=useState('');
+ // Never persist run progress: Play creates a new run on each launch.
+ const saveRun=(_replaceUnreadable=false)=>{};
  saveRunRef.current=saveRun;
- useEffect(()=>{const timer=setInterval(()=>saveRunRef.current(),15000);return()=>{saveRunRef.current();clearInterval(timer)}},[]);
  const gamePerformance=useMemo(()=>new GamePerformanceRecorder(),[]);
  const preparation=useMemo(()=>new NativeFrameWorkScheduler(gamePerformance),[gamePerformance]);
  useEffect(()=>()=>preparation.dispose(),[preparation]);
@@ -116,15 +102,13 @@ function Game({onHome,entryVisible,onBootProgress,onBootError}:{onHome:()=>void;
   r.travel=new SceneTravel(next,r.resources,w=>{world.current=w;clear();refresh(n=>n+1)},setStatus);
  };
  const restoreSurvival=async(r:Runtime)=>{
-  await saveStore.flush();saveBlocked.current=false;setSaveNotice('');let snapshot:TravelSnapshot|undefined;
-  try{snapshot=await saveStore.load()}catch(e){saveBlocked.current=true;setSaveNotice(`${(e as Error).message} Your save has been kept. Start a new Survival run to replace it.`)}
-  // Do not autosave the temporary camp world while reopening a saved interior.
-  if(snapshot)saveBlocked.current=true;
-  bindTravel(r,snapshot?.worlds.find(([id])=>id==='camp')?.[1]??createCampPlaySession(r.saved.layout,undefined,'survival'));
-  if(snapshot)try{await prepareSavedCampArtwork(snapshot,r.renderer.warmImages);await r.travel.restore(snapshot);saveBlocked.current=false}catch(e){saveBlocked.current=true;setSaveNotice(`Could not reopen your saved location: ${(e as Error).message}. Your save has been kept.`)}
+  saveBlocked.current=false;setSaveNotice('');
+  const session=createCampPlaySession(r.saved.layout,undefined,'survival');
+  session.survivorRole=role;
+  bindTravel(r,session);
  };
- const restart=()=>{const r=runtime.current;if(!r)return;gamePerformance.stop(performance.now(),'New Survival run');try{clear();continuousZoom.current=1;mapVisible.current=false;setMapOpen(false);atlasZoom.set(1);playView.current.zoom=1;bindTravel(r,createCampPlaySession(r.saved.layout,undefined,'survival'));saveBlocked.current=false;setSaveNotice('');change('playing');saveRun(true)}catch(e){setError(String(e));change('error')}};
- const newRun=()=>Alert.alert('Start a new Survival run?','This replaces your saved Survival run on this device.',[{text:'Keep current run',style:'cancel'},{text:'Start new run',style:'destructive',onPress:restart}]);
+ const restart=()=>{const r=runtime.current;if(!r)return;gamePerformance.stop(performance.now(),'New Survival run');try{clear();continuousZoom.current=1;mapVisible.current=false;setMapOpen(false);atlasZoom.set(1);playView.current.zoom=1;const session=createCampPlaySession(r.saved.layout,undefined,'survival');session.survivorRole=role;bindTravel(r,session);saveBlocked.current=false;setSaveNotice('');change('playing');saveRun(true)}catch(e){setError(String(e));change('error')}};
+ const newRun=()=>Alert.alert('Start a new Survival run?','Your current run will end. The permanent world layout stays unchanged.',[{text:'Keep current run',style:'cancel'},{text:'Start new run',style:'destructive',onPress:restart}]);
  useEffect(()=>{clear()},[width,height]);
  useEffect(()=>{
   let live=true,appActive=AppState.currentState==='active',raf=0,last=0,acc=0,lastTerrain=0,previous:PlayerSample|undefined,activeWorld:World|null=null;
@@ -189,7 +173,7 @@ function Game({onHome,entryVisible,onBootProgress,onBootError}:{onHome:()=>void;
      onBootProgress(.65);
      const resources=await stage('Open scenes',()=>new SceneResourceCache(SCENES,renderer!.warmImages,renderer!.releaseImages)),outdoor=new OutdoorTerrainStream(renderer.warmImages,renderer.releaseImages,setStatus);
      if(!live){resources.dispose();outdoor.dispose();renderer?.dispose();return}
-     local={renderer,resources,outdoor,saved,reduced,travel:undefined as unknown as SceneTravel};runtime.current=local;await stage('Restore survival',()=>restoreSurvival(local!));
+     local={renderer,resources,outdoor,saved,reduced,travel:undefined as unknown as SceneTravel};runtime.current=local;await stage('Start fresh survival',()=>restoreSurvival(local!));
      onBootProgress(.82);
      const w=world.current!,size=dimensions.current,c=editorCamera(size.width,size.height,w,playView.current,1);
      await stage('Settle terrain',async()=>{outdoor.update({x:c.x,y:c.y,width:size.width/c.scale,height:size.height/c.scale},w.player,usesPaintedHomeTerrain(w.layout?.terrainImage));await outdoor.settled();if(outdoor.error)throw Error('The path ahead could not load.');w.outdoorReady=outdoor.ready});
@@ -199,8 +183,6 @@ function Game({onHome,entryVisible,onBootProgress,onBootError}:{onHome:()=>void;
      if(!live){stop();return}
      // Present a complete first frame before removing the loading screen.
      picture.value=await stage('Draw game',()=>renderer!.draw(w,size.width,size.height,local!.travel.opacity));
-     // Prime immutable map serialization before interactive play.
-     saveStore.prepare(local!.travel);
      renderer!.setFrameManaged(true);
      setStatus('');change(!appActive||saveBlocked.current||w.phase==='over'?'paused':'playing');
      onBootProgress(1);
@@ -234,11 +216,11 @@ function Game({onHome,entryVisible,onBootProgress,onBootError}:{onHome:()=>void;
    {!active&&mode!=='bag'&&mode!=='map'&&<View style={[s.overlay,{paddingTop:safe.top+20,paddingBottom:safe.bottom+20,paddingLeft:safe.left+20,paddingRight:safe.right+20}]}>{mode==='paused'&&performanceOpen?<NativePerformancePanel recorder={gamePerformance} onStart={startRecording} onBack={()=>setPerformanceOpen(false)} defeated={w?.phase==='over'||saveBlocked.current} wide={wide}/>:<ScrollView style={[s.dialog,wide&&s.dialogWide]} contentContainerStyle={s.dialogContent}>
     <Text style={s.title}>{mode==='paused'?(w?.phase==='over'?'Run ended':'Game paused'):mode==='error'?'Unable to open game':'Humans Remain'}</Text>
     <Text style={s.description}>{mode==='loading'?status:mode==='error'?error:w?.phase==='over'?(w.cause||'Your health reached zero.'):'Your game is paused.'}</Text>
-    {mode==='paused'&&<Text style={s.description}>{saveNotice||'Progress saves on this device.'}</Text>}
+    {mode==='paused'&&<Text style={s.description}>{saveNotice||'Each Play starts a new Survival run.'}</Text>}
     {mode==='paused'&&<View style={[s.menu,wide&&s.menuWide]}>
      {w?.phase!=='over'&&!saveBlocked.current&&button('Resume',()=>{clear();change('playing');saveRun()},false,wide&&s.menuItem)}
      {button('New Survival run',newRun,false,wide&&s.menuItem)}
-     {button('Starting screen',()=>{clear();saveRun();void saveStore.flush().then(onHome)},false,wide&&s.menuItem)}
+     {button('Starting screen',()=>{clear();saveRun();onHome()},false,wide&&s.menuItem)}
      <Text style={s.section}>SETTINGS · PERFORMANCE</Text>
      <NativePerformanceMenuOptions recorder={gamePerformance} onOpen={()=>setPerformanceOpen(true)} style={wide&&s.menuItem}/>
     </View>}

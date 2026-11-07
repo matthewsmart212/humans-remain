@@ -1,4 +1,5 @@
 import {drawRepairHammer} from './repair-hammer';
+import {drawEngineerIdentity} from './engineer-renderer';
 import {isPickaxe} from './pickaxes';
 import {drawPickaxe} from './mining-renderer';
 import {heldProvision} from './food-provisions';
@@ -33,11 +34,11 @@ export function drawWorker(ctx:CanvasRenderingContext2D,imgs:Record<string,HTMLI
  const image=imgs[f.sheet];if(!image)return;
  const [sx,sy,sw,sh]=f.crop,k=f.scale;
  ctx.save();ctx.translate(held?.x??p.x,held?.y??p.y-(w.bruteGrab?.lift??0));
- if(held){if(held.tilt)ctx.rotate(held.tilt);if(facing.mirror)ctx.scale(-1,1);ctx.drawImage(image,sx,sy,sw,sh,-f.anchor[0]*k,-f.anchor[1]*k,sw*k,sh*k);ctx.restore();return}
+ if(held){if(held.tilt)ctx.rotate(held.tilt);if(facing.mirror)ctx.scale(-1,1);ctx.drawImage(image,sx,sy,sw,sh,-f.anchor[0]*k,-f.anchor[1]*k,sw*k,sh*k);drawEngineerIdentity(ctx,w,facing.view);ctx.restore();return}
  if(p.hurtUntil>t&&!w.weather?.reducedMotion&&Math.floor(t*18)%2===0)ctx.globalAlpha=.5;
  if(p.downedUntil)ctx.scale(1,87/142);
- if(drawRunnerBow(ctx,imgs,w)){ctx.restore();return}
- if(!isPickaxe(p.equipped)&&drawRunnerAxeAttack(ctx,imgs,w)){ctx.restore();return}
+ if(drawRunnerBow(ctx,imgs,w)){if(facing.mirror)ctx.scale(-1,1);drawEngineerIdentity(ctx,w,facing.view);ctx.restore();return}
+ if(!isPickaxe(p.equipped)&&drawRunnerAxeAttack(ctx,imgs,w)){if(facing.mirror)ctx.scale(-1,1);drawEngineerIdentity(ctx,w,facing.view);ctx.restore();return}
  if(facing.mirror)ctx.scale(-1,1);
  if(cycle)ctx.translate(0,cycle.bob*(p.walkBlend??1));
  const hammer=p.equipped==='repairHammer',pickaxe=isPickaxe(p.equipped),axeImage=imgs[hammer?'repairHammer':pickaxe?p.equipped as string:p.equipped==='woodenAxe'?'woodenAxe':'campAxe'];
@@ -71,5 +72,6 @@ export function drawWorker(ctx:CanvasRenderingContext2D,imgs:Record<string,HTMLI
  if(spear&&!spear.behind&&spearImage){drawSpear(ctx,spearImage,spear,'tip');drawWeaponGrip(ctx,image,f,spear)}
  if(axe&&!axe.behind){(hammer?drawRepairHammer:pickaxe?drawPickaxe:drawAxe)(ctx,axeImage,axe);drawAxeGrip(ctx,image,f,axe.hand)}
  if(meal&&!meal.behind){drawMeal();drawAxeGrip(ctx,image,f,meal.hand)}
+ drawEngineerIdentity(ctx,w,facing.view);
  ctx.restore();
 }
