@@ -1,5 +1,8 @@
 import NativeStartingScreen from './StartingScreen';
-import type {SurvivorRoleId} from '../src/survivor-roles';
+import {SURVIVOR_ROLES,type SurvivorRoleId} from '../src/survivor-roles';
+import {START_PROFILE_KEY,readStartProfile} from '../src/start-profile';
+import {playerMovementImagesForRole} from '../src/gameplay-artwork';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import {HUNTER_IMAGE_SOURCES} from '../src/hunter-sprites';
 import {NativeFrameWorkScheduler} from './frame-work-scheduler';
 import {stationMenuAnimating,stationMenuRevision} from '../src/station-menu-layout';
@@ -61,6 +64,8 @@ export default function App(){
 
 function Game({role,onHome,entryVisible,onBootProgress,onBootError}:{role:SurvivorRoleId;onHome:()=>void;entryVisible:boolean;onBootProgress:(progress:number)=>void;onBootError:(message:string)=>void}){
  const entryVisibleRef=useRef(entryVisible);entryVisibleRef.current=entryVisible;
+ const [activeRole,setActiveRole]=useState<SurvivorRoleId>(role);
+ const [characterOpen,setCharacterOpen]=useState(false),[characterLoading,setCharacterLoading]=useState(false),[characterError,setCharacterError]=useState('');
  const {width,height}=useWindowDimensions(),safe=useSafeAreaInsets(),dimensions=useRef({width,height});dimensions.current={width,height};
  const world=useRef<World|null>(null),runtime=useRef<Runtime|null>(null),input=useRef(zero()),sprint=useRef(false),swing=useRef(false),enabled=useRef(false),modeRef=useRef<Mode>('loading');
  const playView=useRef({...PLAY_VIEW});
@@ -108,7 +113,25 @@ function Game({role,onHome,entryVisible,onBootProgress,onBootError}:{role:Surviv
   session.survivorRole=role;
   bindTravel(r,session);
  };
- const restart=()=>{const r=runtime.current;if(!r)return;gamePerformance.stop(performance.now(),'New Survival run');try{clear();continuousZoom.current=1;mapVisible.current=false;setMapOpen(false);atlasZoom.set(1);playView.current.zoom=1;const session=createCampPlaySession(r.saved.layout,undefined,'survival');session.survivorRole=role;bindTravel(r,session);saveBlocked.current=false;setSaveNotice('');change('playing');saveRun(true)}catch(e){setError(String(e));change('error')}};
+ const restart=()=>{const r=runtime.current;if(!r)return;gamePerformance.stop(performance.now(),'New Survival run');try{clear();continuousZoom.current=1;mapVisible.current=false;setMapOpen(false);atlasZoom.set(1);playView.current.zoom=1;const session=createCampPlaySession(r.saved.layout,undefined,'survival');session.survivorRole=activeRole;bindTravel(r,session);saveBlocked.current=false;setSaveNotice('');change('playing');saveRun(true)}catch(e){setError(String(e));change('error')}};
+ const changeCharacter=async(next:SurvivorRoleId)=>{
+  const r=runtime.current,w=world.current;
+  if(!r||!w||modeRef.current!=='paused'||w.phase==='over'||characterLoading||next===activeRole)return;
+  setCharacterLoading(true);setCharacterError('');
+  // Paused native frames do not drain background warm jobs. Temporarily use
+  // the standalone image preparation queue to avoid deadlocking the menu.
+  r.renderer.setFrameManaged(false);
+  try{
+   await r.renderer.warmImages(playerMovementImagesForRole(next),'foreground');
+   if(world.current!==w||runtime.current!==r)throw Error('The game changed while loading character artwork.');
+   w.survivorRole=next;setActiveRole(next);refresh(n=>n+1);
+   try{
+    const saved=readStartProfile(await AsyncStorage.getItem(START_PROFILE_KEY));
+    await AsyncStorage.setItem(START_PROFILE_KEY,JSON.stringify({...saved,role:next}));
+   }catch{setCharacterError('Character changed in this run, but the next-run preference could not be saved.')}
+  }catch(error){setCharacterError(error instanceof Error?error.message:'Character artwork could not load. Retry.')}
+  finally{r.renderer.setFrameManaged(true);setCharacterLoading(false)}
+ };
  const newRun=()=>Alert.alert('Start a new Survival run?','Your current run will end. The permanent world layout stays unchanged.',[{text:'Keep current run',style:'cancel'},{text:'Start new run',style:'destructive',onPress:restart}]);
  useEffect(()=>{clear()},[width,height]);
  useEffect(()=>{
@@ -215,11 +238,20 @@ function Game({role,onHome,entryVisible,onBootProgress,onBootError}:{role:Surviv
   {w&&active&&<Profiler id="native-map" onRender={profileRender}><NativePlayerMap nativePinch={pinch.registration} presentation={pinch.amount} pinchGesture={pinch.gesture} pinching={pinch.uiPinching} preparation={preparation} diagnostics={gamePerformance} onReady={onMapReady} active={mapOpen} world={world} width={width} height={height} safe={safe} camera={atlasCamera} zoom={atlasZoom} pump={mapPump} onTouchStart={pinch.start} onClose={closeMap}/></Profiler>}
   {w&&active&&<NativePerformanceOverlay recorder={gamePerformance} top={mapOpen?safe.top+8:safe.top+116} left={mapOpen?safe.left+8:safe.left+16}/>}
    {!active&&mode!=='bag'&&mode!=='map'&&<View style={[s.overlay,{paddingTop:safe.top+20,paddingBottom:safe.bottom+20,paddingLeft:safe.left+20,paddingRight:safe.right+20}]}>{mode==='paused'&&performanceOpen?<NativePerformancePanel recorder={gamePerformance} onStart={startRecording} onBack={()=>setPerformanceOpen(false)} defeated={w?.phase==='over'||saveBlocked.current} wide={wide}/>:<ScrollView style={[s.dialog,wide&&s.dialogWide]} contentContainerStyle={s.dialogContent}>
-    <Text style={s.title}>{mode==='paused'?(w?.phase==='over'?'Run ended':'Game paused'):mode==='error'?'Unable to open game':'Humans Remain'}</Text>
-    <Text style={s.description}>{mode==='loading'?status:mode==='error'?error:w?.phase==='over'?(w.cause||'Your health reached zero.'):'Your game is paused.'}</Text>
-    {mode==='paused'&&<Text style={s.description}>{saveNotice||'Each Play starts a new Survival run.'}</Text>}
-    {mode==='paused'&&<View style={[s.menu,wide&&s.menuWide]}>
+    <Text style={s.title}>{mode==='paused'&&characterOpen?'Change character':mode==='paused'?(w?.phase==='over'?'Run ended':'Game paused'):mode==='error'?'Unable to open game':'Humans Remain'}</Text>
+    <Text style={s.description}>{mode==='paused'&&characterOpen?'Switch characters without resetting your position, gear, or run.':mode==='loading'?status:mode==='error'?error:w?.phase==='over'?(w.cause||'Your health reached zero.'):'Your game is paused.'}</Text>
+    {mode==='paused'&&!characterOpen&&<Text style={s.description}>{saveNotice||'Each Play starts a new Survival run.'}</Text>}
+    {mode==='paused'&&characterOpen?<View style={s.menu}>
+     <View style={s.characterGrid}>{SURVIVOR_ROLES.map(choice=><Pressable accessibilityRole="button" accessibilityState={{selected:activeRole===choice.id,disabled:characterLoading}} key={choice.id} disabled={characterLoading} onPress={()=>void changeCharacter(choice.id)} style={[s.characterChoice,activeRole===choice.id&&s.characterSelected]}>
+      <Text style={s.characterGlyph}>{choice.glyph}</Text><View style={{flex:1}}><Text style={s.buttonText}>{choice.label}{activeRole===choice.id?'  ✓':''}</Text><Text style={s.small}>{choice.subtitle}</Text></View>
+     </Pressable>)}</View>
+     {characterLoading&&<Text style={s.description}>Loading character artwork…</Text>}
+     {!!characterError&&<Text accessibilityRole="alert" style={s.description}>{characterError}</Text>}
+     <Text style={s.description}>Hunter running temporarily uses walking sprites. Medic uses Survivor artwork.</Text>
+     {button('Back to settings',()=>setCharacterOpen(false),characterLoading)}
+    </View>:mode==='paused'&&<View style={[s.menu,wide&&s.menuWide]}>
      {w?.phase!=='over'&&!saveBlocked.current&&button('Resume',()=>{clear();change('playing');saveRun()},false,wide&&s.menuItem)}
+     {w?.phase!=='over'&&button('Change character · '+(SURVIVOR_ROLES.find(option=>option.id===activeRole)?.label??'Survivor'),()=>{setCharacterError('');setCharacterOpen(true)},false,wide&&s.menuItem)}
      {button('New Survival run',newRun,false,wide&&s.menuItem)}
      {button('Starting screen',()=>{clear();saveRun();onHome()},false,wide&&s.menuItem)}
      <Text style={s.section}>SETTINGS · PERFORMANCE</Text>
@@ -229,4 +261,4 @@ function Game({role,onHome,entryVisible,onBootProgress,onBootError}:{role:Surviv
    </ScrollView>}</View>}
  </View></GestureDetector>;
 }
-const s=StyleSheet.create({root:{flex:1,backgroundColor:'#100e0c'},hud:{position:'absolute',flexDirection:'row',alignItems:'center',gap:8},stats:{flex:1,backgroundColor:'#102d30e8',borderRadius:10,padding:9},text:{color:'#ffe9c1',fontSize:15,fontWeight:'800'},small:{color:'#e8d9b8',fontSize:12,lineHeight:17},controls:{position:'absolute',flexDirection:'row',alignItems:'flex-end',justifyContent:'space-between'},leftControls:{gap:8,alignItems:'center'},joystick:{width:108,height:108,borderRadius:60,borderWidth:2,borderColor:'#d8c69988',backgroundColor:'#102d3066',alignItems:'center',justifyContent:'center'},thumb:{width:46,height:46,borderRadius:24,backgroundColor:'#e7d6a9aa',borderWidth:2,borderColor:'#f5e3bd'},actions:{alignItems:'flex-end',gap:8,maxWidth:240},row:{flexDirection:'row',gap:8},button:{minHeight:44,paddingHorizontal:13,paddingVertical:10,borderRadius:10,borderWidth:1,borderColor:'#938260',backgroundColor:'#183738ed',justifyContent:'center',alignItems:'center'},buttonText:{fontSize:14,fontWeight:'800',color:'#ffe4b2'},disabled:{opacity:.4},attack:{width:104,height:76,borderRadius:30,borderWidth:2,borderColor:'#e9bc77',backgroundColor:'#9c5428e8',alignItems:'center',justifyContent:'center'},notice:{position:'absolute',alignSelf:'center',top:'28%',maxWidth:'86%',backgroundColor:'#102d30ed',borderRadius:9,padding:10},overlay:{position:'absolute',top:0,bottom:0,left:0,right:0,justifyContent:'center',alignItems:'center',padding:24,backgroundColor:'#100e0cbb'},dialog:{width:'100%',maxWidth:420,maxHeight:'100%',flexGrow:0,borderRadius:16,borderWidth:1,borderColor:'#9b8054',backgroundColor:'#153234f5'},dialogWide:{maxWidth:720},dialogContent:{padding:24,gap:12},menu:{gap:12},menuWide:{flexDirection:'row',flexWrap:'wrap',justifyContent:'space-between',rowGap:12},menuItem:{width:'48.5%'},section:{width:'100%',fontSize:11,letterSpacing:2,color:'#b5bd9f',textAlign:'center',marginTop:4},title:{fontSize:30,fontWeight:'900',color:'#f6d69c',textAlign:'center'},description:{fontSize:15,lineHeight:22,color:'#e4d5b5',textAlign:'center'}});
+const s=StyleSheet.create({root:{flex:1,backgroundColor:'#100e0c'},hud:{position:'absolute',flexDirection:'row',alignItems:'center',gap:8},stats:{flex:1,backgroundColor:'#102d30e8',borderRadius:10,padding:9},text:{color:'#ffe9c1',fontSize:15,fontWeight:'800'},small:{color:'#e8d9b8',fontSize:12,lineHeight:17},controls:{position:'absolute',flexDirection:'row',alignItems:'flex-end',justifyContent:'space-between'},leftControls:{gap:8,alignItems:'center'},joystick:{width:108,height:108,borderRadius:60,borderWidth:2,borderColor:'#d8c69988',backgroundColor:'#102d3066',alignItems:'center',justifyContent:'center'},thumb:{width:46,height:46,borderRadius:24,backgroundColor:'#e7d6a9aa',borderWidth:2,borderColor:'#f5e3bd'},actions:{alignItems:'flex-end',gap:8,maxWidth:240},row:{flexDirection:'row',gap:8},button:{minHeight:44,paddingHorizontal:13,paddingVertical:10,borderRadius:10,borderWidth:1,borderColor:'#938260',backgroundColor:'#183738ed',justifyContent:'center',alignItems:'center'},buttonText:{fontSize:14,fontWeight:'800',color:'#ffe4b2'},disabled:{opacity:.4},attack:{width:104,height:76,borderRadius:30,borderWidth:2,borderColor:'#e9bc77',backgroundColor:'#9c5428e8',alignItems:'center',justifyContent:'center'},notice:{position:'absolute',alignSelf:'center',top:'28%',maxWidth:'86%',backgroundColor:'#102d30ed',borderRadius:9,padding:10},overlay:{position:'absolute',top:0,bottom:0,left:0,right:0,justifyContent:'center',alignItems:'center',padding:24,backgroundColor:'#100e0cbb'},dialog:{width:'100%',maxWidth:420,maxHeight:'100%',flexGrow:0,borderRadius:16,borderWidth:1,borderColor:'#9b8054',backgroundColor:'#153234f5'},dialogWide:{maxWidth:720},dialogContent:{padding:24,gap:12},menu:{gap:12},menuWide:{flexDirection:'row',flexWrap:'wrap',justifyContent:'space-between',rowGap:12},menuItem:{width:'48.5%'},characterGrid:{flexDirection:'row',flexWrap:'wrap',gap:10,justifyContent:'space-between'},characterChoice:{width:'48%',minHeight:70,flexDirection:'row',alignItems:'center',gap:8,padding:10,borderRadius:10,borderWidth:1,borderColor:'#938260',backgroundColor:'#183738ed'},characterSelected:{borderColor:'#f5c77e',backgroundColor:'#375344'},characterGlyph:{fontSize:24,color:'#f5c77e'},section:{width:'100%',fontSize:11,letterSpacing:2,color:'#b5bd9f',textAlign:'center',marginTop:4},title:{fontSize:30,fontWeight:'900',color:'#f6d69c',textAlign:'center'},description:{fontSize:15,lineHeight:22,color:'#e4d5b5',textAlign:'center'}});
