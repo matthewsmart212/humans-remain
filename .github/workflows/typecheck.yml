@@ -18,6 +18,8 @@ jobs:
           cache: npm
       - run: npm ci
       - run: npm run typecheck
+      - name: Test all Hunter walking frames and carried tools
+        run: node scripts/check-hunter-walk-frames.mjs
   native:
     runs-on: ubuntu-latest
     timeout-minutes: 15
