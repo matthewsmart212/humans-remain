@@ -8,6 +8,23 @@ export function artworkFailureDetails(error:unknown){
  return {errorName:name.slice(0,40),failure:name==='AbortError'?'aborted':status?'http':/stalled|too long|timeout/i.test(message)?'timeout':name==='TypeError'?'network-or-api':'decode-or-render',httpStatus:status?Number(status):0};
 }
 
+/** Bound image decoding, native asset operations and graphics startup. */
+export function loadingDeadline<T>(task:Promise<T>,timeoutMs:number,signal?:AbortSignal,message='Loading took too long. Please retry.'){
+ return new Promise<T>((resolve,reject)=>{
+  let finished=false;
+  const finish=(error:unknown,value?:T)=>{
+   if(finished)return;
+   finished=true;clearTimeout(timer);signal?.removeEventListener('abort',cancel);
+   error?reject(error):resolve(value!);
+  };
+  const cancel=()=>finish(aborted(signal));
+  const timer=setTimeout(()=>finish(new Error(message)),timeoutMs);
+  task.then(value=>finish(null,value),error=>finish(error));
+  signal?.addEventListener('abort',cancel,{once:true});
+  if(signal?.aborted)cancel();
+ });
+}
+
 /** Bound the total request, but restart the HTTP attempt if it stalls.
  * Mobile Safari can leave fetch() or its response body pending indefinitely.
  * Progress chunks reset the inactivity clock on a legitimately slow download.
