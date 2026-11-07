@@ -42,6 +42,9 @@ export default function StartingScreen({width,height,safe={top:0,bottom:0,left:0
    <View nativeID="start-logo-atmosphere" pointerEvents="none" style={[StyleSheet.absoluteFill,...(Platform.OS==='web'?[]:[{borderRadius:unit(28),backgroundColor:'#102e2f35',shadowColor:'#061a1c',shadowOpacity:.6,shadowRadius:unit(30)}])]} />
    <Image accessibilityLabel="Humans Remain" source={artwork.logo} resizeMode="contain" style={{width:'100%',height:'100%'}}/>
   </View>
+  <Pressable accessibilityRole="switch" accessibilityLabel={profile.muted?'Unmute menu music':'Mute menu music'} accessibilityState={{checked:!profile.muted}} onPress={()=>onProfile({...profile,muted:!profile.muted})} hitSlop={6} style={[s.soundToggle,{right:safe.right+gutter+Math.max(44,unit(48))+unit(12),top:safe.top+availableHeight*.05,width:Math.max(44,unit(48)),height:Math.max(44,unit(48))}]}>
+   <Text accessible={false} style={{fontSize:Math.max(22,unit(27)),lineHeight:Math.max(33,unit(38)),textAlign:'center'}}>{profile.muted?'🔇':'🔊'}</Text>
+  </Pressable>
   <Pressable accessibilityRole="button" accessibilityLabel="Starting screen settings" disabled={busy||loading} onPress={()=>setPanel('settings')} hitSlop={8} style={[s.settings,{right:safe.right+gutter,top:safe.top+availableHeight*.05,width:Math.max(44,unit(48)),height:Math.max(44,unit(48))}]}>{icon('settings',35)}</Pressable>
   <View style={[s.menu,{right:safe.right+gutter,bottom:portraitMode?bottomBaseline+unit(128):bottomBaseline,width:menuWidth}]}>
    <View style={{width:panelWidth,height:panelHeight,alignSelf:'flex-end'}}>
@@ -76,6 +79,7 @@ const s=StyleSheet.create({
  root:{position:'absolute',top:0,left:0,right:0,bottom:0,backgroundColor:'#071b1d',zIndex:1000,overflow:'hidden'},
  logo:{position:'absolute'},
  settings:{backgroundColor:'transparent',borderWidth:0,padding:0,position:'absolute',alignItems:'flex-end',justifyContent:'center'},
+ soundToggle:{position:'absolute',alignItems:'center',justifyContent:'center',borderColor:'#d0b17c55',borderWidth:1,borderRadius:12,backgroundColor:'#071b1db0'},
  menu:{position:'absolute'},
  pressed:{backgroundColor:'#d995261c'},detail:{color:'#d5bea0',fontSize:12,letterSpacing:3},noticeBanner:{position:'absolute',paddingHorizontal:12,paddingVertical:8,gap:5,backgroundColor:'#061c1ee8',borderRadius:5},notice:{color:'#ffe2b8',fontSize:13,lineHeight:18},
  stats:{position:'absolute',flexDirection:'row',alignItems:'center',borderBottomWidth:1,borderBottomColor:'#ad8e5770'},identity:{},nameRow:{flexDirection:'row',alignItems:'center'},name:{color:'#f2dfb0'},level:{color:'#f5ae35'},xpRow:{flexDirection:'row',alignItems:'center'},xp:{borderWidth:1,borderColor:'#cfaa5c',backgroundColor:'#081d1fc9',overflow:'hidden'},xpFill:{height:'100%',width:0,backgroundColor:'#ffa312',borderRadius:8},xpText:{color:'#f1dfad'},
