@@ -3,7 +3,7 @@ import {View,Image,StyleSheet,AppState,AccessibilityInfo,StatusBar,useWindowDime
 import {useSafeAreaInsets} from 'react-native-safe-area-context';
 import {Canvas,Rect,LinearGradient,vec} from '@shopify/react-native-skia';
 import {useVideoPlayer,VideoView} from 'expo-video';
-import {useAudioPlayer,setAudioModeAsync} from 'expo-audio';
+import {useAudioPlayer,useAudioPlayerStatus,setAudioModeAsync} from 'expo-audio';
 import {useFonts} from 'expo-font';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import StartingScreen from '../src/StartingScreen';
@@ -36,6 +36,7 @@ export default function NativeStartingScreen({onPlay,loadingProgress,onLoadingCo
  // The same approved soundtrack is published by GitHub, independently of the video.
  // Use a URI rather than a require() until the binary import commit has landed.
  const music=useAudioPlayer({uri:'https://raw.githubusercontent.com/matthewsmart212/humans-remain/main/public/audio/start-menu.mp3'});
+ const musicStatus=useAudioPlayerStatus(music);
  const firstMusicAt=useRef<number|null>(null);
  useEffect(()=>{void setAudioModeAsync({playsInSilentMode:true,shouldPlayInBackground:false,interruptionMode:'mixWithOthers'}).catch(()=>{})},[]);
  useEffect(()=>{
@@ -45,15 +46,19 @@ export default function NativeStartingScreen({onPlay,loadingProgress,onLoadingCo
   const sync=()=>{
    stopFade();
    if(!loaded||profile.muted||AppState.currentState!=='active'){music.pause();music.volume=0;return}
+   // Start the ramp only after the audio is loaded and actually playing,
+   // not while a remote MP3 is still buffering over a slow connection.
+   if(!musicStatus.isLoaded){music.volume=0;return}
+   if(!musicStatus.playing){music.volume=0;music.play();return}
    if(firstMusicAt.current===null)firstMusicAt.current=Date.now();
    const tick=()=>{const level=Math.min(1,Math.max(0,(Date.now()-firstMusicAt.current!)/3000));music.volume=level;if(level>=1)stopFade()};
-   tick();music.play();
+   tick();
    if(music.volume<1)fadeTimer=setInterval(tick,50);
   };
   sync();
   const subscription=AppState.addEventListener('change',sync);
   return()=>{subscription.remove();stopFade();music.pause()};
- },[music,loaded,profile.muted]);
+ },[music,loaded,profile.muted,musicStatus.isLoaded,musicStatus.playing]);
 
  useEffect(()=>{let live=true;void AsyncStorage.getItem(START_PROFILE_KEY).then(text=>{if(live)setProfile(readStartProfile(text))}).catch(()=>{if(live)setNotice('Your survivor preferences could not be read.')}).finally(()=>{if(live)setLoaded(true)});return()=>{live=false}},[]);
  useEffect(()=>{let live=true,changed=false;void AccessibilityInfo.isReduceMotionEnabled().then(value=>{if(live&&!changed)setReduced(value)}).catch(()=>{});const subscription=AccessibilityInfo.addEventListener('reduceMotionChanged',value=>{changed=true;setReduced(value)});return()=>{live=false;subscription.remove()}},[]);
