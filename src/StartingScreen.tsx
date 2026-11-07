@@ -43,7 +43,10 @@ export default function StartingScreen({width,height,safe={top:0,bottom:0,left:0
    <Image accessibilityLabel="Humans Remain" source={artwork.logo} resizeMode="contain" style={{width:'100%',height:'100%'}}/>
   </View>
   <Pressable accessibilityRole="switch" accessibilityLabel={profile.muted?'Unmute menu music':'Mute menu music'} accessibilityState={{checked:!profile.muted}} onPress={()=>onProfile({...profile,muted:!profile.muted})} hitSlop={6} style={[s.soundToggle,{right:safe.right+gutter+Math.max(44,unit(48))+unit(12),top:safe.top+availableHeight*.05,width:Math.max(44,unit(48)),height:Math.max(44,unit(48))}]}>
-   <Text accessible={false} style={{fontSize:Math.max(22,unit(27)),lineHeight:Math.max(33,unit(38)),textAlign:'center'}}>{profile.muted?'🔇':'🔊'}</Text>
+   <View accessible={false} pointerEvents="none" style={{width:Math.max(31,unit(35)),height:Math.max(31,unit(35)),alignItems:'center',justifyContent:'center'}}>
+    <Text style={{position:'absolute',left:0,top:0,fontSize:Math.max(27,unit(31)),lineHeight:Math.max(33,unit(37)),fontWeight:'bold',color:'#d6bc8b',textShadowColor:'#1b120a',textShadowRadius:2}}>◀</Text>
+    {profile.muted?<Text style={{position:'absolute',right:0,top:0,fontSize:Math.max(26,unit(30)),lineHeight:Math.max(33,unit(37)),fontWeight:'bold',color:'#d6bc8b'}}>×</Text>:<Text style={{position:'absolute',right:0,top:0,fontSize:Math.max(23,unit(26)),lineHeight:Math.max(33,unit(37)),fontWeight:'bold',color:'#d6bc8b'}}>))</Text>}
+   </View>
   </Pressable>
   <Pressable accessibilityRole="button" accessibilityLabel="Starting screen settings" disabled={busy||loading} onPress={()=>setPanel('settings')} hitSlop={8} style={[s.settings,{right:safe.right+gutter,top:safe.top+availableHeight*.05,width:Math.max(44,unit(48)),height:Math.max(44,unit(48))}]}>{icon('settings',35)}</Pressable>
   <View style={[s.menu,{right:safe.right+gutter,bottom:portraitMode?bottomBaseline+unit(128):bottomBaseline,width:menuWidth}]}>
