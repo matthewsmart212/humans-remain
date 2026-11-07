@@ -34,12 +34,19 @@ export function finalizePublishAssets(circularWallImages,historicalPublishExport
  fs.cpSync(source,target,{recursive:true,filter:filename=>{
   const relative=path.relative(source,filename).split(path.sep).join('/');
   const url=relative.startsWith('client/')?'/'+relative.slice(7):'';
-  const previewSource=url.startsWith('/previews/dawn-camp/')&&fs.statSync(filename).isFile()&&!['watch.html','preview-poster.webp'].includes(path.basename(filename));
+  const previewSource=url.startsWith('/previews/dawn-camp/')&&fs.statSync(filename).isFile()&&!['watch.html','preview-poster.webp','start-scene.mp4','start-scene-poster.jpg'].includes(path.basename(filename));
   const unused=isTemporaryPublishPath(relative)||previewSource||url.startsWith('/api/asset-files/')||retired.some(old=>url===old||url.startsWith(old+'/'))||
    wallFolders.some(folder=>url.startsWith('/survival/'+folder+'/'))&&fs.statSync(filename).isFile()&&!circularWallImages.has(url);
   if(unused){excluded++;if(fs.statSync(filename).isFile())bytes+=fs.statSync(filename).size;return false}
   return true;
  }});
+ // The actual starting-screen film and its decoded-frame fallback must be
+ // deployed as assets; losing both previously showed only the dark HUD.
+ for(const media of ['start-scene.mp4','start-scene-poster.jpg']){
+  const pathToMedia=path.join(target,'client/previews/dawn-camp',media);
+  assert(fs.existsSync(pathToMedia)&&fs.statSync(pathToMedia).size>1024,
+   'Required start-screen media missing from publish bundle: '+pathToMedia);
+ }
  for(const url of circularWallImages)assert(fs.existsSync(path.join(target,'client'+url)),'Required wall: '+url);
  for(const file of ['cutaway-v3','exterior','ruined-cutaway-v3','ruined','settled-ground-v6','rooted-footing-v6'])assert(fs.existsSync(path.join(target,'client/survival/headquarters-south-v1',file+'.webp')),'Required headquarters state: '+file);
  for(const url of retired)assert(!fs.existsSync(path.join(target,'client'+url)),'Retired export cannot enter the final publish tree: '+url);
