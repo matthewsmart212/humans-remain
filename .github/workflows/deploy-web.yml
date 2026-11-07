@@ -11,9 +11,11 @@ on:
 permissions:
   contents: read
 
+# Let an in-flight asset-heavy deploy finish even when another commit arrives.
+# GitHub keeps at most one pending successor and updates to the newest main.
 concurrency:
   group: humans-remain-web-deployment
-  cancel-in-progress: true
+  cancel-in-progress: false
 
 jobs:
   deploy:
