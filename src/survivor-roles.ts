@@ -1,4 +1,4 @@
-/** Four selectable archetypes. Modifiers and alternate sprite atlases will be wired up later. */
+/** Four selectable archetypes; Hunter and Engineer have their own painted gameplay sprites. */
 export const SURVIVOR_ROLES=[
  {id:'survivor',label:'Survivor',subtitle:'All-rounder',glyph:'★',health:100,stamina:100,gathering:3,support:3,description:'A reliable choice with balanced survival stats.'},
  {id:'engineer',label:'Engineer',subtitle:'Builds & repairs',glyph:'⚙',health:95,stamina:95,gathering:4,support:5,description:'Strong camp utility and gathering, with slightly less health and stamina.'},

@@ -1,5 +1,6 @@
 import {drawRepairHammer} from './repair-hammer';
 import {ENGINEER_ART,engineerCycle} from './engineer-sprites';
+import {HUNTER_ART,hunterCycle,hunterFacing} from './hunter-sprites';
 import {isPickaxe} from './pickaxes';
 import {drawPickaxe} from './mining-renderer';
 import {heldProvision} from './food-provisions';
@@ -25,13 +26,14 @@ import {heldMeal} from './food-items';
 /** Character rendering shared by gameplay, world editor and art yard. */
 export function drawWorker(ctx:CanvasRenderingContext2D,imgs:Record<string,HTMLImageElement>,w:World,_atlas?:Atlas,held?:{x:number;y:number;tilt?:number}){
  const p=w.player,t=timeOf(w),animation=held?{direction:p.direction,pose:'idle' as const}:workerAnimation(w);
- const engineer=w.survivorRole==='engineer';
- const facing=engineer?{view:animation.direction,mirror:false}:runnerFacing(animation.direction);
- const art=engineer?ENGINEER_ART[animation.direction]:SURVIVOR_ART[facing.view];
+ const engineer=w.survivorRole==='engineer',hunter=w.survivorRole==='hunter';
+ const ownSprite=engineer||hunter;
+ const facing=hunter?hunterFacing(animation.direction):engineer?{view:animation.direction,mirror:false}:runnerFacing(animation.direction);
+ const art=hunter?HUNTER_ART[animation.direction]:engineer?ENGINEER_ART[animation.direction]:SURVIVOR_ART[facing.view];
  const swordMoving=isSword(p.equipped)&&!!w.swordThrust&&p.moving;
  const moving=(animation.pose==='walk'||animation.pose==='run'||swordMoving||isPickaxe(p.equipped)&&!!w.axeSwing&&p.moving)&&!p.downedUntil;
  const running=!w.swordThrust&&(p.runBlend??0)>.45;
- const cycle=moving?(engineer?engineerCycle(animation.direction,p.walkDistance,running):runnerCycle(animation.direction,p.walkDistance,running)):undefined;
+ const cycle=moving?(hunter?hunterCycle(animation.direction,p.walkDistance,running):engineer?engineerCycle(animation.direction,p.walkDistance,running):runnerCycle(animation.direction,p.walkDistance,running)):undefined;
  const f=animation.pose==='punch'?art.punch:cycle?.sprite??art.idle;
  const image=imgs[f.sheet];if(!image)return;
  const [sx,sy,sw,sh]=f.crop,k=f.scale;
@@ -39,8 +41,8 @@ export function drawWorker(ctx:CanvasRenderingContext2D,imgs:Record<string,HTMLI
  if(held){if(held.tilt)ctx.rotate(held.tilt);if(facing.mirror)ctx.scale(-1,1);ctx.drawImage(image,sx,sy,sw,sh,-f.anchor[0]*k,-f.anchor[1]*k,sw*k,sh*k);ctx.restore();return}
  if(p.hurtUntil>t&&!w.weather?.reducedMotion&&Math.floor(t*18)%2===0)ctx.globalAlpha=.5;
  if(p.downedUntil)ctx.scale(1,87/142);
- if(!engineer&&drawRunnerBow(ctx,imgs,w)){ctx.restore();return}
- if(!engineer&&!isPickaxe(p.equipped)&&drawRunnerAxeAttack(ctx,imgs,w)){ctx.restore();return}
+ if(!ownSprite&&drawRunnerBow(ctx,imgs,w)){ctx.restore();return}
+ if(!ownSprite&&!isPickaxe(p.equipped)&&drawRunnerAxeAttack(ctx,imgs,w)){ctx.restore();return}
  if(facing.mirror)ctx.scale(-1,1);
  if(cycle)ctx.translate(0,cycle.bob*(p.walkBlend??1));
  const hammer=p.equipped==='repairHammer',pickaxe=isPickaxe(p.equipped),axeImage=imgs[hammer?'repairHammer':pickaxe?p.equipped as string:p.equipped==='woodenAxe'?'woodenAxe':'campAxe'];
@@ -62,8 +64,8 @@ export function drawWorker(ctx:CanvasRenderingContext2D,imgs:Record<string,HTMLI
  if(axe?.behind)(hammer?drawRepairHammer:pickaxe?drawPickaxe:drawAxe)(ctx,axeImage,axe);
  if(meal?.behind)drawMeal();
  const legView=cycle&&runnerLegView(animation.direction,running);
- if(!engineer&&sword?.active&&cycle&&animation.pose==='punch')drawMovingSwordThrust(ctx,imgs,f,animation.direction,cycle,p.walkDistance);
- else if(!engineer&&legView&&imgs.runnerLegLayers){
+ if(!ownSprite&&sword?.active&&cycle&&animation.pose==='punch')drawMovingSwordThrust(ctx,imgs,f,animation.direction,cycle,p.walkDistance);
+ else if(!ownSprite&&legView&&imgs.runnerLegLayers){
   drawRunnerLegs(ctx,imgs.runnerLegLayers,legView,p.walkDistance,running);
   drawRunnerTorso(ctx,image,f,legView,running,cycle!.frame);
  }else ctx.drawImage(image,sx,sy,sw,sh,-f.anchor[0]*k,-f.anchor[1]*k,sw*k,sh*k);

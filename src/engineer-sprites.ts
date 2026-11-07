@@ -49,7 +49,7 @@ export const ENGINEER_ART:Record<Direction,EngineerPoses>=Object.fromEntries(
    punch:frame(sheet,row,3),
   }
  ])
-) as Record<Direction,EngineerPoses>;
+) as unknown as Record<Direction,EngineerPoses>;
 
 /** Identical stride distance, four-phase stepping and bob as the original.
  * No time-based cycling while stationary or blocked; sprint stays aligned.

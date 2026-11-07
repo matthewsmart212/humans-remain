@@ -1,5 +1,6 @@
 import {waitForStartingWorld} from './start-world-ready';
 import GameStart from './GameStart';
+import {HUNTER_IMAGE_SOURCES} from './hunter-sprites';
 import {START_PROFILE_KEY,readStartProfile} from './start-profile';
 import {spawnPlayCreature,spawnImages,clearPlaySpawns,type SpawnKind} from './play-spawns';
 import {BOMBER_IMAGE_SOURCES} from './bomber-sprites';
@@ -240,6 +241,7 @@ export default function WorldEditor({externalStart=false,onExternalStartState,on
   const session=createCampPlaySession(layoutRef.current,undefined,'survival');
   session.survivorRole=selectedSurvivor();
   world.current=session;bindTravel(session);
+  if(session.survivorRole==='hunter')await renderer.current?.warmImages(HUNTER_IMAGE_SOURCES);
   await renderer.current?.prepareGameplay(session);
   setPaused(document.hidden);setAxeEquipped(true);
   updateView({playing:true,follow:true,zoom:1,x:session.player.x,y:session.player.y});
