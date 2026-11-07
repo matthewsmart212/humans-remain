@@ -1,6 +1,6 @@
 # Hunter walk art (Ludo.ai)
 
-The five original direction sheets have been split into 36 transparent registered frames each and exported to WebP 6×6 atlases (206×236 pixel cells). **The six binary assets are supplied in the accompanying Hunter asset pack** and must be uploaded into this directory before building or deploying the branch:
+The five original direction sheets have been split into 36 transparent registered frames each and exported to WebP 6×6 atlases (206×236 pixel cells). **All six binary assets are committed in this directory** and bundled for offline native use:
 
 - `down.webp`
 - `down-right.webp`
