@@ -143,3 +143,7 @@ public/survival/expedition-menu-v2/loading-panel.webp -filter -diff -merge
 
 # One decoded WEBP atlas (7 columns × 6 rows) for the one-character loading animation.
 /public/survival/start-prepare-v4/*.webp -filter -diff -merge -text
+
+# New single-video start scene is a normal Git blob, not an LFS pointer.
+/public/previews/dawn-camp/start-scene.mp4 -filter -diff -merge -text
+/public/previews/dawn-camp/start-scene-poster.jpg -filter -diff -merge -text
