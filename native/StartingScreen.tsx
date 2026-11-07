@@ -34,8 +34,8 @@ export default function NativeStartingScreen({onPlay,loadingProgress,onLoadingCo
  const writes=useRef(Promise.resolve());
  const player=useVideoPlayer(require('../public/previews/dawn-camp/start-scene.mp4'),p=>{p.loop=true;p.muted=true;p.staysActiveInBackground=false});
  // The same approved soundtrack is published by GitHub, independently of the video.
- // Use a URI rather than a require() until the binary import commit has landed.
- const music=useAudioPlayer({uri:'https://raw.githubusercontent.com/matthewsmart212/humans-remain/main/public/audio/start-menu.mp3'});
+ // Bundle with Expo so the starting screen plays offline as well.
+ const music=useAudioPlayer(require('../public/audio/start-menu.mp3'));
  const musicStatus=useAudioPlayerStatus(music);
  const firstMusicAt=useRef<number|null>(null);
  useEffect(()=>{void setAudioModeAsync({playsInSilentMode:true,shouldPlayInBackground:false,interruptionMode:'mixWithOthers'}).catch(()=>{})},[]);
