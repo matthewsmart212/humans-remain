@@ -1,4 +1,5 @@
 import {waitForStartingWorld} from './start-world-ready';
+import {isModuleImportError,recoverFailedModuleLoad} from './module-load-recovery';
 import GameStart from './GameStart';
 import {HUNTER_IMAGE_SOURCES} from './hunter-sprites';
 import {START_PROFILE_KEY,readStartProfile} from './start-profile';
@@ -442,7 +443,7 @@ export default function WorldEditor({externalStart=false,onExternalStartState,on
     }
     frameMeter.current.record(now,drawMs,!document.hidden);raf=requestAnimationFrame(frame)
    };raf=requestAnimationFrame(frame);
-  })().catch(e=>{clearTimeout(startupTimeout);controller.abort();if(alive)setError(e instanceof Error?e.message:'The artwork could not load. Please retry.');console.error(e)});
+  })().catch(e=>{clearTimeout(startupTimeout);controller.abort();console.error('World renderer startup failed',e);if(!alive)return;if(recoverFailedModuleLoad(e))return;setError(isModuleImportError(e)?'The game graphics could not download. Please refresh this page or try a different connection.':e instanceof Error?e.message:'The artwork could not load. Please retry.')});
   return()=>{alive=false;modeRequest.current++;document.removeEventListener('visibilitychange',resetMeter);frameMeter.current.reset();clearTimeout(startupTimeout);controller.abort();cancelAnimationFrame(raf);travel.current?.dispose();travel.current=null;mapResources.current?.dispose();mapResources.current=null;outdoorTerrain.current?.dispose();outdoorTerrain.current=null;renderer.current?.dispose();renderer.current=undefined};
  },[loadAttempt]);
  useEffect(()=>{
