@@ -3,6 +3,7 @@ import {wavePlan} from './camp-siege';
 import {spawnImages,type SpawnKind} from './play-spawns';
 import {RUNNER_AXE_IMAGE_SOURCES} from './runner-axe-art';
 import {RUNNER_CYCLE_SOURCES} from './runner-cycles';
+import {ENGINEER_IMAGE_SOURCES} from './engineer-sprites';
 import {BOW_IMAGES} from './bow-art';
 import {SWORD_IMAGES} from './swords';
 import {SPEAR_IMAGES} from './spears';
@@ -16,7 +17,7 @@ import {BONFIRE_FOOD_IMAGES} from './bonfire-food-art';
 import {RABBIT_FOOD_IMAGES,VENISON_FOOD_IMAGES} from './food-items';
 
 /** Small, shared player/food set. Other animation families have a live owner. */
-export const PLAYER_MOVEMENT_IMAGES:Record<string,string>={...RUNNER_CYCLE_SOURCES,...REPAIR_HAMMER_IMAGES,...PROVISION_IMAGES,...BONFIRE_FOOD_IMAGES,...RABBIT_FOOD_IMAGES,...VENISON_FOOD_IMAGES,stone:MINING_IMAGES.stone,torch:'/survival/equipment/torch-v1.png',bagScrap:'/survival/ui-backpack-v1/scrap.png',bagFuel:'/survival/ui-backpack-v1/fuel.png'};
+export const PLAYER_MOVEMENT_IMAGES:Record<string,string>={...RUNNER_CYCLE_SOURCES,...ENGINEER_IMAGE_SOURCES,...REPAIR_HAMMER_IMAGES,...PROVISION_IMAGES,...BONFIRE_FOOD_IMAGES,...RABBIT_FOOD_IMAGES,...VENISON_FOOD_IMAGES,stone:MINING_IMAGES.stone,torch:'/survival/equipment/torch-v1.png',bagScrap:'/survival/ui-backpack-v1/scrap.png',bagFuel:'/survival/ui-backpack-v1/fuel.png'};
 const equipment:Record<string,string>={...MINING_IMAGES,...KNIFE_IMAGES,...SWORD_IMAGES,...SPEAR_IMAGES};
 /** Prefetch carried tools and nearby creatures, preserving the original art. */
 export function gameplayImageSources(w:World):Record<string,string>{
