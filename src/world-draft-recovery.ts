@@ -21,7 +21,11 @@ export function resolveEditorDraft(local:EditorDraft,remote:WorldLayout|null):Wo
  const checked=remote?validateLayout(remote):null;
  if(checked&&!checked.layout)throw Error('Your saved camp could not be loaded. No saved objects have been changed. Retry loading.');
  const cloud=checked?.layout;
- if(cloud&&(!local.layout||(local.unconfirmedEmpty&&cloud.items.length>0)||cloud.updatedAt>local.layout.updatedAt))return cloud;
+ // A background-cached empty draft must never hide a populated cloud camp,
+ // even when Safari gave the empty placeholder a newer timestamp.
+ // An intentional deletion must be explicitly saved to the shared world.
+ if(cloud?.items.length&&(local.layout?.items.length??0)===0)return cloud;
+ if(cloud&&(!local.layout||cloud.updatedAt>local.layout.updatedAt))return cloud;
  if(local.layout)return local.layout;
  if(local.raw)throw Error('Your local draft could not be loaded. It has been kept unchanged. Retry loading.');
  return cloud||emptyLayout();

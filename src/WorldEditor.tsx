@@ -372,7 +372,7 @@ export default function WorldEditor({externalStart=false,onExternalStartState,on
    let saved:Awaited<ReturnType<typeof fetchWorldLayout>>|undefined;
    try{saved=await fetchWorldLayout()}catch{if(alive)setStatus('Cloud unavailable · local draft is still editable')}
    if(!alive)return;
-   const source=saved?resolveEditorDraft(local,saved.draft):offlineEditorDraft(local);
+   const source=saved?resolveEditorDraft(local,saved.draft?.items.length?saved.draft:saved.applied?.items.length?saved.applied:saved.draft):offlineEditorDraft(local);
    if(layoutRef.current.updatedAt===localAt){layoutRef.current=source;setLayout(source);world.current={...createWorld(source),editorPreview:true};updateView({x:source.spawn.x,y:source.spawn.y})}
    draftHydrated.current=true;
    if(saved){ownerCanSave=saved.canEdit;revision.current=saved.revision;setCloudLoaded(true);setStatus(initialDraft.unconfirmedEmpty&&source.items.length?'Saved camp restored · all objects loaded':'Draft ready · saved locally as you edit')}
