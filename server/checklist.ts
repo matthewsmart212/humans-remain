@@ -99,7 +99,7 @@ export default {async fetch(request:Request,env:Env):Promise<Response>{
   return new Response(request.method==='HEAD'?null:renderPublicChecklist(url.origin,rows,available,await readArtwork(env.DB).catch(()=>[]),(await readCustomAssets(env.DB).catch(()=>[])).map(customCatalogueEntry)),{headers:{'Content-Type':'text/html;charset=utf-8','Cache-Control':'no-store'}});
  }
  if(url.pathname==='/mcp')return handleMcp(request,async()=>(await db(env).prepare('SELECT id,art,implemented,tested,concept,export_complete,updated_at FROM base_checklist').all()).results as any,()=>readArtwork(env.DB));
- if(url.pathname==='/'||url.pathname==='/index.html')return new Response(request.method==='HEAD'?null:__INDEX_HTML__,{headers:{'Content-Type':'text/html;charset=utf-8'}});
+ if(url.pathname==='/'||url.pathname==='/index.html')return new Response(request.method==='HEAD'?null:__INDEX_HTML__,{headers:{'Content-Type':'text/html;charset=utf-8','Cache-Control':'no-store, max-age=0','Pragma':'no-cache','X-Content-Type-Options':'nosniff'}});
  if(url.pathname!=='/api/base-checklist')return env.ASSETS?env.ASSETS.fetch(request):new Response('Not found',{status:404});
  try{
   if(request.method==='GET'){const rows=await db(env).prepare('SELECT id,art,implemented,tested,concept,export_complete,updated_at FROM base_checklist').all();return json({rows:(rows.results as {id:string}[]).filter(row=>isLibraryAssetId(row.id)),canEdit});}

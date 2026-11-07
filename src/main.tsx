@@ -7,6 +7,15 @@ import '@fontsource/barlow/500.css';
 import '@fontsource/barlow/600.css';
 import './styles.css';
 import AssetWorldGate from './AssetWorldGate';
+import {recoverFailedModuleLoad} from './module-load-recovery';
+
+// Handle missing/stale Vite chunks after a site deployment. Prevent Vite's
+// default unhandled error; make one clean, cache-busted page reload instead.
+window.addEventListener('vite:preloadError',(event:Event)=>{
+ event.preventDefault();
+ const failure=(event as Event&{payload?:unknown}).payload;
+ recoverFailedModuleLoad(failure,true);
+});
 
 // Each browser visit starts at camp; World Builder is opened from Settings.
 window.history.replaceState(null,'',location.pathname+location.search+'#start');
