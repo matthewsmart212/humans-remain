@@ -39,7 +39,7 @@ export const HUNTER_ART:Record<Direction,Poses>=Object.fromEntries(
  (Object.entries(VIEWS) as [Direction,View][]).map(([direction,{sheet}])=>[
   direction,{idle:frame(sheet,6),punch:frame(sheet,6),walk:Array.from({length:36},(_,i)=>frame(sheet,i))}
  ])
-) as Record<Direction,Poses>;
+) as unknown as Record<Direction,Poses>;
 export const hunterFacing=(direction:Direction)=>({view:direction,mirror:VIEWS[direction].mirror});
 export function hunterCycle(direction:Direction,distance:number,running:boolean){
  const absolute=((distance%(112*6))+(112*6))%(112*6);
