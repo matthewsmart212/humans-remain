@@ -6,7 +6,7 @@ export type StartScreenArtwork={
  logo:ImageSourcePropType;
  selectionGlow:ImageSourcePropType;
  expeditionCards:ImageSourcePropType;
- /** Optional individual transparent plaques; keep the atlas fallback for native. */
+ /** The approved original signs, individually cut out as transparent PNGs. */
  expeditionPanels?:Record<'play'|'customise'|'upgrades'|'friends',ImageSourcePropType>;
  expeditionLoading:ImageSourcePropType;
  icons:Record<StartScreenIconName,ImageSourcePropType>;
@@ -17,6 +17,12 @@ export const WEB_START_SCREEN_ART:StartScreenArtwork={
  logo:uri('humans-remain-logo'),
  selectionGlow:uri('play-selection-glow'),
  expeditionCards:{uri:'/survival/expedition-menu-v2/approved-cards.webp'},
+ expeditionPanels:{
+  play:{uri:'/survival/expedition-menu-v2/panels/play.png'},
+  customise:{uri:'/survival/expedition-menu-v2/panels/customise.png'},
+  upgrades:{uri:'/survival/expedition-menu-v2/panels/upgrades.png'},
+  friends:{uri:'/survival/expedition-menu-v2/panels/friends.png'},
+ },
  expeditionLoading:{uri:'/survival/expedition-menu-v2/loading-panel.webp'},
  icons:{play:uri('play'),friends:uri('friends'),customise:uri('customise'),upgrades:uri('upgrades'),lock:uri('lock'),settings:uri('settings')},
 };
