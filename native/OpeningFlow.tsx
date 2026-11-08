@@ -55,7 +55,7 @@ function Welcome({width,height,insets,onWatch,onContinue}:{width:number;height:n
  const logoWidth=Math.min(width*(portrait?.72:.40),500);
  return <View style={s.screen}>
   <Image accessibilityIgnoresInvertColors source={cover} resizeMode="cover" style={StyleSheet.absoluteFill}/>
-  <View pointerEvents="none" style={[StyleSheet.absoluteFill,{backgroundColor:'#03131be0'}]}/>
+  <View pointerEvents="none" style={[StyleSheet.absoluteFill,{backgroundColor:'#03131b99'}]}/>
   <Canvas pointerEvents="none" style={StyleSheet.absoluteFill}>
    <Rect x={0} y={0} width={width} height={height}>
     <LinearGradient start={vec(0,0)} end={vec(0,height)} colors={['#07151b60','#03121b1c','#020a0fef']} positions={[0,.50,1]}/>
