@@ -32,3 +32,21 @@ The audio session uses `expo-audio` with iOS silent-mode playback and mixes with
 - Background during the intro and menu; media should pause while inactive and resume correctly.
 - Press Play and wait for world load: menu music should stop only once gameplay is actually entered.
 - Test on a physical iPhone; passing GitHub typechecks does not confirm AV playback behaviour.
+
+## Four-second cinematic-to-menu UI entrance
+
+The final 4 seconds of the user's intro share the same artwork as the animated menu background. The game now uses the same actual menu UI during those seconds — no duplicate artwork or second set of menus:
+
+- At **4.0 seconds remaining**, the existing Humans Remain logo begins easing into place.
+- Around **3.0 seconds remaining**, the survivor portrait, name, class and experience bar rise softly into view.
+- Around **2.1 seconds remaining**, the expedition/menu cards begin sliding up and fading into the actual interactive positions.
+- During the **final 1.5 seconds**, the music/settings controls and translucent UI shading settle in.
+- The menu UI component stays mounted and its controls only become interactive after the video handoff. The intro's final frame fades into the prepared start-scene.mp4 loop beneath those already-positioned UI elements.
+
+Implementation:
+- `native/MenuBackdrop.tsx`: a single persistent, independently controlled `expo-video` menu loop behind the intro.
+- `native/OpeningFlow.tsx`: triggers the UI entrance from the intro video's **remaining playback time**, and cues the loop at the final ~0.12 seconds.
+- `native/EntryFlow.tsx`: keeps the same UI over the intro and menu, disables touches during cinema and preserves the shared music.
+- `native/StartingScreen.tsx` and `src/StartingScreen.tsx`: transparent UI-only menu with staggered native-driver animations. Web remains unchanged unless explicit intro phases are requested.
+
+The entrance is suppressed when iOS Reduce Motion is enabled. Continue and Skip show the complete menu without waiting for the four-second reveal. The real film-to-loop visual handoff still needs a physical-iPhone check; TypeScript checks alone cannot measure decoder frame timing.
