@@ -1,48 +1,71 @@
 import React,{useState} from 'react';
-import {Image,Pressable,StyleSheet,Text,View} from 'react-native';
+import {Image,Platform,Pressable,StyleSheet,Text,View} from 'react-native';
+import type {ImageSourcePropType} from 'react-native';
 import type {StartScreenArtwork} from './start-screen-art';
 
 type Props={width:number;maxHeight:number;fontFamily:string;artwork:StartScreenArtwork;busy:boolean;playDisabled:boolean;onPlay:()=>void;onCustomise:()=>void;onUpgrades:()=>void;onFriends?:()=>void};
 type Card='play'|'customise'|'upgrades'|'friends';
-// The approved illustrated menu is unchanged. On web, use transparently
-// extracted individual signs rather than clips of an opaque full-scene mock-up.
-// Keep the existing atlas fallback for native until extracted files are bundled.
-const ATLAS={width:1846,height:852};
-const COMPOSITION={width:516,height:599};
-const CARD_MASKS:Record<Card,string>={
- play:'polygon(5% 1%,93% 1%,98% 5%,100% 10%,100% 90%,97% 96%,94% 99%,6% 99%,1% 95%,0% 88%,0% 12%,2% 5%)',
- customise:'polygon(5% 2%,94% 2%,99% 7%,99% 90%,94% 99%,6% 99%,1% 93%,1% 8%)',
- upgrades:'polygon(5% 2%,94% 2%,99% 7%,99% 90%,94% 99%,6% 99%,1% 93%,1% 8%)',
- friends:'polygon(3% 2%,97% 2%,100% 12%,100% 88%,97% 99%,3% 99%,0% 90%,0% 10%)',
-};
+const ATLAS={width:1846,height:852},COMPOSITION={width:516,height:599};
 const CARDS={
- play:{x:1280,y:160,width:516,height:298,left:0,top:0,label:'PLAY'},
- customise:{x:1288,y:474,width:240,height:170,left:8,top:314,label:'CUSTOMISE'},
- upgrades:{x:1547,y:474,width:242,height:170,left:267,top:314,label:'UPGRADES'},
- friends:{x:1288,y:665,width:504,height:94,left:8,top:505,label:'PLAY WITH FRIENDS!'},
+ play:{width:516,height:298,left:0,top:0,label:'PLAY'},
+ customise:{width:240,height:170,left:8,top:314,label:'CUSTOMISE'},
+ upgrades:{width:242,height:170,left:267,top:314,label:'UPGRADES'},
+ friends:{width:504,height:94,left:8,top:505,label:'PLAY WITH FRIENDS!'},
 } as const;
+const GOLD='#c49a59',CREAM='#f5ddb0',TEAL='#0d3736';
+
+// Paint the clean plaque and its drop shadow separately. The old concept
+// image is flattened and contains the old camp behind its clipped corners.
+export function ExpeditionPlaque({width,height,scale,children}:{width:number;height:number;scale:number;children:React.ReactNode}){
+ const w=width*scale,h=height*scale;
+ return <View style={{width:w,height:h,backgroundColor:'transparent',shadowColor:'#000',shadowOpacity:.78,shadowRadius:Math.max(6,14*scale),shadowOffset:{width:0,height:Math.max(3,9*scale)},elevation:12}}>
+  <View style={{flex:1,overflow:'hidden',borderWidth:Math.max(1.2,3*scale),borderColor:GOLD,borderRadius:Math.max(5,12*scale),backgroundColor:TEAL}}>
+   <View pointerEvents="none" style={{...StyleSheet.absoluteFillObject,borderWidth:Math.max(.6,2*scale),borderColor:'#1f5a51',borderRadius:Math.max(3,8*scale),margin:4*scale}}/>
+   {children}
+  </View>
+  {([0,1,2,3] as const).map(i=><View key={i} pointerEvents="none" style={{position:'absolute',width:Math.max(9,19*scale),height:Math.max(9,19*scale),left:i%2===0?5*scale:undefined,right:i%2===1?5*scale:undefined,top:i<2?5*scale:undefined,bottom:i>=2?5*scale:undefined,transform:[{rotate:'45deg'}],backgroundColor:'#9a572b',borderColor:'#d5a36a',borderWidth:Math.max(1,2*scale),borderRadius:2*scale,alignItems:'center',justifyContent:'center'}}>
+   <View style={{width:3*scale,height:3*scale,backgroundColor:'#e5ba7c',borderRadius:2*scale}}/>
+  </View>)}
+ </View>;
+}
+
+// Keep only the forest gate painting from the original approved artwork,
+// well inside the new panel. Never sample its contaminated outside edges.
+export function ExpeditionForest({scale,source}:{scale:number;source:ImageSourcePropType}){
+ const x=1310,y=226,w=466,h=174,destW=476*scale,destH=167*scale,sx=destW/w,sy=destH/h;
+ return <View pointerEvents="none" style={{width:destW,height:destH,overflow:'hidden',alignSelf:'center',backgroundColor:'#103c39'}}>
+  <Image source={source} resizeMode="stretch" style={{position:'absolute',left:-x*sx,top:-y*sy,width:ATLAS.width*sx,height:ATLAS.height*sy}}/>
+  <View style={{position:'absolute',left:0,right:0,bottom:0,height:31*scale,backgroundColor:'#102d2bc0'}}/>
+ </View>;
+}
 
 export default function ExpeditionMenu({width,maxHeight,fontFamily,artwork,busy,playDisabled,onPlay,onCustomise,onUpgrades,onFriends}:Props){
  const [focused,setFocused]=useState<Card|null>(null);
- const scale=Math.min(width/COMPOSITION.width,maxHeight/COMPOSITION.height);
+ const scale=Math.max(.001,Math.min(width/COMPOSITION.width,maxHeight/COMPOSITION.height));
  const callbacks={play:onPlay,customise:onCustomise,upgrades:onUpgrades,friends:onFriends};
  return <View accessibilityLabel="Expedition menu" style={{width:COMPOSITION.width*scale,height:COMPOSITION.height*scale,alignSelf:'flex-end'}}>
   {(Object.keys(CARDS) as Card[]).map(key=>{
    const card=CARDS[key],disabled=(key==='friends'&&!onFriends)||busy||(key==='play'&&playDisabled);
-   const separate=typeof document!=='undefined'&&artwork.expeditionPanels;
-   return <Pressable key={key} accessibilityRole="button" accessibilityLabel={card.label} accessibilityState={{disabled}} disabled={disabled} onPress={callbacks[key]} onFocus={()=>setFocused(key)} onBlur={()=>setFocused(null)} hitSlop={2} style={({pressed})=>[s.card,{left:card.left*scale,top:card.top*scale,width:card.width*scale,height:card.height*scale,...(!separate?{overflow:'hidden' as const,borderRadius:3*scale,...(typeof document!=='undefined'?{clipPath:CARD_MASKS[key]}:{})}:{overflow:'visible' as const})},pressed&&s.pressed,(busy||(key==='play'&&playDisabled))&&s.busy]}>
-    {separate
-      ? <Image accessible={false} pointerEvents="none" source={artwork.expeditionPanels![key]} resizeMode="stretch" style={{position:'absolute',left:0,top:0,width:card.width*scale,height:card.height*scale}}/>
-      : <Image accessible={false} pointerEvents="none" source={artwork.expeditionCards} resizeMode="stretch" style={{position:'absolute',left:-card.x*scale,top:-card.y*scale,width:ATLAS.width*scale,height:ATLAS.height*scale}}/>}
-    {/* The approved artwork still has "Coming soon" painted onto this plaque.
-         Use an inset painted label for the enabled native co-op action, preserving
-         the decorative sign edges until a clean atlas can be shipped. */}
-    {key==='friends'&&!!onFriends&&<View pointerEvents="none" style={{position:'absolute',left:card.width*scale*.065,right:card.width*scale*.065,top:card.height*scale*.14,bottom:card.height*scale*.14,backgroundColor:'#2b261ff5',borderWidth:Math.max(.75,scale),borderColor:'#9d784c',borderRadius:Math.max(3,5*scale),alignItems:'center',justifyContent:'center',shadowColor:'#000000',shadowOpacity:.44,shadowRadius:4*scale}}>
-     <Text allowFontScaling={false} numberOfLines={1} style={{color:'#f3d29a',fontFamily,fontSize:Math.max(12,23*scale),letterSpacing:1.3*scale,textAlign:'center',textShadowColor:'#100f0c',textShadowRadius:2*scale,textShadowOffset:{width:0,height:1}}}>PLAY WITH FRIENDS!</Text>
-    </View>}
-    {focused===key&&key!=='play'&&<View pointerEvents="none" style={[StyleSheet.absoluteFill,s.focus]}/>}
+   return <Pressable key={key} accessibilityRole="button" accessibilityLabel={card.label} accessibilityState={{disabled}} disabled={disabled} onPress={callbacks[key]} onFocus={()=>setFocused(key)} onBlur={()=>setFocused(null)} hitSlop={2}
+    style={({pressed})=>[{position:'absolute',left:card.left*scale,top:card.top*scale,width:card.width*scale,height:card.height*scale,opacity:pressed?0.82:disabled?0.65:1},Platform.OS==='web'&&{filter:'drop-shadow(0 6px 8px rgba(0,0,0,.50))'}]}>
+    <ExpeditionPlaque width={card.width} height={card.height} scale={scale}>
+     {key==='play'?<>
+      <Text allowFontScaling={false} numberOfLines={1} style={{fontFamily,fontSize:21*scale,lineHeight:48*scale,letterSpacing:2.5*scale,color:CREAM,textAlign:'center'}}>—  YOUR NEXT EXPEDITION  —</Text>
+      <ExpeditionForest scale={scale} source={artwork.expeditionCards}/>
+      <View style={{flex:1,backgroundColor:'#9d5a19',borderTopWidth:Math.max(1,2*scale),borderTopColor:'#dda64e',alignItems:'center',justifyContent:'center'}}>
+       <Text allowFontScaling={false} style={{fontFamily,fontSize:51*scale,lineHeight:61*scale,letterSpacing:3*scale,color:'#fce7bb',textShadowColor:'#452007',textShadowRadius:3*scale,textShadowOffset:{width:0,height:2*scale}}}>▶ PLAY</Text>
+      </View>
+     </>:key==='friends'?<View style={{flex:1,flexDirection:'row',alignItems:'center',justifyContent:'center',gap:21*scale,paddingHorizontal:30*scale}}>
+       <Image source={artwork.icons.friends} resizeMode="contain" style={{width:56*scale,height:56*scale}}/>
+       <View style={{width:1*scale,height:55*scale,backgroundColor:'#c8a2728c'}}/>
+       <View style={{flex:1,alignItems:'center',justifyContent:'center'}}><Text allowFontScaling={false} numberOfLines={1} style={{fontFamily,fontSize:24*scale,letterSpacing:1.4*scale,color:CREAM,textAlign:'center'}}>PLAY WITH FRIENDS!</Text>{!onFriends&&<Text allowFontScaling={false} style={{fontFamily,fontSize:13*scale,letterSpacing:3*scale,color:'#d7bd8a'}}>COMING SOON</Text>}</View>
+      </View>:<View style={{flex:1,alignItems:'center',justifyContent:'center',gap:11*scale,paddingTop:7*scale}}>
+       <Image source={artwork.icons[key]} resizeMode="contain" style={{width:72*scale,height:72*scale}}/>
+       <Text allowFontScaling={false} numberOfLines={1} style={{fontFamily,fontSize:27*scale,letterSpacing:2.2*scale,color:CREAM}}>{key==='customise'?'CUSTOMISE':'UPGRADES'}</Text>
+      </View>}
+      {focused===key&&<View pointerEvents="none" style={{...StyleSheet.absoluteFillObject,borderColor:'#ffde91',borderWidth:2,borderRadius:5*scale}}/>}
+    </ExpeditionPlaque>
    </Pressable>;
   })}
  </View>;
 }
-const s=StyleSheet.create({backdrop:{position:'absolute',backgroundColor:'#04191b45'},card:{position:'absolute',backgroundColor:'transparent'},pressed:{opacity:.82},busy:{opacity:.5},focus:{borderWidth:2,borderColor:'#ffda83',borderRadius:3}});
