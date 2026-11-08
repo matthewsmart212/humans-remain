@@ -60,7 +60,7 @@ export default function StartingScreen({width,height,safe={top:0,bottom:0,left:0
    {loading&&<Animated.View pointerEvents="none" style={[StyleSheet.absoluteFill,{opacity:transition,transform:[{translateY:transition.interpolate({inputRange:[0,1],outputRange:[unit(12),0]})}]}]}><ExpeditionLoading width={Math.min(menuWidth,availableHeight*(portraitMode?.53:.67)*516/599)} height={Math.min(menuWidth*599/516,availableHeight*(portraitMode?.53:.67))} artwork={artwork.expeditionLoading} progress={loadingProgress} reducedMotion={reducedMotion}/></Animated.View>}
    </View>
   </View>
-  <View style={[s.stats,{left:safe.left+gutter,right:safe.right+gutter,bottom:bottomBaseline,paddingBottom:unit(6),gap:unit(12)}]}>
+  <View pointerEvents="none" style={[s.stats,{left:safe.left+gutter,right:safe.right+gutter,bottom:bottomBaseline,paddingBottom:unit(6),gap:unit(12)}]}>
    <Image source={portrait} resizeMode="contain" style={{width:unit(90),height:unit(82),transform:[{translateY:unit(3)}]}}/>
    <View style={[s.identity,{gap:unit(6),transform:[{translateY:unit(8)}]}]}>
     <View style={[s.nameRow,{gap:unit(28)}]}><Text numberOfLines={1} style={[s.name,{fontFamily,fontSize:unit(25),lineHeight:unit(34),maxWidth:unit(portraitMode?200:230)}]}>{profile.name.toUpperCase()}</Text><Text style={[s.level,{fontFamily,fontSize:unit(19),lineHeight:unit(27)}]}>LEVEL 1 · {survivorRole(profile.role).label.toUpperCase()}</Text></View>
