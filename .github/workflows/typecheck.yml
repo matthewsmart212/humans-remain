@@ -1,5 +1,7 @@
 name: Typecheck web and iOS
 on:
+  push:
+    branches: [main]
   pull_request:
     branches: [main]
 permissions:
