@@ -3,20 +3,25 @@ import {AccessibilityInfo,ActivityIndicator,Animated,AppState,Easing,Image,Platf
 import {useSafeAreaInsets} from 'react-native-safe-area-context';
 import {Canvas,LinearGradient,Rect,vec} from '@shopify/react-native-skia';
 import {useVideoPlayer,VideoView} from 'expo-video';
-import {useAudioPlayer,useAudioPlayerStatus,setAudioModeAsync} from 'expo-audio';
+import type {AudioPlayer} from 'expo-audio';
 
-// These are short valid placeholder assets until the user's finished 60-second
-// MP4 and separate soundtrack MP3 replace them at the exact same paths.
-// Keeping static require() calls lets Expo bundle both files for offline iOS.
+// The movie contains the spoken narration. Its soundtrack is managed by
+// NativeEntryFlow, so it can continue across cinematic and main-menu screens.
 const introSource=require('../public/previews/the-reclamation/intro.mp4');
-const soundtrackSource=require('../public/previews/the-reclamation/soundtrack.mp3');
 const cover=require('../public/previews/dawn-camp/start-scene-poster.jpg');
 const logo=require('../public/survival/starting-screen-ui-v2/humans-remain-logo.png');
 
-type Props={onComplete:()=>void};
+type Props={
+ onComplete:()=>void;
+ onContinueSelected:()=>void;
+ onWatchSelected:()=>void;
+ soundtrack:AudioPlayer;
+ soundtrackReady:boolean;
+ soundtrackAllowed:boolean;
+};
 type Phase='welcome'|'cinematic';
 
-export default function NativeOpeningFlow({onComplete}:Props){
+export default function NativeOpeningFlow({onComplete,onContinueSelected,onWatchSelected,soundtrack,soundtrackReady,soundtrackAllowed}:Props){
  const [phase,setPhase]=useState<Phase>('welcome');
  const [reduced,setReduced]=useState(false);
  const opacity=useRef(new Animated.Value(1)).current;
@@ -44,8 +49,11 @@ export default function NativeOpeningFlow({onComplete}:Props){
 
  return <Animated.View style={[s.screen,{opacity}]}><StatusBar hidden/>
   {phase==='welcome'
-   ?<Welcome width={width} height={height} insets={insets} onWatch={()=>change('cinematic')} onContinue={()=>change('menu')}/>
-   :<Cinematic insets={insets} onDone={()=>change('menu')} onBack={()=>change('menu')}/>}
+   ?<Welcome width={width} height={height} insets={insets}
+      onWatch={()=>{onWatchSelected();change('cinematic')}}
+      onContinue={()=>{onContinueSelected();change('menu')}}/>
+   :<Cinematic insets={insets} soundtrack={soundtrack} soundtrackReady={soundtrackReady}
+      soundtrackAllowed={soundtrackAllowed} onDone={()=>change('menu')}/>}
  </Animated.View>;
 }
 
@@ -85,99 +93,85 @@ function Welcome({width,height,insets,onWatch,onContinue}:{width:number;height:n
  </View>;
 }
 
-function Cinematic({insets,onDone,onBack}:{insets:{top:number;bottom:number;left:number;right:number};onDone:()=>void;onBack:()=>void}){
+function Cinematic({insets,onDone,soundtrack,soundtrackReady,soundtrackAllowed}:{
+ insets:{top:number;bottom:number;left:number;right:number};
+ onDone:()=>void;
+ soundtrack:AudioPlayer;
+ soundtrackReady:boolean;
+ soundtrackAllowed:boolean;
+}){
  const video=useVideoPlayer(introSource,p=>{p.loop=false;p.muted=false;p.staysActiveInBackground=false;p.timeUpdateEventInterval=1});
- const soundtrack=useAudioPlayer(soundtrackSource);
- const soundStatus=useAudioPlayerStatus(soundtrack);
  const [state,setState]=useState<'loading'|'playing'|'unavailable'|'error'>('loading');
  const [videoReady,setVideoReady]=useState(video.status==='readyToPlay');
- const [audioSessionReady,setAudioSessionReady]=useState(false);
  const [firstFrame,setFirstFrame]=useState(false);
  const started=useRef(false),leaving=useRef(false),firstPlayback=useRef(true),seeking=useRef(false);
- const stop=()=>{
-  video.pause();
-  soundtrack.pause();
- };
+ const allowed=useRef(soundtrackAllowed),done=useRef(onDone);
+ allowed.current=soundtrackAllowed;
+ done.current=onDone;
  const leave=()=>{
   if(leaving.current)return;
   leaving.current=true;
-  stop();
-  onDone();
+  // Do not pause/release the soundtrack. Its single player now belongs to
+  // NativeEntryFlow, which reuses it directly in the main menu.
+  video.pause();
+  done.current();
  };
- const leaveBack=()=>{
-  if(leaving.current)return;
-  leaving.current=true;
-  stop();
-  onBack();
- };
-
- // Preload the MP3 before the MP4 is allowed to start. The video already
- // carries the narration; the independent MP3 supplies only the music bed.
- useEffect(()=>{
-  soundtrack.loop=false;
-  soundtrack.volume=.72;
-  let live=true;
-  void setAudioModeAsync({playsInSilentMode:true,shouldPlayInBackground:false,interruptionMode:'mixWithOthers'})
-   .then(()=>{if(live)setAudioSessionReady(true)})
-   .catch(()=>{if(live)setState('error')});
-  return()=>{live=false;soundtrack.pause()};
- },[soundtrack]);
 
  useEffect(()=>{
   const status=video.addListener('statusChange',event=>{
    if(event.status==='readyToPlay')setVideoReady(true);
-   else if(event.status==='error'){stop();setState('error')}
+   else if(event.status==='error'){video.pause();soundtrack.pause();setState('error')}
   });
   const playback=video.addListener('playingChange',event=>{
-   if(!event.isPlaying){soundtrack.pause();return}
+   if(!event.isPlaying){
+    // On completion, the soundtrack must carry through into the menu.
+    // Only pause the track when the movie is interrupted mid-scene.
+    if(!leaving.current&&!(video.duration>0&&video.currentTime>=video.duration-.75))soundtrack.pause();
+    return;
+   }
    if(leaving.current)return;
    setState('playing');
-   // This event is emitted when the native video actually starts, rather
-   // than when a button is tapped or when the player is still buffering.
    if(firstPlayback.current){
     firstPlayback.current=false;
-    soundtrack.play();
+    if(allowed.current)soundtrack.play();
    }else{
     soundtrack.pause();
-    void soundtrack.seekTo(video.currentTime).then(()=>{
-     if(!leaving.current&&video.playing&&AppState.currentState==='active')soundtrack.play();
+    void soundtrack.seekTo(Math.max(0,video.currentTime)).then(()=>{
+     if(!leaving.current&&video.playing&&allowed.current&&AppState.currentState==='active')soundtrack.play();
     }).catch(()=>setState('error'));
    }
   });
   const progress=video.addListener('timeUpdate',event=>{
    if(leaving.current||!video.playing||!soundtrack.playing||seeking.current)return;
-   // Independent decoders cannot be guaranteed sample-perfect. Correct
-   // larger drift, without frequent seeks that would cause audible clicks.
    const drift=event.currentTime-soundtrack.currentTime;
    if(Math.abs(drift)>.45&&event.currentTime<video.duration-1){
     seeking.current=true;
-    void soundtrack.seekTo(event.currentTime).catch(()=>{}).finally(()=>{seeking.current=false});
+    void soundtrack.seekTo(Math.max(0,event.currentTime)).catch(()=>{}).finally(()=>{seeking.current=false});
    }
   });
   const ended=video.addListener('playToEnd',leave);
   const app=AppState.addEventListener('change',next=>{
-   if(next!=='active')stop();
-   else if(started.current&&!leaving.current)video.play();
+   if(next!=='active')video.pause();
+   else if(started.current&&!leaving.current&&video.status==='readyToPlay')video.play();
   });
-  return()=>{status.remove();playback.remove();progress.remove();ended.remove();app.remove();stop()};
+  return()=>{status.remove();playback.remove();progress.remove();ended.remove();app.remove();video.pause()};
  },[video,soundtrack]);
 
  useEffect(()=>{
+  if(!soundtrackAllowed){soundtrack.pause();return}
+  if(video.playing&&!leaving.current&&!soundtrack.playing)soundtrack.play();
+ },[soundtrackAllowed,video,soundtrack]);
+
+ useEffect(()=>{
   if(started.current||leaving.current||state==='error'||state==='unavailable')return;
-  if(!videoReady||!soundStatus.isLoaded||!audioSessionReady)return;
-  // The committed 1-second video is only a placeholder until replaced.
+  if(!videoReady||!soundtrackReady)return;
   if(video.duration>0&&video.duration<10){setState('unavailable');return}
   started.current=true;
-  // Reset the soundtrack before releasing the video player. As soon as the
-  // video reports playingChange(true), begin the preloaded music.
+  // Reset only when a NEW intro starts, never when entering the menu.
   void soundtrack.seekTo(0).then(()=>{
    if(!leaving.current){video.currentTime=0;video.play()}
   }).catch(()=>setState('error'));
- },[videoReady,soundStatus.isLoaded,audioSessionReady,video,soundtrack,state]);
-
- useEffect(()=>{
-  if(soundStatus.error&&!started.current)setState('error');
- },[soundStatus.error]);
+ },[videoReady,soundtrackReady,video,soundtrack,state]);
 
  return <View style={s.screen}>
   <Image source={cover} resizeMode="cover" style={StyleSheet.absoluteFill}/>
@@ -187,8 +181,8 @@ function Cinematic({insets,onDone,onBack}:{insets:{top:number;bottom:number;left
   {state!=='playing'&&<View style={s.cinematicMessage}>
    {state==='loading'?<><ActivityIndicator size="small" color="#eac48b"/><Text style={s.message}>PREPARING THE RECLAMATION…</Text></>
    :<><Text style={s.messageTitle}>{state==='unavailable'?'THE RECLAMATION':'INTRO UNAVAILABLE'}</Text>
-     <Text style={s.message}>{state==='unavailable'?'Your 60-second cinematic is not installed yet. Replace intro.mp4 and soundtrack.mp3 in GitHub.':'The video or soundtrack could not be played on this device.'}</Text>
-     <Pressable accessibilityRole="button" onPress={leaveBack} style={s.messageButton}><Text style={s.secondaryText}>CONTINUE TO MENU  →</Text></Pressable></>}
+     <Text style={s.message}>{state==='unavailable'?'Your 60-second cinematic is not installed yet.':'The intro video could not be played on this device.'}</Text>
+     <Pressable accessibilityRole="button" onPress={leave} style={s.messageButton}><Text style={s.secondaryText}>CONTINUE TO MENU  →</Text></Pressable></>}
   </View>}
  </View>;
 }
