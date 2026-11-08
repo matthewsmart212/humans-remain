@@ -7,7 +7,8 @@ import {nextLoadingProgress} from './loading-presentation';
 const ART={width:504,height:594};
 type Props={width:number;height:number;artwork:ImageSourcePropType;progress:number;reducedMotion:boolean};
 export default function ExpeditionLoading({width,height,artwork,progress,reducedMotion}:Props){
- // The parent already constrains the menu to the safe landscape viewport.\n const scale=Math.max(.001,Math.min(width/ART.width,height/ART.height)),w=ART.width*scale,h=ART.height*scale;
+ // The parent already constrains the menu to the safe landscape viewport.
+ const scale=Math.max(.001,Math.min(width/ART.width,height/ART.height)),w=ART.width*scale,h=ART.height*scale;
  const target=Math.max(0,Math.min(1,progress)),amount=useRef(new Animated.Value(target)).current;
  const pulse=useRef(new Animated.Value(1)).current;
  const actual=useRef(target);actual.current=target;
