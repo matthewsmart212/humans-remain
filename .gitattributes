@@ -155,3 +155,7 @@ public/survival/expedition-menu-v2/loading-panel.webp -filter -diff -merge
 
 # Hunter v2 sprite atlases are uploaded directly through GitHub's web UI.
 /public/survival/hunter-v1/walk-v2/*.png -filter -diff -merge -text
+
+# Approved expedition menu plaques are tiny transparent runtime assets; iOS
+# must receive the real PNG bytes from a normal checkout (no LFS pointers).
+/public/survival/expedition-menu-v2/panels/*.png -filter -diff -merge -text
