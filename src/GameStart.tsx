@@ -201,7 +201,7 @@ export default function GameStart({onPlay,onBack,busy,notice,playDisabled,loadin
   style={{opacity:visualsReady?1:0,transition:'opacity 180ms ease-out',...(loadingProgress===1?{backgroundColor:'transparent',backgroundImage:'none'}:{})}}>
   <div className="game-start-media" aria-hidden="true">
    <video ref={menuVideo} className="game-start-scene"
-    style={{opacity:phase==='menu'?1:0}}
+    style={{opacity:menuFrameReady||phase==='menu'?1:0}}
     src={MENU_LOOP_URL} poster={MENU_POSTER_URL} loop muted playsInline preload="auto"
     onPlaying={()=>setMenuFrameReady(true)}
     onError={()=>setMenuFailed(true)}/>
@@ -224,8 +224,7 @@ export default function GameStart({onPlay,onBack,busy,notice,playDisabled,loadin
     introUiPhase={introUiPhase} transparentBackground
     background={null} shade={<div className="game-start-shade"/>}/>
   </div>
-  {phase!=='menu'&&
-   <div className="game-start-welcome" style={{opacity:phase==='landing'||!introHasFrame?1:0,pointerEvents:phase==='landing'?'auto':'none'}}>
+  <div className="game-start-welcome" style={{opacity:phase==='landing'||(phase==='watching'&&!introHasFrame)?1:0,pointerEvents:phase==='landing'?'auto':'none'}}>
     <div className="game-start-welcome-content">
      <div className="game-start-overline">THE RECLAMATION</div>
      <img src={LOGO_URL} className="game-start-welcome-logo" alt="Humans Remain"/>
@@ -241,7 +240,7 @@ export default function GameStart({onPlay,onBack,busy,notice,playDisabled,loadin
      </div>
     </div>
     <p className="game-start-welcome-footer">SURVIVE THE DAY. DEFEND THE NIGHT.</p>
-   </div>}
+   </div>
   {phase==='watching'&&<button className="game-start-skip" type="button" onClick={onSkip}
    aria-label="Skip introduction and open the main menu">SKIP »</button>}
  </div>,document.body);
