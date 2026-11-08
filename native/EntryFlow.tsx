@@ -111,21 +111,27 @@ export default function NativeEntryFlow({initialMenuVisible,onPlay,onFriends,loa
   return()=>animation.stop();
  },[openingGone,menuRequested,menuFrameReady,menuVideoFailed,openingOpacity]);
  const musicAllowed=profileReady&&audioReady&&active&&!muted;
+ // The existing menu UI uses zIndex:1000 internally. Keep its entire
+ // subtree inside the BACK layer so it cannot paint above the intro on iOS.
+ // The opening overlay is explicitly stacked above it until the menu video
+ // has a decoded frame and the dissolve is complete.
  return <View style={StyleSheet.absoluteFill}>
-  <NativeStartingScreen
-   onPlay={onPlay}
-   onFriends={onFriends}
-   loadingProgress={loadingProgress}
-   loadError={loadError}
-   onLoadingComplete={onLoadingComplete}
-   onSoundtrackMuteChange={setMuted}
-   allowBackgroundPlayback={menuVideoEnabled}
-   onBackgroundFrame={onBackgroundFrame}
-   onBackgroundError={onBackgroundError}
-  />
+  <View pointerEvents={openingGone?'auto':'none'} style={[StyleSheet.absoluteFill,{zIndex:0}]}>
+   <NativeStartingScreen
+    onPlay={onPlay}
+    onFriends={onFriends}
+    loadingProgress={loadingProgress}
+    loadError={loadError}
+    onLoadingComplete={onLoadingComplete}
+    onSoundtrackMuteChange={setMuted}
+    allowBackgroundPlayback={menuVideoEnabled}
+    onBackgroundFrame={onBackgroundFrame}
+    onBackgroundError={onBackgroundError}
+   />
+  </View>
   {!openingGone&&<Animated.View
     pointerEvents={menuRequested==='none'?'auto':'none'}
-    style={[StyleSheet.absoluteFill,{opacity:openingOpacity}]}>
+    style={[StyleSheet.absoluteFill,{opacity:openingOpacity,zIndex:2000,elevation:2000,backgroundColor:'#061117'}]}>
     <NativeOpeningFlow
      onComplete={arriveAtMenu}
      onPrepareMenu={prepareLoop}
