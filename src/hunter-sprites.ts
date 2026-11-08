@@ -47,7 +47,7 @@ export const HUNTER_LEGACY_ART:Record<Direction,Poses>=Object.fromEntries(
    walk:Array.from({length:36},(_,i)=>legacyFrame(sheet,i))
   }
  ])
-) as Record<Direction,Poses>;
+) as unknown as Record<Direction,Poses>;
 
 /** Select stationary, planted-feet frames from the user's new walking artwork. */
 const IDLE_FRAME:Record<Direction,number>={
@@ -62,7 +62,7 @@ export const HUNTER_ART:Record<Direction,Poses>=Object.fromEntries(
    walk:HUNTER_WALK_V2[direction]
   }
  ])
-) as Record<Direction,Poses>;
+) as unknown as Record<Direction,Poses>;
 
 export const hunterFacing=(direction:Direction)=>({view:direction,mirror:VIEWS[direction].mirror});
 
