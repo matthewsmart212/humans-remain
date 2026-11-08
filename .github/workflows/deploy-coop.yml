@@ -54,7 +54,7 @@ jobs:
 
       - name: Verify independent Worker name and entry point
         run: |
-          node -e "const c=require('./wrangler.coop.jsonc');if(c.name!=='humans-remain-coop'||c.main!=='./server/coop.ts')process.exit(1)"
+          node -e "const fs=require('node:fs');const c=JSON.parse(fs.readFileSync('wrangler.coop.jsonc','utf8'));if(c.name!=='humans-remain-coop'||c.main!=='./server/coop.ts')process.exit(1)"
 
       - name: Verify Cloudflare credentials
         env:
@@ -85,7 +85,7 @@ jobs:
           fi
           node -e "const u=process.env.DEPLOY_URL;const health=new URL('/health',u);if(health.protocol!=='https:')process.exit(1);console.log('Checking '+health.toString())"
           for attempt in 1 2 3 4 5; do
-            if curl --fail --silent --show-error --max-time 10 "$DEPLOY_URL/health" | grep -q 'humans-remain-coop'; then
+            if curl --fail --silent --show-error --max-time 10 "$(node -e "console.log(new URL('/health',process.env.DEPLOY_URL).href)")" | grep -q 'humans-remain-coop'; then
               echo "Multiplayer health endpoint responds correctly."
               exit 0
             fi
