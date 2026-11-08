@@ -105,6 +105,9 @@ export default function NativeEntryFlow({initialMenuVisible,onPlay,onFriends,loa
  const arriveAtMenu=(kind:'natural'|'skip')=>{
   setMusicMode('menu');
   setMenuVideoEnabled(true);
+  // If a device missed the 4-second update event, the completed menu must
+  // never retain hidden or half-animated controls.
+  if(kind==='natural')setMenuUiPhase('shown');
   setMenuRequested(kind);
  };
  const onBackgroundFrame=useCallback(()=>setMenuFrameReady(true),[]);
