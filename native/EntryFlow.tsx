@@ -1,9 +1,10 @@
 import React,{useCallback,useEffect,useRef,useState} from 'react';
-import {Animated,AppState,Easing,StyleSheet,View} from 'react-native';
+import {AccessibilityInfo,Animated,AppState,Easing,StyleSheet,View} from 'react-native';
 import {useAudioPlayer,setAudioModeAsync} from 'expo-audio';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import NativeOpeningFlow from './OpeningFlow';
 import NativeStartingScreen from './StartingScreen';
+import NativeMenuBackdrop from './MenuBackdrop';
 import {START_PROFILE_KEY,readStartProfile} from '../src/start-profile';
 import type {SurvivorRoleId} from '../src/survivor-roles';
 
@@ -27,6 +28,8 @@ export default function NativeEntryFlow({initialMenuVisible,onPlay,onFriends,loa
  const [menuVideoEnabled,setMenuVideoEnabled]=useState(initialMenuVisible);
  const [menuFrameReady,setMenuFrameReady]=useState(false);
  const [menuVideoFailed,setMenuVideoFailed]=useState(false);
+ const [menuUiPhase,setMenuUiPhase]=useState<'hidden'|'revealing'|'shown'>(initialMenuVisible?'shown':'hidden');
+ const [motion,setMotion]=useState(true),[reduced,setReduced]=useState(false);
  const [openingGone,setOpeningGone]=useState(initialMenuVisible);
  const openingOpacity=useRef(new Animated.Value(1)).current;
  const [musicMode,setMusicMode]=useState<MusicMode>(initialMenuVisible?'menu':'idle');
@@ -45,10 +48,17 @@ export default function NativeEntryFlow({initialMenuVisible,onPlay,onFriends,loa
  useEffect(()=>{
   let live=true;
   void AsyncStorage.getItem(START_PROFILE_KEY)
-   .then(text=>{if(live)setMuted(readStartProfile(text).muted)})
+   .then(text=>{if(live){const profile=readStartProfile(text);setMuted(profile.muted);setMotion(profile.motion)}})
    .catch(()=>{})
    .finally(()=>{if(live)setProfileReady(true)});
   return()=>{live=false};
+ },[]);
+
+ useEffect(()=>{
+  let live=true;
+  void AccessibilityInfo.isReduceMotionEnabled().then(value=>{if(live)setReduced(value)}).catch(()=>{});
+  const sub=AccessibilityInfo.addEventListener('reduceMotionChanged',value=>setReduced(value));
+  return()=>{live=false;sub.remove()};
  },[]);
 
  // Watch Intro must not be held up by downloading the track over the network:
@@ -88,6 +98,7 @@ export default function NativeEntryFlow({initialMenuVisible,onPlay,onFriends,loa
   setMenuRequested('continue');
  };
  const chooseWatch=()=>setMusicMode('cinematic');
+ const beginFinalReveal=()=>setMenuUiPhase(phase=>phase==='hidden'?'revealing':phase);
  // The final footage of the intro is deliberately aligned with the END of
  // the menu's looping clip. Start its next loop near the final intro frame.
  const prepareLoop=()=>setMenuVideoEnabled(true);
@@ -100,7 +111,10 @@ export default function NativeEntryFlow({initialMenuVisible,onPlay,onFriends,loa
  const onBackgroundError=useCallback(()=>setMenuVideoFailed(true),[]);
  // The intro never unmounts over an unprepared or black video surface.
  useEffect(()=>{
-  if(openingGone||menuRequested==='none'||(!menuFrameReady&&!menuVideoFailed))return;
+  if(openingGone||menuRequested==='none'||(!menuFrameReady&&!menuVideoFailed&&motion&&!reduced))return;
+  // Skip/Continue bring all the controls in with the short handoff; a
+  // naturally finishing intro already animated them over its final 4s.
+  if(menuRequested!=='natural')setMenuUiPhase('shown');
   const animation=Animated.timing(openingOpacity,{
    toValue:0,
    duration:menuRequested==='natural'?85:220,
@@ -109,32 +123,26 @@ export default function NativeEntryFlow({initialMenuVisible,onPlay,onFriends,loa
   });
   animation.start(({finished})=>{if(finished)setOpeningGone(true)});
   return()=>animation.stop();
- },[openingGone,menuRequested,menuFrameReady,menuVideoFailed,openingOpacity]);
+ },[openingGone,menuRequested,menuFrameReady,menuVideoFailed,motion,reduced,openingOpacity]);
  const musicAllowed=profileReady&&audioReady&&active&&!muted;
- // The existing menu UI uses zIndex:1000 internally. Keep its entire
- // subtree inside the BACK layer so it cannot paint above the intro on iOS.
- // The opening overlay is explicitly stacked above it until the menu video
- // has a decoded frame and the dissolve is complete.
+ // Three distinct layers on iOS: one menu video at the back, the intro
+ // above it, and the REAL menu UI over both during its final four seconds.
+ // None of these players/UI trees are remounted during the natural handoff.
  return <View style={StyleSheet.absoluteFill}>
-  <View pointerEvents={openingGone?'auto':'none'} style={[StyleSheet.absoluteFill,{zIndex:0}]}>
-   <NativeStartingScreen
-    onPlay={onPlay}
-    onFriends={onFriends}
-    loadingProgress={loadingProgress}
-    loadError={loadError}
-    onLoadingComplete={onLoadingComplete}
-    onSoundtrackMuteChange={setMuted}
-    allowBackgroundPlayback={menuVideoEnabled}
-    onBackgroundFrame={onBackgroundFrame}
-    onBackgroundError={onBackgroundError}
+  <View pointerEvents="none" style={[StyleSheet.absoluteFill,{zIndex:0}]}>
+   <NativeMenuBackdrop
+    playing={menuVideoEnabled&&motion&&!reduced}
+    onFirstFrame={onBackgroundFrame}
+    onError={onBackgroundError}
    />
   </View>
   {!openingGone&&<Animated.View
     pointerEvents={menuRequested==='none'?'auto':'none'}
-    style={[StyleSheet.absoluteFill,{opacity:openingOpacity,zIndex:2000,elevation:2000,backgroundColor:'#061117'}]}>
+    style={[StyleSheet.absoluteFill,{opacity:openingOpacity,zIndex:1500,elevation:1500,backgroundColor:'#061117'}]}>
     <NativeOpeningFlow
      onComplete={arriveAtMenu}
      onPrepareMenu={prepareLoop}
+     onUiReveal={beginFinalReveal}
      onContinueSelected={chooseContinue}
      onWatchSelected={chooseWatch}
      soundtrack={music}
@@ -142,5 +150,17 @@ export default function NativeEntryFlow({initialMenuVisible,onPlay,onFriends,loa
      soundtrackAllowed={musicAllowed}
     />
    </Animated.View>}
+  <View pointerEvents={openingGone?'auto':'none'} style={[StyleSheet.absoluteFill,{zIndex:3000,elevation:3000}]}>
+   <NativeStartingScreen
+    onPlay={onPlay}
+    onFriends={onFriends}
+    loadingProgress={loadingProgress}
+    loadError={loadError}
+    onLoadingComplete={onLoadingComplete}
+    onSoundtrackMuteChange={setMuted}
+    onBackgroundMotionChange={setMotion}
+    introUiPhase={menuUiPhase}
+   />
+  </View>
  </View>;
 }
