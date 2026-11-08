@@ -1,6 +1,6 @@
 import {drawRepairHammer} from './repair-hammer';
 import {ENGINEER_ART,engineerCycle} from './engineer-sprites';
-import {HUNTER_ART,hunterCycle,hunterFacing} from './hunter-sprites';
+import {HUNTER_ART,HUNTER_LEGACY_ART,hunterCycle,hunterLegacyCycle,hunterFacing} from './hunter-sprites';
 import {isPickaxe} from './pickaxes';
 import {drawPickaxe} from './mining-renderer';
 import {heldProvision} from './food-provisions';
@@ -29,11 +29,14 @@ export function drawWorker(ctx:CanvasRenderingContext2D,imgs:Record<string,HTMLI
  const engineer=w.survivorRole==='engineer',hunter=w.survivorRole==='hunter';
  const ownSprite=engineer||hunter;
  const facing=hunter?hunterFacing(animation.direction):engineer?{view:animation.direction,mirror:false}:runnerFacing(animation.direction);
- const art=hunter?HUNTER_ART[animation.direction]:engineer?ENGINEER_ART[animation.direction]:SURVIVOR_ART[facing.view];
+ // New atlas is role-gated in gameplay-artwork; if it fails to load, keep
+ // the original Hunter visible rather than drawing an invisible player.
+ const hunterV2Ready=hunter&&!!imgs[HUNTER_ART[animation.direction].idle.sheet];
+ const art=hunter?(hunterV2Ready?HUNTER_ART[animation.direction]:HUNTER_LEGACY_ART[animation.direction]):engineer?ENGINEER_ART[animation.direction]:SURVIVOR_ART[facing.view];
  const swordMoving=isSword(p.equipped)&&!!w.swordThrust&&p.moving;
  const moving=(animation.pose==='walk'||animation.pose==='run'||swordMoving||isPickaxe(p.equipped)&&!!w.axeSwing&&p.moving)&&!p.downedUntil;
  const running=!w.swordThrust&&(p.runBlend??0)>.45;
- const cycle=moving?(hunter?hunterCycle(animation.direction,p.walkDistance,running):engineer?engineerCycle(animation.direction,p.walkDistance,running):runnerCycle(animation.direction,p.walkDistance,running)):undefined;
+ const cycle=moving?(hunter?(hunterV2Ready?hunterCycle(animation.direction,p.walkDistance,running):hunterLegacyCycle(animation.direction,p.walkDistance,running)):engineer?engineerCycle(animation.direction,p.walkDistance,running):runnerCycle(animation.direction,p.walkDistance,running)):undefined;
  const f=animation.pose==='punch'?art.punch:cycle?.sprite??art.idle;
  const image=imgs[f.sheet];if(!image)return;
  const [sx,sy,sw,sh]=f.crop,k=f.scale;
