@@ -1,44 +1,54 @@
 # iOS opening flow — The Reclamation
 
-This Expo-only flow runs before the existing `NativeStartingScreen`:
+The iOS Expo application now starts on a cinematic title screen with the existing Humans Remain logo:
 
-1. A quiet, darkened title screen with the approved Humans Remain logo.
-2. **Watch Intro** fades to the dedicated 60-second cinematic player. The movie plays once (including its own narrator/music), with **Skip** at top right. Completion or Skip fades into the existing menu.
-3. **Continue** fades directly into the existing menu.
-4. Returning from a run to the starting screen stays at the menu instead of returning to the intro choice.
+1. **Watch Intro**: fade in to the 60-second video, then fade to the existing start menu.
+2. **Continue**: go straight to the existing start menu.
+3. During the cinematic, **Skip** immediately stops *both* the video and its separate MP3 soundtrack.
+4. After the video ends, the player enters the normal menu. Returning from gameplay also goes to the menu, not back to the Enter screen.
 
-The original looping `public/previews/dawn-camp/start-scene.mp4` remains the **main-menu background**, unchanged. This opening deliberately does not use it as a substitute intro.
+The existing menu's looping `public/previews/dawn-camp/start-scene.mp4` and `public/audio/start-menu.mp3` remain separate and unchanged.
 
-## Add the final cinematic video
+## Replace the video and soundtrack
 
-The user-created 60-second movie is not yet committed. Until connected, Watch Intro shows a helpful unavailable message and a Continue button; Continue works normally.
+The following real files MUST replace the tiny binary placeholders committed here:
 
-**Recommended for final offline iOS builds:** put the finished, sound-mixed H.264/AAC MP4 at:
+| File | Exact repository path |
+| --- | --- |
+| 60-second finished intro video (includes narration, no background music required) | `public/previews/the-reclamation/intro.mp4` |
+| Music bed, 60 seconds and starting at time zero | `public/previews/the-reclamation/soundtrack.mp3` |
 
-```
-public/previews/the-reclamation/intro.mp4
-```
+**Open the folder in GitHub:**
+https://github.com/matthewsmart212/humans-remain/tree/main/public/previews/the-reclamation
 
-Then replace the source declaration in `native/OpeningFlow.tsx` with a static require:
+You do NOT need to update code or create another branch when replacing these placeholders. GitHub stores these specific files as ordinary Git blobs (rather than LFS pointers) to allow replacement from GitHub's web UI. For files too large for the GitHub UI (normally 25 MiB per file), use Git from your computer with an appropriate large-file strategy, or re-encode the video at a smaller bitrate. The audio and video will be statically bundled by Expo and playable offline.
 
-```ts
-const introSource:VideoSource=require('../public/previews/the-reclamation/intro.mp4');
-```
+**Important:** the repository initially contains a deliberately *1-second, tiny, blank placeholder video* and a very short silent MP3. Watch Intro will display an "intro not installed yet" message until you replace them with the real media. Both files need replacing. Do not mistake these placeholders for your finished cinematic.
 
-Remove the URL-only declaration if no longer needed. Metro must see a literal static `require` for bundling; do not use a runtime-computed local file path.
+### Video settings
 
-**For remote video testing before bundling:** set `EXPO_PUBLIC_RECLAMATION_INTRO_URL` to a direct, publicly accessible HTTPS MP4 URL before starting Expo. The player uses streaming/caching where supported. Avoid GitHub's regular HTML blob pages: they are not playable video URLs.
+Use landscape 16:9, H.264/AVC MP4, 1920 × 1080 (or 1280 × 720), 30 fps and roughly 60 seconds. Include your spoken narration (and optional sound effects) in the video file. **Do not mix the same background music into the video** if you also put that music in `soundtrack.mp3`, or you'll hear it twice.
 
-A landscape 1920×1080 MP4, 30 fps, H.264 video + AAC audio, with speech and music mixed together, is a reasonable iPhone delivery format. Use a moderate bitrate to avoid excessive app size and decoding spikes.
+Use a 60-second MP3 for the soundtrack. Its first beat should begin at 00:00, with no extra lead-in silence unless intentional. You can fade out the music in the last second for a clean transition to the existing menu track.
 
-## Verify on an iPhone
+## Playback implementation
 
-- Cold-launch in landscape; wait for the poster and logo; tap Continue. Existing expedition menu, menu music, character selection and Play should remain unchanged.
-- Relaunch; choose Watch Intro. Confirm video audio, responsive Skip, and automatic main-menu transition when it ends.
-- Put the app in the background during playback, then return. Playback should pause while inactive and resume when active.
-- Test with Reduce Motion enabled in iOS Accessibility settings; screen transitions should become immediate.
-- Test Watch Intro with no video URL/file, with a network error, and offline. The user must always be able to continue.
-- Confirm gameplay return-to-title goes to the existing menu, not the initial Enter screen.
-- Test on a real iPhone; this branch has not been device-tested.
+- `native/OpeningFlow.tsx` statically loads `intro.mp4` with `expo-video`, and `soundtrack.mp3` with `expo-audio`.
+- The soundtrack is preloaded; the video does not start until both sources are ready.
+- Music starts on the video's native `playingChange(true)` event rather than an arbitrary button-tap timer.
+- When paused or backgrounded, both pause. When playback resumes, the MP3 seeks to the current video time.
+- During playback, the controller corrects drift larger than 0.45 seconds, and both stop on Skip or video completion.
+- The video contains the narration and the separate music player only contains background music.
+- Exact sample-level synchronization is **not guaranteed** with separate native video/audio players. For absolutely precise sync, mix the completed MP3 into the final MP4 as one AAC audio track and play the video alone. Keeping the MP3 separate offers convenient replacement and approximate syncing.
 
-The entry uses a single static poster instead of adding another looping video, reducing simultaneous decoding and asset pressure on iOS.
+## Testing
+
+1. `cd native && npx expo start` on the new main commit.
+2. Verify Continue opens your existing menu with its previous music and moving backdrop.
+3. Replace **both** media files, refresh Metro, tap Watch Intro and check the music begins with the video.
+4. Skip at 5 seconds, ensure no intro audio continues underneath the menu.
+5. Let the 60-second video finish; it should switch to the menu automatically.
+6. Background and restore the app midway through video, then test headphones, mute, slow loading, iOS Reduce Motion, and return-to-menu.
+7. Test on a physical iPhone. GitHub type checks do not validate native playback timing.
+
+The static splash uses a dimmed copy of the existing menu poster so the game doesn't decode multiple looping videos on first launch.
