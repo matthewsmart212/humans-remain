@@ -42,7 +42,11 @@ export default function GameStart({onPlay,onBack,busy,notice,playDisabled,loadin
  useEffect(()=>{
   let active=true;
   const sources=[MENU_POSTER_URL,LOGO_URL,'/survival/expedition-menu-v2/approved-cards.webp',
-   '/survival/starting-screen-ui-v2/survivor-profile.png','/survival/starting-screen-ui-v2/settings.png'];
+   '/survival/starting-screen-ui-v2/survivor-profile.png','/survival/starting-screen-ui-v2/settings.png',
+   '/survival/expedition-menu-v2/panels/play.png',
+   '/survival/expedition-menu-v2/panels/customise.png',
+   '/survival/expedition-menu-v2/panels/upgrades.png',
+   '/survival/expedition-menu-v2/panels/friends.png'];
   const loads=sources.map(src=>new Promise<void>(resolve=>{
    const img=new window.Image();
    img.onload=()=>resolve();img.onerror=()=>resolve();img.src=src;
