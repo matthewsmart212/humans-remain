@@ -4,7 +4,7 @@
 The source is an opaque, flattened concept sheet. Crop each sign with an
 antialiased silhouette so the painted camp behind the signs is transparent.
 The illustrated artwork, lettering and borders inside each sign are untouched.
-Run after Git LFS materializes the original .webp.
+The source is kept intact, and these standalone PNGs are bundled by iOS and web.\nThe approved type, gate art, painted copper trim and shaped corners remain\nunaltered. The crop is masked outside the plaque, not repainted in React.
 """
 from pathlib import Path
 from PIL import Image, ImageDraw
@@ -37,16 +37,21 @@ def main():
     DEST.mkdir(parents=True,exist_ok=True)
     for name,(bounds,points) in PANELS.items():
         x,y,w,h=bounds
-        sample=3
+        sample=4
         mask=Image.new("L",(w*sample,h*sample),0)
         ink=ImageDraw.Draw(mask)
         ink.polygon([(px*sample,py*sample) for px,py in points],fill=255)
         mask=mask.resize((w,h),Image.Resampling.LANCZOS)
         panel=image.crop((x,y,x+w,y+h)).convert("RGBA")
         panel.putalpha(mask)
-        target=DEST/(name+".webp")
-        panel.save(target,format="WEBP",lossless=True,exact=True)
-        assert Image.open(target).mode=="RGBA",f"No alpha in {target}"
-        print(f"Transparent expedition plaque: {target.relative_to(ROOT)} ({w}x{h})")
+        # Save a real RGBA PNG for Expo/iOS; WebP is also produced for the web
+        # deploy's historical extraction step. Neither includes the old camp.
+        target=DEST/(name+".png")
+        panel.save(target,format="PNG",optimize=True)
+        assert Image.open(target).getextrema()[3][0]==0, f"Panel needs alpha: {target}"
+        assert panel.getpixel((0,0))[3]==0, f"Old background at corner: {target}"
+        webp=DEST/(name+".webp")
+        panel.save(webp,format="WEBP",lossless=True,exact=True)
+        print(f"Original illustrated transparent plaque: {target.relative_to(ROOT)} ({w}x{h})")
 if __name__=="__main__":
     main()
