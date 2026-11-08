@@ -45,7 +45,7 @@ export default function GameStart({onPlay,onBack,busy,notice,playDisabled,loadin
    '/survival/starting-screen-ui-v2/survivor-profile.png','/survival/starting-screen-ui-v2/settings.png'];
   const loads=sources.map(src=>new Promise<void>(resolve=>{
    const img=new window.Image();
-   img.onload=resolve;img.onerror=resolve;img.src=src;
+   img.onload=()=>resolve();img.onerror=()=>resolve();img.src=src;
    if(img.complete)resolve();
   }));
   void Promise.race([Promise.all(loads),new Promise(resolve=>setTimeout(resolve,4500))])
