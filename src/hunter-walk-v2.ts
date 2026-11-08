@@ -49,7 +49,7 @@ export const HUNTER_WALK_V2:Record<Direction,readonly RunnerSprite[]> = Object.f
  (Object.entries(VIEWS) as [Direction,(typeof VIEWS)[Direction]][]).map(
   ([direction,view]) => [direction,Array.from({length:view.count},(_,index)=>sprite(view.sheet,index))]
  )
-) as Record<Direction,readonly RunnerSprite[]>;
+) as unknown as Record<Direction,readonly RunnerSprite[]>;
 
 /** Frame selection is distance-driven to prevent skating at different movement speeds. */
 export function hunterWalkV2Cycle(direction:Direction,distance:number,running:boolean) {

@@ -200,7 +200,7 @@ function Game({role,onHome,entryVisible,onBootProgress,onBootError,coop}:{role:S
      renderer=await stage('Open renderer',()=>createNativeRenderer(playView.current,gamePerformance,preparation));if(!live){renderer.dispose();return}
      // Complete placed animations, chopping, stumps and movement before Play.
      // Detailed terrain uses bounded native lookahead and a startup buffer.
-     await stage('Warm artwork',()=>renderer!.warmImages({...EDITOR_IMAGE_SOURCES,...playerMovementImagesForRole(role),...Object.assign({},...(coop?.players||[]).filter(peer=>peer.id!==coop.id).map(peer=>playerMovementImagesForRole(peer.role))),...editorTerrainDetail(saved.layout.terrainImage),...requiredImages(saved.layout.items.map(p=>p.assetId),saved.layout.terrainImage)}));
+     await stage('Warm artwork',()=>renderer!.warmImages({...EDITOR_IMAGE_SOURCES,...playerMovementImagesForRole(role),...Object.assign({},...(coop?.players||[]).filter(peer=>peer.id!==coop?.id).map(peer=>playerMovementImagesForRole(peer.role))),...editorTerrainDetail(saved.layout.terrainImage),...requiredImages(saved.layout.items.map(p=>p.assetId),saved.layout.terrainImage)}));
      if(!live){renderer?.dispose();return}
      onBootProgress(.65);
      const resources=await stage('Open scenes',()=>new SceneResourceCache(SCENES,renderer!.warmImages,renderer!.releaseImages)),outdoor=new OutdoorTerrainStream(renderer.warmImages,renderer.releaseImages,setStatus);
