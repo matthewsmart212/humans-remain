@@ -118,8 +118,7 @@ export default function GameStart({onPlay,onBack,busy,notice,playDisabled,loadin
  const save=(next:StartProfile)=>{
   muteRef.current=next.muted;
   setProfile(next);
-  if(next.muted)startMusic.current?.();
-  else startMusic.current?.();
+  startMusic.current?.();
   try{localStorage.setItem(START_PROFILE_KEY,JSON.stringify(next));setSaveNotice('')}
   catch{setSaveNotice('Your name and preferences could not be saved on this device.')}
  };
@@ -225,8 +224,8 @@ export default function GameStart({onPlay,onBack,busy,notice,playDisabled,loadin
     introUiPhase={introUiPhase} transparentBackground
     background={null} shade={<div className="game-start-shade"/>}/>
   </div>
-  {(phase==='landing'||(phase==='watching'&&!introHasFrame))&&
-   <div className="game-start-welcome" style={{pointerEvents:phase==='landing'?'auto':'none'}}>
+  {phase!=='menu'&&
+   <div className="game-start-welcome" style={{opacity:phase==='landing'||!introHasFrame?1:0,pointerEvents:phase==='landing'?'auto':'none'}}>
     <div className="game-start-welcome-content">
      <div className="game-start-overline">THE RECLAMATION</div>
      <img src={LOGO_URL} className="game-start-welcome-logo" alt="Humans Remain"/>
