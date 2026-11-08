@@ -14,6 +14,7 @@ const logo=require('../public/survival/starting-screen-ui-v2/humans-remain-logo.
 type Props={
  onComplete:(reason:'natural'|'skip')=>void;
  onPrepareMenu:()=>void;
+ onUiReveal:()=>void;
  onContinueSelected:()=>void;
  onWatchSelected:()=>void;
  soundtrack:AudioPlayer;
@@ -22,7 +23,7 @@ type Props={
 };
 type Phase='welcome'|'cinematic';
 
-export default function NativeOpeningFlow({onComplete,onPrepareMenu,onContinueSelected,onWatchSelected,soundtrack,soundtrackReady,soundtrackAllowed}:Props){
+export default function NativeOpeningFlow({onComplete,onPrepareMenu,onUiReveal,onContinueSelected,onWatchSelected,soundtrack,soundtrackReady,soundtrackAllowed}:Props){
  const [phase,setPhase]=useState<Phase>('welcome');
  const [welcomeVisible,setWelcomeVisible]=useState(true);
  const [reduced,setReduced]=useState(false);
@@ -56,6 +57,7 @@ export default function NativeOpeningFlow({onComplete,onPrepareMenu,onContinueSe
     soundtrackAllowed={soundtrackAllowed}
     onFirstFrame={revealCinematic}
     onPrepareMenu={onPrepareMenu}
+    onUiReveal={onUiReveal}
     onDone={onComplete}/>}
   {welcomeVisible&&<Animated.View pointerEvents={phase==='welcome'?'auto':'none'} style={[StyleSheet.absoluteFill,{opacity:welcomeOpacity}]}>
    <Welcome width={width} height={height} insets={insets}
@@ -101,11 +103,12 @@ function Welcome({width,height,insets,onWatch,onContinue}:{width:number;height:n
  </View>;
 }
 
-function Cinematic({insets,onDone,onFirstFrame,onPrepareMenu,soundtrack,soundtrackReady,soundtrackAllowed}:{
+function Cinematic({insets,onDone,onFirstFrame,onPrepareMenu,onUiReveal,soundtrack,soundtrackReady,soundtrackAllowed}:{
  insets:{top:number;bottom:number;left:number;right:number};
  onDone:(reason:'natural'|'skip')=>void;
  onFirstFrame:()=>void;
  onPrepareMenu:()=>void;
+ onUiReveal:()=>void;
  soundtrack:AudioPlayer;
  soundtrackReady:boolean;
  soundtrackAllowed:boolean;
@@ -114,12 +117,13 @@ function Cinematic({insets,onDone,onFirstFrame,onPrepareMenu,soundtrack,soundtra
  const [state,setState]=useState<'loading'|'playing'|'unavailable'|'error'>('loading');
  const [videoReady,setVideoReady]=useState(video.status==='readyToPlay');
  const [firstFrame,setFirstFrame]=useState(false);
- const started=useRef(false),leaving=useRef(false),firstPlayback=useRef(true),seeking=useRef(false),prepared=useRef(false);
- const allowed=useRef(soundtrackAllowed),done=useRef(onDone),prepare=useRef(onPrepareMenu),onFrame=useRef(onFirstFrame);
+ const started=useRef(false),leaving=useRef(false),firstPlayback=useRef(true),seeking=useRef(false),prepared=useRef(false),uiRevealStarted=useRef(false);
+ const allowed=useRef(soundtrackAllowed),done=useRef(onDone),prepare=useRef(onPrepareMenu),onFrame=useRef(onFirstFrame),revealUi=useRef(onUiReveal);
  allowed.current=soundtrackAllowed;
  done.current=onDone;
  prepare.current=onPrepareMenu;
  onFrame.current=onFirstFrame;
+ revealUi.current=onUiReveal;
  const leave=(reason:'natural'|'skip')=>{
   if(leaving.current)return;
   leaving.current=true;
@@ -153,6 +157,13 @@ function Cinematic({insets,onDone,onFirstFrame,onPrepareMenu,soundtrack,soundtra
   });
   const progress=video.addListener('timeUpdate',event=>{
    if(leaving.current)return;
+   // The real menu logo, survivor bar and expedition cards animate on top of
+   // the film over its last four seconds, driven by the VIDEO clock (not
+   // wall-clock timers that run while decoding or the app is backgrounded).
+   if(!uiRevealStarted.current&&video.duration>4&&video.duration-event.currentTime<=4){
+    uiRevealStarted.current=true;
+    revealUi.current();
+   }
    // The user's intro ends on the last frame of start-scene.mp4's loop.
    // Cue that loop's first frame slightly before the final intro frame.
    if(!prepared.current&&video.duration>0&&video.duration-event.currentTime<=.12){
