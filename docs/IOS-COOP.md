@@ -36,6 +36,13 @@ Restart Metro after setting the environment variable. Build and run on two
 actual iPhones; the WebSocket implementation uses React Native's native
 WebSocket. Browser FPS results are not a substitute for physical iPhone testing.
 
+## Contract tests
+
+Run `node scripts/check-coop-room.mjs` after root `npm ci` to validate room
+creation, hibernation attachments, host permissions, packet validation, room
+expiry and player limits without connecting to Cloudflare. The PR typecheck
+workflow runs this test too.
+
 ## Pilot protocol (v1)
 
 `POST /rooms` -> `{code}`, then `GET /rooms/:code/socket` upgrades to

@@ -28,7 +28,7 @@ export default function CoopLobby({role,name,onBack,onLaunch}:Props){
    const normalized=code.trim().toUpperCase().replace(/[\s-]/g,'');
    if(!create&&!COOP_ROOM_CODE.test(normalized))throw Error('Enter the eight-character expedition code.');
    const room=create?await createCoopRoom():normalized;
-   if(!create){const r=await fetch(COOP_API+'/rooms/'+room);if(!r.ok)throw Error(r.status===404?'Expedition not found or expired.':'Unable to join ('+r.status+').')}
+   if(!create){const r=await fetch(COOP_API+'/rooms/'+room);if(!r.ok)throw Error(r.status===404?'Expedition not found or expired.':'Unable to join ('+r.status+').');const info=await r.json() as {players:number};if(info.players>=4)throw Error('That expedition is full.')}
    const session=new CoopClient(room,name,role);
    client.current=session;
    unlisten.current=session.subscribe(event=>{

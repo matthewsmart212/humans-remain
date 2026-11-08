@@ -20,14 +20,14 @@ const socketData=(socket:WebSocket)=>(socket as AttachedSocket).deserializeAttac
 export class CoopRoom {
  constructor(private state:RoomState){}
  private peers():CoopPeer[]{
-  return this.state.getWebSockets().map(socket=>{
+  return this.state.getWebSockets().filter(socket=>socket.readyState===1).map(socket=>{
    const s=socketData(socket);
    return s?{...s.pose,id:s.id,name:s.name,role:s.role,joinedAt:s.joinedAt}:null;
   }).filter((v):v is CoopPeer=>!!v).sort((a,b)=>a.joinedAt-b.joinedAt||a.id.localeCompare(b.id));
  }
  private broadcast(packet:CoopServerPacket){
   const data=JSON.stringify(packet);
-  for(const socket of this.state.getWebSockets())try{socket.send(data)}catch{}
+  for(const socket of this.state.getWebSockets())if(socket.readyState===1)try{socket.send(data)}catch{}
  }
  private roster(){this.broadcast({type:'roster',players:this.peers()})}
  async fetch(request:Request):Promise<Response>{
@@ -41,7 +41,7 @@ export class CoopRoom {
   if(!created||Date.now()-created>24*60*60*1000)return response({error:'Room expired or not found'},404);
   if(url.pathname==='/status'&&request.method==='GET')return response({exists:true,players:this.peers().length});
   if(url.pathname!=='/socket'||request.headers.get('Upgrade')?.toLowerCase()!=='websocket')return response({error:'Not found'},404);
-  if(this.state.getWebSockets().length>=COOP_MAX_PLAYERS)return response({error:'Room is full'},409);
+  if(this.peers().length>=COOP_MAX_PLAYERS)return response({error:'Room is full'},409);
   const role=url.searchParams.get('role'),name=url.searchParams.get('name')||'Survivor';
   if(!COOP_ROLES.includes(role as CoopPeer['role'])||name.length>60)return response({error:'Invalid survivor'},400);
   const [client,server]=Object.values(new WebSocketPair());
