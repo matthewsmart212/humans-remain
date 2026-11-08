@@ -147,3 +147,6 @@ public/survival/expedition-menu-v2/loading-panel.webp -filter -diff -merge
 # New single-video start scene is a normal Git blob, not an LFS pointer.
 /public/previews/dawn-camp/start-scene.mp4 -filter -diff -merge -text
 /public/previews/dawn-camp/start-scene-poster.jpg -filter -diff -merge -text
+
+# Hunter v2 sprite atlases are uploaded directly through GitHub's web UI.
+/public/survival/hunter-v1/walk-v2/*.png -filter -diff -merge -text
