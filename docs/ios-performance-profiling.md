@@ -38,8 +38,9 @@ npx expo start --no-dev --minify
 Close and reopen the app after changing mode. This is still Expo Go or your
 development client, not an App Store release binary. Use a physical iPhone release
 build for final performance acceptance. Do not mix development and release
-recordings in a before/after comparison. Auto-save-to-computer is dev-only;
-production JavaScript uses Export log.
+recordings in a before/after comparison. Auto-save-to-computer is still
+dev-only. **Export log (.json)** uses the share sheet in both modes — Save to
+Files on the phone.
 
 ## What the JSON measures
 
