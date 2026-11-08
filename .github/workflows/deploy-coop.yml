@@ -1,0 +1,95 @@
+name: Deploy Humans Remain Co-op
+
+# The iOS multiplayer service is independent of the existing web Worker.
+# Only the co-op development branch can automatically deploy this service.
+on:
+  push:
+    branches:
+      - feature/ios-coop-foundation
+    paths:
+      - '.github/workflows/deploy-coop.yml'
+      - 'wrangler.coop.jsonc'
+      - 'server/coop.ts'
+      - 'src/coop-protocol.ts'
+      - 'scripts/check-coop-room.mjs'
+      - 'package.json'
+      - 'package-lock.json'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: humans-remain-coop-deployment
+  cancel-in-progress: false
+
+jobs:
+  deploy:
+    name: Check and deploy multiplayer Worker
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - name: Checkout multiplayer source (no artwork LFS)
+        uses: actions/checkout@v4
+        env:
+          GIT_LFS_SKIP_SMUDGE: '1'
+        with:
+          lfs: false
+          fetch-depth: 1
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22.13.1'
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Typecheck multiplayer and shared code
+        run: npm run typecheck
+
+      - name: Validate room, host permissions and four-player limit
+        run: node scripts/check-coop-room.mjs
+
+      - name: Verify independent Worker name and entry point
+        run: |
+          node -e "const c=require('./wrangler.coop.jsonc');if(c.name!=='humans-remain-coop'||c.main!=='./server/coop.ts')process.exit(1)"
+
+      - name: Verify Cloudflare credentials
+        env:
+          CF_TOKEN_PRESENT: ${{ secrets.CLOUDFLARE_API_TOKEN != '' }}
+          CF_ACCOUNT_PRESENT: ${{ secrets.CLOUDFLARE_ACCOUNT_ID != '' }}
+        run: |
+          if [ "$CF_TOKEN_PRESENT" != "true" ] || [ "$CF_ACCOUNT_PRESENT" != "true" ]; then
+            echo "::error::Existing Cloudflare GitHub Actions secrets are missing."
+            exit 1
+          fi
+
+      - name: Deploy multiplayer only (never the web Worker)
+        id: publish
+        uses: cloudflare/wrangler-action@v4
+        with:
+          apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          wranglerVersion: '4'
+          command: deploy --config wrangler.coop.jsonc
+
+      - name: Smoke-test the live multiplayer endpoint
+        env:
+          DEPLOY_URL: ${{ steps.publish.outputs.deployment-url }}
+        run: |
+          if [ -z "$DEPLOY_URL" ]; then
+            echo "::warning::No Worker URL was supplied by Wrangler; inspect the deploy logs for the live endpoint."
+            exit 0
+          fi
+          node -e "const u=process.env.DEPLOY_URL;const health=new URL('/health',u);if(health.protocol!=='https:')process.exit(1);console.log('Checking '+health.toString())"
+          for attempt in 1 2 3 4 5; do
+            if curl --fail --silent --show-error --max-time 10 "$DEPLOY_URL/health" | grep -q 'humans-remain-coop'; then
+              echo "Multiplayer health endpoint responds correctly."
+              exit 0
+            fi
+            sleep 5
+          done
+          echo "::error::The new multiplayer Worker failed its health check."
+          exit 1
