@@ -18,7 +18,7 @@ const GOLD='#c49a59',CREAM='#f5ddb0',TEAL='#0d3736';
 // image is flattened and contains the old camp behind its clipped corners.
 export function ExpeditionPlaque({width,height,scale,children}:{width:number;height:number;scale:number;children:React.ReactNode}){
  const w=width*scale,h=height*scale;
- return <View style={{width:w,height:h,backgroundColor:'transparent',shadowColor:'#000',shadowOpacity:.78,shadowRadius:Math.max(6,14*scale),shadowOffset:{width:0,height:Math.max(3,9*scale)},elevation:12}}>
+ return <View style={{width:w,height:h,backgroundColor:TEAL,borderRadius:Math.max(5,12*scale),shadowColor:'#000',shadowOpacity:.78,shadowRadius:Math.max(6,14*scale),shadowOffset:{width:0,height:Math.max(3,9*scale)},elevation:12}}>
   <View style={{flex:1,overflow:'hidden',borderWidth:Math.max(1.2,3*scale),borderColor:GOLD,borderRadius:Math.max(5,12*scale),backgroundColor:TEAL}}>
    <View pointerEvents="none" style={{...StyleSheet.absoluteFillObject,borderWidth:Math.max(.6,2*scale),borderColor:'#1f5a51',borderRadius:Math.max(3,8*scale),margin:4*scale}}/>
    {children}
