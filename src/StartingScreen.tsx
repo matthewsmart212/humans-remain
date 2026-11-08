@@ -57,7 +57,7 @@ export default function StartingScreen({width,height,safe={top:0,bottom:0,left:0
  // Reserve room for the lower HUD on every iPhone aspect ratio. Both menu
  // and loading panel use one identical artboard size, never the full atlas size.
  const menuWidth=portraitMode?Math.min(availableWidth*.83,420):Math.min(unit(430),availableWidth*.48);
- const maxMenuHeight=availableHeight*(portraitMode?.53:.61);
+ const maxMenuHeight=availableHeight*(portraitMode?.53:.67);
  const panelWidth=Math.min(menuWidth,maxMenuHeight*516/599);
  const panelHeight=panelWidth*599/516;
  const icon=(name:StartScreenIconName,size:number,style?:object)=><Image accessibilityIgnoresInvertColors source={artwork.icons[name]} resizeMode="contain" style={[{width:unit(size),height:unit(size)},style]}/>;
@@ -81,7 +81,7 @@ export default function StartingScreen({width,height,safe={top:0,bottom:0,left:0
    <Animated.View pointerEvents={loading?'none':'auto'} accessibilityElementsHidden={loading} importantForAccessibility={loading?'no-hide-descendants':'auto'} style={[StyleSheet.absoluteFill,{opacity:transition.interpolate({inputRange:[0,1],outputRange:[1,0]}),transform:[{translateY:transition.interpolate({inputRange:[0,1],outputRange:[0,-unit(10)]})}]}]}>
    <ExpeditionMenu width={panelWidth} maxHeight={panelHeight} fontFamily={fontFamily} artwork={artwork} busy={busy} playDisabled={playDisabled} onPlay={play} onCustomise={()=>{setName(profile.name);setRole(profile.role);setPanel('customise')}} onUpgrades={()=>setPanel('upgrades')} onFriends={onFriends}/>
    </Animated.View>
-   {loading&&<Animated.View pointerEvents="none" style={[StyleSheet.absoluteFill,{opacity:transition,transform:[{translateY:transition.interpolate({inputRange:[0,1],outputRange:[unit(12),0]})}]}]}><ExpeditionLoading width={panelWidth} height={panelHeight} artwork={artwork.expeditionLoading} forestArtwork={artwork.expeditionCards} progress={loadingProgress} reducedMotion={reducedMotion}/></Animated.View>}
+   {loading&&<Animated.View pointerEvents="none" style={[StyleSheet.absoluteFill,{opacity:transition,transform:[{translateY:transition.interpolate({inputRange:[0,1],outputRange:[unit(12),0]})}]}]}><ExpeditionLoading width={panelWidth} height={panelHeight} artwork={artwork.expeditionLoading} progress={loadingProgress} reducedMotion={reducedMotion}/></Animated.View>}
    </View>
   </Animated.View>
   <Animated.View pointerEvents="none" style={[s.stats,{left:safe.left+gutter,right:safe.right+gutter,bottom:bottomBaseline,paddingBottom:unit(6),gap:unit(12)},statsEntrance]}>
