@@ -1,4 +1,6 @@
 import NativeStartingScreen from './StartingScreen';
+import CoopLobby from './CoopLobby';
+import type {CoopClient} from './coop-client';
 import {SURVIVOR_ROLES,type SurvivorRoleId} from '../src/survivor-roles';
 import {START_PROFILE_KEY,readStartProfile} from '../src/start-profile';
 import {playerMovementImagesForRole} from '../src/gameplay-artwork';
@@ -50,21 +52,26 @@ type Mode='loading'|'playing'|'paused'|'bag'|'map'|'error';
 type Runtime={renderer:Awaited<ReturnType<typeof createNativeRenderer>>;outdoor:OutdoorTerrainStream;resources:SceneResourceCache;travel:SceneTravel;saved:SavedWorld;reduced:boolean};
 const zero=()=>({x:0,y:0});
 export default function App(){
+ const [lobby,setLobby]=useState<{role:SurvivorRoleId;name:string}|null>(null),[coop,setCoop]=useState<CoopClient|null>(null);
  const [entered,setEntered]=useState(false),[launched,setLaunched]=useState(false),[loadingProgress,setLoadingProgress]=useState<number>(),[loadError,setLoadError]=useState(''),[selectedRole,setSelectedRole]=useState<SurvivorRoleId>('survivor');
  const launchTimer=useRef<ReturnType<typeof setTimeout>|undefined>(undefined),starting=useRef(false);
  useEffect(()=>()=>clearTimeout(launchTimer.current),[]);
  const start=(role:SurvivorRoleId)=>{if(starting.current)return;setSelectedRole(role);starting.current=true;setLoadError('');setLoadingProgress(.04);launchTimer.current=setTimeout(()=>setLaunched(true),440)};
- const home=()=>{setEntered(false);setLaunched(false);setLoadingProgress(undefined);starting.current=false};
+ const home=()=>{coop?.dispose();setCoop(null);setLobby(null);setEntered(false);setLaunched(false);setLoadingProgress(undefined);starting.current=false};
  const failed=useCallback((message:string)=>{setLoadError(message+' Press Play to try again.');setLoadingProgress(undefined);setLaunched(false);starting.current=false},[]);
  return <GestureHandlerRootView style={{flex:1}}><SafeAreaProvider>
-  {launched&&<Game role={selectedRole} onHome={home} entryVisible={entered} onBootProgress={setLoadingProgress} onBootError={failed}/>}
-  {!entered&&<View style={StyleSheet.absoluteFill}><NativeStartingScreen onPlay={start} loadingProgress={loadingProgress} loadError={loadError} onLoadingComplete={()=>setEntered(true)}/></View>}
+  {launched&&<Game role={selectedRole} onHome={home} entryVisible={entered} onBootProgress={setLoadingProgress} onBootError={failed} coop={coop}/>}
+  {!entered&&<View style={StyleSheet.absoluteFill}><NativeStartingScreen onPlay={start} onFriends={(role,name)=>setLobby({role,name})} loadingProgress={loadingProgress} loadError={loadError} onLoadingComplete={()=>setEntered(true)}/></View>}
+  {lobby&&!entered&&<CoopLobby role={lobby.role} name={lobby.name} onBack={()=>setLobby(null)} onLaunch={session=>{setCoop(session);setLobby(null);start(session.role)}}/>}
  </SafeAreaProvider></GestureHandlerRootView>;
 }
 
-function Game({role,onHome,entryVisible,onBootProgress,onBootError}:{role:SurvivorRoleId;onHome:()=>void;entryVisible:boolean;onBootProgress:(progress:number)=>void;onBootError:(message:string)=>void}){
+function Game({role,onHome,entryVisible,onBootProgress,onBootError,coop}:{role:SurvivorRoleId;coop:CoopClient|null;onHome:()=>void;entryVisible:boolean;onBootProgress:(progress:number)=>void;onBootError:(message:string)=>void}){
  const entryVisibleRef=useRef(entryVisible);entryVisibleRef.current=entryVisible;
  const [activeRole,setActiveRole]=useState<SurvivorRoleId>(role);
+ const [coopInfo,setCoopInfo]=useState('');
+ const warmedPeerRoles=useRef(new Set<SurvivorRoleId>());
+ useEffect(()=>{if(!coop)return;return coop.subscribe(event=>{if(event!=='update')return;setCoopInfo(coop.status+' · '+coop.players.length+'/4 survivors');const renderer=runtime.current?.renderer;if(!renderer)return;for(const peer of coop.players){if(peer.id===coop.id||warmedPeerRoles.current.has(peer.role))continue;warmedPeerRoles.current.add(peer.role);void renderer.warmImages(playerMovementImagesForRole(peer.role),'foreground').catch(()=>warmedPeerRoles.current.delete(peer.role))}})},[coop]);
  const [characterOpen,setCharacterOpen]=useState(false),[characterLoading,setCharacterLoading]=useState(false),[characterError,setCharacterError]=useState('');
  const {width,height}=useWindowDimensions(),safe=useSafeAreaInsets(),dimensions=useRef({width,height});dimensions.current={width,height};
  const world=useRef<World|null>(null),runtime=useRef<Runtime|null>(null),input=useRef(zero()),sprint=useRef(false),swing=useRef(false),enabled=useRef(false),modeRef=useRef<Mode>('loading');
@@ -116,7 +123,7 @@ function Game({role,onHome,entryVisible,onBootProgress,onBootError}:{role:Surviv
  const restart=()=>{const r=runtime.current;if(!r)return;gamePerformance.stop(performance.now(),'New Survival run');try{clear();continuousZoom.current=1;mapVisible.current=false;setMapOpen(false);atlasZoom.set(1);playView.current.zoom=1;const session=createCampPlaySession(r.saved.layout,undefined,'survival');session.survivorRole=activeRole;bindTravel(r,session);saveBlocked.current=false;setSaveNotice('');change('playing');saveRun(true)}catch(e){setError(String(e));change('error')}};
  const changeCharacter=async(next:SurvivorRoleId)=>{
   const r=runtime.current,w=world.current;
-  if(!r||!w||modeRef.current!=='paused'||w.phase==='over'||characterLoading||next===activeRole)return;
+  if(coop||!r||!w||modeRef.current!=='paused'||w.phase==='over'||characterLoading||next===activeRole)return;
   setCharacterLoading(true);setCharacterError('');
   // Paused native frames do not drain background warm jobs. Temporarily use
   // the standalone image preparation queue to avoid deadlocking the menu.
@@ -154,6 +161,7 @@ function Game({role,onHome,entryVisible,onBootProgress,onBootError}:{role:Surviv
      r.travel.tick(STEP,true);acc-=STEP;
      if(world.current!==current){previous=undefined;acc=0;break}
     }
+    if(playing&&world.current)coop?.sendPose(world.current,Date.now());
     // Scene travel changes busy state outside React; keep native recognition current.
     pinch.syncConfig();
     const simulationEnded=tracked?performance.now():0;
@@ -162,7 +170,7 @@ function Game({role,onHome,entryVisible,onBootProgress,onBootError}:{role:Surviv
     const size=dimensions.current,sizeKey=`${size.width}:${size.height}`;
     const drawStarted=tracked?performance.now():0;
     let worldDrawn=false,publishMs=0;
-    if(!worldCovered&&(playing||drawnMenuRevision!==stationMenuRevision(current)||stationMenuAnimating(current,now/1000)||drawnWorld!==current||drawnRevision!==r.renderer.revision||drawnSize!==sizeKey)){worldDrawn=true;const nextPicture=r.renderer.draw(presentPlayer(current,previous,playing?acc/STEP:1),size.width,size.height,r.travel.opacity);const publishStarted=tracked?performance.now():0;picture.value=nextPicture;if(tracked)publishMs=performance.now()-publishStarted;drawnRevision=r.renderer.revision;drawnSize=sizeKey;drawnWorld=current;drawnMenuRevision=stationMenuRevision(current)}
+    if(!worldCovered&&(playing||drawnMenuRevision!==stationMenuRevision(current)||stationMenuAnimating(current,now/1000)||drawnWorld!==current||drawnRevision!==r.renderer.revision||drawnSize!==sizeKey)){worldDrawn=true;const nextPicture=r.renderer.draw(presentPlayer(current,previous,playing?acc/STEP:1),size.width,size.height,r.travel.opacity,coop?.remotePoses());const publishStarted=tracked?performance.now():0;picture.value=nextPicture;if(tracked)publishMs=performance.now()-publishStarted;drawnRevision=r.renderer.revision;drawnSize=sizeKey;drawnWorld=current;drawnMenuRevision=stationMenuRevision(current)}
     const renderMs=tracked?performance.now()-drawStarted:0,updateMs=tracked?drawStarted-updateStarted:0,diagnosticsStarted=gamePerformance.tracing?performance.now():0;
     if(gamePerformance.tracing){
      gamePerformance.system('simulationMs',simulationEnded-updateStarted);gamePerformance.system('terrainMs',drawStarted-simulationEnded);
@@ -192,7 +200,7 @@ function Game({role,onHome,entryVisible,onBootProgress,onBootError}:{role:Surviv
      renderer=await stage('Open renderer',()=>createNativeRenderer(playView.current,gamePerformance,preparation));if(!live){renderer.dispose();return}
      // Complete placed animations, chopping, stumps and movement before Play.
      // Detailed terrain uses bounded native lookahead and a startup buffer.
-     await stage('Warm artwork',()=>renderer!.warmImages({...EDITOR_IMAGE_SOURCES,...(role==='hunter'?HUNTER_IMAGE_SOURCES:{}),...editorTerrainDetail(saved.layout.terrainImage),...requiredImages(saved.layout.items.map(p=>p.assetId),saved.layout.terrainImage)}));
+     await stage('Warm artwork',()=>renderer!.warmImages({...EDITOR_IMAGE_SOURCES,...playerMovementImagesForRole(role),...Object.assign({},...(coop?.players||[]).filter(peer=>peer.id!==coop.id).map(peer=>playerMovementImagesForRole(peer.role))),...editorTerrainDetail(saved.layout.terrainImage),...requiredImages(saved.layout.items.map(p=>p.assetId),saved.layout.terrainImage)}));
      if(!live){renderer?.dispose();return}
      onBootProgress(.65);
      const resources=await stage('Open scenes',()=>new SceneResourceCache(SCENES,renderer!.warmImages,renderer!.releaseImages)),outdoor=new OutdoorTerrainStream(renderer.warmImages,renderer.releaseImages,setStatus);
@@ -206,14 +214,14 @@ function Game({role,onHome,entryVisible,onBootProgress,onBootError}:{role:Surviv
      await stage('Prepare nearby detail',()=>renderer!.prepareTerrain(w,size.width,size.height));
      if(!live){stop();return}
      // Present a complete first frame before removing the loading screen.
-     picture.value=await stage('Draw game',()=>renderer!.draw(w,size.width,size.height,local!.travel.opacity));
+     picture.value=await stage('Draw game',()=>renderer!.draw(w,size.width,size.height,local!.travel.opacity,coop?.remotePoses()));
      renderer!.setFrameManaged(true);
      setStatus('');change(!appActive||saveBlocked.current||w.phase==='over'?'paused':'playing');
      onBootProgress(1);
      if(appActive)raf=requestAnimationFrame(frame);
    }catch(e){stop();throw e}
   })().catch(e=>{if(!live)return;console.error('Unable to open game',e);setError(e instanceof Error?e.message:String(e));change('error');onBootError(e instanceof Error?e.message:String(e))});
-  const subscription=AppState.addEventListener('change',state=>{appActive=state==='active';last=0;acc=0;if(!appActive){pause();gamePerformance.setActivity('background',performance.now());cancelAnimationFrame(raf);raf=0}else if(local&&!raf){gamePerformance.setActivity('paused',performance.now());raf=requestAnimationFrame(frame)}});
+  const subscription=AppState.addEventListener('change',state=>{appActive=state==='active';coop?.setForeground(appActive);last=0;acc=0;if(!appActive){pause();gamePerformance.setActivity('background',performance.now());cancelAnimationFrame(raf);raf=0}else if(local&&!raf){gamePerformance.setActivity('paused',performance.now());raf=requestAnimationFrame(frame)}});
   const memoryWarning=AppState.addEventListener('memoryWarning',()=>{gamePerformance.trace(performance.now(),'native-memory-warning',0,{atlasZoom:continuousZoom.current,mapVisible:mapVisible.current});});
   const accessibility=AccessibilityInfo.addEventListener('reduceMotionChanged',reduced=>{if(local)local.reduced=reduced;if(world.current?.weather)world.current.weather.reducedMotion=reduced});
   return()=>{live=false;cancelAnimationFrame(raf);subscription.remove();memoryWarning.remove();accessibility.remove();picture.value=empty;stop()};
@@ -236,6 +244,7 @@ function Game({role,onHome,entryVisible,onBootProgress,onBootError}:{role:Surviv
    onTool={()=>{if(world.current&&(modeRef.current==='playing'||modeRef.current==='bag')&&!runtime.current?.travel.busy)toggleAxe(world.current)}}/></Profiler>}
   {w&&active&&!mapOpen&&!!(status||saveNotice)&&<Pressable style={[s.notice,{top:safe.top+110}]} onPress={()=>{if(status){runtime.current?.outdoor.retry();runtime.current?.travel.retry()}else saveRun()}}><Text style={s.small}>{status||saveNotice}</Text></Pressable>}
   {w&&active&&<Profiler id="native-map" onRender={profileRender}><NativePlayerMap nativePinch={pinch.registration} presentation={pinch.amount} pinchGesture={pinch.gesture} pinching={pinch.uiPinching} preparation={preparation} diagnostics={gamePerformance} onReady={onMapReady} active={mapOpen} world={world} width={width} height={height} safe={safe} camera={atlasCamera} zoom={atlasZoom} pump={mapPump} onTouchStart={pinch.start} onClose={closeMap}/></Profiler>}
+  {coop&&w&&active&&<View pointerEvents="none" style={{position:'absolute',right:safe.right+12,bottom:safe.bottom+12,backgroundColor:'#071d1ddc',borderRadius:7,paddingHorizontal:9,paddingVertical:5}}><Text style={{color:'#ffe1a5',fontSize:11}}>CO-OP · {coopInfo}</Text></View>}
   {w&&active&&<NativePerformanceOverlay recorder={gamePerformance} top={mapOpen?safe.top+8:safe.top+116} left={mapOpen?safe.left+8:safe.left+16}/>}
    {!active&&mode!=='bag'&&mode!=='map'&&<View style={[s.overlay,{paddingTop:safe.top+20,paddingBottom:safe.bottom+20,paddingLeft:safe.left+20,paddingRight:safe.right+20}]}>{mode==='paused'&&performanceOpen?<NativePerformancePanel recorder={gamePerformance} onStart={startRecording} onBack={()=>setPerformanceOpen(false)} defeated={w?.phase==='over'||saveBlocked.current} wide={wide}/>:<ScrollView style={[s.dialog,wide&&s.dialogWide]} contentContainerStyle={s.dialogContent}>
     <Text style={s.title}>{mode==='paused'&&characterOpen?'Change character':mode==='paused'?(w?.phase==='over'?'Run ended':'Game paused'):mode==='error'?'Unable to open game':'Humans Remain'}</Text>
@@ -251,7 +260,7 @@ function Game({role,onHome,entryVisible,onBootProgress,onBootError}:{role:Surviv
      {button('Back to settings',()=>setCharacterOpen(false),characterLoading)}
     </View>:mode==='paused'&&<View style={[s.menu,wide&&s.menuWide]}>
      {w?.phase!=='over'&&!saveBlocked.current&&button('Resume',()=>{clear();change('playing');saveRun()},false,wide&&s.menuItem)}
-     {w?.phase!=='over'&&button('Change character · '+(SURVIVOR_ROLES.find(option=>option.id===activeRole)?.label??'Survivor'),()=>{setCharacterError('');setCharacterOpen(true)},false,wide&&s.menuItem)}
+     {!coop&&w?.phase!=='over'&&button('Change character · '+(SURVIVOR_ROLES.find(option=>option.id===activeRole)?.label??'Survivor'),()=>{setCharacterError('');setCharacterOpen(true)},false,wide&&s.menuItem)}
      {button('New Survival run',newRun,false,wide&&s.menuItem)}
      {button('Starting screen',()=>{clear();saveRun();onHome()},false,wide&&s.menuItem)}
      <Text style={s.section}>SETTINGS · PERFORMANCE</Text>

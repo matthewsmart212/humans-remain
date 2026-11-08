@@ -1,6 +1,7 @@
 import {COOP_MAX_PLAYERS,COOP_PROTOCOL_VERSION,COOP_ROOM_CODE,COOP_ROLES,validCoopPose,type CoopPeer,type CoopPose,type CoopClientPacket,type CoopServerPacket} from '../src/coop-protocol';
 
 type SocketData={id:string;name:string;role:CoopPeer['role'];joinedAt:number;pose:CoopPose;lastPoseAt:number};
+type AttachedSocket=WebSocket&{serializeAttachment(value:SocketData):void;deserializeAttachment():unknown};
 type RoomState={
  storage:{get<T>(key:string):Promise<T|undefined>;put(key:string,value:unknown):Promise<void>};
  acceptWebSocket(socket:WebSocket):void;
@@ -14,7 +15,7 @@ const headers={'Cache-Control':'no-store'};
 const response=(data:unknown,status=200)=>Response.json(data,{status,headers});
 const defaultPose:CoopPose={x:0,y:0,direction:'down',moving:false,sprinting:false,walkDistance:0,sceneId:'camp'};
 const safeName=(name:string)=>name.trim().replace(/[<>\\]/g,'').slice(0,20)||'Survivor';
-const socketData=(socket:WebSocket)=>socket.deserializeAttachment() as SocketData|undefined;
+const socketData=(socket:WebSocket)=>(socket as AttachedSocket).deserializeAttachment() as SocketData|undefined;
 
 export class CoopRoom {
  constructor(private state:RoomState){}
@@ -47,7 +48,7 @@ export class CoopRoom {
   const joinedAt=Date.now(),id=crypto.randomUUID();
   const spawn=this.peers().at(0);
   this.state.acceptWebSocket(server);
-  server.serializeAttachment({id,name:safeName(name),role,joinedAt,pose:spawn?{...defaultPose,x:spawn.x+30,y:spawn.y+20,sceneId:spawn.sceneId}:defaultPose,lastPoseAt:0} satisfies SocketData);
+  (server as AttachedSocket).serializeAttachment({id,name:safeName(name),role:role as CoopPeer['role'],joinedAt,pose:spawn?{...defaultPose,x:spawn.x+30,y:spawn.y+20,sceneId:spawn.sceneId}:defaultPose,lastPoseAt:0});
   server.send(JSON.stringify({type:'welcome',id,room:url.searchParams.get('room')||'',players:this.peers(),version:COOP_PROTOCOL_VERSION} satisfies CoopServerPacket));
   this.roster();
   return new Response(null,{status:101,webSocket:client} as ResponseInit);
@@ -70,7 +71,7 @@ export class CoopRoom {
   const now=Date.now();
   if(now-owner.lastPoseAt<70)return; // cap per-connection messages near 14Hz
   owner.lastPoseAt=now;owner.pose=packet.pose;
-  socket.serializeAttachment(owner); // survives hibernation without an in-memory loop
+  (socket as AttachedSocket).serializeAttachment(owner); // survives hibernation without an in-memory loop
   this.broadcast({type:'pose',peer:{...owner.pose,id:owner.id,name:owner.name,role:owner.role,joinedAt:owner.joinedAt}});
  }
  webSocketClose(){this.roster()}
@@ -94,7 +95,7 @@ export default {
    }
    return response({error:'Could not allocate a room'},503);
   }
-  const match=/^\\/rooms\\/([A-HJ-NP-Z2-9]{8})(?:\\/(socket))?$/.exec(url.pathname);
+  const match=/^\/rooms\/([A-HJ-NP-Z2-9]{8})(?:\/(socket))?$/.exec(url.pathname);
   if(!match||!COOP_ROOM_CODE.test(match[1]))return response({error:'Not found'},404);
   const room=env.ROOMS.get(env.ROOMS.idFromName(match[1]));
   if(match[2]==='socket'){

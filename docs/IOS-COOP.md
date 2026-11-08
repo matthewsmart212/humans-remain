@@ -46,7 +46,10 @@ are allowed. Every accepted message has basic size/type checks and position
 packets are rate limited. Cloudflare stores connected-player attachments with
 the WebSocket Hibernation API.
 
-Future steps: connect the native starting-screen menu, render remote survivor
-sprites inside Skia, test two-device latency and disconnect behaviour, then
-refactor the survival simulation to be authoritative before allowing shared
-resources or combat.
+The native Play With Friends menu now creates/joins lobbies. When two devices
+connect, the host can start the session. Other survivors are rendered with their
+selected 8-direction Skia sprites; this is *visual presence only* and their
+combat, loot and world simulation are not synchronized. Both phones must have
+the same world and app build for coordinates to align. Next: test two physical
+iPhones for rendering/latency/background recovery, then convert the shared
+simulation to server authority before enabling multiplayer combat or resources.

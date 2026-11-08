@@ -9,10 +9,10 @@ import SurvivorSelector from './SurvivorSelector';
 import {survivorRole,type SurvivorRoleId} from './survivor-roles';
 
 
-type Props={width:number;height:number;safe?:{top:number;bottom:number;left:number;right:number};background:React.ReactNode;shade:React.ReactNode;portrait:ImageSourcePropType;artwork:StartScreenArtwork;fontFamily?:string;profile:StartProfile;onProfile:(p:StartProfile)=>void;onPlay:()=>void;onBack?:()=>void;busy?:boolean;notice?:string;playDisabled?:boolean;loadingProgress?:number;reducedMotion?:boolean;onLoadingComplete?:()=>void};
+type Props={width:number;height:number;safe?:{top:number;bottom:number;left:number;right:number};background:React.ReactNode;shade:React.ReactNode;portrait:ImageSourcePropType;artwork:StartScreenArtwork;fontFamily?:string;profile:StartProfile;onProfile:(p:StartProfile)=>void;onPlay:()=>void;onFriends?:()=>void;onBack?:()=>void;busy?:boolean;notice?:string;playDisabled?:boolean;loadingProgress?:number;reducedMotion?:boolean;onLoadingComplete?:()=>void};
 type Panel='customise'|'upgrades'|'settings'|null;
 const serif=Platform.OS==='ios'?'Georgia':Platform.OS==='web'?'Georgia, serif':'serif';
-export default function StartingScreen({width,height,safe={top:0,bottom:0,left:0,right:0},background,shade,portrait,artwork,fontFamily=START_SCREEN_MENU_FONT,profile,onProfile,onPlay,onBack,busy=false,notice='',playDisabled=false,loadingProgress,reducedMotion=false,onLoadingComplete}:Props){
+export default function StartingScreen({width,height,safe={top:0,bottom:0,left:0,right:0},background,shade,portrait,artwork,fontFamily=START_SCREEN_MENU_FONT,profile,onProfile,onPlay,onFriends,onBack,busy=false,notice='',playDisabled=false,loadingProgress,reducedMotion=false,onLoadingComplete}:Props){
  const [panel,setPanel]=useState<Panel>(null),[name,setName]=useState(profile.name),[role,setRole]=useState<SurvivorRoleId>(profile.role);
  const loading=loadingProgress!==undefined;
  const transition=useRef(new Animated.Value(loading?1:0)).current,sceneOpacity=useRef(new Animated.Value(1)).current;
@@ -55,7 +55,7 @@ export default function StartingScreen({width,height,safe={top:0,bottom:0,left:0
    <View style={{width:panelWidth,height:panelHeight,alignSelf:'flex-end'}}>
    <View nativeID="expedition-menu-atmosphere" pointerEvents="none" style={{position:'absolute',top:0,bottom:0,left:0,right:0,...(Platform.OS==='web'?{}:{top:-unit(18),bottom:-unit(18),left:-unit(18),right:-unit(18),borderRadius:unit(28),backgroundColor:'#102e2f30',shadowColor:'#071b1d',shadowOpacity:.65,shadowRadius:unit(30)})}}/>
    <Animated.View pointerEvents={loading?'none':'auto'} accessibilityElementsHidden={loading} importantForAccessibility={loading?'no-hide-descendants':'auto'} style={[StyleSheet.absoluteFill,{opacity:transition.interpolate({inputRange:[0,1],outputRange:[1,0]}),transform:[{translateY:transition.interpolate({inputRange:[0,1],outputRange:[0,-unit(10)]})}]}]}>
-   <ExpeditionMenu width={menuWidth} maxHeight={availableHeight*(portraitMode?.53:.67)} fontFamily={fontFamily} artwork={artwork} busy={busy} playDisabled={playDisabled} onPlay={play} onCustomise={()=>{setName(profile.name);setRole(profile.role);setPanel('customise')}} onUpgrades={()=>setPanel('upgrades')}/>
+   <ExpeditionMenu width={menuWidth} maxHeight={availableHeight*(portraitMode?.53:.67)} fontFamily={fontFamily} artwork={artwork} busy={busy} playDisabled={playDisabled} onPlay={play} onCustomise={()=>{setName(profile.name);setRole(profile.role);setPanel('customise')}} onUpgrades={()=>setPanel('upgrades')} onFriends={onFriends}/>
    </Animated.View>
    {loading&&<Animated.View pointerEvents="none" style={[StyleSheet.absoluteFill,{opacity:transition,transform:[{translateY:transition.interpolate({inputRange:[0,1],outputRange:[unit(12),0]})}]}]}><ExpeditionLoading width={Math.min(menuWidth,availableHeight*(portraitMode?.53:.67)*516/599)} height={Math.min(menuWidth*599/516,availableHeight*(portraitMode?.53:.67))} artwork={artwork.expeditionLoading} progress={loadingProgress} reducedMotion={reducedMotion}/></Animated.View>}
    </View>

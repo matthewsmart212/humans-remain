@@ -4,11 +4,11 @@ import type {SurvivorRoleId} from '../src/survivor-roles';
 
 // Set this in native/.env.local to your deployed independent co-op Worker.
 declare const process:{env:Partial<Record<'EXPO_PUBLIC_COOP_URL',string>>};
-export const COOP_API=(process.env.EXPO_PUBLIC_COOP_URL||'').trim().replace(/\\/$/,'');
+export const COOP_API=(process.env.EXPO_PUBLIC_COOP_URL||'').trim().replace(/\/$/,'');
 export type CoopStatus='connecting'|'connected'|'reconnecting'|'offline'|'failed';
 const reason=(value:unknown)=>value instanceof Error?value.message:String(value);
 export async function createCoopRoom():Promise<string>{
- if(!/^https:\\/\\//.test(COOP_API))throw Error('Co-op server is not configured for this iOS build.');
+ if(!COOP_API.startsWith('https://'))throw Error('Co-op server is not configured for this iOS build.');
  const response=await fetch(COOP_API+'/rooms',{method:'POST',headers:{'Content-Type':'application/json'}});
  if(!response.ok)throw Error('Could not create the expedition ('+response.status+').');
  const data=await response.json() as {code?:string};
@@ -41,7 +41,7 @@ export class CoopClient {
  subscribe(listener:(event:'update'|'start')=>void){this.listeners.add(listener);listener('update');return()=>{this.listeners.delete(listener)}}
  private emit(event:'update'|'start'='update'){for(const fn of this.listeners)fn(event)}
  connect(){
-  if(this.disposed||!this.foreground||this.ws||!/^https:\\/\\//.test(this.api))return;
+  if(this.disposed||!this.foreground||this.ws||!this.api.startsWith('https://'))return;
   this.status=this.tries?'reconnecting':'connecting';this.error='';this.emit();
   const url=this.api.replace(/^https:/,'wss:')+'/rooms/'+this.code+'/socket?name='+encodeURIComponent(this.name)+'&role='+encodeURIComponent(this.role);
   const ws=new WebSocket(url);this.ws=ws;
