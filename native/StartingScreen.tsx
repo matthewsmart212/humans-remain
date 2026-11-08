@@ -13,6 +13,12 @@ const menuArtwork:StartScreenArtwork={
  logo:require('../public/survival/starting-screen-ui-v2/humans-remain-logo.png'),
  selectionGlow:require('../public/survival/starting-screen-ui-v2/play-selection-glow.png'),
  expeditionCards:require('../public/survival/expedition-menu-v2/approved-cards.webp'),
+ expeditionPanels:{
+  play:require('../public/survival/expedition-menu-v2/panels/play.png'),
+  customise:require('../public/survival/expedition-menu-v2/panels/customise.png'),
+  upgrades:require('../public/survival/expedition-menu-v2/panels/upgrades.png'),
+  friends:require('../public/survival/expedition-menu-v2/panels/friends.png'),
+ },
  expeditionLoading:require('../public/survival/expedition-menu-v2/loading-panel.webp'),
  icons:{
   play:require('../public/survival/starting-screen-ui-v2/play.png'),
