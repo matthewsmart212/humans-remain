@@ -20,7 +20,7 @@ export function ExpeditionPlaque({width,height,scale,children}:{width:number;hei
  const w=width*scale,h=height*scale;
  return <View style={{width:w,height:h,backgroundColor:TEAL,borderRadius:Math.max(5,12*scale),shadowColor:'#000',shadowOpacity:.78,shadowRadius:Math.max(6,14*scale),shadowOffset:{width:0,height:Math.max(3,9*scale)},elevation:12}}>
   <View style={{flex:1,overflow:'hidden',borderWidth:Math.max(1.2,3*scale),borderColor:GOLD,borderRadius:Math.max(5,12*scale),backgroundColor:TEAL}}>
-   <View pointerEvents="none" style={{...StyleSheet.absoluteFillObject,borderWidth:Math.max(.6,2*scale),borderColor:'#1f5a51',borderRadius:Math.max(3,8*scale),margin:4*scale}}/>
+   <View pointerEvents="none" style={{...StyleSheet.absoluteFill,borderWidth:Math.max(.6,2*scale),borderColor:'#1f5a51',borderRadius:Math.max(3,8*scale),margin:4*scale}}/>
    {children}
   </View>
   {([0,1,2,3] as const).map(i=><View key={i} pointerEvents="none" style={{position:'absolute',width:Math.max(9,19*scale),height:Math.max(9,19*scale),left:i%2===0?5*scale:undefined,right:i%2===1?5*scale:undefined,top:i<2?5*scale:undefined,bottom:i>=2?5*scale:undefined,transform:[{rotate:'45deg'}],backgroundColor:'#9a572b',borderColor:'#d5a36a',borderWidth:Math.max(1,2*scale),borderRadius:2*scale,alignItems:'center',justifyContent:'center'}}>
@@ -63,7 +63,7 @@ export default function ExpeditionMenu({width,maxHeight,fontFamily,artwork,busy,
        <Image source={artwork.icons[key]} resizeMode="contain" style={{width:72*scale,height:72*scale}}/>
        <Text allowFontScaling={false} numberOfLines={1} style={{fontFamily,fontSize:27*scale,letterSpacing:2.2*scale,color:CREAM}}>{key==='customise'?'CUSTOMISE':'UPGRADES'}</Text>
       </View>}
-      {focused===key&&<View pointerEvents="none" style={{...StyleSheet.absoluteFillObject,borderColor:'#ffde91',borderWidth:2,borderRadius:5*scale}}/>}
+      {focused===key&&<View pointerEvents="none" style={{...StyleSheet.absoluteFill,borderColor:'#ffde91',borderWidth:2,borderRadius:5*scale}}/>}
     </ExpeditionPlaque>
    </Pressable>;
   })}
