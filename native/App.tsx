@@ -1,4 +1,5 @@
 import NativeStartingScreen from './StartingScreen';
+import NativeOpeningFlow from './OpeningFlow';
 import {SURVIVOR_ROLES,type SurvivorRoleId} from '../src/survivor-roles';
 import {START_PROFILE_KEY,readStartProfile} from '../src/start-profile';
 import {playerMovementImagesForRole} from '../src/gameplay-artwork';
@@ -50,15 +51,16 @@ type Mode='loading'|'playing'|'paused'|'bag'|'map'|'error';
 type Runtime={renderer:Awaited<ReturnType<typeof createNativeRenderer>>;outdoor:OutdoorTerrainStream;resources:SceneResourceCache;travel:SceneTravel;saved:SavedWorld;reduced:boolean};
 const zero=()=>({x:0,y:0});
 export default function App(){
- const [entered,setEntered]=useState(false),[launched,setLaunched]=useState(false),[loadingProgress,setLoadingProgress]=useState<number>(),[loadError,setLoadError]=useState(''),[selectedRole,setSelectedRole]=useState<SurvivorRoleId>('survivor');
+ const [entered,setEntered]=useState(false),[openingComplete,setOpeningComplete]=useState(false),[launched,setLaunched]=useState(false),[loadingProgress,setLoadingProgress]=useState<number>(),[loadError,setLoadError]=useState(''),[selectedRole,setSelectedRole]=useState<SurvivorRoleId>('survivor');
  const launchTimer=useRef<ReturnType<typeof setTimeout>|undefined>(undefined),starting=useRef(false);
  useEffect(()=>()=>clearTimeout(launchTimer.current),[]);
  const start=(role:SurvivorRoleId)=>{if(starting.current)return;setSelectedRole(role);starting.current=true;setLoadError('');setLoadingProgress(.04);launchTimer.current=setTimeout(()=>setLaunched(true),440)};
- const home=()=>{setEntered(false);setLaunched(false);setLoadingProgress(undefined);starting.current=false};
+ const home=()=>{setEntered(false);setOpeningComplete(true);setLaunched(false);setLoadingProgress(undefined);starting.current=false};
  const failed=useCallback((message:string)=>{setLoadError(message+' Press Play to try again.');setLoadingProgress(undefined);setLaunched(false);starting.current=false},[]);
  return <GestureHandlerRootView style={{flex:1}}><SafeAreaProvider>
   {launched&&<Game role={selectedRole} onHome={home} entryVisible={entered} onBootProgress={setLoadingProgress} onBootError={failed}/>}
-  {!entered&&<View style={StyleSheet.absoluteFill}><NativeStartingScreen onPlay={start} loadingProgress={loadingProgress} loadError={loadError} onLoadingComplete={()=>setEntered(true)}/></View>}
+  {!entered&&!openingComplete&&<View style={StyleSheet.absoluteFill}><NativeOpeningFlow onComplete={()=>setOpeningComplete(true)}/></View>}
+  {!entered&&openingComplete&&<View style={StyleSheet.absoluteFill}><NativeStartingScreen onPlay={start} loadingProgress={loadingProgress} loadError={loadError} onLoadingComplete={()=>setEntered(true)}/></View>}
  </SafeAreaProvider></GestureHandlerRootView>;
 }
 
