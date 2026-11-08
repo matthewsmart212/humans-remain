@@ -45,7 +45,9 @@ export class CoopRoom {
   const role=url.searchParams.get('role'),name=url.searchParams.get('name')||'Survivor';
   if(!COOP_ROLES.includes(role as CoopPeer['role'])||name.length>60)return response({error:'Invalid survivor'},400);
   const [client,server]=Object.values(new WebSocketPair());
-  const joinedAt=Date.now(),id=crypto.randomUUID();
+  // Date.now() can be identical for rapid successive joins. Preserve join
+  // order deterministically, including on fast physical-device connections.
+  const joinedAt=Math.max(Date.now(),...this.peers().map(peer=>peer.joinedAt+1)),id=crypto.randomUUID();
   const spawn=this.peers().at(0);
   this.state.acceptWebSocket(server);
   (server as AttachedSocket).serializeAttachment({id,name:safeName(name),role:role as CoopPeer['role'],joinedAt,pose:spawn?{...defaultPose,x:spawn.x+30,y:spawn.y+20,sceneId:spawn.sceneId}:defaultPose,lastPoseAt:0});
