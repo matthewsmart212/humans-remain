@@ -1,0 +1,10 @@
+{
+  "$schema": "./node_modules/wrangler/config-schema.json",
+  "name": "humans-remain-coop",
+  "main": "./server/coop.ts",
+  "compatibility_date": "2026-11-05",
+  "durable_objects": {
+    "bindings": [{"name":"ROOMS","class_name":"CoopRoom"}]
+  },
+  "migrations": [{"tag":"coop-v1","new_sqlite_classes":["CoopRoom"]}]
+}
