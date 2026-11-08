@@ -1,5 +1,5 @@
 import React,{useState} from 'react';
-import {Image,Pressable,StyleSheet,View} from 'react-native';
+import {Image,Pressable,StyleSheet,Text,View} from 'react-native';
 import type {StartScreenArtwork} from './start-screen-art';
 
 type Props={width:number;maxHeight:number;fontFamily:string;artwork:StartScreenArtwork;busy:boolean;playDisabled:boolean;onPlay:()=>void;onCustomise:()=>void;onUpgrades:()=>void;onFriends?:()=>void};
@@ -34,6 +34,12 @@ export default function ExpeditionMenu({width,maxHeight,artwork,busy,playDisable
     {separate
       ? <Image accessible={false} pointerEvents="none" source={artwork.expeditionPanels![key]} resizeMode="stretch" style={{position:'absolute',left:0,top:0,width:card.width*scale,height:card.height*scale}}/>
       : <Image accessible={false} pointerEvents="none" source={artwork.expeditionCards} resizeMode="stretch" style={{position:'absolute',left:-card.x*scale,top:-card.y*scale,width:ATLAS.width*scale,height:ATLAS.height*scale}}/>}
+    {/* The approved artwork still has "Coming soon" painted onto this plaque.
+         Use an inset painted label for the enabled native co-op action, preserving
+         the decorative sign edges until a clean atlas can be shipped. */}
+    {key==='friends'&&!!onFriends&&<View pointerEvents="none" style={{position:'absolute',left:card.width*scale*.065,right:card.width*scale*.065,top:card.height*scale*.14,bottom:card.height*scale*.14,backgroundColor:'#2b261ff5',borderWidth:Math.max(.75,scale),borderColor:'#9d784c',borderRadius:Math.max(3,5*scale),alignItems:'center',justifyContent:'center',shadowColor:'#000000',shadowOpacity:.44,shadowRadius:4*scale}}>
+     <Text allowFontScaling={false} numberOfLines={1} style={{color:'#f3d29a',fontFamily,fontSize:Math.max(12,23*scale),letterSpacing:1.3*scale,textAlign:'center',textShadowColor:'#100f0c',textShadowRadius:2*scale,textShadowOffset:{width:0,height:1}}}>PLAY WITH FRIENDS!</Text>
+    </View>}
     {focused===key&&key!=='play'&&<View pointerEvents="none" style={[StyleSheet.absoluteFill,s.focus]}/>}
    </Pressable>;
   })}
