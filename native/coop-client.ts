@@ -62,7 +62,8 @@ export class CoopClient {
     const previous=this.peers.get(peer.id);
     this.peers.set(peer.id,peer);
     const now=Date.now();
-    this.snapshots.set(peer.id,{from:this.snapshots.get(peer.id)?.to||previous||peer,to:peer,receivedAt:now});
+    const from=this.snapshots.get(peer.id)?.to||previous||peer;
+    this.snapshots.set(peer.id,{from:from.sceneId===peer.sceneId?from:peer,to:peer,receivedAt:now});
     // No React re-render for 10 Hz position packets. The Skia frame loop samples them.
    }else if(packet.type==='pong'){
     if(Number.isFinite(packet.nonce))this.pingMs=Math.max(0,Date.now()-packet.nonce);
@@ -104,7 +105,8 @@ export class CoopClient {
    if(peer.id===this.id)continue;
    const s=this.snapshots.get(peer.id);
    if(!s){result.push(peer);continue}
-   const alpha=Math.max(0,Math.min(1,(now-s.receivedAt+80)/120));
+   // Smooth each incoming 10 Hz sample over the next 100 ms without advancing early.
+   const alpha=Math.max(0,Math.min(1,(now-s.receivedAt)/100));
    result.push({...peer,x:s.from.x+(s.to.x-s.from.x)*alpha,y:s.from.y+(s.to.y-s.from.y)*alpha,walkDistance:s.from.walkDistance+(s.to.walkDistance-s.from.walkDistance)*alpha});
   }
   return result;
