@@ -28,7 +28,7 @@ The ordinary `wrangler.jsonc` and website deployment are unaffected.
 
 The dedicated GitHub Actions workflow `.github/workflows/deploy-coop.yml`
 automatically validates and deploys changes from the
-`feature/ios-coop-foundation` branch using the repository's existing
+`main` branch using the repository's existing
 Cloudflare credentials. It never deploys or modifies the web Worker.
 
 The native co-op client defaults to the live development Worker:

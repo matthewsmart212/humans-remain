@@ -1,11 +1,11 @@
 name: Deploy Humans Remain Co-op
 
 # The iOS multiplayer service is independent of the existing web Worker.
-# Only the co-op development branch can automatically deploy this service.
+# Deploy multiplayer server changes from main alongside the native app.
 on:
   push:
     branches:
-      - feature/ios-coop-foundation
+      - main
     paths:
       - '.github/workflows/deploy-coop.yml'
       - 'wrangler.coop.jsonc'

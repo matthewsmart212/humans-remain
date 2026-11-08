@@ -1,4 +1,4 @@
-import NativeStartingScreen from './StartingScreen';
+import NativeEntryFlow from './EntryFlow';
 import CoopLobby from './CoopLobby';
 import type {CoopClient} from './coop-client';
 import {SURVIVOR_ROLES,type SurvivorRoleId} from '../src/survivor-roles';
@@ -53,15 +53,15 @@ type Runtime={renderer:Awaited<ReturnType<typeof createNativeRenderer>>;outdoor:
 const zero=()=>({x:0,y:0});
 export default function App(){
  const [lobby,setLobby]=useState<{role:SurvivorRoleId;name:string}|null>(null),[coop,setCoop]=useState<CoopClient|null>(null);
- const [entered,setEntered]=useState(false),[launched,setLaunched]=useState(false),[loadingProgress,setLoadingProgress]=useState<number>(),[loadError,setLoadError]=useState(''),[selectedRole,setSelectedRole]=useState<SurvivorRoleId>('survivor');
+ const [entered,setEntered]=useState(false),[openingComplete,setOpeningComplete]=useState(false),[launched,setLaunched]=useState(false),[loadingProgress,setLoadingProgress]=useState<number>(),[loadError,setLoadError]=useState(''),[selectedRole,setSelectedRole]=useState<SurvivorRoleId>('survivor');
  const launchTimer=useRef<ReturnType<typeof setTimeout>|undefined>(undefined),starting=useRef(false);
  useEffect(()=>()=>clearTimeout(launchTimer.current),[]);
  const start=(role:SurvivorRoleId)=>{if(starting.current)return;setSelectedRole(role);starting.current=true;setLoadError('');setLoadingProgress(.04);launchTimer.current=setTimeout(()=>setLaunched(true),440)};
- const home=()=>{coop?.dispose();setCoop(null);setLobby(null);setEntered(false);setLaunched(false);setLoadingProgress(undefined);starting.current=false};
+ const home=()=>{coop?.dispose();setCoop(null);setLobby(null);setEntered(false);setOpeningComplete(true);setLaunched(false);setLoadingProgress(undefined);starting.current=false};
  const failed=useCallback((message:string)=>{setLoadError(message+' Press Play to try again.');setLoadingProgress(undefined);setLaunched(false);starting.current=false},[]);
  return <GestureHandlerRootView style={{flex:1}}><SafeAreaProvider>
   {launched&&<Game role={selectedRole} onHome={home} entryVisible={entered} onBootProgress={setLoadingProgress} onBootError={failed} coop={coop}/>}
-  {!entered&&<View style={StyleSheet.absoluteFill}><NativeStartingScreen onPlay={start} onFriends={(role,name)=>setLobby({role,name})} loadingProgress={loadingProgress} loadError={loadError} onLoadingComplete={()=>setEntered(true)}/></View>}
+  {!entered&&<View style={StyleSheet.absoluteFill}><NativeEntryFlow initialMenuVisible={openingComplete} onPlay={start} onFriends={(role,name)=>setLobby({role,name})} loadingProgress={loadingProgress} loadError={loadError} onLoadingComplete={()=>setEntered(true)}/></View>}
   {lobby&&!entered&&<CoopLobby role={lobby.role} name={lobby.name} onBack={()=>setLobby(null)} onLaunch={session=>{setCoop(session);setLobby(null);start(session.role)}}/>}
  </SafeAreaProvider></GestureHandlerRootView>;
 }

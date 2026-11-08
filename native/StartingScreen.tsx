@@ -3,7 +3,6 @@ import {View,Image,StyleSheet,AppState,AccessibilityInfo,StatusBar,useWindowDime
 import {useSafeAreaInsets} from 'react-native-safe-area-context';
 import {Canvas,Rect,LinearGradient,vec} from '@shopify/react-native-skia';
 import {useVideoPlayer,VideoView} from 'expo-video';
-import {useAudioPlayer,useAudioPlayerStatus,setAudioModeAsync} from 'expo-audio';
 import {useFonts} from 'expo-font';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import StartingScreen from '../src/StartingScreen';
@@ -28,44 +27,19 @@ const menuArtwork:StartScreenArtwork={
 const menuFonts={[START_SCREEN_MENU_FONT]:require('../public/fonts/camp-menu-semibold.ttf')};
 const menuPoster=require('../public/previews/dawn-camp/start-scene-poster.jpg');
 
-export default function NativeStartingScreen({onPlay,onFriends,loadingProgress,onLoadingComplete,loadError=''}:{onPlay:(role:SurvivorRoleId)=>void;onFriends:(role:SurvivorRoleId,name:string)=>void;loadingProgress?:number;onLoadingComplete:()=>void;loadError?:string}){
+export default function NativeStartingScreen({onPlay,onFriends,loadingProgress,onLoadingComplete,loadError='',onSoundtrackMuteChange}:{onPlay:(role:SurvivorRoleId)=>void;onFriends:(role:SurvivorRoleId,name:string)=>void;loadingProgress?:number;onLoadingComplete:()=>void;loadError?:string;onSoundtrackMuteChange?:(muted:boolean)=>void}){
  const {width,height}=useWindowDimensions(),safe=useSafeAreaInsets();
  const [fontsLoaded,fontError]=useFonts(menuFonts);
  const [profile,setProfile]=useState(DEFAULT_START_PROFILE),[loaded,setLoaded]=useState(false),[reduced,setReduced]=useState(true),[firstFrame,setFirstFrame]=useState(false),[notice,setNotice]=useState('');
  const writes=useRef(Promise.resolve());
  const player=useVideoPlayer(require('../public/previews/dawn-camp/start-scene.mp4'),p=>{p.loop=true;p.muted=true;p.staysActiveInBackground=false});
- // The same approved soundtrack is published by GitHub, independently of the video.
- // Bundle with Expo so the starting screen plays offline as well.
- const music=useAudioPlayer(require('../public/audio/start-menu.mp3'));
- const musicStatus=useAudioPlayerStatus(music);
- const firstMusicAt=useRef<number|null>(null);
- useEffect(()=>{void setAudioModeAsync({playsInSilentMode:true,shouldPlayInBackground:false,interruptionMode:'mixWithOthers'}).catch(()=>{})},[]);
- useEffect(()=>{
-  music.loop=true;
-  let fadeTimer:ReturnType<typeof setInterval>|undefined;
-  const stopFade=()=>{if(fadeTimer!==undefined){clearInterval(fadeTimer);fadeTimer=undefined}};
-  const sync=()=>{
-   stopFade();
-   if(!loaded||profile.muted||AppState.currentState!=='active'){music.pause();music.volume=0;return}
-   // Start the ramp only after the audio is loaded and actually playing,
-   // not while a remote MP3 is still buffering over a slow connection.
-   if(!musicStatus.isLoaded){music.volume=0;return}
-   if(!musicStatus.playing){music.volume=0;music.play();return}
-   if(firstMusicAt.current===null)firstMusicAt.current=Date.now();
-   const tick=()=>{const level=Math.min(1,Math.max(0,(Date.now()-firstMusicAt.current!)/3000));music.volume=level;if(level>=1)stopFade()};
-   tick();
-   if(music.volume<1)fadeTimer=setInterval(tick,50);
-  };
-  sync();
-  const subscription=AppState.addEventListener('change',sync);
-  return()=>{subscription.remove();stopFade();music.pause()};
- },[music,loaded,profile.muted,musicStatus.isLoaded,musicStatus.playing]);
-
+ // The music now belongs to NativeEntryFlow and persists when the intro
+ // transitions into this menu. This screen must not create a second player.
  useEffect(()=>{let live=true;void AsyncStorage.getItem(START_PROFILE_KEY).then(text=>{if(live)setProfile(readStartProfile(text))}).catch(()=>{if(live)setNotice('Your survivor preferences could not be read.')}).finally(()=>{if(live)setLoaded(true)});return()=>{live=false}},[]);
  useEffect(()=>{let live=true,changed=false;void AccessibilityInfo.isReduceMotionEnabled().then(value=>{if(live&&!changed)setReduced(value)}).catch(()=>{});const subscription=AccessibilityInfo.addEventListener('reduceMotionChanged',value=>{changed=true;setReduced(value)});return()=>{live=false;subscription.remove()}},[]);
  useEffect(()=>{const sync=()=>{if(loaded&&profile.motion&&!reduced&&AppState.currentState==='active')player.play();else player.pause()};sync();const subscription=AppState.addEventListener('change',sync);return()=>{subscription.remove();player.pause()}},[player,profile.motion,reduced,loaded]);
  useEffect(()=>{const sub=player.addListener('statusChange',event=>{if(event.status==='error')setNotice('Camp animation could not play. You can still enter your world.')});return()=>sub.remove()},[player]);
- const save=(next:StartProfile)=>{setProfile(next);writes.current=writes.current.then(()=>AsyncStorage.setItem(START_PROFILE_KEY,JSON.stringify(next))).catch(()=>setNotice('Your preferences could not be saved on this device.'))};
+ const save=(next:StartProfile)=>{setProfile(next);onSoundtrackMuteChange?.(next.muted);writes.current=writes.current.then(()=>AsyncStorage.setItem(START_PROFILE_KEY,JSON.stringify(next))).catch(()=>setNotice('Your preferences could not be saved on this device.'))};
  // Keep the approved poster visible until the bundled face is ready, avoiding a
  // one-frame system-font menu. A font error still opens the usable fallback UI.
  if(!fontsLoaded&&!fontError)return <View style={{flex:1,backgroundColor:'#071b1d'}}><StatusBar hidden/><Image source={menuPoster} resizeMode="cover" style={StyleSheet.absoluteFill}/></View>;
