@@ -84,12 +84,21 @@ jobs:
             exit 0
           fi
           node -e "const u=process.env.DEPLOY_URL;const health=new URL('/health',u);if(health.protocol!=='https:')process.exit(1);console.log('Checking '+health.toString())"
+          LIVE_ORIGIN="$(node -e "console.log(new URL(process.env.DEPLOY_URL).origin)")"
+          HEALTH_OK=false
           for attempt in 1 2 3 4 5; do
-            if curl --fail --silent --show-error --max-time 10 "$(node -e "console.log(new URL('/health',process.env.DEPLOY_URL).href)")" | grep -q 'humans-remain-coop'; then
-              echo "Multiplayer health endpoint responds correctly."
-              exit 0
+            if curl --fail --silent --show-error --max-time 10 "$LIVE_ORIGIN/health" | grep -q 'humans-remain-coop'; then
+              HEALTH_OK=true
+              break
             fi
             sleep 5
           done
-          echo "::error::The new multiplayer Worker failed its health check."
-          exit 1
+          if [ "$HEALTH_OK" != "true" ]; then
+            echo "::error::The new multiplayer Worker failed its health check."
+            exit 1
+          fi
+          echo "Worker health endpoint responds correctly."
+          ROOM_JSON="$(curl --fail --silent --show-error --max-time 15 -X POST "$LIVE_ORIGIN/rooms")"
+          ROOM_CODE="$(printf '%s' "$ROOM_JSON" | node -e "let body='';process.stdin.on('data',v=>body+=v);process.stdin.on('end',()=>{const c=JSON.parse(body).code;if(!/^[A-HJ-NP-Z2-9]{8}$/.test(c))process.exit(1);process.stdout.write(c)})")"
+          curl --fail --silent --show-error --max-time 15 "$LIVE_ORIGIN/rooms/$ROOM_CODE" | node -e "let body='';process.stdin.on('data',v=>body+=v);process.stdin.on('end',()=>{const result=JSON.parse(body);if(result.exists!==true||result.players!==0)process.exit(1)})"
+          echo "Cloudflare Durable Object room creation and lookup passed."

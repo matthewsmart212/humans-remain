@@ -2,9 +2,10 @@ import {COOP_PROTOCOL_VERSION,COOP_ROOM_CODE,validCoopPose,type CoopPeer,type Co
 import type {World} from '../src/survival-engine';
 import type {SurvivorRoleId} from '../src/survivor-roles';
 
-// Set this in native/.env.local to your deployed independent co-op Worker.
+// The multiplayer branch defaults to its deployed co-op Worker. Developers can
+// override with EXPO_PUBLIC_COOP_URL when testing staging or a local endpoint.
 declare const process:{env:Partial<Record<'EXPO_PUBLIC_COOP_URL',string>>};
-export const COOP_API=(process.env.EXPO_PUBLIC_COOP_URL||'').trim().replace(/\/$/,'');
+export const COOP_API=(process.env.EXPO_PUBLIC_COOP_URL||'https://humans-remain-coop.matthew-smart212.workers.dev').trim().replace(/\/$/,'');
 export type CoopStatus='connecting'|'connected'|'reconnecting'|'offline'|'failed';
 const reason=(value:unknown)=>value instanceof Error?value.message:String(value);
 export async function createCoopRoom():Promise<string>{

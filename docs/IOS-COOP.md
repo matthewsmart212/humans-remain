@@ -26,13 +26,17 @@ This deploys `humans-remain-coop` independently of the world-editor website.
 It requires Cloudflare Durable Objects with SQLite migrations enabled.
 The ordinary `wrangler.jsonc` and website deployment are unaffected.
 
-Create `native/.env.local` locally:
+The dedicated GitHub Actions workflow `.github/workflows/deploy-coop.yml`
+automatically validates and deploys changes from the
+`feature/ios-coop-foundation` branch using the repository's existing
+Cloudflare credentials. It never deploys or modifies the web Worker.
 
-```env
-EXPO_PUBLIC_COOP_URL=https://<your-coop-worker-hostname>
-```
+The native co-op client defaults to the live development Worker:
+`https://humans-remain-coop.matthew-smart212.workers.dev`.
+No `.env.local` is required to reach it. To target a different server, set
+`EXPO_PUBLIC_COOP_URL=https://your-staging-worker` in `native/.env.local`.
 
-Restart Metro after setting the environment variable. Build and run on two
+Restart Metro after changing native source or any environment variable. Build and run on two
 actual iPhones; the WebSocket implementation uses React Native's native
 WebSocket. Browser FPS results are not a substitute for physical iPhone testing.
 
