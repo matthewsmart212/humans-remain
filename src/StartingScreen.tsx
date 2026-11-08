@@ -9,14 +9,35 @@ import SurvivorSelector from './SurvivorSelector';
 import {survivorRole,type SurvivorRoleId} from './survivor-roles';
 
 
-type Props={width:number;height:number;safe?:{top:number;bottom:number;left:number;right:number};background:React.ReactNode;shade:React.ReactNode;portrait:ImageSourcePropType;artwork:StartScreenArtwork;fontFamily?:string;profile:StartProfile;onProfile:(p:StartProfile)=>void;onPlay:()=>void;onFriends?:()=>void;onBack?:()=>void;busy?:boolean;notice?:string;playDisabled?:boolean;loadingProgress?:number;reducedMotion?:boolean;onLoadingComplete?:()=>void};
+type Props={width:number;height:number;safe?:{top:number;bottom:number;left:number;right:number};background:React.ReactNode;shade:React.ReactNode;portrait:ImageSourcePropType;artwork:StartScreenArtwork;fontFamily?:string;profile:StartProfile;onProfile:(p:StartProfile)=>void;onPlay:()=>void;onFriends?:()=>void;onBack?:()=>void;busy?:boolean;notice?:string;playDisabled?:boolean;loadingProgress?:number;reducedMotion?:boolean;onLoadingComplete?:()=>void;introUiPhase?:'hidden'|'revealing'|'shown';transparentBackground?:boolean};
 type Panel='customise'|'upgrades'|'settings'|null;
 const serif=Platform.OS==='ios'?'Georgia':Platform.OS==='web'?'Georgia, serif':'serif';
-export default function StartingScreen({width,height,safe={top:0,bottom:0,left:0,right:0},background,shade,portrait,artwork,fontFamily=START_SCREEN_MENU_FONT,profile,onProfile,onPlay,onFriends,onBack,busy=false,notice='',playDisabled=false,loadingProgress,reducedMotion=false,onLoadingComplete}:Props){
+const AnimatedPressable=Animated.createAnimatedComponent(Pressable);
+export default function StartingScreen({width,height,safe={top:0,bottom:0,left:0,right:0},background,shade,portrait,artwork,fontFamily=START_SCREEN_MENU_FONT,profile,onProfile,onPlay,onFriends,onBack,busy=false,notice='',playDisabled=false,loadingProgress,reducedMotion=false,onLoadingComplete,introUiPhase='shown',transparentBackground=false}:Props){
  const [panel,setPanel]=useState<Panel>(null),[name,setName]=useState(profile.name),[role,setRole]=useState<SurvivorRoleId>(profile.role);
  const loading=loadingProgress!==undefined;
  const transition=useRef(new Animated.Value(loading?1:0)).current,sceneOpacity=useRef(new Animated.Value(1)).current;
  const complete=useRef(onLoadingComplete);complete.current=onLoadingComplete;
+ // The exact same menu UI stays mounted across the intro's final frame.
+ // Native drives this progress over the last four seconds of the film.
+ const introReveal=useRef(new Animated.Value(introUiPhase==='shown'?1:0)).current;
+ useEffect(()=>{
+  introReveal.stopAnimation();
+  if(introUiPhase==='hidden'){introReveal.setValue(0);return}
+  if(introUiPhase==='shown'||reducedMotion){introReveal.setValue(1);return}
+  const animation=Animated.timing(introReveal,{toValue:1,duration:4000,easing:Easing.linear,useNativeDriver:Platform.OS!=='web'});
+  animation.start();
+  return()=>animation.stop();
+ },[introUiPhase,reducedMotion,introReveal]);
+ const entrance=(start:number,end:number)=>introReveal.interpolate({inputRange:[0,start,end,1],outputRange:[0,0,1,1],extrapolate:'clamp'});
+ const lift=(start:number,end:number,px:number)=>introReveal.interpolate({inputRange:[0,start,end,1],outputRange:[px,px,0,0],extrapolate:'clamp'});
+ const logoEntrance={opacity:entrance(.015,.37),transform:[{translateY:lift(.015,.37,-18)}]};
+ const statsEntrance={opacity:entrance(.25,.70),transform:[{translateY:lift(.25,.70,24)}]};
+ const menuEntrance={opacity:entrance(.48,.985),transform:[{translateY:lift(.48,.985,32)}]};
+ const controlsEntrance={opacity:entrance(.62,.96),transform:[{translateY:lift(.62,.96,-12)}]};
+ const shadeEntrance={opacity:entrance(.38,.88)};
+ const noticeEntrance={opacity:entrance(.83,1)};
+ 
  useEffect(()=>{const animation=Animated.timing(transition,{toValue:loading?1:0,duration:reducedMotion?0:420,easing:Easing.inOut(Easing.cubic),useNativeDriver:Platform.OS!=='web'});animation.start();return()=>animation.stop()},[loading,reducedMotion,transition]);
  useEffect(()=>{
   if(loadingProgress!==1){sceneOpacity.setValue(1);return}
@@ -38,20 +59,20 @@ export default function StartingScreen({width,height,safe={top:0,bottom:0,left:0
  const panelHeight=Math.min(menuWidth*599/516,availableHeight*(portraitMode?.53:.67));
  const icon=(name:StartScreenIconName,size:number,style?:object)=><Image accessibilityIgnoresInvertColors source={artwork.icons[name]} resizeMode="contain" style={[{width:unit(size),height:unit(size)},style]}/>;
  const action=(label:string,fn:()=>void)=><Pressable accessibilityRole="button" onPress={fn} style={({pressed})=>[s.action,pressed&&s.pressed]}><Text style={s.actionText}>{label}</Text></Pressable>;
- return <Animated.View accessibilityLabel="Humans Remain starting screen" style={[s.root,{opacity:sceneOpacity}]}>
-  {background}{shade}
+ return <Animated.View accessibilityLabel="Humans Remain starting screen" style={[s.root,{opacity:sceneOpacity,backgroundColor:transparentBackground?'transparent':'#071b1d'}]}>
+  {background}<Animated.View pointerEvents="none" style={[StyleSheet.absoluteFill,shadeEntrance]}>{shade}</Animated.View>
   <Image accessible={false} pointerEvents="none" source={artwork.expeditionLoading} style={{position:'absolute',width:1,height:1,opacity:0}}/>
-  <View pointerEvents="none" style={[s.logo,{left:safe.left+gutter,top:safe.top+availableHeight*.05,width:portraitMode?190:unit(216),height:portraitMode?84:unit(95)}]}>
+  <Animated.View pointerEvents="none" style={[s.logo,{left:safe.left+gutter,top:safe.top+availableHeight*.05,width:portraitMode?190:unit(216),height:portraitMode?84:unit(95)},logoEntrance]}>
    <View nativeID="start-logo-atmosphere" pointerEvents="none" style={[StyleSheet.absoluteFill,...(Platform.OS==='web'?[]:[{borderRadius:unit(28),backgroundColor:'#102e2f35',shadowColor:'#061a1c',shadowOpacity:.6,shadowRadius:unit(30)}])]} />
    <Image accessibilityLabel="Humans Remain" source={artwork.logo} resizeMode="contain" style={{width:'100%',height:'100%'}}/>
-  </View>
-  <Pressable accessibilityRole="switch" accessibilityLabel={profile.muted?'Unmute menu music':'Mute menu music'} accessibilityState={{checked:!profile.muted}} onPress={()=>onProfile({...profile,muted:!profile.muted})} hitSlop={6} style={[s.soundToggle,{right:safe.right+gutter+Math.max(44,unit(48))+unit(12),top:safe.top+availableHeight*.05,width:Math.max(44,unit(48)),height:Math.max(44,unit(48))}]}>
+  </Animated.View>
+  <AnimatedPressable accessibilityRole="switch" accessibilityLabel={profile.muted?'Unmute menu music':'Mute menu music'} accessibilityState={{checked:!profile.muted}} onPress={()=>onProfile({...profile,muted:!profile.muted})} hitSlop={6} style={[s.soundToggle,{right:safe.right+gutter+Math.max(44,unit(48))+unit(12),top:safe.top+availableHeight*.05,width:Math.max(44,unit(48)),height:Math.max(44,unit(48))},controlsEntrance]}>
    <View pointerEvents="none" style={{width:35,height:35,alignItems:'center',justifyContent:'center'}}>
     <Text style={{color:'#dfc99e',fontSize:27,fontWeight:'400',lineHeight:35}}>{profile.muted?'♩':'♫'}</Text>
    </View>
-  </Pressable>
-  <Pressable accessibilityRole="button" accessibilityLabel="Starting screen settings" disabled={busy||loading} onPress={()=>setPanel('settings')} hitSlop={8} style={[s.settings,{right:safe.right+gutter,top:safe.top+availableHeight*.05,width:Math.max(44,unit(48)),height:Math.max(44,unit(48))}]}>{icon('settings',35)}</Pressable>
-  <View style={[s.menu,{right:safe.right+gutter,bottom:portraitMode?bottomBaseline+unit(128):bottomBaseline,width:menuWidth}]}>
+  </AnimatedPressable>
+  <AnimatedPressable accessibilityRole="button" accessibilityLabel="Starting screen settings" disabled={busy||loading} onPress={()=>setPanel('settings')} hitSlop={8} style={[s.settings,{right:safe.right+gutter,top:safe.top+availableHeight*.05,width:Math.max(44,unit(48)),height:Math.max(44,unit(48))},controlsEntrance]}>{icon('settings',35)}</AnimatedPressable>
+  <Animated.View style={[s.menu,{right:safe.right+gutter,bottom:portraitMode?bottomBaseline+unit(128):bottomBaseline,width:menuWidth},menuEntrance]}>
    <View style={{width:panelWidth,height:panelHeight,alignSelf:'flex-end'}}>
    <View nativeID="expedition-menu-atmosphere" pointerEvents="none" style={{position:'absolute',top:0,bottom:0,left:0,right:0,...(Platform.OS==='web'?{}:{top:-unit(18),bottom:-unit(18),left:-unit(18),right:-unit(18),borderRadius:unit(28),backgroundColor:'#102e2f30',shadowColor:'#071b1d',shadowOpacity:.65,shadowRadius:unit(30)})}}/>
    <Animated.View pointerEvents={loading?'none':'auto'} accessibilityElementsHidden={loading} importantForAccessibility={loading?'no-hide-descendants':'auto'} style={[StyleSheet.absoluteFill,{opacity:transition.interpolate({inputRange:[0,1],outputRange:[1,0]}),transform:[{translateY:transition.interpolate({inputRange:[0,1],outputRange:[0,-unit(10)]})}]}]}>
@@ -59,19 +80,19 @@ export default function StartingScreen({width,height,safe={top:0,bottom:0,left:0
    </Animated.View>
    {loading&&<Animated.View pointerEvents="none" style={[StyleSheet.absoluteFill,{opacity:transition,transform:[{translateY:transition.interpolate({inputRange:[0,1],outputRange:[unit(12),0]})}]}]}><ExpeditionLoading width={Math.min(menuWidth,availableHeight*(portraitMode?.53:.67)*516/599)} height={Math.min(menuWidth*599/516,availableHeight*(portraitMode?.53:.67))} artwork={artwork.expeditionLoading} progress={loadingProgress} reducedMotion={reducedMotion}/></Animated.View>}
    </View>
-  </View>
-  <View pointerEvents="none" style={[s.stats,{left:safe.left+gutter,right:safe.right+gutter,bottom:bottomBaseline,paddingBottom:unit(6),gap:unit(12)}]}>
+  </Animated.View>
+  <Animated.View pointerEvents="none" style={[s.stats,{left:safe.left+gutter,right:safe.right+gutter,bottom:bottomBaseline,paddingBottom:unit(6),gap:unit(12)},statsEntrance]}>
    <Image source={portrait} resizeMode="contain" style={{width:unit(90),height:unit(82),transform:[{translateY:unit(3)}]}}/>
    <View style={[s.identity,{gap:unit(6),transform:[{translateY:unit(8)}]}]}>
     <View style={[s.nameRow,{gap:unit(28)}]}><Text numberOfLines={1} style={[s.name,{fontFamily,fontSize:unit(25),lineHeight:unit(34),maxWidth:unit(portraitMode?200:230)}]}>{profile.name.toUpperCase()}</Text><Text style={[s.level,{fontFamily,fontSize:unit(19),lineHeight:unit(27)}]}>LEVEL 1 · {survivorRole(profile.role).label.toUpperCase()}</Text></View>
     <View style={[s.xpRow,{gap:unit(18)}]}><View accessibilityRole="progressbar" accessibilityLabel="Survivor experience" accessibilityValue={{min:0,max:1000,now:0,text:'0 out of 1,000 XP'}} style={[s.xp,{width:unit(portraitMode?230:276),height:Math.max(7,unit(13)),borderRadius:unit(8)}]}><View style={s.xpFill}/></View><Text style={[s.xpText,{fontFamily,fontSize:unit(18),lineHeight:unit(23)}]}>0 / 1,000 XP</Text></View>
    </View>
 
-  </View>
-  {(!!notice||busy&&!loading)&&<View pointerEvents="none" style={[s.noticeBanner,{top:safe.top+8,left:safe.left+availableWidth*.28,right:safe.right+availableWidth*.11}]}>
+  </Animated.View>
+  {(!!notice||busy&&!loading)&&<Animated.View pointerEvents="none" style={[s.noticeBanner,{top:safe.top+8,left:safe.left+availableWidth*.28,right:safe.right+availableWidth*.11},noticeEntrance]}>
    {!!notice&&<Text accessibilityRole="alert" style={s.notice}>{notice}</Text>}
    {busy&&!loading&&<Text accessibilityLiveRegion="polite" style={s.detail}>Preparing your world…</Text>}
-  </View>}
+  </Animated.View>}
   {panel&&<View accessibilityViewIsModal style={[s.modal,{paddingTop:safe.top+12,paddingBottom:safe.bottom+12,paddingLeft:safe.left+20,paddingRight:safe.right+20}]}>
    <ScrollView style={s.dialog} contentContainerStyle={s.dialogContent} keyboardShouldPersistTaps="handled">
     <View style={s.panelHeader}><Text accessibilityRole="header" style={s.panelTitle}>{panel==='customise'?'Choose your survivor':panel==='upgrades'?'Camp upgrades':'Settings'}</Text><Pressable accessibilityRole="button" accessibilityLabel="Close panel" onPress={()=>setPanel(null)} style={s.close}><Text style={s.closeText}>×</Text></Pressable></View>
