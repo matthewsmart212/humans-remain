@@ -23,6 +23,7 @@ import {TERRAIN_CHUNK_IMAGES} from '../src/terrain-stream-art';
 import {RIVER_DETAIL_IMAGES} from '../src/river-art';
 import {drawWorldEditor,type EditorView} from '../src/placed-world-renderer';
 import type {World} from '../src/survival-engine';
+import type {CoopPeer} from '../src/coop-protocol';
 import type {Atlas} from '../src/packaging-renderer';
 import type {TerrainView} from '../src/outdoor-terrain';
 import {WORLD_URL} from './config';
@@ -116,7 +117,7 @@ export async function createNativeRenderer(view:EditorView={...PLAY_VIEW},diagno
    await streams.settled();
   },
   textureStats:()=>({graphics:{backend:'native-skia',shaderFieldBytes:adapter.shaderFieldBytes()},roads:streams.roads.stats(),camp:streams.camp.stats(),rivers:streams.rivers.stats(),artwork:{...loader.stats(),warming:queue.length,warmQueue:queue.slice(0,12).map(job=>({key:job.key,priority:job.priority,ageMs:Math.round(performance.now()-job.queuedAt)}))}}),
-  draw(world:World,width:number,height:number,fade=0){
+  draw(world:World,width:number,height:number,fade=0,peers:readonly CoopPeer[]=[]){
    const recorder=Skia.PictureRecorder(),canvas=recorder.beginRecording(Skia.XYWHRect(0,0,width,height));
    const density=Math.min(2,PixelRatio.get());
    // Match web's physical-pixel camera/LOD thresholds, then map the Picture
@@ -130,7 +131,7 @@ export async function createNativeRenderer(view:EditorView={...PLAY_VIEW},diagno
    hooks.requestRiverArtwork=v=>streams.rivers.update(v,width*density/v.width);
    hooks.riverTime=world.tick/60;
    const started=diagnostics?.tracing?performance.now():undefined;
-   try{drawWorldEditor(ctx as unknown as CanvasRenderingContext2D,{} as Atlas,prepared as unknown as Record<string,HTMLImageElement>,world,view,fade);return recorder.finishRecordingAsPicture()}finally{if(started!==undefined)diagnostics!.phase('worldDrawMs',performance.now()-started);const cleanup=started!==undefined?performance.now():undefined;ctx.dispose();recorder.dispose();if(cleanup!==undefined)diagnostics!.phase('cleanupMs',performance.now()-cleanup)}
+   try{drawWorldEditor(ctx as unknown as CanvasRenderingContext2D,{} as Atlas,prepared as unknown as Record<string,HTMLImageElement>,world,view,fade,peers);return recorder.finishRecordingAsPicture()}finally{if(started!==undefined)diagnostics!.phase('worldDrawMs',performance.now()-started);const cleanup=started!==undefined?performance.now():undefined;ctx.dispose();recorder.dispose();if(cleanup!==undefined)diagnostics!.phase('cleanupMs',performance.now()-cleanup)}
   },
   dispose(){if(disposed)return;disposed=true;unregisterPreparation();if(!sharedPreparation)preparation.dispose();streams.dispose();for(const job of queue.splice(0))job.reject(Error('Renderer closed'));loader.dispose();for(const key of Object.keys(prepared))delete prepared[key];preparationSurface.dispose();preparationPaint.dispose();adapter.disposeLighting();font.dispose();face.dispose()}
  };

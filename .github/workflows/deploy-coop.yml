@@ -1,0 +1,104 @@
+name: Deploy Humans Remain Co-op
+
+# The iOS multiplayer service is independent of the existing web Worker.
+# Deploy multiplayer server changes from main alongside the native app.
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - '.github/workflows/deploy-coop.yml'
+      - 'wrangler.coop.jsonc'
+      - 'server/coop.ts'
+      - 'src/coop-protocol.ts'
+      - 'scripts/check-coop-room.mjs'
+      - 'package.json'
+      - 'package-lock.json'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: humans-remain-coop-deployment
+  cancel-in-progress: false
+
+jobs:
+  deploy:
+    name: Check and deploy multiplayer Worker
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - name: Checkout multiplayer source (no artwork LFS)
+        uses: actions/checkout@v4
+        env:
+          GIT_LFS_SKIP_SMUDGE: '1'
+        with:
+          lfs: false
+          fetch-depth: 1
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22.13.1'
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Typecheck multiplayer and shared code
+        run: npm run typecheck
+
+      - name: Validate room, host permissions and four-player limit
+        run: node scripts/check-coop-room.mjs
+
+      - name: Verify independent Worker name and entry point
+        run: |
+          node -e "const fs=require('node:fs');const c=JSON.parse(fs.readFileSync('wrangler.coop.jsonc','utf8'));if(c.name!=='humans-remain-coop'||c.main!=='./server/coop.ts')process.exit(1)"
+
+      - name: Verify Cloudflare credentials
+        env:
+          CF_TOKEN_PRESENT: ${{ secrets.CLOUDFLARE_API_TOKEN != '' }}
+          CF_ACCOUNT_PRESENT: ${{ secrets.CLOUDFLARE_ACCOUNT_ID != '' }}
+        run: |
+          if [ "$CF_TOKEN_PRESENT" != "true" ] || [ "$CF_ACCOUNT_PRESENT" != "true" ]; then
+            echo "::error::Existing Cloudflare GitHub Actions secrets are missing."
+            exit 1
+          fi
+
+      - name: Deploy multiplayer only (never the web Worker)
+        id: publish
+        uses: cloudflare/wrangler-action@v4
+        with:
+          apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          wranglerVersion: '4'
+          command: deploy --config wrangler.coop.jsonc
+
+      - name: Smoke-test the live multiplayer endpoint
+        env:
+          DEPLOY_URL: ${{ steps.publish.outputs.deployment-url }}
+        run: |
+          if [ -z "$DEPLOY_URL" ]; then
+            echo "::warning::No Worker URL was supplied by Wrangler; inspect the deploy logs for the live endpoint."
+            exit 0
+          fi
+          node -e "const u=process.env.DEPLOY_URL;const health=new URL('/health',u);if(health.protocol!=='https:')process.exit(1);console.log('Checking '+health.toString())"
+          LIVE_ORIGIN="$(node -e "console.log(new URL(process.env.DEPLOY_URL).origin)")"
+          HEALTH_OK=false
+          for attempt in 1 2 3 4 5; do
+            if curl --fail --silent --show-error --max-time 10 "$LIVE_ORIGIN/health" | grep -q 'humans-remain-coop'; then
+              HEALTH_OK=true
+              break
+            fi
+            sleep 5
+          done
+          if [ "$HEALTH_OK" != "true" ]; then
+            echo "::error::The new multiplayer Worker failed its health check."
+            exit 1
+          fi
+          echo "Worker health endpoint responds correctly."
+          ROOM_JSON="$(curl --fail --silent --show-error --max-time 15 -X POST "$LIVE_ORIGIN/rooms")"
+          ROOM_CODE="$(printf '%s' "$ROOM_JSON" | node -e "let body='';process.stdin.on('data',v=>body+=v);process.stdin.on('end',()=>{const c=JSON.parse(body).code;if(!/^[A-HJ-NP-Z2-9]{8}$/.test(c))process.exit(1);process.stdout.write(c)})")"
+          curl --fail --silent --show-error --max-time 15 "$LIVE_ORIGIN/rooms/$ROOM_CODE" | node -e "let body='';process.stdin.on('data',v=>body+=v);process.stdin.on('end',()=>{const result=JSON.parse(body);if(result.exists!==true||result.players!==0)process.exit(1)})"
+          echo "Cloudflare Durable Object room creation and lookup passed."

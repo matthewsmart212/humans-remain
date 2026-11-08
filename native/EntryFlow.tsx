@@ -15,13 +15,14 @@ const musicSource=require('../public/previews/the-reclamation/soundtrack.mp3');
 type Props={
  initialMenuVisible:boolean;
  onPlay:(role:SurvivorRoleId)=>void;
+ onFriends:(role:SurvivorRoleId,name:string)=>void;
  loadingProgress?:number;
  loadError?:string;
  onLoadingComplete:()=>void;
 };
 type MusicMode='idle'|'cinematic'|'menu';
 
-export default function NativeEntryFlow({initialMenuVisible,onPlay,loadingProgress,loadError='',onLoadingComplete}:Props){
+export default function NativeEntryFlow({initialMenuVisible,onPlay,onFriends,loadingProgress,loadError='',onLoadingComplete}:Props){
  const [menuVisible,setMenuVisible]=useState(initialMenuVisible);
  const [musicMode,setMusicMode]=useState<MusicMode>(initialMenuVisible?'menu':'idle');
  const [muted,setMuted]=useState(false);
@@ -95,6 +96,7 @@ export default function NativeEntryFlow({initialMenuVisible,onPlay,loadingProgre
     />
    :<NativeStartingScreen
      onPlay={onPlay}
+     onFriends={onFriends}
      loadingProgress={loadingProgress}
      loadError={loadError}
      onLoadingComplete={onLoadingComplete}
