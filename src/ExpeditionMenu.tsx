@@ -22,7 +22,7 @@ const CARDS={
  friends:{x:1288,y:665,width:504,height:94,left:8,top:505,label:'PLAY WITH FRIENDS!'},
 } as const;
 
-export default function ExpeditionMenu({width,maxHeight,artwork,busy,playDisabled,onPlay,onCustomise,onUpgrades,onFriends}:Props){
+export default function ExpeditionMenu({width,maxHeight,fontFamily,artwork,busy,playDisabled,onPlay,onCustomise,onUpgrades,onFriends}:Props){
  const [focused,setFocused]=useState<Card|null>(null);
  const scale=Math.min(width/COMPOSITION.width,maxHeight/COMPOSITION.height);
  const callbacks={play:onPlay,customise:onCustomise,upgrades:onUpgrades,friends:onFriends};
