@@ -1,5 +1,4 @@
-import NativeStartingScreen from './StartingScreen';
-import NativeOpeningFlow from './OpeningFlow';
+import NativeEntryFlow from './EntryFlow';
 import {SURVIVOR_ROLES,type SurvivorRoleId} from '../src/survivor-roles';
 import {START_PROFILE_KEY,readStartProfile} from '../src/start-profile';
 import {playerMovementImagesForRole} from '../src/gameplay-artwork';
@@ -59,8 +58,7 @@ export default function App(){
  const failed=useCallback((message:string)=>{setLoadError(message+' Press Play to try again.');setLoadingProgress(undefined);setLaunched(false);starting.current=false},[]);
  return <GestureHandlerRootView style={{flex:1}}><SafeAreaProvider>
   {launched&&<Game role={selectedRole} onHome={home} entryVisible={entered} onBootProgress={setLoadingProgress} onBootError={failed}/>}
-  {!entered&&!openingComplete&&<View style={StyleSheet.absoluteFill}><NativeOpeningFlow onComplete={()=>setOpeningComplete(true)}/></View>}
-  {!entered&&openingComplete&&<View style={StyleSheet.absoluteFill}><NativeStartingScreen onPlay={start} loadingProgress={loadingProgress} loadError={loadError} onLoadingComplete={()=>setEntered(true)}/></View>}
+  {!entered&&<View style={StyleSheet.absoluteFill}><NativeEntryFlow initialMenuVisible={openingComplete} onPlay={start} loadingProgress={loadingProgress} loadError={loadError} onLoadingComplete={()=>setEntered(true)}/></View>}
  </SafeAreaProvider></GestureHandlerRootView>;
 }
 
