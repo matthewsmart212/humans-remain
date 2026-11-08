@@ -80,3 +80,71 @@
   filter:blur(23px);
 }
 
+
+/* Browser parity with Expo: cinema/backdrop behind the actual shared menu UI. */
+.game-start-media{position:absolute;inset:0;z-index:0;overflow:hidden;pointer-events:none}
+.game-start-media .game-start-scene,
+.game-start-intro-scene{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;pointer-events:none;transition:opacity 90ms linear}
+.game-start-menu-ui{position:absolute;inset:0;z-index:10;isolation:isolate}
+.game-start-welcome{
+ position:absolute;inset:0;z-index:20;display:flex;align-items:center;justify-content:center;
+ background:
+  linear-gradient(180deg,rgba(7,21,27,.70) 0%,rgba(3,18,27,.47) 52%,rgba(2,10,15,.94) 100%),
+  linear-gradient(90deg,rgba(6,21,26,.57),rgba(6,21,26,.08) 50%,rgba(6,21,26,.57)),
+  url('/previews/dawn-camp/start-scene-poster.jpg') center/cover no-repeat;
+ transition:opacity 240ms ease-in-out;
+ overflow:hidden
+}
+.game-start-welcome::before{
+ content:"";position:absolute;top:5%;left:5%;right:5%;height:1px;
+ background:rgba(181,139,93,.3);pointer-events:none
+}
+.game-start-welcome-content{
+ position:relative;display:flex;flex-direction:column;align-items:center;justify-content:center;
+ gap:11px;max-width:95%;padding:20px;text-align:center
+}
+.game-start-overline{color:#d5a66b;font:700 clamp(10px,1.25vw,13px)/1.3 Barlow,Arial,sans-serif;letter-spacing:.43em}
+.game-start-welcome-logo{display:block;width:min(40vw,500px);max-width:85vw;height:auto;max-height:26vh;object-fit:contain;filter:drop-shadow(0 9px 18px rgba(0,0,0,.65))}
+.game-start-welcome-tagline{
+ color:#e5d6be;margin:0;font:600 clamp(11px,1.3vw,15px)/1.5 Barlow,Arial,sans-serif;
+ letter-spacing:.17em;text-shadow:0 2px 8px rgba(0,0,0,.85)
+}
+.game-start-welcome-divider{width:116px;height:1px;margin:5px 0;background:#b88d60a6}
+.game-start-welcome-actions{display:flex;gap:14px;align-items:stretch;justify-content:center}
+.game-start-welcome-button{
+ appearance:none;border-radius:7px;border:1px solid #b49365;
+ display:flex;flex-direction:column;align-items:center;justify-content:center;gap:5px;
+ min-height:62px;min-width:207px;padding:9px 18px;cursor:pointer;
+ box-shadow:0 7px 18px rgba(0,0,0,.28);
+ transition:background 160ms ease,border-color 160ms ease,transform 160ms ease;
+}
+.game-start-welcome-button strong{font:800 15px/1.3 Barlow,Arial,sans-serif;letter-spacing:.09em}
+.game-start-welcome-button small{font:600 9px/1.4 Barlow,Arial,sans-serif;letter-spacing:.13em}
+.game-start-welcome-button.primary{background:rgba(183,124,66,.94);border-color:#edc592;color:#130f0d}
+.game-start-welcome-button.secondary{background:rgba(7,29,36,.91);color:#f3d9ac}
+.game-start-welcome-button:hover{transform:translateY(-2px);border-color:#f3d9ac}
+.game-start-welcome-button:active{transform:translateY(1px)}
+.game-start-welcome-footer{
+ position:absolute;bottom:max(18px,env(safe-area-inset-bottom));left:0;right:0;margin:0;
+ color:#b1a997;font:600 10px/1.3 Barlow,Arial,sans-serif;letter-spacing:.20em;text-align:center
+}
+.game-start-skip{
+ position:absolute;z-index:30;right:max(20px,calc(env(safe-area-inset-right) + 20px));
+ top:max(16px,calc(env(safe-area-inset-top) + 16px));
+ min-width:88px;min-height:48px;border:1px solid rgba(181,155,118,.55);
+ background:rgba(6,20,26,.82);color:#f2d6a7;border-radius:6px;
+ font:800 13px/1.4 Barlow,Arial,sans-serif;letter-spacing:.13em;
+ cursor:pointer;touch-action:manipulation
+}
+.game-start-skip:hover{border-color:#f2d6a7;background:rgba(6,20,26,.95)}
+@media(max-width:650px), (orientation:portrait){
+ .game-start-welcome-content{gap:9px;padding:16px}
+ .game-start-welcome-logo{width:min(72vw,430px);max-height:20vh}
+ .game-start-welcome-actions{flex-direction:column;gap:10px}
+ .game-start-welcome-button{min-width:min(72vw,320px);min-height:55px}
+ .game-start-welcome-tagline{font-size:11px}
+}
+@media(prefers-reduced-motion:reduce){
+ .game-start-media .game-start-scene,.game-start-intro-scene,
+ .game-start-welcome,.game-start-welcome-button{transition:none}
+}
