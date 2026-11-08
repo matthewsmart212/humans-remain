@@ -26,6 +26,6 @@ This is low-overhead instrumentation, **not zero overhead**. FPS means game `req
 - `node scripts/check-performance-recording.mjs`: deterministic 30/60/120 Hz, real hitch, pause/background/backpack filtering, zero-frame reports, caps, finite JSON, no frame notifications, disabled polling, actual platform menu handlers, and web/native export adapters.
 - `npm run typecheck` in root and `native`.
 - Existing `check-field-kit.mjs` and `check-survival-needs.mjs` regression suites.
-- Expo iOS production JS export with two Metro workers.
+- Expo iOS production JS (`--no-dev --minify`) uses the same share-sheet export; the file and sharing modules stay in the main bundle.
 
 The collector microbenchmark in `docs/qa/performance-v1/checks.json` measures only collector code on the build host, not total UI/clock/context overhead or physical-device FPS. Browser interaction and a physical iPhone/OS share sheet are not exercised in this environment.

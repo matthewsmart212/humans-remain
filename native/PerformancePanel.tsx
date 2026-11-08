@@ -1,5 +1,7 @@
 import React,{useState} from 'react';
 import {View,Text,Pressable,ScrollView,StyleSheet,NativeModules,type StyleProp,type ViewStyle} from 'react-native';
+import {File,Paths} from 'expo-file-system';
+import * as Sharing from 'expo-sharing';
 import {GamePerformanceRecorder,performanceDuration,performanceResultRows} from '../src/performance-recording';
 import {usePerformanceSnapshot} from '../src/use-performance-snapshot';
 
@@ -36,8 +38,8 @@ export async function saveNativePerformanceLogToComputer(recorder:GamePerformanc
   return saved.latest||'performance-logs/latest.json';
 }
 export async function exportNativePerformanceLog(recorder:GamePerformanceRecorder){
- // Load/file-write only after Stop, in the paused diagnostics screen.
- const [{File,Paths},Sharing]=await Promise.all([import('expo-file-system'),import('expo-sharing')]);
+ // Keep the share sheet in the main bundle: Expo's --no-dev/--minify JS cannot
+ // fetch extra chunks, so a late import left Export log dead after Stop.
  if(!await Sharing.isAvailableAsync())throw Error('File sharing is unavailable on this device.');
  const file=new File(Paths.cache,'humans-remain-performance.json');file.write(recorder.exportJson());
  await Sharing.shareAsync(file.uri,{mimeType:'application/json',UTI:'public.json',dialogTitle:'Save performance log'});
@@ -71,7 +73,7 @@ export default function NativePerformancePanel({recorder,onStart,onBack,defeated
    {state.hasLog&&!state.recording&&button(exporting?'Preparing log…':'Export log (.json)',()=>void save(),false,exporting)}
    {button('Back to pause menu',onBack,false,exporting)}
    <Text style={s.note}>Opt-in. Timing buffers ≤ 17.4 MB plus capped event history; display refreshes twice a second. New recordings replace the previous log. Export before closing the app.</Text>
-   <Text style={s.note}>Game-loop and UI callback cadence are separate measurements; neither measures GPU completion. No screenshots.{devBuild?' Stopping a recording sends the JSON only to this computer, into performance-logs/latest.json.':' Export opens the share sheet — choose Save to Files.'}</Text>
+   <Text style={s.note}>Game-loop and UI callback cadence are separate measurements; neither measures GPU completion. No screenshots.{devBuild?' Stopping a recording sends the JSON only to this computer, into performance-logs/latest.json.':''} Export opens the share sheet — choose Save to Files.</Text>
    {!!message&&<Text accessibilityRole="alert" style={s.note}>{message}</Text>}
   </View></View>
  </ScrollView></View>;
