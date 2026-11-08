@@ -211,7 +211,7 @@ export default function GameStart({onPlay,onBack,busy,notice,playDisabled,loadin
     onPlaying={()=>{setIntroHasFrame(true);startMusic.current?.()}}
     onTimeUpdate={onIntroTime}
     onEnded={finishToMenu}
-    onError={finishToMenu}/>
+    onError={()=>{if(phase==='watching')finishToMenu()}}/>
   </div>
   <div className="game-start-menu-ui"
    style={{pointerEvents:phase==='menu'?'auto':'none'}}>
