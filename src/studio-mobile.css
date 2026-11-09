@@ -25,7 +25,8 @@
 .camp-studio[data-mobile=true] .studio-tools-toggle>span{display:inline}
 .camp-studio[data-mobile=true] .studio-tools-toggle[aria-expanded=true],.camp-studio[data-mobile=true] .studio-panel-toggle[aria-expanded=true]{background:#405e57;border-color:#8fa88b;color:#ffe2a6}
 .camp-studio[data-mobile=true] .studio-tools-toggle[data-paused=true]{color:#ffe2a6;border-color:#d1ad70}
-.camp-studio[data-mobile=true] .studio-top .studio-save,.camp-studio[data-mobile=true] .studio-top .studio-inspector-toggle{display:none}
+/* Keep Save visible on touch devices; inspector remains accessible through Tools. */
+.camp-studio[data-mobile=true] .studio-top .studio-inspector-toggle{display:none}
 .camp-studio[data-mobile=true] .studio-library-button>span{display:none}
 .camp-studio[data-mobile=true] .studio-panel-toggle{width:44px;min-width:44px}
 .camp-studio[data-mobile=true] .we-world{grid-column:2;grid-row:4}
