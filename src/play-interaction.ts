@@ -34,7 +34,7 @@ export function repairTargetInfo(world:World,id:import('./camp-restoration').Cam
  const status=buildingRepairStatus(world,id),job=world.buildingRepair;
  const health=Math.ceil(buildingHp(world,id)/buildingMaxHp(world,id)*100);
  const condition=!buildingRestored(world,id)?'Broken':id==='headquarters'&&health===100?'Defences damaged':`Damaged · ${health}%`;
- const hint=id==='headquarters'&&!buildingEstablished(world,id)?'Repair in headquarters menu':job?.id===id?(job.held?'Materials used on completion':job.worked>0?'Released · Progress falling':'Hold to repair'):status==='Ready'?(id==='headquarters'?'Tap to repair':'Hold to repair'):status==='Need repair materials'?'More materials needed':status;
+ const hint=world.creativeMode?'Tap to repair instantly':id==='headquarters'&&!buildingEstablished(world,id)?'Repair in headquarters menu':job?.id===id?(job.held?'Materials used on completion':job.worked>0?'Released · Progress falling':'Hold to repair'):status==='Ready'?(id==='headquarters'?'Tap to repair':'Hold to repair'):status==='Need repair materials'?'More materials needed':status;
  return {condition,materials:costRows(world,buildingRepairCost(world,id)),hint};
 }
 /** A repair is its own action, so equipping a hammer never takes away a usable station. */
@@ -45,11 +45,11 @@ function repairInteraction(world:World,id:CampBuildingId,placementId:string):Pla
   const cost=costRows(world,job.cost).map(row=>`${row.needed} ${materialName(row)}`).join(' · ');
   return {key:'repairing:'+id,repair:true,label:'Hold to repair '+CAMP_REPAIRS[id].name.toLowerCase()+' · Release to let progress fall',shortLabel:job.held?'HOLD':'REPAIR',icon:'chest',image:REPAIR_HAMMER_IMAGE,disabled:status!=='Ready',target:{id:'repairing:'+id,buildingId:id,x:site.x,y:site.y,label:CAMP_REPAIRS[id].name,repairInfo:repairTargetInfo(world,id),detail:job.held?'Cost: '+cost:job.worked>0?'Progress falling':'Cost: '+cost,blocked:status!=='Ready',repairState:job.held?'holding':job.worked>0?'falling':'ready',progress:Math.floor(repairProgress(world)*100)/100,progressLabel:'Repair progress'},perform:()=>world.buildingRepair?.id===id&&buildingRepairStatus(world,id)==='Ready'&&holdBuildingRepair(world,true)};
  }
- const needsHQ=id!=='headquarters'&&!buildingRestored(world,'headquarters'),equip=status==='Equip repair hammer',instant=id==='headquarters';
+ const needsHQ=!world.creativeMode&&id!=='headquarters'&&!buildingRestored(world,'headquarters'),equip=status==='Equip repair hammer',instant=id==='headquarters'||!!world.creativeMode;
  const rows=costRows(world,buildingRepairCost(world,id));
  const materials=rows.length===1?`Needs ${rows[0].needed} ${materialName(rows[0])} · Have ${rows[0].have}`:rows.map(row=>`${row.have}/${row.needed} ${row.name.toLowerCase()}`).join(' · ');
  const detail=needsHQ?'Requires Camp level 1':status==='Requires Camp level 2'?status:materials+(status==='Repair hammer needed'?' · Hammer needed':'');
- return {key:'broken:'+placementId+':'+status,repair:!instant&&!needsHQ&&!equip&&status==='Ready',label:`${equip?'Equip hammer to repair':instant?'Repair':'Hold to repair'} ${CAMP_REPAIRS[id].name.toLowerCase()} · ${detail}`,shortLabel:needsHQ?'INSPECT':equip?'EQUIP':'REPAIR',icon:'chest',image:REPAIR_HAMMER_IMAGE,disabled:needsHQ||!equip&&status!=='Ready',target:{id:'broken:'+placementId,buildingId:id,x:site.x,y:site.y,label:CAMP_REPAIRS[id].name,repairInfo:repairTargetInfo(world,id),detail,blocked:needsHQ||!equip&&status!=='Ready'},perform:()=>{
+ return {key:'broken:'+placementId+':'+status,repair:!instant&&!needsHQ&&!equip&&status==='Ready',label:`${equip?'Equip hammer to repair':instant?'Tap to repair':'Hold to repair'} ${CAMP_REPAIRS[id].name.toLowerCase()} · ${detail}`,shortLabel:needsHQ?'INSPECT':equip?'EQUIP':'REPAIR',icon:'chest',image:REPAIR_HAMMER_IMAGE,disabled:needsHQ||!equip&&status!=='Ready',target:{id:'broken:'+placementId,buildingId:id,x:site.x,y:site.y,label:CAMP_REPAIRS[id].name,repairInfo:repairTargetInfo(world,id),detail,blocked:needsHQ||!equip&&status!=='Ready'},perform:()=>{
   if(needsHQ)return false;
   if(equip)return hasGear(world,'repairHammer')&&selectQuickItem(world,'repairHammer');
   return instant?restoreCampBuilding(world,id):beginBuildingRepair(world,id);

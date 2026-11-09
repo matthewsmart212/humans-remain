@@ -29,7 +29,7 @@ export function smithyCraftStatus(w:World,id:GearKind){
  if(!recipeUnlocked(w,id))return campAccessLevel(w)<2?'Expand to Camp level 2':'Restore the camp furnace';
  if(!canPayMaterials(w,recipe.cost))return'Need materials';
  const freed=materialEntries(recipe.cost).reduce((n,[kind,count])=>n+Math.min(count,itemCount(w,kind))*ITEM_RULES[kind].weight,0);
- return packWeight(w)-freed+GEAR[id].weight*recipe.count>PACK_CAPACITY+1e-7?'Backpack full':'Ready to craft';
+ return !w.creativeMode&&packWeight(w)-freed+GEAR[id].weight*recipe.count>PACK_CAPACITY+1e-7?'Backpack full':'Ready to craft';
 }
 export function craftSmithyGear(w:World,id:GearKind){
  const recipe=FORGE_RECIPES.find(r=>r.id===id);if(!recipe||smithyCraftStatus(w,id)!=='Ready to craft'||!payMaterials(w,recipe.cost))return false;

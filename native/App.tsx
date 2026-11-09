@@ -72,7 +72,8 @@ function Game({role,onHome,entryVisible,onBootProgress,onBootError,coop}:{role:S
  const [coopInfo,setCoopInfo]=useState('');
  const warmedPeerRoles=useRef(new Set<SurvivorRoleId>());
  useEffect(()=>{if(!coop)return;return coop.subscribe(event=>{if(event!=='update')return;setCoopInfo(coop.status+' · '+coop.players.length+'/4 survivors');const renderer=runtime.current?.renderer;if(!renderer)return;for(const peer of coop.players){if(peer.id===coop.id||warmedPeerRoles.current.has(peer.role))continue;warmedPeerRoles.current.add(peer.role);void renderer.warmImages(playerMovementImagesForRole(peer.role),'foreground').catch(()=>warmedPeerRoles.current.delete(peer.role))}})},[coop]);
- const [characterOpen,setCharacterOpen]=useState(false),[characterLoading,setCharacterLoading]=useState(false),[characterError,setCharacterError]=useState('');
+ const [creativeMode,setCreativeMode]=useState(false);
+  const [characterOpen,setCharacterOpen]=useState(false),[characterLoading,setCharacterLoading]=useState(false),[characterError,setCharacterError]=useState('');
  const {width,height}=useWindowDimensions(),safe=useSafeAreaInsets(),dimensions=useRef({width,height});dimensions.current={width,height};
  const world=useRef<World|null>(null),runtime=useRef<Runtime|null>(null),input=useRef(zero()),sprint=useRef(false),swing=useRef(false),enabled=useRef(false),modeRef=useRef<Mode>('loading');
  const playView=useRef({...PLAY_VIEW});
@@ -120,8 +121,9 @@ function Game({role,onHome,entryVisible,onBootProgress,onBootError,coop}:{role:S
   session.survivorRole=role;
   bindTravel(r,session);
  };
- const restart=()=>{const r=runtime.current;if(!r)return;gamePerformance.stop(performance.now(),'New Survival run');try{clear();continuousZoom.current=1;mapVisible.current=false;setMapOpen(false);atlasZoom.set(1);playView.current.zoom=1;const session=createCampPlaySession(r.saved.layout,undefined,'survival');session.survivorRole=activeRole;bindTravel(r,session);saveBlocked.current=false;setSaveNotice('');change('playing');saveRun(true)}catch(e){setError(String(e));change('error')}};
- const changeCharacter=async(next:SurvivorRoleId)=>{
+ const restart=()=>{const r=runtime.current;if(!r)return;gamePerformance.stop(performance.now(),'New Survival run');try{clear();continuousZoom.current=1;mapVisible.current=false;setMapOpen(false);atlasZoom.set(1);playView.current.zoom=1;const session=createCampPlaySession(r.saved.layout,undefined,'survival');session.creativeMode=creativeMode;session.survivorRole=activeRole;bindTravel(r,session);saveBlocked.current=false;setSaveNotice('');change('playing');saveRun(true)}catch(e){setError(String(e));change('error')}};
+ const toggleCreative=()=>{const w=world.current;if(coop||modeRef.current!=='paused'||!w?.progression||w.phase==='over')return;const next=!w.creativeMode;w.creativeMode=next;setCreativeMode(next);fieldKit.cancel();refresh(n=>n+1)};
+  const changeCharacter=async(next:SurvivorRoleId)=>{
   const r=runtime.current,w=world.current;
   if(coop||!r||!w||modeRef.current!=='paused'||w.phase==='over'||characterLoading||next===activeRole)return;
   setCharacterLoading(true);setCharacterError('');
@@ -261,7 +263,9 @@ function Game({role,onHome,entryVisible,onBootProgress,onBootError,coop}:{role:S
     </View>:mode==='paused'&&<View style={[s.menu,wide&&s.menuWide]}>
      {w?.phase!=='over'&&!saveBlocked.current&&button('Resume',()=>{clear();change('playing');saveRun()},false,wide&&s.menuItem)}
      {!coop&&w?.phase!=='over'&&button('Change character · '+(SURVIVOR_ROLES.find(option=>option.id===activeRole)?.label??'Survivor'),()=>{setCharacterError('');setCharacterOpen(true)},false,wide&&s.menuItem)}
-     {button('New Survival run',newRun,false,wide&&s.menuItem)}
+     {!coop&&w?.phase!=='over'&&button('Creative Mode · '+(creativeMode?'ON':'OFF'),toggleCreative,false,wide&&s.menuItem)}
+      {!coop&&creativeMode&&<Text style={s.description}>Unlimited building supplies · Instant repairs and upgrades. Off restores original quantities.</Text>}
+      {button('New Survival run',newRun,false,wide&&s.menuItem)}
      {button('Starting screen',()=>{clear();saveRun();onHome()},false,wide&&s.menuItem)}
      <Text style={s.section}>SETTINGS · PERFORMANCE</Text>
      <NativePerformanceMenuOptions recorder={gamePerformance} onOpen={()=>setPerformanceOpen(true)} style={wide&&s.menuItem}/>

@@ -62,6 +62,7 @@ export function campExpansionStatus(w:World){
  if(campAccessLevel(w)>=2)return 'Camp level 2 unlocked';
  if(campAccessLevel(w)===0)return 'Repair headquarters first';
  if(!w.progression||w.stationPanel!=='headquarters'||!nearbyHeadquarters(w)||w.phase==='over'||w.player.hp<=0||w.player.downedUntil)return 'Visit headquarters';
+ if(w.creativeMode)return 'Ready';
  if(w.phase==='night')return 'Expand at dawn';
  const ready=campFacilities(w);
  if(!ready.workshop)return buildingRestored(w,'workshop')?'Workshop not in camp':'Repair the workshop first';
@@ -74,7 +75,7 @@ export function expandCamp(w:World){
  w.notice='Camp level 2 · New building and equipment plans unlocked';w.noticeUntil=w.tick/60+4;
  return true;
 }
-export function campWorkStatus(w:World,fortify=false){if(campAccessLevel(w)===0)return 'Repair headquarters first';const p=w.progression;if(!p||w.stationPanel!=='headquarters'||!nearbyHeadquarters(w)||w.phase==='over'||w.player.hp<=0||w.player.downedUntil)return 'Visit headquarters';if(w.phase==='night')return 'Available at dawn';if(fortify&&p.fortified)return 'Already reinforced';if(fortify&&!blueprintLearned(w,'reinforced-camp'))return 'Requires Camp level 2';if(!fortify&&p.hqHp>=p.hqMax&&p.defence>=p.defenceMax)return 'Camp is fully repaired';return canPayMaterials(w,fortify?FORTIFY_COST:REPAIR_CAMP_COST)?'Ready':'Gather materials'}
+export function campWorkStatus(w:World,fortify=false){if(campAccessLevel(w)===0)return 'Repair headquarters first';const p=w.progression;if(!p||w.stationPanel!=='headquarters'||!nearbyHeadquarters(w)||w.phase==='over'||w.player.hp<=0||w.player.downedUntil)return 'Visit headquarters';if(w.creativeMode)return fortify&&p.fortified?'Already reinforced':!fortify&&p.hqHp>=p.hqMax&&p.defence>=p.defenceMax?'Camp is fully repaired':'Ready';if(w.phase==='night')return 'Available at dawn';if(fortify&&p.fortified)return 'Already reinforced';if(fortify&&!blueprintLearned(w,'reinforced-camp'))return 'Requires Camp level 2';if(!fortify&&p.hqHp>=p.hqMax&&p.defence>=p.defenceMax)return 'Camp is fully repaired';return canPayMaterials(w,fortify?FORTIFY_COST:REPAIR_CAMP_COST)?'Ready':'Gather materials'}
 export function repairCamp(w:World,fortify=false){if(campWorkStatus(w,fortify)!=='Ready'||!payMaterials(w,fortify?FORTIFY_COST:REPAIR_CAMP_COST))return false;const p=w.progression!;if(fortify){p.fortified=true;p.defenceMax=220;p.defence=220}else{p.hqHp=Math.min(p.hqMax,p.hqHp+70);p.defence=Math.min(p.defenceMax,p.defence+65)}w.notice=fortify?'Camp defences reinforced':'Camp repaired';w.noticeUntil=w.tick/60+3;return true}
 export function learnBlueprint(w:World,id:HQBlueprintId){
  if(!w.progression||campAccessLevel(w)<2||w.stationPanel!=='headquarters'||!nearbyHeadquarters(w)||w.phase==='over'||w.player.hp<=0||w.player.downedUntil||!blueprintFound(w,id)||blueprintLearned(w,id))return false;
@@ -93,6 +94,7 @@ export function buildingRepairCost(w:World,id:CampBuildingId):MaterialCost{
 }
 export function buildingRepairStatus(w:World,id:CampBuildingId){
  if(!buildingNeedsRepair(w,id))return 'Already repaired';
+ if(w.creativeMode){if(!w.progression||w.phase==='over'||w.scene||w.player.hp<=0||w.player.downedUntil)return 'Unavailable';return id==='headquarters'?(w.layout?.items.some(p=>campBuildingId(p.assetId)===id)?'Ready':'Building site not in camp'):(campRepairSite(w,id)?'Ready':'Building site not in camp')}
  if(id!=='headquarters'&&campAccessLevel(w)<CAMP_REPAIRS[id].level)return campAccessLevel(w)===0?'Repair headquarters first':'Requires Camp level '+CAMP_REPAIRS[id].level;
  if(!w.progression||w.phase==='over'||w.player.hp<=0||w.player.downedUntil||w.scene)return 'Unavailable';
  if(id==='headquarters'){
@@ -126,9 +128,8 @@ export function restoreCampBuilding(w:World,id:CampBuildingId){
  if(id==='headquarters'){if(initial)p.campLevel=1;p.hqHp=p.hqMax;p.defence=p.defenceMax;w.waypoint=undefined;}
  else{
   (p.buildingHp??={})[id]=buildingMaxHp(w,id);
-  const site=campRepairSite(w,id)!;w.player.direction=facing(site.placement.x-w.player.x,site.placement.y-w.player.y);
-  w.repairHammerUntil=timeOf(w)+.55;
-  if(w.waypoint&&Math.hypot(w.waypoint.x-site.x,w.waypoint.y-site.y)<180)w.waypoint=undefined;
+  const site=campRepairSite(w,id);if(site){w.player.direction=facing(site.placement.x-w.player.x,site.placement.y-w.player.y);if(w.waypoint&&Math.hypot(w.waypoint.x-site.x,w.waypoint.y-site.y)<180)w.waypoint=undefined;}
+  if(!w.creativeMode)w.repairHammerUntil=timeOf(w)+.55;
  }
  if(id==='furnace')p.furnaceRestored=true;
  w.repairCheckpoint=true;

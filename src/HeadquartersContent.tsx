@@ -9,6 +9,7 @@ import {CAMP_EXPANSION_COST,CAMP_LEVEL_NAMES,campAccessLevel,type CampLevel} fro
 import {journalObjectives,journalNextStep,objectiveComplete,trackObjective,type JournalId} from './headquarters-journal';
 import {canPayMaterials} from './camp-materials';
 import type {MaterialCost} from './forge-recipes';
+import {furnaces,upgradeFurnace} from './camp-furnace';
 
 type Props={world:World;width:number;height:number;source:(path:string)=>ImageSourcePropType;onClose:()=>void;onChange:()=>void};
 type Filter='all'|'buildings'|'equipment';
@@ -194,13 +195,14 @@ export default function HeadquartersContent({world:w,width,height,source,onClose
   const workStatus=plan.id==='shelter'?buildingRepairStatus(w,'headquarters'):campWorkStatus(w,plan.id==='reinforced-camp');
   let label='',action=()=>{},disabled=false,hint='',cost:MaterialCost|undefined=plan.cost;
   if(locked){label='VIEW LEVEL '+planCampLevel(plan);action=()=>viewLevel(planCampLevel(plan));hint='Unlocks when your camp reaches level '+planCampLevel(plan)+'.';cost=undefined}
-  else if(!plan.gearId&&plan.building!=='headquarters'&&buildingNeedsRepair(w,plan.building)){cost=buildingRepairCost(w,plan.building);label='FIND '+buildingFor(plan.building).short.toUpperCase();disabled=!buildingPlacement(w,buildingFor(plan.building));action=()=>findBuilding(plan.building);hint='Equip your repair hammer and restore this existing building on site.'}
+  else if(!plan.gearId&&plan.building!=='headquarters'&&buildingNeedsRepair(w,plan.building)){cost=buildingRepairCost(w,plan.building);disabled=!buildingPlacement(w,buildingFor(plan.building));if(w.creativeMode){label='RESTORE '+buildingFor(plan.building).short.toUpperCase();action=()=>{if(restoreCampBuilding(w,plan.building))changed(buildingFor(plan.building).name+' restored.');else changed(buildingRepairStatus(w,plan.building))};hint='Creative Mode · Repair this building instantly.'}else{label='FIND '+buildingFor(plan.building).short.toUpperCase();action=()=>findBuilding(plan.building);hint='Equip your repair hammer and restore this existing building on site.'}}
   else if(plan.gearId&&!buildingRestored(w,'workshop')){label='VIEW WORKSHOP REPAIR';action=()=>openPlan('workshop');hint='Repair the workshop before crafting equipment.';cost=undefined}
   else if(plan.id==='reinforced-camp'){label=reinforced?'CAMP REINFORCED':'REINFORCE CAMP';disabled=workStatus!=='Ready';action=()=>{if(repairCamp(w,true))changed('Camp defences reinforced.')};hint=reinforced?'Camp defence capacity increased to 220.':workStatus==='Ready'?plan.benefit:workStatus;if(reinforced)cost=undefined}
   else if(repairs){label='REPAIR HEADQUARTERS';disabled=workStatus!=='Ready';cost=REPAIR_CAMP_COST;action=()=>{if(restoreCampBuilding(w,'headquarters')){onChange();onClose()}};hint=workStatus==='Ready'?'Repair headquarters and defences immediately.':workStatus}
   else if(plan.id==='shelter'){label='VIEW CAMP LEVELS';action=()=>viewLevel();cost=undefined}
   else if((plan.gearId&&planCampLevel(plan)===2||plan.id==='furnace-bellows')&&w.progression&&!w.progression.furnaceRestored){label='VIEW FURNACE PLAN';action=()=>openPlan('metalworking');hint='Repair the furnace with your hammer to enable this recipe.'}
-  else if(plan.building==='garden'||plan.building==='treatment'){label='STRUCTURE REPAIRED';disabled=true;cost=undefined;hint=plan.building==='garden'?'Garden restored. Planting and harvesting are coming later.':'Shelter restored. Medical treatment is coming later.'}
+  else if(w.creativeMode&&plan.id==='furnace-bellows'){const furnace=furnaces(w.layout)[0],upgraded=!!furnace&&w.ironworks?.stations[furnace.id]?.level===2;label=upgraded?'FURNACE UPGRADED':'UPGRADE FURNACE';disabled=!furnace||upgraded;action=()=>{if(upgradeFurnace(w))changed('Furnace upgraded to level 2.');else changed('Repair the furnace first.')};hint=upgraded?'Level 2 bellows fitted.':'Creative Mode · Instant furnace upgrade.';if(upgraded)cost=undefined}
+   else if(plan.building==='garden'||plan.building==='treatment'){label='STRUCTURE REPAIRED';disabled=true;cost=undefined;hint=plan.building==='garden'?'Garden restored. Planting and harvesting are coming later.':'Shelter restored. Medical treatment is coming later.'}
   else {label='MARK '+buildingFor(plan.building).short.toUpperCase()+' ON MAP';action=()=>findBuilding(plan.building);disabled=!buildingPlacement(w,buildingFor(plan.building));hint=plan.gearId?'Craft at the workshop. Materials are spent there.':plan.id==='furnace-bellows'?'Fit improved bellows at the furnace.':plan.id==='workshop'?'Craft tools at the workshop.':'Sets a waypoint to this building.';if(built)cost=undefined}
   return <View style={[s.page,portrait&&s.portraitPage]}>
    <View style={s.backRow}><Button label="‹  ALL PLANS" onPress={()=>{setPlanId(undefined);setMessage('')}} style={s.backButton}/></View>

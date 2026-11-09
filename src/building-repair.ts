@@ -15,6 +15,7 @@ export function repairAnchor(w:World,id:CampBuildingId){
  return campRepairSite(w,id);
 }
 export function beginBuildingRepair(w:World,id:CampBuildingId){
+ if(w.creativeMode)return restoreCampBuilding(w,id);
  if(id==='headquarters'||w.buildingRepair||buildingRepairStatus(w,id)!=='Ready'||!hasGear(w,'repairHammer')||w.player.hurtUntil>timeOf(w)||w.dodge||w.axeSwing||w.spearThrust||w.swordThrust||w.bowShot)return false;
  const site=repairAnchor(w,id);if(!site)return false;
  w.player.equipped='repairHammer';w.player.moving=false;w.player.sprinting=false;

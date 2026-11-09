@@ -8,5 +8,7 @@ export const canPayMaterials=(w:World,cost:MaterialCost)=>materialEntries(cost).
 /** Validate the whole recipe before taking anything; pack supplies are used first. */
 export function payMaterials(w:World,cost:MaterialCost){
  if(!canPayMaterials(w,cost))return false;
+ // Creative costs do not consume real backpack or warehouse supplies.
+ if(w.creativeMode)return true;
  for(const[kind,n]of materialEntries(cost)){const carried=Math.min(n,itemCount(w,kind));if(carried)takeInventory(w,kind,carried);if(n>carried)setStoredCount(w,kind,storedCount(w,kind)-(n-carried))}return true;
 }

@@ -24,6 +24,8 @@
 @media(max-height:440px){.performance-panel{padding:14px 20px}.performance-panel header p{margin-bottom:10px}.performance-panel header h1{font-size:26px}.performance-note{line-height:1.35}.performance-actions{gap:6px}}
 .game-pause-menu>section{display:flex;flex-direction:column;gap:10px;padding:28px}
 .game-pause-menu small{font:700 11px Barlow,sans-serif;letter-spacing:3px;color:#b5bd9f;text-align:center}
+.game-creative-note{margin:0;font-size:12px;line-height:1.4;color:#d6cfac;text-align:center}
+.camp-studio .game-pause-menu button[aria-pressed=true]{border-color:#edbf73;background:#345447}
 .game-pause-menu h1{font:800 42px 'Barlow Condensed',sans-serif;text-align:center;margin:0 0 12px;color:#f4d49c}
 .camp-studio .game-pause-menu button{width:100%;min-height:48px;justify-content:flex-start;gap:12px;padding:12px 16px;border-color:#59736c;background:#24433f;border-radius:9px;font-size:15px}
 .camp-studio .game-pause-menu .game-resume{background:#edbf73;border-color:#edbf73;color:#172c30;font-weight:700}

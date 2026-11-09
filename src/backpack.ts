@@ -50,7 +50,7 @@ export function backpackItems(s:BackpackContents):BagItem[]{
   ['stone','stone',s.stone??0,'Stone mined from weathered boulders. Use with ingots and logs to reinforce the camp furnace.','Store stone in a camp chest to free carrying weight.'],
   ['scrap','scrap',s.scrap,'Recovered metal pieces. Recycle 3 scrap into 1 iron ingot at the camp furnace.','Unload at a camp chest to free carrying weight.'],
   ['fuel','fuel',s.fuel,'Recovered fuel for camp equipment.','Campfire cooking uses logs. Store fuel at camp.'],
- ] as const){const weight=ITEM_RULES[kind].weight;items.push({id,name:ITEM_RULES[kind].name,category:'Materials',count,image:BAG_IMAGES[id],description,facts:[['Each',`${weight} kg`],['Stack',`${(count*weight).toFixed(2)} kg`]],hint,useDisabled:true,droppable:true})}
+ ] as const){const weight=ITEM_RULES[kind].weight;items.push({id,name:ITEM_RULES[kind].name,category:'Materials',count,image:BAG_IMAGES[id],description,facts:[['Each',`${weight} kg`],['Stack',s.creativeMode?'∞ Creative supplies':`${(count*weight).toFixed(2)} kg`]],hint:s.creativeMode?'Creative Mode · Unlimited supplies. Turn it off to see original quantities.':hint,useDisabled:true,droppable:!s.creativeMode})}
  return items.filter(i=>i.count>0);
 }
 export function useBackpackItem(w:World,id:BagItemId){
@@ -66,7 +66,8 @@ export function dropBackpackItem(w:World,id:BagItemId,quantity:1|'all'):BagResul
  if(w.phase==='over'||w.player.downedUntil||w.player.hp<=0)return{ok:false,message:'You cannot drop items right now.'};
  if(isGear(id))return{ok:false,message:'Store tools in the headquarters chest.'};
  const kind:InventoryKind=id==='venisonRaw'?'rawVenison':id==='venisonMeal'?'cookedVenison':id==='rabbitRaw'?'rawRabbit':id==='rabbitMeal'?'cookedRabbit':id==='raw'?'rawMeat':id==='meal'?'cookedMeat':id==='logs'?'pallets':id;
- const owned=itemCount(w,kind),amount=quantity==='all'?owned:1;
+ if(w.creativeMode&&['pallets','stone','scrap','ironOre','ironIngot','fuel'].includes(kind))return{ok:false,message:'Creative supplies cannot be dropped. Turn off Creative Mode first.'};
+  const owned=itemCount(w,kind),amount=quantity==='all'?owned:1;
  if(!owned||amount>owned)return{ok:false,message:'There are no items left in that stack.'};
  const portions=Number.isSafeInteger(amount)&&amount>0?[amount]:[];
  if(!portions.length)return{ok:false,message:'That stack cannot be dropped right now.'};

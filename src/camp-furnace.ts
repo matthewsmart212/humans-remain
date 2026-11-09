@@ -64,7 +64,8 @@ export function collectIngots(w:World){
  stepFurnaces(w);if(!furnaceAccess(w))return 0;const f=furnaceState(w,w.furnaceId!),n=addInventory(w,'ironIngot',f.ready);f.ready-=n;return n;
 }
 export function upgradeFurnace(w:World){
- stepFurnaces(w);if(!furnaceAccess(w))return false;const f=furnaceState(w,w.furnaceId!);
- if(f.level!==1||!payMaterials(w,FURNACE_UPGRADE_COST))return false;f.level=2;return true;
+ stepFurnaces(w);const id=w.creativeMode?furnaces(w.layout)[0]?.id:w.furnaceId;
+ if(!id||!buildingRestored(w,'furnace')||!w.creativeMode&&!furnaceAccess(w))return false;
+ const f=furnaceState(w,id);if(f.level!==1||!payMaterials(w,FURNACE_UPGRADE_COST))return false;f.level=2;return true;
 }
 export function furnaceRevision(w:World){return Object.entries(w.ironworks?.stations??{}).map(([id,f])=>[id,f.level,Math.ceil(f.fuel*2),f.ready,f.queue.map(j=>[j.id,j.recipe,Math.ceil(j.remaining*2)])])}
