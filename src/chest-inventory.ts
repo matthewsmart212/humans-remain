@@ -6,7 +6,7 @@ import {storeItem,withdrawItem} from './camp-storage';
 import {atStorage} from './station-access';
 import type {World} from './survival-engine';
 export type ChestSide='chest'|'pack';
-const RESOURCE_IDS={ironOre:'ironOre',ironIngot:'ironIngot',stone:'stone',berries:'berries',apple:'apple',beans:'beans',energyBar:'energyBar',huntersMeal:'huntersMeal',raw:'rawMeat',meal:'cookedMeat',rabbitRaw:'rawRabbit',rabbitMeal:'cookedRabbit',venisonRaw:'rawVenison',venisonMeal:'cookedVenison',logs:'pallets',scrap:'scrap',fuel:'fuel'} as const;
+const RESOURCE_IDS={ironOre:'ironOre',ironIngot:'ironIngot',stone:'stone',berries:'berries',apple:'apple',potato:'potato',beans:'beans',energyBar:'energyBar',huntersMeal:'huntersMeal',raw:'rawMeat',meal:'cookedMeat',rabbitRaw:'rawRabbit',rabbitMeal:'cookedRabbit',venisonRaw:'rawVenison',venisonMeal:'cookedVenison',logs:'pallets',scrap:'scrap',fuel:'fuel'} as const;
 export function chestItemCount(w:World,id:BagItemId,side:ChestSide){
  if(isGear(id))return gear(w)[side==='pack'?'bag':'chest'][id]??0;
  return side==='pack'?itemCount(w,RESOURCE_IDS[id]):storedCount(w,RESOURCE_IDS[id]);
