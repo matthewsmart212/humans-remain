@@ -56,5 +56,8 @@ type ArtworkRenderer={loadImages:(sources:Record<string,string>,progress?:((p:Ar
 export async function prepareEditorMovement(renderer:ArtworkRenderer,layout:WorldLayout,priority:ArtworkPriority='foreground',center=layout.spawn,role:SurvivorRoleId='survivor'){
  // Walking only needs nearby objects; movement never waits on distant scenery.
  const near=requiredImages(nearby(layout,center,1650),layout.terrainImage,{animationFrames:false});
- await Promise.all([renderer.loadImages(near,undefined,priority),renderer.warmImages(playerMovementImagesForRole(role),priority)]);
+ // Fruit is painted as a separate layer over forage plants. It must be ready before
+  // the first playable frame or ripe berry bushes and apple trees appear empty.
+  // Keep the preload small: only these two world-fruit images are necessary.
+  await Promise.all([renderer.loadImages(near,undefined,priority),renderer.warmImages({...playerMovementImagesForRole(role),provision_berries:PROVISION_IMAGES.provision_berries,provision_apple:PROVISION_IMAGES.provision_apple},priority)]);
 }
