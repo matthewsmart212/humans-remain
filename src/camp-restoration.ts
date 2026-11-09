@@ -13,7 +13,7 @@ export const CAMP_REPAIRS:Record<CampBuildingId,{name:string;assetId:string;leve
  fire:{name:'Campfire',assetId:'base_hearth_t1',level:1,cost:{pallets:1,stone:2}},
  bunker:{name:'Bunker',assetId:'misc_2dd09bb8-883b-42e3-b765-c2a1c735b016',level:1,cost:{pallets:3,stone:2,scrap:3}},
  treatment:{name:'Treatment centre',assetId:'base_medical_t2',level:1,cost:{pallets:3,scrap:2}},
- garden:{name:'Garden',assetId:'art_camp_garden_broken',level:1,cost:{pallets:3}},
+ garden:{name:'Potato patch',assetId:'art_camp_garden_broken',level:1,cost:{pallets:3}},
  furnace:{name:'Furnace',assetId:'art_camp_smelting_furnace',level:2,cost:{pallets:4,stone:3,scrap:4}},
 };
 export const BROKEN_CAMP_ART=Object.fromEntries(CAMP_BUILDING_IDS.map(id=>[id,id==='headquarters'?HQ_SOUTH_RUIN:id==='furnace'||id==='warehouse'?`${WORKSITE_ROOT}/${id}-broken.webp`:`/survival/camp-ruins-v1/${id}.webp`])) as Record<CampBuildingId,string>;
