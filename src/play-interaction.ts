@@ -24,6 +24,7 @@ import {nearbyGate,toggleGate,gateActionLabel} from './camp-gates';
 import {chestIsOpen,toggleChest} from './chest-animation';
 import {campInteraction,performCampInteraction} from './studio-play';
 import {foodName} from './food-items';
+import {nearPotatoPatch,potatoPatchAction} from './potato-farming';
 
 export type PlayInteraction={repairAction?:PlayInteraction;repair?:boolean;image?:string;key:string;label:string;shortLabel:string;icon:'gate'|'chest'|'collect'|'cook'|'water';disabled:boolean;available?:boolean;target?:FieldKitTarget;perform:()=>unknown};
 
@@ -77,9 +78,18 @@ export function playInteraction(world:World):PlayInteraction|null{
  }
  for(const forage of nearbyForageTargets(world)){
   const {placement:p,remaining,fits,root}=forage;if(!remaining)continue;
-  const art=FORAGE_BY_ID.get(p.assetId)!,b=placementBounds(p),noun=art.kind==='berries'?'berry portion':'apple',cooling=timeOf(world)<(world.forageReadyAt??0);
-  add({key:`forage:${p.id}:${remaining}`,label:!fits?'Backpack full · Drop or store supplies':`Pick 1 ${noun} · ${remaining} left`,shortLabel:!fits?'PACK FULL':'PICK 1',icon:'collect',image:PROVISIONS[art.kind].image,available:!!fits,disabled:!fits||cooling||!canForage(world),target:{id:`forage:${p.id}`,...root,forageId:p.id,label:art.kind==='berries'?'Wild berries':'Apple tree',detail:fits?`${remaining} left`:'Backpack full',blocked:!fits,ground:{x:root.x,y:root.y-3,rx:b.width*(art.kind==='berries'?.46:.16),ry:b.width*(art.kind==='berries'?.12:.05)}},perform:()=>pickForage(world,p.id)});
+  const art=FORAGE_BY_ID.get(p.assetId)!,b=placementBounds(p),noun=art.kind==='berries'?'berry portion':art.kind==='potato'?'potato':'apple',cooling=timeOf(world)<(world.forageReadyAt??0);
+  add({key:`forage:${p.id}:${remaining}`,label:!fits?'Backpack full · Drop or store supplies':`Pick 1 ${noun} · ${remaining} left`,shortLabel:!fits?'PACK FULL':'PICK 1',icon:'collect',image:PROVISIONS[art.kind].image,available:!!fits,disabled:!fits||cooling||!canForage(world),target:{id:`forage:${p.id}`,...root,forageId:p.id,label:art.kind==='berries'?'Wild berries':art.kind==='potato'?'Wild potato plant':'Apple tree',detail:fits?`${remaining} left`:'Backpack full',blocked:!fits,ground:{x:root.x,y:root.y-3,rx:b.width*(art.kind==='berries'?.46:art.kind==='potato'?.32:.16),ry:b.width*(art.kind==='berries'?.12:art.kind==='potato'?.09:.05)}},perform:()=>pickForage(world,p.id)});
  }
+ const patch=nearPotatoPatch(world),patchAction=patch?potatoPatchAction(world):null;
+ if(patch&&patchAction)add({
+  key:`potato:${patchAction.kind}:${world.potatoPatch?.plantedAt.length??0}:${world.potatoPatch?.tier??1}`,
+  label:patchAction.label,shortLabel:patchAction.shortLabel,icon:patchAction.kind==='harvest'?'collect':'chest',
+  image:patchAction.kind==='harvest'?PROVISIONS.potato.image:undefined,
+  disabled:patchAction.disabled,
+  target:{id:'potato-patch',buildingId:'garden',x:patch.x,y:patch.y,label:'Potato patch',detail:patchAction.detail,blocked:patchAction.disabled},
+  perform:patchAction.perform,
+ });
  // Usable buildings keep their normal action. An in-progress companion keeps
  // its job even if a pickup temporarily becomes the primary interaction.
  let activeRepair:PlayInteraction|undefined;
