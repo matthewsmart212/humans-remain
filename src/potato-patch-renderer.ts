@@ -56,9 +56,12 @@ function stoneSoil(c:Ctx,x:number,y:number,w:number,h:number){
 }
 export function drawPotatoPatch(ctx:Ctx,w:World,p:Placement){
  if(!p.assetId.startsWith('art_camp_garden_'))return false;
- const bounds=placementBounds(p),{x,y,width:W,height:H}=bounds;
+ const bounds=placementBounds(p);
  const broken=!buildingRestored(w,'garden')||p.assetId==='art_camp_garden_broken'&&!w.progression;
  const tier=broken?0:(w.editorPreview&&p.assetId==='art_camp_garden_t2'?2:potatoPatch(w).tier);
+ // Tier 2 expands slightly without growing into the road or camp wall.
+ const scale=tier===2?1.15:1,W=bounds.width*scale,H=bounds.height*scale;
+ const x=bounds.x-(W-bounds.width)*.5,y=bounds.y-(H-bounds.height)*.5;
  ctx.save();
  stoneSoil(ctx,x,y,W,H);
  // Viewed from the road at screen right. The front-right fence stops early,
