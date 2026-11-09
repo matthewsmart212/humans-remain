@@ -6,7 +6,7 @@ import {placementBounds} from './world-layout';
 import {timeOf,type World} from './survival-engine';
 export const POTATO_YIELD=4,POTATO_GROW_SECONDS=240;
 export const POTATO_UPGRADE_COST={pallets:4,stone:2,scrap:2} as const;
-export type PotatoPatchState={tier:1|2;plantedAt:number[]};
+export type PotatoPatchState={tier:1|2;plantedAt:number[];harvestedAt?:number};
 export const potatoPatch=(w:World):PotatoPatchState=>{
  const s=w.potatoPatch??={tier:1 as const,plantedAt:[]};
  if(s.tier!==1&&s.tier!==2)s.tier=1;
@@ -35,7 +35,7 @@ export function harvestPotatoes(w:World){
  if(!nearPotatoPatch(w)||!buildingRestored(w,'garden')||w.phase==='over'||w.player.hp<=0||w.player.downedUntil||w.stationPanel||!readyPotatoes(w)||canCarryCount(w,'potato',4)<4)return false;
  const patch=potatoPatch(w),i=patch.plantedAt.findIndex(start=>potatoGrowth(w,start)>=1);
  if(i<0||addInventory(w,'potato',4)!==4)return false;
- patch.plantedAt.splice(i,1);w.notice='+4 potatoes harvested · Replant one to grow more';w.noticeUntil=timeOf(w)+3;return true;
+ patch.plantedAt.splice(i,1);patch.harvestedAt=timeOf(w);w.notice='+4 potatoes harvested · Replant one to grow more';w.noticeUntil=timeOf(w)+3;return true;
 }
 export function upgradePotatoPatch(w:World){
  if(!nearPotatoPatch(w)||!buildingRestored(w,'garden')||w.phase==='over'||w.player.hp<=0||w.player.downedUntil||w.stationPanel||campAccessLevel(w)<2||potatoPatch(w).tier===2||!payMaterials(w,POTATO_UPGRADE_COST))return false;

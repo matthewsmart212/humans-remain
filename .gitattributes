@@ -159,3 +159,6 @@ public/survival/expedition-menu-v2/loading-panel.webp -filter -diff -merge
 # Approved expedition menu plaques are tiny transparent runtime assets; iOS
 # must receive the real PNG bytes from a normal checkout (no LFS pointers).
 /public/survival/expedition-menu-v2/panels/*.png -filter -diff -merge -text
+
+# Approved compact potato artwork is directly committed through the GitHub connection.
+/public/survival/potato-patch-v2/*.webp -filter -diff -merge -text

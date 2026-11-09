@@ -10,7 +10,7 @@ const berryPoints=[[.28,.53],[.49,.38],[.68,.55],[.5,.67]];
 const applePoints=[[.3,.38],[.56,.24],[.73,.47]];
 export function drawForagePlant(ctx:CanvasRenderingContext2D,imgs:Record<string,HTMLImageElement>,w:World,p:Placement){
  const art=FORAGE_BY_ID.get(p.assetId);if(!art)return false;
- if(art.kind==='potato'){drawWildPotatoPlant(ctx,w,p,forageRemaining(w,p)>0);return true;}
+ if(art.kind==='potato')return drawWildPotatoPlant(ctx,imgs,w,p,forageRemaining(w,p)>0);
  const base=imgs[assetImageKey(art.image)];if(!base)return false;
  const b=placementBounds(p),s=w.forage?.[p.id],age=s?timeOf(w)-s.pickedAt:Infinity,reduced=!!w.weather?.reducedMotion;
  const points=art.kind==='berries'?berryPoints:applePoints,fruit=imgs[`provision_${art.kind}`],count=forageRemaining(w,p),size=(art.kind==='berries'?22:24)*p.scale;
