@@ -50,7 +50,7 @@ export function buildingArt(w:World,b:HQBuilding):HQArt{
  const p=buildingPlacement(w,b),a=ASSET_BY_ID.get(p?.assetId??b.assetId);
  return{image:a?.image??HQ_BENCH_ART,overlay:b.id==='headquarters'?a?.roof:undefined};
 }
-export const gardenArt=(tier:number):HQArt=>({image:GARDEN_ART[Math.max(0,Math.min(3,tier))].image,clip:tier===3?[.06,.18,.88,.72]:[.06,.31,.88,.59]});
+export const gardenArt=(tier:number):HQArt=>({image:GARDEN_ART[Math.max(0,Math.min(GARDEN_ART.length-1,tier))].image,clip:[.06,.31,.88,.59]});
 export function buildingStatus(w:World,b:HQBuilding){
  if(!buildingPlacement(w,b))return 'Not in camp';
  if(!buildingRestored(w,b.id))return 'Broken';
@@ -70,7 +70,7 @@ export type HQPlan={id:string;title:string;name:string;category:HQCategory;build
 export function headquartersPlans(w:World):HQPlan[]{
  const art=(id:HQBuildingId)=>buildingArt(w,buildingFor(id));
  const buildings:HQPlan[]=[
-  ...[1,2,3].map(tier=>({id:`gardening-${tier}`,title:'Garden',name:['','Vegetable patch','Raised beds','Greenhouse'][tier],category:'buildings' as const,building:'garden' as const,tier,art:gardenArt(tier),description:['','Two growing beds.','Four raised growing beds.','Six sheltered growing beds.'][tier],benefit:['','A small start for home-grown food.','More growing space in the same camp lot.','Shelter and a rain tank for the garden.'][tier],hint:'Artwork preview · farming and repairs are not available yet.',preview:true})),
+  ...[1,2].map(tier=>({id:`gardening-${tier}`,title:'Potato patch',name:['','Potato patch','Raised potato beds'][tier],category:'buildings' as const,building:'garden' as const,tier,art:gardenArt(tier),description:['','Two growing beds.','Four raised growing beds.'][tier],benefit:['','A small start for home-grown food.','More growing space in the same camp lot.'][tier],hint:'Grow potatoes at the patch in camp.',preview:true})),
   {id:'metalworking',title:'Furnace',name:'Furnace',category:'buildings',building:'furnace',tier:1,art:art('furnace'),description:'Smelt ore and recycle scrap into iron ingots.',benefit:'Repair the existing furnace with your hammer to enable metal equipment.',hint:'Repair on site with your hammer after unlocking Camp level 2.',learn:'metalworking',cost:RESTORE_FURNACE_COST},
   {id:'furnace-bellows',title:'Improved bellows',name:'Furnace upgrade',category:'buildings',building:'furnace',tier:2,art:art('furnace'),description:'Faster smelting and larger batches.',benefit:'25% faster · 6 queued batches · 12 ingot storage.',hint:'Fit the upgrade at the restored furnace.',cost:FURNACE_UPGRADE_COST},
   {id:'shelter',title:'Headquarters',name:'Headquarters',category:'buildings',building:'headquarters',tier:1,art:art('headquarters'),description:'Upgrade your camp and unlock new plans.',benefit:'Camp progression, plans and journal.',hint:'Upgrade at headquarters using resources.'},
