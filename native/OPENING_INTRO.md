@@ -20,14 +20,14 @@ The original looping visual at `public/previews/dawn-camp/start-scene.mp4` remai
 7. Opening the in-game pause menu and choosing Starting Screen opens the main menu with a fresh soundtrack instance.
 8. The existing music toggle and saved mute preference still control the music in the start menu.
 
-The audio session uses `expo-audio` with iOS silent-mode playback and mixes with the intro narration in `expo-video`. Since the track and the video are decoded by different native players, their start is approximate, with drift correction during cinematic playback; it isn't sample-perfect. For frame-perfect timing, combine the video narration and music in one MP4 audio track.
+The audio session uses `expo-audio` with iOS silent-mode playback and mixes with the intro narration in `expo-video`. Both native video players explicitly use `mixWithOthers`. The soundtrack runs independently: starting, buffering or resuming the film never pauses or seeks the music.
 
 ## iPhone QA
 
 - Cold launch and choose Watch Intro: music should start immediately on the tap. Menus, words, vignette and camp background disappear by three seconds, the centred logo fades between 3 and 4 seconds, and the intro movie begins after four seconds. Audio continues under narration rather than restarting.
 - Skip at 5, 20 and 55 seconds: video stops; music must *not* restart or silence during the transition.
 - Let the video complete: music continues in the expedition menu, looping as needed.
-- Choose Continue directly: music begins and continues in the expedition menu.
+- Choose Continue directly: music begins on the tap, the same four-second title animation plays, then the expedition menu animates in over the looping camp video.
 - Test the sound/music toggle: mute and unmute should affect the shared soundtrack.
 - Background during the intro and menu; media should pause while inactive and resume correctly.
 - Press Play and wait for world load: menu music should stop only once gameplay is actually entered.
@@ -41,7 +41,7 @@ The audio session uses `expo-audio` with iOS silent-mode playback and mixes with
 - **4.0s:** start the preloaded film without restarting or rewinding the soundtrack. Its narration can begin, and its 60-second visual story plays normally. Native decoder latency can delay the very first painted frame slightly; the screen stays black during that handoff.
 - If iOS Reduce Motion is enabled, the logo movement is shortened but the four-second intro delay and soundtrack timing remain intact.
 
-Implementation: `native/intro-transition.ts` defines the timeline and four-second music offset; `native/OpeningFlow.tsx` stages the title before activating the preloaded player, and `native/EntryFlow.tsx` starts the shared player immediately on the tap. Intro video drift correction accounts for the four seconds of music already played. `scripts/check-intro-title-transition.mjs` checks the timeline and flow wiring.
+Implementation: `native/intro-transition.ts` defines the four-second title timeline; `native/OpeningFlow.tsx` stages the title before activating the preloaded player, and `native/EntryFlow.tsx` starts the shared player immediately on the tap. Text fades within 300 ms before the logo moves; music runs continuously without video-driven drift correction. `scripts/check-intro-title-transition.mjs` checks the timeline and flow wiring.
 
 ## Four-second cinematic-to-menu UI entrance
 

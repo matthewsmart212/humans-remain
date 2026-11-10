@@ -4,6 +4,7 @@ import StartingScreen from './StartingScreen';
 import {WEB_START_SCREEN_ART} from './start-screen-art';
 import {START_PROFILE_KEY,readStartProfile,type StartProfile} from './start-profile';
 import './game-start.css';
+import {createOpeningMusic} from './opening-music';
 
 // Only the first entry on a page visit presents the Reclamation splash.
 // Returning from a game goes to the already-familiar starting menu, as on iOS.
@@ -73,54 +74,29 @@ export default function GameStart({onPlay,onBack,busy,notice,playDisabled,loadin
  // One permanent soundtrack player for both the intro and main menu.
  // Browser autoplay rules require a click to unlock audio on a new visit.
  useEffect(()=>{
-  const audio=new Audio(SOUNDTRACK_URL);
-  audio.loop=true;audio.preload='auto';audio.volume=.72;
-  let context:AudioContext|null=null,gain:GainNode|null=null,frame=0,fadeStart:number|null=null,level=0,disposed=false;
-  try{
-   context=new window.AudioContext();
-   gain=context.createGain();gain.gain.value=0;
-   const source=context.createMediaElementSource(audio);source.connect(gain);gain.connect(context.destination);
-  }catch{context=null;gain=null}
-  const setLevel=(value:number)=>{
-   level=value;
-   if(gain)gain.gain.value=muteRef.current?0:value*.72;
-   else audio.volume=muteRef.current?0:value*.72;
-  };
-  const fade=(now:number)=>{
-   if(disposed)return;
-   if(fadeStart===null)fadeStart=now;
-   setLevel(Math.min(1,(now-fadeStart)/1800));
-   if(level<1)frame=requestAnimationFrame(fade);else frame=0;
-  };
-  const start=()=>{
-   if(disposed||!audioActivated.current)return;
-   setLevel(level);
-   if(document.hidden||muteRef.current){audio.pause();return}
-   // Do not await before play(): Safari's transient user activation matters.
-   if(context?.state==='suspended')void context.resume().catch(()=>{});
-   if(audio.paused)void audio.play().then(()=>{
-    if(!disposed&&frame===0&&level<1)frame=requestAnimationFrame(fade);
-   }).catch(()=>{});
-   else if(frame===0&&level<1)frame=requestAnimationFrame(fade);
-  };
-  const onVisible=()=>{if(document.hidden)audio.pause();else start()};
-  const onGesture=()=>start();
+  // Web Audio mixes the loop with narration without Safari pausing one
+  // HTML media element to start another. No phase change resets this player.
   const onError=()=>setSaveNotice('The Reclamation soundtrack could not load. Refresh the page to retry.');
-  audio.addEventListener('error',onError);
+  let music:ReturnType<typeof createOpeningMusic>;
+  try{music=createOpeningMusic(new window.AudioContext(),SOUNDTRACK_URL,onError)}
+  catch{onError();return}
+  const start=()=>{
+   if(!audioActivated.current||document.hidden||muteRef.current){music.pause();return}
+   music.start();
+  };
   startMusic.current=start;
-  document.addEventListener('visibilitychange',onVisible);
-  document.addEventListener('pointerdown',onGesture,true);
-  document.addEventListener('touchstart',onGesture,true);
-  document.addEventListener('keydown',onGesture,true);
+  document.addEventListener('visibilitychange',start);
+  document.addEventListener('pointerdown',start,true);
+  document.addEventListener('touchstart',start,true);
+  document.addEventListener('keydown',start,true);
   start();
   return()=>{
-   disposed=true;startMusic.current=null;cancelAnimationFrame(frame);
-   document.removeEventListener('visibilitychange',onVisible);
-   document.removeEventListener('pointerdown',onGesture,true);
-   document.removeEventListener('touchstart',onGesture,true);
-   document.removeEventListener('keydown',onGesture,true);
-   audio.removeEventListener('error',onError);audio.pause();audio.removeAttribute('src');audio.load();
-   if(context)void context.close().catch(()=>{});
+   startMusic.current=null;
+   document.removeEventListener('visibilitychange',start);
+   document.removeEventListener('pointerdown',start,true);
+   document.removeEventListener('touchstart',start,true);
+   document.removeEventListener('keydown',start,true);
+   music.dispose();
   };
  },[]);
 
@@ -146,7 +122,6 @@ export default function GameStart({onPlay,onBack,busy,notice,playDisabled,loadin
  const finishToMenu=()=>{
   if(finished.current)return;
   finished.current=true;
-  setIntroUiPhase('shown');
   setHandoffRequested(true);
   playMenuVideo();
  };
@@ -170,7 +145,7 @@ export default function GameStart({onPlay,onBack,busy,notice,playDisabled,loadin
   if(!player)return;
   void player.play().then(()=>setIntroNeedsGesture(false)).catch(()=>finishToMenu());
  };
- const onWatch=()=>{
+ const beginEntry=(choice:'watch'|'continue')=>{
   if(phase!=='landing'||watchPressed.current)return;
   watchPressed.current=true;
   // Browser audio is enabled within the original button press. Preserve one
@@ -181,9 +156,11 @@ export default function GameStart({onPlay,onBack,busy,notice,playDisabled,loadin
   const bounds=introLogo.current?.getBoundingClientRect();
   if(bounds)setLogoTravel({x:innerWidth/2-bounds.left-bounds.width/2,y:innerHeight/2-bounds.top-bounds.height/2});
   setPhase('transition');
-  introStartTimer.current=setTimeout(startIntroVideo,INTRO_TITLE_TRANSITION_MS);
+  if(choice==='continue')playMenuVideo();
+  introStartTimer.current=setTimeout(choice==='watch'?startIntroVideo:finishToMenu,INTRO_TITLE_TRANSITION_MS);
  };
- const onContinue=()=>{enableAudio();finishToMenu()};
+ const onWatch=()=>beginEntry('watch');
+ const onContinue=()=>beginEntry('continue');
  const onSkip=()=>{
   introVideo.current?.pause();
   finishToMenu();
@@ -203,7 +180,10 @@ export default function GameStart({onPlay,onBack,busy,notice,playDisabled,loadin
  useEffect(()=>{
   if(!handoffRequested||(!menuFrameReady&&!menuFailed))return;
   hasVisitedMenuThisPage=true;
-  setIntroUiPhase('shown');
+  // Continue/Skip use the same staggered menu entrance as the film outro.
+  // Preserve the finished outro when it has already revealed the controls.
+  if(!introRevealStarted.current)setIntroUiPhase('revealing');
+  else setIntroUiPhase('shown');
   setPhase('menu');
   introVideo.current?.pause();
  },[handoffRequested,menuFrameReady,menuFailed]);
@@ -264,10 +244,10 @@ export default function GameStart({onPlay,onBack,busy,notice,playDisabled,loadin
      <p className="game-start-welcome-tagline">THE WORLD WAS TAKEN. WE ARE STILL HERE.</p>
      <div className="game-start-welcome-divider"/>
      <div className="game-start-welcome-actions">
-      <button type="button" onClick={onWatch} className="game-start-welcome-button primary">
+      <button type="button" onClick={onWatch} disabled={phase!=='landing'} className="game-start-welcome-button primary">
        <strong>▶ &nbsp; WATCH INTRO</strong><small>THE STORY SO FAR · 60 SECONDS</small>
       </button>
-      <button type="button" onClick={onContinue} className="game-start-welcome-button secondary">
+      <button type="button" onClick={onContinue} disabled={phase!=='landing'} className="game-start-welcome-button secondary">
        <strong>CONTINUE →</strong><small>GO TO MAIN MENU</small>
       </button>
      </div>

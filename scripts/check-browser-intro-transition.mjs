@@ -7,7 +7,7 @@ const check=(yes,description)=>assert(yes,description);
 
 check(app.includes("type EntryPhase='landing'|'transition'|'watching'|'menu'"),'browser has distinct pre-video phase');
 check(app.includes("const INTRO_TITLE_TRANSITION_MS=4000;"),'film starts four seconds after tap');
-check(app.includes('introStartTimer.current=setTimeout(startIntroVideo,INTRO_TITLE_TRANSITION_MS);'),'clock schedules movie after title sequence');
+check(app.includes("introStartTimer.current=setTimeout(choice==='watch'?startIntroVideo:finishToMenu,INTRO_TITLE_TRANSITION_MS);"),'clock schedules movie after title sequence');
 check(app.includes("setPhase('transition');"),'watch button starts animation, not film');
 check(app.indexOf("setPhase('transition');")<app.indexOf('introStartTimer.current=setTimeout'),'animation is requested before film');
 check(app.includes('introStartTimer.current=null;\n  setPhase(\'watching\');'),'film enters watching phase only after delay');
@@ -17,6 +17,8 @@ check(app.includes('innerWidth/2-bounds.left-bounds.width/2'),'horizontal motion
 check(app.includes('innerHeight/2-bounds.top-bounds.height/2'),'vertical motion uses viewport centre');
 check(app.includes("enableAudio();\n  introRevealStarted.current=false"),'soundtrack begins directly on Watch click');
 check(app.includes("audioActivated.current=true;startMusic.current?.()"),'uses the shared audio player');
+check(app.includes("const onContinue=()=>beginEntry('continue')"),'Continue shares the full title transition');
+check(app.includes("if(!introRevealStarted.current)setIntroUiPhase('revealing')"),'Continue animates the real menu into view');
 check(app.includes("src={INTRO_URL} preload=\"auto\""),'intro movie preloads before button tap');
 check(app.includes("setIntroNeedsGesture(true)"),'Safari policy error does not skip the cinematic');
 check(app.includes('TAP TO BEGIN THE RECLAMATION'), 'blocked video can resume with user gesture');

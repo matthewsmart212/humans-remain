@@ -3,8 +3,7 @@ import {AccessibilityInfo,Animated,AppState,Easing,Image,Platform,Pressable,Stat
 import {useSafeAreaInsets} from 'react-native-safe-area-context';
 import {Canvas,LinearGradient,Rect,vec} from '@shopify/react-native-skia';
 import {useVideoPlayer,VideoView} from 'expo-video';
-import type {AudioPlayer} from 'expo-audio';
-import {INTRO_TITLE_TRANSITION_MS,INTRO_BLACKOUT_MS,INTRO_LOGO_FADE_MS,introMusicTime} from './intro-transition';
+import {INTRO_TITLE_TRANSITION_MS,INTRO_BLACKOUT_MS,INTRO_LOGO_FADE_MS} from './intro-transition';
 
 // The movie contains spoken narration; NativeEntryFlow owns the music and
 // preloads the matching menu video behind the final frames of this movie.
@@ -17,19 +16,25 @@ type Props={
  onPrepareMenu:()=>void;
  onUiReveal:()=>void;
  onContinueSelected:()=>void;
+ onContinueComplete:()=>void;
  onWatchSelected:()=>void;
- soundtrack:AudioPlayer;
- soundtrackReady:boolean;
  soundtrackAllowed:boolean;
 };
 type Phase='welcome'|'transition'|'cinematic';
 
-export default function NativeOpeningFlow({onComplete,onPrepareMenu,onUiReveal,onContinueSelected,onWatchSelected,soundtrack,soundtrackReady,soundtrackAllowed}:Props){
+export default function NativeOpeningFlow({onComplete,onPrepareMenu,onUiReveal,onContinueSelected,onContinueComplete,onWatchSelected,soundtrackAllowed}:Props){
  const [phase,setPhase]=useState<Phase>('welcome');
  const [welcomeVisible,setWelcomeVisible]=useState(true);
  const [reduced,setReduced]=useState(false);
  const welcomeOpacity=useRef(new Animated.Value(1)).current;
  const transitioning=useRef(false),watchPressed=useRef(false);
+ const selection=useRef<'watch'|'continue'>('watch');
+ const choose=(choice:'watch'|'continue')=>{
+  if(watchPressed.current)return;
+  watchPressed.current=true;selection.current=choice;
+  if(choice==='watch')onWatchSelected();else onContinueSelected();
+  setPhase('transition');
+ };
  const insets=useSafeAreaInsets();
  const {width,height}=useWindowDimensions();
 
@@ -53,8 +58,6 @@ export default function NativeOpeningFlow({onComplete,onPrepareMenu,onUiReveal,o
  return <View style={s.screen}><StatusBar hidden/>
   <Cinematic active={phase==='cinematic'}
     insets={insets}
-    soundtrack={soundtrack}
-    soundtrackReady={soundtrackReady}
     soundtrackAllowed={soundtrackAllowed}
     onFirstFrame={revealCinematic}
     onPrepareMenu={onPrepareMenu}
@@ -62,9 +65,9 @@ export default function NativeOpeningFlow({onComplete,onPrepareMenu,onUiReveal,o
     onDone={onComplete}/>
   {welcomeVisible&&<Animated.View pointerEvents={phase==='welcome'?'auto':'none'} style={[StyleSheet.absoluteFill,{opacity:welcomeOpacity}]}>
    <Welcome width={width} height={height} insets={insets} transitioning={phase==='transition'} reducedMotion={reduced}
-      onWatch={()=>{if(watchPressed.current)return;watchPressed.current=true;onWatchSelected();setPhase('transition')}}
-      onTransitionComplete={()=>setPhase('cinematic')}
-      onContinue={onContinueSelected}/>
+      onWatch={()=>choose('watch')}
+      onTransitionComplete={()=>{if(selection.current==='continue')onContinueComplete();else setPhase('cinematic')}}
+      onContinue={()=>choose('continue')}/>
   </Animated.View>}
  </View>;
 }
@@ -91,10 +94,10 @@ function Welcome({width,height,insets,onWatch,onTransitionComplete,onContinue,tr
   // are over. Black reaches full opacity by 3s; only the centred logo remains.
   const animation=Animated.parallel([
    Animated.timing(backdropBlack,{toValue:1,duration:INTRO_BLACKOUT_MS,easing:Easing.inOut(Easing.cubic),useNativeDriver:true}),
-   Animated.timing(buttonsOut,{toValue:0,duration:reducedMotion?650:1550,easing:Easing.in(Easing.cubic),useNativeDriver:true}),
-   Animated.sequence([Animated.delay(260),Animated.timing(detailsOut,{toValue:0,duration:reducedMotion?650:2180,easing:Easing.inOut(Easing.cubic),useNativeDriver:true})]),
-   Animated.timing(cornersOut,{toValue:0,duration:1300,easing:Easing.in(Easing.quad),useNativeDriver:true}),
-   Animated.timing(logoMove,{toValue:1,duration:reducedMotion?1000:INTRO_BLACKOUT_MS,easing:Easing.inOut(Easing.cubic),useNativeDriver:true}),
+   Animated.timing(buttonsOut,{toValue:0,duration:450,easing:Easing.in(Easing.cubic),useNativeDriver:true}),
+   Animated.timing(detailsOut,{toValue:0,duration:300,easing:Easing.out(Easing.cubic),useNativeDriver:true}),
+   Animated.timing(cornersOut,{toValue:0,duration:350,easing:Easing.in(Easing.quad),useNativeDriver:true}),
+   Animated.sequence([Animated.delay(400),Animated.timing(logoMove,{toValue:1,duration:INTRO_BLACKOUT_MS-400,easing:Easing.inOut(Easing.cubic),useNativeDriver:true})]),
    Animated.sequence([Animated.delay(INTRO_TITLE_TRANSITION_MS-INTRO_LOGO_FADE_MS),Animated.timing(logoFade,{toValue:0,duration:INTRO_LOGO_FADE_MS,easing:Easing.inOut(Easing.cubic),useNativeDriver:true})])
   ]);
   animation.start(({finished})=>{if(finished)finishTransition.current()});
@@ -103,9 +106,9 @@ function Welcome({width,height,insets,onWatch,onTransitionComplete,onContinue,tr
  const centreLogo={
   opacity:logoFade,
   transform:[
-   {translateX:logoMove.interpolate({inputRange:[0,1],outputRange:[0,logoTarget.x]})},
-   {translateY:logoMove.interpolate({inputRange:[0,1],outputRange:[0,logoTarget.y]})},
-   {scale:logoMove.interpolate({inputRange:[0,.73,1],outputRange:[1,1.115,1.07]})}
+   {translateX:logoMove.interpolate({inputRange:[0,1],outputRange:[0,reducedMotion?0:logoTarget.x]})},
+   {translateY:logoMove.interpolate({inputRange:[0,1],outputRange:[0,reducedMotion?0:logoTarget.y]})},
+   {scale:logoMove.interpolate({inputRange:[0,.73,1],outputRange:reducedMotion?[1,1,1]:[1,1.115,1.07]})}
   ]
  };
  const aura=logoMove.interpolate({inputRange:[0,.3,.78,1],outputRange:[0,.05,.2,.17]});
@@ -149,25 +152,22 @@ function Welcome({width,height,insets,onWatch,onTransitionComplete,onContinue,tr
  </View>;
 }
 
-function Cinematic({active,insets,onDone,onFirstFrame,onPrepareMenu,onUiReveal,soundtrack,soundtrackReady,soundtrackAllowed}:{
+function Cinematic({active,insets,onDone,onFirstFrame,onPrepareMenu,onUiReveal,soundtrackAllowed}:{
  active:boolean;
  insets:{top:number;bottom:number;left:number;right:number};
  onDone:(reason:'natural'|'skip')=>void;
  onFirstFrame:()=>void;
  onPrepareMenu:()=>void;
  onUiReveal:()=>void;
- soundtrack:AudioPlayer;
- soundtrackReady:boolean;
  soundtrackAllowed:boolean;
 }){
- const video=useVideoPlayer(introSource,p=>{p.loop=false;p.muted=false;p.staysActiveInBackground=false;p.timeUpdateEventInterval=.05});
+ const video=useVideoPlayer(introSource,p=>{p.loop=false;p.muted=true;p.audioMixingMode='mixWithOthers';p.staysActiveInBackground=false;p.timeUpdateEventInterval=.05});
  const [state,setState]=useState<'loading'|'playing'|'unavailable'|'error'>('loading');
  const [videoReady,setVideoReady]=useState(video.status==='readyToPlay');
  const [firstFrame,setFirstFrame]=useState(false);
- const started=useRef(false),leaving=useRef(false),firstPlayback=useRef(true),seeking=useRef(false),prepared=useRef(false),uiRevealStarted=useRef(false);
- const allowed=useRef(soundtrackAllowed),activeRef=useRef(active),done=useRef(onDone),prepare=useRef(onPrepareMenu),onFrame=useRef(onFirstFrame),revealUi=useRef(onUiReveal);
+ const started=useRef(false),leaving=useRef(false),prepared=useRef(false),uiRevealStarted=useRef(false);
+ const activeRef=useRef(active),done=useRef(onDone),prepare=useRef(onPrepareMenu),onFrame=useRef(onFirstFrame),revealUi=useRef(onUiReveal);
  activeRef.current=active;
- allowed.current=soundtrackAllowed;
  done.current=onDone;
  prepare.current=onPrepareMenu;
  onFrame.current=onFirstFrame;
@@ -188,21 +188,7 @@ function Cinematic({active,insets,onDone,onFirstFrame,onPrepareMenu,onUiReveal,s
   });
   const playback=video.addListener('playingChange',event=>{
    if(!activeRef.current||!started.current)return;
-   if(!event.isPlaying){
-    if(!leaving.current&&!(video.duration>0&&video.currentTime>=video.duration-.75))soundtrack.pause();
-    return;
-   }
-   if(leaving.current)return;
-   setState('playing');
-   if(firstPlayback.current){
-    firstPlayback.current=false;
-    if(allowed.current)soundtrack.play();
-   }else{
-    soundtrack.pause();
-    void soundtrack.seekTo(introMusicTime(video.currentTime,soundtrack.duration)).then(()=>{
-     if(!leaving.current&&video.playing&&allowed.current&&AppState.currentState==='active')soundtrack.play();
-    }).catch(()=>setState('error'));
-   }
+   if(event.isPlaying&&!leaving.current)setState('playing');
   });
   const progress=video.addListener('timeUpdate',event=>{
    if(leaving.current)return;
@@ -219,13 +205,6 @@ function Cinematic({active,insets,onDone,onFirstFrame,onPrepareMenu,onUiReveal,s
     prepared.current=true;
     prepare.current();
    }
-   if(!video.playing||!soundtrack.playing||seeking.current)return;
-   const expected=introMusicTime(event.currentTime,soundtrack.duration);
-   const drift=expected-soundtrack.currentTime;
-   if(Math.abs(drift)>.45&&event.currentTime<video.duration-1){
-    seeking.current=true;
-    void soundtrack.seekTo(expected).catch(()=>{}).finally(()=>{seeking.current=false});
-   }
   });
   const ended=video.addListener('playToEnd',()=>leave('natural'));
   const app=AppState.addEventListener('change',next=>{
@@ -233,12 +212,11 @@ function Cinematic({active,insets,onDone,onFirstFrame,onPrepareMenu,onUiReveal,s
    else if(activeRef.current&&started.current&&!leaving.current&&video.status==='readyToPlay')video.play();
   });
   return()=>{status.remove();playback.remove();progress.remove();ended.remove();app.remove();video.pause()};
- },[video,soundtrack]);
+ },[video]);
 
- useEffect(()=>{
-  if(!soundtrackAllowed){soundtrack.pause();return}
-  if(active&&video.playing&&!leaving.current&&!soundtrack.playing)soundtrack.play();
- },[active,soundtrackAllowed,video,soundtrack]);
+ // All native players use the same mixing mode. The soundtrack is owned
+ // solely by EntryFlow and keeps playing across video loading/stalls.
+ useEffect(()=>{video.muted=!soundtrackAllowed},[video,soundtrackAllowed]);
 
  // On some iPhones a paused, preloaded video can paint frame zero before the
  // four-second title animation finishes. The first-frame callback then fires

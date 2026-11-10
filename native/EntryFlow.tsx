@@ -82,8 +82,8 @@ export default function NativeEntryFlow({initialMenuVisible,onPlay,onFriends,loa
   return()=>{live=false;sub.remove()};
  },[]);
 
- // The cinematic controls pausing/resuming while it is visible. The menu
- // runs the same player continuously, without ever seeking back to zero.
+ // One owner controls soundtrack playback through the title, film and menu.
+ // Video buffering or starting narration must never pause or seek this loop.
  useEffect(()=>{
   if(!profileReady||!audioReady||!musicLoaded||!active||muted){
    music.pause();
@@ -95,8 +95,8 @@ export default function NativeEntryFlow({initialMenuVisible,onPlay,onFriends,loa
  const chooseContinue=()=>{
   setMusicMode('menu');
   setMenuVideoEnabled(true);
-  setMenuRequested('continue');
  };
+ const completeContinue=()=>setMenuRequested('continue');
  const chooseWatch=()=>{
   // The same shared soundtrack starts on the Watch Intro tap, not when
   // expo-video eventually renders its first frame four seconds later.
@@ -122,7 +122,7 @@ export default function NativeEntryFlow({initialMenuVisible,onPlay,onFriends,loa
   if(openingGone||menuRequested==='none'||(!menuFrameReady&&!menuVideoFailed&&motion&&!reduced))return;
   // Skip/Continue bring all the controls in with the short handoff; a
   // naturally finishing intro already animated them over its final 4s.
-  if(menuRequested!=='natural')setMenuUiPhase('shown');
+  if(menuRequested!=='natural')setMenuUiPhase('revealing');
   const animation=Animated.timing(openingOpacity,{
    toValue:0,
    duration:menuRequested==='natural'?85:220,
@@ -152,9 +152,8 @@ export default function NativeEntryFlow({initialMenuVisible,onPlay,onFriends,loa
      onPrepareMenu={prepareLoop}
      onUiReveal={beginFinalReveal}
      onContinueSelected={chooseContinue}
+     onContinueComplete={completeContinue}
      onWatchSelected={chooseWatch}
-     soundtrack={music}
-     soundtrackReady={musicLoaded&&profileReady&&audioReady}
      soundtrackAllowed={musicAllowed}
     />
    </Animated.View>}

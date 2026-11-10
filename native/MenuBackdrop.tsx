@@ -15,6 +15,7 @@ export default function NativeMenuBackdrop({playing,onFirstFrame,onError}:{
  const video=useVideoPlayer(loopSource,p=>{
   p.loop=true;
   p.muted=true;
+  p.audioMixingMode='mixWithOthers';
   p.staysActiveInBackground=false;
  });
  const [frameReady,setFrameReady]=useState(false);

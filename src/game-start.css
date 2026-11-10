@@ -107,10 +107,10 @@
 .game-start-welcome.is-transitioning::after{opacity:1}
 .game-start-welcome.is-transitioning::before{opacity:0;transition:opacity 900ms ease-out}
 .game-start-welcome-content{z-index:2}
-.game-start-welcome-footer{z-index:2;transition:opacity 1050ms ease-out}
+.game-start-welcome-footer{z-index:2;transition:opacity 350ms ease-out}
 .game-start-welcome.is-transitioning .game-start-welcome-footer{opacity:0}
 .game-start-overline,.game-start-welcome-tagline,.game-start-welcome-divider{
- transition:opacity 2100ms cubic-bezier(.5,0,1,1),transform 2100ms cubic-bezier(.2,0,.8,1)
+ transition:opacity 300ms ease-out,transform 300ms ease-out
 }
 .game-start-welcome.is-transitioning .game-start-overline,
 .game-start-welcome.is-transitioning .game-start-welcome-tagline,
@@ -118,7 +118,7 @@
  opacity:0;transform:translateY(-16px)
 }
 .game-start-welcome-actions{
- transition:opacity 1450ms cubic-bezier(.6,0,1,1),transform 1450ms ease-in
+ transition:opacity 450ms ease-out,transform 600ms ease-in
 }
 .game-start-welcome.is-transitioning .game-start-welcome-actions{
  opacity:0;transform:translateY(26px);pointer-events:none
@@ -133,6 +133,7 @@
 }
 @keyframes hr-intro-title-logo{
  0%{transform:translate3d(0,0,0) scale(1);opacity:1;filter:drop-shadow(0 9px 18px rgba(0,0,0,.65))}
+ 10%{transform:translate3d(0,0,0) scale(1);opacity:1}
  72%{transform:translate3d(var(--intro-logo-dx,0px),var(--intro-logo-dy,0px),0) scale(1.095);opacity:1;filter:drop-shadow(0 0 35px rgba(208,144,69,.65))}
  75%{transform:translate3d(var(--intro-logo-dx,0px),var(--intro-logo-dy,0px),0) scale(1.08);opacity:1;filter:drop-shadow(0 0 35px rgba(208,144,69,.55))}
  100%{transform:translate3d(var(--intro-logo-dx,0px),var(--intro-logo-dy,0px),0) scale(1.08);opacity:0;filter:drop-shadow(0 0 10px rgba(208,144,69,0))}
