@@ -23,6 +23,7 @@ assert(opening.includes("Animated.timing(logoFade,{toValue:0,duration:INTRO_LOGO
 assert(opening.includes("finishTransition.current()"),'transition completion callback is stable across renders');
 assert(opening.includes("const next={x:width/2-bounds.x-bounds.width/2,y:height/2-bounds.y-bounds.height/2}"),'logo centres using measured initial position');
 assert(opening.includes("if(!active||started.current||leaving.current)return"),'movie cannot start during title animation');
+assert(opening.includes("if(active&&firstFrame&&state==='playing')onFrame.current();"),'a predecoded first frame cannot leave an opaque black overlay after playback starts');
 assert(opening.includes("video.currentTime=0;\n  video.play();"),'movie starts after transition');
 assert(!opening.includes("soundtrack.seekTo(0)"),'soundtrack does not restart when video begins');
 assert(opening.includes('introMusicTime(event.currentTime,soundtrack.duration)'), 'drift is corrected with the four-second soundtrack headstart');
