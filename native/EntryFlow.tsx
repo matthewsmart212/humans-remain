@@ -89,7 +89,7 @@ export default function NativeEntryFlow({initialMenuVisible,onPlay,onFriends,loa
    music.pause();
    return;
   }
-  if(musicMode==='menu'&&!music.playing)music.play();
+  if((musicMode==='menu'||musicMode==='cinematic')&&!music.playing)music.play();
  },[music,musicMode,profileReady,audioReady,musicLoaded,active,muted]);
 
  const chooseContinue=()=>{
@@ -97,7 +97,12 @@ export default function NativeEntryFlow({initialMenuVisible,onPlay,onFriends,loa
   setMenuVideoEnabled(true);
   setMenuRequested('continue');
  };
- const chooseWatch=()=>setMusicMode('cinematic');
+ const chooseWatch=()=>{
+  // The same shared soundtrack starts on the Watch Intro tap, not when
+  // expo-video eventually renders its first frame four seconds later.
+  setMusicMode('cinematic');
+  if(profileReady&&audioReady&&musicLoaded&&active&&!muted&&!music.playing)music.play();
+ };
  const beginFinalReveal=()=>setMenuUiPhase(phase=>phase==='hidden'?'revealing':phase);
  // The final footage of the intro is deliberately aligned with the END of
  // the menu's looping clip. Start its next loop near the final intro frame.
