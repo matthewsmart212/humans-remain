@@ -161,7 +161,7 @@
 /* Approved Reclamation plaques are individual transparent PNGs cut directly
    from the signed-off mock-up. Keep text/icons inside the art; the entire
    hit target remains an accessible button on both web and iOS. */
-.game-start-welcome-actions{display:flex;gap:20px;align-items:center;justify-content:center}
+.game-start-welcome-actions{display:flex;gap:12px;align-items:center;justify-content:center}
 .game-start-welcome-button{
  appearance:none;border:0;border-radius:0;background:transparent;
  display:block;flex:none;min-width:0;min-height:0;margin:0;padding:0;
@@ -170,8 +170,8 @@
  filter:drop-shadow(0 7px 8px rgba(0,0,0,.52));
  transition:transform 160ms ease,filter 160ms ease,opacity 160ms ease
 }
-.game-start-welcome-button.primary{width:min(27.75vw,426px)}
-.game-start-welcome-button.secondary{width:min(25vw,384px)}
+.game-start-welcome-button.primary{width:min(13.875vw,213px)}
+.game-start-welcome-button.secondary{width:min(12.5vw,192px)}
 .game-start-welcome-button img{display:block;width:100%;height:auto;pointer-events:none;user-select:none;-webkit-user-drag:none}
 .game-start-welcome-button:hover{transform:translateY(-2px);filter:drop-shadow(0 9px 10px rgba(0,0,0,.64)) brightness(1.06)}
 .game-start-welcome-button:active{transform:translateY(1px);filter:brightness(.92)}
@@ -194,8 +194,8 @@
  .game-start-welcome-content{gap:9px;padding:16px}
  .game-start-welcome-logo{width:min(72vw,430px);max-height:20vh}
  .game-start-welcome-actions{flex-direction:column;gap:3px}
- .game-start-welcome-button.primary{width:min(76vw,390px)}
- .game-start-welcome-button.secondary{width:min(71vw,365px)}
+ .game-start-welcome-button.primary{width:min(38vw,195px)}
+ .game-start-welcome-button.secondary{width:min(35.5vw,182.5px)}
  .game-start-welcome-tagline{font-size:11px}
 }
 @media(prefers-reduced-motion:reduce){

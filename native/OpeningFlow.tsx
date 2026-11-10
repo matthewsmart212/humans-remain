@@ -88,8 +88,8 @@ function Welcome({width,height,insets,onWatch,onTransitionComplete,onContinue,tr
  const usableWidth=Math.max(1,width-insets.left-insets.right-edge*2);
  const usableHeight=Math.max(1,height-insets.top-insets.bottom);
  const buttonScale=portrait
-  ?Math.min(1,usableWidth*.88/426,usableHeight*.24/160)
-  :Math.min(1,(usableWidth-14)/824,usableHeight*.31/160);
+  ?Math.min(.5,usableWidth*.88/426,usableHeight*.24/160)
+  :Math.min(.5,(usableWidth-14)/824,usableHeight*.31/160);
  const [logoTarget,setLogoTarget]=useState({x:0,y:0});
  const backdropBlack=useRef(new Animated.Value(0)).current;
  const buttonsOut=useRef(new Animated.Value(1)).current;
@@ -276,7 +276,7 @@ const s=StyleSheet.create({
  eyebrow:{fontSize:12,letterSpacing:5,fontWeight:'700',color:'#cba477',textAlign:'center'},
  tagline:{color:'#e5d6be',letterSpacing:2,fontWeight:'600',textAlign:'center',marginTop:-5},
  divider:{height:1,width:120,backgroundColor:'#b88d60a6',marginTop:8,marginBottom:8},
- buttons:{flexDirection:'row',justifyContent:'center',gap:14,marginTop:5},
+ buttons:{flexDirection:'row',justifyContent:'center',gap:10,marginTop:5},
  buttonsPortrait:{flexDirection:'column'},
  artButton:{alignItems:'center',justifyContent:'center',backgroundColor:'transparent'},
  artworkImage:{width:'100%',height:'100%'},
