@@ -10,6 +10,7 @@ import {INTRO_TITLE_TRANSITION_MS,INTRO_BLACKOUT_MS,INTRO_LOGO_FADE_MS} from './
 const introSource=require('../public/previews/the-reclamation/intro.mp4');
 const cover=require('../public/previews/dawn-camp/start-scene-poster.jpg');
 const logo=require('../public/survival/starting-screen-ui-v2/humans-remain-logo.png');
+const skipArtwork=require('../public/survival/intro-ui/skip.webp');
 // Cut from the approved intro mock-up; both PNGs retain their transparent
 // silhouettes, metal corner brackets, engraved text and warm/cool glow.
 const watchIntroButton=require('../public/previews/the-reclamation/buttons/watch-intro.png');
@@ -170,6 +171,9 @@ function Cinematic({active,insets,onDone,onFirstFrame,onFilmPlaying,onPrepareMen
  onPrepareMenu:()=>void;
  onUiReveal:()=>void;
 }){
+ const {width:screenWidth}=useWindowDimensions();
+ const skipWidth=Math.min(210,Math.max(130,screenWidth*.175));
+ const skipHeight=skipWidth*117/300;
  const video=useVideoPlayer(introSource,p=>{p.loop=false;p.muted=true;p.audioMixingMode='mixWithOthers';p.staysActiveInBackground=false;p.timeUpdateEventInterval=.05});
  const [state,setState]=useState<'loading'|'playing'|'unavailable'|'error'>('loading');
  const [videoReady,setVideoReady]=useState(video.status==='readyToPlay');
@@ -261,7 +265,7 @@ function Cinematic({active,insets,onDone,onFirstFrame,onFilmPlaying,onPrepareMen
   <Image source={cover} resizeMode="cover" style={StyleSheet.absoluteFill}/>
   <View pointerEvents="none" style={[StyleSheet.absoluteFill,{backgroundColor:'#02090dc9'}]}/>
   <VideoView player={video} contentFit="cover" nativeControls={false} allowsPictureInPicture={false} fullscreenOptions={{enable:false}} onFirstFrameRender={()=>{setFirstFrame(true);if(activeRef.current)onFrame.current()}} style={[StyleSheet.absoluteFill,{opacity:firstFrame?1:0,backgroundColor:'#020a0c'}]}/>
-  {active&&<Pressable accessibilityRole="button" accessibilityLabel="Skip introduction" onPress={()=>leave('skip')} style={({pressed})=>[s.skip,{top:insets.top+16,right:insets.right+20},pressed&&s.pressed]}><Text style={s.skipText}>SKIP  »</Text></Pressable>}
+  {active&&<Pressable accessibilityRole="button" accessibilityLabel="Skip introduction" onPress={()=>leave('skip')} style={({pressed})=>[s.skip,{top:insets.top+12,right:insets.right+16,width:skipWidth,height:skipHeight},pressed&&s.skipPressed]}><Image accessibilityIgnoresInvertColors source={skipArtwork} resizeMode="contain" style={s.skipArtwork}/></Pressable>}
   {active&&(state==='error'||state==='unavailable')&&<View style={s.cinematicMessage}>
     <Text style={s.messageTitle}>INTRO UNAVAILABLE</Text>
     <Text style={s.message}>The intro video could not be played on this device.</Text>
@@ -285,8 +289,10 @@ const s=StyleSheet.create({
  footer:{position:'absolute',alignSelf:'center',fontSize:10,color:'#b1a997',letterSpacing:2.3},
  cornerLine:{position:'absolute',height:1,backgroundColor:'#b58b5d4d'},
  logoHalo:{position:'absolute',width:'125%',height:'90%',borderRadius:80,backgroundColor:'#c99e5e',shadowColor:'#f3bf76',shadowOpacity:.75,shadowRadius:42,shadowOffset:{width:0,height:0}},
- skip:{position:'absolute',minHeight:48,minWidth:88,alignItems:'center',justifyContent:'center',paddingHorizontal:16,borderWidth:1,borderColor:'#b59b7680',borderRadius:6,backgroundColor:'#06141ac9'},
- skipText:{fontSize:13,fontWeight:'800',letterSpacing:1.8,color:'#f2d6a7'},
+ // Transparent illustrated plaque; its whole silhouette is a touch target.
+ skip:{position:'absolute',minHeight:48,alignItems:'center',justifyContent:'center'},
+ skipArtwork:{width:'100%',height:'100%'},
+ skipPressed:{opacity:.82,transform:[{scale:.975}]},
  cinematicMessage:{position:'absolute',top:0,right:0,bottom:0,left:0,alignItems:'center',justifyContent:'center',gap:17,paddingHorizontal:30},
  messageTitle:{fontSize:24,color:'#f2d6a7',letterSpacing:3,fontFamily:Platform.OS==='ios'?'Georgia':'serif',fontWeight:'700'},
  message:{fontSize:14,lineHeight:22,color:'#e0d1bc',textAlign:'center',maxWidth:520},

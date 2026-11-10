@@ -165,3 +165,6 @@ public/survival/expedition-menu-v2/loading-panel.webp -filter -diff -merge
 
 # Approved intro buttons are compact direct Git blobs, not Git LFS pointers.
 /public/previews/the-reclamation/buttons/*.png -filter -diff -merge -text
+
+# Illustrated intro button is a small normal Git blob for Cloudflare and Expo.
+/public/survival/intro-ui/skip.webp -filter -diff -merge -text

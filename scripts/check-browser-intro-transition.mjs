@@ -31,6 +31,8 @@ check(app.includes("watchPressed.current?' is-transitioning'"),'splash remains f
 check(app.includes("phase==='watching'&&introHasFrame"),'intro hides the title only once video has begun');
 check(app.includes("remaining<=4"),'outro menu handoff remains in place');
 check(app.includes("onEnded={finishToMenu}"),'intro end still completes as normal');
+check(app.includes('className="game-start-skip game-start-skip-art"')&&app.includes('/survival/intro-ui/skip.webp'),'browser uses the illustrated skip asset');
+check(app.includes('onClick={onSkip}')&&css.includes('.game-start-skip-art img'),'browser illustrated skip preserves action and responsive sizing');
 check(css.includes('animation:hr-intro-title-logo 4000ms both'),'logo animation lasts exactly four seconds');
 check(css.includes('transition:opacity 3000ms'),'background fully blacks out in three seconds');
 check(css.includes('75%{transform:translate3d(var(--intro-logo-dx'),'logo stays in centre until final second');

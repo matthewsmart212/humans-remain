@@ -30,6 +30,8 @@ assert(entry.includes("setMusicMode('idle');"),'Watch Intro leaves the title ani
 assert(opening.includes("if(event.isPlaying&&!leaving.current){")&&opening.includes('filmPlaying.current()'),'actual video playback triggers the shared soundtrack');
 assert(opening.includes('musicTriggered.current=true'),'playback starts the soundtrack only once');
 assert(opening.includes('onFilmPlaying={onFilmPlaying}')&&entry.includes('onFilmPlaying={filmPlaybackStarted}'),'native video playing event is connected to the soundtrack owner');
+assert(opening.includes("const skipArtwork=require('../public/survival/intro-ui/skip.webp')"),'Expo uses the illustrated skip asset');
+assert(opening.includes('source={skipArtwork}')&&opening.includes("onPress={()=>leave('skip')}"),'Expo illustrated skip preserves the existing skip action');
 assert(entry.includes("const filmPlaybackStarted=()=>setMusicMode('cinematic');"),'cinematic music mode begins only with film playback');
 assert(entry.includes("if((musicMode==='menu'||musicMode==='cinematic')&&!music.playing)music.play();"),'shared player continues through the menu after start');
 assert(entry.includes("onWatchSelected={chooseWatch}"),'watch action retains the title animation');
