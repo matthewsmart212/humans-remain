@@ -11,7 +11,7 @@ import riverQualityRedirects from './river-quality-redirects.json';
 import {handleMcp} from './mcp';
 import {renderPublicChecklist} from './public-checklist';
 import {handleWorldLayout,handlePublishedWorld} from './world-layout';
-import {editorIdentity,editAccessResponse,type EditorIdentityEnv} from './edit-access';
+import {editorIdentity,editAccessResponse,editorUnlockResponse,editorLockResponse,type EditorIdentityEnv} from './edit-access';
 import {isLibraryAssetId} from '../src/asset-library-policy';
 type Statement={bind:(...values:unknown[])=>Statement;all:()=>Promise<{results:unknown[]}>;run:()=>Promise<unknown>};
 type Env=ArtEnv & EditorIdentityEnv & {DB:{prepare:(sql:string)=>Statement};ASSETS?:{fetch:(request:Request)=>Promise<Response>};GITHUB_WORLD_SYNC_TOKEN?:string};
@@ -91,6 +91,8 @@ export default {async fetch(request:Request,env:Env):Promise<Response>{
  if((request.method==='GET'||request.method==='HEAD')&&retiredTerrain[url.pathname])return Response.redirect(new URL(retiredTerrain[url.pathname],url.origin).href,307);
  const {canEdit}=editorIdentity(request,env);
  if(url.pathname==='/api/edit-access')return editAccessResponse(request,env);
+ if(url.pathname==='/api/editor-unlock')return editorUnlockResponse(request,env);
+ if(url.pathname==='/api/editor-lock')return editorLockResponse(request);
  if(url.pathname==='/api/custom-assets'||url.pathname==='/api/asset-artwork'||url.pathname==='/api/asset-files'||url.pathname==='/api/world-terrain'||url.pathname.startsWith('/api/asset-files/'))return handleArtwork(request,env,canEdit);
  if(url.pathname==='/api/world-layout')return handleWorldLayout(request,env.DB,canEdit,env.GITHUB_WORLD_SYNC_TOKEN);
  if(url.pathname==='/api/published-world')return handlePublishedWorld(request,env.DB);
