@@ -158,12 +158,11 @@ export default function GameStart({onPlay,onBack,busy,notice,playDisabled,loadin
   // Intro narration must not begin until the full four-second title animation
   // finishes. The media element has preloaded from the initial page mount.
   player.currentTime=0;
-  void player.play().catch(error=>{
-   // Safari may require a fresh gesture to play a video with narration after
-   // a delayed transition. Keep the black title screen and offer one tap,
-   // rather than silently skipping the film.
-   if(error instanceof DOMException&&error.name==='NotAllowedError')setIntroNeedsGesture(true);
-   else finishToMenu();
+  void player.play().catch(()=>{
+   // Safari may require a fresh gesture to play narrated video after a timer.
+   // Other transient playback rejections must not silently skip the film.
+   // Keep the black title screen and offer an explicit one-tap retry.
+   setIntroNeedsGesture(true);
   });
  };
  const retryIntroPlayback=()=>{
