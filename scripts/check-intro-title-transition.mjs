@@ -1,0 +1,33 @@
+import assert from 'node:assert/strict';
+import fs from 'node:fs';
+import {build} from 'esbuild';
+
+const compiled=await build({entryPoints:['native/intro-transition.ts'],bundle:true,write:false,format:'esm',platform:'node'});
+const timeline=await import('data:text/javascript;base64,'+Buffer.from(compiled.outputFiles[0].text).toString('base64'));
+assert.equal(timeline.INTRO_TITLE_TRANSITION_MS,4000);
+assert.equal(timeline.INTRO_BLACKOUT_MS,3000);
+assert.equal(timeline.INTRO_LOGO_FADE_MS,1000);
+assert.equal(timeline.INTRO_BLACKOUT_MS+timeline.INTRO_LOGO_FADE_MS,timeline.INTRO_TITLE_TRANSITION_MS);
+assert.equal(timeline.introMusicTime(0),4,'soundtrack has already played for four seconds at first film frame');
+assert.equal(timeline.introMusicTime(24),28,'music continues rather than restarting at video time');
+assert.equal(timeline.introMusicTime(65,60),9,'looping audio retains correct offset');
+
+const opening=fs.readFileSync('native/OpeningFlow.tsx','utf8');
+const entry=fs.readFileSync('native/EntryFlow.tsx','utf8');
+assert(opening.includes("type Phase='welcome'|'transition'|'cinematic'"),'opening has a distinct pre-film phase');
+assert(opening.includes("setPhase('transition')"),'watch click starts the four-second lead-in');
+assert(opening.includes("onTransitionComplete={()=>setPhase('cinematic')}"),'movie starts when the lead-in finishes');
+assert(opening.includes("<Cinematic active={phase==='cinematic'}"),'intro is mounted early for local media preloading');
+assert(opening.includes("Animated.timing(backdropBlack,{toValue:1,duration:INTRO_BLACKOUT_MS"),'background fades to black in three seconds');
+assert(opening.includes("Animated.timing(logoFade,{toValue:0,duration:INTRO_LOGO_FADE_MS"),'logo fades during the fourth second');
+assert(opening.includes("finishTransition.current()"),'transition completion callback is stable across renders');
+assert(opening.includes("const next={x:width/2-bounds.x-bounds.width/2,y:height/2-bounds.y-bounds.height/2}"),'logo centres using measured initial position');
+assert(opening.includes("if(!active||started.current||leaving.current)return"),'movie cannot start during title animation');
+assert(opening.includes("video.currentTime=0;\n  video.play();"),'movie starts after transition');
+assert(!opening.includes("soundtrack.seekTo(0)"),'soundtrack does not restart when video begins');
+assert(opening.includes('introMusicTime(event.currentTime,soundtrack.duration)'), 'drift is corrected with the four-second soundtrack headstart');
+assert(opening.includes("video.duration-event.currentTime<=4"),'existing final-four-seconds menu reveal is preserved');
+assert(entry.includes("setMusicMode('cinematic');"),'tap requests cinematic audio immediately');
+assert(entry.includes("if((musicMode==='menu'||musicMode==='cinematic')&&!music.playing)music.play();"),'shared player begins the track on tap and continues through menu');
+assert(entry.includes("onWatchSelected={chooseWatch}"),'watch action wires soundtrack to the title animation');
+console.log('PASS: four-second title transition, 3-second blackout, 1-second logo fade, movie preload, music headstart and seamless menu handoff.');
