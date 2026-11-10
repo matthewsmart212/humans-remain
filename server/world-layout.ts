@@ -3,6 +3,7 @@ import {readArtwork} from './artwork';
 import {assetMapWithImports} from '../src/imported-art';
 import {validateLayout} from '../src/world-layout';
 import {validTerrainBorder} from '../src/terrain-limits';
+import {publishBundledWorld} from './world-bundle';
 type Statement={bind:(...values:unknown[])=>Statement;all:()=>Promise<{results:any[]}>;run:()=>Promise<any>};
 
 /** Public, read-only copy of the last explicitly published authored world.
@@ -22,7 +23,7 @@ export async function handlePublishedWorld(request:Request,DB:{prepare:(sql:stri
   return new Response(request.method==='HEAD'?null:JSON.stringify({schemaVersion:1,layout,records,updatedAt:layout.updatedAt}),{headers:{...headers,'Content-Type':'application/json;charset=utf-8'}});
  }catch(error){console.error('Published world read failed',error);return Response.json({error:'Published world unavailable'},{status:503,headers:{...headers,'Cache-Control':'no-store'}})}
 }
-export async function handleWorldLayout(request:Request,DB:{prepare:(sql:string)=>Statement},canEdit:boolean){
+export async function handleWorldLayout(request:Request,DB:{prepare:(sql:string)=>Statement},canEdit:boolean,githubToken?:string){
  const json=(v:unknown,status=200)=>Response.json(v,{status,headers:{'Cache-Control':'no-store'}});
  try{
   if(request.method==='GET'){const row=(await DB.prepare("SELECT draft_json,applied_json,revision,updated_at FROM world_layout WHERE id='main'").all()).results[0];return json({draft:canEdit&&row?.draft_json?JSON.parse(row.draft_json):null,applied:row?.applied_json?JSON.parse(row.applied_json):null,revision:row?.revision||0,updatedAt:row?.updated_at||null,canEdit})}
@@ -35,7 +36,8 @@ export async function handleWorldLayout(request:Request,DB:{prepare:(sql:string)
   if(!Number.isInteger(v.revision)||v.revision<0||!['save','apply','original'].includes(v.action))return json({error:'Invalid save request'},400);
   // The historic gameplay validator requires removed generator/storage stations. Modern
   // worlds may intentionally have neither; validate all placement geometry here.
-  const {layout,errors}=validateLayout(v.layout,false,assetMapWithImports(await readArtwork(DB,true)));if(!layout||errors.length)return json({error:errors.join(' ')},400);
+  const records=await readArtwork(DB,true);
+  const {layout,errors}=validateLayout(v.layout,false,assetMapWithImports(records));if(!layout||errors.length)return json({error:errors.join(' ')},400);
   if(v.action==='apply'&&!layout.items.length)return json({error:'An empty world cannot be published. Save it as a draft instead.'},400);
   if(layout.terrainImage){const t=layout.terrainImage,row=(await DB.prepare('SELECT * FROM asset_art_files WHERE id=? AND entry_id=?').bind(t.id,'world-terrain').all()).results[0];if(!row)return json({error:'Upload this terrain image before saving the world.'},400);if(!validTerrainBorder(row.width,row.height,layout.terrainBorder||0))return json({error:'The outer scenery border does not fit this image.'},400);layout.terrainImage={id:row.id,url:'/api/asset-files/'+row.id,name:row.name,mime:row.mime,width:row.width,height:row.height,bytes:row.bytes};await DB.prepare('UPDATE asset_art_files SET published=1 WHERE id=?').bind(row.id).run()}
   const at=new Date().toISOString();layout.updatedAt=at;const encoded=JSON.stringify(layout);
@@ -44,6 +46,19 @@ export async function handleWorldLayout(request:Request,DB:{prepare:(sql:string)
   const args=v.action==='apply'?[encoded,encoded,at,v.revision]:[encoded,at,v.revision];
   const result=await DB.prepare("UPDATE world_layout SET "+set+" WHERE id='main' AND revision=?").bind(...args).run();
   if(result.meta?.changes!==1)return json({error:'Another tab saved a newer world. Export your draft, then reload before saving.'},409);
+  if(v.action==='apply'){
+   // Cloudflare's published world is available immediately to new sessions.
+   // The iOS offline fallback is committed to GitHub separately. Never report
+   // a successful bundle update unless GitHub confirmed the new commit.
+   if(!githubToken?.trim())return json({revision:v.revision+1,updatedAt:at,bundle:'unconfigured',bundleMessage:'Cloudflare world published; GitHub secret GITHUB_WORLD_SYNC_TOKEN is not configured.'});
+   try{
+    const commit=await publishBundledWorld(layout,records,v.revision+1,githubToken);
+    return json({revision:v.revision+1,updatedAt:at,bundle:'published',commit});
+   }catch(error){
+    console.error('Bundled world publishing failed',error);
+    return json({revision:v.revision+1,updatedAt:at,bundle:'failed',bundleMessage:'Cloudflare world published, but the iOS bundled snapshot could not be updated. Retry Publish World.'});
+   }
+  }
   return json({revision:v.revision+1,updatedAt:at});
  }catch(error){console.error('World storage error',error);return json({error:'World storage is unavailable. Your local draft is kept; retry saving.'},503)}
 }
