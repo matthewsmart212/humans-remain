@@ -237,7 +237,7 @@ export default function GameStart({onPlay,onBack,busy,notice,playDisabled,loadin
     introUiPhase={introUiPhase} transparentBackground
     background={null} shade={<div className="game-start-shade"/>}/>
   </div>
-  <div className={'game-start-welcome'+(phase==='transition'||phase==='watching'?' is-transitioning':'')} style={{opacity:phase==='landing'||phase==='transition'||(phase==='watching'&&!introHasFrame)?1:0,pointerEvents:phase==='landing'?'auto':'none',...({'--intro-logo-dx':logoTravel.x+'px','--intro-logo-dy':logoTravel.y+'px'} as React.CSSProperties)}}>
+  <div className={'game-start-welcome'+(watchPressed.current?' is-transitioning':'')} style={{opacity:phase==='landing'||phase==='transition'||(phase==='watching'&&!introHasFrame)?1:0,pointerEvents:phase==='landing'?'auto':'none',...({'--intro-logo-dx':logoTravel.x+'px','--intro-logo-dy':logoTravel.y+'px'} as React.CSSProperties)}}>
     <div className="game-start-welcome-content">
      <div className="game-start-overline">THE RECLAMATION</div>
      <img ref={introLogo} src={LOGO_URL} className="game-start-welcome-logo" alt="Humans Remain"/>

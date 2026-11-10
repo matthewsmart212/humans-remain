@@ -22,7 +22,7 @@ check(app.includes("if(!introRevealStarted.current)setIntroUiPhase('revealing')"
 check(app.includes("src={INTRO_URL} preload=\"auto\""),'intro movie preloads before button tap');
 check(app.includes("setIntroNeedsGesture(true)"),'Safari policy error does not skip the cinematic');
 check(app.includes('TAP TO BEGIN THE RECLAMATION'), 'blocked video can resume with user gesture');
-check(app.includes("phase==='transition'||phase==='watching'?' is-transitioning'"),'blackout persists until first decoded frame');
+check(app.includes("watchPressed.current?' is-transitioning'"),'splash remains faded after the handoff, without resetting text or logo');
 check(app.includes("phase==='watching'&&introHasFrame"),'intro hides the title only once video has begun');
 check(app.includes("remaining<=4"),'outro menu handoff remains in place');
 check(app.includes("onEnded={finishToMenu}"),'intro end still completes as normal');
