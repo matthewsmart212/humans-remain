@@ -18,11 +18,10 @@ type Props={
  onContinueSelected:()=>void;
  onContinueComplete:()=>void;
  onWatchSelected:()=>void;
- soundtrackAllowed:boolean;
 };
 type Phase='welcome'|'transition'|'cinematic';
 
-export default function NativeOpeningFlow({onComplete,onPrepareMenu,onUiReveal,onContinueSelected,onContinueComplete,onWatchSelected,soundtrackAllowed}:Props){
+export default function NativeOpeningFlow({onComplete,onPrepareMenu,onUiReveal,onContinueSelected,onContinueComplete,onWatchSelected}:Props){
  const [phase,setPhase]=useState<Phase>('welcome');
  const [welcomeVisible,setWelcomeVisible]=useState(true);
  const [reduced,setReduced]=useState(false);
@@ -58,7 +57,6 @@ export default function NativeOpeningFlow({onComplete,onPrepareMenu,onUiReveal,o
  return <View style={s.screen}><StatusBar hidden/>
   <Cinematic active={phase==='cinematic'}
     insets={insets}
-    soundtrackAllowed={soundtrackAllowed}
     onFirstFrame={revealCinematic}
     onPrepareMenu={onPrepareMenu}
     onUiReveal={onUiReveal}
@@ -152,14 +150,13 @@ function Welcome({width,height,insets,onWatch,onTransitionComplete,onContinue,tr
  </View>;
 }
 
-function Cinematic({active,insets,onDone,onFirstFrame,onPrepareMenu,onUiReveal,soundtrackAllowed}:{
+function Cinematic({active,insets,onDone,onFirstFrame,onPrepareMenu,onUiReveal}:{
  active:boolean;
  insets:{top:number;bottom:number;left:number;right:number};
  onDone:(reason:'natural'|'skip')=>void;
  onFirstFrame:()=>void;
  onPrepareMenu:()=>void;
  onUiReveal:()=>void;
- soundtrackAllowed:boolean;
 }){
  const video=useVideoPlayer(introSource,p=>{p.loop=false;p.muted=true;p.audioMixingMode='mixWithOthers';p.staysActiveInBackground=false;p.timeUpdateEventInterval=.05});
  const [state,setState]=useState<'loading'|'playing'|'unavailable'|'error'>('loading');
@@ -216,7 +213,9 @@ function Cinematic({active,insets,onDone,onFirstFrame,onPrepareMenu,onUiReveal,s
 
  // All native players use the same mixing mode. The soundtrack is owned
  // solely by EntryFlow and keeps playing across video loading/stalls.
- useEffect(()=>{video.muted=!soundtrackAllowed},[video,soundtrackAllowed]);
+ // The menu music preference applies to the MP3. Watching the film also
+ // plays its narration, including when the player has muted the music.
+ useEffect(()=>{video.muted=!active},[video,active]);
 
  // On some iPhones a paused, preloaded video can paint frame zero before the
  // four-second title animation finishes. The first-frame callback then fires

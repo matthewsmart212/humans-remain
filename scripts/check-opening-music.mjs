@@ -1,43 +1,73 @@
 import assert from 'node:assert/strict';
 import {build} from 'esbuild';
-const compiled=await build({entryPoints:['src/opening-music.ts'],bundle:true,write:false,format:'esm',platform:'node'});
-const {createOpeningMusic}=await import('data:text/javascript;base64,'+Buffer.from(compiled.outputFiles[0].text).toString('base64'));
-const flush=()=>new Promise(resolve=>setImmediate(resolve));
-let downloaded;
-globalThis.fetch=()=>new Promise(resolve=>{downloaded=()=>resolve({ok:true,arrayBuffer:async()=>new ArrayBuffer(1)})});
-function fakeContext(){
- const sources=[];
- return {sources,state:'suspended',currentTime:0,destination:{},
-  createGain:()=>({gain:{value:0,setValueAtTime(){},linearRampToValueAtTime(){}},connect(){},disconnect(){}}),
-  createBufferSource(){const s={starts:[],stops:0,connect(){},disconnect(){},start(...args){this.starts.push(args)},stop(){this.stops++}};sources.push(s);return s},
-  resume(){this.state='running';return Promise.resolve()},
-  close(){this.state='closed';return Promise.resolve()},
-  decodeAudioData:async()=>({duration:60})
- };
+
+const compiled = await build({entryPoints: ['src/opening-music.ts'], bundle: true, write: false, format: 'esm', platform: 'node'});
+const {createOpeningMusic} = await import('data:text/javascript;base64,' + Buffer.from(compiled.outputFiles[0].text).toString('base64'));
+const flush = () => new Promise(resolve => setImmediate(resolve));
+
+class Media extends EventTarget {
+  paused = true;
+  currentTime = 0;
+  attempts = [];
+  loads = 0;
+  error = null;
+  play() {
+    this.paused = false;
+    return new Promise((resolve, reject) => this.attempts.push({resolve, reject}));
+  }
+  pause() { this.paused = true; }
+  load() { this.loads++; this.error = null; }
 }
-const errors=[];
-const context=fakeContext(),music=createOpeningMusic(context,'/music.mp3',()=>errors.push('load'));
-music.start(); // User taps before download completes.
-assert.equal(context.state,'running','the tap unlocks audio immediately');
-assert.equal(context.sources.length,0);
-downloaded();await flush();
-assert.equal(context.sources.length,1,'download completion honours the original tap');
-assert.deepEqual(context.sources[0].starts,[[0,0]]);
-context.currentTime=4;
-music.start();music.start(); // Video starts; then the menu starts.
-assert.equal(context.sources.length,1,'video/menu start cannot replace the music source');
-assert.equal(context.sources[0].stops,0,'music stays uninterrupted across transitions');
+
+const audio = new Media();
+const prompts = [];
+const session = {type: 'auto'};
+const music = createOpeningMusic(audio, visible => prompts.push(visible), session);
+music.start();
+assert.equal(audio.attempts.length, 1, 'tap requests streaming playback before media has loaded');
+assert.equal(session.type, 'playback');
+music.start();
+assert.equal(audio.attempts.length, 1, 'a buffering request stays pending');
+audio.attempts[0].resolve();
+await flush();
+
+audio.currentTime = 4;
+music.start();
+assert.equal(audio.attempts.length, 1, 'starting narration leaves the music playing');
+assert.equal(audio.currentTime, 4);
+audio.paused = true;
+audio.dispatchEvent(new Event('pause'));
+assert.equal(prompts.at(-1), true, 'an unexpected interruption offers recovery');
 music.pause();
-assert.equal(context.sources[0].stops,1);
-context.currentTime=50;music.start();
-assert.deepEqual(context.sources[1].starts,[[0,4]],'visibility/mute resume preserves the playback position');
-context.currentTime=115;music.pause();music.start();
-assert.deepEqual(context.sources[2].starts,[[0,9]],'offset wraps correctly after the loop ends');
-music.dispose();music.start();
-assert.equal(context.sources.length,3,'disposed player cannot restart');
-const mutedContext=fakeContext(),muted=createOpeningMusic(mutedContext,'/music.mp3',()=>errors.push('muted'));
-muted.start();muted.pause();downloaded();await flush();
-assert.equal(mutedContext.sources.length,0,'muting during download prevents late playback');
-muted.dispose();
-assert.deepEqual(errors,[]);
-console.log('PASS: early tap, continuous video/menu music, mute/background resume, loop offsets, disposal, and muted preload.');
+music.start();
+assert.equal(audio.currentTime, 4, 'unmute/foreground resumes at the same point');
+audio.paused = true;
+audio.attempts[1].reject(new Error('NotAllowedError'));
+await flush();
+assert.equal(prompts.at(-1), true, 'a blocked play offers a retry');
+
+audio.error = new Error('network failure');
+music.start();
+assert.equal(audio.loads, 0, 'rerender/visibility events do not reload the stream');
+music.start(true);
+assert.equal(audio.loads, 1, 'a deliberate retry reloads a failed stream');
+audio.attempts[2].resolve();
+await flush();
+assert.equal(prompts.at(-1), false);
+music.pause();
+music.start();
+music.dispose();
+audio.attempts[3].reject(new Error('AbortError'));
+await flush();
+assert.equal(prompts.at(-1), false, 'a cancelled play cannot show a stale prompt');
+assert.equal(session.type, 'auto');
+assert.equal(audio.paused, true);
+music.start();
+assert.equal(audio.attempts.length, 4, 'a released player stays stopped');
+
+const legacy = new Media();
+const withoutSession = createOpeningMusic(legacy, () => {});
+withoutSession.start();
+assert.equal(legacy.attempts.length, 1, 'streaming works without the optional audio-session API');
+withoutSession.dispose();
+console.log('PASS: tap-to-stream, uninterrupted handoff, mute/resume, blocked playback recovery and cleanup.');

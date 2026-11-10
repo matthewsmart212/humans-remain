@@ -9,6 +9,7 @@ import retiredRoadRedirects from './retired-road-redirects.json';
 import riverFeaturesRedirects from './river-features-redirects.json';
 import riverQualityRedirects from './river-quality-redirects.json';
 import {handleMcp} from './mcp';
+import {openingMediaResponse} from './opening-media';
 import {renderPublicChecklist} from './public-checklist';
 import {handleWorldLayout,handlePublishedWorld} from './world-layout';
 import {editorIdentity,editAccessResponse,editorUnlockResponse,editorLockResponse,type EditorIdentityEnv} from './edit-access';
@@ -16,6 +17,7 @@ import {isLibraryAssetId} from '../src/asset-library-policy';
 type Statement={bind:(...values:unknown[])=>Statement;all:()=>Promise<{results:unknown[]}>;run:()=>Promise<unknown>};
 type Env=ArtEnv & EditorIdentityEnv & {DB:{prepare:(sql:string)=>Statement};ASSETS?:{fetch:(request:Request)=>Promise<Response>};GITHUB_WORLD_SYNC_TOKEN?:string};
 declare const __INDEX_HTML__:string;
+declare const __OPENING_MEDIA_SIZES__:Record<string,number>;
 const json=(data:unknown,status=200)=>Response.json(data,{status,headers:{'Cache-Control':'no-store'}});
 const db=(env:Env)=>{if(!env.DB)throw Error('Checklist storage unavailable');return env.DB};
 // Keep older open tabs working after superseded map exports leave the bundle.
@@ -103,6 +105,9 @@ export default {async fetch(request:Request,env:Env):Promise<Response>{
  }
  if(url.pathname==='/mcp')return handleMcp(request,async()=>(await db(env).prepare('SELECT id,art,implemented,tested,concept,export_complete,updated_at FROM base_checklist').all()).results as any,()=>readArtwork(env.DB));
  if(url.pathname==='/'||url.pathname==='/index.html')return new Response(request.method==='HEAD'?null:__INDEX_HTML__,{headers:{'Content-Type':'text/html;charset=utf-8','Cache-Control':'no-store, max-age=0','Pragma':'no-cache','X-Content-Type-Options':'nosniff'}});
+ if(env.ASSETS&&typeof __OPENING_MEDIA_SIZES__!=='undefined'&&Object.hasOwn(__OPENING_MEDIA_SIZES__,url.pathname)){
+  return openingMediaResponse(request,await env.ASSETS.fetch(request),__OPENING_MEDIA_SIZES__[url.pathname]);
+ }
  if(url.pathname!=='/api/base-checklist')return env.ASSETS?env.ASSETS.fetch(request):new Response('Not found',{status:404});
  try{
   if(request.method==='GET'){const rows=await db(env).prepare('SELECT id,art,implemented,tested,concept,export_complete,updated_at FROM base_checklist').all();return json({rows:(rows.results as {id:string}[]).filter(row=>isLibraryAssetId(row.id)),canEdit});}

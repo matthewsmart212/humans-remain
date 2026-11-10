@@ -202,3 +202,5 @@
   100%{transform:none;opacity:0}
  }
 }
+
+.game-start-skip.game-start-sound-retry{left:max(20px,env(safe-area-inset-left));right:auto}

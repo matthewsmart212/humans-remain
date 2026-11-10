@@ -1,10 +1,11 @@
-import React,{useEffect,useRef,useState} from 'react';
+import React,{useEffect,useLayoutEffect,useRef,useState} from 'react';
 import {createPortal} from 'react-dom';
 import StartingScreen from './StartingScreen';
 import {WEB_START_SCREEN_ART} from './start-screen-art';
 import {START_PROFILE_KEY,readStartProfile,type StartProfile} from './start-profile';
 import './game-start.css';
 import {createOpeningMusic} from './opening-music';
+import openingMedia from './opening-media-paths.json';
 
 // Only the first entry on a page visit presents the Reclamation splash.
 // Returning from a game goes to the already-familiar starting menu, as on iOS.
@@ -12,9 +13,7 @@ let hasVisitedMenuThisPage=false;
 type EntryPhase='landing'|'transition'|'watching'|'menu';
 const INTRO_TITLE_TRANSITION_MS=4000;
 type IntroUiPhase='hidden'|'revealing'|'shown';
-const INTRO_URL='/previews/the-reclamation/intro.mp4';
-const SOUNDTRACK_URL='/previews/the-reclamation/soundtrack.mp3';
-const MENU_LOOP_URL='/previews/dawn-camp/start-scene.mp4';
+const {intro:INTRO_URL,soundtrack:SOUNDTRACK_URL,menuLoop:MENU_LOOP_URL}=openingMedia;
 const MENU_POSTER_URL='/previews/dawn-camp/start-scene-poster.jpg';
 const LOGO_URL='/survival/starting-screen-ui-v2/humans-remain-logo.png';
 
@@ -40,7 +39,9 @@ export default function GameStart({onPlay,onBack,busy,notice,playDisabled,loadin
  const [logoTravel,setLogoTravel]=useState({x:0,y:0});
  const [introNeedsGesture,setIntroNeedsGesture]=useState(false);
  const menuVideo=useRef<HTMLVideoElement>(null);
- const startMusic=useRef<null|(()=>void)>(null);
+ const soundtrack=useRef<HTMLAudioElement>(null);
+ const startMusic=useRef<null|((retry?:boolean)=>void)>(null);
+ const [soundNeedsTap,setSoundNeedsTap]=useState(false);
  const muteRef=useRef(profile.muted),motionRef=useRef(profile.motion),reducedRef=useRef(reduced);
  muteRef.current=profile.muted;motionRef.current=profile.motion;reducedRef.current=reduced;
  const audioActivated=useRef(hasVisitedMenuThisPage);
@@ -71,41 +72,37 @@ export default function GameStart({onPlay,onBack,busy,notice,playDisabled,loadin
   return()=>{removeEventListener('resize',resize);media.removeEventListener('change',motion)};
  },[]);
 
- // One permanent soundtrack player for both the intro and main menu.
- // Browser autoplay rules require a click to unlock audio on a new visit.
- useEffect(()=>{
-  // Web Audio mixes the loop with narration without Safari pausing one
-  // HTML media element to start another. No phase change resets this player.
-  const onError=()=>setSaveNotice('The Reclamation soundtrack could not load. Refresh the page to retry.');
-  let music:ReturnType<typeof createOpeningMusic>;
-  try{music=createOpeningMusic(new window.AudioContext(),SOUNDTRACK_URL,onError)}
-  catch{onError();return}
-  const start=()=>{
-   if(!audioActivated.current||document.hidden||muteRef.current){music.pause();return}
-   music.start();
+ // Install the streaming player before either entry button can receive a tap.
+ useLayoutEffect(()=>{
+  const audio=soundtrack.current;
+  if(!audio)return;
+  const session=(navigator as Navigator & {audioSession?:{type:string}}).audioSession;
+  const music=createOpeningMusic(audio,setSoundNeedsTap,session);
+  const start=(retry=false)=>{
+   if(!audioActivated.current||document.hidden||muteRef.current){
+    music.pause();
+    setSoundNeedsTap(false);
+    return;
+   }
+   music.start(retry);
   };
+  const sync=()=>start();
   startMusic.current=start;
-  document.addEventListener('visibilitychange',start);
-  document.addEventListener('pointerdown',start,true);
-  document.addEventListener('touchstart',start,true);
-  document.addEventListener('keydown',start,true);
+  document.addEventListener('visibilitychange',sync);
   start();
   return()=>{
    startMusic.current=null;
-   document.removeEventListener('visibilitychange',start);
-   document.removeEventListener('pointerdown',start,true);
-   document.removeEventListener('touchstart',start,true);
-   document.removeEventListener('keydown',start,true);
+   document.removeEventListener('visibilitychange',sync);
    music.dispose();
   };
  },[]);
 
- const enableAudio=()=>{audioActivated.current=true;startMusic.current?.()};
+ const enableAudio=()=>{audioActivated.current=true;startMusic.current?.(true)};
  useEffect(()=>()=>{if(introStartTimer.current!==null)clearTimeout(introStartTimer.current)},[]);
  const save=(next:StartProfile)=>{
   muteRef.current=next.muted;
   setProfile(next);
-  startMusic.current?.();
+  startMusic.current?.(!next.muted);
   try{localStorage.setItem(START_PROFILE_KEY,JSON.stringify(next));setSaveNotice('')}
   catch{setSaveNotice('Your name and preferences could not be saved on this device.')}
  };
@@ -141,6 +138,7 @@ export default function GameStart({onPlay,onBack,busy,notice,playDisabled,loadin
   });
  };
  const retryIntroPlayback=()=>{
+  startMusic.current?.(true);
   const player=introVideo.current;
   if(!player)return;
   void player.play().then(()=>setIntroNeedsGesture(false)).catch(()=>finishToMenu());
@@ -213,6 +211,7 @@ export default function GameStart({onPlay,onBack,busy,notice,playDisabled,loadin
  return createPortal(<div className="game-start" onKeyDown={e=>e.stopPropagation()}
   style={{opacity:visualsReady?1:0,transition:'opacity 180ms ease-out',...(loadingProgress===1?{backgroundColor:'transparent',backgroundImage:'none'}:{})}}>
   <div className="game-start-media" aria-hidden="true">
+   <audio ref={soundtrack} src={SOUNDTRACK_URL} preload="auto" loop/>
    <video ref={menuVideo} className="game-start-scene"
     style={{opacity:menuFrameReady||phase==='menu'?1:0}}
     src={MENU_LOOP_URL} poster={MENU_POSTER_URL} loop muted playsInline preload="auto"
@@ -254,6 +253,8 @@ export default function GameStart({onPlay,onBack,busy,notice,playDisabled,loadin
     </div>
     <p className="game-start-welcome-footer">SURVIVE THE DAY. DEFEND THE NIGHT.</p>
    </div>
+  {soundNeedsTap&&!profile.muted&&(phase==='menu'||(phase==='watching'&&introHasFrame))&&
+   <button className="game-start-skip game-start-sound-retry" type="button" onClick={()=>startMusic.current?.(true)}>RETRY SOUND</button>}
   {phase==='watching'&&introNeedsGesture&&<button className="game-start-intro-retry" type="button" onClick={retryIntroPlayback}>TAP TO BEGIN THE RECLAMATION ▶</button>}
   {phase==='watching'&&<button className="game-start-skip" type="button" onClick={onSkip}
    aria-label="Skip introduction and open the main menu">SKIP »</button>}

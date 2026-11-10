@@ -101,7 +101,14 @@ for(const url of historicalPublishExports){
  assert(!fs.existsSync(source),'Historical source export remained in publish bundle: '+url);
 }
 for(const active of ['/art/grain.svg','/maps/world-illustrated.webp','/survival/scrap-walker-v3/atlas.json'])assert(fs.existsSync('dist/client'+active),'Active artwork must remain published: '+active);
-await build({entryPoints:['server/checklist.ts'],outfile:'dist/server/index.js',bundle:true,platform:'neutral',format:'esm',target:'es2022',define:{__INDEX_HTML__:JSON.stringify(fs.readFileSync('dist/client/index.html','utf8'))}});
+// An asset binding can omit Content-Length on a streamed body. The browser
+// and Worker use the same three files, with byte counts from this exact build.
+const openingMedia=JSON.parse(fs.readFileSync('src/opening-media-paths.json','utf8'));
+const openingMediaSizes=Object.fromEntries(Object.values(openingMedia).map(url=>[url,fs.statSync('dist/client'+url).size]));
+await build({entryPoints:['server/checklist.ts'],outfile:'dist/server/index.js',bundle:true,platform:'neutral',format:'esm',target:'es2022',define:{
+ __INDEX_HTML__:JSON.stringify(fs.readFileSync('dist/client/index.html','utf8')),
+ __OPENING_MEDIA_SIZES__:JSON.stringify(openingMediaSizes)
+}});
 fs.mkdirSync('dist/.openai',{recursive:true});
 fs.copyFileSync('.openai/hosting.json','dist/.openai/hosting.json');
 fs.cpSync('drizzle','dist/.openai/drizzle',{recursive:true});

@@ -36,14 +36,8 @@ export default function NativeEntryFlow({initialMenuVisible,onPlay,onFriends,loa
  const [muted,setMuted]=useState(false);
  const [profileReady,setProfileReady]=useState(false);
  const [audioReady,setAudioReady]=useState(false);
- const [musicLoaded,setMusicLoaded]=useState(false);
  const [active,setActive]=useState(AppState.currentState==='active');
  const music=useAudioPlayer(musicSource);
- const activeRef=useRef(active),mutedRef=useRef(muted),profileReadyRef=useRef(profileReady);
- activeRef.current=active;
- mutedRef.current=muted;
- profileReadyRef.current=profileReady;
-
  // Read the exact same saved mute preference as the existing menu UI.
  useEffect(()=>{
   let live=true;
@@ -66,11 +60,7 @@ export default function NativeEntryFlow({initialMenuVisible,onPlay,onFriends,loa
  useEffect(()=>{
   music.loop=true;
   music.volume=.72;
-  setMusicLoaded(music.isLoaded);
-  const sub=music.addListener('playbackStatusUpdate',event=>{
-   setMusicLoaded(current=>current===event.isLoaded?current:event.isLoaded);
-  });
-  return()=>{sub.remove();music.pause()};
+  return()=>music.pause();
  },[music]);
 
  useEffect(()=>{
@@ -79,18 +69,21 @@ export default function NativeEntryFlow({initialMenuVisible,onPlay,onFriends,loa
    .then(()=>{if(live)setAudioReady(true)})
    .catch(()=>{if(live)setAudioReady(true)});
   const sub=AppState.addEventListener('change',state=>setActive(state==='active'));
+  setActive(AppState.currentState==='active');
   return()=>{live=false;sub.remove()};
  },[]);
 
  // One owner controls soundtrack playback through the title, film and menu.
  // Video buffering or starting narration must never pause or seek this loop.
  useEffect(()=>{
-  if(!profileReady||!audioReady||!musicLoaded||!active||muted){
+  if(!profileReady||!audioReady||!active||muted){
    music.pause();
    return;
   }
+  // AVPlayer can queue play while its item is buffering. Waiting for a
+  // separate loaded event here can discard an early title-screen tap.
   if((musicMode==='menu'||musicMode==='cinematic')&&!music.playing)music.play();
- },[music,musicMode,profileReady,audioReady,musicLoaded,active,muted]);
+ },[music,musicMode,profileReady,audioReady,active,muted]);
 
  const chooseContinue=()=>{
   setMusicMode('menu');
@@ -101,7 +94,6 @@ export default function NativeEntryFlow({initialMenuVisible,onPlay,onFriends,loa
   // The same shared soundtrack starts on the Watch Intro tap, not when
   // expo-video eventually renders its first frame four seconds later.
   setMusicMode('cinematic');
-  if(profileReady&&audioReady&&musicLoaded&&active&&!muted&&!music.playing)music.play();
  };
  const beginFinalReveal=()=>setMenuUiPhase(phase=>phase==='hidden'?'revealing':phase);
  // The final footage of the intro is deliberately aligned with the END of
@@ -132,7 +124,6 @@ export default function NativeEntryFlow({initialMenuVisible,onPlay,onFriends,loa
   animation.start(({finished})=>{if(finished)setOpeningGone(true)});
   return()=>animation.stop();
  },[openingGone,menuRequested,menuFrameReady,menuVideoFailed,motion,reduced,openingOpacity]);
- const musicAllowed=profileReady&&audioReady&&active&&!muted;
  // Three distinct layers on iOS: one menu video at the back, the intro
  // above it, and the REAL menu UI over both during its final four seconds.
  // None of these players/UI trees are remounted during the natural handoff.
@@ -154,7 +145,6 @@ export default function NativeEntryFlow({initialMenuVisible,onPlay,onFriends,loa
      onContinueSelected={chooseContinue}
      onContinueComplete={completeContinue}
      onWatchSelected={chooseWatch}
-     soundtrackAllowed={musicAllowed}
     />
    </Animated.View>}
   <View pointerEvents={openingGone?'auto':'none'} style={[StyleSheet.absoluteFill,{zIndex:3000,elevation:3000}]}>

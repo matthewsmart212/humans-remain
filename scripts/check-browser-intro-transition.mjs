@@ -1,5 +1,7 @@
 import assert from 'node:assert/strict';
 import fs from 'node:fs';
+import './check-opening-music.mjs';
+import './check-opening-media-ranges.mjs';
 const app=fs.readFileSync('src/GameStart.tsx','utf8');
 const css=fs.readFileSync('src/game-start.css','utf8');
 const html=fs.readFileSync('index.html','utf8');
@@ -16,7 +18,7 @@ check(app.includes("const bounds=introLogo.current?.getBoundingClientRect();"),'
 check(app.includes('innerWidth/2-bounds.left-bounds.width/2'),'horizontal motion uses viewport centre');
 check(app.includes('innerHeight/2-bounds.top-bounds.height/2'),'vertical motion uses viewport centre');
 check(app.includes("enableAudio();\n  introRevealStarted.current=false"),'soundtrack begins directly on Watch click');
-check(app.includes("audioActivated.current=true;startMusic.current?.()"),'uses the shared audio player');
+check(app.includes("audioActivated.current=true;startMusic.current?.(true)"),'the entry tap starts the shared player and can recover a failed preload');
 check(app.includes("const onContinue=()=>beginEntry('continue')"),'Continue shares the full title transition');
 check(app.includes("if(!introRevealStarted.current)setIntroUiPhase('revealing')"),'Continue animates the real menu into view');
 check(app.includes("src={INTRO_URL} preload=\"auto\""),'intro movie preloads before button tap');
