@@ -2,6 +2,8 @@
 
 The editor can save a private draft or **Publish** the permanent layout. The
 primary Publish button prompts before changing the world for new player runs.
+The Cloudflare Workers URL is public, even when only one developer currently
+uses it; anonymous publishing would let anyone overwrite the world.
 
 ## One-time setup (secrets are NOT GitHub source files)
 
@@ -19,11 +21,14 @@ not be the same Cloudflare database.
    JavaScript, Expo config or a public environment variable.
 3. To unlock editing on the public Cloudflare Worker, create a separate,
    unpredictable **32+ character** secret `WORLD_EDITOR_TOKEN` in the same
-   Worker. The in-app **Unlock editor** control accepts this owner key for the
-   current browser tab. Keep it private. The GitHub token must never be entered
+   Worker. Tap **Unlock Publishing** in World settings and enter this key
+   **once per browser/device**. The Worker saves a secure HttpOnly owner cookie
+   for 90 days. You don't need to sign into ChatGPT or re-enter the key on
+   every visit. Keep the key private. The GitHub token must never be entered
    in the editor.
-4. Once the Worker deploy includes this code, open its World Editor, make a
-   placement change and click **Publish**. Confirm the prompt. The status
+4. Once the Worker deploy includes this code, open its World Editor, tap
+   **Unlock Publishing** if necessary, make a placement change and tap
+   **Publish World**. Confirm the prompt. The status
    must say **Cloudflare and GitHub** and include a GitHub commit ID before
    considering the bundled update successful.
 
@@ -39,8 +44,9 @@ Each command prompts privately for the value. Never commit credentials.
 
 ## Behaviour and rollback
 
-- **Ctrl/Cmd+S / Save Draft**: stores the editor draft in the existing D1
-  database, without changing the world used by other players.
+- **Ctrl/Cmd+S / Save Draft**: saves locally and, once owner access is unlocked,
+  also saves to the existing D1 database, without changing the world used by
+  other players.
 - **Publish**: saves the validated world as the Cloudflare published world,
   then commits the same layout and authoritative artwork metadata to
   `native/assets/world-snapshot.json` on `main`. The update uses GitHub's
