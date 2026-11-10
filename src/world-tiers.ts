@@ -30,13 +30,32 @@ export function tierTargets(layout:WorldLayout,selectedId:string){
  if(!selected)throw Error('This object is no longer in the draft.');
  return wallIdentity(selected.assetId)?layout.items.filter(p=>wallIdentity(p.assetId)):[selected];
 }
+/** Moving one upgrade tier must not move the coordinates of any other tier.
+ * Keep the original position as a fallback for tiers the user hasn't edited.
+ */
+export function rememberTierMove(placement:Placement,patch:Partial<Placement>):Placement{
+ const next={...placement,...patch},identity=tierIdentity(placement.assetId);
+ if(!identity||(next.x===placement.x&&next.y===placement.y))return next;
+ const previous=placement.tierPositions??{base:{x:placement.x,y:placement.y}};
+ return {...next,tierPositions:{...previous,[String(identity.tier)]:{x:next.x,y:next.y}}};
+}
+/** Duplicating a tiered object translates every saved tier position together.
+ * This is distinct from dragging the selected tier, which only moves that tier.
+ */
+export function translateTierPositions(p:Placement,position:{x:number;y:number},bound:(point:{x:number;y:number})=>{x:number;y:number}):Placement{
+ const dx=position.x-p.x,dy=position.y-p.y;
+ return {...p,...position,...(p.tierPositions?{tierPositions:Object.fromEntries(Object.entries(p.tierPositions).map(([tier,point])=>[tier,bound({x:point.x+dx,y:point.y+dy})]))}:{})};
+}
 /** All-or-nothing: a missing wall variant must never leave half the perimeter upgraded. */
 export function changePlacementTier(layout:WorldLayout,selectedId:string,tier:number,assets=ASSET_BY_ID):WorldLayout{
  const targets=tierTargets(layout,selectedId),updates=new Map<string,Placement>();
  for(const p of targets){
   const option=tierOptions(p.assetId,assets).find(o=>o.tier===tier);
   if(!option?.available||!option.assetId)throw Error('Artwork is not ready for every part of this tier. Nothing was changed.');
-  if(p.assetId!==option.assetId)updates.set(p.id,{...p,frame:structuredClone(placementFrame(p,assets)),assetId:option.assetId});
+  if(p.assetId!==option.assetId){
+   const position=p.tierPositions?.[String(tier)]??p.tierPositions?.base;
+   updates.set(p.id,{...p,frame:structuredClone(placementFrame(p,assets)),assetId:option.assetId,...(position?{x:position.x,y:position.y}:{})});
+  }
  }
  return updates.size?{...layout,items:layout.items.map(p=>updates.get(p.id)??p)}:layout;
 }
