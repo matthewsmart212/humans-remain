@@ -4,13 +4,19 @@
 
 The browser editor distinguishes **Save** (private local/owner draft) and **Publish World** (the active world for new game sessions). The existing Cloudflare D1 `world_layout.applied_json` is the published layout; `draft_json` stays private. Both the editor and the native app use the same `WorldLayout` format, including object position, size, rotation, layers, collisions, asset IDs, and terrain references.
 
-## Owner setup on Cloudflare
+## Token-free owner publishing (one-time setup)
 
-1. Deploy the Worker from `main` using the existing Cloudflare deployment action, and apply the D1 migrations.
-2. In **Cloudflare Dashboard → Workers & Pages → humans-remain → Settings → Variables and Secrets**, create a **secret** named `WORLD_EDITOR_TOKEN` containing a randomly generated key of at least 32 characters. Do not use a plain-text variable, put the token in GitHub, or place it in client source.
-3. Open the **Cloudflare-hosted** Humans Remain game (not the old Safety Last or separate private ChatGPT Site), enter the world editor from Settings, open **World settings → Unlock editor**, and enter that key. It is retained only in the current browser tab's session storage.
-4. Move/resize/rotate assets, press **Save** to keep a draft, and press **Publish World** when ready. Publication requires explicit confirmation and server authorization.
-5. Visit the public API above and check `updatedAt` and the returned `layout`. The next iOS game boot retrieves this data; if it is invalid, unavailable, or its artwork fails to warm, iOS falls back to the last cached published copy or the bundled snapshot.
+The editor now supports **Cloudflare Access email sign-in**. No WORLD_EDITOR_TOKEN is needed to publish after owner sign-in. The old key method remains available as a fallback during migration.
+
+1. In Cloudflare **Zero Trust → Access → Applications**, add a **Self-hosted** application for **only** the path `/api/editor-session` on the public Humans Remain hostname. Restrict its policy to **your exact email address** (email one-time PIN works). Do **not** protect the entire Worker or `/api/published-world`: new iOS game sessions and public players need to read it.
+2. In **Workers & Pages → humans-remain → Settings → Variables and Secrets**, set `SITE_OWNER_EMAIL` to that same owner email. It is a simple account setting, not a publishing token. You only do this once.
+3. Redeploy `main`, including the automatic D1 migration `0005_owner_editor_sessions.sql`.
+4. Open the Cloudflare-hosted game → Settings → World editor → **Owner Sign-In**. Cloudflare verifies your email. After successful sign-in the editor stores an **HttpOnly, Secure, 60-day device session** whose random verifier is stored only hashed in D1.
+5. Move buildings, reposition each upgrade tier, save drafts, and press **Publish World** when ready. Changes publish to Cloudflare for all players starting a new session. The optional `GITHUB_WORLD_SYNC_TOKEN` on the *server* is still required to also update the bundled iOS fallback on GitHub.
+
+The owner login endpoint is never considered proof of ownership from request headers alone: it requires Cloudflare's verified Worker `ctx.access` identity, matching `SITE_OWNER_EMAIL`. Anyone else remains read-only even if they try to forge an email header. The application should leave only the sign-in path behind Access, rather than restricting public game assets or the world read API.
+
+If you have not configured Access yet, the existing legacy **Use existing owner key** option still works. It uses `WORLD_EDITOR_TOKEN` only if that old Worker secret is already installed. This avoids locking you out while switching methods.
 
 The published endpoint is read-only, returns no editor draft, and allows cross-origin GETs for the iPhone app. A published release is selected when a **new game boots**; it does not rewrite a running player's positions, inventory, building condition, or personal progress.
 

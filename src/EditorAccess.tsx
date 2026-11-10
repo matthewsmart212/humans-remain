@@ -5,13 +5,15 @@ import './editor-access.css';
 
 export type EditorAccessState='loading'|'owner'|'anonymous'|'viewer'|'error';
 type AccessData={state:EditorAccessState;signInUrl?:string;signOutUrl?:string};
-export type EditorAccess=AccessData&{refresh:()=>void;unlock:()=>Promise<boolean>;lock:()=>Promise<void>};
+export type EditorAccess=AccessData&{refresh:()=>void;unlock:()=>Promise<boolean>;unlockWithKey:()=>Promise<boolean>;lock:()=>Promise<void>};
 
 export function useEditorAccess(returnTo:string):EditorAccess{
  const [data,setData]=useState<AccessData>({state:'loading'}),[version,setVersion]=useState(0);
  const refresh=useCallback(()=>setVersion(v=>v+1),[]);
- const unlock=useCallback(async()=>{
-  const key=window.prompt('Unlock publishing once on this device. Enter the private WORLD_EDITOR_TOKEN from your Cloudflare Worker settings. This is not a ChatGPT sign-in.');
+ // Legacy one-time owner key remains as a fallback while Cloudflare Access
+ // is configured. Ordinary publishing no longer needs a copied secret.
+ const unlockWithKey=useCallback(async()=>{
+  const key=window.prompt('Enter your existing private WORLD_EDITOR_TOKEN to unlock this device (legacy method).');
   if(!key?.trim())return false;
   try{
    const response=await fetch('/api/editor-unlock',{method:'POST',headers:{'Content-Type':'application/json'},credentials:'same-origin',body:JSON.stringify({key:key.trim()})});
@@ -20,6 +22,14 @@ export function useEditorAccess(returnTo:string):EditorAccess{
    clearEditorToken();refresh();return true;
   }catch(error){window.alert(error instanceof Error?error.message:'Could not unlock publishing.');return false}
  },[refresh]);
+ const unlock=useCallback(async()=>{
+  // A protected owner-only URL lets Cloudflare send an email login, then
+  // redirects back with a secure cookie. No token is stored in JavaScript.
+  if(window.location.hostname.endsWith('.chatgpt.site'))return unlockWithKey();
+  const path=window.location.pathname+window.location.search+(window.location.hash||'#editor');
+  window.location.assign('/api/editor-session?returnTo='+encodeURIComponent(path));
+  return false;
+ },[unlockWithKey]);
  const lock=useCallback(async()=>{
   try{await fetch('/api/editor-lock',{method:'POST',credentials:'same-origin'});}
   finally{clearEditorToken();refresh()}
@@ -34,12 +44,11 @@ export function useEditorAccess(returnTo:string):EditorAccess{
   return()=>controller.abort();
  },[returnTo,version]);
  useEffect(()=>{const visible=()=>{if(document.visibilityState==='visible')refresh()};window.addEventListener('focus',refresh);document.addEventListener('visibilitychange',visible);return()=>{window.removeEventListener('focus',refresh);document.removeEventListener('visibilitychange',visible)}},[refresh]);
- return {...data,refresh,unlock,lock};
+ return {...data,refresh,unlock,unlockWithKey,lock};
 }
 
 export function EditorAccessNotice({access}:{access:EditorAccess}){
  if(access.state==='owner')return null;
- const cloudflare=window.location.hostname.endsWith('.workers.dev');
- const unlock=()=>void access.unlock();
- return <div className="editor-access" role="status"><LockKeyhole size={19}/><div><strong>{access.state==='loading'?'Checking editing access…':cloudflare?'Cloudflare editor is locked':access.state==='anonymous'?'Sign in to unlock editing':access.state==='viewer'?'This account has read-only access':'Could not check editing access'}</strong><p>{cloudflare?'Unlock once on this device to save and publish. You will stay unlocked on this browser, without signing into ChatGPT. Visitors cannot change the world.':access.state==='loading'?'Your artwork remains available to preview.':access.state==='anonymous'?'Use your ChatGPT owner account to edit images, collision lines and animation settings.':access.state==='viewer'?'Sign out, then sign in with the ChatGPT account that owns this site.':'Retry the access check. Your current changes stay on this screen.'}</p><div className="editor-access-actions">{!cloudflare&&access.state==='anonymous'&&<a href={access.signInUrl} target="_top"><LogIn size={16}/>Sign in to edit</a>}{!cloudflare&&access.state==='viewer'&&<a href={access.signOutUrl} target="_top"><LogIn size={16}/>Sign out to change account</a>}{cloudflare&&access.state!=='loading'&&<button type="button" onClick={unlock}><LogIn size={16}/>Unlock publishing</button>}{access.state!=='loading'&&<button type="button" onClick={access.refresh}><RefreshCw size={14}/>{access.state==='error'?'Retry access check':'Recheck access'}</button>}</div></div></div>;
+ const cloudflare=!window.location.hostname.endsWith('.chatgpt.site');
+ return <div className="editor-access" role="status"><LockKeyhole size={19}/><div><strong>{access.state==='loading'?'Checking editing access…':cloudflare?'World editor is locked':access.state==='anonymous'?'Sign in to unlock editing':access.state==='viewer'?'This account has read-only access':'Could not check editing access'}</strong><p>{cloudflare?'Sign in once through Cloudflare Access to save and publish on this device. Visitors cannot change the world.':'Your artwork remains available to preview.'}</p><div className="editor-access-actions">{!cloudflare&&access.state==='anonymous'&&<a href={access.signInUrl} target="_top"><LogIn size={16}/>Sign in to edit</a>}{!cloudflare&&access.state==='viewer'&&<a href={access.signOutUrl} target="_top"><LogIn size={16}/>Sign out to change account</a>}{cloudflare&&access.state!=='loading'&&<><button type="button" onClick={()=>void access.unlock()}><LogIn size={16}/>Sign in as owner</button><button type="button" onClick={()=>void access.unlockWithKey()}>Use existing owner key</button></>}{access.state!=='loading'&&<button type="button" onClick={access.refresh}><RefreshCw size={14}/>{access.state==='error'?'Retry access check':'Recheck access'}</button>}</div></div></div>;
 }

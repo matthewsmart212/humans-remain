@@ -12,7 +12,7 @@ import {handleMcp} from './mcp';
 import {openingMediaResponse} from './opening-media';
 import {renderPublicChecklist} from './public-checklist';
 import {handleWorldLayout,handlePublishedWorld} from './world-layout';
-import {editorIdentity,editAccessResponse,editorUnlockResponse,editorLockResponse,type EditorIdentityEnv} from './edit-access';
+import {editorIdentity,editAccessResponse,editorUnlockResponse,editorLockResponse,editorSessionIsOwner,editorSessionResponse,type EditorIdentityEnv,type VerifiedCloudflareAccess} from './edit-access';
 import {isLibraryAssetId} from '../src/asset-library-policy';
 type Statement={bind:(...values:unknown[])=>Statement;all:()=>Promise<{results:unknown[]}>;run:()=>Promise<unknown>};
 type Env=ArtEnv & EditorIdentityEnv & {DB:{prepare:(sql:string)=>Statement};ASSETS?:{fetch:(request:Request)=>Promise<Response>};GITHUB_WORLD_SYNC_TOKEN?:string};
@@ -87,12 +87,14 @@ const retiredTerrain:Record<string,string>={
 // Resolve old artwork chains in one request.
 for(const key of Object.keys(retiredTerrain)){const seen=new Set([key]);let target=retiredTerrain[key];while(retiredTerrain[target]&&!seen.has(target)){seen.add(target);target=retiredTerrain[target]}retiredTerrain[key]=target}
 
-export default {async fetch(request:Request,env:Env):Promise<Response>{
+export default {async fetch(request:Request,env:Env,ctx?:{access?:VerifiedCloudflareAccess}):Promise<Response>{
  const url=new URL(request.url);
  if((request.method==='GET'||request.method==='HEAD')&&url.pathname.startsWith('/survival/maps/consistent-terrain-v1/')&&url.pathname.endsWith('.webp'))return Response.redirect(new URL('/survival/world-ground-v2/warm.webp',url.origin).href,307);
  if((request.method==='GET'||request.method==='HEAD')&&retiredTerrain[url.pathname])return Response.redirect(new URL(retiredTerrain[url.pathname],url.origin).href,307);
- const {canEdit}=editorIdentity(request,env);
- if(url.pathname==='/api/edit-access')return editAccessResponse(request,env);
+ const {canEdit:legacyOwner}=editorIdentity(request,env);
+ const canEdit=legacyOwner||(url.pathname.startsWith('/api/')&&await editorSessionIsOwner(request,env.DB));
+ if(url.pathname==='/api/editor-session')return editorSessionResponse(request,env,env.DB,ctx?.access);
+ if(url.pathname==='/api/edit-access')return editAccessResponse(request,env,canEdit);
  if(url.pathname==='/api/editor-unlock')return editorUnlockResponse(request,env);
  if(url.pathname==='/api/editor-lock')return editorLockResponse(request);
  if(url.pathname==='/api/custom-assets'||url.pathname==='/api/asset-artwork'||url.pathname==='/api/asset-files'||url.pathname==='/api/world-terrain'||url.pathname.startsWith('/api/asset-files/'))return handleArtwork(request,env,canEdit);
