@@ -20,6 +20,8 @@ jobs:
           cache: npm
       - run: npm ci
       - run: npm run typecheck
+      - name: Test editor selection inside roofless buildings
+        run: node scripts/check-interior-selection.mjs
       - name: Test server-side bundled world publication
         run: node scripts/check-world-bundle-publishing.mjs
       - name: Test co-op room protocol and hibernation
