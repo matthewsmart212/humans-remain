@@ -10,6 +10,10 @@ import {INTRO_TITLE_TRANSITION_MS,INTRO_BLACKOUT_MS,INTRO_LOGO_FADE_MS} from './
 const introSource=require('../public/previews/the-reclamation/intro.mp4');
 const cover=require('../public/previews/dawn-camp/start-scene-poster.jpg');
 const logo=require('../public/survival/starting-screen-ui-v2/humans-remain-logo.png');
+// Cut from the approved intro mock-up; both PNGs retain their transparent
+// silhouettes, metal corner brackets, engraved text and warm/cool glow.
+const watchIntroButton=require('../public/previews/the-reclamation/buttons/watch-intro.png');
+const continueButton=require('../public/previews/the-reclamation/buttons/continue.png');
 
 type Props={
  onComplete:(reason:'natural'|'skip')=>void;
@@ -79,6 +83,13 @@ function Welcome({width,height,insets,onWatch,onTransitionComplete,onContinue,tr
  const portrait=height>width;
  const edge=Math.max(18,Math.min(width,height)*.052);
  const logoWidth=Math.min(width*(portrait?.72:.40),500);
+ // Size the two real plaques together so both remain fully within the
+ // landscape iPhone safe area; stack them on portrait devices.
+ const usableWidth=Math.max(1,width-insets.left-insets.right-edge*2);
+ const usableHeight=Math.max(1,height-insets.top-insets.bottom);
+ const buttonScale=portrait
+  ?Math.min(1,usableWidth*.88/426,usableHeight*.24/160)
+  :Math.min(1,(usableWidth-14)/824,usableHeight*.31/160);
  const [logoTarget,setLogoTarget]=useState({x:0,y:0});
  const backdropBlack=useRef(new Animated.Value(0)).current;
  const buttonsOut=useRef(new Animated.Value(1)).current;
@@ -138,13 +149,11 @@ function Welcome({width,height,insets,onWatch,onTransitionComplete,onContinue,tr
    <Animated.Text style={[s.tagline,{fontSize:portrait?12:14,opacity:detailsOut}]}>THE WORLD WAS TAKEN. WE ARE STILL HERE.</Animated.Text>
    <Animated.View pointerEvents="none" style={[s.divider,{opacity:detailsOut}]}/>
    <Animated.View pointerEvents={transitioning?'none':'auto'} style={[s.buttons,portrait&&s.buttonsPortrait,{opacity:buttonsOut,transform:[{translateY:buttonsOut.interpolate({inputRange:[0,1],outputRange:[22,0]})}]}]}>
-    <Pressable accessibilityRole="button" accessibilityLabel="Watch the one-minute story introduction" disabled={transitioning} onPress={onWatch} style={({pressed})=>[s.button,s.primaryButton,pressed&&s.pressed]}>
-     <Text style={s.primaryText}>▶  WATCH INTRO</Text>
-     <Text style={s.buttonSub}>THE STORY SO FAR  ·  60 SECONDS</Text>
+    <Pressable accessibilityRole="button" accessibilityLabel="Watch the one-minute story introduction" disabled={transitioning} onPress={onWatch} style={({pressed})=>[s.artButton,{width:426*buttonScale,height:160*buttonScale},pressed&&s.pressed]}>
+     <Image source={watchIntroButton} resizeMode="contain" style={s.artworkImage}/>
     </Pressable>
-    <Pressable accessibilityRole="button" accessibilityLabel="Continue to main menu" disabled={transitioning} onPress={onContinue} style={({pressed})=>[s.button,s.secondaryButton,pressed&&s.pressed]}>
-     <Text style={s.secondaryText}>CONTINUE  →</Text>
-     <Text style={s.buttonSub}>GO TO MAIN MENU</Text>
+    <Pressable accessibilityRole="button" accessibilityLabel="Continue to main menu" disabled={transitioning} onPress={onContinue} style={({pressed})=>[s.artButton,{width:384*buttonScale,height:158*buttonScale},pressed&&s.pressed]}>
+     <Image source={continueButton} resizeMode="contain" style={s.artworkImage}/>
     </Pressable>
    </Animated.View>
   </View>
@@ -269,13 +278,10 @@ const s=StyleSheet.create({
  divider:{height:1,width:120,backgroundColor:'#b88d60a6',marginTop:8,marginBottom:8},
  buttons:{flexDirection:'row',justifyContent:'center',gap:14,marginTop:5},
  buttonsPortrait:{flexDirection:'column'},
- button:{minWidth:205,minHeight:60,paddingHorizontal:18,paddingVertical:9,borderRadius:7,borderWidth:1,alignItems:'center',justifyContent:'center',gap:5},
- primaryButton:{backgroundColor:'#b77c42e8',borderColor:'#edc592'},
- secondaryButton:{backgroundColor:'#071d24e0',borderColor:'#b49365'},
+ artButton:{alignItems:'center',justifyContent:'center',backgroundColor:'transparent'},
+ artworkImage:{width:'100%',height:'100%'},
  pressed:{opacity:.78},
- primaryText:{fontSize:15,fontWeight:'800',color:'#130f0d',letterSpacing:1.3},
  secondaryText:{fontSize:15,fontWeight:'800',color:'#f3d9ac',letterSpacing:1.3},
- buttonSub:{fontSize:9,letterSpacing:1.2,color:'#e3d2b5',fontWeight:'600'},
  footer:{position:'absolute',alignSelf:'center',fontSize:10,color:'#b1a997',letterSpacing:2.3},
  cornerLine:{position:'absolute',height:1,backgroundColor:'#b58b5d4d'},
  logoHalo:{position:'absolute',width:'125%',height:'90%',borderRadius:80,backgroundColor:'#c99e5e',shadowColor:'#f3bf76',shadowOpacity:.75,shadowRadius:42,shadowOffset:{width:0,height:0}},

@@ -162,3 +162,6 @@ public/survival/expedition-menu-v2/loading-panel.webp -filter -diff -merge
 
 # Approved compact potato artwork is directly committed through the GitHub connection.
 /public/survival/potato-patch-v2/*.webp -filter -diff -merge -text
+
+# Approved intro buttons are compact direct Git blobs, not Git LFS pointers.
+/public/previews/the-reclamation/buttons/*.png -filter -diff -merge -text

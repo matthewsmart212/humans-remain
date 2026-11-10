@@ -245,11 +245,11 @@ export default function GameStart({onPlay,onBack,busy,notice,playDisabled,loadin
      <p className="game-start-welcome-tagline">THE WORLD WAS TAKEN. WE ARE STILL HERE.</p>
      <div className="game-start-welcome-divider"/>
      <div className="game-start-welcome-actions">
-      <button type="button" onClick={onWatch} disabled={phase!=='landing'} className="game-start-welcome-button primary">
-       <strong>▶ &nbsp; WATCH INTRO</strong><small>THE STORY SO FAR · 60 SECONDS</small>
+      <button type="button" onClick={onWatch} disabled={phase!=='landing'} className="game-start-welcome-button primary" aria-label="Watch intro: the story so far, 60 seconds">
+       <img src="/previews/the-reclamation/buttons/watch-intro.png" alt="" draggable={false}/>
       </button>
-      <button type="button" onClick={onContinue} disabled={phase!=='landing'} className="game-start-welcome-button secondary">
-       <strong>CONTINUE →</strong><small>GO TO MAIN MENU</small>
+      <button type="button" onClick={onContinue} disabled={phase!=='landing'} className="game-start-welcome-button secondary" aria-label="Continue to main menu">
+       <img src="/previews/the-reclamation/buttons/continue.png" alt="" draggable={false}/>
       </button>
      </div>
     </div>
