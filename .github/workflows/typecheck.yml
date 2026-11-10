@@ -20,6 +20,8 @@ jobs:
           cache: npm
       - run: npm ci
       - run: npm run typecheck
+      - name: Test server-side bundled world publication
+        run: node scripts/check-world-bundle-publishing.mjs
       - name: Test co-op room protocol and hibernation
         run: node scripts/check-coop-room.mjs
       - name: Test all Hunter walking frames and carried tools
