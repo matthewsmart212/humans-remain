@@ -25,7 +25,7 @@ export async function handlePublishedWorld(request:Request,DB:{prepare:(sql:stri
 export async function handleWorldLayout(request:Request,DB:{prepare:(sql:string)=>Statement},canEdit:boolean){
  const json=(v:unknown,status=200)=>Response.json(v,{status,headers:{'Cache-Control':'no-store'}});
  try{
-  if(request.method==='GET'){const row=(await DB.prepare("SELECT draft_json,applied_json,revision,updated_at FROM world_layout WHERE id='main'").all()).results[0];return json({draft:row?.draft_json?JSON.parse(row.draft_json):null,applied:row?.applied_json?JSON.parse(row.applied_json):null,revision:row?.revision||0,updatedAt:row?.updated_at||null,canEdit})}
+  if(request.method==='GET'){const row=(await DB.prepare("SELECT draft_json,applied_json,revision,updated_at FROM world_layout WHERE id='main'").all()).results[0];return json({draft:canEdit&&row?.draft_json?JSON.parse(row.draft_json):null,applied:row?.applied_json?JSON.parse(row.applied_json):null,revision:row?.revision||0,updatedAt:row?.updated_at||null,canEdit})}
   if(request.method!=='PUT')return json({error:'Method not allowed'},405);
   if(!canEdit)return json({error:'Only the signed-in site owner can save or apply the shared world. Your local draft is kept.'},403);
   if(request.headers.get('Origin')!==new URL(request.url).origin)return json({error:'Origin not allowed'},403);
