@@ -258,6 +258,6 @@ export default function GameStart({onPlay,onBack,busy,notice,playDisabled,loadin
    <button className="game-start-skip game-start-sound-retry" type="button" onClick={()=>startMusic.current?.(true)}>RETRY SOUND</button>}
   {phase==='watching'&&introNeedsGesture&&<button className="game-start-intro-retry" type="button" onClick={retryIntroPlayback}>TAP TO BEGIN THE RECLAMATION ▶</button>}
   {phase==='watching'&&<button className="game-start-skip game-start-skip-art" type="button" onClick={onSkip}
-   aria-label="Skip introduction and open the main menu"><img src="/survival/intro-ui/skip.webp" alt="" aria-hidden="true"/></button>
+   aria-label="Skip introduction and open the main menu"><img src="/survival/intro-ui/skip.webp" alt="" aria-hidden="true"/></button>}
  </div>,document.body);
 }
