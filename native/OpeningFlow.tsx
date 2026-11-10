@@ -136,9 +136,8 @@ function Welcome({width,height,insets,onWatch,onTransitionComplete,onContinue,tr
    </Rect>
   </Canvas>
   <Animated.View pointerEvents="none" style={[StyleSheet.absoluteFill,{backgroundColor:'#000000',opacity:backdropBlack}]}/>
-  <Animated.View pointerEvents="none" style={[s.cornerLine,{top:insets.top+edge,left:insets.left+edge,right:insets.right+edge,opacity:cornersOut}]}/>
+  <Animated.View pointerEvents="none" style={[s.cornerLine,{bottom:insets.bottom+edge*.5+32,left:insets.left+edge,right:insets.right+edge,opacity:cornersOut}]}/>
   <View style={[s.welcome,{paddingTop:insets.top+12,paddingBottom:insets.bottom+10,paddingLeft:insets.left+edge,paddingRight:insets.right+edge}]}>
-   <Animated.Text style={[s.eyebrow,{opacity:detailsOut}]}>THE RECLAMATION</Animated.Text>
    <Animated.View onLayout={event=>{
     const bounds=event.nativeEvent.layout;
     const next={x:width/2-bounds.x-bounds.width/2,y:height/2-bounds.y-bounds.height/2};
@@ -147,7 +146,7 @@ function Welcome({width,height,insets,onWatch,onTransitionComplete,onContinue,tr
     <Animated.View pointerEvents="none" style={[s.logoHalo,{opacity:aura}]}/>
     <Image accessibilityLabel="Humans Remain" source={logo} resizeMode="contain" style={{width:'100%',height:'100%'}}/>
    </Animated.View>
-   <Animated.Text style={[s.tagline,{fontSize:portrait?12:14,opacity:detailsOut}]}>THE WORLD WAS TAKEN. WE ARE STILL HERE.</Animated.Text>
+   <Animated.Text style={[s.eyebrow,{opacity:detailsOut,marginTop:-4}]}>THE RECLAMATION</Animated.Text>
    <Animated.View pointerEvents="none" style={[s.divider,{opacity:detailsOut}]}/>
    <Animated.View pointerEvents={transitioning?'none':'auto'} style={[s.buttons,portrait&&s.buttonsPortrait,{opacity:buttonsOut,transform:[{translateY:buttonsOut.interpolate({inputRange:[0,1],outputRange:[22,0]})}]}]}>
     <Pressable accessibilityRole="button" accessibilityLabel="Watch the one-minute story introduction" disabled={transitioning} onPress={onWatch} style={({pressed})=>[s.artButton,{width:426*buttonScale,height:160*buttonScale},pressed&&s.pressed]}>
@@ -278,7 +277,6 @@ const s=StyleSheet.create({
  screen:{flex:1,backgroundColor:'#061117',overflow:'hidden'},
  welcome:{flex:1,alignItems:'center',justifyContent:'center',gap:10},
  eyebrow:{fontSize:12,letterSpacing:5,fontWeight:'700',color:'#cba477',textAlign:'center'},
- tagline:{color:'#e5d6be',letterSpacing:2,fontWeight:'600',textAlign:'center',marginTop:-5},
  divider:{height:1,width:120,backgroundColor:'#b88d60a6',marginTop:8,marginBottom:8},
  buttons:{flexDirection:'row',justifyContent:'center',gap:10,marginTop:5},
  buttonsPortrait:{flexDirection:'column'},

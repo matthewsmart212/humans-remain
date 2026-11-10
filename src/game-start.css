@@ -96,7 +96,8 @@
  overflow:hidden
 }
 .game-start-welcome::before{
- content:"";position:absolute;top:5%;left:5%;right:5%;height:1px;
+ content:"";position:absolute;bottom:calc(max(18px,env(safe-area-inset-bottom)) + 35px);
+ left:5%;right:5%;height:1px;
  background:rgba(181,139,93,.3);pointer-events:none
 }
 .game-start-welcome::after{
@@ -109,11 +110,10 @@
 .game-start-welcome-content{z-index:2}
 .game-start-welcome-footer{z-index:2;transition:opacity 350ms ease-out}
 .game-start-welcome.is-transitioning .game-start-welcome-footer{opacity:0}
-.game-start-overline,.game-start-welcome-tagline,.game-start-welcome-divider{
+.game-start-overline,.game-start-welcome-divider{
  transition:opacity 300ms ease-out,transform 300ms ease-out
 }
 .game-start-welcome.is-transitioning .game-start-overline,
-.game-start-welcome.is-transitioning .game-start-welcome-tagline,
 .game-start-welcome.is-transitioning .game-start-welcome-divider{
  opacity:0;transform:translateY(-16px)
 }
@@ -151,12 +151,8 @@
  position:relative;display:flex;flex-direction:column;align-items:center;justify-content:center;
  gap:11px;max-width:95%;padding:20px;text-align:center
 }
-.game-start-overline{color:#d5a66b;font:700 clamp(10px,1.25vw,13px)/1.3 Barlow,Arial,sans-serif;letter-spacing:.43em}
+.game-start-overline{color:#d5a66b;font:700 clamp(10px,1.25vw,13px)/1.3 Barlow,Arial,sans-serif;letter-spacing:.43em;margin-top:-3px}
 .game-start-welcome-logo{display:block;width:min(40vw,500px);max-width:85vw;height:auto;max-height:26vh;object-fit:contain;filter:drop-shadow(0 9px 18px rgba(0,0,0,.65))}
-.game-start-welcome-tagline{
- color:#e5d6be;margin:0;font:600 clamp(11px,1.3vw,15px)/1.5 Barlow,Arial,sans-serif;
- letter-spacing:.17em;text-shadow:0 2px 8px rgba(0,0,0,.85)
-}
 .game-start-welcome-divider{width:116px;height:1px;margin:5px 0;background:#b88d60a6}
 /* Approved Reclamation plaques are individual transparent PNGs cut directly
    from the signed-off mock-up. Keep text/icons inside the art; the entire
@@ -196,7 +192,6 @@
  .game-start-welcome-actions{flex-direction:column;gap:3px}
  .game-start-welcome-button.primary{width:min(38vw,195px)}
  .game-start-welcome-button.secondary{width:min(35.5vw,182.5px)}
- .game-start-welcome-tagline{font-size:11px}
 }
 @media(prefers-reduced-motion:reduce){
  .game-start-media .game-start-scene,.game-start-intro-scene,

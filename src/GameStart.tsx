@@ -240,9 +240,8 @@ export default function GameStart({onPlay,onBack,busy,notice,playDisabled,loadin
   </div>
   <div className={'game-start-welcome'+(watchPressed.current?' is-transitioning':'')} style={{opacity:phase==='landing'||phase==='transition'||(phase==='watching'&&!introHasFrame)?1:0,pointerEvents:phase==='landing'?'auto':'none',...({'--intro-logo-dx':logoTravel.x+'px','--intro-logo-dy':logoTravel.y+'px'} as React.CSSProperties)}}>
     <div className="game-start-welcome-content">
-     <div className="game-start-overline">THE RECLAMATION</div>
      <img ref={introLogo} src={LOGO_URL} className="game-start-welcome-logo" alt="Humans Remain"/>
-     <p className="game-start-welcome-tagline">THE WORLD WAS TAKEN. WE ARE STILL HERE.</p>
+     <div className="game-start-overline">THE RECLAMATION</div>
      <div className="game-start-welcome-divider"/>
      <div className="game-start-welcome-actions">
       <button type="button" onClick={onWatch} disabled={phase!=='landing'} className="game-start-welcome-button primary" aria-label="Watch intro: the story so far, 60 seconds">
