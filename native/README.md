@@ -20,9 +20,11 @@ After pulling an update, run `npm ci` again if dependencies changed and use
 Use a compatible Expo Go build for SDK 58, or `npm run ios` on a Mac with Xcode
 and signing configured. Keep the parent `src` and `public` folders alongside
 this folder. Read `../docs/APP-RUNTIME.md` for world syncing, offline fallback,
-controls, checks and device-testing limits. The world and its artwork ship with
-the app and work offline. Saving a browser editor draft does not change the
-iPhone game; world updates are reviewed and bundled into a new app update.
+controls, checks and device-testing limits. The iOS app retrieves the latest owner-published world from Cloudflare at
+the start of a game. Only published asset positions are shared; ordinary draft
+saves remain private. If the cloud is unavailable, the app loads its last
+cached published layout or its bundled world snapshot and remains playable.
+See `../docs/WORLD-PUBLISHING.md` for editor setup and publication.
 
 Survival progress saves in AsyncStorage on this device. New Survival run in the
 pause menu replaces it after confirmation. An unreadable save is kept and shown
