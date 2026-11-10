@@ -6,9 +6,9 @@ import {build} from 'esbuild';
 const modules=['world-tiers','world-assets','world-layout','imported-art'];
 const compiled=await build({stdin:{contents:modules.map(m=>`export * from './src/${m}';`).join(''),resolveDir:process.cwd()},bundle:true,write:false,format:'esm',platform:'node'});
 const m=await import('data:text/javascript;base64,'+Buffer.from(compiled.outputFiles[0].text).toString('base64'));
-const hearth=m.newPlacement('base_hearth_t1',1700,1700),base={...m.emptyLayout(),items:[hearth]};
+const hearth=m.newPlacement('art_camp_garden_t1',1700,1700),base={...m.emptyLayout(),items:[hearth]};
 const source=JSON.stringify(base);
-assert(m.tierOptions(hearth.assetId).some(t=>t.tier===2&&t.available),'second hearth tier is available');
+assert(m.tierOptions(hearth.assetId).some(t=>t.tier===2&&t.available),'second potato patch tier is available');
 
 // An unedited upgrade retains the existing location on first visit.
 const tier2=m.changePlacementTier(base,hearth.id,2);
