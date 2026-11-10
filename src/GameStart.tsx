@@ -242,7 +242,7 @@ export default function GameStart({onPlay,onBack,busy,notice,playDisabled,loadin
 
  const portrait={uri:profile.role==='hunter'?'/survival/hunter-v1/portrait.png':profile.role==='engineer'?'/survival/engineer-v2/portrait.webp':'/survival/starting-screen-ui-v2/survivor-profile.png'};
  return createPortal(<div className="game-start" onKeyDown={e=>e.stopPropagation()}
-  style={{opacity:visualsReady?1:0,transition:'opacity 180ms ease-out',...(loadingProgress===1?{backgroundColor:'transparent',backgroundImage:'none'}:{})}}>
+  style={{opacity:phase==='landing'||phase==='transition'||visualsReady?1:0,transition:'opacity 180ms ease-out',...(loadingProgress===1?{backgroundColor:'transparent',backgroundImage:'none'}:{})}}>
   <div className="game-start-media" aria-hidden="true">
    <audio ref={soundtrack} src={SOUNDTRACK_URL} preload="auto" loop/>
    <video ref={menuVideo} className="game-start-scene"
