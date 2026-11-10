@@ -8,7 +8,8 @@ import './game-start.css';
 // Only the first entry on a page visit presents the Reclamation splash.
 // Returning from a game goes to the already-familiar starting menu, as on iOS.
 let hasVisitedMenuThisPage=false;
-type EntryPhase='landing'|'watching'|'menu';
+type EntryPhase='landing'|'transition'|'watching'|'menu';
+const INTRO_TITLE_TRANSITION_MS=4000;
 type IntroUiPhase='hidden'|'revealing'|'shown';
 const INTRO_URL='/previews/the-reclamation/intro.mp4';
 const SOUNDTRACK_URL='/previews/the-reclamation/soundtrack.mp3';
@@ -32,6 +33,11 @@ export default function GameStart({onPlay,onBack,busy,notice,playDisabled,loadin
  const [menuFrameReady,setMenuFrameReady]=useState(false);
  const [menuFailed,setMenuFailed]=useState(false);
  const introVideo=useRef<HTMLVideoElement>(null);
+ const introLogo=useRef<HTMLImageElement>(null);
+ const introStartTimer=useRef<ReturnType<typeof setTimeout>|null>(null);
+ const watchPressed=useRef(false);
+ const [logoTravel,setLogoTravel]=useState({x:0,y:0});
+ const [introNeedsGesture,setIntroNeedsGesture]=useState(false);
  const menuVideo=useRef<HTMLVideoElement>(null);
  const startMusic=useRef<null|(()=>void)>(null);
  const muteRef=useRef(profile.muted),motionRef=useRef(profile.motion),reducedRef=useRef(reduced);
@@ -119,6 +125,7 @@ export default function GameStart({onPlay,onBack,busy,notice,playDisabled,loadin
  },[]);
 
  const enableAudio=()=>{audioActivated.current=true;startMusic.current?.()};
+ useEffect(()=>()=>{if(introStartTimer.current!==null)clearTimeout(introStartTimer.current)},[]);
  const save=(next:StartProfile)=>{
   muteRef.current=next.muted;
   setProfile(next);
@@ -143,16 +150,39 @@ export default function GameStart({onPlay,onBack,busy,notice,playDisabled,loadin
   setHandoffRequested(true);
   playMenuVideo();
  };
- const onWatch=()=>{
-  if(phase!=='landing')return;
-  enableAudio();
-  introRevealStarted.current=false;
-  setIntroUiPhase('hidden');
+ const startIntroVideo=()=>{
+  introStartTimer.current=null;
   setPhase('watching');
   const player=introVideo.current;
   if(!player){finishToMenu();return}
+  // Intro narration must not begin until the full four-second title animation
+  // finishes. The media element has preloaded from the initial page mount.
   player.currentTime=0;
-  void player.play().catch(()=>finishToMenu());
+  void player.play().catch(error=>{
+   // Safari may require a fresh gesture to play a video with narration after
+   // a delayed transition. Keep the black title screen and offer one tap,
+   // rather than silently skipping the film.
+   if(error instanceof DOMException&&error.name==='NotAllowedError')setIntroNeedsGesture(true);
+   else finishToMenu();
+  });
+ };
+ const retryIntroPlayback=()=>{
+  const player=introVideo.current;
+  if(!player)return;
+  void player.play().then(()=>setIntroNeedsGesture(false)).catch(()=>finishToMenu());
+ };
+ const onWatch=()=>{
+  if(phase!=='landing'||watchPressed.current)return;
+  watchPressed.current=true;
+  // Browser audio is enabled within the original button press. Preserve one
+  // continuous player throughout title animation, narration, and main menu.
+  enableAudio();
+  introRevealStarted.current=false;
+  setIntroUiPhase('hidden');
+  const bounds=introLogo.current?.getBoundingClientRect();
+  if(bounds)setLogoTravel({x:innerWidth/2-bounds.left-bounds.width/2,y:innerHeight/2-bounds.top-bounds.height/2});
+  setPhase('transition');
+  introStartTimer.current=setTimeout(startIntroVideo,INTRO_TITLE_TRANSITION_MS);
  };
  const onContinue=()=>{enableAudio();finishToMenu()};
  const onSkip=()=>{
@@ -189,11 +219,11 @@ export default function GameStart({onPlay,onBack,busy,notice,playDisabled,loadin
   const sync=()=>{
    if(document.hidden){introVideo.current?.pause();menuVideo.current?.pause();return}
    if(phase==='menu'&&!reduced&&profile.motion)void menuVideo.current?.play().catch(()=>{});
-   if(phase==='watching'&&!finished.current)void introVideo.current?.play().catch(()=>{});
+   if(phase==='watching'&&!finished.current&&!introNeedsGesture)void introVideo.current?.play().catch(()=>{});
   };
   document.addEventListener('visibilitychange',sync);
   return()=>document.removeEventListener('visibilitychange',sync);
- },[phase,reduced,profile.motion]);
+ },[phase,reduced,profile.motion,introNeedsGesture]);
  useEffect(()=>{
   const editor=document.querySelector('main.world-editor');
   editor?.setAttribute('inert','');
@@ -212,7 +242,7 @@ export default function GameStart({onPlay,onBack,busy,notice,playDisabled,loadin
    <video ref={introVideo} className="game-start-intro-scene"
     style={{opacity:phase==='watching'&&introHasFrame?1:0}}
     src={INTRO_URL} preload="auto" playsInline
-    onPlaying={()=>{setIntroHasFrame(true);startMusic.current?.()}}
+    onPlaying={()=>{setIntroHasFrame(true);setIntroNeedsGesture(false);startMusic.current?.()}}
     onTimeUpdate={onIntroTime}
     onEnded={finishToMenu}
     onError={()=>{if(phase==='watching')finishToMenu()}}/>
@@ -228,10 +258,10 @@ export default function GameStart({onPlay,onBack,busy,notice,playDisabled,loadin
     introUiPhase={introUiPhase} transparentBackground
     background={null} shade={<div className="game-start-shade"/>}/>
   </div>
-  <div className="game-start-welcome" style={{opacity:phase==='landing'||(phase==='watching'&&!introHasFrame)?1:0,pointerEvents:phase==='landing'?'auto':'none'}}>
+  <div className={'game-start-welcome'+(phase==='transition'||phase==='watching'?' is-transitioning':'')} style={{opacity:phase==='landing'||phase==='transition'||(phase==='watching'&&!introHasFrame)?1:0,pointerEvents:phase==='landing'?'auto':'none',...({'--intro-logo-dx':logoTravel.x+'px','--intro-logo-dy':logoTravel.y+'px'} as React.CSSProperties)}}>
     <div className="game-start-welcome-content">
      <div className="game-start-overline">THE RECLAMATION</div>
-     <img src={LOGO_URL} className="game-start-welcome-logo" alt="Humans Remain"/>
+     <img ref={introLogo} src={LOGO_URL} className="game-start-welcome-logo" alt="Humans Remain"/>
      <p className="game-start-welcome-tagline">THE WORLD WAS TAKEN. WE ARE STILL HERE.</p>
      <div className="game-start-welcome-divider"/>
      <div className="game-start-welcome-actions">
@@ -245,6 +275,7 @@ export default function GameStart({onPlay,onBack,busy,notice,playDisabled,loadin
     </div>
     <p className="game-start-welcome-footer">SURVIVE THE DAY. DEFEND THE NIGHT.</p>
    </div>
+  {phase==='watching'&&introNeedsGesture&&<button className="game-start-intro-retry" type="button" onClick={retryIntroPlayback}>TAP TO BEGIN THE RECLAMATION ▶</button>}
   {phase==='watching'&&<button className="game-start-skip" type="button" onClick={onSkip}
    aria-label="Skip introduction and open the main menu">SKIP »</button>}
  </div>,document.body);
