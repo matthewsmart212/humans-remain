@@ -26,6 +26,8 @@ jobs:
         run: node scripts/check-browser-intro-transition.mjs
       - name: Test persistent owner unlock for publishing
         run: node scripts/check-owner-publishing-unlock.mjs
+      - name: Verify signed Cloudflare Access owner identity
+        run: node scripts/check-cloudflare-owner.mjs
       - name: Test independent upgrade-tier positions
         run: node scripts/check-tier-positions.mjs
       - name: Test editor selection inside roofless buildings

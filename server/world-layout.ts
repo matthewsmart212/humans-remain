@@ -39,7 +39,7 @@ export async function handleWorldLayout(request:Request,DB:{prepare:(sql:string)
  try{
   if(request.method==='GET'){const row=(await DB.prepare("SELECT draft_json,applied_json,revision,updated_at FROM world_layout WHERE id='main'").all()).results[0];return json({draft:canEdit&&row?.draft_json?JSON.parse(row.draft_json):null,applied:row?.applied_json&&JSON.parse(row.applied_json).updatedAt>=bundledWorld.layout.updatedAt?JSON.parse(row.applied_json):bundledWorld.layout,revision:row?.revision||0,updatedAt:row?.updated_at||null,canEdit})}
   if(request.method!=='PUT')return json({error:'Method not allowed'},405);
-  if(!canEdit)return json({error:'Only the signed-in site owner can save or apply the shared world. Your local draft is kept.'},403);
+  if(!canEdit)return json({error:'Only the owner can save or publish the shared world. Sign in to publish; your local draft is kept.'},403);
   if(request.headers.get('Origin')!==new URL(request.url).origin)return json({error:'Origin not allowed'},403);
   if(!request.headers.get('Content-Type')?.startsWith('application/json'))return json({error:'JSON required'},415);
   const body=await request.text();if(new TextEncoder().encode(body).byteLength>MAX_LAYOUT_BYTES)return json({error:'World is too large'},413);
