@@ -10,7 +10,7 @@ import riverFeaturesRedirects from './river-features-redirects.json';
 import riverQualityRedirects from './river-quality-redirects.json';
 import {handleMcp} from './mcp';
 import {renderPublicChecklist} from './public-checklist';
-import {handleWorldLayout} from './world-layout';
+import {handleWorldLayout,handlePublishedWorld} from './world-layout';
 import {editorIdentity,editAccessResponse,type EditorIdentityEnv} from './edit-access';
 import {isLibraryAssetId} from '../src/asset-library-policy';
 type Statement={bind:(...values:unknown[])=>Statement;all:()=>Promise<{results:unknown[]}>;run:()=>Promise<unknown>};
@@ -93,6 +93,7 @@ export default {async fetch(request:Request,env:Env):Promise<Response>{
  if(url.pathname==='/api/edit-access')return editAccessResponse(request,env);
  if(url.pathname==='/api/custom-assets'||url.pathname==='/api/asset-artwork'||url.pathname==='/api/asset-files'||url.pathname==='/api/world-terrain'||url.pathname.startsWith('/api/asset-files/'))return handleArtwork(request,env,canEdit);
  if(url.pathname==='/api/world-layout')return handleWorldLayout(request,env.DB,canEdit);
+ if(url.pathname==='/api/published-world')return handlePublishedWorld(request,env.DB);
  if(url.pathname==='/checklist.html'){
   if(!['GET','HEAD'].includes(request.method))return new Response('Read-only page',{status:405,headers:{Allow:'GET, HEAD'}});
   let rows:any[]=[],available=true;try{rows=(await db(env).prepare('SELECT id,art,implemented,tested,concept,export_complete,updated_at FROM base_checklist').all()).results as any[]}catch{available=false}
