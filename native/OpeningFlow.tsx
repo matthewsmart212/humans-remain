@@ -83,6 +83,8 @@ function Welcome({width,height,insets,onWatch,onTransitionComplete,onContinue,tr
  const cornersOut=useRef(new Animated.Value(1)).current;
  const logoMove=useRef(new Animated.Value(0)).current;
  const logoFade=useRef(new Animated.Value(1)).current;
+ const finishTransition=useRef(onTransitionComplete);
+ finishTransition.current=onTransitionComplete;
  useEffect(()=>{
   if(!transitioning)return;
   // Every animated component keeps its original layout until the four seconds
@@ -95,9 +97,9 @@ function Welcome({width,height,insets,onWatch,onTransitionComplete,onContinue,tr
    Animated.timing(logoMove,{toValue:1,duration:reducedMotion?1000:INTRO_BLACKOUT_MS,easing:Easing.inOut(Easing.cubic),useNativeDriver:true}),
    Animated.sequence([Animated.delay(INTRO_BLACKOUT_MS),Animated.timing(logoFade,{toValue:0,duration:INTRO_LOGO_FADE_MS,easing:Easing.inOut(Easing.cubic),useNativeDriver:true})])
   ]);
-  animation.start(({finished})=>{if(finished)onTransitionComplete()});
+  animation.start(({finished})=>{if(finished)finishTransition.current()});
   return()=>animation.stop();
- },[transitioning,reducedMotion,backdropBlack,buttonsOut,detailsOut,cornersOut,logoMove,logoFade,onTransitionComplete]);
+ },[transitioning,reducedMotion,backdropBlack,buttonsOut,detailsOut,cornersOut,logoMove,logoFade]);
  const centreLogo={
   opacity:logoFade,
   transform:[
