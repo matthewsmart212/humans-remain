@@ -14,7 +14,7 @@ export default function WorldTierControls({layout,placement,pending,disabled,onC
     <b data-broken={option.tier===0}>{option.tier===0?'Broken':'T'+option.tier}</b><span>{option.name}<small>{available?'': 'Artwork needed'}</small></span>
    </button>;
   })}</div>
-  <p>{pending?'Loading tier artwork…':identity.wall?`Changes all ${targets.length} placed wall pieces together, including locked and mirrored copies.`:'Switch up or down without moving this object.'}</p>
-  <small>Position, dimensions, rotation, layers and blockers stay fixed. Undo restores the previous tier.</small>
+  <p>{pending?'Loading tier artwork…':identity.wall?`Changes all ${targets.length} wall pieces together, including locked and mirrored copies.`:'Switch tiers to edit each upgrade separately.'}</p>
+  <small>Each tier remembers its own position. Move or nudge a tier, then switch back to confirm the lower tier has not moved. Dimensions, rotation, layers and blockers remain shared. Undo restores the previous edit.</small>
  </section>;
 }
