@@ -1,5 +1,6 @@
 import {MAX_LAYOUT_BYTES} from '../src/layout-limits';
 import bundledWorld from '../native/assets/world-snapshot.json';
+import type {ArtworkRecord} from '../src/artwork-model';
 import {readArtwork} from './artwork';
 import {assetMapWithImports} from '../src/imported-art';
 import {validateLayout} from '../src/world-layout';
@@ -9,7 +10,8 @@ type Statement={bind:(...values:unknown[])=>Statement;all:()=>Promise<{results:a
 /** Current server artwork overrides the baseline registered in the bundled release. */
 async function worldRecords(DB:{prepare:(sql:string)=>Statement}){
  const current=await readArtwork(DB,true),ids=new Set(current.map(r=>r.id));
- return [...bundledWorld.records.filter(r=>!ids.has(r.id)),...current];
+ const baseline=bundledWorld.records as unknown as ArtworkRecord[];
+ return [...baseline.filter(r=>!ids.has(r.id)),...current];
 }
 
 /** Public, read-only copy of the last explicitly published authored world.
