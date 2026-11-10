@@ -48,7 +48,16 @@ function selectionDepth(p:Placement,viewer?:{x:number;y:number}){
  return Math.max(a.interior?-10000:p.y,...(a.foreground||[]).map(f=>placementPoint(p,b.x+(f[0]+f[2]/2)/a.crop[2]*b.width,b.y+(f[1]+f[3])/a.crop[3]*b.height)[1]));
 }
 export function placementHitStack(items:Placement[],x:number,y:number,viewer?:{x:number;y:number}){
- return items.map((p,index)=>({p,index})).filter(({p})=>placementContains(p,x,y)).sort((a,b)=>compareWorldDrawables({layer:b.p.layer,y:selectionDepth(b.p,viewer)},{layer:a.p.layer,y:selectionDepth(a.p,viewer)})||b.index-a.index).map(({p})=>p);
+ const hits=items.map((p,index)=>({p,index})).filter(({p})=>placementContains(p,x,y)).sort((a,b)=>compareWorldDrawables({layer:b.p.layer,y:selectionDepth(b.p,viewer)},{layer:a.p.layer,y:selectionDepth(a.p,viewer)})||b.index-a.index).map(({p})=>p);
+ // Foreground wall panels can still have a higher draw depth than furniture.
+ // With the roof off, make the *contents* pickable first without changing
+ // the actual visual order or how roofs behave in the live game.
+ const room=hits.find(p=>buildingInteriorExposed(p,viewer)&&insideBuilding(p,x,y));
+ if(!room)return hits;
+ const furniture=hits.filter(p=>p.id!==room.id&&insideBuilding(room,p.x,p.y));
+ if(!furniture.length)return hits;
+ const furnitureIds=new Set(furniture.map(p=>p.id));
+ return [...furniture,...hits.filter(p=>!furnitureIds.has(p.id))];
 }
 /** Preserve selected-object dragging, but don't let a previously selected
  * building swallow taps on furniture once its interior is exposed.
