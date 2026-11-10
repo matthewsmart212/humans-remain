@@ -6,6 +6,11 @@ import {validateLayout} from '../src/world-layout';
 import {validTerrainBorder} from '../src/terrain-limits';
 import {publishBundledWorld} from './world-bundle';
 type Statement={bind:(...values:unknown[])=>Statement;all:()=>Promise<{results:any[]}>;run:()=>Promise<any>};
+/** Current server artwork overrides the baseline registered in the bundled release. */
+async function worldRecords(DB:{prepare:(sql:string)=>Statement}){
+ const current=await readArtwork(DB,true),ids=new Set(current.map(r=>r.id));
+ return [...bundledWorld.records.filter(r=>!ids.has(r.id)),...current];
+}
 
 /** Public, read-only copy of the last explicitly published authored world.
  * Drafts and owner-only editor state never leave this endpoint. A missing
@@ -23,7 +28,7 @@ export async function handlePublishedWorld(request:Request,DB:{prepare:(sql:stri
   // snapshot to GitHub; a Cloudflare deploy must not serve stale D1 artwork.
   const useDatabase=!!databaseLayout&&typeof databaseLayout.updatedAt==='string'&&databaseLayout.updatedAt>=bundledWorld.layout.updatedAt;
   const layout=useDatabase?databaseLayout:bundledWorld.layout;
-  const records=useDatabase?await readArtwork(DB,true):bundledWorld.records;
+  const records=useDatabase?await worldRecords(DB):bundledWorld.records;
   return new Response(request.method==='HEAD'?null:JSON.stringify({schemaVersion:1,layout,records,updatedAt:layout.updatedAt}),{headers:{...headers,'Content-Type':'application/json;charset=utf-8'}});
  }catch(error){console.error('Published world read failed',error);return Response.json({error:'Published world unavailable'},{status:503,headers:{...headers,'Cache-Control':'no-store'}})}
 }
@@ -40,7 +45,7 @@ export async function handleWorldLayout(request:Request,DB:{prepare:(sql:string)
   if(!Number.isInteger(v.revision)||v.revision<0||!['save','apply','original'].includes(v.action))return json({error:'Invalid save request'},400);
   // The historic gameplay validator requires removed generator/storage stations. Modern
   // worlds may intentionally have neither; validate all placement geometry here.
-  const records=await readArtwork(DB,true);
+  const records=await worldRecords(DB);
   const {layout,errors}=validateLayout(v.layout,false,assetMapWithImports(records));if(!layout||errors.length)return json({error:errors.join(' ')},400);
   if(v.action==='apply'&&!layout.items.length)return json({error:'An empty world cannot be published. Save it as a draft instead.'},400);
   if(layout.terrainImage){const t=layout.terrainImage,row=(await DB.prepare('SELECT * FROM asset_art_files WHERE id=? AND entry_id=?').bind(t.id,'world-terrain').all()).results[0];if(!row)return json({error:'Upload this terrain image before saving the world.'},400);if(!validTerrainBorder(row.width,row.height,layout.terrainBorder||0))return json({error:'The outer scenery border does not fit this image.'},400);layout.terrainImage={id:row.id,url:'/api/asset-files/'+row.id,name:row.name,mime:row.mime,width:row.width,height:row.height,bytes:row.bytes};await DB.prepare('UPDATE asset_art_files SET published=1 WHERE id=?').bind(row.id).run()}
