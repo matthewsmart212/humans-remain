@@ -20,6 +20,8 @@ jobs:
           cache: npm
       - run: npm ci
       - run: npm run typecheck
+      - name: Test persistent owner unlock for publishing
+        run: node scripts/check-owner-publishing-unlock.mjs
       - name: Test independent upgrade-tier positions
         run: node scripts/check-tier-positions.mjs
       - name: Test editor selection inside roofless buildings
