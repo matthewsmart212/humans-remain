@@ -33,7 +33,7 @@ import {readWeather,rememberWeather,setWorldWeather,stepWeather,triggerLightning
 import React,{useEffect,useId,useMemo,useRef,useState} from 'react';
 import {Leaf,ArrowLeft,MousePointer2,Footprints,Search,Save,Play,Undo2,Redo2,Trash2,Copy,LocateFixed,Grid2X2,Shield,Sun,Moon,CloudRain,CloudFog,CloudLightning,Download,Upload,X,MapPin,Layers,Plus,Minus,PanelLeft,SlidersHorizontal,Hand,MoreHorizontal,Maximize2,Minimize2,ArrowUp,ArrowDown,ArrowRight,RotateCw,RotateCcw,Lock,Unlock,FlipHorizontal2,FlipVertical2,LibraryBig,Square,Pause,RotateCcw as Restart,PanelRight,ChevronRight,Box,FolderOpen,Flame,Droplets,Heart,HelpCircle,Check} from 'lucide-react';
 import {WORLD_ASSETS,imageDimensions,ASSET_BY_ID,ROLE_LABELS,requiredImages,type WorldAsset,type WorldRole} from './world-assets';
-import {emptyLayout,invalidateLayoutCollision,newPlacement,newPlacementId,placementPoint,placementBounds,placementHitStack,placementEditable,normalizeRotation,placementGeometryAsset,fetchWorldLayout,saveWorldLayout,validateLayout,LAYOUT_KEY,type Placement,type WorldLayout} from './world-layout';
+import {emptyLayout,invalidateLayoutCollision,newPlacement,newPlacementId,placementPoint,placementBounds,placementHitStack,preferredPlacementHit,placementEditable,normalizeRotation,placementGeometryAsset,fetchWorldLayout,saveWorldLayout,validateLayout,LAYOUT_KEY,type Placement,type WorldLayout} from './world-layout';
 import {readEditorDraft,resolveEditorDraft,offlineEditorDraft,persistEditorDraft} from './world-draft-recovery';
 import {drawWorldEditor,editorCamera,type EditorView} from './placed-world-renderer';
 import {clampPlayZoom} from './play-zoom';
@@ -521,9 +521,11 @@ if(k==='e'){e.preventDefault();if(!e.repeat){const gate=nearbyGate(world.current
   if(e.button===1||e.button===2||keys.current.has(' ')||panTool){e.preventDefault();freeCamera();gesture.current={...base,kind:'pan',start:point(e.clientX,e.clientY)};return}
   // Placement waits for release; pinch, pan and cancelled touches never place an object.
   if(viewRef.current.placingSpawn||placingRef.current){gesture.current={...base,kind:'tap'};return}
-  const hits=placementHitStack(layoutRef.current.items,p.x,p.y).filter(item=>!foliageHiddenRef.current||!isFoliageAsset(ASSET_BY_ID.get(item.assetId)));
-  // A picked lower asset stays draggable even while another image covers it.
-  const hit=hits.find(item=>item.id===viewRef.current.selected)||hits[0];
+  const hits=placementHitStack(layoutRef.current.items,p.x,p.y,world.current.player).filter(item=>!foliageHiddenRef.current||!isFoliageAsset(ASSET_BY_ID.get(item.assetId)));
+  // When a roof is hidden, furniture takes priority over the building's broad
+  // image bounds, even if the building was already selected. Elsewhere keep
+  // the existing behaviour of dragging an explicitly selected lower asset.
+  const hit=preferredPlacementHit(hits,p.x,p.y,viewRef.current.selected,world.current.player);
   select(hit?.id||null,hits.map(item=>item.id));freeCamera();
   gesture.current=hit&&!hit.locked?{...base,kind:'move',id:hit.id,start:point(e.clientX,e.clientY),origin:{x:hit.x,y:hit.y}}:{...base,kind:'pan',start:point(e.clientX,e.clientY)};
  };
