@@ -14,7 +14,7 @@ import {handleWorldLayout,handlePublishedWorld} from './world-layout';
 import {editorIdentity,editAccessResponse,type EditorIdentityEnv} from './edit-access';
 import {isLibraryAssetId} from '../src/asset-library-policy';
 type Statement={bind:(...values:unknown[])=>Statement;all:()=>Promise<{results:unknown[]}>;run:()=>Promise<unknown>};
-type Env=ArtEnv & EditorIdentityEnv & {DB:{prepare:(sql:string)=>Statement};ASSETS?:{fetch:(request:Request)=>Promise<Response>}};
+type Env=ArtEnv & EditorIdentityEnv & {DB:{prepare:(sql:string)=>Statement};ASSETS?:{fetch:(request:Request)=>Promise<Response>};GITHUB_WORLD_SYNC_TOKEN?:string};
 declare const __INDEX_HTML__:string;
 const json=(data:unknown,status=200)=>Response.json(data,{status,headers:{'Cache-Control':'no-store'}});
 const db=(env:Env)=>{if(!env.DB)throw Error('Checklist storage unavailable');return env.DB};
@@ -92,7 +92,7 @@ export default {async fetch(request:Request,env:Env):Promise<Response>{
  const {canEdit}=editorIdentity(request,env);
  if(url.pathname==='/api/edit-access')return editAccessResponse(request,env);
  if(url.pathname==='/api/custom-assets'||url.pathname==='/api/asset-artwork'||url.pathname==='/api/asset-files'||url.pathname==='/api/world-terrain'||url.pathname.startsWith('/api/asset-files/'))return handleArtwork(request,env,canEdit);
- if(url.pathname==='/api/world-layout')return handleWorldLayout(request,env.DB,canEdit);
+ if(url.pathname==='/api/world-layout')return handleWorldLayout(request,env.DB,canEdit,env.GITHUB_WORLD_SYNC_TOKEN);
  if(url.pathname==='/api/published-world')return handlePublishedWorld(request,env.DB);
  if(url.pathname==='/checklist.html'){
   if(!['GET','HEAD'].includes(request.method))return new Response('Read-only page',{status:405,headers:{Allow:'GET, HEAD'}});
