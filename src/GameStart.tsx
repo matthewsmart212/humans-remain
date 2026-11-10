@@ -27,6 +27,8 @@ export default function GameStart({onPlay,onBack,busy,notice,playDisabled,loadin
  const [saveNotice,setSaveNotice]=useState('');
  const [visualsReady,setVisualsReady]=useState(false);
  const [phase,setPhase]=useState<EntryPhase>(()=>hasVisitedMenuThisPage?'menu':'landing');
+ // One opening reveal per page visit, not every return from gameplay.
+ const [openingStage,setOpeningStage]=useState<'pending'|'playing'|'done'>(()=>hasVisitedMenuThisPage?'done':'pending');
  const [introUiPhase,setIntroUiPhase]=useState<IntroUiPhase>(()=>hasVisitedMenuThisPage?'shown':'hidden');
  const [introHasFrame,setIntroHasFrame]=useState(false);
  const [skipVisible,setSkipVisible]=useState(true);
@@ -73,6 +75,17 @@ export default function GameStart({onPlay,onBack,busy,notice,playDisabled,loadin
   addEventListener('resize',resize);media.addEventListener('change',motion);
   return()=>{removeEventListener('resize',resize);media.removeEventListener('change',motion)};
  },[]);
+
+ // Measure the real logo once artwork is ready, then run the four-second
+ // reverse animation from that exact center displacement. While pending the
+ // page shows only black, never a flash of the unanimated title or buttons.
+ useLayoutEffect(()=>{
+  if(!visualsReady||phase!=='landing'||openingStage!=='pending')return;
+  const bounds=introLogo.current?.getBoundingClientRect();
+  if(!bounds||bounds.width===0||bounds.height===0)return;
+  setLogoTravel({x:innerWidth/2-bounds.left-bounds.width/2,y:innerHeight/2-bounds.top-bounds.height/2});
+  setOpeningStage(reduced?'done':'playing');
+ },[visualsReady,phase,openingStage,reduced]);
 
  // Install the streaming player before either entry button can receive a tap.
  useLayoutEffect(()=>{
@@ -146,7 +159,7 @@ export default function GameStart({onPlay,onBack,busy,notice,playDisabled,loadin
   void player.play().then(()=>setIntroNeedsGesture(false)).catch(()=>finishToMenu());
  };
  const beginEntry=(choice:'watch'|'continue')=>{
-  if(phase!=='landing'||watchPressed.current)return;
+  if(phase!=='landing'||openingStage!=='done'||watchPressed.current)return;
   watchPressed.current=true;
   // Continue starts music on the tap. Watch Intro's four-second title
   // transition is silent; only the movie's playing event enables music.
@@ -256,16 +269,17 @@ export default function GameStart({onPlay,onBack,busy,notice,playDisabled,loadin
     introUiPhase={introUiPhase} transparentBackground
     background={null} shade={<div className="game-start-shade"/>}/>
   </div>
-  <div className={'game-start-welcome'+(watchPressed.current?' is-transitioning':'')} style={{opacity:phase==='landing'||phase==='transition'||(phase==='watching'&&!introHasFrame)?1:0,pointerEvents:phase==='landing'?'auto':'none',...({'--intro-logo-dx':logoTravel.x+'px','--intro-logo-dy':logoTravel.y+'px'} as React.CSSProperties)}}>
+  <div className={'game-start-welcome'+(watchPressed.current?' is-transitioning':'')+(openingStage!=='done'?' is-opening':'')+(openingStage==='playing'?' is-opening-active':'')} style={{opacity:phase==='landing'||phase==='transition'||(phase==='watching'&&!introHasFrame)?1:0,pointerEvents:phase==='landing'?'auto':'none',...({'--intro-logo-dx':logoTravel.x+'px','--intro-logo-dy':logoTravel.y+'px'} as React.CSSProperties)}}>
     <div className="game-start-welcome-content">
-     <img ref={introLogo} src={LOGO_URL} className="game-start-welcome-logo" alt="Humans Remain"/>
+     <img ref={introLogo} src={LOGO_URL} className="game-start-welcome-logo" alt="Humans Remain"
+      onAnimationEnd={event=>{if(event.animationName==='hr-opening-title-logo')setOpeningStage('done')}}/>
      <div className="game-start-overline">THE RECLAMATION</div>
      <div className="game-start-welcome-divider"/>
      <div className="game-start-welcome-actions">
-      <button type="button" onClick={onWatch} disabled={phase!=='landing'} className="game-start-welcome-button primary" aria-label="Watch intro: the story so far, 60 seconds">
+      <button type="button" onClick={onWatch} disabled={phase!=='landing'||openingStage!=='done'} className="game-start-welcome-button primary" aria-label="Watch intro: the story so far, 60 seconds">
        <img src="/previews/the-reclamation/buttons/watch-intro.png" alt="" draggable={false}/>
       </button>
-      <button type="button" onClick={onContinue} disabled={phase!=='landing'} className="game-start-welcome-button secondary" aria-label="Continue to main menu">
+      <button type="button" onClick={onContinue} disabled={phase!=='landing'||openingStage!=='done'} className="game-start-welcome-button secondary" aria-label="Continue to main menu">
        <img src="/previews/the-reclamation/buttons/continue.png" alt="" draggable={false}/>
       </button>
      </div>

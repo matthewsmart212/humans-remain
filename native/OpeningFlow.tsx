@@ -92,14 +92,48 @@ function Welcome({width,height,insets,onWatch,onTransitionComplete,onContinue,tr
   ?Math.min(.5,usableWidth*.88/426,usableHeight*.24/160)
   :Math.min(.5,(usableWidth-14)/824,usableHeight*.31/160);
  const [logoTarget,setLogoTarget]=useState({x:0,y:0});
- const backdropBlack=useRef(new Animated.Value(0)).current;
- const buttonsOut=useRef(new Animated.Value(1)).current;
- const detailsOut=useRef(new Animated.Value(1)).current;
- const cornersOut=useRef(new Animated.Value(1)).current;
- const logoMove=useRef(new Animated.Value(0)).current;
- const logoFade=useRef(new Animated.Value(1)).current;
+ const [logoMeasured,setLogoMeasured]=useState(false);
+ const [openingFinished,setOpeningFinished]=useState(false);
+ // Start with the *same* centered black logo pose used at the end of the
+ // outgoing title animation. Reversing these values avoids a separate splash
+ // logo, preventing a one-frame size/position jump on iOS.
+ const backdropBlack=useRef(new Animated.Value(1)).current;
+ const buttonsOut=useRef(new Animated.Value(0)).current;
+ const detailsOut=useRef(new Animated.Value(0)).current;
+ const cornersOut=useRef(new Animated.Value(0)).current;
+ const logoMove=useRef(new Animated.Value(1)).current;
+ const logoFade=useRef(new Animated.Value(0)).current;
  const finishTransition=useRef(onTransitionComplete);
  finishTransition.current=onTransitionComplete;
+ useEffect(()=>{
+  if(!logoMeasured)return;
+  if(reducedMotion){
+   backdropBlack.setValue(0);
+   logoMove.setValue(0);
+   logoFade.setValue(1);
+   buttonsOut.setValue(1);
+   detailsOut.setValue(1);
+   cornersOut.setValue(1);
+   setOpeningFinished(true);
+   return;
+  }
+  // Four-second reverse of Watch Intro: the centered logo comes up on
+  // black, travels home while the campsite appears, then the other UI fades
+  // in. Start only after layout supplies the exact translation vector.
+  const opening=Animated.parallel([
+   Animated.timing(logoFade,{toValue:1,duration:INTRO_LOGO_FADE_MS,easing:Easing.inOut(Easing.cubic),useNativeDriver:true}),
+   Animated.sequence([Animated.delay(INTRO_LOGO_FADE_MS),Animated.timing(logoMove,{toValue:0,duration:INTRO_BLACKOUT_MS-400,easing:Easing.inOut(Easing.cubic),useNativeDriver:true})]),
+   Animated.sequence([Animated.delay(INTRO_LOGO_FADE_MS),Animated.timing(backdropBlack,{toValue:0,duration:INTRO_BLACKOUT_MS,easing:Easing.inOut(Easing.cubic),useNativeDriver:true})]),
+   Animated.sequence([Animated.delay(INTRO_TITLE_TRANSITION_MS-750),Animated.timing(detailsOut,{toValue:1,duration:300,easing:Easing.out(Easing.cubic),useNativeDriver:true})]),
+   Animated.sequence([Animated.delay(INTRO_TITLE_TRANSITION_MS-600),Animated.timing(buttonsOut,{toValue:1,duration:450,easing:Easing.out(Easing.cubic),useNativeDriver:true})]),
+   Animated.sequence([Animated.delay(INTRO_TITLE_TRANSITION_MS-350),Animated.timing(cornersOut,{toValue:1,duration:350,easing:Easing.out(Easing.cubic),useNativeDriver:true})])
+  ]);
+  opening.start(({finished})=>{if(finished)setOpeningFinished(true)});
+  return()=>opening.stop();
+ // Values are stable useRef instances. Measurement triggers once, and changes
+ // to Reduce Motion mid-animation should not restart the opening sequence.
+ // eslint-disable-next-line react-hooks/exhaustive-deps
+ },[logoMeasured]);
  useEffect(()=>{
   if(!transitioning)return;
   // Every animated component keeps its original layout until the four seconds
@@ -141,16 +175,17 @@ function Welcome({width,height,insets,onWatch,onTransitionComplete,onContinue,tr
     const bounds=event.nativeEvent.layout;
     const next={x:width/2-bounds.x-bounds.width/2,y:height/2-bounds.y-bounds.height/2};
     setLogoTarget(old=>old.x===next.x&&old.y===next.y?old:next);
+    setLogoMeasured(true);
    }} style={[{width:logoWidth,height:Math.min(130,logoWidth*.44),alignItems:'center',justifyContent:'center'},centreLogo]}>
     <Image accessibilityLabel="Humans Remain" source={logo} resizeMode="contain" style={{width:'100%',height:'100%'}}/>
    </Animated.View>
    <Animated.Text style={[s.eyebrow,{opacity:detailsOut,marginTop:-4}]}>THE RECLAMATION</Animated.Text>
    <Animated.View pointerEvents="none" style={[s.divider,{opacity:detailsOut}]}/>
-   <Animated.View pointerEvents={transitioning?'none':'auto'} style={[s.buttons,portrait&&s.buttonsPortrait,{opacity:buttonsOut,transform:[{translateY:buttonsOut.interpolate({inputRange:[0,1],outputRange:[22,0]})}]}]}>
-    <Pressable accessibilityRole="button" accessibilityLabel="Watch the one-minute story introduction" disabled={transitioning} onPress={onWatch} style={({pressed})=>[s.artButton,{width:426*buttonScale,height:160*buttonScale},pressed&&s.pressed]}>
+   <Animated.View pointerEvents={transitioning||!openingFinished?'none':'auto'} style={[s.buttons,portrait&&s.buttonsPortrait,{opacity:buttonsOut,transform:[{translateY:buttonsOut.interpolate({inputRange:[0,1],outputRange:[22,0]})}]}]}>
+    <Pressable accessibilityRole="button" accessibilityLabel="Watch the one-minute story introduction" disabled={transitioning||!openingFinished} onPress={onWatch} style={({pressed})=>[s.artButton,{width:426*buttonScale,height:160*buttonScale},pressed&&s.pressed]}>
      <Image source={watchIntroButton} resizeMode="contain" style={s.artworkImage}/>
     </Pressable>
-    <Pressable accessibilityRole="button" accessibilityLabel="Continue to main menu" disabled={transitioning} onPress={onContinue} style={({pressed})=>[s.artButton,{width:384*buttonScale,height:158*buttonScale},pressed&&s.pressed]}>
+    <Pressable accessibilityRole="button" accessibilityLabel="Continue to main menu" disabled={transitioning||!openingFinished} onPress={onContinue} style={({pressed})=>[s.artButton,{width:384*buttonScale,height:158*buttonScale},pressed&&s.pressed]}>
      <Image source={continueButton} resizeMode="contain" style={s.artworkImage}/>
     </Pressable>
    </Animated.View>

@@ -123,6 +123,47 @@
 .game-start-welcome.is-transitioning .game-start-welcome-actions{
  opacity:0;transform:translateY(26px);pointer-events:none
 }
+/* Opening the app runs the inverse of the existing four-second title exit:
+   the logo appears in the centre on black, flies back to its landing place
+   as the campsite is revealed, and the controls materialise at the end.
+   The existing outgoing keyframes below are deliberately unchanged. */
+.game-start-welcome.is-opening::after{opacity:1;transition:none}
+.game-start-welcome.is-opening::before,
+.game-start-welcome.is-opening .game-start-overline,
+.game-start-welcome.is-opening .game-start-welcome-divider,
+.game-start-welcome.is-opening .game-start-welcome-actions,
+.game-start-welcome.is-opening .game-start-welcome-footer{opacity:0;transition:none}
+.game-start-welcome.is-opening .game-start-welcome-logo{opacity:0;transition:none}
+.game-start-welcome.is-opening-active::after{animation:hr-opening-campsite 4000ms both}
+.game-start-welcome.is-opening-active::before{animation:hr-opening-corners 4000ms both}
+.game-start-welcome.is-opening-active .game-start-welcome-logo{animation:hr-opening-title-logo 4000ms both}
+.game-start-welcome.is-opening-active .game-start-overline,
+.game-start-welcome.is-opening-active .game-start-welcome-divider{animation:hr-opening-details 4000ms both}
+.game-start-welcome.is-opening-active .game-start-welcome-actions{animation:hr-opening-buttons 4000ms both}
+.game-start-welcome.is-opening-active .game-start-welcome-footer{animation:hr-opening-corners 4000ms both}
+@keyframes hr-opening-campsite{
+ 0%,25%{opacity:1}
+ 100%{opacity:0}
+}
+@keyframes hr-opening-title-logo{
+ 0%{transform:translate3d(var(--intro-logo-dx,0px),var(--intro-logo-dy,0px),0) scale(1.08);opacity:0;filter:none}
+ 25%{transform:translate3d(var(--intro-logo-dx,0px),var(--intro-logo-dy,0px),0) scale(1.08);opacity:1;filter:none}
+ 90%{transform:translate3d(0,0,0) scale(1);opacity:1;filter:none}
+ 100%{transform:none;opacity:1;filter:drop-shadow(0 9px 18px rgba(0,0,0,.65))}
+}
+@keyframes hr-opening-details{
+ 0%,81%{opacity:0;transform:translateY(-12px)}
+ 90%,100%{opacity:1;transform:none}
+}
+@keyframes hr-opening-buttons{
+ 0%,81%{opacity:0;transform:translateY(22px)}
+ 96%,100%{opacity:1;transform:none}
+}
+@keyframes hr-opening-corners{
+ 0%,90%{opacity:0}
+ 100%{opacity:1}
+}
+
 /* Native and browser both take exactly four seconds: the whole screen
    becomes pure black by 3s; only the centred logo survives until it
    dissolves during the fourth second. Coordinates come from the real logo's
