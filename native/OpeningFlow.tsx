@@ -95,11 +95,11 @@ function Welcome({width,height,insets,onWatch,onTransitionComplete,onContinue,tr
    Animated.sequence([Animated.delay(260),Animated.timing(detailsOut,{toValue:0,duration:reducedMotion?650:2180,easing:Easing.inOut(Easing.cubic),useNativeDriver:true})]),
    Animated.timing(cornersOut,{toValue:0,duration:1300,easing:Easing.in(Easing.quad),useNativeDriver:true}),
    Animated.timing(logoMove,{toValue:1,duration:reducedMotion?1000:INTRO_BLACKOUT_MS,easing:Easing.inOut(Easing.cubic),useNativeDriver:true}),
-   Animated.sequence([Animated.delay(INTRO_BLACKOUT_MS),Animated.timing(logoFade,{toValue:0,duration:INTRO_LOGO_FADE_MS,easing:Easing.inOut(Easing.cubic),useNativeDriver:true})])
+   Animated.sequence([Animated.delay(INTRO_TITLE_TRANSITION_MS-INTRO_LOGO_FADE_MS),Animated.timing(logoFade,{toValue:0,duration:INTRO_LOGO_FADE_MS,easing:Easing.inOut(Easing.cubic),useNativeDriver:true})])
   ]);
   animation.start(({finished})=>{if(finished)finishTransition.current()});
   return()=>animation.stop();
- },[transitioning,reducedMotion,backdropBlack,buttonsOut,detailsOut,cornersOut,logoMove,logoFade]);
+ },[transitioning,backdropBlack,buttonsOut,detailsOut,cornersOut,logoMove,logoFade]);
  const centreLogo={
   opacity:logoFade,
   transform:[
