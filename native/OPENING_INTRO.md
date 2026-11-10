@@ -12,7 +12,7 @@ The original looping visual at `public/previews/dawn-camp/start-scene.mp4` remai
 ## User experience
 
 1. App opens on the Humans Remain title screen.
-2. **Watch Intro:** the app loads both local files, starts the video with narration, and starts the soundtrack when native video playback begins.
+2. **Watch Intro:** the shared soundtrack begins on the button tap, before the video. The menu chrome fades away into black over three seconds while the logo glides to the screen centre; the logo disappears during second four. The preloaded intro movie begins when that four-second sequence finishes.
 3. **Continue:** starts that same soundtrack and fades directly to the existing main menu.
 4. **Skip Intro:** pauses ONLY the video, while the existing soundtrack continues at its current playback time during the fade to the menu.
 5. **Intro ends:** the soundtrack continues without seeking/restarting, and the main menu appears.
@@ -24,7 +24,7 @@ The audio session uses `expo-audio` with iOS silent-mode playback and mixes with
 
 ## iPhone QA
 
-- Cold launch and choose Watch Intro: music should begin with the moving video (not earlier) and remain under voice-over.
+- Cold launch and choose Watch Intro: music should start immediately on the tap. Menus, words, vignette and camp background disappear by three seconds, the centred logo fades between 3 and 4 seconds, and the intro movie begins after four seconds. Audio continues under narration rather than restarting.
 - Skip at 5, 20 and 55 seconds: video stops; music must *not* restart or silence during the transition.
 - Let the video complete: music continues in the expedition menu, looping as needed.
 - Choose Continue directly: music begins and continues in the expedition menu.
@@ -32,6 +32,16 @@ The audio session uses `expo-audio` with iOS silent-mode playback and mixes with
 - Background during the intro and menu; media should pause while inactive and resume correctly.
 - Press Play and wait for world load: menu music should stop only once gameplay is actually entered.
 - Test on a physical iPhone; passing GitHub typechecks does not confirm AV playback behaviour.
+
+## Four-second title-to-intro transition (on Watch Intro)
+
+- **0.0s:** start the bundled Reclamation soundtrack and the native-driver title animation in the same button action; the intro video is already preloaded but remains paused.
+- **0–3.0s:** expedition controls and title typography fade and drift away, the camp poster gradually turns completely black, and the original wordmark travels to the true screen centre with a subtle amber halo.
+- **3.0–4.0s:** only the logo remains on pure black, then fades out over one second.
+- **4.0s:** start the preloaded film without restarting or rewinding the soundtrack. Its narration can begin, and its 60-second visual story plays normally. Native decoder latency can delay the very first painted frame slightly; the screen stays black during that handoff.
+- If iOS Reduce Motion is enabled, the logo movement is shortened but the four-second intro delay and soundtrack timing remain intact.
+
+Implementation: `native/intro-transition.ts` defines the timeline and four-second music offset; `native/OpeningFlow.tsx` stages the title before activating the preloaded player, and `native/EntryFlow.tsx` starts the shared player immediately on the tap. Intro video drift correction accounts for the four seconds of music already played. `scripts/check-intro-title-transition.mjs` checks the timeline and flow wiring.
 
 ## Four-second cinematic-to-menu UI entrance
 
