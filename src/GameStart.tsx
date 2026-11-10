@@ -29,6 +29,8 @@ export default function GameStart({onPlay,onBack,busy,notice,playDisabled,loadin
  const [phase,setPhase]=useState<EntryPhase>(()=>hasVisitedMenuThisPage?'menu':'landing');
  const [introUiPhase,setIntroUiPhase]=useState<IntroUiPhase>(()=>hasVisitedMenuThisPage?'shown':'hidden');
  const [introHasFrame,setIntroHasFrame]=useState(false);
+ const [skipVisible,setSkipVisible]=useState(true);
+ const skipHideAt=useRef(5),skipLocked=useRef(false);
  const [handoffRequested,setHandoffRequested]=useState(false);
  const [menuFrameReady,setMenuFrameReady]=useState(false);
  const [menuFailed,setMenuFailed]=useState(false);
@@ -163,10 +165,26 @@ export default function GameStart({onPlay,onBack,busy,notice,playDisabled,loadin
   introVideo.current?.pause();
   finishToMenu();
  };
+ const onIntroSurfaceTap=()=>{
+  const video=introVideo.current;
+  if(phase!=='watching'||!video||!introHasFrame||finished.current||skipLocked.current)return;
+  if(Number.isFinite(video.duration)&&video.duration>0&&video.duration-video.currentTime<=5)return;
+  skipHideAt.current=video.currentTime+5;
+  setSkipVisible(true);
+ };
  const onIntroTime=()=>{
   const video=introVideo.current;
-  if(!video||finished.current||!Number.isFinite(video.duration)||video.duration<=0)return;
-  const remaining=video.duration-video.currentTime;
+  if(!video||finished.current)return;
+  const hasDuration=Number.isFinite(video.duration)&&video.duration>0;
+  const remaining=hasDuration?video.duration-video.currentTime:Infinity;
+  // Playback-clock timing continues correctly across pauses or buffering.
+  if(hasDuration&&remaining<=5){
+   skipLocked.current=true;
+   setSkipVisible(false);
+  }else if(video.currentTime>=skipHideAt.current){
+   setSkipVisible(false);
+  }
+  if(!hasDuration)return;
   if(!introRevealStarted.current&&remaining<=4&&video.duration>4){
    introRevealStarted.current=true;
    setIntroUiPhase('revealing');
@@ -257,7 +275,9 @@ export default function GameStart({onPlay,onBack,busy,notice,playDisabled,loadin
   {soundNeedsTap&&!profile.muted&&(phase==='menu'||(phase==='watching'&&introHasFrame))&&
    <button className="game-start-skip game-start-sound-retry" type="button" onClick={()=>startMusic.current?.(true)}>RETRY SOUND</button>}
   {phase==='watching'&&introNeedsGesture&&<button className="game-start-intro-retry" type="button" onClick={retryIntroPlayback}>TAP TO BEGIN THE RECLAMATION ▶</button>}
+  {phase==='watching'&&introHasFrame&&!introNeedsGesture&&<div className="game-start-intro-tap-area" onClick={onIntroSurfaceTap} aria-hidden="true"/>}
   {phase==='watching'&&<button className="game-start-skip game-start-skip-art" type="button" onClick={onSkip}
-   aria-label="Skip introduction and open the main menu"><img src="/survival/intro-ui/skip.webp" alt="" aria-hidden="true"/></button>}
+   style={{opacity:skipVisible?1:0,pointerEvents:skipVisible?'auto':'none'}}
+   disabled={!skipVisible} aria-label="Skip introduction and open the main menu"><img src="/survival/intro-ui/skip.webp" alt="" aria-hidden="true"/></button>}
  </div>,document.body);
 }
