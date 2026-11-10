@@ -240,6 +240,14 @@ function Cinematic({active,insets,onDone,onFirstFrame,onPrepareMenu,onUiReveal,s
   if(active&&video.playing&&!leaving.current&&!soundtrack.playing)soundtrack.play();
  },[active,soundtrackAllowed,video,soundtrack]);
 
+ // On some iPhones a paused, preloaded video can paint frame zero before the
+ // four-second title animation finishes. The first-frame callback then fires
+ // while the Welcome overlay is still up. Release it when playback begins,
+ // otherwise that perfectly decoded video could stay hidden behind black.
+ useEffect(()=>{
+  if(active&&firstFrame&&state==='playing')onFrame.current();
+ },[active,firstFrame,state]);
+
  useEffect(()=>{
   if(!active||started.current||leaving.current)return;
   if(state==='error'||state==='unavailable'){onFrame.current();return}
