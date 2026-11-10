@@ -2,7 +2,7 @@ import assert from 'node:assert/strict';
 import {build} from 'esbuild';
 
 // Test the same geometry and selection functions used by WorldEditor on taps.
-const compiled=await build({entryPoints:['src/world-layout.ts'],bundle:true,write:false,format:'esm',platform:'node'});
+const compiled=await build({stdin:{contents:"export * from './src/world-layout';export * from './src/world-assets';",resolveDir:process.cwd()},bundle:true,write:false,format:'esm',platform:'node'});
 const {newPlacement,ASSET_BY_ID,insideBuilding,placementPoint,placementHitStack,preferredPlacementHit,buildingInteriorExposed}=await import('data:text/javascript;base64,'+Buffer.from(compiled.outputFiles[0].text).toString('base64'));
 
 // The fixed HQ image covers furniture, but its revealed room should not.
