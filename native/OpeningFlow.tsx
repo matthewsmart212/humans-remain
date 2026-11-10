@@ -123,7 +123,6 @@ function Welcome({width,height,insets,onWatch,onTransitionComplete,onContinue,tr
    {scale:logoMove.interpolate({inputRange:[0,.73,1],outputRange:reducedMotion?[1,1,1]:[1,1.115,1.07]})}
   ]
  };
- const aura=logoMove.interpolate({inputRange:[0,.3,.78,1],outputRange:[0,.05,.2,.17]});
  return <View style={s.screen}>
   <Image accessibilityIgnoresInvertColors source={cover} resizeMode="cover" style={StyleSheet.absoluteFill}/>
   <View pointerEvents="none" style={[StyleSheet.absoluteFill,{backgroundColor:'#03131b99'}]}/>
@@ -143,7 +142,6 @@ function Welcome({width,height,insets,onWatch,onTransitionComplete,onContinue,tr
     const next={x:width/2-bounds.x-bounds.width/2,y:height/2-bounds.y-bounds.height/2};
     setLogoTarget(old=>old.x===next.x&&old.y===next.y?old:next);
    }} style={[{width:logoWidth,height:Math.min(130,logoWidth*.44),alignItems:'center',justifyContent:'center'},centreLogo]}>
-    <Animated.View pointerEvents="none" style={[s.logoHalo,{opacity:aura}]}/>
     <Image accessibilityLabel="Humans Remain" source={logo} resizeMode="contain" style={{width:'100%',height:'100%'}}/>
    </Animated.View>
    <Animated.Text style={[s.eyebrow,{opacity:detailsOut,marginTop:-4}]}>THE RECLAMATION</Animated.Text>
@@ -177,6 +175,10 @@ function Cinematic({active,insets,onDone,onFirstFrame,onFilmPlaying,onPrepareMen
  const [state,setState]=useState<'loading'|'playing'|'unavailable'|'error'>('loading');
  const [videoReady,setVideoReady]=useState(video.status==='readyToPlay');
  const [firstFrame,setFirstFrame]=useState(false);
+ // Five seconds of movie time per reveal; never show Skip in the final five.
+ const skipOpacity=useRef(new Animated.Value(1)).current;
+ const [skipTouchable,setSkipTouchable]=useState(true);
+ const skipShown=useRef(true),skipHideAt=useRef(5),skipLocked=useRef(false);
  const started=useRef(false),leaving=useRef(false),prepared=useRef(false),uiRevealStarted=useRef(false),musicTriggered=useRef(false);
  const activeRef=useRef(active),done=useRef(onDone),prepare=useRef(onPrepareMenu),onFrame=useRef(onFirstFrame),revealUi=useRef(onUiReveal),filmPlaying=useRef(onFilmPlaying);
  activeRef.current=active;
@@ -185,6 +187,19 @@ function Cinematic({active,insets,onDone,onFirstFrame,onFilmPlaying,onPrepareMen
  onFrame.current=onFirstFrame;
  revealUi.current=onUiReveal;
  filmPlaying.current=onFilmPlaying;
+ const setSkipShown=(visible:boolean)=>{
+  if(skipShown.current===visible)return;
+  skipShown.current=visible;
+  setSkipTouchable(visible);
+  skipOpacity.stopAnimation();
+  Animated.timing(skipOpacity,{toValue:visible?1:0,duration:280,easing:Easing.inOut(Easing.quad),useNativeDriver:true}).start();
+ };
+ const wakeSkip=()=>{
+  if(!activeRef.current||!started.current||leaving.current||skipLocked.current)return;
+  if(video.duration>0&&video.duration-video.currentTime<=5)return;
+  skipHideAt.current=video.currentTime+5;
+  setSkipShown(true);
+ };
  const leave=(reason:'natural'|'skip')=>{
   if(leaving.current)return;
   leaving.current=true;
@@ -210,6 +225,12 @@ function Cinematic({active,insets,onDone,onFirstFrame,onFilmPlaying,onPrepareMen
   });
   const progress=video.addListener('timeUpdate',event=>{
    if(leaving.current)return;
+   if(video.duration>0&&video.duration-event.currentTime<=5){
+    skipLocked.current=true;
+    setSkipShown(false);
+   }else if(event.currentTime>=skipHideAt.current){
+    setSkipShown(false);
+   }
    // The real menu logo, survivor bar and expedition cards animate on top of
    // the film over its last four seconds, driven by the VIDEO clock (not
    // wall-clock timers that run while decoding or the app is backgrounded).
@@ -229,8 +250,8 @@ function Cinematic({active,insets,onDone,onFirstFrame,onFilmPlaying,onPrepareMen
    if(next!=='active')video.pause();
    else if(activeRef.current&&started.current&&!leaving.current&&video.status==='readyToPlay')video.play();
   });
-  return()=>{status.remove();playback.remove();progress.remove();ended.remove();app.remove();video.pause()};
- },[video]);
+  return()=>{status.remove();playback.remove();progress.remove();ended.remove();app.remove();video.pause();skipOpacity.stopAnimation()};
+ },[video,skipOpacity]);
 
  // All native players use the same mixing mode. The soundtrack is owned
  // solely by EntryFlow. It starts at actual movie playback and then
@@ -264,7 +285,12 @@ function Cinematic({active,insets,onDone,onFirstFrame,onFilmPlaying,onPrepareMen
   <Image source={cover} resizeMode="cover" style={StyleSheet.absoluteFill}/>
   <View pointerEvents="none" style={[StyleSheet.absoluteFill,{backgroundColor:'#02090dc9'}]}/>
   <VideoView player={video} contentFit="cover" nativeControls={false} allowsPictureInPicture={false} fullscreenOptions={{enable:false}} onFirstFrameRender={()=>{setFirstFrame(true);if(activeRef.current)onFrame.current()}} style={[StyleSheet.absoluteFill,{opacity:firstFrame?1:0,backgroundColor:'#020a0c'}]}/>
-  {active&&<Pressable accessibilityRole="button" accessibilityLabel="Skip introduction" onPress={()=>leave('skip')} style={({pressed})=>[s.skip,{top:insets.top+12,right:insets.right+16,width:skipWidth,height:skipHeight},pressed&&s.skipPressed]}><Image accessibilityIgnoresInvertColors source={skipArtwork} resizeMode="contain" style={s.skipArtwork}/></Pressable>}
+  {active&&state==='playing'&&<Pressable accessible={false} onPress={wakeSkip} style={StyleSheet.absoluteFill}/>}
+  {active&&state!=='error'&&state!=='unavailable'&&<Animated.View pointerEvents={skipTouchable?'auto':'none'} style={[s.skip,{top:insets.top+12,right:insets.right+16,width:skipWidth,height:skipHeight,opacity:skipOpacity}]}>
+   <Pressable accessibilityRole="button" accessibilityLabel="Skip introduction" onPress={()=>leave('skip')} style={({pressed})=>[s.skipTouchTarget,pressed&&s.skipPressed]}>
+    <Image accessibilityIgnoresInvertColors source={skipArtwork} resizeMode="contain" style={s.skipArtwork}/>
+   </Pressable>
+  </Animated.View>}
   {active&&(state==='error'||state==='unavailable')&&<View style={s.cinematicMessage}>
     <Text style={s.messageTitle}>INTRO UNAVAILABLE</Text>
     <Text style={s.message}>The intro video could not be played on this device.</Text>
@@ -286,9 +312,9 @@ const s=StyleSheet.create({
  secondaryText:{fontSize:15,fontWeight:'800',color:'#f3d9ac',letterSpacing:1.3},
  footer:{position:'absolute',alignSelf:'center',fontSize:10,color:'#b1a997',letterSpacing:2.3},
  cornerLine:{position:'absolute',height:1,backgroundColor:'#b58b5d4d'},
- logoHalo:{position:'absolute',width:'125%',height:'90%',borderRadius:80,backgroundColor:'#c99e5e',shadowColor:'#f3bf76',shadowOpacity:.75,shadowRadius:42,shadowOffset:{width:0,height:0}},
  // Transparent illustrated plaque; its whole silhouette is a touch target.
  skip:{position:'absolute',minHeight:48,alignItems:'center',justifyContent:'center'},
+ skipTouchTarget:{width:'100%',height:'100%',alignItems:'center',justifyContent:'center'},
  skipArtwork:{width:'100%',height:'100%'},
  skipPressed:{opacity:.82,transform:[{scale:.975}]},
  cinematicMessage:{position:'absolute',top:0,right:0,bottom:0,left:0,alignItems:'center',justifyContent:'center',gap:17,paddingHorizontal:30},
