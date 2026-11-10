@@ -44,7 +44,7 @@ import {performanceWorldContext} from '../src/performance-context';
 import {NativeUiFrameProbe} from './UiFrameProbe';
 import {NativeDeviceContextProbe} from './DeviceContextProbe';
 import {FieldKitController} from '../src/field-kit';
-import {loadGameWorld,type SavedWorld} from './game-world';
+import {loadGameWorld,loadPublishedGameWorld,type SavedWorld} from './game-world';
 
 // Statically replaced by Expo's environment transform; no Node runtime required.
 declare const process:{env:Partial<Record<'EXPO_PUBLIC_GAME_SOURCE_COMMIT'|'EXPO_PUBLIC_GAME_SOURCE_DIRTY'|'EXPO_PUBLIC_GAME_SOURCE_CAPTURED_AT',string>>};
@@ -196,13 +196,22 @@ function Game({role,onHome,entryVisible,onBootProgress,onBootError,coop}:{role:S
    try{
      await stage('Load interface font',()=>Font.loadAsync({FieldKitBarlow:require('../public/fonts/barlow-condensed-black.ttf')}));
      const reduced=await stage('Read accessibility settings',()=>AccessibilityInfo.isReduceMotionEnabled());
-     const saved=await stage('Open game world',loadGameWorld);
+     let saved=await stage('Open published game world',loadPublishedGameWorld);
      if(!live)return;
      onBootProgress(.2);setStatus('Preparing game…');
      renderer=await stage('Open renderer',()=>createNativeRenderer(playView.current,gamePerformance,preparation));if(!live){renderer.dispose();return}
      // Complete placed animations, chopping, stumps and movement before Play.
      // Detailed terrain uses bounded native lookahead and a startup buffer.
-     await stage('Warm artwork',()=>renderer!.warmImages({...EDITOR_IMAGE_SOURCES,...playerMovementImagesForRole(role),...Object.assign({},...(coop?.players||[]).filter(peer=>peer.id!==coop?.id).map(peer=>playerMovementImagesForRole(peer.role))),...editorTerrainDetail(saved.layout.terrainImage),...requiredImages(saved.layout.items.map(p=>p.assetId),saved.layout.terrainImage)}));
+     const warmWorldArtwork=()=>renderer!.warmImages({...EDITOR_IMAGE_SOURCES,...playerMovementImagesForRole(role),...Object.assign({},...(coop?.players||[]).filter(peer=>peer.id!==coop?.id).map(peer=>playerMovementImagesForRole(peer.role))),...editorTerrainDetail(saved.layout.terrainImage),...requiredImages(saved.layout.items.map(p=>p.assetId),saved.layout.terrainImage)});
+     try{await stage('Warm artwork',warmWorldArtwork)}
+     catch(error){
+      if(saved.source==='Game world')throw error;
+      // A published layout must not make the entire app unplayable if one
+      // remote image is missing. Fall back to the bundled, verified release.
+      console.warn('Published world artwork unavailable; loading bundled world',error);
+      saved=loadGameWorld();
+      await stage('Warm bundled artwork',warmWorldArtwork);
+     }
      if(!live){renderer?.dispose();return}
      onBootProgress(.65);
      const resources=await stage('Open scenes',()=>new SceneResourceCache(SCENES,renderer!.warmImages,renderer!.releaseImages)),outdoor=new OutdoorTerrainStream(renderer.warmImages,renderer.releaseImages,setStatus);
