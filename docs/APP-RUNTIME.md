@@ -72,11 +72,13 @@ persists through scene travel and pause; restarting a run restores 100%.
 Gesture updates write directly to the camera used by rendering and streaming,
 without React updates for each gesture sample. Editor zoom remains independent.
 
-Native loads `native/assets/world-snapshot.json` with its bundled artwork.
-It does not request the world's editor APIs or read retired cached editor
-drafts. A clean launch works offline and never waits for the hosted editor.
-World changes ship with a reviewed snapshot and artwork in an app update;
-pressing Save in the browser editor alone no longer changes the iPhone game.
+Native first requests the public Cloudflare `/api/published-world` JSON,
+which is the owner-published world layout rather than a mutable editor draft.
+It caches validated releases, and falls back to that cache or its bundled
+`native/assets/world-snapshot.json` if the network or new artwork is
+unavailable. Save Draft does not change player worlds; Publish World does.
+See [World Publishing](WORLD-PUBLISHING.md) for owner configuration, the
+distinct Cloudflare and ChatGPT Site databases, and end-to-end verification.
 Fresh runs start in daylight and clear weather. Continued runs retain their
 saved environment. Legacy/custom artwork referenced by an existing run can
 still use the renderer's artwork download fallback when necessary.
