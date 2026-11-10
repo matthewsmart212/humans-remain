@@ -66,7 +66,7 @@ import {addApprovedHeadquartersProps} from './headquarters-dressing';
 import {addApprovedCampWell} from './camp-centrepiece';
 import {STATION_IDS} from './camp-stations';
 import WorldTierControls from './WorldTierControls';
-import {prepareTierChange,tierTargets,wallAssetForLayout} from './world-tiers';
+import {prepareTierChange,tierTargets,wallAssetForLayout,rememberTierMove,translateTierPositions} from './world-tiers';
 import {EDITOR_IMAGE_SOURCES,EDITOR_ENTRY_IMAGES,editorEntryArtwork,editorTerrainDetail,prepareEditorMovement} from './editor-image-sources';
 import {loadingDeadline,type ArtworkProgress} from './artwork-loading';
 import {libraryAssets} from './asset-library-policy';
@@ -166,7 +166,7 @@ export default function WorldEditor({externalStart=false,onExternalStartState,on
  const select=(id:string|null,candidates?:string[])=>{setSelected(id);setOverlapIds(candidates??(id?[id]:[]));updateView({selected:id})};
  const toggleFoliage=()=>{cancelGesture();cancelPlace();const hidden=!foliageHiddenRef.current;foliageHiddenRef.current=hidden;setFoliageHidden(hidden);rememberFoliageHidden(hidden);if(hidden&&isFoliageAsset(ASSET_BY_ID.get(layoutRef.current.items.find(p=>p.id===viewRef.current.selected)?.assetId||'')))select(null)};
  const setCurrent=(next:WorldLayout,record=true)=>{if(world.current.scene)backToCamp();if(record){history.current.push(layoutRef.current);if(history.current.length>60)history.current.shift();future.current=[];setHistoryTick(n=>n+1)}next={...next,updatedAt:new Date().toISOString()};layoutRef.current=next;world.current.layout=next;for(const id of STATION_IDS){const p=next.items.find(p=>p.role===id);world.current.camp[id].x=p?.x??-10000;world.current.camp[id].y=p?.y??-10000}setLayout(next);setStatus('Changes saved on this device · Save to sync');};
- const editItem=(id:string,patch:Partial<Placement>,record=true)=>{if(modeRef.current==='play')return;const item=layoutRef.current.items.find(p=>p.id===id);if(!item||!placementEditable(item,patch))return;setCurrent({...layoutRef.current,items:layoutRef.current.items.map(p=>p.id===id?{...p,...patch}:p)},record);};
+ const editItem=(id:string,patch:Partial<Placement>,record=true)=>{if(modeRef.current==='play')return;const item=layoutRef.current.items.find(p=>p.id===id);if(!item||!placementEditable(item,patch))return;setCurrent({...layoutRef.current,items:layoutRef.current.items.map(p=>p.id===id?rememberTierMove(p,patch):p)},record);};
  const cancelPlace=()=>{placementEpoch.current++;placingRef.current=null;setPlacing(null);updateView({ghost:null,placingSpawn:false})};
  const cancelGesture=()=>{const g=gesture.current;if(g?.kind==='move'&&g.moved)setCurrent(g.before,false);gesture.current=null;pinch.current=null;pointers.current.clear();playZoomInput.current?.cancel()};
  const equipAxe=()=>{if(toggleAxe(world.current))setAxeEquipped(world.current.player.equipped==='axe')};
@@ -365,7 +365,7 @@ export default function WorldEditor({externalStart=false,onExternalStartState,on
   cancelGesture();cancelPlace();keys.current.clear();touchInput.current={x:0,y:0};sprint.reset();attackHeld.current=false;clearAttackQueue(world.current);
   setCurrent({...layoutRef.current,items:layoutRef.current.items.filter(p=>p.id!==id)});select(null);if(mobile)setInspectorOpen(false);setCollisionEdit(null);show(name+' removed from this draft. Undo restores it.');
  };
- const duplicate=()=>{if(layoutRef.current.items.length>=MAX_LAYOUT_ITEMS){show(`This world is at the ${MAX_LAYOUT_ITEMS}-object limit.`);return}const p=layoutRef.current.items.find(p=>p.id===selected);if(p){const next={...p,locked:false,id:newPlacementId(),...boundPlacementPoint({x:p.x+100,y:p.y+60},p.assetId,layoutRef.current)};setCurrent({...layoutRef.current,items:[...layoutRef.current.items,next]});select(next.id)}};
+ const duplicate=()=>{if(layoutRef.current.items.length>=MAX_LAYOUT_ITEMS){show(`This world is at the ${MAX_LAYOUT_ITEMS}-object limit.`);return}const p=layoutRef.current.items.find(p=>p.id===selected);if(p){const destination=boundPlacementPoint({x:p.x+100,y:p.y+60},p.assetId,layoutRef.current),next={...translateTierPositions(p,destination,point=>boundPlacementPoint(point,p.assetId,layoutRef.current)),locked:false,id:newPlacementId()};setCurrent({...layoutRef.current,items:[...layoutRef.current.items,next]});select(next.id)}};
  const show=(s:string)=>setMessage(s);
  const retryLoading=()=>{cancelModePreparation();if(modeRef.current==='play')stopPlay();backToCamp();setReady(false);setError('');setLoadProgress({loaded:0,total:0,stage:'Opening your saved draft…'});setLoadAttempt(n=>n+1)};
  const loadTerrainDetail=async(r=renderer.current)=>{
@@ -501,7 +501,7 @@ if(k==='e'){e.preventDefault();if(!e.repeat){const gate=nearbyGate(world.current
   cancelGesture();cancelPlace();const current=layoutRef.current,id=viewRef.current.selected;if(!id)return;
   tierBusyRef.current=true;setTierBusy(true);
   try{const next=await prepareTierChange(current,id,tier,ids=>renderer.current!.loadImages(requiredImages(ids)),()=>layoutRef.current);
-   if(next!==current){setCurrent(next);const count=tierTargets(next,id).length;show(count>1?`All ${count} wall pieces switched to tier ${tier}. Their placements are unchanged.`:`${tier===0?'Broken state':'Tier '+tier} selected. Position and dimensions are unchanged.`)}
+   if(next!==current){setCurrent(next);const count=tierTargets(next,id).length;show(count>1?`All ${count} wall pieces switched to tier ${tier}. Each piece keeps its own saved tier position.`:`${tier===0?'Broken state':'Tier '+tier} selected. You can reposition this tier without moving the others.`)}
   }catch(e){show((e as Error).message)}finally{tierBusyRef.current=false;setTierBusy(false)}
  };
  const beginPlace=async(id:string)=>{if(!ready)return;id=wallAssetForLayout(id,layoutRef.current);switchMode('edit');const epoch=placementEpoch.current;try{await ensureArt(id);if(epoch!==placementEpoch.current||modeRef.current!=='edit')return;placingRef.current=id;setPlacing(id);select(null);canvas.current?.focus({preventScroll:true});show(mobile?'Tap the ground to place your asset.':'Click the ground to place. Escape cancels.')}catch{show('This artwork could not load. Try again.')}};
