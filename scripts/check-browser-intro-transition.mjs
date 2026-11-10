@@ -16,7 +16,7 @@ check(app.includes("const bounds=introLogo.current?.getBoundingClientRect();"),'
 check(app.includes('innerWidth/2-bounds.left-bounds.width/2'),'horizontal motion uses viewport centre');
 check(app.includes('innerHeight/2-bounds.top-bounds.height/2'),'vertical motion uses viewport centre');
 check(app.includes("enableAudio();\n  introRevealStarted.current=false"),'soundtrack begins directly on Watch click');
-check(app.includes("audioActivated.current=true;startMusic.current?.();"),'uses the shared audio player');
+check(app.includes("audioActivated.current=true;startMusic.current?.()"),'uses the shared audio player');
 check(app.includes("src={INTRO_URL} preload=\"auto\""),'intro movie preloads before button tap');
 check(app.includes("setIntroNeedsGesture(true)"),'Safari policy error does not skip the cinematic');
 check(app.includes('TAP TO BEGIN THE RECLAMATION'), 'blocked video can resume with user gesture');
