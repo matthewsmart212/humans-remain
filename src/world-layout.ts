@@ -33,14 +33,32 @@ export function placementContains(p:Placement,x:number,y:number){const b=placeme
 /** Layer zero preserves automatic depth; other layers order complete assets. */
 /** Roofs cover the world regardless of a building's editable base layer. */
 export function compareWorldDrawables(a:{roof?:boolean;layer?:number;y:number},b:{roof?:boolean;layer?:number;y:number}){return Number(!!a.roof)-Number(!!b.roof)||(a.layer??0)-(b.layer??0)||a.y-b.y}
-function selectionDepth(p:Placement){
+/** A roof is pickable only while it is actually covering the room.
+ * In the editor the same worker position that reveals the room in Walk mode
+ * must also let the user select the furniture beneath it.
+ */
+export function buildingInteriorExposed(p:Placement,viewer?:{x:number;y:number}){
+ const a=placementGeometryAsset(p);
+ return !!a?.interior&&(p.roof==='hidden'||(p.roof==='auto'&&!!viewer&&insideBuilding(p,viewer.x,viewer.y)));
+}
+function selectionDepth(p:Placement,viewer?:{x:number;y:number}){
  const a=ASSET_BY_ID.get(p.assetId);if(!a)return p.y;
- if(a.roof&&p.roof!=='hidden')return 100000;
+ if(a.roof&&p.roof!=='hidden'&&!buildingInteriorExposed(p,viewer))return 100000;
  const b=placementBounds(p);
  return Math.max(a.interior?-10000:p.y,...(a.foreground||[]).map(f=>placementPoint(p,b.x+(f[0]+f[2]/2)/a.crop[2]*b.width,b.y+(f[1]+f[3])/a.crop[3]*b.height)[1]));
 }
-export function placementHitStack(items:Placement[],x:number,y:number){
- return items.map((p,index)=>({p,index})).filter(({p})=>placementContains(p,x,y)).sort((a,b)=>compareWorldDrawables({layer:b.p.layer,y:selectionDepth(b.p)},{layer:a.p.layer,y:selectionDepth(a.p)})||b.index-a.index).map(({p})=>p);
+export function placementHitStack(items:Placement[],x:number,y:number,viewer?:{x:number;y:number}){
+ return items.map((p,index)=>({p,index})).filter(({p})=>placementContains(p,x,y)).sort((a,b)=>compareWorldDrawables({layer:b.p.layer,y:selectionDepth(b.p,viewer)},{layer:a.p.layer,y:selectionDepth(a.p,viewer)})||b.index-a.index).map(({p})=>p);
+}
+/** Preserve selected-object dragging, but don't let a previously selected
+ * building swallow taps on furniture once its interior is exposed.
+ * Buildings remain pickable on their walls, on empty floor and via Scene.
+ */
+export function preferredPlacementHit(hits:Placement[],x:number,y:number,selectedId:string|null,viewer?:{x:number;y:number}){
+ const exposedRoom=hits.find(p=>buildingInteriorExposed(p,viewer)&&insideBuilding(p,x,y));
+ const furniture=exposedRoom?hits.filter(p=>p.id!==exposedRoom.id&&insideBuilding(exposedRoom,p.x,p.y)):[];
+ const candidates=furniture.length?furniture:hits;
+ return candidates.find(p=>p.id===selectedId)||candidates[0];
 }
 export function placementEditable(p:Placement,patch:Partial<Placement>){return !p.locked||!['x','y','scale','rotation','flipX','flipY'].some(k=>Object.hasOwn(patch,k))}
 export function placementBodies(p:Placement,assets=ASSET_BY_ID):Collider[]{
