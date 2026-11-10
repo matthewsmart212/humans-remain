@@ -73,8 +73,9 @@ export default function NativeEntryFlow({initialMenuVisible,onPlay,onFriends,loa
   return()=>{live=false;sub.remove()};
  },[]);
 
- // One owner controls soundtrack playback through the title, film and menu.
- // Video buffering or starting narration must never pause or seek this loop.
+ // One owner controls soundtrack playback through the film and menu.
+ // Watch Intro's four-second title animation stays silent; once the video
+ // starts, buffering or the menu handoff never pauses or seeks the music.
  useEffect(()=>{
   if(!profileReady||!audioReady||!active||muted){
    music.pause();
@@ -91,10 +92,10 @@ export default function NativeEntryFlow({initialMenuVisible,onPlay,onFriends,loa
  };
  const completeContinue=()=>setMenuRequested('continue');
  const chooseWatch=()=>{
-  // The same shared soundtrack starts on the Watch Intro tap, not when
-  // expo-video eventually renders its first frame four seconds later.
-  setMusicMode('cinematic');
+  // Unlike Continue, Watch Intro remains silent through the title animation.
+  setMusicMode('idle');
  };
+ const filmPlaybackStarted=()=>setMusicMode('cinematic');
  const beginFinalReveal=()=>setMenuUiPhase(phase=>phase==='hidden'?'revealing':phase);
  // The final footage of the intro is deliberately aligned with the END of
  // the menu's looping clip. Start its next loop near the final intro frame.
@@ -145,6 +146,7 @@ export default function NativeEntryFlow({initialMenuVisible,onPlay,onFriends,loa
      onContinueSelected={chooseContinue}
      onContinueComplete={completeContinue}
      onWatchSelected={chooseWatch}
+     onFilmPlaying={filmPlaybackStarted}
     />
    </Animated.View>}
   <View pointerEvents={openingGone?'auto':'none'} style={[StyleSheet.absoluteFill,{zIndex:3000,elevation:3000}]}>

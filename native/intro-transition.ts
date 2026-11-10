@@ -1,5 +1,6 @@
-/** Shared timing for Watch Intro and Continue. Music starts on the tap and
- * runs independently of video playback, including buffering and menu handoff.
+/** Shared timing for Watch Intro and Continue. Continue starts music on
+ * the tap; Watch Intro waits for the movie to actually start playing after
+ * the silent title sequence. Music then continues across the menu handoff.
  */
 export const INTRO_TITLE_TRANSITION_MS=4000;
 export const INTRO_BLACKOUT_MS=3000;

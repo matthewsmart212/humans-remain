@@ -17,8 +17,11 @@ check(app.includes("player.currentTime=0;\n  void player.play().catch"),'preload
 check(app.includes("const bounds=introLogo.current?.getBoundingClientRect();"),'logo position is measured for exact centre');
 check(app.includes('innerWidth/2-bounds.left-bounds.width/2'),'horizontal motion uses viewport centre');
 check(app.includes('innerHeight/2-bounds.top-bounds.height/2'),'vertical motion uses viewport centre');
-check(app.includes("enableAudio();\n  introRevealStarted.current=false"),'soundtrack begins directly on Watch click');
-check(app.includes("audioActivated.current=true;startMusic.current?.(true)"),'the entry tap starts the shared player and can recover a failed preload');
+check(app.includes("if(choice==='continue')enableAudio();"),'Continue starts the soundtrack on the tap, not Watch Intro');
+check(app.includes("onPlaying={()=>{setIntroHasFrame(true);setIntroNeedsGesture(false);enableAudio()}}"),'Watch Intro starts the soundtrack only after the movie begins playing');
+check(!app.includes("const retryIntroPlayback=()=>{\n  startMusic.current?.(true);"),'intro playback retry does not prematurely start music');
+check(app.includes("if(!audioActivated.current)enableAudio();"),'skipping an unplayed video still starts menu audio');
+check(app.includes("audioActivated.current=true;startMusic.current?.(true)"),'shared player preserves audio recovery when activated');
 check(app.includes("const onContinue=()=>beginEntry('continue')"),'Continue shares the full title transition');
 check(app.includes("if(!introRevealStarted.current)setIntroUiPhase('revealing')"),'Continue animates the real menu into view');
 check(app.includes("src={INTRO_URL} preload=\"auto\""),'intro movie preloads before button tap');
@@ -38,4 +41,4 @@ check(css.includes('hr-intro-title-logo-reduced'),'reduced-motion path has no fo
 check(html.includes('/src/main.tsx'),'actual browser entry mounts the updated app');
 const gate=fs.readFileSync('src/AssetWorldGate.tsx','utf8');
 check(gate.includes("import GameStart from './GameStart'"),'browser entry uses GameStart, not native OpeningFlow');
-console.log('PASS: browser soundtrack tap, 3s blackout, centred logo, final-second fade, 4s video start, Safari fallback, and outgoing menu handoff.');
+console.log('PASS: browser silent Watch transition, movie-playing audio trigger, Continue tap audio, title animation, Safari fallback and menu handoff.');

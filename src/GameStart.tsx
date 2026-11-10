@@ -138,7 +138,7 @@ export default function GameStart({onPlay,onBack,busy,notice,playDisabled,loadin
   });
  };
  const retryIntroPlayback=()=>{
-  startMusic.current?.(true);
+  // The playing event starts the soundtrack only after the video resumes.
   const player=introVideo.current;
   if(!player)return;
   void player.play().then(()=>setIntroNeedsGesture(false)).catch(()=>finishToMenu());
@@ -146,9 +146,9 @@ export default function GameStart({onPlay,onBack,busy,notice,playDisabled,loadin
  const beginEntry=(choice:'watch'|'continue')=>{
   if(phase!=='landing'||watchPressed.current)return;
   watchPressed.current=true;
-  // Browser audio is enabled within the original button press. Preserve one
-  // continuous player throughout title animation, narration, and main menu.
-  enableAudio();
+  // Continue starts music on the tap. Watch Intro's four-second title
+  // transition is silent; only the movie's playing event enables music.
+  if(choice==='continue')enableAudio();
   introRevealStarted.current=false;
   setIntroUiPhase('hidden');
   const bounds=introLogo.current?.getBoundingClientRect();
@@ -183,6 +183,8 @@ export default function GameStart({onPlay,onBack,busy,notice,playDisabled,loadin
   if(!introRevealStarted.current)setIntroUiPhase('revealing');
   else setIntroUiPhase('shown');
   setPhase('menu');
+  // Skipping a film that never played still gives the menu its soundtrack.
+  if(!audioActivated.current)enableAudio();
   introVideo.current?.pause();
  },[handoffRequested,menuFrameReady,menuFailed]);
  // Returning from the game should resume the menu loop rather than show
@@ -220,7 +222,7 @@ export default function GameStart({onPlay,onBack,busy,notice,playDisabled,loadin
    <video ref={introVideo} className="game-start-intro-scene"
     style={{opacity:phase==='watching'&&introHasFrame?1:0}}
     src={INTRO_URL} preload="auto" playsInline
-    onPlaying={()=>{setIntroHasFrame(true);setIntroNeedsGesture(false);startMusic.current?.()}}
+    onPlaying={()=>{setIntroHasFrame(true);setIntroNeedsGesture(false);enableAudio()}}
     onTimeUpdate={onIntroTime}
     onEnded={finishToMenu}
     onError={()=>{if(phase==='watching')finishToMenu()}}/>

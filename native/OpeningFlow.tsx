@@ -18,10 +18,11 @@ type Props={
  onContinueSelected:()=>void;
  onContinueComplete:()=>void;
  onWatchSelected:()=>void;
+ onFilmPlaying:()=>void;
 };
 type Phase='welcome'|'transition'|'cinematic';
 
-export default function NativeOpeningFlow({onComplete,onPrepareMenu,onUiReveal,onContinueSelected,onContinueComplete,onWatchSelected}:Props){
+export default function NativeOpeningFlow({onComplete,onPrepareMenu,onUiReveal,onContinueSelected,onContinueComplete,onWatchSelected,onFilmPlaying}:Props){
  const [phase,setPhase]=useState<Phase>('welcome');
  const [welcomeVisible,setWelcomeVisible]=useState(true);
  const [reduced,setReduced]=useState(false);
@@ -58,6 +59,7 @@ export default function NativeOpeningFlow({onComplete,onPrepareMenu,onUiReveal,o
   <Cinematic active={phase==='cinematic'}
     insets={insets}
     onFirstFrame={revealCinematic}
+    onFilmPlaying={onFilmPlaying}
     onPrepareMenu={onPrepareMenu}
     onUiReveal={onUiReveal}
     onDone={onComplete}/>
@@ -150,11 +152,12 @@ function Welcome({width,height,insets,onWatch,onTransitionComplete,onContinue,tr
  </View>;
 }
 
-function Cinematic({active,insets,onDone,onFirstFrame,onPrepareMenu,onUiReveal}:{
+function Cinematic({active,insets,onDone,onFirstFrame,onFilmPlaying,onPrepareMenu,onUiReveal}:{
  active:boolean;
  insets:{top:number;bottom:number;left:number;right:number};
  onDone:(reason:'natural'|'skip')=>void;
  onFirstFrame:()=>void;
+ onFilmPlaying:()=>void;
  onPrepareMenu:()=>void;
  onUiReveal:()=>void;
 }){
@@ -162,13 +165,14 @@ function Cinematic({active,insets,onDone,onFirstFrame,onPrepareMenu,onUiReveal}:
  const [state,setState]=useState<'loading'|'playing'|'unavailable'|'error'>('loading');
  const [videoReady,setVideoReady]=useState(video.status==='readyToPlay');
  const [firstFrame,setFirstFrame]=useState(false);
- const started=useRef(false),leaving=useRef(false),prepared=useRef(false),uiRevealStarted=useRef(false);
- const activeRef=useRef(active),done=useRef(onDone),prepare=useRef(onPrepareMenu),onFrame=useRef(onFirstFrame),revealUi=useRef(onUiReveal);
+ const started=useRef(false),leaving=useRef(false),prepared=useRef(false),uiRevealStarted=useRef(false),musicTriggered=useRef(false);
+ const activeRef=useRef(active),done=useRef(onDone),prepare=useRef(onPrepareMenu),onFrame=useRef(onFirstFrame),revealUi=useRef(onUiReveal),filmPlaying=useRef(onFilmPlaying);
  activeRef.current=active;
  done.current=onDone;
  prepare.current=onPrepareMenu;
  onFrame.current=onFirstFrame;
  revealUi.current=onUiReveal;
+ filmPlaying.current=onFilmPlaying;
  const leave=(reason:'natural'|'skip')=>{
   if(leaving.current)return;
   leaving.current=true;
@@ -185,7 +189,12 @@ function Cinematic({active,insets,onDone,onFirstFrame,onPrepareMenu,onUiReveal}:
   });
   const playback=video.addListener('playingChange',event=>{
    if(!activeRef.current||!started.current)return;
-   if(event.isPlaying&&!leaving.current)setState('playing');
+   if(event.isPlaying&&!leaving.current){
+    setState('playing');
+    // The four-second logo animation is silent. Begin music only once
+    // the actual narrated movie has entered its playing state.
+    if(!musicTriggered.current){musicTriggered.current=true;filmPlaying.current()}
+   }
   });
   const progress=video.addListener('timeUpdate',event=>{
    if(leaving.current)return;
@@ -212,7 +221,8 @@ function Cinematic({active,insets,onDone,onFirstFrame,onPrepareMenu,onUiReveal}:
  },[video]);
 
  // All native players use the same mixing mode. The soundtrack is owned
- // solely by EntryFlow and keeps playing across video loading/stalls.
+ // solely by EntryFlow. It starts at actual movie playback and then
+ // keeps playing across video buffering/stalls and the menu handoff.
  // The menu music preference applies to the MP3. Watching the film also
  // plays its narration, including when the player has muted the music.
  useEffect(()=>{video.muted=!active},[video,active]);
@@ -231,7 +241,8 @@ function Cinematic({active,insets,onDone,onFirstFrame,onPrepareMenu,onUiReveal}:
   if(!videoReady)return;
   if(video.duration>0&&video.duration<10){setState('unavailable');onFrame.current();return}
   // The movie is already preloaded; start it only after the full 4-second
-  // title sequence. Music began on Watch Intro and must not be reset here.
+  // title sequence. The playingChange event starts the music when the
+  // movie actually begins; do not start it here while still buffering.
   started.current=true;
   video.currentTime=0;
   video.play();

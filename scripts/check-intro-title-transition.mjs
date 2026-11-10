@@ -26,7 +26,11 @@ assert(!opening.includes('soundtrack.pause()')&&!opening.includes('soundtrack.se
 assert(opening.includes("audioMixingMode='mixWithOthers'"),'video mixes narration with soundtrack');
 assert(entry.includes('onContinueComplete={completeContinue}'),'Continue waits for the complete title animation');
 assert(opening.includes("video.duration-event.currentTime<=4"),'existing final-four-seconds menu reveal is preserved');
-assert(entry.includes("setMusicMode('cinematic');"),'tap requests cinematic audio immediately');
-assert(entry.includes("if((musicMode==='menu'||musicMode==='cinematic')&&!music.playing)music.play();"),'shared player begins the track on tap and continues through menu');
-assert(entry.includes("onWatchSelected={chooseWatch}"),'watch action wires soundtrack to the title animation');
-console.log('PASS: four-second title transition, 3-second blackout, 1-second logo fade, movie preload, independent continuous music and animated Continue handoff.');
+assert(entry.includes("setMusicMode('idle');"),'Watch Intro leaves the title animation silent');
+assert(opening.includes("if(event.isPlaying&&!leaving.current){")&&opening.includes('filmPlaying.current()'),'actual video playback triggers the shared soundtrack');
+assert(opening.includes('musicTriggered.current=true'),'playback starts the soundtrack only once');
+assert(opening.includes('onFilmPlaying={onFilmPlaying}')&&entry.includes('onFilmPlaying={filmPlaybackStarted}'),'native video playing event is connected to the soundtrack owner');
+assert(entry.includes("const filmPlaybackStarted=()=>setMusicMode('cinematic');"),'cinematic music mode begins only with film playback');
+assert(entry.includes("if((musicMode==='menu'||musicMode==='cinematic')&&!music.playing)music.play();"),'shared player continues through the menu after start');
+assert(entry.includes("onWatchSelected={chooseWatch}"),'watch action retains the title animation');
+console.log('PASS: silent four-second Watch transition, video-synchronised music, Continue tap audio, movie preload and animated menu handoff.');
