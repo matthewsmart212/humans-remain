@@ -60,6 +60,7 @@ import {prepareTerrainUpload} from './terrain-upload';
 import WorldCollisionEditor from './WorldCollisionEditor';
 import {EditorJoystick,useMobileEditor,useEditorDisplay} from './WorldEditorControls';
 import {EditorAccessNotice,useEditorAccess} from './EditorAccess';
+import {editorTokenHeaders} from './editor-token';
 import {toggleChest,chestIsOpen} from './chest-animation';
 import {addApprovedHeadquartersProps} from './headquarters-dressing';
 import {addApprovedCampWell} from './camp-centrepiece';
@@ -578,7 +579,7 @@ if(k==='e'){e.preventDefault();if(!e.repeat){const gate=nearbyGate(world.current
   setTerrainBusy(true);
   try{const prepared=await prepareTerrainUpload(file);
    setTerrainProgress('Uploading background…');
-   const response=await fetch('/api/world-terrain',{method:'POST',headers:{'Content-Type':prepared.type,'X-File-Name':encodeURIComponent(prepared.name),'X-File-Size':String(prepared.size)},body:prepared});const data=await response.json();if(!response.ok)throw Error(data.error||'Terrain upload failed');const image=data as ArtworkFile;
+   const response=await fetch('/api/world-terrain',{method:'POST',headers:{'Content-Type':prepared.type,'X-File-Name':encodeURIComponent(prepared.name),'X-File-Size':String(prepared.size),...editorTokenHeaders()},body:prepared});const data=await response.json();if(!response.ok)throw Error(data.error||'Terrain upload failed');const image=data as ArtworkFile;
    await renderer.current?.loadImages(requiredImages([],image));setCurrent({...layoutRef.current,terrainImage:image,terrainBorder:image.width===HOME_TERRAIN.fullSize&&image.height===HOME_TERRAIN.fullSize?HOME_TERRAIN.border:0});
    show('Background replaced. Objects stay in place. Press Play to try it.');
   }catch(e){show((e as Error).message)}finally{setTerrainBusy(false);setTerrainProgress('')}
