@@ -20,6 +20,8 @@ jobs:
           cache: npm
       - run: npm ci
       - run: npm run typecheck
+      - name: Test four-second cinematic title transition
+        run: node scripts/check-intro-title-transition.mjs
       - name: Test persistent owner unlock for publishing
         run: node scripts/check-owner-publishing-unlock.mjs
       - name: Test independent upgrade-tier positions
