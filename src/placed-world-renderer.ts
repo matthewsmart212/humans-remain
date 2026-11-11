@@ -23,7 +23,7 @@ import {rabbitDrawables} from './rabbit-renderer';
 import {visiblePickupCues,drawPickupGlints} from './pickup-visibility';
 import {drawResourceOutlines} from './resource-outlines';
 import {treeLogDrawables} from './tree-log-renderer';
-import {clampPlayZoom} from './play-zoom';
+import {clampPlayZoom,FULL_PLAY_ZOOM,MIN_PLAY_ZOOM} from './play-zoom';
 import {drawFieldKitTarget,getFieldKitTarget} from './field-kit-target';
 import {gateDrawables} from './camp-gate-renderer';
 import {drawTree} from './tree-chopping';
@@ -141,10 +141,10 @@ export function placedDrawables(ctx:CanvasRenderingContext2D,imgs:Record<string,
  return out;
 }
 function rotatePlacement(ctx:CanvasRenderingContext2D,p:Placement){ctx.translate(p.x,p.y);ctx.rotate((p.rotation||0)*Math.PI/180);ctx.translate(-p.x,-p.y);if(p.flipX||p.flipY){const b=placementBounds(p),cx=b.x+b.width/2,cy=b.y+b.height/2;ctx.translate(cx,cy);ctx.scale(p.flipX?-1:1,p.flipY?-1:1);ctx.translate(-cx,-cy)}}
-export type EditorView={x:number;y:number;zoom:number;follow:boolean;grid:boolean;collision:boolean;selected:string|null;ghost:Placement|null;placingSpawn:boolean;playing?:boolean;hideFoliage?:boolean};
+export type EditorView={x:number;y:number;zoom:number;follow:boolean;grid:boolean;collision:boolean;selected:string|null;ghost:Placement|null;placingSpawn:boolean;playing?:boolean;fullZoom?:boolean;hideFoliage?:boolean};
 export function editorCamera(width:number,height:number,w:World,view:EditorView,pixelRatio=Math.min(2,globalThis.devicePixelRatio||1),now=menuClock()){
  const lw=width/pixelRatio,lh=height/pixelRatio;
- const scale=Math.max(width/1800,height/900)*(view.playing?clampPlayZoom(view.zoom):view.zoom);
+ const scale=Math.max(width/1800,height/900)*(view.playing?clampPlayZoom(view.zoom,view.fullZoom?FULL_PLAY_ZOOM:MIN_PLAY_ZOOM):view.zoom);
  const vw=width/scale,vh=height/scale;
  let x=view.follow?w.player.x-vw/2:view.x-vw/2,y=view.follow?w.player.y-vh*.53:view.y-vh/2;
  // Clamp the ordinary camera first. Menu framing may reveal the map's faded

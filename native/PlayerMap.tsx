@@ -36,7 +36,7 @@ const landmarkSymbols:Record<PlayerMapLandmark['kind'],string>={
 };
 const landmarkPriority:Record<PlayerMapLandmark['kind'],number>={camp:0,bunker:1,headquarters:2,well:3,storage:4,building:5};
 type Camera={zoom:number;focus:Vec};
-type Props={world:React.RefObject<World|null>;width:number;height:number;safe:{top:number;right:number;bottom:number;left:number};onClose:()=>void;diagnostics?:GamePerformanceRecorder;onReady?:(ready:boolean)=>void;active?:boolean;
+type Props={world:React.RefObject<World|null>;width:number;height:number;safe:{top:number;right:number;bottom:number;left:number};onClose:()=>void;diagnostics?:GamePerformanceRecorder;onReady?:(ready:boolean)=>void;active?:boolean;fullZoom?:boolean;
  /** Blends the gameplay camera into the atlas at a pinch amount. The amount
   * is read from `zoom` here, so a pinch re-renders the map alone. */
  camera?:(amount:number)=>ReturnType<typeof continuousMapCamera>|null;zoom?:ZoomStore;
@@ -108,7 +108,7 @@ function MapAction({kind,label,top,right,selected=false,onPress}:{kind:'place'|'
  return <Pressable accessibilityRole="button" accessibilityLabel={label} accessibilityState={{selected}} onPress={onPress} style={[s.close,{position:'absolute',top,right},selected&&{borderColor:'#ffe0a0'}]}><Canvas pointerEvents="none" style={{width:44,height:44}}><Circle cx={22} cy={22} r={21}><LinearGradient start={{x:8,y:5}} end={{x:35,y:42}} colors={selected?['#98683d','#573b29']:['#26565a','#0b3034']}/></Circle><Circle cx={22} cy={22} r={21} color="#edcb83" style="stroke" strokeWidth={1}/><Group transform={[{translateX:22},{translateY:22},{scale:.72}]}>{kind==='place'?<><Path path={WAYPOINT_PIN} color="#f4e6c7" style="stroke" strokeWidth={2.5}/><Path path="M4 -18H16M10 -24V-12" color="#f4e6c7" style="stroke" strokeWidth={2.5} strokeCap="round"/></>:<Path path="M-10 -10H10M-6 -10V-15H6V-10M-8 -10L-6 14H6L8 -10M-2 -4V8M3 -4V8" color="#f4e6c7" style="stroke" strokeWidth={2.5} strokeCap="round" strokeJoin="round"/>}</Group></Canvas></Pressable>;
 }
 
-function NativePlayerMap({world,width,height,safe,onClose,active=true,camera:continuousCamera,zoom,pump,onTouchStart,diagnostics,onReady,presentation,pinchGesture,pinching,preparation,nativePinch}:Props){
+function NativePlayerMap({world,width,height,safe,onClose,active=true,fullZoom=false,camera:continuousCamera,zoom,pump,onTouchStart,diagnostics,onReady,presentation,pinchGesture,pinching,preparation,nativePinch}:Props){
  // Camera presentation stays on the UI runtime; RN only receives changed tile
  // coverage, scene samples and settled actions, never one React update per pixel.
  const fallbackAmount=useSharedValue(zoom?.get()??1),amount=presentation??fallbackAmount;
@@ -136,7 +136,7 @@ function NativePlayerMap({world,width,height,safe,onClose,active=true,camera:con
  const visibleAmount=useDerivedValue(()=>Math.min(MIN_PLAY_ZOOM,amount.value));
  const presentationView=useDerivedValue(()=>nativeMapCameraView(uiCamera.value,visibleAmount.value,uiFocus.value));
  const cameraTransform=useDerivedValue(()=>{const v=presentationView.value;return[{translateX:-v.x*v.scale},{translateY:-v.y*v.scale},{scale:v.scale}]});
- const mapOpacity=useAnimatedStyle(()=>({opacity:uiCamera.value.continuous?nativeAtlasOpacity(visibleAmount.value):1}));
+ const mapOpacity=useAnimatedStyle(()=>({opacity:uiCamera.value.continuous?(fullZoom&&!active?0:nativeAtlasOpacity(visibleAmount.value)):1}));
  const initialView=playerMapView(scene.bounds,size.width,size.height,camera.zoom,camera.focus,Math.max(12,continuous?.entry??12));
  const current=useRef({scene,size,view:initialView,tiles,active});
  current.current.scene=scene;current.current.size=size;current.current.tiles=tiles;current.current.active=active;

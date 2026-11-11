@@ -1,5 +1,8 @@
 export const MIN_PLAY_ZOOM=.7,MAX_PLAY_ZOOM=1;
-export const clampPlayZoom=(zoom:number)=>Number.isFinite(zoom)?Math.max(MIN_PLAY_ZOOM,Math.min(MAX_PLAY_ZOOM,zoom)):MAX_PLAY_ZOOM;
+/** Extra-wide gameplay framing. A normal pinch cannot enter the atlas in this mode. */
+export const FULL_PLAY_ZOOM=.35;
+export const FULL_ZOOM_SETTING_KEY='humans-remain-full-zoom-v1';
+export const clampPlayZoom=(zoom:number,minimum=MIN_PLAY_ZOOM)=>Number.isFinite(zoom)?Math.max(minimum,Math.min(MAX_PLAY_ZOOM,zoom)):MAX_PLAY_ZOOM;
 export type PinchPoint={id:string|number;x:number;y:number};
 
 /** Gesture state only; the camera remains the single source of zoom state. */

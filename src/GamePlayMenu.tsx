@@ -4,13 +4,13 @@ import {ArrowLeft,Maximize2,Minimize2,Pause,Play,RotateCcw,Users,Hammer} from 'l
 import {SURVIVOR_ROLES,type SurvivorRoleId} from './survivor-roles';
 import {GamePerformancePanel,PerformanceMenuOptions,type GameDiagnostics} from './GamePerformance';
 
-type Props={paused:boolean;fullscreen:boolean;hideButton?:boolean;defeated?:boolean;cause?:string;survival?:boolean;saveNotice?:string;saveBlocked?:boolean;onSandbox?:()=>void;onContinue?:()=>void;diagnostics?:GameDiagnostics;spawns?:PlaySpawnControls;onPause:()=>void;onResume:()=>void;onRestart:()=>void;onExit:()=>void;onExpand:()=>void;characterRole?:SurvivorRoleId;onChangeCharacter?:(role:SurvivorRoleId)=>Promise<void>;creativeMode?:boolean;onToggleCreative?:()=>void};
+type Props={paused:boolean;fullscreen:boolean;hideButton?:boolean;defeated?:boolean;cause?:string;survival?:boolean;saveNotice?:string;saveBlocked?:boolean;onSandbox?:()=>void;onContinue?:()=>void;diagnostics?:GameDiagnostics;spawns?:PlaySpawnControls;onPause:()=>void;onResume:()=>void;onRestart:()=>void;onExit:()=>void;onExpand:()=>void;characterRole?:SurvivorRoleId;onChangeCharacter?:(role:SurvivorRoleId)=>Promise<void>;creativeMode?:boolean;onToggleCreative?:()=>void;fullZoom?:boolean;onToggleFullZoom?:()=>void};
 const tap=(perform:()=>void)=>({onPointerDown:(e:React.PointerEvent<HTMLButtonElement>)=>{if(e.button!==0)return;e.preventDefault();e.stopPropagation();perform()},onClick:(e:React.MouseEvent<HTMLButtonElement>)=>{e.stopPropagation();if(e.detail===0)perform()}});
 
 export function EditorOnly({playing,children}:{playing:boolean;children:React.ReactNode}){return playing?null:<>{children}</>}
 
 /** The play surface exposes game actions only; editor tools stay unmounted. */
-export default function GamePlayMenu({paused,fullscreen,hideButton=false,defeated=false,cause,survival=false,saveNotice,saveBlocked=false,onSandbox,onContinue,diagnostics,spawns,onPause,onResume,onRestart,onExit,onExpand,characterRole='survivor',onChangeCharacter,creativeMode=false,onToggleCreative}:Props){
+export default function GamePlayMenu({paused,fullscreen,hideButton=false,defeated=false,cause,survival=false,saveNotice,saveBlocked=false,onSandbox,onContinue,diagnostics,spawns,onPause,onResume,onRestart,onExit,onExpand,characterRole='survivor',onChangeCharacter,creativeMode=false,onToggleCreative,fullZoom=false,onToggleFullZoom}:Props){
  const dialog=useRef<HTMLDialogElement>(null),title=useId(),[performanceOpen,setPerformanceOpen]=useState(false),[spawnOpen,setSpawnOpen]=useState(false),[confirmNew,setConfirmNew]=useState(false),[characterOpen,setCharacterOpen]=useState(false),[changingCharacter,setChangingCharacter]=useState(false),[characterError,setCharacterError]=useState('');
  useEffect(()=>{if(!paused){setPerformanceOpen(false);setSpawnOpen(false);setConfirmNew(false);setCharacterOpen(false);setCharacterError('')}},[paused]);
  useEffect(()=>{const el=dialog.current;if(!el)return;if(paused&&!el.open)el.showModal();else if(!paused&&el.open)el.close();return()=>{if(el.open)el.close()}},[paused]);
@@ -45,6 +45,7 @@ export default function GamePlayMenu({paused,fullscreen,hideButton=false,defeate
     {!survival&&onContinue&&<button type="button" {...tap(onContinue)}>Start fresh Survival run</button>}
     {paused&&onChangeCharacter&&!defeated&&<button type="button" {...tap(()=>{setCharacterError('');setCharacterOpen(true)})}><Users size={18}/>Change character · {SURVIVOR_ROLES.find(r=>r.id===characterRole)?.label}</button>}
     {paused&&survival&&onToggleCreative&&!defeated&&<><button type="button" aria-pressed={creativeMode} {...tap(onToggleCreative)}><Hammer size={18}/>Creative Mode · {creativeMode?'ON':'OFF'}</button>{creativeMode&&<p className="game-creative-note">Unlimited building supplies · instant repairs and upgrades. Turn it off to restore your original quantities.</p>}</>}
+     {paused&&onToggleFullZoom&&!defeated&&<><button type="button" aria-pressed={fullZoom} {...tap(onToggleFullZoom)}><Maximize2 size={18}/>Full Zoom · {fullZoom?'ON':'OFF'}</button>{fullZoom&&<p className="game-creative-note">Pinch out further without switching to the map. The map button still works.</p>}</>}
      {paused&&diagnostics&&<PerformanceMenuOptions recorder={diagnostics.recorder} onOpen={()=>setPerformanceOpen(true)} onSpawn={!defeated&&spawns?()=>setSpawnOpen(true):undefined}/>}
     <button type="button" autoFocus={defeated} {...tap(()=>setConfirmNew(true))}><RotateCcw size={18}/>New Survival run</button>
     {survival&&onSandbox&&<button type="button" {...tap(onSandbox)}>Open testing sandbox</button>}

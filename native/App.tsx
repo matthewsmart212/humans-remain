@@ -9,6 +9,7 @@ import {HUNTER_IMAGE_SOURCES} from '../src/hunter-sprites';
 import {NativeFrameWorkScheduler} from './frame-work-scheduler';
 import {stationMenuAnimating,stationMenuRevision} from '../src/station-menu-layout';
 import {normalizeAtlasZoom,settleAtlasZoom} from '../src/continuous-zoom-state';
+import {FULL_PLAY_ZOOM,MIN_PLAY_ZOOM,FULL_ZOOM_SETTING_KEY} from '../src/play-zoom';
 import {continuousMapCamera} from '../src/continuous-zoom';
 import React,{Profiler,useCallback,useEffect,useMemo,useRef,useState} from 'react';
 import {View,Text,Pressable,ScrollView,StyleSheet,AppState,StatusBar,Alert,useWindowDimensions,AccessibilityInfo,Platform,PixelRatio,type StyleProp,type ViewStyle} from 'react-native';
@@ -73,25 +74,30 @@ function Game({role,onHome,entryVisible,onBootProgress,onBootError,coop}:{role:S
  const warmedPeerRoles=useRef(new Set<SurvivorRoleId>());
  useEffect(()=>{if(!coop)return;return coop.subscribe(event=>{if(event!=='update')return;setCoopInfo(coop.status+' · '+coop.players.length+'/4 survivors');const renderer=runtime.current?.renderer;if(!renderer)return;for(const peer of coop.players){if(peer.id===coop.id||warmedPeerRoles.current.has(peer.role))continue;warmedPeerRoles.current.add(peer.role);void renderer.warmImages(playerMovementImagesForRole(peer.role),'foreground').catch(()=>warmedPeerRoles.current.delete(peer.role))}})},[coop]);
  const [creativeMode,setCreativeMode]=useState(false);
+  const [fullZoom,setFullZoom]=useState(false),fullZoomEnabled=useRef(false),mapRequested=useRef(false);
   const [characterOpen,setCharacterOpen]=useState(false),[characterLoading,setCharacterLoading]=useState(false),[characterError,setCharacterError]=useState('');
  const {width,height}=useWindowDimensions(),safe=useSafeAreaInsets(),dimensions=useRef({width,height});dimensions.current={width,height};
  const world=useRef<World|null>(null),runtime=useRef<Runtime|null>(null),input=useRef(zero()),sprint=useRef(false),swing=useRef(false),enabled=useRef(false),modeRef=useRef<Mode>('loading');
  const playView=useRef({...PLAY_VIEW});
+  useEffect(()=>{let live=true;void AsyncStorage.getItem(FULL_ZOOM_SETTING_KEY).then(value=>{if(!live)return;const next=value==='1';fullZoomEnabled.current=next;playView.current.fullZoom=next;setFullZoom(next)}).catch(()=>{});return()=>{live=false}},[]);
  // A pinch moves the atlas amount every frame; only the map subscribes to it.
  const continuousZoom=useRef(1),mapVisible=useRef(false),[mapOpen,setMapOpen]=useState(false),atlasZoom=useMemo(()=>createZoomStore(1),[]);
  const mapReady=useRef(false),onMapReady=useCallback((ready:boolean)=>{mapReady.current=ready},[]),mapPump=useRef<((frameStart:number)=>void)|undefined>(undefined);
  const atlasCamera=useCallback((amount:number)=>world.current?continuousMapCamera(world.current,playView.current,dimensions.current.width,dimensions.current.height,amount):null,[]);
  const mapCamera=()=>atlasCamera(continuousZoom.current);
  const applyZoom=(amount:number,present=true)=>{
-  const next=normalizeAtlasZoom(amount,mapCamera()?.minimum??.7),open=next<.7;
-  continuousZoom.current=next;playView.current.zoom=Math.max(.7,next);
-  if(open!==mapVisible.current){clear(true);if(world.current)world.current.stationPanel=undefined;mapVisible.current=open;setMapOpen(open);gamePerformance.trace(performance.now(),open?'native-map-open':'native-map-close',0,{atlasZoom:next,ready:mapReady.current})}
-  atlasZoom.set(next,present);
- };
- const animateZoom=(requested:number,duration=260)=>pinch.animateTo(settleAtlasZoom(requested),duration);
- const settleZoom=(interrupted:boolean)=>{gamePerformance.trace(performance.now(),'native-pinch-end',0,{atlasZoom:continuousZoom.current,interrupted});const target=settleAtlasZoom(continuousZoom.current);if(target===continuousZoom.current)return;if(interrupted){pinch.stopAnimation();applyZoom(target)}else animateZoom(target,150)};
- const closeMap=useCallback(()=>animateZoom(.7),[]);
- const fieldKit=useMemo(()=>new FieldKitController(),[]);
+   const minimum=fullZoomEnabled.current&&!mapRequested.current?FULL_PLAY_ZOOM:(mapCamera()?.minimum??MIN_PLAY_ZOOM);
+   const next=normalizeAtlasZoom(amount,minimum);
+   if(mapRequested.current&&next>=MIN_PLAY_ZOOM)mapRequested.current=false;
+   const open=next<MIN_PLAY_ZOOM&&(!fullZoomEnabled.current||mapRequested.current);
+   continuousZoom.current=next;playView.current.zoom=Math.max(fullZoomEnabled.current?FULL_PLAY_ZOOM:MIN_PLAY_ZOOM,next);
+   if(open!==mapVisible.current){clear(true);if(world.current)world.current.stationPanel=undefined;mapVisible.current=open;setMapOpen(open);gamePerformance.trace(performance.now(),open?'native-map-open':'native-map-close',0,{atlasZoom:next,ready:mapReady.current})}
+   atlasZoom.set(next,present);
+  };
+  const animateZoom=(requested:number,duration=260)=>pinch.animateTo(fullZoomEnabled.current&&!mapRequested.current?normalizeAtlasZoom(requested,FULL_PLAY_ZOOM):settleAtlasZoom(requested),duration);
+  const settleZoom=(interrupted:boolean)=>{gamePerformance.trace(performance.now(),'native-pinch-end',0,{atlasZoom:continuousZoom.current,interrupted});if(fullZoomEnabled.current&&!mapRequested.current)return;const target=settleAtlasZoom(continuousZoom.current);if(target===continuousZoom.current)return;if(interrupted){pinch.stopAnimation();applyZoom(target)}else animateZoom(target,150)};
+  const closeMap=useCallback(()=>animateZoom(MIN_PLAY_ZOOM),[]);
+  const fieldKit=useMemo(()=>new FieldKitController(),[]);
  const saveBlocked=useRef(false),saveRunRef=useRef(()=>{}),[saveNotice,setSaveNotice]=useState('');
  // Never persist run progress: Play creates a new run on each launch.
  const saveRun=(_replaceUnreadable=false)=>{};
@@ -104,12 +110,12 @@ function Game({role,onHome,entryVisible,onBootProgress,onBootError,coop}:{role:S
  const [performanceOpen,setPerformanceOpen]=useState(false);
  const profileRender:React.ProfilerOnRenderCallback=(id,phase,actualDuration,_baseDuration,startTime)=>{if(gamePerformance.recording&&actualDuration>=4)gamePerformance.trace(startTime,'native-react-commit',actualDuration,{id,phase,atlasZoom:continuousZoom.current,mapVisible:mapVisible.current})};
  const startRecording=()=>{if(world.current?.phase==='over'||saveBlocked.current)return;gamePerformance.start(performance.now(),{platform:Platform.OS,osVersion:Platform.Version,developmentBuild:__DEV__,sourceAtMetroStart:{commit:process.env.EXPO_PUBLIC_GAME_SOURCE_COMMIT??'unavailable',trackedChanges:process.env.EXPO_PUBLIC_GAME_SOURCE_DIRTY??'unknown',capturedAt:process.env.EXPO_PUBLIC_GAME_SOURCE_CAPTURED_AT??'unavailable',scope:'Metro startup snapshot; restart Metro after pulling or editing code before a comparison run.'},jsEngine:typeof (globalThis as {HermesInternal?:unknown}).HermesInternal==='object'?'Hermes':'unknown',reactNativeVersion:Platform.constants.reactNativeVersion,renderer:'native-skia-picture',pixelRatio:PixelRatio.get(),renderPixelRatio:Math.min(2,PixelRatio.get()),viewport:dimensions.current,worldUpdatedAt:runtime.current?.saved.layout.updatedAt,worldRevision:runtime.current?.saved.revision,overlayEnabled:gamePerformance.overlay,nativeDiagnosticsRevision:'ios-native-smoothness-v2',nativeSaveFormat:'split-layouts-v2',sharedPreparationBudget:true,reactProfilerAvailable:__DEV__,uiCadenceAvailable:true});clear();change('playing')};
- const pinch=useNativePlayZoom({enabled:()=>enabled.current&&!runtime.current?.travel?.busy,getZoom:()=>continuousZoom.current,minimumZoom:()=>mapCamera()?.minimum??.7,onGestureEnd:settleZoom,setZoom:zoom=>applyZoom(zoom,false),onPinchStart:()=>{gamePerformance.trace(performance.now(),'native-pinch-start',0,{atlasZoom:continuousZoom.current});input.current=zero()}},atlasZoom);
+ const pinch=useNativePlayZoom({enabled:()=>enabled.current&&!runtime.current?.travel?.busy,getZoom:()=>continuousZoom.current,minimumZoom:()=>fullZoomEnabled.current&&!mapRequested.current?FULL_PLAY_ZOOM:(mapCamera()?.minimum??MIN_PLAY_ZOOM),onGestureEnd:settleZoom,setZoom:zoom=>applyZoom(zoom,false),onPinchStart:()=>{gamePerformance.trace(performance.now(),'native-pinch-start',0,{atlasZoom:continuousZoom.current});input.current=zero()}},atlasZoom);
  const [mode,setMode]=useState<Mode>('loading'),[boot,setBoot]=useState(0),[status,setStatus]=useState('Opening game…'),[error,setError]=useState(''),[,refresh]=useState(0),[sprinting,setSprinting]=useState(false);
  const empty=useMemo(()=>{const r=Skia.PictureRecorder();r.beginRecording();const p=r.finishRecordingAsPicture();r.dispose();return p},[]),picture=useSharedValue<SkPicture>(empty);
  const clear=(preserveZoom=false)=>{input.current=zero();sprint.current=false;swing.current=false;fieldKit.cancel();if(!preserveZoom)pinch.cancel();setSprinting(false);if(world.current)clearAttackQueue(world.current)};
- const change=(next:Mode)=>{frameDiagnostics.reset();if(next!=='playing'){pinch.stopAnimation();mapVisible.current=false;continuousZoom.current=playView.current.zoom;setMapOpen(false);atlasZoom.set(1)}gamePerformance.setActivity(next==='playing'?'playing':next==='bag'?'bag':next==='paused'||next==='map'?'paused':next==='error'?'error':'menu',performance.now());if(next==='error')gamePerformance.stop(performance.now(),'Runtime error');modeRef.current=next;enabled.current=next==='playing';if(next!=='paused')setPerformanceOpen(false);setMode(next)};
- const openMap=()=>{gamePerformance.trace(performance.now(),'native-map-button');if(!enabled.current||runtime.current?.travel.busy||!world.current||world.current.phase==='over')return;const c=mapCamera();if(c)animateZoom(.7*Math.min(2.5,c.entry*.5)/c.entry)};
+ const change=(next:Mode)=>{frameDiagnostics.reset();if(next!=='playing'){pinch.stopAnimation();mapVisible.current=false;continuousZoom.current=playView.current.zoom;mapRequested.current=false;setMapOpen(false);atlasZoom.set(continuousZoom.current)}gamePerformance.setActivity(next==='playing'?'playing':next==='bag'?'bag':next==='paused'||next==='map'?'paused':next==='error'?'error':'menu',performance.now());if(next==='error')gamePerformance.stop(performance.now(),'Runtime error');modeRef.current=next;enabled.current=next==='playing';if(next!=='paused')setPerformanceOpen(false);setMode(next)};
+ const openMap=()=>{gamePerformance.trace(performance.now(),'native-map-button');if(!enabled.current||runtime.current?.travel.busy||!world.current||world.current.phase==='over')return;const c=mapCamera();if(c){mapRequested.current=true;animateZoom(MIN_PLAY_ZOOM*Math.min(2.5,c.entry*.5)/c.entry)}};
  const pause=()=>{if(modeRef.current==='playing'||modeRef.current==='bag'||modeRef.current==='map'){clear();change('paused');saveRun()}};
  const bindTravel=(r:Runtime,next:World)=>{
   r.travel?.dispose();world.current=next;if(next.cycle){if(next.weather)next.weather.reducedMotion=r.reduced}else{setWorldTimeOfDay(next,'day',true);setWorldWeather(next,CLEAR_WEATHER,r.reduced)}
@@ -121,8 +127,9 @@ function Game({role,onHome,entryVisible,onBootProgress,onBootError,coop}:{role:S
   session.survivorRole=role;
   bindTravel(r,session);
  };
- const restart=()=>{const r=runtime.current;if(!r)return;gamePerformance.stop(performance.now(),'New Survival run');try{clear();continuousZoom.current=1;mapVisible.current=false;setMapOpen(false);atlasZoom.set(1);playView.current.zoom=1;const session=createCampPlaySession(r.saved.layout,undefined,'survival');session.creativeMode=creativeMode;session.survivorRole=activeRole;bindTravel(r,session);saveBlocked.current=false;setSaveNotice('');change('playing');saveRun(true)}catch(e){setError(String(e));change('error')}};
- const toggleCreative=()=>{const w=world.current;if(coop||modeRef.current!=='paused'||!w?.progression||w.phase==='over')return;const next=!w.creativeMode;w.creativeMode=next;setCreativeMode(next);fieldKit.cancel();refresh(n=>n+1)};
+ const restart=()=>{const r=runtime.current;if(!r)return;gamePerformance.stop(performance.now(),'New Survival run');try{clear();continuousZoom.current=1;mapVisible.current=false;mapRequested.current=false;setMapOpen(false);atlasZoom.set(1);playView.current.zoom=1;const session=createCampPlaySession(r.saved.layout,undefined,'survival');session.creativeMode=creativeMode;session.survivorRole=activeRole;bindTravel(r,session);saveBlocked.current=false;setSaveNotice('');change('playing');saveRun(true)}catch(e){setError(String(e));change('error')}};
+ const toggleFullZoom=()=>{if(modeRef.current!=='paused')return;const next=!fullZoomEnabled.current;fullZoomEnabled.current=next;playView.current.fullZoom=next;if(!next){mapRequested.current=false;playView.current.zoom=Math.max(MIN_PLAY_ZOOM,playView.current.zoom);continuousZoom.current=playView.current.zoom;atlasZoom.set(continuousZoom.current)}setFullZoom(next);void AsyncStorage.setItem(FULL_ZOOM_SETTING_KEY,next?'1':'0').catch(()=>{})};
+  const toggleCreative=()=>{const w=world.current;if(coop||modeRef.current!=='paused'||!w?.progression||w.phase==='over')return;const next=!w.creativeMode;w.creativeMode=next;setCreativeMode(next);fieldKit.cancel();refresh(n=>n+1)};
   const changeCharacter=async(next:SurvivorRoleId)=>{
   const r=runtime.current,w=world.current;
   if(coop||!r||!w||modeRef.current!=='paused'||w.phase==='over'||characterLoading||next===activeRole)return;
@@ -167,7 +174,7 @@ function Game({role,onHome,entryVisible,onBootProgress,onBootError,coop}:{role:S
     // Scene travel changes busy state outside React; keep native recognition current.
     pinch.syncConfig();
     const simulationEnded=tracked?performance.now():0;
-    const current=world.current!,worldCovered=nativeMapCoversWorld(continuousZoom.current,mapReady.current);
+    const current=world.current!,worldCovered=mapVisible.current&&nativeMapCoversWorld(continuousZoom.current,mapReady.current);
     if(!worldCovered&&now-lastTerrain>=200){const size=dimensions.current,c=editorCamera(size.width,size.height,current,playView.current,1);r.outdoor.update({x:c.x,y:c.y,width:size.width/c.scale,height:size.height/c.scale},current.player,!current.scene&&usesPaintedHomeTerrain(current.layout?.terrainImage));current.outdoorReady=r.outdoor.ready;lastTerrain=now}
     const size=dimensions.current,sizeKey=`${size.width}:${size.height}`;
     const drawStarted=tracked?performance.now():0;
@@ -254,7 +261,7 @@ function Game({role,onHome,entryVisible,onBootProgress,onBootError,coop}:{role:S
    onDodge={()=>act(v=>dodgePlayer(v,input.current))}
    onTool={()=>{if(world.current&&(modeRef.current==='playing'||modeRef.current==='bag')&&!runtime.current?.travel.busy)toggleAxe(world.current)}}/></Profiler>}
   {w&&active&&!mapOpen&&!!(status||saveNotice)&&<Pressable style={[s.notice,{top:safe.top+110}]} onPress={()=>{if(status){runtime.current?.outdoor.retry();runtime.current?.travel.retry()}else saveRun()}}><Text style={s.small}>{status||saveNotice}</Text></Pressable>}
-  {w&&active&&<Profiler id="native-map" onRender={profileRender}><NativePlayerMap nativePinch={pinch.registration} presentation={pinch.amount} pinchGesture={pinch.gesture} pinching={pinch.uiPinching} preparation={preparation} diagnostics={gamePerformance} onReady={onMapReady} active={mapOpen} world={world} width={width} height={height} safe={safe} camera={atlasCamera} zoom={atlasZoom} pump={mapPump} onTouchStart={pinch.start} onClose={closeMap}/></Profiler>}
+  {w&&active&&<Profiler id="native-map" onRender={profileRender}><NativePlayerMap nativePinch={pinch.registration} presentation={pinch.amount} pinchGesture={pinch.gesture} pinching={pinch.uiPinching} preparation={preparation} diagnostics={gamePerformance} onReady={onMapReady} active={mapOpen} fullZoom={fullZoom} world={world} width={width} height={height} safe={safe} camera={atlasCamera} zoom={atlasZoom} pump={mapPump} onTouchStart={pinch.start} onClose={closeMap}/></Profiler>}
   {coop&&w&&active&&<View pointerEvents="none" style={{position:'absolute',right:safe.right+12,bottom:safe.bottom+12,backgroundColor:'#071d1ddc',borderRadius:7,paddingHorizontal:9,paddingVertical:5}}><Text style={{color:'#ffe1a5',fontSize:11}}>CO-OP · {coopInfo}</Text></View>}
   {w&&active&&<NativePerformanceOverlay recorder={gamePerformance} top={mapOpen?safe.top+8:safe.top+116} left={mapOpen?safe.left+8:safe.left+16}/>}
    {!active&&mode!=='bag'&&mode!=='map'&&<View style={[s.overlay,{paddingTop:safe.top+20,paddingBottom:safe.bottom+20,paddingLeft:safe.left+20,paddingRight:safe.right+20}]}>{mode==='paused'&&performanceOpen?<NativePerformancePanel recorder={gamePerformance} onStart={startRecording} onBack={()=>setPerformanceOpen(false)} defeated={w?.phase==='over'||saveBlocked.current} wide={wide}/>:<ScrollView style={[s.dialog,wide&&s.dialogWide]} contentContainerStyle={s.dialogContent}>
@@ -272,7 +279,9 @@ function Game({role,onHome,entryVisible,onBootProgress,onBootError,coop}:{role:S
     </View>:mode==='paused'&&<View style={[s.menu,wide&&s.menuWide]}>
      {w?.phase!=='over'&&!saveBlocked.current&&button('Resume',()=>{clear();change('playing');saveRun()},false,wide&&s.menuItem)}
      {!coop&&w?.phase!=='over'&&button('Change character · '+(SURVIVOR_ROLES.find(option=>option.id===activeRole)?.label??'Survivor'),()=>{setCharacterError('');setCharacterOpen(true)},false,wide&&s.menuItem)}
-     {!coop&&w?.phase!=='over'&&button('Creative Mode · '+(creativeMode?'ON':'OFF'),toggleCreative,false,wide&&s.menuItem)}
+     {w?.phase!=='over'&&<Pressable accessibilityRole="switch" accessibilityLabel="Full Zoom" accessibilityState={{checked:fullZoom}} onPress={toggleFullZoom} style={[s.button,wide&&s.menuItem]}><Text style={s.buttonText}>Full Zoom · {fullZoom?'ON':'OFF'}</Text></Pressable>}
+      {fullZoom&&w?.phase!=='over'&&<Text style={s.description}>Pinch out further without opening the map. The map button still works.</Text>}
+      {!coop&&w?.phase!=='over'&&button('Creative Mode · '+(creativeMode?'ON':'OFF'),toggleCreative,false,wide&&s.menuItem)}
       {!coop&&creativeMode&&<Text style={s.description}>Unlimited building supplies · Instant repairs and upgrades. Off restores original quantities.</Text>}
       {button('New Survival run',newRun,false,wide&&s.menuItem)}
      {button('Starting screen',()=>{clear();saveRun();onHome()},false,wide&&s.menuItem)}
