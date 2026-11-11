@@ -11,15 +11,26 @@ export function useEditorAccess(returnTo:string):EditorAccess{
  const [data,setData]=useState<AccessData>({state:'loading'}),[version,setVersion]=useState(0);
  const refresh=useCallback(()=>setVersion(v=>v+1),[]);
  const unlock=useCallback(async()=>{
-  // The browser never receives or asks for a Cloudflare secret. A path-specific
-  // Cloudflare Access application signs the owner in using a one-time email PIN.
-  if(!data.passwordlessConfigured){
-   window.alert('Passwordless publishing needs one-time setup in Cloudflare Zero Trust. Your world edits are already saved on this device. See docs/WORLD-PUBLISHING.md.');
+  // A one-time owner key is configured as the private WORLD_EDITOR_TOKEN Worker
+  // secret. The browser sends it to the server only for the unlock request.
+  // A secure HttpOnly cookie then remembers this device for 90 days.
+  const key=window.prompt('Enter the WORLD_EDITOR_TOKEN you created in Cloudflare (one time on this browser):');
+  if(!key?.trim())return false;
+  try{
+   const response=await fetch('/api/editor-unlock',{
+    method:'POST',headers:{'Content-Type':'application/json'},
+    credentials:'same-origin',body:JSON.stringify({key:key.trim()})
+   });
+   const result=await response.json();
+   if(!response.ok)throw Error(result.error||'Could not unlock publishing.');
+   clearEditorToken();
+   refresh();
+   return true;
+  }catch(error){
+   window.alert(error instanceof Error?error.message:'Could not unlock publishing.');
    return false;
   }
-  window.location.assign('/owner-login');
-  return true;
- },[data.passwordlessConfigured]);
+ },[refresh]);
  const lock=useCallback(async()=>{
   try{await fetch('/api/editor-lock',{method:'POST',credentials:'same-origin'});}
   finally{clearEditorToken();refresh()}
@@ -42,12 +53,10 @@ export function EditorAccessNotice({access}:{access:EditorAccess}){
  const cloudflare=window.location.hostname.endsWith('.workers.dev');
  const unlock=()=>void access.unlock();
  const title=access.state==='loading'?'Checking editing access…':
-  cloudflare?(access.passwordlessConfigured?'Owner sign-in needed':'Owner sign-in setup needed'):
+  cloudflare?'World publishing is locked':
   access.state==='anonymous'?'Sign in to unlock editing':access.state==='viewer'?'This account has read-only access':'Could not check editing access';
  const description=cloudflare?
-  (access.passwordlessConfigured?
-   'Move and save buildings freely. To publish to every player, sign in with your owner email. No publish token is needed.':
-   'Your building changes are saved locally. To publish them online without a token, configure Cloudflare Access once for the owner-only sign-in route.'):
+  'You can move and save buildings locally. Enter your private Cloudflare editor key once on this device to publish the shared world.':
   access.state==='loading'?'Your artwork remains available to preview.':
   access.state==='anonymous'?'Use your ChatGPT owner account to edit images, collision lines and animation settings.':
   access.state==='viewer'?'Sign out, then sign in with the ChatGPT account that owns this site.':
@@ -55,7 +64,7 @@ export function EditorAccessNotice({access}:{access:EditorAccess}){
  return <div className="editor-access" role="status"><LockKeyhole size={19}/><div>
   <strong>{title}</strong><p>{description}</p>
   <div className="editor-access-actions">
-   {cloudflare&&access.passwordlessConfigured&&access.state!=='loading'&&<button type="button" onClick={unlock}><LogIn size={16}/>Sign in to publish</button>}
+   {cloudflare&&access.state!=='loading'&&<button type="button" onClick={unlock}><LogIn size={16}/>Unlock Publishing</button>}
    {!cloudflare&&access.state==='anonymous'&&<a href={access.signInUrl} target="_top"><LogIn size={16}/>Sign in to edit</a>}
    {!cloudflare&&access.state==='viewer'&&<a href={access.signOutUrl} target="_top"><LogIn size={16}/>Sign out to change account</a>}
    {access.state!=='loading'&&<button type="button" onClick={access.refresh}><RefreshCw size={14}/>{access.state==='error'?'Retry access check':'Recheck access'}</button>}

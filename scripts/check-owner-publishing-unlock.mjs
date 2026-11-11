@@ -36,12 +36,13 @@ assert.match(locked.headers.get('Set-Cookie'),/Max-Age=0/);
 assert.equal(editorLockResponse(new Request(origin+'/api/editor-lock',{method:'POST',headers:{Origin:'https://external.example'}})).status,403);
 
 const editor=fs.readFileSync('src/WorldEditor.tsx','utf8');
-assert(editor.includes("canEdit?'Publish World':'Sign in to publish'"),'world settings use owner sign-in');
-assert(editor.includes("canEdit?'Publish & Bundle World':'Sign in to publish'"),'mobile workspace uses owner sign-in');
+assert(editor.includes("canEdit?'Publish World':'Unlock Publishing'"),'world settings offer one-time owner key unlock');
+assert(editor.includes("canEdit?'Publish & Bundle World':'Unlock Publishing'"),'mobile workspace offers one-time owner key unlock');
 assert(!editor.includes("disabled={!canEdit||!ready||busy||terrainBusy||tierBusy} onClick={()=>void save('apply')}"),'locked owners can initiate sign-in from publish button');
 const access=fs.readFileSync('src/EditorAccess.tsx','utf8');
-assert(access.includes("window.location.assign('/owner-login')"),'owner sign-in redirects to Cloudflare Access');
-assert(!access.includes('window.prompt'),'editor does not ask for a Cloudflare publishing token');
+assert(access.includes("fetch('/api/editor-unlock'"),'editor uses existing owner key endpoint');
+assert(access.includes("window.prompt("),'editor requests key only when owner chooses Unlock Publishing');
+assert(access.includes("credentials:'same-origin'"),'unlock request can receive the secure same-origin session cookie');
 assert(!access.includes('sessionStorage.setItem'),'no owner secret stored by client JavaScript');
 
 // Cloudflare Access authentication requires a real RSA signature, exact AUD,

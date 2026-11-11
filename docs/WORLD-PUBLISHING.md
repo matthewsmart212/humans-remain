@@ -1,37 +1,29 @@
-# Publish the Humans Remain world without entering a token
+# Publish the Humans Remain world — simple key setup
 
-The public game is at `https://humans-remain.matthew-smart212.workers.dev`.
+The live game is at https://humans-remain.matthew-smart212.workers.dev .
 
-- **Edit:** Drag buildings, adjust tiers, move props, and save a local draft immediately. This works without sign-in. No other player's world changes until Publish.
-- **Publish World:** Sign in as the owner with Cloudflare Access (email one-time PIN or your chosen identity provider). The server verifies Cloudflare's signed session, then writes the shared layout to D1.
-- **Play:** New game sessions load `/api/published-world`. Running games are not silently moved. Expo/iOS also has cached and bundled offline fallbacks.
+## One-time Cloudflare Worker secret
 
-## One-time Cloudflare Access setup (no publishing key in the editor)
+1. Visit https://dash.cloudflare.com/ and open **Workers & Pages → humans-remain → Settings → Variables and Secrets**.
+2. Add a **Secret** named `WORLD_EDITOR_TOKEN`. Generate a random value **at least 32 characters** long (use a password manager). Save and deploy it. Keep it private and do **not** paste it into GitHub or ChatGPT.
+3. Open the **Cloudflare-hosted** game → **Settings → World editor → World settings → Unlock Publishing**.
+4. Enter the same value **once**. The server returns a secure HttpOnly session cookie that remembers this browser for up to **90 days**.
+5. Move and rotate buildings, move independent upgrade tiers, and press **Save Draft** for local/private work. Press **Publish World** and confirm when ready to update Cloudflare's shared world.
 
-The public game must remain public; **do not protect the whole Worker**.
+The shared world loads for **new** iOS/web game sessions. A running session is not automatically rewritten. Publishing requires owner authentication; anonymous visitors can play but cannot publish.
 
-1. Cloudflare dashboard → **Zero Trust → Access controls → Applications → Add application → Self-hosted**. Make an application for the exact game hostname, with the path `/owner-login` only. If your dashboard offers Worker-level protection, do **not** select it; it would require every player to sign in. Cloudflare supports application-specific path rules.
-2. Allow **only your own email** in the application's Access policy. Enable **One-time PIN** as the identity provider (or use your existing trusted SSO account). Set the application cookie's **Cookie Path Attribute to disabled**, so the signed `CF_Authorization` cookie can be sent to the normal same-host editor API after returning to `/#editor`. Leave HttpOnly enabled.
-3. From the new Access app, copy its **Application Audience (AUD) tag**. Find your **team domain** in Zero Trust (format `https://YOUR-TEAM.cloudflareaccess.com`).
-4. In **Workers & Pages → humans-remain → Settings → Variables and Secrets**, add:
-   - `CF_ACCESS_TEAM_DOMAIN`: full HTTPS team domain.
-   - `CF_ACCESS_AUD`: the application's AUD tag.
-   - `CF_ACCESS_OWNER_EMAIL`: your own exact sign-in email, in a server-only variable/secret.
-   Use encrypted secrets if preferred. The app does not read these values in client JavaScript.
-5. Deploy the latest `main` (normally automatic). In the game, enter **Settings → World editor → World settings → Sign in to publish**. Cloudflare asks for your email PIN once per configured Access session, then returns to the editor. Publishing requires one explicit confirmation.
+### Different tokens
 
-The editor no longer asks you to enter `WORLD_EDITOR_TOKEN`. The old server-side owner-cookie mechanism is retained only as compatibility for sessions already unlocked; **it is not required by the new sign-in**. Until the Access setup above is completed, the world can still be edited and saved locally, but public publishing remains locked. We do not allow an anonymous overwrite of your world.
+- `WORLD_EDITOR_TOKEN`: this is **the one you need** to unlock publishing. It exists only as a Cloudflare Worker secret.
+- `CLOUDFLARE_API_TOKEN`: already used separately by GitHub Actions to deploy the website. **Not** entered into the world editor.
+- `GITHUB_WORLD_SYNC_TOKEN`: optional **server-only** integration to automatically commit the published layout to `native/assets/world-snapshot.json` for iOS offline fallback. Without it, the newly published Cloudflare world still loads for online iOS/web sessions, but the **offline bundled snapshot will not be updated**.
 
-### GitHub snapshot is a separate optional setting
+### Checking your changes
 
-`GITHUB_WORLD_SYNC_TOKEN` is **not** an editor sign-in token. It is an optional server-only fine-grained GitHub credential that commits a newly published world snapshot to `native/assets/world-snapshot.json`. Without this separate server-side integration, **Cloudflare's D1 world still publishes and online iOS/web sessions can load it**, but the offline bundled fallback does **not** automatically update. Configure the token only if you need automatic GitHub snapshot commits, with repository **Contents: read/write** permission. Never expose it in the editor.
+Open `/api/published-world` on the game hostname and verify `updatedAt` after publishing. Start a **new** game session on iPhone while online to see the new placements. If you need to recover local changes, the World editor also offers **Export world**.
 
-## Test the setup
+### Optional alternative
 
-1. Open the public game in a private window: it should launch normally, and unauthorized `PUT /api/world-layout` must return **403**.
-2. Open `/owner-login` as the owner: Cloudflare should present sign-in or reuse the signed session, then redirect to `/#editor`. The **Publish World** control should appear after the access status loads.
-3. Move one building, choose **Save Draft**: it must not change `/api/published-world`.
-4. Choose **Publish World**, confirm: `/api/published-world` must return a newer `updatedAt` and the new position. On iOS, start a fresh run while online and check it loads the updated placement.
-5. Disconnect the network: the previous cached/bundled world should remain available.
+The repository also supports a passwordless Cloudflare Access sign-in through `/owner-login`, but it requires additional Cloudflare configuration. You do **not** need to set that up for the simple key workflow.
 
-A Cloudflare D1 world and any legacy ChatGPT Site's D1 are **different databases**. Publish from the Cloudflare Worker above for all devices.
+The old ChatGPT Site (if still available) and the live Cloudflare Worker use different databases; publish from the Cloudflare-hosted editor.
