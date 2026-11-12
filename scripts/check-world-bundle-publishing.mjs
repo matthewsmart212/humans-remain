@@ -41,7 +41,9 @@ try{
   globalThis.fetch=async url=>{
    const path=new URL(url).pathname;
    if(status===422&&path.endsWith('/git/blobs'))return ok({sha:'new-blob'});
-   return new Response('PRIVATE-GITHUB-ERROR-BODY',{status});
+   // 403 responses with explicit GitHub permission errors should offer a
+   // permissions hint; an unrecognised 403 should not assume the cause.
+   return new Response(status===403?'Resource not accessible by personal access token':'PRIVATE-GITHUB-ERROR-BODY',{status});
   };
   try{
    await publishBundledWorld(layout,[],91,'fake-private-server-token');
