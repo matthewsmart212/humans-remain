@@ -12,7 +12,7 @@ type GitHubRef={object:{sha:string}};
 type GitHubSha={sha:string};
 
 class GitHubResponseError extends Error {
- constructor(readonly status:number,readonly stage:string){
+ constructor(readonly status:number,readonly stage:string,readonly cause:'user-agent'|'permissions'|'rate-limit'|'authentication'|'unknown'='unknown'){
   super('GitHub world sync failed with HTTP '+status+' while '+stage+'.');
  }
 }
@@ -25,7 +25,13 @@ export function explainWorldSyncFailure(error:unknown):string{
  const {status,stage}=error;
  const prefix='GitHub returned HTTP '+status+' while '+stage+'. ';
  if(status===401)return prefix+'The GitHub token is invalid or expired. Replace GITHUB_WORLD_SYNC_TOKEN in Cloudflare with a valid token.';
- if(status===403)return prefix+'Check that the GitHub token has Contents: Read and write for matthewsmart212/humans-remain.';
+ if(status===403){
+  if(error.cause==='user-agent')return prefix+'GitHub rejected the request User-Agent. Update the world publisher before retrying.';
+  if(error.cause==='rate-limit')return prefix+'GitHub is rate limiting requests. Try again later rather than regenerating your token.';
+  if(error.cause==='authentication')return prefix+'GitHub rejected the authentication attempt. Verify GITHUB_WORLD_SYNC_TOKEN in the Cloudflare Production environment.';
+  if(error.cause==='permissions')return prefix+'GitHub says this token cannot write repository contents. Confirm its selected repository and Contents: Read and write permission.';
+  return prefix+'GitHub declined the request. Check Cloudflare Worker logs for the GitHub response category and request ID.';
+ }
  if(status===404)return prefix+'Check the token resource owner and that humans-remain is selected under Repository access.';
  if(status===409||status===422)return prefix+'GitHub rejected the commit update. Retry once; if this repeats, check the repository permissions and Worker logs.';
  if(status===429||status>=500)return prefix+'GitHub may be temporarily unavailable or rate limiting. Retry shortly.';
@@ -36,6 +42,10 @@ async function github<T>(token:string,path:string,method='GET',body?:unknown):Pr
   method,
   headers:{
    'Accept':'application/vnd.github+json',
+   // GitHub requires a valid User-Agent. Cloudflare Worker fetch() does not
+   // guarantee the browser/Node default; missing it causes HTTP 403 even
+   // when the fine-grained token has Contents: write permission.
+   'User-Agent':'HumansRemain-WorldPublisher/1.0',
    'Authorization':'Bearer '+token.trim(),
    'X-GitHub-Api-Version':'2022-11-28',
    ...(body===undefined?{}:{'Content-Type':'application/json'}),
@@ -49,7 +59,17 @@ async function github<T>(token:string,path:string,method='GET',body?:unknown):Pr
    path==='/git/trees'?'building the new world snapshot tree':
    path==='/git/commits'?'creating the world snapshot commit':
    path==='/git/refs/heads/main'?'updating the main branch':'calling GitHub';
-  throw new GitHubResponseError(response.status,stage);
+  // Classify GitHub's error without exposing a token, full response body,
+  // or other potentially private API details to the browser.
+  const bodyText=(await response.text().catch(()=>'')).slice(0,4096);
+  const reason:GitHubResponseError['cause']=
+   /user.agent/i.test(bodyText)?'user-agent':
+   /rate.limit|too many requests|abuse detection/i.test(bodyText)?'rate-limit':
+   /resource not accessible|permission|not permitted/i.test(bodyText)?'permissions':
+   /bad credentials|authentication|token invalid/i.test(bodyText)?'authentication':'unknown';
+  const requestId=(response.headers.get('x-github-request-id')||'').replace(/[^a-zA-Z0-9:-]/g,'').slice(0,80);
+  console.warn('GitHub world sync rejected:',{status:response.status,stage,reason,requestId});
+  throw new GitHubResponseError(response.status,stage,reason);
  }
  return await response.json() as T;
 }

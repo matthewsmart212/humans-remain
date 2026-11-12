@@ -12,6 +12,7 @@ globalThis.fetch=async(url,options)=>{
  const path=new URL(url).pathname;
  calls.push({path,options});
  assert.equal(options.headers.Authorization,'Bearer fake-private-server-token');
+ assert.equal(options.headers['User-Agent'],'HumansRemain-WorldPublisher/1.0','Worker always sends the User-Agent GitHub requires');
  if(path.endsWith('/git/blobs'))return ok({sha:'new-blob'});
  if(path.endsWith('/git/ref/heads/main'))return ok({object:{sha:'base-commit'}});
  if(path.endsWith('/git/commits/base-commit'))return ok({sha:'base-commit',tree:{sha:'base-tree'}});
@@ -52,6 +53,15 @@ try{
    assert(!message.includes('PRIVATE-GITHUB-ERROR-BODY'));
    assert(!message.includes('fake-private-server-token'));
   }
+ }
+ // A GitHub error explicitly complaining about User-Agent must be
+ // classified without leaking the provider response body.
+ globalThis.fetch=async()=>new Response(JSON.stringify({message:'User-Agent required'}),{status:403});
+ try{
+  await publishBundledWorld(layout,[],91,'fake-private-server-token');
+  assert.fail('Missing User-Agent rejection should fail');
+ }catch(error){
+  assert.match(explainWorldSyncFailure(error),/User-Agent/);
  }
  assert.match(explainWorldSyncFailure(new Error('network error')),/could not be reached/);
  console.log('Bundled world GitHub publisher: verified authenticated commits and safe HTTP diagnostics.');
