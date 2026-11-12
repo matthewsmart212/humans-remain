@@ -4,7 +4,7 @@ import {build} from 'esbuild';
 // Exercise the real Worker publisher without contacting GitHub or using secrets.
 const result=await build({entryPoints:['server/world-bundle.ts'],bundle:true,write:false,platform:'node',format:'esm',target:'node22'});
 const moduleUrl='data:text/javascript;base64,'+Buffer.from(result.outputFiles[0].text).toString('base64');
-const {publishBundledWorld}=await import(moduleUrl);
+const {publishBundledWorld,explainWorldSyncFailure}=await import(moduleUrl);
 const calls=[];
 const originalFetch=globalThis.fetch;
 const ok=value=>Response.json(value);
@@ -34,5 +34,25 @@ try{
  const patch=JSON.parse(calls[5].options.body);
  assert.deepEqual(patch,{sha:'new-commit',force:false});
  await assert.rejects(()=>publishBundledWorld(layout,[],91,''),/not been configured/);
- console.log('Bundled world GitHub publisher: validated blob, tree, non-force main commit and server-only token.');
+ // Report a useful diagnostic, but never reveal the secret, GitHub's
+ // response body or private repository metadata to the editor.
+ for(const [status,fragment] of [[401,'invalid or expired'],[403,'Contents: Read and write'],[404,'Repository access'],[422,'rejected the commit update']]){
+  globalThis.fetch=async url=>{
+   const path=new URL(url).pathname;
+   if(status===422&&path.endsWith('/git/blobs'))return ok({sha:'new-blob'});
+   return new Response('PRIVATE-GITHUB-ERROR-BODY',{status});
+  };
+  try{
+   await publishBundledWorld(layout,[],91,'fake-private-server-token');
+   assert.fail('Expected GitHub sync to fail');
+  }catch(error){
+   const message=explainWorldSyncFailure(error);
+   assert.match(message,new RegExp(fragment,'i'));
+   assert.match(message,new RegExp('HTTP '+status));
+   assert(!message.includes('PRIVATE-GITHUB-ERROR-BODY'));
+   assert(!message.includes('fake-private-server-token'));
+  }
+ }
+ assert.match(explainWorldSyncFailure(new Error('network error')),/could not be reached/);
+ console.log('Bundled world GitHub publisher: verified authenticated commits and safe HTTP diagnostics.');
 }finally{globalThis.fetch=originalFetch}

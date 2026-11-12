@@ -5,7 +5,7 @@ import {readArtwork} from './artwork';
 import {assetMapWithImports} from '../src/imported-art';
 import {validateLayout} from '../src/world-layout';
 import {validTerrainBorder} from '../src/terrain-limits';
-import {publishBundledWorld} from './world-bundle';
+import {publishBundledWorld,explainWorldSyncFailure} from './world-bundle';
 type Statement={bind:(...values:unknown[])=>Statement;all:()=>Promise<{results:any[]}>;run:()=>Promise<any>};
 /** Current server artwork overrides the baseline registered in the bundled release. */
 async function worldRecords(DB:{prepare:(sql:string)=>Statement}){
@@ -67,7 +67,7 @@ export async function handleWorldLayout(request:Request,DB:{prepare:(sql:string)
     return json({revision:v.revision+1,updatedAt:at,bundle:'published',commit});
    }catch(error){
     console.error('Bundled world publishing failed',error);
-    return json({revision:v.revision+1,updatedAt:at,bundle:'failed',bundleMessage:'Cloudflare world published, but the iOS bundled snapshot could not be updated. Retry Publish World.'});
+    return json({revision:v.revision+1,updatedAt:at,bundle:'failed',bundleMessage:explainWorldSyncFailure(error)});
    }
   }
   return json({revision:v.revision+1,updatedAt:at});

@@ -12,9 +12,24 @@ type GitHubRef={object:{sha:string}};
 type GitHubSha={sha:string};
 
 class GitHubResponseError extends Error {
- constructor(readonly status:number){
-  super('GitHub could not update the bundled world (HTTP '+status+').');
+ constructor(readonly status:number,readonly stage:string){
+  super('GitHub world sync failed with HTTP '+status+' while '+stage+'.');
  }
+}
+
+/** Return a user-safe diagnostic without forwarding GitHub response bodies,
+ * credentials, request headers or repository content to the browser. */
+export function explainWorldSyncFailure(error:unknown):string{
+ if(!(error instanceof GitHubResponseError))
+  return 'GitHub could not be reached while syncing the offline iOS snapshot. Check Cloudflare Worker logs or retry once.';
+ const {status,stage}=error;
+ const prefix='GitHub returned HTTP '+status+' while '+stage+'. ';
+ if(status===401)return prefix+'The GitHub token is invalid or expired. Replace GITHUB_WORLD_SYNC_TOKEN in Cloudflare with a valid token.';
+ if(status===403)return prefix+'Check that the GitHub token has Contents: Read and write for matthewsmart212/humans-remain.';
+ if(status===404)return prefix+'Check the token resource owner and that humans-remain is selected under Repository access.';
+ if(status===409||status===422)return prefix+'GitHub rejected the commit update. Retry once; if this repeats, check the repository permissions and Worker logs.';
+ if(status===429||status>=500)return prefix+'GitHub may be temporarily unavailable or rate limiting. Retry shortly.';
+ return prefix+'Check the token repository permissions and Cloudflare Worker logs.';
 }
 async function github<T>(token:string,path:string,method='GET',body?:unknown):Promise<T>{
  const response=await fetch(api+path,{
@@ -27,7 +42,15 @@ async function github<T>(token:string,path:string,method='GET',body?:unknown):Pr
   },
   ...(body===undefined?{}:{body:JSON.stringify(body)}),
  });
- if(!response.ok)throw new GitHubResponseError(response.status);
+ if(!response.ok){
+  const stage=path==='/git/blobs'?'creating the world snapshot':
+   path==='/git/ref/heads/main'?'reading the main branch':
+   path.startsWith('/git/commits/')?'reading the latest commit':
+   path==='/git/trees'?'building the new world snapshot tree':
+   path==='/git/commits'?'creating the world snapshot commit':
+   path==='/git/refs/heads/main'?'updating the main branch':'calling GitHub';
+  throw new GitHubResponseError(response.status,stage);
+ }
  return await response.json() as T;
 }
 
