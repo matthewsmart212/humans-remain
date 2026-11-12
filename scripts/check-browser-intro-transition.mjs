@@ -24,7 +24,10 @@ check(app.includes("if(!audioActivated.current)enableAudio();"),'skipping an unp
 check(app.includes("audioActivated.current=true;startMusic.current?.(true)"),'shared player preserves audio recovery when activated');
 check(app.includes("const onContinue=()=>beginEntry('continue')"),'Continue shares the full title transition');
 check(app.includes("if(!introRevealStarted.current)setIntroUiPhase('revealing')"),'Continue animates the real menu into view');
-check(app.includes("src={INTRO_URL} preload=\"auto\""),'intro movie preloads before button tap');
+check(app.includes("src={introRequested?INTRO_URL:undefined} preload={introRequested?'auto':'none'}"),'intro movie buffers only after Watch Intro is selected');
+check(app.includes("else setIntroRequested(true);"),'Watch tap queues cinematic buffering during the four-second logo transition');
+check(app.includes("player.src=MENU_LOOP_URL;"),'menu video loads only at Continue or cinematic handoff');
+check(app.includes("preload=\"none\" loop"),'soundtrack does not load its 11 MB audio before user action');
 check(app.includes("setIntroNeedsGesture(true)"),'Safari policy error does not skip the cinematic');
 check(app.includes('TAP TO BEGIN THE RECLAMATION'), 'blocked video can resume with user gesture');
 check(app.includes("watchPressed.current?' is-transitioning'"),'splash remains faded after the handoff, without resetting text or logo');
@@ -43,4 +46,9 @@ check(css.includes('hr-intro-title-logo-reduced'),'reduced-motion path has no fo
 check(html.includes('/src/main.tsx'),'actual browser entry mounts the updated app');
 const gate=fs.readFileSync('src/AssetWorldGate.tsx','utf8');
 check(gate.includes("import GameStart from './GameStart'"),'browser entry uses GameStart, not native OpeningFlow');
+check(gate.includes("lazy(()=>import('./WorldEditor'))"),'full Skia world bundle is deferred until player requests it');
+check(gate.includes("if(!request||ready)return;"),'published world artwork is not fetched at title screen load');
+check(gate.includes("onBack={()=>open('editor')}"),'World Editor remains accessible via starting screen settings');
+check(gate.includes("onPlay={()=>open('play')}"),'Play triggers lazy world hydration');
+check(gate.includes("if(action==='play')controls.current.play();"),'deferred Play is forwarded once the editor is mounted');
 console.log('PASS: browser silent Watch transition, movie-playing audio trigger, Continue tap audio, title animation, Safari fallback and menu handoff.');

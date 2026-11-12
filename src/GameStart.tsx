@@ -31,6 +31,9 @@ export default function GameStart({onPlay,onBack,busy,notice,playDisabled,loadin
  const [openingStage,setOpeningStage]=useState<'pending'|'playing'|'done'>(()=>hasVisitedMenuThisPage?'done':'pending');
  const [introUiPhase,setIntroUiPhase]=useState<IntroUiPhase>(()=>hasVisitedMenuThisPage?'shown':'hidden');
  const [introHasFrame,setIntroHasFrame]=useState(false);
+ // Defer decoding the 25 MB cinematic until Watch Intro is selected.
+ // The four-second title transition gives Safari time to buffer its first frame.
+ const [introRequested,setIntroRequested]=useState(false);
  const [skipVisible,setSkipVisible]=useState(true);
  const skipHideAt=useRef(5),skipLocked=useRef(false);
  const [handoffRequested,setHandoffRequested]=useState(false);
@@ -127,8 +130,12 @@ export default function GameStart({onPlay,onBack,busy,notice,playDisabled,loadin
   if(reducedRef.current||!motionRef.current){setMenuFrameReady(true);return}
   const player=menuVideo.current;
   if(!player){setMenuFailed(true);return}
-  // Menu video is muted, so browsers allow the prewarmed player to start
-  // as the closing frame arrives even without a second user gesture.
+  // Never preload the 8 MB menu video behind the welcome splash. Request it
+  // only when the player presses Continue or the film reaches its outro.
+  if(!player.getAttribute('src')){
+   player.src=MENU_LOOP_URL;
+   player.load();
+  }
   void player.play().catch(()=>setMenuFailed(true));
  };
  const finishToMenu=()=>{
@@ -143,7 +150,7 @@ export default function GameStart({onPlay,onBack,busy,notice,playDisabled,loadin
   const player=introVideo.current;
   if(!player){finishToMenu();return}
   // Intro narration must not begin until the full four-second title animation
-  // finishes. The media element has preloaded from the initial page mount.
+  // finishes. Preloading starts when Watch Intro is pressed.
   player.currentTime=0;
   void player.play().catch(()=>{
    // Safari may require a fresh gesture to play narrated video after a timer.
@@ -164,6 +171,7 @@ export default function GameStart({onPlay,onBack,busy,notice,playDisabled,loadin
   // Continue starts music on the tap. Watch Intro's four-second title
   // transition is silent; only the movie's playing event enables music.
   if(choice==='continue')enableAudio();
+  else setIntroRequested(true);
   introRevealStarted.current=false;
   setIntroUiPhase('hidden');
   const bounds=introLogo.current?.getBoundingClientRect();
@@ -217,13 +225,18 @@ export default function GameStart({onPlay,onBack,busy,notice,playDisabled,loadin
   // Skipping a film that never played still gives the menu its soundtrack.
   if(!audioActivated.current)enableAudio();
   introVideo.current?.pause();
+  // Drop the inactive movie from the DOM after the handoff so iPhone Safari
+  // can reclaim its decoder and memory while the menu loop is playing.
+  setIntroRequested(false);
  },[handoffRequested,menuFrameReady,menuFailed]);
  // Returning from the game should resume the menu loop rather than show
  // another splash screen, but never autoplay the intro on initial load.
  useEffect(()=>{
   if(phase!=='menu'||!profile.motion||reduced)return;
   const video=menuVideo.current;
-  if(video?.paused)void video.play().catch(()=>setMenuFailed(true));
+  if(!video)return;
+  if(!video.getAttribute('src'))playMenuVideo();
+  else if(video.paused)void video.play().catch(()=>setMenuFailed(true));
  },[phase,profile.motion,reduced]);
  useEffect(()=>{
   const sync=()=>{
@@ -244,15 +257,15 @@ export default function GameStart({onPlay,onBack,busy,notice,playDisabled,loadin
  return createPortal(<div className="game-start" onKeyDown={e=>e.stopPropagation()}
   style={{opacity:phase==='landing'||phase==='transition'||visualsReady?1:0,transition:'opacity 180ms ease-out',...(loadingProgress===1?{backgroundColor:'transparent',backgroundImage:'none'}:{})}}>
   <div className="game-start-media" aria-hidden="true">
-   <audio ref={soundtrack} src={SOUNDTRACK_URL} preload="auto" loop/>
+   <audio ref={soundtrack} src={SOUNDTRACK_URL} preload="none" loop/>
    <video ref={menuVideo} className="game-start-scene"
     style={{opacity:menuFrameReady||phase==='menu'?1:0}}
-    src={MENU_LOOP_URL} poster={MENU_POSTER_URL} loop muted playsInline preload="auto"
+    poster={MENU_POSTER_URL} loop muted playsInline preload="none"
     onPlaying={()=>setMenuFrameReady(true)}
     onError={()=>setMenuFailed(true)}/>
    <video ref={introVideo} className="game-start-intro-scene"
     style={{opacity:phase==='watching'&&introHasFrame?1:0}}
-    src={INTRO_URL} preload="auto" playsInline
+    src={introRequested?INTRO_URL:undefined} preload={introRequested?'auto':'none'} playsInline
     onPlaying={()=>{setIntroHasFrame(true);setIntroNeedsGesture(false);enableAudio()}}
     onTimeUpdate={onIntroTime}
     onEnded={finishToMenu}
