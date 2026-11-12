@@ -36,7 +36,7 @@ async function github<T>(token:string,path:string,method='GET',body?:unknown):Pr
   method,
   headers:{
    'Accept':'application/vnd.github+json',
-   'Authorization':'Bearer '+token,
+   'Authorization':'Bearer '+token.trim(),
    'X-GitHub-Api-Version':'2022-11-28',
    ...(body===undefined?{}:{'Content-Type':'application/json'}),
   },
