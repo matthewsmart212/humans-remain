@@ -13,32 +13,32 @@
   },
   {
     "name": "warehouse-full",
-    "width": 384,
-    "height": 384,
-    "bytes": 19754
+    "width": 768,
+    "height": 768,
+    "bytes": 159064
   },
   {
     "name": "warehouse-empty",
-    "width": 384,
-    "height": 384,
-    "bytes": 17912
+    "width": 768,
+    "height": 768,
+    "bytes": 142154
   },
   {
     "name": "warehouse-half",
-    "width": 384,
-    "height": 384,
-    "bytes": 18568
+    "width": 768,
+    "height": 768,
+    "bytes": 147020
   },
   {
     "name": "warehouse-broken",
-    "width": 384,
-    "height": 384,
-    "bytes": 16928
+    "width": 768,
+    "height": 768,
+    "bytes": 143710
   },
   {
     "name": "warehouse-light",
-    "width": 384,
-    "height": 384,
-    "bytes": 18166
+    "width": 768,
+    "height": 768,
+    "bytes": 137300
   }
 ]
