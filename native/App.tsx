@@ -14,7 +14,7 @@ import {continuousMapCamera} from '../src/continuous-zoom';
 import React,{Profiler,useCallback,useEffect,useMemo,useRef,useState} from 'react';
 import {View,Text,Pressable,ScrollView,StyleSheet,AppState,StatusBar,Alert,useWindowDimensions,AccessibilityInfo,Platform,PixelRatio,type StyleProp,type ViewStyle} from 'react-native';
 import {SafeAreaProvider,useSafeAreaInsets} from 'react-native-safe-area-context';
-import {Canvas,Picture,Skia,type SkPicture} from '@shopify/react-native-skia';
+import {Canvas,Group,Picture,Skia,type SkPicture} from '@shopify/react-native-skia';
 import {useSharedValue} from 'react-native-reanimated';
 import {GestureHandlerRootView,GestureDetector} from 'react-native-gesture-handler';
 import * as Haptics from 'expo-haptics';
@@ -33,6 +33,7 @@ import {SceneResourceCache} from '../src/scene-resources';
 import {SceneTravel} from '../src/scene-travel';
 import {SCENES} from '../src/world-scenes';
 import {createNativeRenderer,PLAY_VIEW} from './game-renderer';
+import {gameCanvasLayout} from './game-canvas';
 import {createZoomStore} from './play-zoom';
 import {useNativePlayZoom} from './use-native-play-zoom';
 import {NativePinchSurface} from './NativePinchSurface';
@@ -77,6 +78,12 @@ function Game({role,onHome,entryVisible,onBootProgress,onBootError,coop}:{role:S
   const [fullZoom,setFullZoom]=useState(false),fullZoomEnabled=useRef(false),mapRequested=useRef(false);
   const [characterOpen,setCharacterOpen]=useState(false),[characterLoading,setCharacterLoading]=useState(false),[characterError,setCharacterError]=useState('');
  const {width,height}=useWindowDimensions(),safe=useSafeAreaInsets(),dimensions=useRef({width,height});dimensions.current={width,height};
+ // Draw the world at no more than two pixels per point, as web does. The
+ // Picture stays in screen points; only the Canvas drawable becomes smaller.
+ const gameCanvas=useMemo(()=>{
+  const layout=gameCanvasLayout(width,height,PixelRatio.get());
+  return{...layout,frame:{position:'absolute',left:0,top:0,width:layout.width,height:layout.height,transformOrigin:'left top',transform:[{scaleX:layout.scaleX},{scaleY:layout.scaleY}]} satisfies ViewStyle,picture:[{scaleX:1/layout.scaleX},{scaleY:1/layout.scaleY}]};
+ },[width,height]);
  const world=useRef<World|null>(null),runtime=useRef<Runtime|null>(null),input=useRef(zero()),sprint=useRef(false),swing=useRef(false),enabled=useRef(false),modeRef=useRef<Mode>('loading');
  const playView=useRef({...PLAY_VIEW});
   useEffect(()=>{let live=true;void AsyncStorage.getItem(FULL_ZOOM_SETTING_KEY).then(value=>{if(!live)return;const next=value==='1';fullZoomEnabled.current=next;playView.current.fullZoom=next;setFullZoom(next)}).catch(()=>{});return()=>{live=false}},[]);
@@ -109,7 +116,7 @@ function Game({role,onHome,entryVisible,onBootProgress,onBootError,coop}:{role:S
  const frameDiagnostics=useMemo(()=>new NativeFrameDiagnostics(gamePerformance),[gamePerformance]);
  const [performanceOpen,setPerformanceOpen]=useState(false);
  const profileRender:React.ProfilerOnRenderCallback=(id,phase,actualDuration,_baseDuration,startTime)=>{if(gamePerformance.recording&&actualDuration>=4)gamePerformance.trace(startTime,'native-react-commit',actualDuration,{id,phase,atlasZoom:continuousZoom.current,mapVisible:mapVisible.current})};
- const startRecording=()=>{if(world.current?.phase==='over'||saveBlocked.current)return;gamePerformance.start(performance.now(),{platform:Platform.OS,osVersion:Platform.Version,developmentBuild:__DEV__,sourceAtMetroStart:{commit:process.env.EXPO_PUBLIC_GAME_SOURCE_COMMIT??'unavailable',trackedChanges:process.env.EXPO_PUBLIC_GAME_SOURCE_DIRTY??'unknown',capturedAt:process.env.EXPO_PUBLIC_GAME_SOURCE_CAPTURED_AT??'unavailable',scope:'Metro startup snapshot; restart Metro after pulling or editing code before a comparison run.'},jsEngine:typeof (globalThis as {HermesInternal?:unknown}).HermesInternal==='object'?'Hermes':'unknown',reactNativeVersion:Platform.constants.reactNativeVersion,renderer:'native-skia-picture',pixelRatio:PixelRatio.get(),renderPixelRatio:Math.min(2,PixelRatio.get()),viewport:dimensions.current,worldUpdatedAt:runtime.current?.saved.layout.updatedAt,worldRevision:runtime.current?.saved.revision,overlayEnabled:gamePerformance.overlay,nativeDiagnosticsRevision:'ios-native-smoothness-v2',nativeSaveFormat:'split-layouts-v2',sharedPreparationBudget:true,reactProfilerAvailable:__DEV__,uiCadenceAvailable:true});clear();change('playing')};
+ const startRecording=()=>{if(world.current?.phase==='over'||saveBlocked.current)return;gamePerformance.start(performance.now(),{platform:Platform.OS,osVersion:Platform.Version,developmentBuild:__DEV__,sourceAtMetroStart:{commit:process.env.EXPO_PUBLIC_GAME_SOURCE_COMMIT??'unavailable',trackedChanges:process.env.EXPO_PUBLIC_GAME_SOURCE_DIRTY??'unknown',capturedAt:process.env.EXPO_PUBLIC_GAME_SOURCE_CAPTURED_AT??'unavailable',scope:'Metro startup snapshot; restart Metro after pulling or editing code before a comparison run.'},jsEngine:typeof (globalThis as {HermesInternal?:unknown}).HermesInternal==='object'?'Hermes':'unknown',reactNativeVersion:Platform.constants.reactNativeVersion,renderer:'native-skia-picture',pixelRatio:PixelRatio.get(),renderPixelRatio:Math.min(2,PixelRatio.get()),canvasPixelRatio:gameCanvasLayout(dimensions.current.width,dimensions.current.height,PixelRatio.get()).density,viewport:dimensions.current,worldUpdatedAt:runtime.current?.saved.layout.updatedAt,worldRevision:runtime.current?.saved.revision,overlayEnabled:gamePerformance.overlay,nativeDiagnosticsRevision:'ios-native-smoothness-v2',nativeSaveFormat:'split-layouts-v2',sharedPreparationBudget:true,reactProfilerAvailable:__DEV__,uiCadenceAvailable:true});clear();change('playing')};
  const pinch=useNativePlayZoom({enabled:()=>enabled.current&&!runtime.current?.travel?.busy,getZoom:()=>continuousZoom.current,minimumZoom:()=>fullZoomEnabled.current&&!mapRequested.current?FULL_PLAY_ZOOM:(mapCamera()?.minimum??MIN_PLAY_ZOOM),onGestureEnd:settleZoom,setZoom:zoom=>applyZoom(zoom,false),onPinchStart:()=>{gamePerformance.trace(performance.now(),'native-pinch-start',0,{atlasZoom:continuousZoom.current});input.current=zero()}},atlasZoom);
  const [mode,setMode]=useState<Mode>('loading'),[boot,setBoot]=useState(0),[status,setStatus]=useState('Opening game…'),[error,setError]=useState(''),[,refresh]=useState(0),[sprinting,setSprinting]=useState(false);
  const empty=useMemo(()=>{const r=Skia.PictureRecorder();r.beginRecording();const p=r.finishRecordingAsPicture();r.dispose();return p},[]),picture=useSharedValue<SkPicture>(empty);
@@ -248,7 +255,9 @@ function Game({role,onHome,entryVisible,onBootProgress,onBootError,coop}:{role:S
  const act=(fn:(world:World)=>unknown)=>{if(!enabled.current||runtime.current?.travel.busy||!world.current)return;fn(world.current);refresh(n=>n+1)};
  const wide=width>600;
  const button=(label:string,onPress:()=>void,disabled=false,style?:StyleProp<ViewStyle>)=><Pressable accessibilityRole="button" disabled={disabled} onPress={onPress} style={[s.button,disabled&&s.disabled,style]}><Text style={s.buttonText}>{label}</Text></Pressable>;
- return <GestureDetector gesture={pinch.gesture}><View style={s.root} collapsable={false}><StatusBar hidden/><Canvas pointerEvents="none" style={StyleSheet.absoluteFill}><Picture picture={picture}/></Canvas>
+ return <GestureDetector gesture={pinch.gesture}><View style={s.root} collapsable={false}><StatusBar hidden/>{gameCanvas.reduced
+   ?<View pointerEvents="none" collapsable={false} style={gameCanvas.frame}><Canvas pointerEvents="none" style={StyleSheet.absoluteFill}><Group transform={gameCanvas.picture}><Picture picture={picture}/></Group></Canvas></View>
+   :<Canvas pointerEvents="none" style={StyleSheet.absoluteFill}><Picture picture={picture}/></Canvas>}
   <NativeUiFrameProbe recorder={gamePerformance} active={active}/>
   <NativeDeviceContextProbe recorder={gamePerformance} active={active}/>
   <NativePinchSurface registration={pinch.registration}><View collapsable={false} style={StyleSheet.absoluteFill} onTouchStart={pinch.start}/></NativePinchSurface>

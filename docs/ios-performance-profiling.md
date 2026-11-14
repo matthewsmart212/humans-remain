@@ -71,6 +71,23 @@ uses approximate wall-clock conversion; inspect `clockAlignment` and
 `deliveryDelayMs`. Pausing/stopping discards incomplete or undelivered batches;
 the aggregate reports observed coverage, not a complete UI-frame trace.
 
+## Game canvas resolution
+
+React Native Skia allocates a Canvas drawable at the full screen scale, which is
+three pixels per point on most iPhones. The world renderer's camera, detail
+levels and terrain streams already assume at most two, as the web canvas does.
+`native/game-canvas.ts` therefore lays the game Canvas out at two thirds of the
+screen on those phones and enlarges it with a view transform, so the drawable
+holds two pixels per point: 1704×786 instead of 2556×1179 on an iPhone 15, about
+44% of the pixels. The Picture stays in screen points and the HUD, map and menus
+keep full density. Phones at two pixels per point or fewer are unchanged.
+
+Recordings report this as `canvasPixelRatio` in the metadata. Recordings made
+before this change drew the canvas at `pixelRatio`, so do not compare across it
+without saying so. To try another cap, change `GAME_CANVAS_MAX_DENSITY`.
+`check-native-game-canvas.mjs` checks the layout arithmetic only; the frame-rate
+effect and the look of the enlarged image have not been measured on an iPhone.
+
 ## Keep profiling from becoming the bottleneck
 
 Recording is opt-in. Typed frame buffers are allocated once before resuming and
