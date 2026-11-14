@@ -1100,9 +1100,9 @@
     "family": "Workshop",
     "tier": 1,
     "name": "Camp workshop",
-    "appearance": "Open-front timber workshop with weathered plank roof, a corrugated metal repair panel, vise and hand tools. Includes the log stack, crates and chopping block from the approved camp mockup.",
+    "appearance": "Open-front timber workshop with a patched shingle roof, tool bench, log shelter, crates and sharpening grindstone.",
     "purpose": "Basic tools, repairs and construction recipes without specialist buildings.",
-    "states": "One transparent static workshop sprite with its supporting props. Approach the bench from the open front; no separate roof or crafting menu yet.",
+    "states": "Broken workshop until repaired. Repaired workshop has a sixteen-frame idle loop with swaying lanterns, pulsing light and a slowly rotating grindstone surface.",
     "batch": "B1",
     "footprint": "560 × 560 world-unit sprite canvas; blocker follows the solid base, not the roof.",
     "lot": "768x736",
@@ -1145,28 +1145,70 @@
       "roofFrontLayer": "Single open-front workshop sprite; automatic transparency can reveal characters behind it. No enterable interior or separate roof layer."
     },
     "assetSpec": {
-      "dimensions": "1254 × 1254 px; transparent PNG.",
+      "dimensions": "627 × 627 px; transparent WebP frames.",
       "scale": "560 world units wide at 100%; resize in the editor.",
       "groundAnchor": "0.52, 0.90 in normalized source coordinates.",
-      "source": "/survival/camp-workshop-v1/camp-workshop.png",
+      "source": "/survival/camp-workshop-v2/idle-00.webp",
       "crop": null,
       "states": [
         {
-          "name": "idle",
-          "method": "Single static sprite; supporting props included."
+          "name": "repaired",
+          "method": "16-frame idle loop, 240 ms per frame."
+        },
+        {
+          "name": "broken",
+          "method": "Matching ruined sprite on the same canvas and ground anchor."
         }
       ]
     },
     "blockers": [],
-    "image": "/survival/camp-workshop-v1/camp-workshop.png",
+    "image": "/survival/camp-workshop-v2/idle-00.webp",
     "artworkExports": [
-      "/survival/camp-workshop-v1/camp-workshop.png"
+      "/survival/camp-workshop-v2/idle-00.webp",
+      "/survival/camp-workshop-v2/idle-01.webp",
+      "/survival/camp-workshop-v2/idle-02.webp",
+      "/survival/camp-workshop-v2/idle-03.webp",
+      "/survival/camp-workshop-v2/idle-04.webp",
+      "/survival/camp-workshop-v2/idle-05.webp",
+      "/survival/camp-workshop-v2/idle-06.webp",
+      "/survival/camp-workshop-v2/idle-07.webp",
+      "/survival/camp-workshop-v2/idle-08.webp",
+      "/survival/camp-workshop-v2/idle-09.webp",
+      "/survival/camp-workshop-v2/idle-10.webp",
+      "/survival/camp-workshop-v2/idle-11.webp",
+      "/survival/camp-workshop-v2/idle-12.webp",
+      "/survival/camp-workshop-v2/idle-13.webp",
+      "/survival/camp-workshop-v2/idle-14.webp",
+      "/survival/camp-workshop-v2/idle-15.webp",
+      "/survival/camp-workshop-v2/broken.webp"
     ],
     "sourceReferences": [
-      "/survival/camp-workshop-v1/camp-workshop.png"
+      "/survival/camp-workshop-v1/camp-workshop.png",
+      "/survival/camp-workshop-v2/idle-00.webp",
+      "/survival/camp-workshop-v2/broken.webp"
     ],
     "artPreview": {
-      "worldWidth": 560
+      "worldWidth": 560,
+      "frames": [
+        "/survival/camp-workshop-v2/idle-00.webp",
+        "/survival/camp-workshop-v2/idle-01.webp",
+        "/survival/camp-workshop-v2/idle-02.webp",
+        "/survival/camp-workshop-v2/idle-03.webp",
+        "/survival/camp-workshop-v2/idle-04.webp",
+        "/survival/camp-workshop-v2/idle-05.webp",
+        "/survival/camp-workshop-v2/idle-06.webp",
+        "/survival/camp-workshop-v2/idle-07.webp",
+        "/survival/camp-workshop-v2/idle-08.webp",
+        "/survival/camp-workshop-v2/idle-09.webp",
+        "/survival/camp-workshop-v2/idle-10.webp",
+        "/survival/camp-workshop-v2/idle-11.webp",
+        "/survival/camp-workshop-v2/idle-12.webp",
+        "/survival/camp-workshop-v2/idle-13.webp",
+        "/survival/camp-workshop-v2/idle-14.webp",
+        "/survival/camp-workshop-v2/idle-15.webp"
+      ],
+      "fps": 4.166666666666667,
+      "animationMode": "loop"
     },
     "evidence": "Standalone artwork made from the approved camp mockup. Registered in the asset library and world editor."
   },

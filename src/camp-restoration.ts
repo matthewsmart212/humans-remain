@@ -1,4 +1,5 @@
 import {WORKSITE_ROOT} from './camp-worksites-art';
+import {WORKSHOP_BROKEN_IMAGE} from './workshop-animation-art';
 import type {World} from './survival-engine';
 import type {MaterialCost} from './forge-recipes';
 import {HQ_SOUTH_RUIN,HQ_SOUTH_RUIN_INTERIOR} from './headquarters-south-art';
@@ -18,6 +19,7 @@ export const CAMP_REPAIRS:Record<CampBuildingId,{name:string;assetId:string;leve
 };
 export const BROKEN_CAMP_ART=Object.fromEntries(CAMP_BUILDING_IDS.map(id=>[id,id==='headquarters'?HQ_SOUTH_RUIN:id==='furnace'||id==='warehouse'?`${WORKSITE_ROOT}/${id}-broken.webp`:`/survival/camp-ruins-v1/${id}.webp`])) as Record<CampBuildingId,string>;
 export const BROKEN_HQ_INTERIOR=HQ_SOUTH_RUIN_INTERIOR;
+BROKEN_CAMP_ART.workshop=WORKSHOP_BROKEN_IMAGE;
 export function campBuildingId(assetId:string):CampBuildingId|undefined{
  if(['art_camp_garden_broken','art_camp_garden_t1','art_camp_garden_t2','art_camp_garden_t3'].includes(assetId))return 'garden';
  return CAMP_BUILDING_IDS.find(id=>CAMP_REPAIRS[id].assetId===assetId);
