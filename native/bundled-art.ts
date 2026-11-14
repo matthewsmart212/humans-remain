@@ -2,8 +2,10 @@
 export const BUNDLED_ART:Record<string,number>={
  "/survival/headquarters-v3/repaired-interior.webp":require("./../public/survival/headquarters-v3/repaired-interior.webp"),
  "/survival/headquarters-v3/broken-interior.webp":require("./../public/survival/headquarters-v3/broken-interior.webp"),
+ "/survival/headquarters-v3/broken-interior-unlit.webp":require("./../public/survival/headquarters-v3/broken-interior-unlit.webp"),
  "/survival/headquarters-v3/repaired-exterior.webp":require("./../public/survival/headquarters-v3/repaired-exterior.webp"),
  "/survival/headquarters-v3/broken-exterior.webp":require("./../public/survival/headquarters-v3/broken-exterior.webp"),
+ "/survival/headquarters-v3/broken-exterior-unlit.webp":require("./../public/survival/headquarters-v3/broken-exterior-unlit.webp"),
  "/survival/headquarters-v2/broken-interior.webp":require("./../public/survival/headquarters-v2/broken-interior.webp"),
  "/survival/headquarters-v2/broken-exterior.webp":require("./../public/survival/headquarters-v2/broken-exterior.webp"),
  "/survival/headquarters-v2/repaired-interior.webp":require("./../public/survival/headquarters-v2/repaired-interior.webp"),

@@ -14,8 +14,8 @@ export const HQ_SOUTH_FOOTING=HQ_SOUTH_ROOT+'/rooted-footing-v6.webp';
  * parts of the building, so they follow owner transforms without new blockers. */
 export const HQ_FOUNDATION_DRESSING:readonly {image:string;rect:readonly [number,number,number,number]}[]=[];
 export const HQ_SOUTH_ROOF=HQ_V3_ROOT+'/repaired-exterior.webp';
-export const HQ_SOUTH_RUIN=HQ_V3_ROOT+'/broken-exterior.webp';
-export const HQ_SOUTH_RUIN_INTERIOR=HQ_V3_ROOT+'/broken-interior.webp';
+export const HQ_SOUTH_RUIN=HQ_V3_ROOT+'/broken-exterior-unlit.webp';
+export const HQ_SOUTH_RUIN_INTERIOR=HQ_V3_ROOT+'/broken-interior-unlit.webp';
 export const HQ_SOUTH_ANCHOR:[number,number]=[.5,.94];
 // Ground contact, not the elevated top edge of a wall. The centre doorway
 // and the steps are deliberately absent from the blocking outlines.
