@@ -1,11 +1,11 @@
 import type {ArtworkRecord} from './artwork-model';
-/** Five matching transparent frames, with light levels from low to high. */
+/** Five pixel-aligned frames from one repaired master; only the lantern glass varies subtly. */
 export const TREATMENT_ART_ROOT='/survival/camp-treatment-v2';
 export const TREATMENT_IDLE_FRAMES=Array.from({length:5},(_,i)=>`${TREATMENT_ART_ROOT}/idle-0${i}.webp`);
 export const TREATMENT_PULSE_FRAMES=[0,1,2,3,4,3,2,1].map(i=>TREATMENT_IDLE_FRAMES[i]);
 export const TREATMENT_BROKEN_IMAGE=`${TREATMENT_ART_ROOT}/broken.webp`;
-export const TREATMENT_ANIMATION_FPS=4;
-const TREATMENT_FRAME_BYTES=[199304,206862,183542,184962,209030];
+export const TREATMENT_ANIMATION_FPS=3;
+const TREATMENT_FRAME_BYTES=[1041448,1041610,1041626,1041108,1041294];
 
 /** Upgrade original treatment artwork, preserving later custom uploads and placement geometry. */
 export function resolveTreatmentArtwork(record:ArtworkRecord):ArtworkRecord{
