@@ -4,33 +4,33 @@
     "sourceId": "2401745e-7f2d-4a8c-b6da-7351bc248ca7",
     "url": "/survival/camp-structures-v3/bunker-0.webp",
     "name": "bunker-0.webp",
-    "width": 1312,
-    "height": 1199,
-    "bytes": 1520152,
+    "width": 896,
+    "height": 819,
+    "bytes": 142924,
     "frames": [
       {
         "sourceId": "2401745e-7f2d-4a8c-b6da-7351bc248ca7",
         "url": "/survival/camp-structures-v3/bunker-0.webp",
         "name": "bunker-0.webp",
-        "width": 1312,
-        "height": 1199,
-        "bytes": 1520152
+        "width": 896,
+        "height": 819,
+        "bytes": 142924
       },
       {
         "sourceId": "c3ca8339-9c06-46f9-bbdd-ffe6b58d5376",
         "url": "/survival/camp-structures-v3/bunker-1.webp",
         "name": "bunker-1.webp",
-        "width": 1312,
-        "height": 1199,
-        "bytes": 1512280
+        "width": 896,
+        "height": 819,
+        "bytes": 142690
       },
       {
         "sourceId": "588cd1b0-8ac3-4283-a358-e6e86bd2ba10",
         "url": "/survival/camp-structures-v3/bunker-2.webp",
         "name": "bunker-2.webp",
-        "width": 1312,
-        "height": 1199,
-        "bytes": 1503248
+        "width": 896,
+        "height": 819,
+        "bytes": 142936
       }
     ]
   },

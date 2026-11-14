@@ -169,3 +169,9 @@ public/survival/expedition-menu-v2/loading-panel.webp -filter -diff -merge
 
 # Illustrated intro button is a small normal Git blob for Cloudflare and Expo.
 /public/survival/intro-ui/skip.webp -filter -diff -merge -text
+
+# Approved paired bunker sprites: store real WebP bytes for Cloudflare and Expo (no Git LFS pointers).
+/public/survival/camp-structures-v3/bunker-0.webp -filter -diff -merge -text
+/public/survival/camp-structures-v3/bunker-1.webp -filter -diff -merge -text
+/public/survival/camp-structures-v3/bunker-2.webp -filter -diff -merge -text
+/public/survival/camp-ruins-v1/bunker.webp -filter -diff -merge -text
