@@ -15,30 +15,30 @@
     "name": "warehouse-full",
     "width": 768,
     "height": 768,
-    "bytes": 159064
+    "bytes": 131442
   },
   {
     "name": "warehouse-empty",
     "width": 768,
     "height": 768,
-    "bytes": 142154
+    "bytes": 111730
   },
   {
     "name": "warehouse-half",
     "width": 768,
     "height": 768,
-    "bytes": 147020
+    "bytes": 116680
   },
   {
     "name": "warehouse-broken",
     "width": 768,
     "height": 768,
-    "bytes": 143710
+    "bytes": 112126
   },
   {
     "name": "warehouse-light",
     "width": 768,
     "height": 768,
-    "bytes": 137300
+    "bytes": 110494
   }
 ]
