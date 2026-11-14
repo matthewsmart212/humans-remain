@@ -3,10 +3,10 @@ import {HQ_SOUTH_INTERIOR,HQ_SOUTH_COLLISION} from './headquarters-south-art';
 import {HEADQUARTERS_PLACEMENT_ID} from './headquarters-south-placement';
 import {placementBounds,placementPoint,type Placement,type WorldLayout} from './world-layout';
 
-/** One-time HQ v2 migration: the planning table is baked into the new sprite.
+/** HQ artwork migration: the planning table is baked into the aligned sprite.
  * Only the two original HQ furniture pieces and auto-added dressing are retired. */
 export function replaceHeadquartersFurnitureWithTable(layout:WorldLayout):WorldLayout{
- if(layout.headquartersArtworkVersion===1||ASSET_BY_ID.get('base_shelter_t1')?.image!==HQ_SOUTH_INTERIOR)return layout;
+ if(layout.headquartersArtworkVersion===2||ASSET_BY_ID.get('base_shelter_t1')?.image!==HQ_SOUTH_INTERIOR)return layout;
  const hall=layout.items.find(p=>p.id===HEADQUARTERS_PLACEMENT_ID&&p.assetId==='base_shelter_t1');
  if(!hall)return layout;
  const b=placementBounds(hall);
@@ -20,5 +20,5 @@ export function replaceHeadquartersFurnitureWithTable(layout:WorldLayout):WorldL
   if(oldIds.has(p.id)||p.id.startsWith('hq-props-v1-'))return false;
   return !(inHall(p)&&(p.assetId==='art_hq_storage_chest'||p.assetId==='art_camp_planning_board'));
  }).map(p=>p.id===hall.id?{...p,collision:HQ_SOUTH_COLLISION}:p);
- return {...layout,headquartersArtworkVersion:1,items,updatedAt:new Date().toISOString()};
+ return {...layout,headquartersArtworkVersion:2,items,updatedAt:new Date().toISOString()};
 }

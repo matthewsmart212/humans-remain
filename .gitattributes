@@ -47,6 +47,8 @@ docs/qa/circular-wall-ne-v3/**/*.jpeg -filter -diff -merge -text
 /public/survival/headquarters-south-v1/** -filter -diff -merge -text
 # Ship HQ v2 as real WebP blobs for browser/CDN and Expo, not LFS pointers.
 /public/survival/headquarters-v2/*.webp -filter -diff -merge -text
+# HQ v3 is a four-state atlas cut into aligned, real WebP files (not Git LFS pointers).
+/public/survival/headquarters-v3/*.webp -filter -diff -merge -text
 /docs/qa/headquarters-south-v1/** -filter -diff -merge -text
 /docs/qa/headquarters-cutaway-v2/** -filter -diff -merge -text
 

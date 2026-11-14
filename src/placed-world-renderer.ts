@@ -1,7 +1,7 @@
 import {drawBuildingCondition} from './building-condition-renderer';
-import {headquartersCutawayAmount,clipHeadquartersLayer} from './headquarters-cutaway';
+import {headquartersCutawayAmount} from './headquarters-cutaway';
 import {headquartersWallMasks,clipWallsOutsideHeadquarters} from './headquarters-wall-mask';
-import {HQ_SOUTH_INTERIOR,HQ_FOUNDATION_DRESSING,HQ_SOUTH_GROUND_OPACITY} from './headquarters-south-art';
+import {HQ_SOUTH_INTERIOR} from './headquarters-south-art';
 import {headquartersRoofBottom,withinRoofApproach,headquartersRaidVisible} from './headquarters-roof';
 import {campBuildingArt} from './camp-restoration';
 import {drawProgressionMarkers} from './progression-renderer';
@@ -104,14 +104,11 @@ export function placedDrawables(ctx:CanvasRenderingContext2D,imgs:Record<string,
   // retain their original pixels through the ordinary image path.
   const animatePlant=!!a.foliage&&(viewport?.scale??1)>=.42&&!!w.foliageMotions?.[p.id];
   const drawBase=()=>{if(southHQ){
-   const ground=a.ground,soil=ground&&imgs[assetImageKey(ground.image)];
-   if(ground&&soil){const [x,y,width,height]=ground.rect;ctx.save();ctx.globalAlpha*=HQ_SOUTH_GROUND_OPACITY;ctx.drawImage(soil,b.x+x*b.width,b.y+y*b.height,width*b.width,height*b.height);ctx.restore()}
+   // All four HQ sprites use the same canvas, footprint, table and stairs.
+   // Draw one complete interior below actors; never splice mismatched upper/lower
+   // image regions (the former hard seam left a square cut out of the façade).
    drawCampContact(ctx,p,a);
-   if(!roofImage){ctx.drawImage(im,b.x,b.y,b.width,b.height);return}
-   ctx.save();clipHeadquartersLayer(ctx,b,false);ctx.drawImage(roofImage,b.x,b.y,b.width,b.height);ctx.restore();
-   // Growth crosses the masonry's lower silhouette instead of outlining it.
-   for(const detail of HQ_FOUNDATION_DRESSING){const growth=imgs[assetImageKey(detail.image)];if(!growth)continue;const [x,y,width,height]=detail.rect;ctx.drawImage(growth,b.x+x*b.width,b.y+y*b.height,width*b.width,height*b.height)}
-   ctx.save();clipHeadquartersLayer(ctx,b,true);ctx.drawImage(im,b.x,b.y,b.width,b.height);ctx.restore();
+   ctx.drawImage(im,b.x,b.y,b.width,b.height);
    return;
   }if(drawPotatoPatch(ctx,imgs,w,p))return;if(restoration){const ruin=imgs[assetImageKey(restoration.image)];if(ruin){ctx.drawImage(ruin,b.x,b.y,b.width,b.height);return}}if(drawCampFurnace(ctx,imgs,w,p))return;if(drawWarehouse(ctx,imgs,w,p))return;if(drawForagePlant(ctx,imgs,w,p))return;if(drawTree(ctx,im,w,p))return;if(drawMineableRock(ctx,im,w,p,a.crop))return;if(a.puddle){drawPuddle(ctx,im,w,p,a);return}if(a.foliage){drawFoliage(ctx,im,w,p,a,animatePlant);return}drawCampContact(ctx,p,a);ctx.save();const [px,py]=placementPoint(p,w.player.x,w.player.y,true);if((p.allowTransparency??placementGeometryAsset(p)?.allowTransparency)!==false&&!a.interior&&py<p.y&&py>b.y&&Math.abs(px-p.x)<b.width*.3)ctx.globalAlpha=.6;
    if(p.role==='hearth'&&!placedFireLit(w,p)&&a.unlit){const off=imgs[assetImageKey(a.unlit)];if(off){const anchor=a.unlitAnchor||[627,1190],size=a.unlitSize||[1254,1254];ctx.drawImage(off,p.frame?b.x:p.x-anchor[0]/size[0]*b.width,p.frame?b.y:p.y-anchor[1]/size[1]*b.height,b.width,b.height)}else ctx.drawImage(im,...a.crop as [number,number,number,number],b.x,b.y,b.width,b.height)}
@@ -126,9 +123,8 @@ export function placedDrawables(ctx:CanvasRenderingContext2D,imgs:Record<string,
    const rect=a.roofRect||[0,0,a.crop[2],a.crop[3]];
    out.push({roof:true,y:100000,draw:()=>{
     ctx.save();ctx.globalAlpha=southHQ?1-cutaway:revealRoof?.08:1;
-    // The roof sprites already paint their own doorway and jambs. An additional
-    // polygon cut-out erases the front façade into a visibly square hole.
-    if(southHQ)clipHeadquartersLayer(ctx,b,true);
+    // The roof/exterior is complete artwork, including its own doorway.
+    // Fade the whole matching sprite over the room rather than masking a square.
     const bottom=southHQ?undefined:headquartersRoofBottom(p);
     if(bottom!==undefined){ctx.beginPath();ctx.moveTo(b.x,b.y);ctx.lineTo(b.x+b.width,b.y);ctx.lineTo(b.x+b.width,bottom);ctx.lineTo(b.x,bottom);ctx.closePath();ctx.clip()}
     ctx.drawImage(roofImage,b.x+rect[0]/a.crop[2]*b.width,b.y+rect[1]/a.crop[3]*b.height,rect[2]/a.crop[2]*b.width,rect[3]/a.crop[3]*b.height);ctx.restore();
