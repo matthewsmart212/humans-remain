@@ -1,5 +1,6 @@
 import {CAMP_RESTORATION_ART} from './camp-restoration-art';
 import {WORKSHOP_NATIVE_ART} from './workshop-animation-art';
+import {FURNACE_NATIVE_ART} from './furnace-animation-art';
 import {HOUND_NATIVE_ART} from './hound-art';
 import {BRUTE_NATIVE_ART} from './brute-art';
 import {WALKER_NATIVE_ART} from './walker-art';
@@ -57,7 +58,7 @@ export async function createNativeRenderer(view:EditorView={...PLAY_VIEW},diagno
  const loader=createArtworkLoader<SkImage>(async(url,signal)=>{
   const started=diagnostics?.recording?performance.now():undefined,session=diagnostics?.session,key=(keyByUrl.get(url)||'unmapped-artwork').slice(0,96);
   try{
-  const module=WORKSHOP_NATIVE_ART[url]??HUNTER_NATIVE_ART[url]??ENGINEER_NATIVE_ART[url]??HOUND_NATIVE_ART[url]??BRUTE_NATIVE_ART[url]??SKITTER_NATIVE_ART[url]??WALKER_NATIVE_ART[url]??FORAGE_NATIVE_ART[url]??provisionModules[url]??BOW_NATIVE_ART[url]??(CAMP_RESTORATION_ART[url]??BUNDLED_ART[url])??BACKPACK_NATIVE_ART[url],a=module?Asset.fromModule(module):Asset.fromURI(url.startsWith('/')?WORLD_URL+url:url);
+  const module=FURNACE_NATIVE_ART[url]??WORKSHOP_NATIVE_ART[url]??HUNTER_NATIVE_ART[url]??ENGINEER_NATIVE_ART[url]??HOUND_NATIVE_ART[url]??BRUTE_NATIVE_ART[url]??SKITTER_NATIVE_ART[url]??WALKER_NATIVE_ART[url]??FORAGE_NATIVE_ART[url]??provisionModules[url]??BOW_NATIVE_ART[url]??(CAMP_RESTORATION_ART[url]??BUNDLED_ART[url])??BACKPACK_NATIVE_ART[url],a=module?Asset.fromModule(module):Asset.fromURI(url.startsWith('/')?WORLD_URL+url:url);
   await loadingDeadline(a.downloadAsync(),45000,signal);
   const data=await loadingDeadline(Skia.Data.fromURI(a.localUri||a.uri),45000,signal);
   try{const image=Skia.Image.MakeImageFromEncoded(data);if(!image)throw Error('An artwork image could not open.');if(started!==undefined)diagnostics!.trace(started,'native-artwork-load',performance.now()-started,{key,mode:'skia-encoded',width:image.width(),height:image.height()},session);return image}finally{data.dispose()}
