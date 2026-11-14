@@ -3,6 +3,7 @@ import {refineCampVegetation} from './camp-vegetation';
 import {placeSouthFacingHeadquarters} from './headquarters-south-placement';
 import {expandHeadquartersSpace} from './headquarters-space';
 import {fitHeadquartersInterior} from './headquarters-interior';
+import {replaceHeadquartersFurnitureWithTable} from './headquarters-table-upgrade';
 import {addCampIronworks} from './ironworks-planting';
 import {addApprovedCampGarden} from './camp-garden-placement';
 import {placeFurnaceByWorkshop} from './camp-furnace-placement';
@@ -30,5 +31,5 @@ const upgrades:[string,(layout:WorldLayout)=>WorldLayout][]=[
  ['Outskirts',addApprovedCampOutskirts],['River',addApprovedCampRiver],['Woodland',refineApprovedWoodlandZones],
  ['World planting',addApprovedWorldPlanting],['Fringe',addApprovedCampFringe],['Tree variants',addApprovedTreeVariants],['Foraging',addForagingPlants],['Wild potatoes',addWildPotatoes],['Ironworks',addCampIronworks],['Furnace',placeFurnaceByWorkshop],['Garden',addApprovedCampGarden],['Vegetation',refineCampVegetation],['Worksites',placeCampWorksites]];
 export function prepareAuthoredWorld(layout:WorldLayout):WorldLayout{
- return expandHeadquartersSpace(fitHeadquartersInterior(placeSouthFacingHeadquarters(upgrades.reduce((world,[name,upgrade])=>{try{return upgrade(world)}catch(e){const error=e instanceof Error?e:Error(String(e));error.message=`${name}: ${error.message}`;throw error}},layout))));
+ return replaceHeadquartersFurnitureWithTable(expandHeadquartersSpace(fitHeadquartersInterior(placeSouthFacingHeadquarters(upgrades.reduce((world,[name,upgrade])=>{try{return upgrade(world)}catch(e){const error=e instanceof Error?e:Error(String(e));error.message=`${name}: ${error.message}`;throw error}},layout)))));
 }

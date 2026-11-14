@@ -109,7 +109,7 @@ export function plansForBuilding(w:World,id:HQBuildingId){return headquartersPla
 export function equipmentInventory(w:World,id:GearKind){const g=gear(w);return{pack:g.bag[id]??0,stored:g.chest[id]??0}}
 export function discoveries(w:World){
  const p=w.progression,entries:{id:string;title:string;body:string;image:string}[]=[];
- if(!p||p.briefed)entries.push({id:'camp',title:'The old camp',body:'A planning bench, useful workstations and unfinished places to restore.',image:HQ_BENCH_ART});
+ if(!p||p.briefed)entries.push({id:'camp',title:'The old camp',body:'A central planning table, useful workstations and unfinished places to restore.',image:HQ_BENCH_ART});
  if(p&&campAccessLevel(w)>=2)entries.push({id:'camp-expanded',title:'A working camp',body:'Headquarters has access to metalworking plans. Restoring the furnace enables metal equipment at the workshop.',image:HQ_BENCH_ART});
  if(p?.repairPart)entries.push({id:'bellows',title:'Recovered furnace bellows',body:'The salvaged bellows came with smelting notes for the camp furnace.',image:'/survival/camp-craft-v2/furnace-idle.webp'});
  if(p?.furnaceRestored)entries.push({id:'furnace',title:'Metalworking restored',body:'Ore and scrap can now become iron ingots at the furnace.',image:'/survival/ironworks-v1/iron-ingot.png'});

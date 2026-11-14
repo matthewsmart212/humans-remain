@@ -248,7 +248,7 @@ export function shootBow(w:World){
  if(w.bruteGrab)return false;
  const p=w.player,t=timeOf(w),spec=BOW_SHOT;
  if(p.equipped!=='bow'||!hasGear(w,'bow')||w.phase==='over'||p.hp<=0||p.downedUntil||w.dodge||w.stationPanel||w.bowShot||t<w.attackReady)return false;
- if((gear(w).bag.arrows??0)<1){w.notice='No arrows · Restock at the headquarters chest';w.noticeUntil=t+2;return false}
+ if((gear(w).bag.arrows??0)<1){w.notice='No arrows · Craft more at the workshop';w.noticeUntil=t+2;return false}
  stepBowLock(w,true);
  const locked=bowLockTarget(w);
  let angle=DIRECTION_ANGLES[p.direction];
