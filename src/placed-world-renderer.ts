@@ -1,5 +1,5 @@
 import {drawBuildingCondition} from './building-condition-renderer';
-import {headquartersCutawayAmount,clipHeadquartersLayer,clipHeadquartersDoorway} from './headquarters-cutaway';
+import {headquartersCutawayAmount,clipHeadquartersLayer} from './headquarters-cutaway';
 import {headquartersWallMasks,clipWallsOutsideHeadquarters} from './headquarters-wall-mask';
 import {HQ_SOUTH_INTERIOR,HQ_SOUTH_RUIN,HQ_FOUNDATION_DRESSING,HQ_SOUTH_GROUND_OPACITY} from './headquarters-south-art';
 import {headquartersRoofBottom,withinRoofApproach,headquartersRaidVisible} from './headquarters-roof';
@@ -126,7 +126,9 @@ export function placedDrawables(ctx:CanvasRenderingContext2D,imgs:Record<string,
    const rect=a.roofRect||[0,0,a.crop[2],a.crop[3]];
    out.push({roof:true,y:100000,draw:()=>{
     ctx.save();ctx.globalAlpha=southHQ?1-cutaway:revealRoof?.08:1;
-    if(southHQ){clipHeadquartersLayer(ctx,b,true);clipHeadquartersDoorway(ctx,b,restoration?.roof===HQ_SOUTH_RUIN,true)}
+    // The roof sprites already paint their own doorway and jambs. An additional
+    // polygon cut-out erases the front façade into a visibly square hole.
+    if(southHQ)clipHeadquartersLayer(ctx,b,true);
     const bottom=southHQ?undefined:headquartersRoofBottom(p);
     if(bottom!==undefined){ctx.beginPath();ctx.moveTo(b.x,b.y);ctx.lineTo(b.x+b.width,b.y);ctx.lineTo(b.x+b.width,bottom);ctx.lineTo(b.x,bottom);ctx.closePath();ctx.clip()}
     ctx.drawImage(roofImage,b.x+rect[0]/a.crop[2]*b.width,b.y+rect[1]/a.crop[3]*b.height,rect[2]/a.crop[2]*b.width,rect[3]/a.crop[3]*b.height);ctx.restore();
