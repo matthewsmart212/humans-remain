@@ -1,6 +1,7 @@
 import {WORKSITE_ROOT} from './camp-worksites-art';
 import {WORKSHOP_BROKEN_IMAGE} from './workshop-animation-art';
 import {FURNACE_BROKEN_IMAGE} from './furnace-animation-art';
+import {TREATMENT_BROKEN_IMAGE} from './treatment-animation-art';
 import type {World} from './survival-engine';
 import type {MaterialCost} from './forge-recipes';
 import {HQ_SOUTH_RUIN,HQ_SOUTH_RUIN_INTERIOR} from './headquarters-south-art';
@@ -22,6 +23,7 @@ export const BROKEN_CAMP_ART=Object.fromEntries(CAMP_BUILDING_IDS.map(id=>[id,id
 export const BROKEN_HQ_INTERIOR=HQ_SOUTH_RUIN_INTERIOR;
 BROKEN_CAMP_ART.workshop=WORKSHOP_BROKEN_IMAGE;
 BROKEN_CAMP_ART.furnace=FURNACE_BROKEN_IMAGE;
+BROKEN_CAMP_ART.treatment=TREATMENT_BROKEN_IMAGE;
 export function campBuildingId(assetId:string):CampBuildingId|undefined{
  if(['art_camp_garden_broken','art_camp_garden_t1','art_camp_garden_t2','art_camp_garden_t3'].includes(assetId))return 'garden';
  return CAMP_BUILDING_IDS.find(id=>CAMP_REPAIRS[id].assetId===assetId);

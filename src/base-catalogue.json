@@ -1026,7 +1026,7 @@
     "name": "Treatment centre",
     "appearance": "Open-front olive and tan canvas recovery shelter with timber posts, low beds, blankets, bandage chest, washbasin and a lantern. Clear central approach between the beds.",
     "purpose": "The camp treatment shelter, with beds and supplies. Healing gameplay is not connected yet.",
-    "states": "One transparent static shelter sprite with its supporting props. No treatment menu or healing mechanics added.",
+    "states": "Broken treatment centre until repaired; repaired centre has a gentle eight-step lantern shimmer from five aligned frames. Healing gameplay is not yet connected.",
     "batch": "B3",
     "footprint": "208 × 160 world units (proposed)",
     "lot": "480x416",
@@ -1050,7 +1050,7 @@
     "testScope": "Artwork, catalogue registration, editor geometry and clear central approach verified. Treatment gameplay is not implemented.",
     "conceptApproved": true,
     "exportComplete": true,
-    "artReadiness": "Transparent treatment-centre artwork ready to place; treatment gameplay pending.",
+    "artReadiness": "Transparent broken and repaired artwork with a lantern animation, integrated into the camp and world editor.",
     "recordType": "buildable structure",
     "buildMenuVisibility": "World editor",
     "improvement": "The camp treatment shelter, with beds and supplies. Healing gameplay is not connected yet.",
@@ -1069,28 +1069,54 @@
       "roofFrontLayer": "Single open-front sprite with normal character-reveal transparency; no separate roof."
     },
     "assetSpec": {
-      "dimensions": "1536 × 1024 px, transparent lossless WebP.",
+      "dimensions": "1254 × 1254 px, transparent WebP.",
       "scale": "680 world units wide at 100%; resize in the editor.",
       "groundAnchor": "0.50, 0.87 in normalized source coordinates.",
-      "source": "/survival/camp-essentials-v1/treatment-centre.webp",
+      "source": "/survival/camp-treatment-v2/idle-00.webp",
       "crop": null,
       "states": [
         {
-          "name": "idle",
-          "method": "Static open-front treatment shelter."
+          "name": "broken",
+          "method": "Torn and dark treatment tent used by the existing repair flow."
+        },
+        {
+          "name": "repaired",
+          "method": "Five fixed-perspective sprites loop back and forth for gentle lantern glow."
         }
       ]
     },
     "blockers": [],
-    "image": "/survival/camp-essentials-v1/treatment-centre.webp",
+    "image": "/survival/camp-treatment-v2/idle-00.webp",
     "artworkExports": [
-      "/survival/camp-essentials-v1/treatment-centre.webp"
+      "/survival/camp-treatment-v2/idle-00.webp",
+      "/survival/camp-treatment-v2/idle-01.webp",
+      "/survival/camp-treatment-v2/idle-02.webp",
+      "/survival/camp-treatment-v2/idle-03.webp",
+      "/survival/camp-treatment-v2/idle-04.webp",
+      "/survival/camp-treatment-v2/broken.webp"
     ],
     "sourceReferences": [
-      "/survival/camp-essentials-v1/treatment-centre.webp"
+      "/survival/camp-treatment-v2/idle-00.webp",
+      "/survival/camp-treatment-v2/idle-01.webp",
+      "/survival/camp-treatment-v2/idle-02.webp",
+      "/survival/camp-treatment-v2/idle-03.webp",
+      "/survival/camp-treatment-v2/idle-04.webp",
+      "/survival/camp-treatment-v2/broken.webp"
     ],
     "artPreview": {
-      "worldWidth": 680
+      "worldWidth": 680,
+      "frames": [
+        "/survival/camp-treatment-v2/idle-00.webp",
+        "/survival/camp-treatment-v2/idle-01.webp",
+        "/survival/camp-treatment-v2/idle-02.webp",
+        "/survival/camp-treatment-v2/idle-03.webp",
+        "/survival/camp-treatment-v2/idle-04.webp",
+        "/survival/camp-treatment-v2/idle-03.webp",
+        "/survival/camp-treatment-v2/idle-02.webp",
+        "/survival/camp-treatment-v2/idle-01.webp"
+      ],
+      "fps": 4,
+      "animationMode": "loop"
     },
     "evidence": "Illustrated asset based on the approved camp mockup, available in the asset library and world editor."
   },

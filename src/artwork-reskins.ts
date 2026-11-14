@@ -1,6 +1,7 @@
 import {resolveWorksiteWarehouse} from './camp-worksites-art';
 import {resolveAnimationDefaults} from './asset-animation-defaults';
 import {resolveWorkshopArtwork} from './workshop-animation-art';
+import {resolveTreatmentArtwork} from './treatment-animation-art';
 import type {ArtworkRecord} from './artwork-model';
 import manifest from './wall-artwork-replacements.json';
 import campManifest from './camp-artwork-replacements.json';
@@ -13,7 +14,7 @@ const replacements=[...manifest,...campManifest] as {entryId:string;sourceId:str
  * anchors and world dimensions remain authoritative; future uploads take priority.
  */
 export function resolveArtworkReskin(record:ArtworkRecord):ArtworkRecord{
- record=resolveWorkshopArtwork(resolveSouthHeadquarters(resolveAnimationDefaults(record)));
+ record=resolveTreatmentArtwork(resolveWorkshopArtwork(resolveSouthHeadquarters(resolveAnimationDefaults(record))));
  const worksite=resolveWorksiteWarehouse(record);if(worksite!==record)return worksite;
  // Registered ground-edge refreshes retain the original architectural pixels.
  // Animated bunker frames are an all-or-nothing match so a later owner upload
