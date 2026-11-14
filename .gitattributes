@@ -115,6 +115,7 @@ docs/qa/headquarters-doorway-v5/*.webp -filter -diff -merge
 /public/survival/camp-craft-v2/warehouse-empty.webp -filter -diff -merge -text
 /public/survival/camp-craft-v2/warehouse-full.webp -filter -diff -merge -text
 /public/survival/camp-craft-v2/warehouse-half.webp -filter -diff -merge -text
+/public/survival/camp-craft-v2/warehouse-light.webp -filter -diff -merge -text
 /public/survival/camp-worksites-v3/furnace-ruined.webp -filter -diff -merge -text
 /public/survival/camp-worksites-v3/furnace.webp -filter -diff -merge -text
 /public/survival/camp-worksites-v3/warehouse-empty.webp -filter -diff -merge -text

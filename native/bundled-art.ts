@@ -51,6 +51,7 @@ export const BUNDLED_ART:Record<string,number>={
  "/survival/camp-craft-v2/warehouse-empty.webp":require("./../public/survival/camp-craft-v2/warehouse-empty.webp"),
  "/survival/camp-craft-v2/warehouse-full.webp":require("./../public/survival/camp-craft-v2/warehouse-full.webp"),
  "/survival/camp-craft-v2/warehouse-half.webp":require("./../public/survival/camp-craft-v2/warehouse-half.webp"),
+ "/survival/camp-craft-v2/warehouse-light.webp":require("./../public/survival/camp-craft-v2/warehouse-light.webp"),
  "/survival/camp-essentials-v1/treatment-centre.webp":require("./../public/survival/camp-essentials-v1/treatment-centre.webp"),
  "/survival/camp-foundations-v2/wall-1.webp":require("./../public/survival/camp-foundations-v2/wall-1.webp"),
  "/survival/camp-foundations-v2/wall-2.webp":require("./../public/survival/camp-foundations-v2/wall-2.webp"),

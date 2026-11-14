@@ -37,11 +37,11 @@
   {
     "entryId": "misc_ceaf1a05-5426-45df-8a51-d3e2e07c6f9f",
     "sourceId": "511df250-f10f-4b4e-8b9d-f091fe490070",
-    "url": "/survival/camp-structures-v3/warehouse.webp",
-    "name": "warehouse.webp",
-    "width": 1254,
-    "height": 1254,
-    "bytes": 1540246,
+    "url": "/survival/camp-craft-v2/warehouse-full.webp",
+    "name": "warehouse-full.webp",
+    "width": 384,
+    "height": 384,
+    "bytes": 19754,
     "frames": []
   }
 ]

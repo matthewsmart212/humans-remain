@@ -1,4 +1,4 @@
-import {FURNACE_COLLISION} from './camp-worksites-art';
+import {FURNACE_COLLISION,WAREHOUSE_ARTWORK,WAREHOUSE_ASSET_ID} from './camp-worksites-art';
 import {restorationImages} from './camp-restoration';
 import {withSouthHeadquartersGeometry,HQ_SOUTH_INTERIOR,HQ_FOUNDATION_DRESSING} from './headquarters-south-art';
 import {IRONWORKS_WORLD_ART,FURNACE_ID} from './ironworks-data';
@@ -110,6 +110,9 @@ export const ASSET_BY_ID=new Map(WORLD_ASSETS.map(a=>[a.id,a]));
 export const TREE_LOG_IMAGE='/survival/world-scenery-v1/hollow-birch-log.webp';
 export const assetImageKey=(url:string)=>'placed:'+url;
 export function requiredImages(assetIds:string[],terrain?:{url:string},options:{animationFrames?:boolean}={}){const out:Record<string,string>=terrain&&!usesPaintedHomeTerrain(terrain)?{[assetImageKey(terrain.url)]:terrain.url}:{};for(const id of new Set(assetIds)){const a=ASSET_BY_ID.get(id);if(!a)continue;const frames=options.animationFrames===false?[a.frames?.[0],a.openFrames?.[0]]:[...(a.frames||[]),...(a.openFrames||[])];for(const url of [...restorationImages(id),a.image,a.roof,a.unlit,a.ground?.image,...(a.image===HQ_SOUTH_INTERIOR?HQ_FOUNDATION_DRESSING.map(d=>d.image):[]),a.gate?.leaf,a.gate?.post,a.gate?.states?.closed,a.gate?.states?.open,...frames])if(url)out[assetImageKey(url)]=url;if(treeArt.some(t=>t.id===id))out[assetImageKey(TREE_LOG_IMAGE)]=TREE_LOG_IMAGE;
+  // Warehouse stock states are independent textures, not placed: URL keys.
+  // The warehouse renderer needs all four to change wood, stone and scrap on demand.
+  if(id===WAREHOUSE_ASSET_ID)Object.assign(out,{warehouseEmpty:WAREHOUSE_ARTWORK.empty,warehouseLight:WAREHOUSE_ARTWORK.light,warehouseHalf:WAREHOUSE_ARTWORK.half,warehouseFull:WAREHOUSE_ARTWORK.full});
   // Runtime-selected potato states must be preloaded on web and packaged on iOS.
   if(GARDEN_ART.some(g=>g.id===id))for(const url of POTATO_PATCH_IMAGES)out[assetImageKey(url)]=url;
   if(id==='art_forage_wild_potato')for(const url of [POTATO_WILD_RIPE,POTATO_WILD_PICKED])out[assetImageKey(url)]=url;
