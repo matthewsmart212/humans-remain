@@ -97,12 +97,9 @@ try{
   const url=m.HQ_SOUTH_ROOT+'/'+name+'.webp',file='public'+url,meta=await sharp(file).metadata();
   assert.deepEqual([meta.width,meta.height],[1536,1024]);assert(meta.hasAlpha);assert(bundle.includes(url),'Native offline bundle includes '+name);
  }
- const underlay=m.ASSET_BY_ID.get(hq.assetId)?.ground;
- assert.equal(underlay?.image,m.HQ_SOUTH_GROUND,'HQ terrain-matched ground underlay is enabled');
- assert.deepEqual(underlay?.rect,[0,0,1,1],'HQ underlay keeps the same canvas and anchor as its building');
- assert(m.HQ_SOUTH_GROUND_OPACITY>0&&m.HQ_SOUTH_GROUND_OPACITY<.36,'HQ soil never replaces the original terrain');
- assert(Object.values(m.requiredImages([hq.assetId])).includes(m.HQ_SOUTH_GROUND),'Ground contact decal is preloaded');
- assert(bundle.includes(m.HQ_SOUTH_GROUND),'Ground contact decal is bundled offline');
+ assert.equal(m.ASSET_BY_ID.get(hq.assetId)?.ground,undefined,'Do not double-paint old HQ dirt beneath authentic bases');
+ assert(!Object.values(m.requiredImages([hq.assetId])).includes(m.HQ_SOUTH_GROUND),'The old dark HQ ground decal is no longer preloaded');
+ assert(bundle.includes(m.HQ_SOUTH_GROUND),'Legacy HQ terrain image remains available for older references');
  for(const detail of m.HQ_FOUNDATION_DRESSING){
   assert(Object.values(m.requiredImages([hq.assetId])).includes(detail.image),'Foundation growth is preloaded: '+detail.image);
   assert(bundle.includes(detail.image),'Foundation growth works offline: '+detail.image);

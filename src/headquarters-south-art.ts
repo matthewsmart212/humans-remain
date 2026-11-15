@@ -49,10 +49,10 @@ export function resolveSouthHeadquarters(record:ArtworkRecord):ArtworkRecord{
 export function withSouthHeadquartersGeometry(a:WorldAsset):WorldAsset{
  if(a.id!=='base_shelter_t1'||a.image!==HQ_SOUTH_INTERIOR)return a;
  return {...a,body:[],segments:[],collision:HQ_SOUTH_COLLISION,
-  // The existing transparent, terrain-matched footprint uses the exact hall
-  // canvas. Its soft soil shoulders blend outside the stonework and follow
-  // editor moves and rotations without adding floor collision.
-  ground:{image:HQ_SOUTH_GROUND,size:[1536,1024],rect:[0,0,1,1]},
+  // Both authentic interior base textures carry their own feathered terrain.
+  // Do not draw the old separate dark soil decal beneath them: the actual
+  // camp terrain should show through the gently cleared outer edges.
+  ground:undefined,
   interior:{x:(.08-.5)*a.width,y:(.36-.94)*a.height,width:.84*a.width,height:.40*a.height},
   foreground:[[20,260,100,590],[1416,260,100,590]],
   roof:HQ_SOUTH_ROOF,roofRect:[0,0,1536,1024],

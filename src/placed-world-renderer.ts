@@ -1,6 +1,6 @@
 import {drawBuildingCondition} from './building-condition-renderer';
 import {headquartersCutawayAmount,clipHeadquartersDoorway} from './headquarters-cutaway';
-import {HQ_SOUTH_INTERIOR,HQ_SOUTH_GROUND_OPACITY} from './headquarters-south-art';
+import {HQ_SOUTH_INTERIOR} from './headquarters-south-art';
 import {headquartersRoofBottom,withinRoofApproach,headquartersRaidVisible} from './headquarters-roof';
 import {campBuildingArt} from './camp-restoration';
 import {drawProgressionMarkers} from './progression-renderer';
@@ -61,9 +61,6 @@ export function drawPlacedGround(ctx:CanvasRenderingContext2D,imgs:Record<string
  if(!layout)return;
  for(const p of visibleGroundPlacements(layout,viewport)){const asset=ASSET_BY_ID.get(p.assetId);if(hideFoliage&&isFoliageAsset(asset))continue;const ground=asset?.ground,im=ground&&imgs[assetImageKey(ground.image)];if(!ground||!im)continue;
   const b=placementBounds(p),[x,y,width,height]=ground.rect;ctx.save();rotatePlacement(ctx,p);
-  // Blend only the soft HQ soil shoulders. Real stones, tracks and foliage
-  // remain visible through this translucent patch, with no opaque halo.
-  if(asset.image===HQ_SOUTH_INTERIOR)ctx.globalAlpha=HQ_SOUTH_GROUND_OPACITY;
   ctx.drawImage(im,b.x+x*b.width,b.y+y*b.height,width*b.width,height*b.height);ctx.restore();
  }
 }
