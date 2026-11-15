@@ -59,7 +59,12 @@ try{
  const masks=m.headquartersWallMasks(layout);assert.equal(m.headquartersWallMasks(layout),masks,'Reuse cached room masks');
  const maskCanvas=createCanvas(1536,1024),maskCtx=maskCanvas.getContext('2d');maskCtx.scale(1536/b.width,1024/b.height);maskCtx.translate(-b.x,-b.y);m.clipWallsOutsideHeadquarters(maskCtx,masks,b);maskCtx.fillStyle='#ff00ff';maskCtx.fillRect(b.x,b.y,b.width,b.height);
  const maskPixel=(u,v)=>maskCtx.getImageData(Math.round(u*1536),Math.round(v*1024),1,1).data[3];
- assert.equal(maskPixel(.5,.5),0,'Palisade pixels cannot appear in the room');assert.equal(maskPixel(.5,.30),0,'Palisade cannot appear through the broken rear wall');assert.equal(maskPixel(.01,.15),255,'Surrounding camp wall remains visible');
+ assert.equal(maskPixel(.5,.5),0,'Palisade pixels cannot appear in the room');
+ assert.equal(maskPixel(.5,.30),0,'Palisade cannot appear through the broken rear wall');
+ assert.equal(maskPixel(.5,.06),0,'Tall palisade boards stay behind the HQ upper rear silhouette');
+ assert.equal(maskPixel(.94,.30),0,'Palisade tips cannot overlap the HQ side wall');
+ assert.equal(maskPixel(.01,.15),255,'Surrounding camp wall remains visible');
+ assert.equal(maskPixel(.98,.6),255,'Outside stockade segments remain unchanged');
  const world=m.createCampPlaySession(layout);world.enemies=[];world.animals=[];world.loot=[];
  // The same doorway coordinates produce the same smooth reveal forwards,
  // backwards, and after rotating/flipping the whole authored hall.
@@ -92,6 +97,10 @@ try{
   const url=m.HQ_SOUTH_ROOT+'/'+name+'.webp',file='public'+url,meta=await sharp(file).metadata();
   assert.deepEqual([meta.width,meta.height],[1536,1024]);assert(meta.hasAlpha);assert(bundle.includes(url),'Native offline bundle includes '+name);
  }
+ const underlay=m.ASSET_BY_ID.get(hq.assetId)?.ground;
+ assert.equal(underlay?.image,m.HQ_SOUTH_GROUND,'HQ terrain-matched ground underlay is enabled');
+ assert.deepEqual(underlay?.rect,[0,0,1,1],'HQ underlay keeps the same canvas and anchor as its building');
+ assert(m.HQ_SOUTH_GROUND_OPACITY>0&&m.HQ_SOUTH_GROUND_OPACITY<.36,'HQ soil never replaces the original terrain');
  assert(Object.values(m.requiredImages([hq.assetId])).includes(m.HQ_SOUTH_GROUND),'Ground contact decal is preloaded');
  assert(bundle.includes(m.HQ_SOUTH_GROUND),'Ground contact decal is bundled offline');
  for(const detail of m.HQ_FOUNDATION_DRESSING){

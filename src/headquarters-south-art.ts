@@ -8,7 +8,7 @@ export const HQ_SOUTH_INTERIOR=HQ_V4_ROOT+'/repaired-interior.webp';
 export const HQ_SOUTH_GROUND=HQ_SOUTH_ROOT+'/settled-ground-v6.webp';
 // Let the actual map stones/leaves show through the disturbed soil. Keep the
 // masonry/roots opaque: only the broad terrain dressing should mix with ground.
-export const HQ_SOUTH_GROUND_OPACITY=.36;
+export const HQ_SOUTH_GROUND_OPACITY=.28;
 export const HQ_SOUTH_FOOTING=HQ_SOUTH_ROOT+'/rooted-footing-v6.webp';
 /** Reuse the camp's low foliage at the masonry feet. These are decorative
  * parts of the building, so they follow owner transforms without new blockers. */
@@ -49,7 +49,10 @@ export function resolveSouthHeadquarters(record:ArtworkRecord):ArtworkRecord{
 export function withSouthHeadquartersGeometry(a:WorldAsset):WorldAsset{
  if(a.id!=='base_shelter_t1'||a.image!==HQ_SOUTH_INTERIOR)return a;
  return {...a,body:[],segments:[],collision:HQ_SOUTH_COLLISION,
-  ground:undefined,
+  // The existing transparent, terrain-matched footprint uses the exact hall
+  // canvas. Its soft soil shoulders blend outside the stonework and follow
+  // editor moves and rotations without adding floor collision.
+  ground:{image:HQ_SOUTH_GROUND,size:[1536,1024],rect:[0,0,1,1]},
   interior:{x:(.08-.5)*a.width,y:(.36-.94)*a.height,width:.84*a.width,height:.40*a.height},
   foreground:[[20,260,100,590],[1416,260,100,590]],
   roof:HQ_SOUTH_ROOF,roofRect:[0,0,1536,1024],
