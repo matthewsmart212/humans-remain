@@ -68,13 +68,19 @@ jobs:
         with:
           python-version: '3.11'
 
-      - name: Extract approved menu plaques with transparent backgrounds
-        run: |
-          python -m pip install Pillow==11.3.0
-          python scripts/extract-expedition-panels.py
+      - name: Install image preparation dependencies
+        run: python -m pip install Pillow==11.3.0 numpy==2.2.6
 
-      - name: Clean HQ alpha fringes before packaging web assets
-        run: python scripts/clean-headquarters-edges.py
+      - name: Extract approved menu plaques with transparent backgrounds
+        run: python scripts/extract-expedition-panels.py
+
+      - name: Prepare the authentic HQ base terrain before packaging web assets
+        # GITHUB_TOKEN bot asset commits do not launch another Actions deploy.
+        # Building the blend here ensures the published Worker always includes
+        # the real edited images, even before the bot's LFS commit is visible.
+        run: |
+          python scripts/clean-headquarters-edges.py
+          python scripts/soften-headquarters-terrain.py
 
       - name: Build web client and Worker
         run: npm run build
