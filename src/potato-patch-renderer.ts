@@ -35,13 +35,22 @@ function drawPotatoSprout(ctx:Ctx,x:number,y:number,scale:number,growth:number){
  ctx.restore();
 }
 
-/** The same exact road-facing four-plot layout is used before and after repair.
- * Broken/repaired state comes from restoration, not an extra upgrade tier. */
+/** Editor and real survival both carry editorPreview=true. In an active run,
+ * progression must take precedence so the unbuilt garden starts broken even if
+ * the saved world placement was selected as a repaired variant in the editor. */
+export function potatoPatchImageForWorld(w:Pick<World,'editorPreview'|'progression'>,assetId:string){
+ const broken=w.progression
+  ?!buildingRestored(w,'garden')
+  :w.editorPreview?assetId==='art_camp_garden_broken':!buildingRestored(w,'garden');
+ return broken?POTATO_PATCH_BROKEN:potatoStageUrl(1,0);
+}
+
+/** Two identical anchors: broken until repaired, with planted crops only after repair. */
 export function drawPotatoPatch(ctx:Ctx,imgs:LoadedImages,w:World,p:Placement){
  if(!p.assetId.startsWith('art_camp_garden_'))return false;
- const broken=w.editorPreview?p.assetId==='art_camp_garden_broken':!buildingRestored(w,'garden');
+ const imageUrl=potatoPatchImageForWorld(w,p.assetId);
+ const broken=imageUrl===POTATO_PATCH_BROKEN;
  const patch=potatoPatch(w);
- const imageUrl=broken?POTATO_PATCH_BROKEN:potatoStageUrl(1,0);
  const sprite=imgs[assetImageKey(imageUrl)];
  if(!sprite)return false;
  const bounds=placementBounds(p),width=bounds.width,height=bounds.height;
