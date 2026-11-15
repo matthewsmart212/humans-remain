@@ -11,7 +11,13 @@ export function headquartersCutawayAmount(p:Placement,w:World){
  if(headquartersRaidVisible(p,w))return 1;
  const b=placementBounds(p),[x,y]=placementPoint(p,w.player.x,w.player.y,true);
  const u=(x-b.x)/b.width,v=(y-b.y)/b.height;
- const doorway=smooth((.20-Math.abs(u-.5))/.045)*smooth((.97-v)/.19);
+ // The player's feet approach the stairway while their head already overlaps
+ // the tall facade. Reveal *before* that overlap, rather than waiting until
+ // the feet have passed into the painted room (which hid the entire survivor).
+ // Restrict this early reveal to the central entrance; the outer walls keep
+ // their full exterior silhouette until the survivor is genuinely indoors.
+ const entrance=smooth((.22-Math.abs(u-.5))/.06);
+ const doorway=entrance*smooth((1.19-v)/.15);
  const room=smooth((u-.07)/.035)*smooth((.93-u)/.035)*smooth((v-.35)/.035)*smooth((.79-v)/.04);
  return Math.max(doorway,room)*smooth((v-.32)/.035);
 }
