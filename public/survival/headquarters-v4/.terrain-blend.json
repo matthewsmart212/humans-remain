@@ -1,7 +1,7 @@
 {
-  "version": 1,
+  "version": 3,
   "files": {
-    "repaired-interior.webp": "494a3468e6e772a4f44f277e3aeecd9f227299429905af793bee154c0dbc7eeb",
-    "broken-interior.webp": "e5490da08a695c8f04e60d2ccdd9659824333334cfe07ea3cbc48c58afd925e5"
+    "repaired-interior.webp": "493da0fe9a8df26e1f5d526699a61bfe2272fd101ac28185f199b275c1fe1566",
+    "broken-interior.webp": "ef5f04d57a255f55e1a37de17b62bcc6bfccf513b89b2fe4d562763e669ba97b"
   }
 }
