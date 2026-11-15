@@ -61,8 +61,8 @@ try{
  const maskPixel=(u,v)=>maskCtx.getImageData(Math.round(u*1536),Math.round(v*1024),1,1).data[3];
  assert.equal(maskPixel(.5,.5),0,'Palisade pixels cannot appear in the room');
  assert.equal(maskPixel(.5,.30),0,'Palisade cannot appear through the broken rear wall');
- assert.equal(maskPixel(.5,.06),0,'Tall palisade boards stay behind the HQ upper rear silhouette');
- assert.equal(maskPixel(.94,.30),0,'Palisade tips cannot overlap the HQ side wall');
+ assert.equal(maskPixel(.5,.06),255,'No legacy mask cuts a gap above the HQ');
+ assert.equal(maskPixel(.94,.30),255,'Side stockade remains visible outside the room');
  assert.equal(maskPixel(.01,.15),255,'Surrounding camp wall remains visible');
  assert.equal(maskPixel(.98,.6),255,'Outside stockade segments remain unchanged');
  const world=m.createCampPlaySession(layout);world.enemies=[];world.animals=[];world.loot=[];
@@ -135,11 +135,23 @@ try{
  Object.assign(world.player,point(.5,1.08));
  const propContext=createCanvas(8,8).getContext('2d');
  const propOnly={...world,layout:{...layout,items:[hq,chest]}};
- // An authored HQ on layer 1 must not paint its floor over a layer-0 survivor.
+ // The HQ's saved editor layer must not reorder the room above its occupants.
  const layeredWorld={...world,layout:{...layout,items:[{...hq,layer:1}]}};
- const hqFloor=m.placedDrawables(propContext,images,layeredWorld).find(d=>d.y===-10000);
- assert(hqFloor&&hqFloor.layer<0,'HQ floor stays below the player despite the saved editor layer');
- assert(m.compareWorldDrawables(hqFloor,{layer:0,y:world.player.y})<0,'Survivor renders over the HQ floor');
+ const expectedFloorDepth=b.y+b.height*.35;
+ const hqFloor=m.placedDrawables(propContext,images,layeredWorld).find(d=>Math.abs(d.y-expectedFloorDepth)<.01);
+ assert(hqFloor&&hqFloor.layer===0,'HQ base uses world depth, not its editor layer');
+ for(const [u,v] of [[.5,.36],[.5,.55],[.5,.76]]){
+  const actor=point(u,v);
+  assert(m.compareWorldDrawables(hqFloor,{layer:0,y:actor.y})<0,'Interior art stays below the survivor');
+ }
+ const northFence=layout.items.filter(p=>p.assetId==='camp_circular_wall_01'||p.assetId==='camp_circular_wall_16');
+ assert.equal(northFence.length,2,'Both north palisade sections are preserved');
+ const behind={...world,layout:{...layout,items:[...northFence,hq]}};
+ const behindDraws=m.placedDrawables(propContext,images,behind).filter(d=>!d.roof);
+ const hallPass=behindDraws.find(d=>Math.abs(d.y-expectedFloorDepth)<.01);
+ const walls=behindDraws.filter(d=>d!==hallPass);
+ assert(hallPass&&walls.length===2,'Complete wall and HQ sprites draw without clipping');
+ assert(walls.every(d=>m.compareWorldDrawables(d,hallPass)<0),'The intact palisade draws behind the HQ');
  const frontPass=m.placedDrawables(propContext,images,layeredWorld).find(d=>!d.roof&&d.layer===0&&Math.abs(d.y-(b.y+b.height*.79))<.01);
  assert(frontPass,'The HQ facade uses normal depth while the player is in front');
  assert(m.compareWorldDrawables(frontPass,{layer:0,y:world.player.y})<0,'A survivor in front of the steps cannot be hidden under the facade');
