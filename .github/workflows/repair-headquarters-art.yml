@@ -29,25 +29,20 @@ jobs:
         with:
           python-version: '3.11'
       - name: Install image tools
-        run: python -m pip install Pillow==11.3.0
+        run: python -m pip install Pillow==11.3.0 numpy==2.2.6
       - name: Remove white fringes from all four HQ textures
         run: python scripts/clean-headquarters-edges.py
-      - name: Edit ONLY terrain around authentic repaired and broken HQ bases
+      - name: Blend dirt under actual HQ bases and exterior views without altering buildings
+        run: python scripts/soften-headquarters-terrain.py
+      - name: Commit pixel-verified four-state terrain blend to main
         shell: bash
         run: |
-          before=$(sha256sum public/survival/headquarters-v4/{repaired,broken}-exterior.webp)
-          python scripts/soften-headquarters-terrain.py
-          after=$(sha256sum public/survival/headquarters-v4/{repaired,broken}-exterior.webp)
-          test "$before" = "$after" || { echo "::error::A roof image changed"; exit 1; }
-      - name: Commit repaired terrain-only base sprites to main for iOS and web
-        shell: bash
-        run: |
-          git add public/survival/headquarters-v4/repaired-interior.webp public/survival/headquarters-v4/broken-interior.webp public/survival/headquarters-v4/.alpha-cleanup.json public/survival/headquarters-v4/.terrain-blend.json
+          git add public/survival/headquarters-v4/{repaired,broken}-{interior,exterior}.webp public/survival/headquarters-v4/.alpha-cleanup.json public/survival/headquarters-v4/.terrain-blend.json
           if git diff --cached --quiet; then
-            echo 'Original HQ bases already have terrain-only feathering'
+            echo 'All four authentic HQ states already have the blend'
             exit 0
           fi
           git config user.name 'github-actions[bot]'
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
-          git commit -m 'Feather only surrounding terrain on original HQ bases'
+          git commit -m 'Blend soil under original HQ assets without changing building artwork'
           git push origin HEAD:main
