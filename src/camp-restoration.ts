@@ -2,6 +2,7 @@ import {WORKSITE_ROOT} from './camp-worksites-art';
 import {WORKSHOP_BROKEN_IMAGE} from './workshop-animation-art';
 import {FURNACE_BROKEN_IMAGE} from './furnace-animation-art';
 import {TREATMENT_BROKEN_IMAGE} from './treatment-animation-art';
+import {POTATO_PATCH_BROKEN,potatoStageUrl} from './potato-patch-art';
 import type {World} from './survival-engine';
 import type {MaterialCost} from './forge-recipes';
 import {HQ_SOUTH_RUIN,HQ_SOUTH_RUIN_INTERIOR} from './headquarters-south-art';
@@ -24,6 +25,7 @@ export const BROKEN_HQ_INTERIOR=HQ_SOUTH_RUIN_INTERIOR;
 BROKEN_CAMP_ART.workshop=WORKSHOP_BROKEN_IMAGE;
 BROKEN_CAMP_ART.furnace=FURNACE_BROKEN_IMAGE;
 BROKEN_CAMP_ART.treatment=TREATMENT_BROKEN_IMAGE;
+BROKEN_CAMP_ART.garden=POTATO_PATCH_BROKEN;
 export function campBuildingId(assetId:string):CampBuildingId|undefined{
  if(['art_camp_garden_broken','art_camp_garden_t1','art_camp_garden_t2','art_camp_garden_t3'].includes(assetId))return 'garden';
  return CAMP_BUILDING_IDS.find(id=>CAMP_REPAIRS[id].assetId===assetId);
@@ -45,10 +47,10 @@ export function campBuildingArt(w:World,assetId:string):{image:string;roof?:stri
  const id=campBuildingId(assetId);if(!id)return;
  if(!buildingRestored(w,id))return id==='headquarters'?{image:BROKEN_HQ_INTERIOR,roof:BROKEN_CAMP_ART.headquarters}:{image:BROKEN_CAMP_ART[id]};
  // Restore the authored abandoned garden without moving or replacing its lot.
- if(id==='garden'&&w.progression?.restoredBuildings&&assetId==='art_camp_garden_broken')return {image:'/survival/camp-garden-v1/tier-1.webp'};
+ if(id==='garden'&&assetId==='art_camp_garden_broken')return {image:potatoStageUrl(1,0)};
 }
 export function restorationImages(assetId:string){
- const id=campBuildingId(assetId);return !id?[]:id==='headquarters'?[BROKEN_CAMP_ART[id],BROKEN_HQ_INTERIOR]:id==='garden'?[BROKEN_CAMP_ART[id],'/survival/camp-garden-v1/tier-1.webp']:[BROKEN_CAMP_ART[id]];
+ const id=campBuildingId(assetId);return !id?[]:id==='headquarters'?[BROKEN_CAMP_ART[id],BROKEN_HQ_INTERIOR]:id==='garden'?[POTATO_PATCH_BROKEN,potatoStageUrl(1,0)]:[BROKEN_CAMP_ART[id]];
 }
 export function validRestorationSave(p:{restoredBuildings?:unknown;campLevel?:unknown;furnaceRestored?:unknown;starterRepairHammer?:unknown;starterPickaxe?:unknown;buildingHp?:unknown}){
  if(p.starterPickaxe!==undefined&&typeof p.starterPickaxe!=='boolean')return false;

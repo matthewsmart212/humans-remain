@@ -95,7 +95,7 @@ for(const e of entries.filter(e=>e.image&&!e.canonicalArt&&!e.id.startsWith('map
  if(forage){a.anchor=forage.anchor.map((v,i)=>v*forage.size[i]);a.solid=forage.kind==='apple';a.body=a.solid?[{x:0,y:-8,hw:20,hh:15}]:[];a.foliage=forage.kind==='berries'||forage.kind==='potato';a.allowTransparency=a.solid;a.note=forage.kind==='potato'?'Gather a wild potato once, then plant or eat it. The picked plant remains as empty soil.':`Pick ${forage.kind==='berries'?'berries':'apples'} nearby with the action button. Fruit regrows after ${forage.regrowDays} dawns.`;}
  const ironworks=IRONWORKS_WORLD_ART.find(f=>f.id===e.id);
  if(ironworks){a.anchor=ironworks.anchor.map((v,i)=>v*ironworks.size[i]);a.width=ironworks.worldWidth;a.height=a.width*ironworks.size[1]/ironworks.size[0];a.body=e.id===FURNACE_ID?[{x:-15,y:-29,hw:61,hh:31},{x:76,y:-21,hw:27,hh:24}]:[{x:0,y:-13,hw:72,hh:27}];if(e.id===FURNACE_ID){a.body=[];a.collision=FURNACE_COLLISION;}a.solid=true;a.allowTransparency=false;a.note=e.id===FURNACE_ID?'Smelt ore or recycle scrap with log fuel. Collect ingots, craft gear and reinforce the bellows.':'Iron-veined boulder · metal pickaxe required · guaranteed iron ore and stone.';}
- if(GARDEN_ART.some(g=>g.id===e.id)){a.anchor=GARDEN_ANCHOR.map((v,i)=>v*crop[i+2]);a.body=[];a.collision=GARDEN_COLLISION;a.allowTransparency=false;a.note='Repair the ruined potato patch, plant one potato to grow four, then upgrade to Tier 2.';}
+ if(GARDEN_ART.some(g=>g.id===e.id)){a.anchor=GARDEN_ANCHOR.map((v,i)=>v*crop[i+2]);a.body=[];a.collision=GARDEN_COLLISION;a.allowTransparency=false;a.note='Repair the ruined potato patch, then plant potatoes independently in its four soil beds.';}
  if(role==='generator')a.body=[{x:0,y:-10,hw:48,hh:35}];
  add(withSouthHeadquartersGeometry(a),['crate','search'].includes(role)||e.id==='art_forage_wild_potato'?false:true);
 }
@@ -107,6 +107,9 @@ const catalogueIds=new Set(entries.map(e=>e.id));
 export const WORLD_ASSETS=assets.filter(a=>catalogueIds.has(a.id)||circularWallArt.some(piece=>piece.id===a.id)).map(addCampGround);
 for(const a of WORLD_ASSETS)if(a.ground)imageDimensions[a.ground.image]=a.ground.size;
 export const ASSET_BY_ID=new Map(WORLD_ASSETS.map(a=>[a.id,a]));
+// Keep old world snapshots readable without presenting a Tier 2 choice in the editor.
+const legacyGarden=ASSET_BY_ID.get('art_camp_garden_t1');
+if(legacyGarden)ASSET_BY_ID.set('art_camp_garden_t2',{...legacyGarden,id:'art_camp_garden_t2'});
 export const TREE_LOG_IMAGE='/survival/world-scenery-v1/hollow-birch-log.webp';
 export const assetImageKey=(url:string)=>'placed:'+url;
 export function requiredImages(assetIds:string[],terrain?:{url:string},options:{animationFrames?:boolean}={}){const out:Record<string,string>=terrain&&!usesPaintedHomeTerrain(terrain)?{[assetImageKey(terrain.url)]:terrain.url}:{};for(const id of new Set(assetIds)){const a=ASSET_BY_ID.get(id);if(!a)continue;const frames=options.animationFrames===false?[a.frames?.[0],a.openFrames?.[0]]:[...(a.frames||[]),...(a.openFrames||[])];for(const url of [...restorationImages(id),a.image,a.roof,a.unlit,a.ground?.image,...(a.image===HQ_SOUTH_INTERIOR?HQ_FOUNDATION_DRESSING.map(d=>d.image):[]),a.gate?.leaf,a.gate?.post,a.gate?.states?.closed,a.gate?.states?.open,...frames])if(url)out[assetImageKey(url)]=url;if(treeArt.some(t=>t.id===id))out[assetImageKey(TREE_LOG_IMAGE)]=TREE_LOG_IMAGE;

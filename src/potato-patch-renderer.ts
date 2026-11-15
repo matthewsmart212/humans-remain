@@ -35,21 +35,19 @@ function drawPotatoSprout(ctx:Ctx,x:number,y:number,scale:number,growth:number){
  ctx.restore();
 }
 
-/** One fixed road-facing four-plot asset for broken, Tier 1 and Tier 2.
- * Repairs, planting, harvesting, and upgrade logic are unchanged. */
+/** The same exact road-facing four-plot layout is used before and after repair.
+ * Broken/repaired state comes from restoration, not an extra upgrade tier. */
 export function drawPotatoPatch(ctx:Ctx,imgs:LoadedImages,w:World,p:Placement){
  if(!p.assetId.startsWith('art_camp_garden_'))return false;
- const broken=!buildingRestored(w,'garden')||(p.assetId==='art_camp_garden_broken'&&!w.progression);
+ const broken=w.editorPreview?p.assetId==='art_camp_garden_broken':!buildingRestored(w,'garden');
  const patch=potatoPatch(w);
- const tier=broken?0:(w.editorPreview&&p.assetId==='art_camp_garden_t2'?2:patch.tier);
- const imageUrl=tier?potatoStageUrl(tier,0):POTATO_PATCH_BROKEN;
+ const imageUrl=broken?POTATO_PATCH_BROKEN:potatoStageUrl(1,0);
  const sprite=imgs[assetImageKey(imageUrl)];
  if(!sprite)return false;
- const bounds=placementBounds(p),scale=tier===2?1.12:1;
- const width=bounds.width*scale,height=bounds.height*scale;
- const left=bounds.x-(width-bounds.width)/2,top=bounds.y+bounds.height-height;
+ const bounds=placementBounds(p),width=bounds.width,height=bounds.height;
+ const left=bounds.x,top=bounds.y;
  ctx.drawImage(sprite,left,top,width,height);
- if(!tier||w.editorPreview)return true;
+ if(broken||w.editorPreview)return true;
  for(let index=0;index<patch.plantedAt.length&&index<BED_CENTRES.length;index++){
   const [rx,ry]=BED_CENTRES[index];
   drawPotatoSprout(ctx,left+rx*width,top+ry*height,width/340,potatoGrowth(w,patch.plantedAt[index]));
