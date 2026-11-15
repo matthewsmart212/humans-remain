@@ -65,16 +65,19 @@ try{
  // backwards, and after rotating/flipping the whole authored hall.
  for(const transform of [{},{rotation:90,flipX:true,scale:.8},{rotation:180,flipY:true}]){
   const p={...hq,...transform},pb=m.placementBounds(p);let prior=0;
-  for(let i=0;i<=60;i++){
-   const v=1.03-i*.008,[x,y]=m.placementPoint(p,pb.x+pb.width*.5,pb.y+pb.height*v);
+  for(let i=0;i<=72;i++){
+   const v=1.24-i*.01,[x,y]=m.placementPoint(p,pb.x+pb.width*.5,pb.y+pb.height*v);
    Object.assign(world.player,{x,y});const amount=m.headquartersCutawayAmount(p,world);
-   assert(amount>=prior-1e-9&&amount-prior<.07,'Continuous entry reveal without a frame-sized jump');
-   if(v>=.97)assert.equal(amount,0,'Roof stays solid outside the steps');
-   if(v<=.78&&v>=.51)assert.equal(amount,1,'No roof or front panels inside');
+   assert(amount>=prior-1e-9&&amount-prior<.11,'Continuous entry reveal without a frame-sized jump');
+   if(v>=1.20)assert.equal(amount,0,'Roof stays solid before the approach');
+   if(v<=1.04&&v>=.52)assert.equal(amount,1,'Player stays visible before crossing the facade');
    assert.equal(m.headquartersCutawayAmount({...p,roof:'shown'},world),0);
    assert.equal(m.headquartersCutawayAmount({...p,roof:'hidden'},world),1);
    prior=amount;
   }
+  const [sideX,sideY]=m.placementPoint(p,pb.x+pb.width*.12,pb.y+pb.height*1.05);
+  Object.assign(world.player,{x:sideX,y:sideY});
+  assert.equal(m.headquartersCutawayAmount(p,world),0,'Standing beside HQ does not hide its roof');
  }
  const door=point(.5,.96),back=point(.5,.55),bench=m.headquartersBench(world),dock=m.headquartersDock(bench);
  for(const target of [back,dock,...people]){const route=m.pathTo(door,target,world,10000,23);assert(route.length&&Math.hypot(route.at(-1).x-target.x,route.at(-1).y-target.y)<75,'Entrance reaches target '+JSON.stringify(target)+' dock '+JSON.stringify(dock));}
