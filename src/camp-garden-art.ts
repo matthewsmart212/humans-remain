@@ -1,7 +1,7 @@
 /** One registered canvas and ground lot for the abandoned patch and its upgrades. */
 export const GARDEN_FAMILY='Potato patch';
 export const GARDEN_PLACEMENT_ID='camp-garden-v1';
-export const GARDEN_CANVAS=512;
+export const GARDEN_CANVAS=768;
 export const GARDEN_ANCHOR=[.5,.90] as const;
 export const GARDEN_WIDTH=340;
 export const GARDEN_ART=[

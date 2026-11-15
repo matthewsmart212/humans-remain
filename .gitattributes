@@ -182,3 +182,7 @@ public/survival/expedition-menu-v2/loading-panel.webp -filter -diff -merge
 
 # New Medic Centre artwork contains real transparent WebP blobs, bundled by Expo and served by Cloudflare.
 /public/survival/camp-treatment-v2/*.webp -filter -diff -merge -text
+# New four-plot vegetable patch assets are real Git blobs, not LFS pointers.
+/public/survival/potato-patch-v2/broken.webp -filter -diff -merge -text
+/public/survival/potato-patch-v2/tier-1-stage-0.webp -filter -diff -merge -text
+/public/survival/potato-patch-v2/tier-2-stage-0.webp -filter -diff -merge -text
