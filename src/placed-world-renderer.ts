@@ -81,6 +81,10 @@ export function placedDrawables(ctx:CanvasRenderingContext2D,imgs:Record<string,
   const b=placementBounds(p),im=imgs[assetImageKey(restoration?.image||frames?.[frame]||a.image)]||imgs[assetImageKey(a.image)];if(!im)continue;
   const southHQ=a.image===HQ_SOUTH_INTERIOR&&!!a.interior;
   const cutaway=southHQ?headquartersCutawayAmount(p,w):0;
+  // The full HQ facade is a background layer when the survivor's feet are
+  // outside its south entrance. It only occludes a survivor behind the facade.
+  const [,playerLocalY]=southHQ?placementPoint(p,w.player.x,w.player.y,true):[0,0];
+  const playerInFrontOfHQ=southHQ&&p.roof==='auto'&&playerLocalY>=b.y+b.height*.79;
   const revealRoof=!!(restoration?.roof||a.roof)&&(p.allowTransparency??placementGeometryAsset(p)?.allowTransparency)!==false&&p.roof==='auto'&&(withinRoofApproach(p,w.player.x,w.player.y)||headquartersRaidVisible(p,w));
   const roofImage=(restoration?.roof||a.roof)&&imgs[assetImageKey(restoration?.roof||a.roof!)];
   if(a.perimeterCurve?.length&&!p.rotation&&!p.flipX&&!p.flipY){
@@ -121,7 +125,7 @@ export function placedDrawables(ctx:CanvasRenderingContext2D,imgs:Record<string,
   // continuously over the revealed room and disappear completely indoors.
   if(roofImage&&p.roof!=='hidden'&&!(southHQ&&cutaway===1)){
    const rect=a.roofRect||[0,0,a.crop[2],a.crop[3]];
-   out.push({roof:true,y:100000,draw:()=>{
+   out.push({roof:!playerInFrontOfHQ,layer:playerInFrontOfHQ?0:undefined,y:playerInFrontOfHQ?b.y+b.height*.79:100000,draw:()=>{
     ctx.save();ctx.globalAlpha=southHQ?1-cutaway:revealRoof?.08:1;
     // The transparent doorway reveals the actual matching interior. Dim only
     // that aperture while the façade is present; as the roof fades indoors,
@@ -143,7 +147,7 @@ export function placedDrawables(ctx:CanvasRenderingContext2D,imgs:Record<string,
   for(let i=first;i<out.length;i++){
    // Walkable HQ floor must draw below actors, regardless of its edited layer.
    // The separate roof drawable still renders over the player when outside.
-   out[i].layer=southHQ&&i===first?-10001:(p.layer??0);
+   out[i].layer=southHQ&&i===first?-10001:(out[i].layer??p.layer??0);
   }
   if(p.rotation||p.flipX||p.flipY)for(let i=first;i<out.length;i++){const draw=out[i].draw;out[i].draw=()=>{ctx.save();rotatePlacement(ctx,p);draw();ctx.restore()}}
  }

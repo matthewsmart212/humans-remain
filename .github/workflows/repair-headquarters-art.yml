@@ -17,9 +17,13 @@ jobs:
     timeout-minutes: 15
     steps:
       - uses: actions/checkout@v4
+        env:
+          GIT_LFS_SKIP_SMUDGE: '1'
         with:
           lfs: false
           fetch-depth: 1
+      - name: Fetch only current HQ image assets from LFS
+        run: git lfs pull --include="public/survival/headquarters-v4/*.webp" --exclude=""
       - uses: actions/setup-python@v5
         with:
           python-version: '3.11'

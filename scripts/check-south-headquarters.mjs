@@ -131,6 +131,9 @@ try{
  const hqFloor=m.placedDrawables(propContext,images,layeredWorld).find(d=>d.y===-10000);
  assert(hqFloor&&hqFloor.layer<0,'HQ floor stays below the player despite the saved editor layer');
  assert(m.compareWorldDrawables(hqFloor,{layer:0,y:world.player.y})<0,'Survivor renders over the HQ floor');
+ const frontPass=m.placedDrawables(propContext,images,layeredWorld).find(d=>!d.roof&&d.layer===0&&Math.abs(d.y-(b.y+b.height*.79))<.01);
+ assert(frontPass,'The HQ facade uses normal depth while the player is in front');
+ assert(m.compareWorldDrawables(frontPass,{layer:0,y:world.player.y})<0,'A survivor in front of the steps cannot be hidden under the facade');
  const closedCount=m.placedDrawables(propContext,images,propOnly).length;
  Object.assign(world.player,point(.5,.6));
  const openCount=m.placedDrawables(propContext,images,propOnly).length;
