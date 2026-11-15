@@ -1,9 +1,9 @@
 #!/usr/bin/env python3
 """Blend the actual HQ game's painted ground into the real terrain, without altering architecture.
 
-The four authentic 1536x1024 repaired/broken interior/exterior sprites share
-the same base. Their roof/exterior sprites also paint the lower soil, so
-adjusting just the interiors would leave the old line whenever the roof is on.
+The actual repaired and broken interior/base sprites contain the offending
+ground apron. The exterior/roof sprites are already transparent around their
+lower edges and must not be reprocessed. Both bases use the same coordinates.
 
 All RGB values (wood, stone, furnishings, roof, and ground) stay byte-identical
 after decoding. Only alpha in a narrow strip BELOW the building foundation
@@ -18,7 +18,8 @@ import numpy as np
 from PIL import Image
 
 ROOT = Path(os.environ.get("HQ_SPRITE_ROOT", str(Path(__file__).resolve().parents[1] / "public/survival/headquarters-v4")))
-NAMES = ("repaired-interior.webp", "broken-interior.webp", "repaired-exterior.webp", "broken-exterior.webp")
+NAMES = ("repaired-interior.webp", "broken-interior.webp")
+ROOFS = ("repaired-exterior.webp", "broken-exterior.webp")
 MANIFEST = ROOT / ".terrain-blend.json"
 ALPHA_MANIFEST = ROOT / ".alpha-cleanup.json"
 SIZE = (1536, 1024)
@@ -99,15 +100,19 @@ def main():
         print("Authentic HQ four-state soil blend already applied; skipping")
         return
     contact, start = contact_mask()
+    roof_hashes = {name: digest(ROOT/name) for name in ROOFS}
     for name in NAMES:
         soften(ROOT/name, contact, start)
+    for name, original_sha in roof_hashes.items():
+        if digest(ROOT/name) != original_sha:
+            raise AssertionError(f"{name}: the exterior/roof artwork was changed")
     if ALPHA_MANIFEST.exists():
         alpha = json.loads(ALPHA_MANIFEST.read_text())
         for name in NAMES:
             alpha.setdefault("files", {})[name]=digest(ROOT/name)
         ALPHA_MANIFEST.write_text(json.dumps(alpha,indent=2)+"\n")
     MANIFEST.write_text(json.dumps({"version":REVISION,"files":{name:digest(ROOT/name) for name in NAMES}},indent=2)+"\n")
-    print("All four authentic HQ states now share the same terrain-only alpha blend")
+    print("Both real HQ bases now have a deeper terrain blend; exterior/roof sprites unchanged")
 
 
 if __name__=="__main__":

@@ -32,14 +32,14 @@ jobs:
         run: python -m pip install Pillow==11.3.0 numpy==2.2.6
       - name: Remove white fringes from all four HQ textures
         run: python scripts/clean-headquarters-edges.py
-      - name: Blend dirt under actual HQ bases and exterior views without altering buildings
+      - name: Blend dirt beneath only the actual HQ bases (keep roofs untouched)
         run: python scripts/soften-headquarters-terrain.py
-      - name: Commit pixel-verified four-state terrain blend to main
+      - name: Commit pixel-verified HQ base terrain blend to main
         shell: bash
         run: |
-          git add public/survival/headquarters-v4/{repaired,broken}-{interior,exterior}.webp public/survival/headquarters-v4/.alpha-cleanup.json public/survival/headquarters-v4/.terrain-blend.json
+          git add public/survival/headquarters-v4/repaired-interior.webp public/survival/headquarters-v4/broken-interior.webp public/survival/headquarters-v4/.alpha-cleanup.json public/survival/headquarters-v4/.terrain-blend.json
           if git diff --cached --quiet; then
-            echo 'All four authentic HQ states already have the blend'
+            echo 'Both authentic HQ bases already have the terrain blend'
             exit 0
           fi
           git config user.name 'github-actions[bot]'
