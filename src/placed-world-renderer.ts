@@ -141,7 +141,9 @@ export function placedDrawables(ctx:CanvasRenderingContext2D,imgs:Record<string,
    }});
   }
   for(let i=first;i<out.length;i++){
-   out[i].layer=p.layer??0;
+   // Walkable HQ floor must draw below actors, regardless of its edited layer.
+   // The separate roof drawable still renders over the player when outside.
+   out[i].layer=southHQ&&i===first?-10001:(p.layer??0);
   }
   if(p.rotation||p.flipX||p.flipY)for(let i=first;i<out.length;i++){const draw=out[i].draw;out[i].draw=()=>{ctx.save();rotatePlacement(ctx,p);draw();ctx.restore()}}
  }

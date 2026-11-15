@@ -73,6 +73,9 @@ jobs:
           python -m pip install Pillow==11.3.0
           python scripts/extract-expedition-panels.py
 
+      - name: Clean HQ alpha fringes before packaging web assets
+        run: python scripts/clean-headquarters-edges.py
+
       - name: Build web client and Worker
         run: npm run build
 

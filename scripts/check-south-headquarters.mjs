@@ -123,6 +123,11 @@ try{
  Object.assign(world.player,point(.5,1.08));
  const propContext=createCanvas(8,8).getContext('2d');
  const propOnly={...world,layout:{...layout,items:[hq,chest]}};
+ // An authored HQ on layer 1 must not paint its floor over a layer-0 survivor.
+ const layeredWorld={...world,layout:{...layout,items:[{...hq,layer:1}]}};
+ const hqFloor=m.placedDrawables(propContext,images,layeredWorld).find(d=>d.y===-10000);
+ assert(hqFloor&&hqFloor.layer<0,'HQ floor stays below the player despite the saved editor layer');
+ assert(m.compareWorldDrawables(hqFloor,{layer:0,y:world.player.y})<0,'Survivor renders over the HQ floor');
  const closedCount=m.placedDrawables(propContext,images,propOnly).length;
  Object.assign(world.player,point(.5,.6));
  const openCount=m.placedDrawables(propContext,images,propOnly).length;
