@@ -1,5 +1,5 @@
 import {drawBuildingCondition} from './building-condition-renderer';
-import {headquartersCutawayAmount} from './headquarters-cutaway';
+import {headquartersCutawayAmount,clipHeadquartersDoorway} from './headquarters-cutaway';
 import {headquartersWallMasks,clipWallsOutsideHeadquarters} from './headquarters-wall-mask';
 import {HQ_SOUTH_INTERIOR} from './headquarters-south-art';
 import {headquartersRoofBottom,withinRoofApproach,headquartersRaidVisible} from './headquarters-roof';
@@ -123,6 +123,16 @@ export function placedDrawables(ctx:CanvasRenderingContext2D,imgs:Record<string,
    const rect=a.roofRect||[0,0,a.crop[2],a.crop[3]];
    out.push({roof:true,y:100000,draw:()=>{
     ctx.save();ctx.globalAlpha=southHQ?1-cutaway:revealRoof?.08:1;
+    // The transparent doorway reveals the actual matching interior. Dim only
+    // that aperture while the façade is present; as the roof fades indoors,
+    // the shade fades with it. Apply identically to repaired and ruined HQ.
+    if(southHQ){
+     ctx.save();
+     clipHeadquartersDoorway(ctx,b,!!restoration?.roof);
+     ctx.fillStyle='rgba(0,0,0,0.16)';
+     ctx.fillRect(b.x,b.y,b.width,b.height);
+     ctx.restore();
+    }
     // The roof/exterior is complete artwork, including its own doorway.
     // Fade the whole matching sprite over the room rather than masking a square.
     const bottom=southHQ?undefined:headquartersRoofBottom(p);
