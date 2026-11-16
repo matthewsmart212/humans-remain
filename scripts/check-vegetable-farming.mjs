@@ -52,7 +52,7 @@ const saved=restored.worlds[0][1];
 assert.deepEqual(m.gardenBeds(saved),m.gardenBeds(game),'Serialized run preserves kinds, bed positions and growth times');
 assert.equal(m.validateLayout(layout).layout.carrotForageVersion,1,'World source retains carrot migration');
 assert.equal(m.addWildCarrots(layout),layout,'Wild carrots do not duplicate on world preparation');
-assert.equal(layout.items.filter(p=>p.assetId==='art_forage_wild_carrot').length,24);
+assert.equal(layout.items.filter(p=>p.id.startsWith('wild-carrot-v1-')).length,24);
 for(const kind of ['potato','carrot']){
  const plants=layout.items.filter(p=>p.assetId===`art_forage_wild_${kind}`);assert(plants.length);
  let target;

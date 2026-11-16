@@ -45,3 +45,16 @@ export function addWildCarrots(layout:WorldLayout):WorldLayout{
  if(layout.items.length+plants.length>MAX_LAYOUT_ITEMS)return layout;
  return {...layout,carrotForageVersion:1,items:[...layout.items,...plants],updatedAt:new Date().toISOString()};
 }
+
+/** Easy-to-find ripe samples on opposite verges just outside the NW road exit.
+ * Stable IDs retain picked state and any editor moves on subsequent loads. */
+export function addNorthwestTestCrops(layout:WorldLayout):WorldLayout{
+ if(!usesPaintedHomeTerrain(layout.terrainImage))return layout;
+ const samples:Placement[]=[
+  {id:'northwest-test-potato-v1',assetId:'art_forage_wild_potato',x:430,y:330,scale:1.15,solid:false,roof:'auto',role:'prop'},
+  {id:'northwest-test-carrot-v1',assetId:'art_forage_wild_carrot',x:585,y:205,scale:1.15,solid:false,roof:'auto',role:'prop'},
+ ];
+ const missing=samples.filter(p=>!layout.items.some(q=>q.id===p.id));
+ if(!missing.length||layout.items.length+missing.length>MAX_LAYOUT_ITEMS)return layout;
+ return {...layout,items:[...layout.items,...missing],updatedAt:new Date().toISOString()};
+}

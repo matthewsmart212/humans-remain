@@ -12,7 +12,7 @@ import type {SceneTravel,TravelSnapshot} from './scene-travel';
 import {SCENES,CAMP_SCENE_ID} from './world-scenes';
 import {resetHound} from './hound-ai';
 import {addApprovedCampGarden} from './camp-garden-placement';
-import {addWildPotatoes,addWildCarrots} from './potato-planting';
+import {addWildPotatoes,addWildCarrots,addNorthwestTestCrops} from './potato-planting';
 import {GARDEN_PLACEMENT_ID} from './camp-garden-art';
 import {placementBodies,layoutBlocked,type WorldLayout} from './world-layout';
 import {placeSouthFacingHeadquarters} from './headquarters-south-placement';
@@ -104,7 +104,7 @@ export function decodeRun(text:string):TravelSnapshot{
   w.scene=id===CAMP_SCENE_ID?undefined:SCENES.get(id);
   if(id===CAMP_SCENE_ID){
    migrateSavedCampPerimeter(w,data.route);
-   const next=addWildCarrots(addWildPotatoes(addApprovedCampGarden(w.layout))),garden=next.items.find(p=>p.id===GARDEN_PLACEMENT_ID);
+   const next=addNorthwestTestCrops(addWildCarrots(addWildPotatoes(addApprovedCampGarden(w.layout)))),garden=next.items.find(p=>p.id===GARDEN_PLACEMENT_ID);
    // A returning player standing on the new lot keeps their position. Add it on
    // a later load once clear rather than trapping or teleporting the player.
    if(!garden||!placementBodies(garden).some(c=>hitCollider(c,w.player.x,w.player.y,19)))w.layout=next;
