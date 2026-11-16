@@ -37,7 +37,7 @@ export function openLootChest(w:World,id=LOOT_CHEST_ID){
   {kind:'energyBar' as const,amount:2,dx:73,dy:52},
  ];
  for(const reward of rewards)w.loot.push({
-  x:p.x+reward.dx,y:p.y+reward.dy,id:w.serial++,kind:reward.kind,amount:reward.amount,
+  x:p.x+reward.dx,y:p.y+reward.dy,id:w.serial++,kind:reward.kind,amount:reward.amount,returned:true,
   flight:{from:{x:p.x,y:p.y-32},born,lands:born+.75},
  });
  w.notice='RARE CACHE OPENED · Collect your supplies';w.noticeUntil=born+3.5;
