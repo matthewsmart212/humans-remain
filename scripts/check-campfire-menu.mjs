@@ -39,15 +39,20 @@ try{
  Object.assign(invalid.player,m.stationFront(invalid.camp,'hearth'));invalid.player.downedUntil=100;assert.equal(m.queueCampfireFood(invalid,'chicken',1),0);invalid.player.downedUntil=0;invalid.phase='over';assert.equal(m.queueCampfireFood(invalid,'chicken',1),0);
 
  const hot=make();m.setItemCount(hot,'rawRabbit',4);hot.camp.hearth.fuel=40;
- assert.equal(m.queueCampfireFood(hot,'rabbit',4),4);advance(hot,32);assert.equal(hot.fire.queue.length,0);assert.equal(hot.fire.rack.length,4,'Adding food to a lit fire starts normal cooking automatically');
- assert.equal(m.collectFood(hot),4);assert.equal(m.itemCount(hot,'cookedRabbit'),4);assert.equal(m.collectFood(hot),0,'Cooked food cannot be duplicated');
+ assert.equal(m.queueCampfireFood(hot,'rabbit',4),4);advance(hot,32);assert.equal(hot.fire.queue.length,0);
+ assert.equal(hot.fire.rack.length,0);assert.equal(hot.loot.filter(l=>l.kind==='cookedRabbit').length,4,'Finished food goes onto the ground');
+ assert.equal(m.collectFood(hot),0,'The old rack action cannot bypass ground collection');advance(hot,1);
+ while(hot.loot.length){Object.assign(hot.player,hot.loot[0]);assert(m.pickup(hot))}
+ assert.equal(m.itemCount(hot,'cookedRabbit'),4);assert(!m.pickup(hot),'Cooked food cannot be duplicated');
 
- const paused=make();m.setItemCount(paused,'rawMeat',1);paused.fire.rack=Array(6).fill('rabbit');paused.camp.hearth.fuel=30;
- assert.equal(m.queueCampfireFood(paused,'chicken',1),1);advance(paused,10);assert.equal(paused.fire.queue[0].remaining,12,'A full ready rack preserves queued raw food');
- assert.equal(m.collectFood(paused,'rabbit'),1);advance(paused,12);assert.equal(paused.fire.queue.length,0);assert.equal(paused.fire.rack.filter(species=>species==='chicken').length,1);
+ const legacy=make();m.setItemCount(legacy,'rawMeat',1);legacy.fire.rack=Array(6).fill('rabbit');legacy.camp.hearth.fuel=30;
+ assert.equal(m.queueCampfireFood(legacy,'chicken',1),1);assert.equal(legacy.fire.rack.length,0,'Saved rack meals become ground loot');
+ advance(legacy,12);assert.equal(legacy.fire.queue.length,0,'Uncollected meals never pause cooking');
+ assert.equal(legacy.loot.filter(l=>l.kind==='cookedRabbit').length,6);assert.equal(legacy.loot.filter(l=>l.kind==='cookedMeat').length,1);
 
- const full=make();full.fire.rack=['chicken','chicken'];m.setItemCount(full,'fuel',294);
- assert.equal(m.collectFood(full),1,'Collection takes only the food that fits');assert.equal(full.fire.rack.length,1);assert.equal(m.itemCount(full,'cookedMeat'),1);assert(m.packWeight(full)<=m.PACK_CAPACITY);
- assert.equal(m.collectFood(full),0);assert.equal(full.fire.rack.length,1,'Uncollected cooked food remains safe');
- console.log('PASS: carried-food-only selection, read-only selection, exact batch and slot limits, cold waiting, stale/depleted input, cancellation conservation, invalid/range/downed guards, automatic cooking, full-rack pause and capacity-safe collection.');
+ const full=make();full.fire.rack=['chicken','chicken'];m.setItemCount(full,'fuel',294);m.stepKitchen(full);advance(full,1);
+ Object.assign(full.player,full.loot[0]);assert(m.pickup(full),'Collection takes only the food that fits');
+ assert.equal(full.loot.length,1);assert.equal(m.itemCount(full,'cookedMeat'),1);assert(m.packWeight(full)<=m.PACK_CAPACITY);
+ Object.assign(full.player,full.loot[0]);assert(!m.pickup(full));assert.equal(full.loot.length,1,'Food stays on the floor when the backpack is full');
+ console.log('PASS: carried-food selection, exact batch and slot limits, cold waiting, stale input, cancellation, guards, automatic ground drops, legacy meal migration and capacity-safe floor collection.');
 }finally{fs.rmSync(temp,{recursive:true,force:true})}
