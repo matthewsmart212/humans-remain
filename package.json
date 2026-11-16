@@ -4,6 +4,7 @@
   "private": true,
   "type": "module",
   "scripts": {
+    "foliage:clusters": "node scripts/place-foliage-clusters.mjs",
     "dev": "vite --host 0.0.0.0",
     "build": "node scripts/build-checklist-server.mjs",
     "typecheck": "tsc --noEmit"

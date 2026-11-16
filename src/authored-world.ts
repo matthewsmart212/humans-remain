@@ -1,3 +1,4 @@
+import {refineForageScenery} from './foliage-composition';
 import {placeCampWorksites} from './camp-worksites-placement';
 import {refineCampVegetation} from './camp-vegetation';
 import {placeSouthFacingHeadquarters} from './headquarters-south-placement';
@@ -29,7 +30,7 @@ const upgrades:[string,(layout:WorldLayout)=>WorldLayout][]=[
  ['Foliage expansion',addApprovedFoliageExpansion],['Terrain foliage',addApprovedTerrainFoliage],['Camp foliage',addApprovedCampFoliage],
  ['Refine foliage',refineApprovedCampFoliage],['Puddles',addApprovedCampPuddles],['Perimeter',addApprovedCampPerimeter],
  ['Outskirts',addApprovedCampOutskirts],['River',addApprovedCampRiver],['Woodland',refineApprovedWoodlandZones],
- ['World planting',addApprovedWorldPlanting],['Fringe',addApprovedCampFringe],['Tree variants',addApprovedTreeVariants],['Foraging',addForagingPlants],['Wild potatoes',addWildPotatoes],['Wild carrots',addWildCarrots],['NW crop samples',addNorthwestTestCrops],['Ironworks',addCampIronworks],['Furnace',placeFurnaceByWorkshop],['Garden',addApprovedCampGarden],['Vegetation',refineCampVegetation],['Worksites',placeCampWorksites]];
+ ['World planting',addApprovedWorldPlanting],['Fringe',addApprovedCampFringe],['Tree variants',addApprovedTreeVariants],['Foraging',addForagingPlants],['Wild potatoes',addWildPotatoes],['Wild carrots',addWildCarrots],['Ironworks',addCampIronworks],['Furnace',placeFurnaceByWorkshop],['Garden',addApprovedCampGarden],['Vegetation',refineCampVegetation],['Worksites',placeCampWorksites],['NW crop samples',addNorthwestTestCrops]];
 export function prepareAuthoredWorld(layout:WorldLayout):WorldLayout{
- return replaceHeadquartersFurnitureWithTable(expandHeadquartersSpace(fitHeadquartersInterior(placeSouthFacingHeadquarters(upgrades.reduce((world,[name,upgrade])=>{try{return upgrade(world)}catch(e){const error=e instanceof Error?e:Error(String(e));error.message=`${name}: ${error.message}`;throw error}},layout)))));
+ return refineForageScenery(replaceHeadquartersFurnitureWithTable(expandHeadquartersSpace(fitHeadquartersInterior(placeSouthFacingHeadquarters(upgrades.reduce((world,[name,upgrade])=>{try{return upgrade(world)}catch(e){const error=e instanceof Error?e:Error(String(e));error.message=`${name}: ${error.message}`;throw error}},layout))))));
 }

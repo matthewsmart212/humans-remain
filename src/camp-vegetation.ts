@@ -95,6 +95,15 @@ function campContext(layout:WorldLayout){
  if(!walls.length)return;
  return {hearth,walls};
 }
+/** Build once per composition pass; includes the wall's painted silhouette. */
+export function campWallClearance(layout:WorldLayout){
+ const walls=campContext(layout)?.walls??[];
+ return (p:Placement)=>{
+  const a=ASSET_BY_ID.get(p.assetId);if(!a)return false;
+  const plant=vegetationShape(p,a);
+  return !walls.some(w=>boundsOverlap(plant,w.bounds)&&w.shapes.some(s=>overlaps(plant,s)));
+ };
+}
 const decorative=(a:WorldAsset)=>!!a.foliage&&!a.id.startsWith('art_forage_');
 const outside=(p:Placement,hearth:Placement)=>Math.hypot(p.x-hearth.x,p.y-hearth.y)>plan.radius;
 export type CampVegetationDiagnostics={

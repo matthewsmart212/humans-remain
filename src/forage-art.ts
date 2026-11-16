@@ -2,8 +2,8 @@
 export const FORAGE_ART=[
  {id:'art_forage_berry_bush',name:'Wild berry bush',kind:'berries' as const,image:'/survival/forage-v1/berry-bush.png',size:[1254,1254],anchor:[.5,.835],worldWidth:156,capacity:4,regrowDays:2,reach:118},
  {id:'art_forage_apple_tree',name:'Wild apple tree',kind:'apple' as const,image:'/survival/forage-v1/apple-tree.png',size:[1254,1254],anchor:[.5,.94],worldWidth:280,capacity:3,regrowDays:3,reach:138},
- {id:'art_forage_wild_potato',name:'Wild potato plant',kind:'potato' as const,image:'/survival/vegetable-crops-v1/potato-stage-3.webp',size:[256,256],anchor:[.5,.86],worldWidth:90,capacity:1,regrowDays:0,reach:116},
- {id:'art_forage_wild_carrot',name:'Wild carrot plant',kind:'carrot' as const,image:'/survival/vegetable-crops-v1/carrot-stage-3.webp',size:[256,256],anchor:[.5,.86],worldWidth:80,capacity:1,regrowDays:0,reach:116},
+ {id:'art_forage_wild_potato',name:'Wild potato plant',kind:'potato' as const,image:'/survival/vegetable-crops-v1/potato-stage-3.webp',size:[256,256],anchor:[.5,.86],worldWidth:112,capacity:1,regrowDays:0,reach:116},
+ {id:'art_forage_wild_carrot',name:'Wild carrot plant',kind:'carrot' as const,image:'/survival/vegetable-crops-v1/carrot-stage-3.webp',size:[256,256],anchor:[.5,.86],worldWidth:110,capacity:1,regrowDays:0,reach:116},
 ];
 export const FORAGE_BY_ID=new Map(FORAGE_ART.map(a=>[a.id,a]));
 export type ForageArt=typeof FORAGE_ART[number];

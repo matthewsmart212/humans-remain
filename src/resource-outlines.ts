@@ -52,7 +52,8 @@ export function nearbyResourceOutlines(w:World,v:ResourceOutlineView,hideFoliage
   // Restored/legacy presentation targets can carry a numeric loot ID. Only
   // namespaced string IDs support placement suffix matching.
   const id=`${kind}:${p.id}`,selected=target?.forageId===p.id||target?.rockId===p.id||target?.treeId===p.id||typeof target?.id==='string'&&target.id.endsWith(`:${p.id}`);
-  cues.push({id,kind,placement:p,distance,selected,alpha:resourceOutlineAlpha(distance,selected)});
+  const crop=forage?.kind==='potato'||forage?.kind==='carrot';
+  cues.push({id,kind,placement:p,distance,selected,alpha:resourceOutlineAlpha(distance,selected)*(crop?1.35:1)});
  }
  for(const loot of pickups){
   const distance=Math.hypot(loot.x-w.player.x,loot.y-w.player.y);if(distance>=RESOURCE_OUTLINE_RANGE)continue;
@@ -101,6 +102,7 @@ export function drawResourceOutlines(ctx:OutlineContext,imgs:Record<string,HTMLI
    bounds=sprite;draw=()=>ctx.drawImage(image,sprite.x,sprite.y,sprite.width,sprite.height);
   }
   if(!bounds||!draw)continue;
-  ctx.drawSpriteOutline(draw,{x:bounds.x-padding,y:bounds.y-padding,width:bounds.width+padding*2,height:bounds.height+padding*2},cue.alpha,(cue.selected?1.5:1.15)/s);
+  const crop=cue.placement?.assetId==='art_forage_wild_potato'||cue.placement?.assetId==='art_forage_wild_carrot';
+  ctx.drawSpriteOutline(draw,{x:bounds.x-padding,y:bounds.y-padding,width:bounds.width+padding*2,height:bounds.height+padding*2},cue.alpha,(crop?(cue.selected?1.75:1.35):(cue.selected?1.5:1.15))/s);
  }
 }
