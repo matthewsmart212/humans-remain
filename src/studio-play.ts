@@ -1,4 +1,5 @@
 import {stepBuildingRepair} from './building-repair';
+import {stepLootChest} from './loot-chest';
 import {startExpedition} from './run-progression';
 import {stepCampSiege} from './camp-siege';
 import {seedScrapSalvage} from './scrap-salvage';
@@ -62,6 +63,7 @@ export function stepCampPlaySession(world:World,input:{x:number;y:number},sprint
  stepGates(world,STEP);movePlayer(world,input,sprint);stepWaypoint(world);
  finishPhase?.('simMovementMs');
  world.tick++;
+ stepLootChest(world);
  stepSurvivalCycle(world,STEP);
  if(!world.scene)stepCampSiege(world);
  stepOnAnimations(world,STEP);
