@@ -186,3 +186,8 @@ public/survival/expedition-menu-v2/loading-panel.webp -filter -diff -merge
 /public/survival/potato-patch-v2/broken.webp -filter -diff -merge -text
 /public/survival/potato-patch-v2/tier-1-stage-0.webp -filter -diff -merge -text
 /public/survival/potato-patch-v2/tier-2-stage-0.webp -filter -diff -merge -text
+
+# Transparent vegetable growth states are real blobs for Cloudflare and Expo.
+/public/survival/vegetable-crops-v1/*.webp -filter -diff -merge -text
+/artwork-archive/vegetable-crops-v1/growth-atlas.png -filter -diff -merge -text
+/docs/qa/vegetable-crops-v1/garden-preview.webp -filter -diff -merge -text

@@ -32,6 +32,8 @@ jobs:
         run: node scripts/check-tier-positions.mjs
       - name: Check potato patch starts broken and switches only when repaired
         run: node scripts/check-potato-patch-start-broken.mjs
+      - name: Check mixed vegetable beds, growth, harvesting and food
+        run: node scripts/check-vegetable-farming.mjs
       - name: Test editor selection inside roofless buildings
         run: node scripts/check-interior-selection.mjs
       - name: Test server-side bundled world publication

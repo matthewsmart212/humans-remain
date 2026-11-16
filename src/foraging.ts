@@ -43,6 +43,6 @@ export function pickForage(w:World,id:string){
  const remaining=target.remaining-count,t=timeOf(w);
  (w.forage??={})[id]={remaining,...(!remaining&&art.regrowDays>0?{regrowRound:w.round+art.regrowDays}:{}),pickedAt:t,picked:count,to:{x:w.player.x,y:w.player.y-40}};
  w.forageReadyAt=t+FORAGE_PICK_COOLDOWN;
- w.notice=`+${count} ${art.kind==='berries'?'berry portion':art.kind==='potato'?'potato':'apple'} · Added to backpack`;w.noticeUntil=t+2.5;
+ w.notice=`+${count} ${art.kind==='berries'?'berry portion':art.kind} · Added to backpack`;w.noticeUntil=t+2.5;
  return true;
 }

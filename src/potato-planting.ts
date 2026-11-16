@@ -23,3 +23,25 @@ export function addWildPotatoes(layout:WorldLayout):WorldLayout{
  if(layout.items.length+plants.length>MAX_LAYOUT_ITEMS)return layout;
  return {...layout,potatoForageVersion:1,items:[...layout.items,...plants],updatedAt:new Date().toISOString()};
 }
+
+/** Carrots are a separate one-time migration, so existing potato worlds gain them too. */
+export function addWildCarrots(layout:WorldLayout):WorldLayout{
+ if(layout.carrotForageVersion===1||!usesPaintedHomeTerrain(layout.terrainImage))return layout;
+ const art=FORAGE_ART.find(a=>a.kind==='carrot');if(!art)return layout;
+ const plants:Placement[]=[],existing=layout.items.filter(p=>p.assetId===art.id);
+ let seed=0xca7707;
+ const random=()=>{seed=(Math.imul(seed,1664525)+1013904223)>>>0;return seed/4294967296};
+ const fire=layout.items.find(p=>p.role==='hearth'),cx=fire?.x??1718,cy=fire?.y??1574;
+ for(let tries=0;tries<1800&&plants.length+existing.length<24;tries++){
+  // Scatter outside the palisade, including plants just beyond the camp exits.
+  const angle=random()*Math.PI*2,radius=1800+random()*1000;
+  const x=cx+Math.cos(angle)*radius,y=cy+Math.sin(angle)*radius;
+  if(!campContains(layout,x,y,28)||riverWaterBlocked(x,y,28)||layoutBlocked(layout,x,y,38)||[...existing,...plants].some(p=>Math.hypot(x-p.x,y-p.y)<180))continue;
+  let approaches=0;
+  for(let i=0;i<8;i++){const a=i*Math.PI/4,px=x+Math.cos(a)*75,py=y+Math.sin(a)*75;if(!layoutBlocked(layout,px,py,19)&&!riverWaterBlocked(px,py,19))approaches++}
+  if(approaches<5)continue;
+  plants.push({id:`wild-carrot-v1-${plants.length+existing.length}`,assetId:art.id,x,y,scale:.9+random()*.2,solid:false,roof:'auto',role:'prop'});
+ }
+ if(layout.items.length+plants.length>MAX_LAYOUT_ITEMS)return layout;
+ return {...layout,carrotForageVersion:1,items:[...layout.items,...plants],updatedAt:new Date().toISOString()};
+}

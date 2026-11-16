@@ -1,6 +1,7 @@
 import {buildingRestored} from './camp-restoration';
-import {potatoGrowth,potatoPatch} from './potato-farming';
-import {POTATO_PATCH_BROKEN,POTATO_WILD_PICKED,POTATO_WILD_RIPE,potatoStageUrl} from './potato-patch-art';
+import {gardenBeds,potatoGrowth,type CropKind} from './potato-farming';
+import {cropStage,cropStageUrl,cropPickedUrl} from './crop-art';
+import {POTATO_PATCH_BROKEN,potatoStageUrl} from './potato-patch-art';
 import {assetImageKey} from './world-assets';
 import {placementBounds,type Placement} from './world-layout';
 import type {World} from './survival-engine';
@@ -10,30 +11,9 @@ type LoadedImages=Record<string,HTMLImageElement>;
 
 /** Four individually planted positions on the approved square-padded painted asset.
  * Keep these in this order so every crop belongs to a real, visible soil bed. */
-const BED_CENTRES=[[.345,.485],[.632,.443],[.404,.677],[.716,.645]] as const;
-
-/** Draw only the living crop on top of the fixed garden illustration.
- * Former stage paintings must never replace the new fence or the four beds. */
-function drawPotatoSprout(ctx:Ctx,x:number,y:number,scale:number,growth:number){
- const g=Math.max(0,Math.min(1,growth));
- const radius=(2.5+7*Math.pow(g,.7))*scale;
- ctx.save();
- ctx.fillStyle='rgba(48,31,15,0.24)';
- ctx.beginPath();ctx.arc(x,y+radius*.4,radius*.86,0,Math.PI*2);ctx.fill();
- ctx.strokeStyle='#52662d';ctx.lineWidth=Math.max(.8,radius*.19);
- ctx.beginPath();ctx.moveTo(x,y);ctx.lineTo(x,y-radius*.85);ctx.stroke();
- const leaves=[[-.87,-.48,.68,'#567b30'],[.87,-.58,.68,'#6a8a38'],[-.52,-1.03,.61,'#8a9d46'],[.54,-1.10,.65,'#6e8d38'],[0,-1.32,.52,'#91a451']] as const;
- for(const [dx,dy,ratio,color] of leaves){
-  ctx.fillStyle=color;ctx.beginPath();ctx.arc(x+dx*radius,y+dy*radius,radius*ratio,0,Math.PI*2);ctx.fill();
- }
- if(g>=.93){
-  ctx.fillStyle='#d0c58b';
-  for(const [dx,dy] of [[-.4,-.9],[.35,-.65],[.05,-1.28]]){
-   ctx.beginPath();ctx.arc(x+dx*radius,y+dy*radius,radius*.16,0,Math.PI*2);ctx.fill();
-  }
- }
- ctx.restore();
-}
+export const BED_CENTRES=[[.303,.485],[.570,.417],[.427,.650],[.700,.590]] as const;
+// Four small plants follow each bed's two sloping rows. Roots stay on the soil.
+const BED_PLANTS=[[-.055,-.014],[.034,-.034],[-.025,.030],[.064,.010]] as const;
 
 /** Editor and real survival both carry editorPreview=true. In an active run,
  * progression must take precedence so the unbuilt garden starts broken even if
@@ -50,23 +30,29 @@ export function drawPotatoPatch(ctx:Ctx,imgs:LoadedImages,w:World,p:Placement){
  if(!p.assetId.startsWith('art_camp_garden_'))return false;
  const imageUrl=potatoPatchImageForWorld(w,p.assetId);
  const broken=imageUrl===POTATO_PATCH_BROKEN;
- const patch=potatoPatch(w);
+ const beds=gardenBeds(w);
  const sprite=imgs[assetImageKey(imageUrl)];
  if(!sprite)return false;
  const bounds=placementBounds(p),width=bounds.width,height=bounds.height;
  const left=bounds.x,top=bounds.y;
  ctx.drawImage(sprite,left,top,width,height);
- if(broken||w.editorPreview)return true;
- for(let index=0;index<patch.plantedAt.length&&index<BED_CENTRES.length;index++){
-  const [rx,ry]=BED_CENTRES[index];
-  drawPotatoSprout(ctx,left+rx*width,top+ry*height,width/340,potatoGrowth(w,patch.plantedAt[index]));
+ if(broken)return true;
+ for(let index=0;index<BED_CENTRES.length;index++){
+  const crop=beds[index];if(!crop)continue;
+  const plant=imgs[assetImageKey(cropStageUrl(crop.kind,cropStage(potatoGrowth(w,crop.plantedAt))))];
+  if(!plant)continue;
+  const [rx,ry]=BED_CENTRES[index],size=width*.13;
+  for(const [dx,dy] of BED_PLANTS){
+   const x=left+(rx+dx)*width,y=top+(ry+dy)*height;
+   ctx.drawImage(plant,x-size*.5,y-size*.86,size,size);
+  }
  }
  return true;
 }
 
-/** Wild potatoes continue to use their own existing sprite pair. */
-export function drawWildPotatoPlant(ctx:Ctx,imgs:LoadedImages,w:World,p:Placement,ripe:boolean){
- const image=imgs[assetImageKey(ripe?POTATO_WILD_RIPE:POTATO_WILD_PICKED)];
+/** Cultivated and wild crops share their art and root anchor. */
+export function drawWildPotatoPlant(ctx:Ctx,imgs:LoadedImages,w:World,p:Placement,ripe:boolean,kind:CropKind='potato'){
+ const image=imgs[assetImageKey(ripe?cropStageUrl(kind,3):cropPickedUrl(kind))];
  if(!image)return false;
  const bounds=placementBounds(p);
  ctx.drawImage(image,bounds.x,bounds.y,bounds.width,bounds.height);

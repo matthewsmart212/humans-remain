@@ -2,7 +2,8 @@
 export const PROVISION_NATIVE_ART={
  berries:require('../public/survival/food-provisions-v1/berries.webp'),
  apple:require('../public/survival/food-provisions-v1/apple.webp'),
- potato:require('../public/survival/potato-patch-v2/potato-item.webp'),
+ potato:require('../public/survival/vegetable-crops-v1/potato-item.webp'),
+ carrot:require('../public/survival/vegetable-crops-v1/carrot-item.webp'),
  beans:require('../public/survival/food-provisions-v1/old-tin-of-beans.webp'),
  energyBar:require('../public/survival/food-provisions-v1/energy-bar.webp'),
  huntersMeal:require('../public/survival/food-provisions-v1/hunters-meal.webp'),
