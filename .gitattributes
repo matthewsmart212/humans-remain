@@ -191,3 +191,6 @@ public/survival/expedition-menu-v2/loading-panel.webp -filter -diff -merge
 /public/survival/vegetable-crops-v1/*.webp -filter -diff -merge -text
 /artwork-archive/vegetable-crops-v1/growth-atlas.png -filter -diff -merge -text
 /docs/qa/vegetable-crops-v1/garden-preview.webp -filter -diff -merge -text
+
+# High-resolution loot-chest atlas is a real WebP blob for web and Expo, not an LFS pointer.
+/public/survival/loot-chest-v1/*.webp -filter -diff -merge -text

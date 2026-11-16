@@ -1,6 +1,6 @@
 import {campLootChest,LOOT_CHEST_IMAGE_KEY,lootChestFrame,lootChestOpened} from './loot-chest';
 import type {World} from './survival-engine';
-const FRAME_WIDTH=96,FRAME_HEIGHT=76,ART_WIDTH=164,ART_HEIGHT=130;
+const FRAME_WIDTH=256,FRAME_HEIGHT=192,ART_WIDTH=164,ART_HEIGHT=130;
 const visible=(x:number,y:number,v:{x:number;y:number;width:number;height:number})=>x>v.x-140&&x<v.x+v.width+140&&y>v.y-155&&y<v.y+v.height+90;
 const shimmer=(w:World)=>w.weather?.reducedMotion?0.64:0.62+0.24*Math.sin(w.tick*.105);
 /** One cached atlas: opening never decodes six independent textures. */

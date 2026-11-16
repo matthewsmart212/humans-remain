@@ -2,7 +2,7 @@ import type {World} from './survival-engine';
 
 /** The test chest is deliberately separate from authored building placement. */
 export const LOOT_CHEST_ID='campfire-cache-01';
-export const LOOT_CHEST_ATLAS='/survival/loot-chest-v1/open-atlas.png';
+export const LOOT_CHEST_ATLAS='/survival/loot-chest-v1/open-atlas.webp';
 export const LOOT_CHEST_IMAGE_KEY='lootChestAtlas';
 export const LOOT_CHEST_FRAMES=6;
 export const LOOT_CHEST_OPEN_TICKS=42;
