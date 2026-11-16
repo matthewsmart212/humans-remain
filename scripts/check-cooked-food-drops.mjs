@@ -35,7 +35,7 @@ try{
 
  const old=make();old.fire.rack=['chicken','rabbit','venison'];m.stepKitchen(old);assert.equal(old.fire.rack.length,0);assert.equal(old.loot.length,3);m.stepKitchen(old);assert.equal(old.loot.length,3,'Old rack meals migrate once');
  // If the editor leaves no walkable ground nearby, retain the finished job.
- const blocked=make(),hearth={...blocked.camp.hearth};blocked.camp.hearth.x=-1000;blocked.camp.hearth.y=-1000;blocked.fire.queue=[{id:blocked.serial++,species:'rabbit',remaining:8}];advance(blocked,8);assert.equal(blocked.loot.length,0);assert.equal(blocked.fire.queue[0].remaining,0);
+ const blocked=make(),hearth={...blocked.camp.hearth};blocked.camp.hearth.x=-1e8;blocked.camp.hearth.y=-1e8;blocked.fire.queue=[{id:blocked.serial++,species:'rabbit',remaining:8}];advance(blocked,8);assert.equal(blocked.loot.length,0);assert.equal(blocked.fire.queue[0].remaining,0);
  Object.assign(blocked.camp.hearth,hearth,{fuel:0});m.stepKitchen(blocked);assert.equal(blocked.fire.queue.length,0);assert.equal(blocked.loot.length,1,'A completed job retries safely even after the fuel runs out');
  console.log('PASS: authored camp walkability, random directions, hop rendering, no table, landing-gated pickup, all meats, catch-up timing, reload safety, legacy meals and blocked-ground retry.');
 }finally{Math.random=random;fs.rmSync(temp,{recursive:true,force:true})}
