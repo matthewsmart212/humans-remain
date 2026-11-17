@@ -15,14 +15,15 @@ uniform float front;
 uniform float2 lidY;
 uniform float4 lidX;
 float bell(float2 p,float2 size){float2 v=p/size;return exp(-dot(v,v)*2.0);}
-float shafts(float2 p){
- float h=-p.y-0.69;
- float width=0.23+max(0.0,h)*0.47;
- float across=(p.x-sin(time*0.6+h*2.3)*max(0.0,h)*0.025)/width;
- float rays=pow(max(0.0,cos(across*10.5+sin(time*0.7+h*2.0)*0.40)),6.0);
- float reach=1.25+opening*1.1;
- float envelope=smoothstep(-0.04,0.18,h)*(1.0-smoothstep(reach*0.50,reach,h));
- return exp(-across*across*1.65)*envelope*(0.13+rays*0.48);
+// Broad moving clouds with soft edges, rather than straight light beams.
+float radiance(float2 p){
+ float h=-p.y-0.70;
+ float drift=sin(time*1.1+h*4.1)*0.16+sin(time*0.63-h*2.7)*0.12;
+ float across=p.x-drift;
+ float rolling=0.76+0.15*sin(across*5.2+h*4.0-time*1.9)+0.09*sin(across*8.0-h*5.7+time*1.1);
+ float body=bell(float2(across,h-0.46),float2(0.98,1.12));
+ float curl=bell(float2(p.x+sin(time*0.8-h*3.3)*0.34,h-0.9),float2(0.72,0.95));
+ return (body*rolling+curl*0.25)*smoothstep(-0.10,0.12,h);
 }
 half4 main(float2 position){
  float2 p=(position-origin)/100.0;
@@ -32,11 +33,12 @@ half4 main(float2 position){
   // Reflected amber across the ground and a soft halo behind the silhouette.
   light+=float3(1.0,0.39,0.065)*bell(p-float2(0.0,-0.05),float2(1.72,0.62))*(0.29+opening*0.13+burst*0.4)*breathe;
   light+=float3(1.0,0.46,0.12)*bell(p-float2(0.0,-0.64),float2(1.5,1.45))*(0.22+charge*0.13+opening*0.15);
-  // Broad, soft-ended shafts fan out from the interior, with moving filaments.
-  light+=float3(1.0,0.84,0.48)*shafts(p)*(0.36+opening*0.84+charge*0.7+burst*2.2);
+  // Warm outer haze around a pale, flowing centre. No directional ray pattern.
+  light+=float3(1.0,0.88,0.59)*radiance(p)*(0.15+opening*0.57+charge*0.35+burst*1.3);
+  light+=float3(1.0,0.38,0.045)*bell(p-float2(sin(time*0.7)*0.16,-1.10),float2(1.14,0.94))*(0.06+opening*0.16);
   // Even sealed, faint wisps and a brighter seam suggest contained energy.
-  float wisps=pow(max(0.0,sin(p.x*12.0+sin(p.y*5.0-time)*1.3)),10.0);
-  light+=float3(1.0,0.42,0.07)*bell(p-float2(0.0,-0.88),float2(1.15,1.2))*wisps*0.14;
+  float wisps=0.65+0.35*sin(p.x*4.5+sin(p.y*3.0-time)*1.3);
+  light+=float3(1.0,0.51,0.13)*bell(p-float2(0.0,-0.88),float2(1.15,1.0))*wisps*0.14;
   light+=float3(1.0,0.70,0.3)*bell(p-float2(0.0,-0.76),float2(1.05,0.11))*(0.16+charge*0.47+burst*0.5);
  }else{
   // Authored crystal and orange inlays are the light sources. The broad bloom
@@ -48,7 +50,8 @@ half4 main(float2 position){
   // interior. Height and width are clipped to the inside of the wooden rim.
   float inside=smoothstep(-0.83,-0.76,p.y)*(1.0-smoothstep(-0.55,-0.50,p.y));
   inside*=1.0-smoothstep(0.67,0.78,abs(p.x));
-  light+=float3(1.0,0.72,0.32)*inside*opening*(0.53+burst*0.42)*breathe;
+  float shimmer=0.86+0.10*sin(time*3.6+p.x*5.0)+0.04*sin(time*7.1-p.x*9.0);
+  light+=float3(1.0,0.88,0.58)*inside*opening*(0.66+burst*0.42)*shimmer;
   light+=float3(1.0,0.63,0.2)*bell(p-float2(0.0,-0.72),float2(0.92,0.2))*opening*0.38;
   // Reflected light follows the raised inner face in EVERY opening pose.
   // Screen blending retains the wood grain and dark iron straps. It is
@@ -57,13 +60,14 @@ half4 main(float2 position){
   float left=mix(lidX.x,lidX.z,v),right=mix(lidX.y,lidX.w,v);
   float lid=smoothstep(lidY.x,lidY.x+0.045,p.y)*(1.0-smoothstep(lidY.y-0.035,lidY.y,p.y));
   lid*=smoothstep(left,left+0.045,p.x)*(1.0-smoothstep(right-0.045,right,p.x));
-  float reflection=(0.34+v*0.36)*(0.72+0.28*exp(-p.x*p.x*2.0));
-  light+=float3(1.0,0.64,0.25)*lid*reflection*opening*(0.85+0.15*breathe);
+  float reflection=(0.22+v*0.30)*(0.66+0.34*exp(-p.x*p.x*2.0));
+  float caustic=0.80+0.20*sin(p.x*4.0+v*4.2-time*1.7);
+  light+=float3(1.0,0.74,0.37)*lid*reflection*opening*caustic;
   float rimY=lidY.x-0.10,centre=(lidX.x+lidX.y)*0.5;
   light+=float3(1.0,0.73,0.36)*bell(p-float2(centre,rimY),float2(0.96,0.085))*opening*0.33;
-  // A little of the volume sits IN FRONT of the lid. The light now connects
-  // the compartment, reflected lid and air above instead of stopping at it.
-  light+=float3(1.0,0.87,0.53)*shafts(p)*opening*(0.28+burst*0.20);
+  // Rolling light sits across the inner face and air above, preserving the
+  // authored wood texture rather than painting a flat amber rectangle.
+  light+=float3(1.0,0.91,0.68)*radiance(p)*opening*(0.27+burst*0.20);
   light+=float3(1.0,0.65,0.26)*bell(p-float2(0.0,-1.02),float2(0.74,0.8))*opening*0.13;
   // Soft flash centred on the opening, never a full-screen white overlay.
   light+=float3(1.0,0.78,0.4)*bell(p-float2(0.0,-0.73),float2(1.48,1.05))*burst*0.65;

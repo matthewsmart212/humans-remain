@@ -8,9 +8,10 @@ export const LOOT_CHEST_ATLAS='/survival/loot-chest-v4/orange-opening-atlas.webp
 export const LOOT_CHEST_IMAGE_KEY='lootChestAtlas';
 export const LOOT_CHEST_FRAMES=10;
 // Ten opening poses from the approved wide orange chest artwork.
-export const LOOT_CHEST_OPEN_TICKS=108;
+export const LOOT_CHEST_OPEN_SPEED=2;
+export const LOOT_CHEST_OPEN_TICKS=108/LOOT_CHEST_OPEN_SPEED;
 /** Show the fully open lid before presenting the contents. */
-export const LOOT_CHEST_REVEAL_HOLD_TICKS=18;
+export const LOOT_CHEST_REVEAL_HOLD_TICKS=18/LOOT_CHEST_OPEN_SPEED;
 export const LOOT_CHEST_REWARDS=[
  {kind:'repairHammer',name:'Repair hammer',amount:1,artId:'repairHammer',description:'Repair broken camp buildings'},
  {kind:'woodenAxe',name:'Wooden axe',amount:1,artId:'woodenAxe',description:'Gather timber from trees'},
@@ -63,7 +64,7 @@ export function openLootChest(w:World,id=LOOT_CHEST_ID){
    contents:Object.fromEntries(LOOT_CHEST_REWARDS.map(reward=>[reward.kind,reward.amount])) as LootChestContents,
   };
   w.rareCacheMenuAt=w.tick+LOOT_CHEST_OPEN_TICKS+LOOT_CHEST_REVEAL_HOLD_TICKS;
-  w.notice='LOOT CHEST · OPENING';w.noticeUntil=w.tick/60+1.8;
+  w.notice='LOOT CHEST · OPENING';w.noticeUntil=(w.tick+LOOT_CHEST_OPEN_TICKS)/60;
  }else{
   w.lootChests![id].menuShown=true;
   w.rareCacheMenuAt=undefined;

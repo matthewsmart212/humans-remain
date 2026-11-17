@@ -52,13 +52,22 @@ try{
   const changed=difference(art,closed);assert(changed>14000,'Closed aura is visible on bright ground');
   world.tick=150;const moving=render('closed-later');assert(difference(closed,moving)>2000,'Closed motes and light visibly breathe');
   assert.equal(m.lootChestFx(world).burst,0,'Unopened late-run chest never plays an opening burst');
-  world.lootChests={[m.LOOT_CHEST_ID]:{openedAt:150,rewardVersion:2,contents:{repairHammer:1,woodenAxe:1,woodenPickaxe:1}}};
-  world.tick=174;render('charging');assert(m.lootChestFx(world).charge>.6);assert.equal(m.lootChestFrame(world),2);
-  world.tick=191;const reveal=render('burst');assert.equal(m.lootChestFrame(world),3);assert(m.lootChestFx(world).burst>.7,'Burst coincides with the first actual lid gap');
-  world.tick=258;const open=render('open');assert.equal(m.lootChestFrame(world),9);assert(difference(closed,open)>20000);
+  world.player.hp=100;
+  assert.equal(m.openLootChest(world),true);
+  assert.equal(m.LOOT_CHEST_OPEN_TICKS/60,.9,'Lid animation takes exactly half the previous 1.8 seconds');
+  assert.equal(world.rareCacheMenuAt,213,'Opening and reveal hold together are halved to 1.05 seconds');
+  for(const [age,frame] of [[0,0],[5,0],[6,1],[12,2],[18,3],[27,4],[48,8],[53,8],[54,9]]){
+   world.tick=150+age;assert.equal(m.lootChestFrame(world),frame,'Faster sprite pose at tick '+age);
+  }
+  world.tick=212;m.stepLootChest(world);assert.equal(world.stationPanel,undefined,'Loot menu waits for the lid and short reveal');
+  world.tick=213;m.stepLootChest(world);assert.equal(world.stationPanel,'rare-cache','Menu opens immediately after the faster reveal');
+  assert.equal(m.lootChestFrame(world),9);world.stationPanel=undefined;
+  world.tick=162;render('charging');assert(m.lootChestFx(world).charge>.6);assert.equal(m.lootChestFrame(world),2);
+  world.tick=171;const reveal=render('burst');assert.equal(m.lootChestFrame(world),3);assert(m.lootChestFx(world).burst>.7,'Burst coincides with the first actual lid gap');
+  world.tick=204;const open=render('open');assert.equal(m.lootChestFrame(world),9);assert(difference(closed,open)>20000);
   world.phase='night';world.nightAmount=1;render('night-open');world.phase='day';world.nightAmount=0;
   for(let pose=3;pose<=9;pose++){
-   world.tick=150+pose*12;assert.equal(m.lootChestFx(world).frame,pose);
+   world.tick=150+pose*6;assert.equal(m.lootChestFx(world).frame,pose);
    render('pose-'+pose);
   }
   world.tick=15000;assert(m.lootChestFx(world).burst<.0001,'Saved opened chest never repeats its one-shot reveal');
@@ -69,6 +78,14 @@ try{
   const rimGain=regionGain(openArt,persistentOpen,265,259,115,12);
   assert(lidGain>32,'Light must remain visible across the upper inside of a fully raised lid');
   assert(rimGain>10,'The upper rail catches the light, not only the compartment below');
+  // In the air above the lid, a filled soft glow replaces the three narrow
+  // bright prongs. Subtract the actual terrain and average out its grain.
+  const profile=[];
+  for(let x=230;x<410;x++)profile.push(Math.max(0,regionGain(openArt,persistentOpen,x,211,1,8)));
+  const peak=Math.max(...profile),coverage=profile.filter(n=>n>peak*.45).length/profile.length;
+  assert(peak>15&&coverage>.38,'The glow fills the air instead of forming thin separated rays');
+  world.tick+=30;const flowing=render('open-flowing');
+  assert(difference(persistentOpen,flowing)>4000,'Open mist and embers remain visibly alive');
   world.phase='night';world.nightAmount=1;
   const nightArt=render(null,'art'),nightLid=render('persistent-night-open');
   assert(regionGain(nightArt,nightLid,285,278,70,24)>24,'Night shading preserves the reflected lid light');
@@ -84,13 +101,13 @@ try{
    if(!opened){world.phase='night';world.nightAmount=1;render('night-closed');world.phase='day';world.nightAmount=0}
   }
   assert.equal(m.lootChestDrawables({},imgs,world,{x:4000,y:4000,width:100,height:100}).length,0,'Offscreen chest does no GPU work');
-  assert.equal(m.lootChestDrawables({},imgs,world,{x:250,y:130,width:140,height:20}).length,1,'Cull bounds include the tips of tall opening shafts');
+  assert.equal(m.lootChestDrawables({},imgs,world,{x:250,y:130,width:140,height:20}).length,1,'Cull bounds include the drifting glow and high sparks');
   assert.equal(m.lootChestDrawables({},imgs,{...world,scene:{}},viewport).length,0,'Camp chest never appears in another scene');
   // Glow, sprite and sparks share one depth key, so a player standing in front
   // occludes the entire effect rather than having a beam painted over their head.
   assert.deepEqual(m.lootChestDrawables({},imgs,world,viewport).map(d=>d.y),[420]);
   atlas.dispose();terrain?.dispose();surface.dispose();font.dispose();adapter.disposeLighting();
-  results.push({target,version:JSON.parse(fs.readFileSync(path.join(skiaRoot,'package.json'))).version,closedEffectPixels:changed,lidBrightnessGain:+lidGain.toFixed(1),topRailBrightnessGain:+rimGain.toFixed(1),realTerrain:!!terrain});
+  results.push({target,version:JSON.parse(fs.readFileSync(path.join(skiaRoot,'package.json'))).version,openingSeconds:m.LOOT_CHEST_OPEN_TICKS/60,glowCoverage:+coverage.toFixed(3),closedEffectPixels:changed,lidBrightnessGain:+lidGain.toFixed(1),topRailBrightnessGain:+rimGain.toFixed(1),realTerrain:!!terrain});
  }
- console.log(JSON.stringify({passed:true,results,checks:['shader compilation','approved atlas','visible daylight glow','moving idle particles','sprite-synchronised reveal','all raised-lid poses','persistent reflected lid and upper-rail light','night reflections','persistent opened state','quiet empty state','steady reduced motion','offscreen culling','shared depth ordering','resource disposal'],physicalIPhoneTested:false},null,2));
+ console.log(JSON.stringify({passed:true,results,checks:['shader compilation','approved atlas','visible daylight glow','moving idle particles','twice-as-fast opening and menu reveal','sprite-synchronised burst','all raised-lid poses','persistent reflected lid and upper-rail light','broad glow without narrow rays','flowing open mist','night reflections','persistent opened state','quiet empty state','steady reduced motion','offscreen culling','shared depth ordering','resource disposal'],physicalIPhoneTested:false},null,2));
 }finally{fs.rmSync(temp,{recursive:true,force:true})}

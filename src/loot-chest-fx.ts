@@ -1,4 +1,4 @@
-import {LOOT_CHEST_ID,lootChestFrame,lootChestOpened,lootChestRemaining} from './loot-chest';
+import {LOOT_CHEST_ID,LOOT_CHEST_OPEN_TICKS,LOOT_CHEST_OPEN_SPEED,lootChestFrame,lootChestOpened,lootChestRemaining} from './loot-chest';
 import type {World} from './survival-engine';
 
 // Top/bottom and left/right edges of the inside face, measured in each actual
@@ -20,7 +20,7 @@ const lids=sourceLids.map(([top,bottom,leftTop,rightTop,leftBottom,rightBottom])
  leftBottom*240/440-120,rightBottom*240/440-120,
 ] as const);
 export type LootChestFx={time:number;frame:number;lid:LootChestLid;open:number;charge:number;burst:number;revealAge:number;power:number;reduced:boolean;empty:boolean};
-export const LOOT_CHEST_BURST_TICK=36; // First sprite with an actual gap under the lid.
+export const LOOT_CHEST_BURST_TICK=LOOT_CHEST_OPEN_TICKS/3; // First sprite with an actual gap under the lid.
 const clamp=(n:number)=>Math.max(0,Math.min(1,n));
 /** One clock for the light, particles and sprite, including restored/co-op state.
  * Sampling an unopened chest never invents an opening, even late in a run. */
@@ -28,7 +28,9 @@ export function lootChestFx(w:World):LootChestFx{
  const opened=lootChestOpened(w),age=opened?Math.max(0,w.tick-w.lootChests![LOOT_CHEST_ID].openedAt):0;
  const reduced=!!w.weather?.reducedMotion,empty=opened&&lootChestRemaining(w)===0;
  const frame=lootChestFrame(w);
- const revealAge=opened?age-LOOT_CHEST_BURST_TICK:-1;
+ // Opening particles and bloom use the animation clock too. Ambient shimmer
+ // keeps normal game time, while the reveal follows the faster moving lid.
+ const revealAge=opened?(age-LOOT_CHEST_BURST_TICK)*LOOT_CHEST_OPEN_SPEED:-1;
  return{
   time:reduced?0:w.tick/60,
   frame,lid:lids[frame],
