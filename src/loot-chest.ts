@@ -6,6 +6,9 @@ import {GEAR,gear} from './player-gear';
 export const LOOT_CHEST_ID='campfire-cache-01';
 export const LOOT_CHEST_ATLAS='/survival/loot-chest-v4/orange-opening-atlas.webp';
 export const LOOT_CHEST_IMAGE_KEY='lootChestAtlas';
+export const LOOT_CHEST_GROUND='/survival/loot-chest-v4/ground-contact.webp';
+export const LOOT_CHEST_GROUND_KEY='lootChestGround';
+export const LOOT_CHEST_IMAGES={[LOOT_CHEST_IMAGE_KEY]:LOOT_CHEST_ATLAS,[LOOT_CHEST_GROUND_KEY]:LOOT_CHEST_GROUND};
 export const LOOT_CHEST_FRAMES=10;
 // Ten opening poses from the approved wide orange chest artwork.
 export const LOOT_CHEST_OPEN_SPEED=2;

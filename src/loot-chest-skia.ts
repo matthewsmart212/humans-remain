@@ -1,6 +1,7 @@
 import {BlendMode} from '@shopify/react-native-skia/lib/module/skia/types';
 import type {SkCanvas,Skia as SkiaApi} from '@shopify/react-native-skia';
 import type {LootChestFx} from './loot-chest-fx';
+import {CHEST_MOUTH_BACK,CHEST_MOUTH_FRONT} from './loot-chest-rig';
 
 // Two small, world-space light passes. Screen blending makes these emit light
 // on bright autumn terrain too. No blur, full-screen surface or new textures.
@@ -48,11 +49,17 @@ half4 main(float2 position){
   light+=float3(1.0,0.42,0.055)*(bell(p-float2(-0.53,-0.38),float2(0.40,0.14))+bell(p-float2(0.43,-0.36),float2(0.40,0.14)))*0.4*breathe;
   // The lid crack advances with the actual poses, then remains a radiant
   // interior. Height and width are clipped to the inside of the wooden rim.
-  float inside=smoothstep(-0.83,-0.76,p.y)*(1.0-smoothstep(-0.55,-0.50,p.y));
-  inside*=1.0-smoothstep(0.67,0.78,abs(p.x));
+  float mouthBack=${(CHEST_MOUTH_BACK/100).toFixed(6)},mouthFront=${(CHEST_MOUTH_FRONT/100).toFixed(6)};
+  float depth=clamp((p.y-mouthBack)/(mouthFront-mouthBack),0.0,1.0);
+  float inside=smoothstep(mouthBack,mouthBack+0.055,p.y)*(1.0-smoothstep(mouthFront-0.07,mouthFront,p.y));
+  float width=mix(0.70,0.79,depth);
+  inside*=1.0-smoothstep(width-0.10,width,abs(p.x));
   float shimmer=0.86+0.10*sin(time*3.6+p.x*5.0)+0.04*sin(time*7.1-p.x*9.0);
-  light+=float3(1.0,0.88,0.58)*inside*opening*(0.66+burst*0.42)*shimmer;
-  light+=float3(1.0,0.63,0.2)*bell(p-float2(0.0,-0.72),float2(0.92,0.2))*opening*0.38;
+  // A rounded source deep in the compartment replaces the white horizontal
+  // strip; the front lip keeps its dark metal and weathered texture.
+  float core=bell(p-float2(sin(time*0.8)*0.025,mouthBack+0.14),float2(0.63,0.15));
+  light+=float3(1.0,0.83,0.44)*inside*opening*(0.27+core*0.55+burst*0.28)*shimmer;
+  light+=float3(1.0,0.58,0.16)*bell(p-float2(0.0,mouthBack+0.15),float2(0.89,0.20))*opening*0.19;
   // Reflected light follows the raised inner face in EVERY opening pose.
   // Screen blending retains the wood grain and dark iron straps. It is
   // strongest near the hinge, with a warm reflection reaching the top rail.
@@ -60,11 +67,11 @@ half4 main(float2 position){
   float left=mix(lidX.x,lidX.z,v),right=mix(lidX.y,lidX.w,v);
   float lid=smoothstep(lidY.x,lidY.x+0.045,p.y)*(1.0-smoothstep(lidY.y-0.035,lidY.y,p.y));
   lid*=smoothstep(left,left+0.045,p.x)*(1.0-smoothstep(right-0.045,right,p.x));
-  float reflection=(0.12+v*0.20)*(0.66+0.34*exp(-p.x*p.x*2.0));
+  float reflection=(0.14+pow(v,1.5)*0.40)*(0.66+0.34*exp(-p.x*p.x*2.0));
   float caustic=0.80+0.20*sin(p.x*4.0+v*4.2-time*1.7);
-  light+=float3(1.0,0.74,0.37)*lid*reflection*opening*caustic;
+  light+=float3(1.0,0.68,0.29)*lid*reflection*opening*caustic;
   float rimY=lidY.x-0.10,centre=(lidX.x+lidX.y)*0.5;
-  light+=float3(1.0,0.73,0.36)*bell(p-float2(centre,rimY),float2(0.96,0.085))*opening*0.33;
+  light+=float3(1.0,0.73,0.36)*bell(p-float2(centre,rimY),float2(0.96,0.085))*opening*0.22;
   // Rolling light sits across the inner face and air above, preserving the
   // authored wood texture rather than painting a flat amber rectangle.
   light+=float3(1.0,0.91,0.68)*radiance(p)*opening*(0.06+burst*0.10);

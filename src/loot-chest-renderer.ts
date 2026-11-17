@@ -1,10 +1,9 @@
-import {drawChestRig} from './loot-chest-rig';
-import {campLootChest,LOOT_CHEST_IMAGE_KEY,lootChestFrame} from './loot-chest';
+import {drawChestRig,CHEST_WIDTH_SCALE,CHEST_MOUTH_BACK,CHEST_MOUTH_FRONT} from './loot-chest-rig';
+import {campLootChest,LOOT_CHEST_IMAGE_KEY,LOOT_CHEST_GROUND_KEY} from './loot-chest';
 import {lootChestFx,type LootChestFx} from './loot-chest-fx';
 import type {World} from './survival-engine';
 
-const FRAME_WIDTH=440,FRAME_HEIGHT=390,COLUMNS=5;
-const ART_WIDTH=240,ART_HEIGHT=213,BASELINE_OFFSET=178,TAU=Math.PI*2;
+const TAU=Math.PI*2;
 type Viewport={x:number;y:number;width:number;height:number};
 type LightContext=CanvasRenderingContext2D&{drawLootChestLight?:(x:number,y:number,fx:LootChestFx,front:boolean)=>void};
 const clamp=(n:number)=>Math.max(0,Math.min(1,n));
@@ -32,12 +31,12 @@ function light(ctx:LightContext,x:number,y:number,fx:LootChestFx,front:boolean){
  if(front){
   glow(x-5,y-43,47,.63+fx.charge*.2);glow(x-53,y-38,28,.3);glow(x+43,y-36,28,.3);
   if(fx.open){
-   glow(x,y-69,82,fx.open*.7);glow(x,y-73,125,fx.burst*.75);
+   glow(x,(CHEST_MOUTH_BACK+CHEST_MOUTH_FRONT)/2+y,65,fx.open*.56);glow(x,y-73,125,fx.burst*.65);
    const [top,bottom,leftTop,rightTop,leftBottom,rightBottom]=fx.lid;
    ctx.save();ctx.beginPath();ctx.moveTo(x+leftTop,y+top);ctx.lineTo(x+rightTop,y+top);
    ctx.lineTo(x+rightBottom,y+bottom);ctx.lineTo(x+leftBottom,y+bottom);ctx.closePath();ctx.clip();
-   glow(x,y+bottom,125,fx.open*.65);ctx.restore();
-   glow(x,y+top-10,70,fx.open*.25);
+   glow(x,y+bottom-4,112,fx.open*.85);ctx.restore();
+   glow(x,y+top-10,70,fx.open*.18);
   }
  }else{
   glow(x,y-40,170,.29+fx.charge*.17+fx.open*.14);
@@ -134,13 +133,22 @@ function sealFlare(ctx:CanvasRenderingContext2D,x:number,y:number,fx:LootChestFx
  ctx.globalAlpha=fx.burst*.78*fx.power;ctx.fillStyle='#fff0b8';ctx.fill();ctx.globalAlpha=1;
 }
 
-/** All effects are one depth-sorted drawable. A survivor in front occludes
- * sparks, beams and bloom as well as the chest, on both renderers. */
+/** A single small authored decal on the terrain pass, beneath every actor. */
+export function drawLootChestGround(ctx:CanvasRenderingContext2D,imgs:Record<string,HTMLImageElement>,w:World,viewport:Viewport){
+ const p=campLootChest(w),ground=imgs[LOOT_CHEST_GROUND_KEY];
+ if(!p||!ground||!visible(p.x,p.y,viewport))return;
+ ctx.save();ctx.globalAlpha=.46;
+ ctx.drawImage(ground,p.x-120*CHEST_WIDTH_SCALE,p.y-22,240*CHEST_WIDTH_SCALE,38);
+ ctx.restore();
+}
+
+/** All light effects are one depth-sorted drawable. A survivor in front
+ * occludes sparks and bloom as well as the chest, on both renderers. */
 export function lootChestDrawables(ctx:CanvasRenderingContext2D,imgs:Record<string,HTMLImageElement>,w:World,viewport:Viewport){
  const p=campLootChest(w);if(!p||!visible(p.x,p.y,viewport))return [];
- const sprite=imgs[LOOT_CHEST_IMAGE_KEY],frame=lootChestFrame(w),fx=lootChestFx(w);
+ const sprite=imgs[LOOT_CHEST_IMAGE_KEY],fx=lootChestFx(w);
  return [{y:p.y,draw:()=>{
-  ctx.save();ctx.translate(p.x,p.y);ctx.scale(.8,1);
+  ctx.save();ctx.translate(p.x,p.y);ctx.scale(CHEST_WIDTH_SCALE,1);
   // Narrow the chest and its aligned effects around the same world anchor.
   const x=0,y=0;
   light(ctx,x,y,fx,false);

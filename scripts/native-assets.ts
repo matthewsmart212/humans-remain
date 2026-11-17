@@ -1,4 +1,5 @@
 import {GARDEN_ART} from '../src/camp-garden-art';
+import {LOOT_CHEST_IMAGES} from '../src/loot-chest';
 import {SPAWNABLES} from '../src/play-spawns';
 import fs from 'node:fs';
 import path from 'node:path';
@@ -28,7 +29,7 @@ const layout=prepareAuthoredWorld(checked.layout);
 // A continued/custom camp can defer the circular migration. Keep its original
 // timber walls, the existing tier variants and their ground beds offline too.
 const savedWallIds=WORLD_ASSETS.filter(a=>wallIdentity(a.id)).map(a=>a.id);
-const sources={...Object.fromEntries(SPAWNABLES.map(v=>['spawn-thumb-'+v.id,v.image])),...EDITOR_IMAGE_SOURCES,...editorTerrainDetail(layout.terrainImage),
+const sources={...LOOT_CHEST_IMAGES,...Object.fromEntries(SPAWNABLES.map(v=>['spawn-thumb-'+v.id,v.image])),...EDITOR_IMAGE_SOURCES,...editorTerrainDetail(layout.terrainImage),
  ...Object.fromEntries(OUTDOOR_TILES.map(t=>[t.key,t.image])),...TERRAIN_CHUNK_IMAGES,...RIVER_DETAIL_IMAGES,
  ...Object.assign({},...[...SCENES.values()].map(sceneImages)),
  ...WALKER_IMAGE_SOURCES,...BOMBER_IMAGE_SOURCES,...requiredImages([...layout.items.map(p=>p.assetId),...GARDEN_ART.map(a=>a.id),...savedWallIds,...circularWallArt.map(a=>a.id)],layout.terrainImage),

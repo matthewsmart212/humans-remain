@@ -194,3 +194,5 @@ public/survival/expedition-menu-v2/loading-panel.webp -filter -diff -merge
 
 # High-resolution loot-chest atlas is a real WebP blob for web and Expo, not an LFS pointer.
 /public/survival/loot-chest-v1/*.webp -filter -diff -merge -text
+# Compact chest footing is bundled directly by both web and Expo.
+/public/survival/loot-chest-v4/ground-contact.webp -filter -diff -merge -text

@@ -1,12 +1,20 @@
 import {LOOT_CHEST_ID,LOOT_CHEST_OPEN_TICKS} from './loot-chest';
 import type {World} from './survival-engine';
 type Point=readonly [number,number];
+export const CHEST_WIDTH_SCALE=.8,CHEST_DEPTH_SCALE=1.18;
+const ART_SCALE=213/390,MOUTH_SOURCE_HEIGHT=46;
+const MOUTH_FRONT=-178+(178+MOUTH_SOURCE_HEIGHT)*ART_SCALE;
+export const CHEST_MOUTH_BACK=MOUTH_FRONT-MOUTH_SOURCE_HEIGHT*ART_SCALE*CHEST_DEPTH_SCALE;
+export const CHEST_MOUTH_FRONT=MOUTH_FRONT;
+const HINGE_Y=-58-24*CHEST_DEPTH_SCALE,LID_RISE=75*CHEST_DEPTH_SCALE;
 export function chestHinge(w:World){
  const state=w.lootChests?.[LOOT_CHEST_ID];
  const t=state?Math.max(0,Math.min(1,(w.tick-state.openedAt)/LOOT_CHEST_OPEN_TICKS)):0;
  // Continuous hinge motion; no frame-swapped body, straps, feet or crystal.
  const eased=t*t*(3-2*t),angle=eased*Math.PI/2;
- const front=-58-99*Math.sin(angle),back=-82;
+ // A deeper rigid lid rotates around the same fixed back hinge. The front
+ // rail and stationary body keep their existing height and narrower width.
+ const back=HINGE_Y,front=back+24*CHEST_DEPTH_SCALE*Math.cos(angle)-LID_RISE*Math.sin(angle);
  const frontWidth=99-15*Math.sin(angle),backWidth=89;
  return {t,front,back,frontWidth,backWidth,inside:front<back};
 }
@@ -24,8 +32,10 @@ function triangle(ctx:CanvasRenderingContext2D,image:HTMLImageElement,crop:reado
  * Only texture projection moves. No generated in-between artwork is used. */
 export function drawChestRig(ctx:CanvasRenderingContext2D,image:HTMLImageElement,w:World,x:number,y:number){
  const h=chestHinge(w);
- // Entire stationary base, including the mouth, front, crystal and feet.
- ctx.drawImage(image,1760,568,440,212,x-120,y-178+178*213/390,240,212*213/390);
+ // Deepen only the compartment. The front, crystal, straps and feet retain
+ // their exact authored proportions and remain identical in every pose.
+ ctx.drawImage(image,1760,568,440,MOUTH_SOURCE_HEIGHT,x-120,y+CHEST_MOUTH_BACK,240,MOUTH_FRONT-CHEST_MOUTH_BACK);
+ ctx.drawImage(image,1760,568+MOUTH_SOURCE_HEIGHT,440,212-MOUTH_SOURCE_HEIGHT,x-120,y+MOUTH_FRONT,240,(212-MOUTH_SOURCE_HEIGHT)*ART_SCALE);
  if(Math.abs(h.front-h.back)<.18)return;
  const top=h.inside?h.front:h.back,bottom=h.inside?h.back:h.front;
  const tw=h.inside?h.frontWidth:h.backWidth,bw=h.inside?h.backWidth:h.frontWidth;

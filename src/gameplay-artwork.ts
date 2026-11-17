@@ -1,5 +1,5 @@
 import type {World} from './survival-engine';
-import {LOOT_CHEST_ATLAS,LOOT_CHEST_IMAGE_KEY} from './loot-chest';
+import {LOOT_CHEST_IMAGES} from './loot-chest';
 import type {SurvivorRoleId} from './survivor-roles';
 import {requiredImages} from './world-assets';
 import {wavePlan} from './camp-siege';
@@ -21,13 +21,13 @@ import {BONFIRE_FOOD_IMAGES} from './bonfire-food-art';
 import {RABBIT_FOOD_IMAGES,VENISON_FOOD_IMAGES} from './food-items';
 
 /** Small, shared player/food set. Other animation families have a live owner. */
-export const PLAYER_MOVEMENT_IMAGES:Record<string,string>={...RUNNER_CYCLE_SOURCES,...ENGINEER_IMAGE_SOURCES,...REPAIR_HAMMER_IMAGES,...PROVISION_IMAGES,...BONFIRE_FOOD_IMAGES,...RABBIT_FOOD_IMAGES,...VENISON_FOOD_IMAGES,[LOOT_CHEST_IMAGE_KEY]:LOOT_CHEST_ATLAS,stone:MINING_IMAGES.stone,torch:'/survival/equipment/torch-v1.png',bagScrap:'/survival/ui-backpack-v1/scrap.png',bagFuel:'/survival/ui-backpack-v1/fuel.png'};
+export const PLAYER_MOVEMENT_IMAGES:Record<string,string>={...RUNNER_CYCLE_SOURCES,...ENGINEER_IMAGE_SOURCES,...REPAIR_HAMMER_IMAGES,...PROVISION_IMAGES,...BONFIRE_FOOD_IMAGES,...RABBIT_FOOD_IMAGES,...VENISON_FOOD_IMAGES,...LOOT_CHEST_IMAGES,stone:MINING_IMAGES.stone,torch:'/survival/equipment/torch-v1.png',bagScrap:'/survival/ui-backpack-v1/scrap.png',bagFuel:'/survival/ui-backpack-v1/fuel.png'};
 /** Do not download all the other characters' atlases to start a Hunter run. */
 export function playerMovementImagesForRole(role:SurvivorRoleId):Record<string,string>{
  return {
   ...(role==='hunter'?HUNTER_IMAGE_SOURCES:role==='engineer'?ENGINEER_IMAGE_SOURCES:RUNNER_CYCLE_SOURCES),
   ...REPAIR_HAMMER_IMAGES,
-  [LOOT_CHEST_IMAGE_KEY]:LOOT_CHEST_ATLAS,
+  ...LOOT_CHEST_IMAGES,
   
   stone:MINING_IMAGES.stone,
   torch:'/survival/equipment/torch-v1.png'
@@ -36,7 +36,7 @@ export function playerMovementImagesForRole(role:SurvivorRoleId):Record<string,s
 const equipment:Record<string,string>={...MINING_IMAGES,...KNIFE_IMAGES,...SWORD_IMAGES,...SPEAR_IMAGES};
 /** Prefetch carried tools and nearby creatures, preserving the original art. */
 export function gameplayImageSources(w:World):Record<string,string>{
- const out:Record<string,string>=w.layout&&!w.scene?{[LOOT_CHEST_IMAGE_KEY]:LOOT_CHEST_ATLAS}:{},gear=new Set(Object.entries(w.gear?.bag??{}).filter(([,count])=>!!count).map(([id])=>id));
+ const out:Record<string,string>=w.layout&&!w.scene?{...LOOT_CHEST_IMAGES}:{},gear=new Set(Object.entries(w.gear?.bag??{}).filter(([,count])=>!!count).map(([id])=>id));
  if(w.survivorRole==='hunter')Object.assign(out,HUNTER_IMAGE_SOURCES);
  if(w.player.equipped)gear.add(w.player.equipped);
  for(const drop of w.loot)gear.add(drop.kind);

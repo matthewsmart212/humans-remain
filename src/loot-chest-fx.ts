@@ -1,4 +1,4 @@
-import {chestHinge} from './loot-chest-rig';
+import {chestHinge,CHEST_DEPTH_SCALE} from './loot-chest-rig';
 import {LOOT_CHEST_ID,LOOT_CHEST_OPEN_TICKS,LOOT_CHEST_OPEN_SPEED,lootChestFrame,lootChestOpened,lootChestRemaining} from './loot-chest';
 import type {World} from './survival-engine';
 
@@ -20,7 +20,7 @@ export function lootChestFx(w:World):LootChestFx{
  return{
   time:reduced?0:w.tick/60,
   frame,lid,
-  open:hinge.inside?clamp((hinge.back-hinge.front)/73):0,
+  open:hinge.inside?clamp((hinge.back-hinge.front)/(75*CHEST_DEPTH_SCALE)):0,
   charge:!reduced&&opened?(age<LOOT_CHEST_BURST_TICK?Math.sin(age/LOOT_CHEST_BURST_TICK*Math.PI*.5)**2:Math.exp(-revealAge/14)):0,
   // One smooth flash as the seal breaks; never loop it on an opened save.
   burst:!reduced&&revealAge>=0?Math.exp(-revealAge/19)*clamp(revealAge/5):0,
