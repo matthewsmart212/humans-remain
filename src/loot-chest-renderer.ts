@@ -1,3 +1,4 @@
+import {drawChestRig} from './loot-chest-rig';
 import {campLootChest,LOOT_CHEST_IMAGE_KEY,lootChestFrame} from './loot-chest';
 import {lootChestFx,type LootChestFx} from './loot-chest-fx';
 import type {World} from './survival-engine';
@@ -75,7 +76,7 @@ function lidGlints(ctx:CanvasRenderingContext2D,x:number,y:number,fx:LootChestFx
  ctx.globalAlpha=1;
 }
 function motes(ctx:CanvasRenderingContext2D,x:number,y:number,fx:LootChestFx){
- const count=fx.reduced?5:fx.empty?8:fx.open>.1?46:32;
+ const count=fx.reduced?5:fx.empty?8:fx.open>.1?24:14;
  // Three small batched paths, with size giving each mote its own life envelope.
  // No stored particle objects, gradient per spark or native allocation per mote.
  for(let pass=0;pass<3;pass++){
@@ -141,8 +142,7 @@ export function lootChestDrawables(ctx:CanvasRenderingContext2D,imgs:Record<stri
  return [{y:p.y,draw:()=>{
   ctx.save();const x=p.x,y=p.y;
   light(ctx,x,y,fx,false);
-  if(sprite)ctx.drawImage(sprite,(frame%COLUMNS)*FRAME_WIDTH,Math.floor(frame/COLUMNS)*FRAME_HEIGHT,
-   FRAME_WIDTH,FRAME_HEIGHT,x-ART_WIDTH/2,y-BASELINE_OFFSET,ART_WIDTH,ART_HEIGHT);
+  if(sprite)drawChestRig(ctx,sprite,w,x,y);
   else{ctx.fillStyle='#393028';ctx.fillRect(x-83,y-70,166,70)}
   light(ctx,x,y,fx,true);
   inlays(ctx,x,y,fx);lidGlints(ctx,x,y,fx);motes(ctx,x,y,fx);openingSparks(ctx,x,y,fx);sealFlare(ctx,x,y,fx);
