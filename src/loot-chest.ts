@@ -7,9 +7,11 @@ export const LOOT_CHEST_ID='campfire-cache-01';
 export const LOOT_CHEST_ATLAS='/survival/loot-chest-v1/open-atlas.webp';
 export const LOOT_CHEST_IMAGE_KEY='lootChestAtlas';
 export const LOOT_CHEST_FRAMES=6;
-export const LOOT_CHEST_OPEN_TICKS=42;
-/** Show the last pose briefly before presenting the loot menu. */
-export const LOOT_CHEST_REVEAL_HOLD_TICKS=8;
+// Six deliberately readable poses (about 0.3 s each at 60 FPS), not the
+// old 0.7-second flash that looked like a single pop-open frame.
+export const LOOT_CHEST_OPEN_TICKS=90;
+/** Show the fully open lid before presenting the contents. */
+export const LOOT_CHEST_REVEAL_HOLD_TICKS=18;
 export const LOOT_CHEST_REWARDS=[
  {kind:'repairHammer',name:'Repair hammer',amount:1,artId:'repairHammer',description:'Repair broken camp buildings'},
  {kind:'woodenAxe',name:'Wooden axe',amount:1,artId:'woodenAxe',description:'Gather timber from trees'},
@@ -50,7 +52,7 @@ export function nearbyLootChest(w:ChestWorld){
  const p=campLootChest(w);
  return p&&w.rareCacheMenuAt===undefined&&Math.hypot(w.player.x-p.x,w.player.y-p.y)<150?p:null;
 }
-/** Initiate the reveal once; the panel appears after the 42-tick opening animation. */
+/** Initiate the reveal once; the panel appears after the full opening animation. */
 export function openLootChest(w:World,id=LOOT_CHEST_ID){
  const p=nearbyLootChest(w);
  if(!p||p.id!==id||w.phase==='over'||w.player.hp<=0||w.player.downedUntil||w.stationPanel)return false;
