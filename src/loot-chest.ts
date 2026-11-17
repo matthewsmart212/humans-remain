@@ -17,7 +17,7 @@ export const LOOT_CHEST_REWARDS=[
 ] as const;
 export type LootChestRewardKind=typeof LOOT_CHEST_REWARDS[number]['kind'];
 export type LootChestContents=Partial<Record<LootChestRewardKind,number>>;
-export type LootChestState=Record<string,{openedAt:number;contents?:LootChestContents}>;
+export type LootChestState=Record<string,{openedAt:number;contents?:LootChestContents;menuShown?:boolean}>;
 type ChestWorld=Pick<World,'layout'|'scene'|'camp'|'player'|'lootChests'|'tick'|'phase'|'stationPanel'|'rareCacheMenuAt'>;
 export function campLootChest(w:ChestWorld){
  if(!w.layout||w.scene||w.camp.hearth.x<0||w.camp.hearth.y<0)return null;
@@ -34,6 +34,7 @@ export function lootChestFrame(w:ChestWorld,id=LOOT_CHEST_ID){
 export function lootChestBlocked(w:ChestWorld,x:number,y:number,r:number){
  const p=campLootChest(w);return !!p&&Math.abs(x-p.x)<49+r&&Math.abs(y-(p.y-5))<21+r;
 }
+export function lootChestInMenuRange(w:ChestWorld){const p=campLootChest(w);return !!p&&Math.hypot(w.player.x-p.x,w.player.y-p.y)<215}
 export function nearbyLootChest(w:ChestWorld){
  const p=campLootChest(w);
  return p&&w.rareCacheMenuAt===undefined&&Math.hypot(w.player.x-p.x,w.player.y-p.y)<150?p:null;
@@ -45,23 +46,31 @@ export function openLootChest(w:World,id=LOOT_CHEST_ID){
  if(!lootChestOpened(w,id)){
   (w.lootChests??={})[id]={
    openedAt:w.tick,
+   menuShown:false,
    contents:Object.fromEntries(LOOT_CHEST_REWARDS.map(reward=>[reward.kind,reward.amount])) as LootChestContents,
   };
   w.rareCacheMenuAt=w.tick+LOOT_CHEST_OPEN_TICKS+LOOT_CHEST_REVEAL_HOLD_TICKS;
-  w.notice='RARE CACHE · SEAL BROKEN';w.noticeUntil=w.tick/60+2;
+  w.notice='LOOT CHEST · OPENING';w.noticeUntil=w.tick/60+1.8;
  }else{
+  w.lootChests![id].menuShown=true;
+  w.rareCacheMenuAt=undefined;
   w.stationPanel='rare-cache';
  }
  return true;
 }
 /** Runs with the shared simulation so web and native reveal the menu together. */
 export function stepLootChest(w:World){
- if(w.rareCacheMenuAt===undefined)return;
+ const state=w.lootChests?.[LOOT_CHEST_ID];
+ if(!state||state.menuShown){w.rareCacheMenuAt=undefined;return}
  if(w.phase==='over'||w.scene){w.rareCacheMenuAt=undefined;return}
- if(w.tick<w.rareCacheMenuAt)return;
+ // The opening deadline is derived from saved chest state, not a transient timer.
+ const readyAt=state.openedAt+LOOT_CHEST_OPEN_TICKS+LOOT_CHEST_REVEAL_HOLD_TICKS;
+ if(w.tick<readyAt)return;
  w.rareCacheMenuAt=undefined;
- // If the player left during the reveal, the menu waits for their return.
- if(!w.stationPanel&&nearbyLootChest(w))w.stationPanel='rare-cache';
+ // If the player left during the reveal, present it when they return.
+ if(w.stationPanel||!lootChestInMenuRange(w))return;
+ state.menuShown=true;
+ w.stationPanel='rare-cache';
 }
 /** Take only what fits; the remainder stays inside for another visit. */
 export function takeLootChestReward(w:World,kind:LootChestRewardKind,requested=Number.MAX_SAFE_INTEGER){
