@@ -7,7 +7,7 @@ export default function QuickBar({selected,torch,cooked,cookedRabbit=0,cookedVen
  const [expanded,setExpanded]=useState(false),root=useRef<HTMLElement>(null),toggle=useRef<HTMLButtonElement>(null),itemsId=useId();
  const notifyExpanded=useRef(onExpandedChange);notifyExpanded.current=onExpandedChange;
  const pointer=useRef<{id:number;x:number;y:number;moved:boolean}|null>(null);
- const items=availableQuickItems({torch,cooked,cookedRabbit,cookedVenison,provisions,axes}),active=items.find(item=>item.id===selected)??items[0],open=expanded&&!disabled&&items.length>0;
+ const items=availableQuickItems({torch,cooked,cookedRabbit,cookedVenison,provisions,axes}),active=items.find(item=>item.id===selected)??items[0],open=expanded&&!disabled,empty=items.length===1&&items[0].id==='fists';
  const visible=open?items:active?[active]:[];
  useEffect(()=>{notifyExpanded.current?.(open)},[open]);
  useEffect(()=>()=>notifyExpanded.current?.(false),[]);
@@ -29,7 +29,7 @@ export default function QuickBar({selected,torch,cooked,cookedRabbit=0,cookedVen
   onClick:(e:React.MouseEvent<HTMLButtonElement>)=>{e.stopPropagation();if(!disabled&&e.detail===0&&!(e.nativeEvent as PointerEvent).pointerType)activate()},
  });
  return <nav ref={root} className="kit-quickbar" aria-label="Quick item selection" data-expanded={open}
-  style={{width:open?quickBarWidth(visible.length):layout.closedWidth,'--quick-closed-width':`${layout.closedWidth}px`,'--quick-slot-width':`${layout.slotWidth}px`,'--quick-height':`${layout.height}px`,'--quick-toggle-width':`${layout.toggleWidth}px`,'--quick-padding':`${layout.padding}px`,'--quick-gap':`${layout.gap}px`,'--quick-action-clearance':`${ACTION_HEX.width+14}px`} as React.CSSProperties}
+  style={{width:open?quickBarWidth(empty?3:visible.length):layout.closedWidth,'--quick-closed-width':`${layout.closedWidth}px`,'--quick-slot-width':`${layout.slotWidth}px`,'--quick-height':`${layout.height}px`,'--quick-toggle-width':`${layout.toggleWidth}px`,'--quick-padding':`${layout.padding}px`,'--quick-gap':`${layout.gap}px`,'--quick-action-clearance':`${ACTION_HEX.width+14}px`} as React.CSSProperties}
   onPointerDown={e=>e.stopPropagation()} onPointerUp={e=>e.stopPropagation()} onContextMenu={e=>e.preventDefault()}
   onKeyDown={e=>{if(e.key==='Escape'&&open){e.preventDefault();e.stopPropagation();close()}else if(e.key===' '||e.key==='Enter')e.stopPropagation()}} onKeyUp={e=>{if(e.key===' '||e.key==='Enter'||e.key==='Escape')e.stopPropagation()}}>
   <span className="kit-quick-skin" aria-hidden="true">{open?QUICK_BAR_SLICES.map(part=><span key={part.id} className="kit-quick-slice" style={{...('width' in part?{width:part.width}:{flex:1}),...('flip' in part?{transform:'scaleX(-1)'}:{})}}><img src="/survival/ui-field-kit-v1/vitals.png" style={quickBarSliceImage(part)} alt="" draggable={false}/></span>):<img className="kit-quick-hex" src="/survival/ui-action-hex-v1/primary.png" alt="" draggable={false}/>}</span>
@@ -39,8 +39,9 @@ export default function QuickBar({selected,torch,cooked,cookedRabbit=0,cookedVen
     {...tap(()=>{if(open){onSelect(item.id);close()}else setExpanded(true)})}>
     <span className="kit-quick-icon" aria-hidden="true" style={{width:size,height:size}}><span className="kit-quick-art-crop" style={{...art.crop,left:(size-art.crop.width)/2,top:(size-art.crop.height)/2,transform:`rotate(${art.rotation}deg)`}}><img src={item.image} style={art.image} alt="" draggable={false}/></span></span><span className="kit-quick-label">{item.label}</span>{count!==undefined&&<b>{count}</b>}
    </button>})}
+   {open&&empty&&<div role="status" style={{minWidth:135,alignSelf:'center',padding:'5px 8px',color:'#eadfba',fontSize:12,lineHeight:1.25,textAlign:'center'}}>No tools collected yet</div>}
   </div>
-  <button ref={toggle} type="button" className="kit-quick-toggle" aria-label={open?'Close item selector':'Open item selector'} aria-expanded={open} aria-controls={itemsId} disabled={disabled||!items.length} {...tap(()=>setExpanded(value=>!value))}>
+  <button ref={toggle} type="button" className="kit-quick-toggle" aria-label={open?'Close item selector':'Open item selector'} aria-expanded={open} aria-controls={itemsId} disabled={disabled} {...tap(()=>setExpanded(value=>!value))}>
    <svg viewBox="0 0 16 24" aria-hidden="true" data-open={open}><path d="m5 5 7 7-7 7"/></svg>
   </button>
  </nav>;
