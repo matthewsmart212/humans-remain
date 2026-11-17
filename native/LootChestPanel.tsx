@@ -1,12 +1,11 @@
 import React,{useState} from 'react';
-import {View,Text,Image,Pressable,ScrollView,StyleSheet} from 'react-native';
+import {View,Text,Pressable,ScrollView,StyleSheet} from 'react-native';
 import StationMenu from './StationMenu';
 import {ItemArt} from './InventoryUI';
 import type {World} from '../src/survival-engine';
 import {canCarryCount,packLoad} from '../src/expedition-inventory';
 import {LOOT_CHEST_REWARDS,lootChestContents,lootChestRemaining,takeLootChestReward,takeAllLootChestRewards,type LootChestRewardKind} from '../src/loot-chest';
 type Props={world:World;width:number;height:number;safe:{top:number;right:number;bottom:number;left:number};onClose:()=>void;onChange:()=>void};
-const atlas=require('../public/survival/loot-chest-v1/open-atlas.webp');
 export default function LootChestPanel({world,width,height,safe,onClose,onChange}:Props){
  const [message,setMessage]=useState('');
  const contents=lootChestContents(world),remaining=lootChestRemaining(world),load=packLoad(world);
@@ -21,9 +20,8 @@ export default function LootChestPanel({world,width,height,safe,onClose,onChange
   onChange();
  };
  const canTake=LOOT_CHEST_REWARDS.some(r=>(contents[r.kind]??0)>0&&canCarryCount(world,r.kind,contents[r.kind]??0)>0);
- return <StationMenu compact world={world} title="Rare cache" subtitle="THE RECLAMATION · SEALED SUPPLIES" label="Rare supply cache" onClose={onClose} width={width} height={height} safe={safe} weight={load.weight} loadLabel={load.label} message={message}>
+ return <StationMenu compact world={world} title="Loot chest" subtitle="THE RECLAMATION · SEALED SUPPLIES" label="Rare supply cache" onClose={onClose} width={width} height={height} safe={safe} weight={load.weight} loadLabel={load.label} message={message}>
   <View style={s.hero}>
-   <View style={s.crop}><Image source={atlas} resizeMode="stretch" style={s.atlas}/></View>
    <View style={{flex:1}}><Text style={s.eyebrow}>DISCOVERY UNLOCKED</Text><Text style={s.headline}>{remaining?'Forgotten supplies':'Cache emptied'}</Text><Text style={s.description}>{remaining?'See what is inside and choose what to take.':'Everything in this cache has been collected.'}</Text></View>
   </View>
   <View style={s.labelRow}><Text style={s.label}>CONTENTS</Text><Text style={s.count}>{remaining} remaining</Text></View>
@@ -43,8 +41,6 @@ export default function LootChestPanel({world,width,height,safe,onClose,onChange
 }
 const s=StyleSheet.create({
  hero:{height:92,flexDirection:'row',alignItems:'center',gap:5,borderRadius:9,borderWidth:1,borderColor:'#76eddf73',backgroundColor:'#194f48',paddingHorizontal:7,flexShrink:0},
- crop:{width:125,height:88,overflow:'hidden'},
- atlas:{position:'absolute',left:-250,top:-88,width:375,height:176},
  eyebrow:{fontSize:8,fontWeight:'800',letterSpacing:1,color:'#94f0e5'},
  headline:{fontSize:18,fontWeight:'800',color:'#ffe9bb'},
  description:{fontSize:10,lineHeight:13,color:'#d2e2d5'},
