@@ -4,13 +4,10 @@ import {GEAR,gear} from './player-gear';
 
 /** A test cache above the campfire. Rewards remain INSIDE, never spawn as ground loot. */
 export const LOOT_CHEST_ID='campfire-cache-01';
-export const LOOT_CHEST_ATLAS='/survival/loot-chest-v3/base-atlas.webp';
+export const LOOT_CHEST_ATLAS='/survival/loot-chest-v4/orange-opening-atlas.webp';
 export const LOOT_CHEST_IMAGE_KEY='lootChestAtlas';
-export const LOOT_CHEST_EMISSIVE_ATLAS='/survival/loot-chest-v3/emissive-atlas.webp';
-export const LOOT_CHEST_EMISSIVE_KEY='lootChestEmissiveAtlas';
 export const LOOT_CHEST_FRAMES=10;
-// Six deliberately readable poses (about 0.3 s each at 60 FPS), not the
-// old 0.7-second flash that looked like a single pop-open frame.
+// Ten opening poses from the approved wide orange chest artwork.
 export const LOOT_CHEST_OPEN_TICKS=108;
 /** Show the fully open lid before presenting the contents. */
 export const LOOT_CHEST_REVEAL_HOLD_TICKS=18;
