@@ -1,4 +1,4 @@
-import {campLootChest,LOOT_CHEST_ID,LOOT_CHEST_IMAGE_KEY,LOOT_CHEST_REWARDS,lootChestContents,lootChestFrame,lootChestOpened,lootChestRemaining} from './loot-chest';
+import {campLootChest,LOOT_CHEST_ID,LOOT_CHEST_IMAGE_KEY,lootChestFrame,lootChestOpened,lootChestRemaining} from './loot-chest';
 import type {World} from './survival-engine';
 const FRAME_WIDTH=256,FRAME_HEIGHT=192,ART_WIDTH=164,ART_HEIGHT=130;
 const visible=(x:number,y:number,v:{x:number;y:number;width:number;height:number})=>x>v.x-140&&x<v.x+v.width+140&&y>v.y-155&&y<v.y+v.height+90;
@@ -7,30 +7,19 @@ const chestAge=(w:World)=>Math.max(0,w.tick-(w.lootChests?.[LOOT_CHEST_ID]?.open
 /** The loot is part of the opened chest's interior, never spawned onto the terrain. */
 export function lootChestDrawables(ctx:CanvasRenderingContext2D,imgs:Record<string,HTMLImageElement>,w:World,viewport:{x:number;y:number;width:number;height:number}){
  const p=campLootChest(w);if(!p||!visible(p.x,p.y,viewport))return [];
- const sprite=imgs[LOOT_CHEST_IMAGE_KEY],frame=lootChestFrame(w,p.id),opened=lootChestOpened(w,p.id),remaining=lootChestRemaining(w,p.id);
+ const sprite=imgs[LOOT_CHEST_IMAGE_KEY],frame=lootChestFrame(w,p.id);
  return [{y:p.y,draw:()=>{
   ctx.save();
-  ctx.fillStyle='rgba(5,20,19,0.25)';
-  ctx.beginPath();ctx.ellipse(p.x,p.y+2,70,16,0,0,Math.PI*2);ctx.fill();
-  // A broad aura makes the cache unmistakably special even before it is opened.
-  const alpha=opened?.10:.17;
-  ctx.globalAlpha=alpha*pulse(w);ctx.fillStyle='#16e9dc';
-  ctx.beginPath();ctx.ellipse(p.x,p.y-18,77,34,0,0,Math.PI*2);ctx.fill();
-  ctx.globalAlpha=1;
-  if(sprite)ctx.drawImage(sprite,(frame%3)*FRAME_WIDTH,Math.floor(frame/3)*FRAME_HEIGHT,FRAME_WIDTH,FRAME_HEIGHT,p.x-ART_WIDTH/2,p.y-ART_HEIGHT+15,ART_WIDTH,ART_HEIGHT);
-  else{ctx.fillStyle='#322d25';ctx.fillRect(p.x-58,p.y-44,116,43);ctx.fillStyle='#2acbbb';ctx.fillRect(p.x-48,p.y-30,96,5)}
-  // Reward illustrations sit inside the bright open cavity.
-  if(opened&&frame>=4&&remaining>0){
-   const contents=lootChestContents(w,p.id);
-   const icons=LOOT_CHEST_REWARDS.filter(reward=>(contents[reward.kind]??0)>0);
-   const spacing=icons.length===1?0:Math.min(29,87/(icons.length-1));
-   for(let i=0;i<icons.length;i++){
-    const reward=icons[i],x=p.x-(icons.length-1)*spacing/2+i*spacing,y=p.y-66+(i%2)*4,img=imgs[reward.imageKey];
-    ctx.globalAlpha=.46;ctx.fillStyle='#7effeb';ctx.beginPath();ctx.arc(x,y+8,15,0,Math.PI*2);ctx.fill();ctx.globalAlpha=1;
-    if(img)ctx.drawImage(img,x-14,y-10,28,26);
-    else{ctx.fillStyle='#c4b58c';ctx.fillRect(x-9,y-5,18,12)}
-   }
+  // Use the shadow painted into the sprite, not a second ground oval.
+  if(sprite){
+   const top=p.y-ART_HEIGHT+15;
+   ctx.drawImage(sprite,(frame%3)*FRAME_WIDTH,Math.floor(frame/3)*FRAME_HEIGHT,FRAME_WIDTH,FRAME_HEIGHT,p.x-ART_WIDTH/2,top,ART_WIDTH,ART_HEIGHT);
+   // The final lid art reaches the top of its atlas cell. Restore its rounded
+   // upper trim using matching texture from the first closed-lid frame.
+   if(frame>=4){ctx.globalAlpha=frame===4?.84:1;ctx.drawImage(sprite,18,22,220,38,p.x-66,top-12,132,24);ctx.globalAlpha=1;}
   }
+  else{ctx.fillStyle='#322d25';ctx.fillRect(p.x-58,p.y-44,116,43);ctx.fillStyle='#2acbbb';ctx.fillRect(p.x-48,p.y-30,96,5)}
+  // The rewards are presented in the menu after the chest opens.
   ctx.restore();
  }}];
 }
@@ -45,7 +34,7 @@ export function drawLootChestLights(ctx:CanvasRenderingContext2D,w:World,viewpor
  ctx.save();
  const cy=p.y-(opened?62:36);
  // Three concentric halos give the core apparent bloom without GPU blur.
- for(let ring=3;ring>=1;ring--){
+ if(opened)for(let ring=2;ring>=1;ring--){
   ctx.globalAlpha=(.035+opening*.045)*s;
   ctx.fillStyle=ring%2?'#2cfff1':'#bffffb';
   ctx.beginPath();ctx.arc(p.x,cy,14+ring*14+opening*16,0,Math.PI*2);ctx.fill();
@@ -61,15 +50,15 @@ export function drawLootChestLights(ctx:CanvasRenderingContext2D,w:World,viewpor
   ctx.beginPath();ctx.ellipse(p.x,p.y-46,40+opening*48,17+opening*29,0,0,Math.PI*2);ctx.stroke();
  }
  // Orbiting sparks and rising motes, never an item ejection.
- const count=reduced?5:12;
+ const count=reduced?8:22;
  for(let i=0;i<count;i++){
-  const angle=i*2.39996+(reduced?0:w.tick*.017*(i%2?1:-1));
-  const radius=41+(i%3)*12+opening*19;
-  const x=p.x+Math.cos(angle)*radius,y=cy-9+Math.sin(angle)*17-(reduced?0:Math.sin(w.tick*.042+i*3)*9);
-  ctx.globalAlpha=(.30+opening*.50)*(i%3===0?1:.7)*s;
+  const phase=reduced?(i%4)/4:(w.tick*(.025+(i%3)*.008)+i*.31)%1;
+  const angle=reduced?i*.61:w.tick*(.012+(i%4)*.003)+i*1.931;
+  const x=p.x+Math.sin(angle)*(36+(i*17%38)),y=cy+14-Math.cos(i*2.57)*11-phase*(30+(i%4)*9)+opening*12;
+  ctx.globalAlpha=(.30+opening*.50)*(i%3===0?1:.7)*(1-phase*.55)*s;
   ctx.fillStyle=i%3===0?'#e3fff7':'#57eadd';
   ctx.fillRect(x,y,i%4===0?3:2,i%4===0?3:2);
-  if(i%4===0){ctx.globalAlpha=.23*s;ctx.fillRect(x-3,y+1,9,1);ctx.fillRect(x+1,y-3,1,9)}
+  if(i%5===0){ctx.globalAlpha=.23*s;ctx.fillRect(x-4,y+1,11,1);ctx.fillRect(x+1,y-4,1,11)}
  }
  ctx.globalAlpha=(opened?0.80:0.9)*s;ctx.fillStyle='#a5fff6';
  ctx.fillRect(p.x-50,p.y-33,19,3);ctx.fillRect(p.x+32,p.y-33,19,3);
