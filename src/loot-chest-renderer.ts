@@ -1,67 +1,115 @@
-import {campLootChest,LOOT_CHEST_ID,LOOT_CHEST_IMAGE_KEY,LOOT_CHEST_OPEN_TICKS,lootChestFrame,lootChestOpened,lootChestRemaining} from './loot-chest';
+import {
+ campLootChest,LOOT_CHEST_ID,LOOT_CHEST_IMAGE_KEY,LOOT_CHEST_EMISSIVE_KEY,
+ LOOT_CHEST_FRAMES,LOOT_CHEST_OPEN_TICKS,lootChestFrame,lootChestOpened,lootChestRemaining
+} from './loot-chest';
 import type {World} from './survival-engine';
-// New atlas: six fully-contained square frames in a 3 × 2 grid. All frames
-// share the same floor anchor; the new lid never needs a fake top-edge patch.
-const FRAME_WIDTH=256,FRAME_HEIGHT=256,ART_WIDTH=210,ART_HEIGHT=210;
-const BASELINE_OFFSET=173;
-const visible=(x:number,y:number,v:{x:number;y:number;width:number;height:number})=>x>v.x-160&&x<v.x+v.width+160&&y>v.y-195&&y<v.y+v.height+95;
-const pulse=(w:World)=>w.weather?.reducedMotion?.65:.70+.30*Math.sin(w.tick*.08);
+
+// Ten 384x384 cells: five columns, two rows. Each pose has its own painted
+// shadow; no artificial blue ground oval or interaction circle is necessary.
+const FRAME_SIZE=384,COLUMNS=5,ART_SIZE=220,BASELINE=190;
+type Viewport={x:number;y:number;width:number;height:number};
+const visible=(x:number,y:number,v:Viewport)=>x>v.x-165&&x<v.x+v.width+165&&y>v.y-205&&y<v.y+v.height+90;
+const clamp=(value:number,a=0,b=1)=>Math.min(b,Math.max(a,value));
 const chestAge=(w:World)=>Math.max(0,w.tick-(w.lootChests?.[LOOT_CHEST_ID]?.openedAt??w.tick));
-/** The loot is part of the opened chest's interior, never spawned onto the terrain. */
-export function lootChestDrawables(ctx:CanvasRenderingContext2D,imgs:Record<string,HTMLImageElement>,w:World,viewport:{x:number;y:number;width:number;height:number}){
- const p=campLootChest(w);if(!p||!visible(p.x,p.y,viewport))return [];
- const sprite=imgs[LOOT_CHEST_IMAGE_KEY],frame=lootChestFrame(w,p.id);
- return [{y:p.y,draw:()=>{
-  ctx.save();
-  // Use the shadow painted into the sprite, not a second ground oval.
-  if(sprite){
-   const top=p.y-BASELINE_OFFSET,left=p.x-ART_WIDTH/2;
-   ctx.drawImage(sprite,(frame%3)*FRAME_WIDTH,Math.floor(frame/3)*FRAME_HEIGHT,FRAME_WIDTH,FRAME_HEIGHT,left,top,ART_WIDTH,ART_HEIGHT);
+
+function drawAtlasFrame(ctx:CanvasRenderingContext2D,img:HTMLImageElement,frame:number,left:number,top:number){
+ ctx.drawImage(img,(frame%COLUMNS)*FRAME_SIZE,Math.floor(frame/COLUMNS)*FRAME_SIZE,
+  FRAME_SIZE,FRAME_SIZE,left,top,ART_SIZE,ART_SIZE);
+}
+
+/** Animated light and sparks; all motion derives from world ticks. */
+function drawChestEffects(ctx:CanvasRenderingContext2D,w:World,x:number,y:number,frame:number){
+ const opened=lootChestOpened(w,LOOT_CHEST_ID),t=w.tick,age=chestAge(w);
+ const reduced=!!w.weather?.reducedMotion;
+ const depleted=opened&&lootChestRemaining(w,LOOT_CHEST_ID)===0;
+ const power=depleted?0.40:1;
+ const progress=opened?clamp(age/LOOT_CHEST_OPEN_TICKS):0;
+ const lid=opened?clamp((frame-2)/7):0;
+ const pulse=reduced?0.72:0.75+0.22*Math.sin(t*.115)+0.09*Math.sin(t*.31);
+ ctx.save();
+
+ // Animate the metal inlays only. Do not draw the earlier extra lock circle.
+ ctx.globalAlpha=(.25+.26*pulse)*power;
+ ctx.fillStyle='#5affeb';
+ ctx.fillRect(x-64,y-47,23,2.3);ctx.fillRect(x+39,y-47,23,2.3);
+ ctx.globalAlpha=(.25+.35*pulse)*power;ctx.fillStyle='#9ffff5';
+ ctx.fillRect(x-3,y-53,5,7);
+
+ if(lid>0){
+  // Constrain the live light to the open cavity rather than the surrounding
+  // terrain, while preserving the chest's real painted shadow.
+  ctx.save();ctx.beginPath();
+  ctx.moveTo(x-80,y-95);ctx.lineTo(x+78,y-98);
+  ctx.lineTo(x+64,y-48);ctx.lineTo(x-73,y-46);ctx.closePath();ctx.clip();
+  const intensity=power*lid*(reduced?0.65:0.52+0.32*Math.sin(t*.085)+0.12*Math.sin(t*.21));
+  for(let i=2;i>=0;i--){
+   ctx.globalAlpha=clamp(intensity*(.11+i*.045));
+   ctx.fillStyle=i===0?'#c7fff7':i===1?'#54fff0':'#1bd5cf';
+   ctx.beginPath();
+   const offset=reduced?0:Math.sin(t*.055+i)*11;
+   ctx.ellipse(x+offset,y-67+i*3,46+i*14,11+i*5,0,0,Math.PI*2);
+   ctx.fill();
   }
-  else{ctx.fillStyle='#322d25';ctx.fillRect(p.x-58,p.y-44,116,43);ctx.fillStyle='#2acbbb';ctx.fillRect(p.x-48,p.y-30,96,5)}
-  // The rewards are presented in the menu after the chest opens.
+  // A moving shaft shimmers across the vault even once the lid is stationary.
+  ctx.globalAlpha=clamp(intensity*.20);ctx.fillStyle='#ddfffa';
+  const sweep=reduced?0:Math.sin(t*.062)*52;
+  ctx.beginPath();ctx.moveTo(x+sweep-10,y-92);ctx.lineTo(x+sweep+5,y-92);
+  ctx.lineTo(x+sweep+23,y-40);ctx.lineTo(x+sweep+10,y-40);
+  ctx.closePath();ctx.fill();ctx.restore();
+ }
+
+ // Short cinematic burst during opening, smoothly fading into the idle glow.
+ const burst=opened&&!reduced?Math.sin(Math.PI*progress)**2:0;
+ if(burst>.03){
+  for(let i=-3;i<=3;i++){
+   ctx.globalAlpha=clamp(burst*(i%2===0 ? .085 : .055))*power;
+   ctx.fillStyle=i%2===0?'#a9fff5':'#20fbe4';ctx.beginPath();
+   ctx.moveTo(x+i*18,y-79);
+   ctx.lineTo(x+i*28-12,y-143-burst*25);
+   ctx.lineTo(x+i*28+7,y-143-burst*25);
+   ctx.closePath();ctx.fill();
+  }
+ }
+
+ // Independent rising motes. Different drift, lifespan and glint widths
+ // avoid the artificial rotating dot-circle used by the previous chest.
+ const count=reduced?6:opened?27:15;
+ for(let i=0;i<count;i++){
+  const life=reduced?(i%5)/5:(t*(.018+(i%4)*.003)+i*.173)%1;
+  const drift=reduced?0:Math.sin(t*(.017+(i%3)*.006)+i*2.83)*13;
+  const radius=(opened?64:58)+(i*13%27);
+  const px=x+Math.sin(i*2.39)*radius+drift;
+  const py=y-(opened?77:57)-life*(opened?82:53)-Math.cos(i*1.79)*9;
+  ctx.globalAlpha=clamp(power*(.15+.50*(1-life))*(opened ? .9 : .52)*(reduced ? .65 : .70+.30*Math.sin(t*.12+i*3.3)));
+  ctx.fillStyle=i%5===0?'#e3fffc':'#44f5e5';
+  const size=i%6===0?3:2;ctx.fillRect(px,py,size,size);
+  if(i%6===0){ctx.globalAlpha*=.6;ctx.fillRect(px-4,py+1,10,1);ctx.fillRect(px+1,py-4,1,10);}
+ }
+ ctx.restore();
+}
+
+/** Depth-sorted with scenery: a survivor in front always covers the glow. */
+export function lootChestDrawables(ctx:CanvasRenderingContext2D,imgs:Record<string,HTMLImageElement>,w:World,viewport:Viewport){
+ const p=campLootChest(w);if(!p||!visible(p.x,p.y,viewport))return [];
+ const base=imgs[LOOT_CHEST_IMAGE_KEY],emissive=imgs[LOOT_CHEST_EMISSIVE_KEY];
+ const frame=lootChestFrame(w,p.id),age=chestAge(w),opened=lootChestOpened(w,p.id);
+ const frameTime=opened?clamp(age/LOOT_CHEST_OPEN_TICKS)*(LOOT_CHEST_FRAMES-1):0;
+ const blend=frame<LOOT_CHEST_FRAMES-1?clamp((frameTime-frame-.70)/.30):0;
+ return [{y:p.y,draw:()=>{
+  ctx.save();const left=p.x-ART_SIZE/2,top=p.y-BASELINE;
+  if(base){
+   drawAtlasFrame(ctx,base,frame,left,top);
+   // Sub-frame crossfade adds a few soft transitions between the ten poses.
+   if(blend>0){ctx.globalAlpha=blend*.80;drawAtlasFrame(ctx,base,frame+1,left,top);ctx.globalAlpha=1;}
+  }else{ctx.fillStyle='#39332c';ctx.fillRect(p.x-70,p.y-100,140,88);}
+  if(emissive){
+   const shimmer=w.weather?.reducedMotion?0.68:0.65+0.20*Math.sin(w.tick*.13)+0.09*Math.sin(w.tick*.31);
+   const dim=opened&&lootChestRemaining(w,p.id)===0?0.45:1;
+   ctx.globalAlpha=clamp(shimmer*dim);drawAtlasFrame(ctx,emissive,frame,left,top);
+   if(blend>0){ctx.globalAlpha=clamp(shimmer*blend*dim*.80);drawAtlasFrame(ctx,emissive,frame+1,left,top);}
+   ctx.globalAlpha=1;
+  }
+  drawChestEffects(ctx,w,p.x,p.y,frame);
   ctx.restore();
  }}];
-}
-/** Cheap layered emissive effects, composited after the camp darkness pass. */
-export function drawLootChestLights(ctx:CanvasRenderingContext2D,w:World,viewport:{x:number;y:number;width:number;height:number}){
- const p=campLootChest(w);if(!p||!visible(p.x,p.y,viewport))return;
- const opened=lootChestOpened(w,p.id),age=chestAge(w),remaining=lootChestRemaining(w,p.id);
- const reduced=!!w.weather?.reducedMotion;
- const opening=opened&&age<LOOT_CHEST_OPEN_TICKS&&!reduced?Math.sin(Math.PI*Math.min(1,age/LOOT_CHEST_OPEN_TICKS)):0;
- const glow=opened?(remaining?0.78:0.24):0.9;
- const flicker=pulse(w),s=glow*flicker;
- ctx.save();
- const cy=p.y-(opened?62:36);
- // Three concentric halos give the core apparent bloom without GPU blur.
- if(opened)for(let ring=2;ring>=1;ring--){
-  ctx.globalAlpha=(.035+opening*.045)*s;
-  ctx.fillStyle=ring%2?'#2cfff1':'#bffffb';
-  ctx.beginPath();ctx.arc(p.x,cy,14+ring*14+opening*16,0,Math.PI*2);ctx.fill();
- }
- // Opening sends turquoise light shafts up through the raised lid.
- if(opening>.03){
-  for(let i=-3;i<=3;i++){
-   ctx.globalAlpha=(.055+opening*.08)*s;
-   ctx.fillStyle=i%2?'#b9fff4':'#16e8dc';
-   ctx.beginPath();ctx.moveTo(p.x+i*12,p.y-53);ctx.lineTo(p.x+i*26-9,p.y-125-opening*65);ctx.lineTo(p.x+i*26+12,p.y-125-opening*65);ctx.closePath();ctx.fill();
-  }
-  ctx.strokeStyle='#bdfff7';ctx.lineWidth=2;ctx.globalAlpha=opening*.50*s;
-  ctx.beginPath();ctx.ellipse(p.x,p.y-46,40+opening*48,17+opening*29,0,0,Math.PI*2);ctx.stroke();
- }
- // Orbiting sparks and rising motes, never an item ejection.
- const count=reduced?8:22;
- for(let i=0;i<count;i++){
-  const phase=reduced?(i%4)/4:(w.tick*(.025+(i%3)*.008)+i*.31)%1;
-  const angle=reduced?i*.61:w.tick*(.012+(i%4)*.003)+i*1.931;
-  const x=p.x+Math.sin(angle)*(36+(i*17%38)),y=cy+14-Math.cos(i*2.57)*11-phase*(30+(i%4)*9)+opening*12;
-  ctx.globalAlpha=(.30+opening*.50)*(i%3===0?1:.7)*(1-phase*.55)*s;
-  ctx.fillStyle=i%3===0?'#e3fff7':'#57eadd';
-  ctx.fillRect(x,y,i%4===0?3:2,i%4===0?3:2);
-  if(i%5===0){ctx.globalAlpha=.23*s;ctx.fillRect(x-4,y+1,11,1);ctx.fillRect(x+1,y-4,1,11)}
- }
- ctx.globalAlpha=(opened?0.80:0.9)*s;ctx.fillStyle='#a5fff6';
- ctx.fillRect(p.x-50,p.y-33,19,3);ctx.fillRect(p.x+32,p.y-33,19,3);
- // The chest artwork supplies its own lock glow; don't overlay a second circle.
- ctx.restore();
 }
