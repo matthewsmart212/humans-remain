@@ -4,6 +4,42 @@ const FRAME_WIDTH=256,FRAME_HEIGHT=192,ART_WIDTH=164,ART_HEIGHT=130;
 const visible=(x:number,y:number,v:{x:number;y:number;width:number;height:number})=>x>v.x-140&&x<v.x+v.width+140&&y>v.y-155&&y<v.y+v.height+90;
 const pulse=(w:World)=>w.weather?.reducedMotion?.65:.70+.30*Math.sin(w.tick*.08);
 const chestAge=(w:World)=>Math.max(0,w.tick-(w.lootChests?.[LOOT_CHEST_ID]?.openedAt??w.tick));
+/**
+ * Frames 4 and 5 were authored flush against the top of their atlas cells,
+ * clipping the back-left upper lip of the raised lid. Extend a thin curved
+ * bevel BEHIND each frame using texture sampled from that SAME frame. Unlike
+ * the old closed-lid patch, this cannot introduce a second, mismatched lid.
+ */
+function drawRaisedLidBevel(ctx:CanvasRenderingContext2D,sprite:HTMLImageElement,frame:number,left:number,top:number){
+ if(frame<4)return;
+ const sourceLeft=frame===4?91:55,sourceWidth=frame===4?151:184;
+ const sx=(frame%3)*FRAME_WIDTH+sourceLeft,sy=Math.floor(frame/3)*FRAME_HEIGHT;
+ const dx=left+sourceLeft/FRAME_WIDTH*ART_WIDTH,dw=sourceWidth/FRAME_WIDTH*ART_WIDTH;
+ const rise=9,corner=Math.min(10,dw*.12);
+ ctx.save();
+ ctx.beginPath();
+ ctx.moveTo(dx,top+5);
+ ctx.lineTo(dx,top-1);
+ ctx.quadraticCurveTo(dx+1,top-rise,dx+corner,top-rise);
+ ctx.lineTo(dx+dw-corner,top-rise);
+ ctx.quadraticCurveTo(dx+dw-1,top-rise,dx+dw,top-1);
+ ctx.lineTo(dx+dw,top+6);
+ ctx.closePath();
+ ctx.clip();
+ // Repeat only the open pose's top-metal texture into the missing pixels.
+ // The normal frame drawn afterwards hides the seam beneath its original rim.
+ ctx.drawImage(sprite,sx,sy+1,sourceWidth,17,dx,top-rise,dw,rise+10);
+ ctx.restore();
+ ctx.save();
+ ctx.strokeStyle='rgba(121,112,91,.75)';
+ ctx.lineWidth=1;
+ ctx.beginPath();ctx.moveTo(dx,top-1);
+ ctx.quadraticCurveTo(dx+1,top-rise,dx+corner,top-rise);
+ ctx.lineTo(dx+dw-corner,top-rise);
+ ctx.quadraticCurveTo(dx+dw-1,top-rise,dx+dw,top-1);
+ ctx.stroke();
+ ctx.restore();
+}
 /** The loot is part of the opened chest's interior, never spawned onto the terrain. */
 export function lootChestDrawables(ctx:CanvasRenderingContext2D,imgs:Record<string,HTMLImageElement>,w:World,viewport:{x:number;y:number;width:number;height:number}){
  const p=campLootChest(w);if(!p||!visible(p.x,p.y,viewport))return [];
@@ -12,9 +48,9 @@ export function lootChestDrawables(ctx:CanvasRenderingContext2D,imgs:Record<stri
   ctx.save();
   // Use the shadow painted into the sprite, not a second ground oval.
   if(sprite){
-   const top=p.y-ART_HEIGHT+15;
-   ctx.drawImage(sprite,(frame%3)*FRAME_WIDTH,Math.floor(frame/3)*FRAME_HEIGHT,FRAME_WIDTH,FRAME_HEIGHT,p.x-ART_WIDTH/2,top,ART_WIDTH,ART_HEIGHT);
-   // The atlas already has opening frames; never composite the closed lid on top.
+   const top=p.y-ART_HEIGHT+15,left=p.x-ART_WIDTH/2;
+   drawRaisedLidBevel(ctx,sprite,frame,left,top);
+   ctx.drawImage(sprite,(frame%3)*FRAME_WIDTH,Math.floor(frame/3)*FRAME_HEIGHT,FRAME_WIDTH,FRAME_HEIGHT,left,top,ART_WIDTH,ART_HEIGHT);
   }
   else{ctx.fillStyle='#322d25';ctx.fillRect(p.x-58,p.y-44,116,43);ctx.fillStyle='#2acbbb';ctx.fillRect(p.x-48,p.y-30,96,5)}
   // The rewards are presented in the menu after the chest opens.
