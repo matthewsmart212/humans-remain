@@ -8,11 +8,11 @@ const images={repairHammer:require('../public/survival/equipment/repair-hammer-v
 const closedFrame=require('../public/survival/ui-action-hex-v1/primary.png');
 export default function NativeQuickBar({selected,torch,cooked,cookedRabbit=0,cookedVenison=0,provisions,axes,disabled,onSelect,onExpandedChange,maxWidth=400}:QuickBarProps&{maxWidth?:number}){
  const [expanded,setExpanded]=useState(false),[reducedMotion,setReducedMotion]=useState(false),width=useRef(new Animated.Value(layout.closedWidth)).current,scroll=useRef<React.ElementRef<typeof ScrollView>>(null);
- const items=availableQuickItems({torch,cooked,cookedRabbit,cookedVenison,provisions,axes}),active=items.find(item=>item.id===selected)??items[0],open=expanded&&!disabled&&items.length>0,visible=open?items:active?[active]:[];
+ const items=availableQuickItems({torch,cooked,cookedRabbit,cookedVenison,provisions,axes}),active=items.find(item=>item.id===selected)??items[0],open=expanded&&!disabled,empty=items.length===1&&items[0].id==='fists',visible=open?items:active?[active]:[];
  const expandedChanged=useRef(onExpandedChange);expandedChanged.current=onExpandedChange;
  useEffect(()=>{expandedChanged.current?.(open)},[open]);
  useEffect(()=>()=>{expandedChanged.current?.(false)},[]);
- const targetWidth=Math.min(maxWidth,open?quickBarWidth(visible.length):layout.closedWidth);
+ const targetWidth=Math.min(maxWidth,open?quickBarWidth(empty?3:visible.length):layout.closedWidth);
  useEffect(()=>{if(disabled)setExpanded(false)},[disabled]);
  useEffect(()=>{let alive=true;AccessibilityInfo.isReduceMotionEnabled().then(value=>{if(alive)setReducedMotion(value)});const listener=AccessibilityInfo.addEventListener('reduceMotionChanged',setReducedMotion);return()=>{alive=false;listener.remove()}},[]);
  useEffect(()=>{const animation=Animated.timing(width,{toValue:targetWidth,duration:reducedMotion?0:180,useNativeDriver:false});animation.start();return()=>animation.stop()},[targetWidth,reducedMotion,width]);
@@ -25,8 +25,9 @@ export default function NativeQuickBar({selected,torch,cooked,cookedRabbit=0,coo
     <View pointerEvents="none" accessible={false} style={{width:size,height:size}}><View style={[s.iconCrop,frame.crop,{left:(size-frame.crop.width)/2,top:(size-frame.crop.height)/2,transform:[{rotate:`${frame.rotation}deg` as `${number}deg`}]}]}><Image source={images[item.id]} resizeMode="stretch" style={[s.iconImage,frame.image]}/></View></View>
     <Text numberOfLines={1} adjustsFontSizeToFit minimumFontScale={.85} style={[s.label,!open&&s.closedLabel]}>{item.label}</Text>{count!==undefined&&<Text style={[s.count,!open&&s.closedCount]}>{count}</Text>}
    </Pressable>})}
+   {open&&empty&&<Text accessibilityRole="text" style={{width:150,alignSelf:'center',paddingHorizontal:8,textAlign:'center',color:'#eadfba',fontFamily:'FieldKitBarlow',fontSize:12}}>No tools collected yet</Text>}
   </ScrollView>
-  <Pressable accessibilityRole="button" accessibilityLabel={open?'Close item selector':'Open item selector'} accessibilityState={{expanded:open,disabled}} disabled={disabled||!items.length} hitSlop={{top:4,bottom:4,left:0,right:4}} onPress={()=>{if(!disabled)setExpanded(value=>!value)}} style={({pressed})=>[s.toggle,!open&&s.closedToggle,pressed&&s.touching,disabled&&s.disabled]}><View pointerEvents="none" style={[s.chevron,!open&&s.closedChevron,{transform:[{rotate:open?'225deg':'45deg'}]}]}/></Pressable>
+  <Pressable accessibilityRole="button" accessibilityLabel={open?'Close item selector':'Open item selector'} accessibilityState={{expanded:open,disabled}} disabled={disabled} hitSlop={{top:4,bottom:4,left:0,right:4}} onPress={()=>{if(!disabled)setExpanded(value=>!value)}} style={({pressed})=>[s.toggle,!open&&s.closedToggle,pressed&&s.touching,disabled&&s.disabled]}><View pointerEvents="none" style={[s.chevron,!open&&s.closedChevron,{transform:[{rotate:open?'225deg':'45deg'}]}]}/></Pressable>
  </Animated.View>;
 }
 const font='FieldKitBarlow',s=StyleSheet.create({
