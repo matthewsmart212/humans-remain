@@ -26,7 +26,7 @@ export default function NativeQuickBar({selected,torch,cooked,cookedRabbit=0,coo
     <Text numberOfLines={1} adjustsFontSizeToFit minimumFontScale={.85} style={[s.label,!open&&s.closedLabel]}>{item.label}</Text>{count!==undefined&&<Text style={[s.count,!open&&s.closedCount]}>{count}</Text>}
    </Pressable>})}
   </ScrollView>
-  <Pressable accessibilityRole="button" accessibilityLabel={open?'Close item selector':'Open item selector'} accessibilityState={{expanded:open,disabled}} disabled={disabled} hitSlop={{top:4,bottom:4,left:0,right:4}} onPress={()=>{if(!disabled)setExpanded(value=>!value)}} style={({pressed})=>[s.toggle,!open&&s.closedToggle,pressed&&s.touching,disabled&&s.disabled]}><View pointerEvents="none" style={[s.chevron,!open&&s.closedChevron,{transform:[{rotate:open?'225deg':'45deg'}]}]}/></Pressable>
+  <Pressable accessibilityRole="button" accessibilityLabel={open?'Close item selector':'Open item selector'} accessibilityState={{expanded:open,disabled}} disabled={disabled||!items.length} hitSlop={{top:4,bottom:4,left:0,right:4}} onPress={()=>{if(!disabled)setExpanded(value=>!value)}} style={({pressed})=>[s.toggle,!open&&s.closedToggle,pressed&&s.touching,disabled&&s.disabled]}><View pointerEvents="none" style={[s.chevron,!open&&s.closedChevron,{transform:[{rotate:open?'225deg':'45deg'}]}]}/></Pressable>
  </Animated.View>;
 }
 const font='FieldKitBarlow',s=StyleSheet.create({

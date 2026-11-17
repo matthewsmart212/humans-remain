@@ -62,6 +62,6 @@ export function drawLootChestLights(ctx:CanvasRenderingContext2D,w:World,viewpor
  }
  ctx.globalAlpha=(opened?0.80:0.9)*s;ctx.fillStyle='#a5fff6';
  ctx.fillRect(p.x-50,p.y-33,19,3);ctx.fillRect(p.x+32,p.y-33,19,3);
- ctx.beginPath();ctx.arc(p.x,p.y-38,5,0,Math.PI*2);ctx.fill();
+ // The chest artwork supplies its own lock glow; don't overlay a second circle.
  ctx.restore();
 }

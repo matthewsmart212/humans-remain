@@ -40,7 +40,7 @@ export default function QuickBar({selected,torch,cooked,cookedRabbit=0,cookedVen
     <span className="kit-quick-icon" aria-hidden="true" style={{width:size,height:size}}><span className="kit-quick-art-crop" style={{...art.crop,left:(size-art.crop.width)/2,top:(size-art.crop.height)/2,transform:`rotate(${art.rotation}deg)`}}><img src={item.image} style={art.image} alt="" draggable={false}/></span></span><span className="kit-quick-label">{item.label}</span>{count!==undefined&&<b>{count}</b>}
    </button>})}
   </div>
-  <button ref={toggle} type="button" className="kit-quick-toggle" aria-label={open?'Close item selector':'Open item selector'} aria-expanded={open} aria-controls={itemsId} disabled={disabled} {...tap(()=>setExpanded(value=>!value))}>
+  <button ref={toggle} type="button" className="kit-quick-toggle" aria-label={open?'Close item selector':'Open item selector'} aria-expanded={open} aria-controls={itemsId} disabled={disabled||!items.length} {...tap(()=>setExpanded(value=>!value))}>
    <svg viewBox="0 0 16 24" aria-hidden="true" data-open={open}><path d="m5 5 7 7-7 7"/></svg>
   </button>
  </nav>;
