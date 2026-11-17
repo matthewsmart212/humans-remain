@@ -7,6 +7,8 @@ export const LOOT_CHEST_ATLAS='/survival/loot-chest-v1/open-atlas.webp';
 export const LOOT_CHEST_IMAGE_KEY='lootChestAtlas';
 export const LOOT_CHEST_FRAMES=6;
 export const LOOT_CHEST_OPEN_TICKS=42;
+/** Show the last pose briefly before presenting the loot menu. */
+export const LOOT_CHEST_REVEAL_HOLD_TICKS=8;
 export const LOOT_CHEST_REWARDS=[
  {kind:'scrap',name:'Metal scrap',amount:8,artId:'scrap',imageKey:'cacheScrap',description:'Reclaimed crafting material'},
  {kind:'ironIngot',name:'Iron ingots',amount:2,artId:'ironIngot',imageKey:'cacheIngot',description:'Refined metal for upgrades'},
@@ -45,7 +47,7 @@ export function openLootChest(w:World,id=LOOT_CHEST_ID){
    openedAt:w.tick,
    contents:Object.fromEntries(LOOT_CHEST_REWARDS.map(reward=>[reward.kind,reward.amount])) as LootChestContents,
   };
-  w.rareCacheMenuAt=w.tick+LOOT_CHEST_OPEN_TICKS;
+  w.rareCacheMenuAt=w.tick+LOOT_CHEST_OPEN_TICKS+LOOT_CHEST_REVEAL_HOLD_TICKS;
   w.notice='RARE CACHE · SEAL BROKEN';w.noticeUntil=w.tick/60+2;
  }else{
   w.stationPanel='rare-cache';
@@ -58,7 +60,8 @@ export function stepLootChest(w:World){
  if(w.phase==='over'||w.scene){w.rareCacheMenuAt=undefined;return}
  if(w.tick<w.rareCacheMenuAt)return;
  w.rareCacheMenuAt=undefined;
- if(!w.stationPanel)w.stationPanel='rare-cache';
+ // If the player left during the reveal, the menu waits for their return.
+ if(!w.stationPanel&&nearbyLootChest(w))w.stationPanel='rare-cache';
 }
 /** Take only what fits; the remainder stays inside for another visit. */
 export function takeLootChestReward(w:World,kind:LootChestRewardKind,requested=Number.MAX_SAFE_INTEGER){
