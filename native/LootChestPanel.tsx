@@ -3,8 +3,8 @@ import {View,Text,Pressable,ScrollView,StyleSheet} from 'react-native';
 import StationMenu from './StationMenu';
 import {ItemArt} from './InventoryUI';
 import type {World} from '../src/survival-engine';
-import {canCarryCount,packLoad} from '../src/expedition-inventory';
-import {LOOT_CHEST_REWARDS,lootChestContents,lootChestRemaining,takeLootChestReward,takeAllLootChestRewards,type LootChestRewardKind} from '../src/loot-chest';
+import {packLoad} from '../src/expedition-inventory';
+import {LOOT_CHEST_REWARDS,lootChestContents,lootChestRemaining,canCarryLootChestReward,takeLootChestReward,takeAllLootChestRewards,type LootChestRewardKind} from '../src/loot-chest';
 type Props={world:World;width:number;height:number;safe:{top:number;right:number;bottom:number;left:number};onClose:()=>void;onChange:()=>void};
 export default function LootChestPanel({world,width,height,safe,onClose,onChange}:Props){
  const [message,setMessage]=useState('');
@@ -19,15 +19,15 @@ export default function LootChestPanel({world,width,height,safe,onClose,onChange
   setMessage(gained?'Collected '+gained+' supplies. Anything left stays inside.':'Backpack full. Make room before collecting.');
   onChange();
  };
- const canTake=LOOT_CHEST_REWARDS.some(r=>(contents[r.kind]??0)>0&&canCarryCount(world,r.kind,contents[r.kind]??0)>0);
- return <StationMenu compact world={world} title="Loot chest" subtitle="THE RECLAMATION · SEALED SUPPLIES" label="Loot chest supplies" onClose={onClose} width={width} height={height} safe={safe} weight={load.weight} loadLabel={load.label} message={message}>
+ const canTake=LOOT_CHEST_REWARDS.some(r=>(contents[r.kind]??0)>0&&canCarryLootChestReward(world,r.kind,contents[r.kind]??0)>0);
+ return <StationMenu compact world={world} title="Loot chest" subtitle="THE RECLAMATION · STARTER TOOLS" label="Loot chest supplies" onClose={onClose} width={width} height={height} safe={safe} weight={load.weight} loadLabel={load.label} message={message}>
   <View style={s.hero}>
-   <View style={{flex:1}}><Text style={s.eyebrow}>DISCOVERY UNLOCKED</Text><Text style={s.headline}>{remaining?'Forgotten supplies':'Cache emptied'}</Text><Text style={s.description}>{remaining?'See what is inside and choose what to take.':'Everything in this cache has been collected.'}</Text></View>
+   <View style={{flex:1}}><Text style={s.eyebrow}>DISCOVERY UNLOCKED</Text><Text style={s.headline}>{remaining?'Essential survival equipment':'Cache emptied'}</Text><Text style={s.description}>{remaining?'See what is inside and choose what to take.':'Everything in this cache has been collected.'}</Text></View>
   </View>
   <View style={s.labelRow}><Text style={s.label}>CONTENTS</Text><Text style={s.count}>{remaining} remaining</Text></View>
   <ScrollView style={{flex:1,minHeight:0}} contentContainerStyle={{gap:5,paddingBottom:4}} showsVerticalScrollIndicator={remaining>4}>
    {LOOT_CHEST_REWARDS.map(reward=>{
-    const count=contents[reward.kind]??0,capacity=canCarryCount(world,reward.kind,count);
+    const count=contents[reward.kind]??0,capacity=canCarryLootChestReward(world,reward.kind,count);
     return <View key={reward.kind} style={[s.reward,!count&&{opacity:.45}]}>
      <ItemArt id={reward.artId} size={38}/>
      <View style={{flex:1,minWidth:0}}><Text style={s.name}>{reward.name}</Text><Text style={s.description} numberOfLines={1}>{reward.description}</Text></View>
