@@ -14,9 +14,7 @@ export function lootChestDrawables(ctx:CanvasRenderingContext2D,imgs:Record<stri
   if(sprite){
    const top=p.y-ART_HEIGHT+15;
    ctx.drawImage(sprite,(frame%3)*FRAME_WIDTH,Math.floor(frame/3)*FRAME_HEIGHT,FRAME_WIDTH,FRAME_HEIGHT,p.x-ART_WIDTH/2,top,ART_WIDTH,ART_HEIGHT);
-   // The final lid art reaches the top of its atlas cell. Restore its rounded
-   // upper trim using matching texture from the first closed-lid frame.
-   if(frame>=4){ctx.globalAlpha=frame===4?.84:1;ctx.drawImage(sprite,18,22,220,38,p.x-66,top-12,132,24);ctx.globalAlpha=1;}
+   // The atlas already has opening frames; never composite the closed lid on top.
   }
   else{ctx.fillStyle='#322d25';ctx.fillRect(p.x-58,p.y-44,116,43);ctx.fillStyle='#2acbbb';ctx.fillRect(p.x-48,p.y-30,96,5)}
   // The rewards are presented in the menu after the chest opens.
