@@ -19,12 +19,12 @@ export default function LootChestPanel({world,onClose,onChange}:Props){
   setMessage(gained?'Collected '+gained+' supplies. '+(lootChestRemaining(world)?'Anything left stays safely inside.':'The cache is empty.'):'No room in your backpack.');
   onChange();
  };
- return <StationMenu compact world={world} title="Loot chest" label="Open rare cache and its contents" subtitle="THE RECLAMATION · SEALED SUPPLIES" onClose={onClose} weight={load.weight} loadLabel={load.label} message={message} className="rare-cache-menu">
+ return <StationMenu compact world={world} title="Loot chest" label="Open loot chest and its contents" subtitle="THE RECLAMATION · SEALED SUPPLIES" onClose={onClose} weight={load.weight} loadLabel={load.label} message={message} className="rare-cache-menu">
   <div className="rare-cache-hero">
    <div><small>DISCOVERY UNLOCKED</small><strong>{remaining?'A forgotten supply cache':'Cache emptied'}</strong><p>{remaining?'The supplies are still inside. Choose what to take.':'You collected everything in this cache.'}</p></div>
   </div>
   <div className="rare-cache-heading"><span>CONTENTS</span><span>{remaining} remaining</span></div>
-  <div className="rare-cache-list" aria-label="Supplies stored inside the rare cache">
+  <div className="rare-cache-list" aria-label="Supplies stored inside the loot chest">
    {LOOT_CHEST_REWARDS.map(reward=>{
     const count=contents[reward.kind]??0,capacity=canCarryCount(world,reward.kind,count);
     return <div className="rare-cache-reward" key={reward.kind} data-empty={!count}>
