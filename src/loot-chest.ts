@@ -4,7 +4,7 @@ import {GEAR,gear} from './player-gear';
 
 /** A test cache above the campfire. Rewards remain INSIDE, never spawn as ground loot. */
 export const LOOT_CHEST_ID='campfire-cache-01';
-export const LOOT_CHEST_ATLAS='/survival/loot-chest-v1/open-atlas.webp';
+export const LOOT_CHEST_ATLAS='/survival/loot-chest-v2/open-atlas.webp';
 export const LOOT_CHEST_IMAGE_KEY='lootChestAtlas';
 export const LOOT_CHEST_FRAMES=6;
 // Six deliberately readable poses (about 0.3 s each at 60 FPS), not the
