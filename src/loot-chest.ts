@@ -1,5 +1,6 @@
 import type {World} from './survival-engine';
-import {addInventory,canCarryCount,type InventoryKind} from './expedition-inventory';
+import {PACK_CAPACITY,packWeight} from './expedition-inventory';
+import {GEAR,gear} from './player-gear';
 
 /** A test cache above the campfire. Rewards remain INSIDE, never spawn as ground loot. */
 export const LOOT_CHEST_ID='campfire-cache-01';
@@ -10,21 +11,31 @@ export const LOOT_CHEST_OPEN_TICKS=42;
 /** Show the last pose briefly before presenting the loot menu. */
 export const LOOT_CHEST_REVEAL_HOLD_TICKS=8;
 export const LOOT_CHEST_REWARDS=[
- {kind:'scrap',name:'Metal scrap',amount:8,artId:'scrap',imageKey:'cacheScrap',description:'Reclaimed crafting material'},
- {kind:'ironIngot',name:'Iron ingots',amount:2,artId:'ironIngot',imageKey:'cacheIngot',description:'Refined metal for upgrades'},
- {kind:'pallets',name:'Logs',amount:4,artId:'logs',imageKey:'cacheLogs',description:'Fuel and camp repairs'},
- {kind:'energyBar',name:'Energy bars',amount:2,artId:'energyBar',imageKey:'cacheEnergy',description:'Emergency expedition rations'},
+ {kind:'repairHammer',name:'Repair hammer',amount:1,artId:'repairHammer',description:'Repair broken camp buildings'},
+ {kind:'woodenAxe',name:'Wooden axe',amount:1,artId:'woodenAxe',description:'Gather timber from trees'},
+ {kind:'woodenPickaxe',name:'Wooden pickaxe',amount:1,artId:'woodenPickaxe',description:'Mine rocks and basic ore'},
 ] as const;
 export type LootChestRewardKind=typeof LOOT_CHEST_REWARDS[number]['kind'];
 export type LootChestContents=Partial<Record<LootChestRewardKind,number>>;
-export type LootChestState=Record<string,{openedAt:number;contents?:LootChestContents;menuShown?:boolean}>;
+export type LootChestState=Record<string,{openedAt:number;contents?:LootChestContents;menuShown?:boolean;rewardVersion?:2}>;
 type ChestWorld=Pick<World,'layout'|'scene'|'camp'|'player'|'lootChests'|'tick'|'phase'|'stationPanel'|'rareCacheMenuAt'>;
 export function campLootChest(w:ChestWorld){
  if(!w.layout||w.scene||w.camp.hearth.x<0||w.camp.hearth.y<0)return null;
  return {id:LOOT_CHEST_ID,x:w.camp.hearth.x,y:w.camp.hearth.y-285};
 }
 export const lootChestOpened=(w:ChestWorld,id=LOOT_CHEST_ID)=>w.lootChests?.[id]!==undefined;
-export const lootChestContents=(w:ChestWorld,id=LOOT_CHEST_ID):LootChestContents=>w.lootChests?.[id]?.contents??{};
+/** Convert previously unclaimed resources to the new starter tools once. */
+export function lootChestContents(w:ChestWorld,id=LOOT_CHEST_ID):LootChestContents{
+ const state=w.lootChests?.[id];if(!state)return {};
+ if(state.rewardVersion===2)return state.contents??{};
+ const old=state.contents as Record<string,number>|undefined;
+ const legacy=['scrap','ironIngot','pallets','energyBar'];
+ if(old&&legacy.some(key=>key in old)){
+  const unclaimed=legacy.some(key=>(old[key]??0)>0);
+  state.contents=Object.fromEntries(LOOT_CHEST_REWARDS.map(reward=>[reward.kind,unclaimed?1:0])) as LootChestContents;
+ }else if(!old)state.contents={};
+ state.rewardVersion=2;return state.contents??{};
+}
 export const lootChestRemaining=(w:ChestWorld,id=LOOT_CHEST_ID)=>LOOT_CHEST_REWARDS.reduce((sum,reward)=>sum+(lootChestContents(w,id)[reward.kind]??0),0);
 export function lootChestFrame(w:ChestWorld,id=LOOT_CHEST_ID){
  const state=w.lootChests?.[id];if(!state)return 0;
@@ -47,6 +58,7 @@ export function openLootChest(w:World,id=LOOT_CHEST_ID){
   (w.lootChests??={})[id]={
    openedAt:w.tick,
    menuShown:false,
+   rewardVersion:2,
    contents:Object.fromEntries(LOOT_CHEST_REWARDS.map(reward=>[reward.kind,reward.amount])) as LootChestContents,
   };
   w.rareCacheMenuAt=w.tick+LOOT_CHEST_OPEN_TICKS+LOOT_CHEST_REVEAL_HOLD_TICKS;
@@ -72,17 +84,22 @@ export function stepLootChest(w:World){
  state.menuShown=true;
  w.stationPanel='rare-cache';
 }
-/** Take only what fits; the remainder stays inside for another visit. */
+/** Transfer gear through the existing backpack weight limit. */
+export function canCarryLootChestReward(w:World,kind:LootChestRewardKind,requested=1){
+ const remaining=lootChestContents(w)[kind]??0;
+ if(!Number.isFinite(requested)||requested<=0||remaining<=0)return 0;
+ const count=Math.min(remaining,Math.floor(requested));
+ return Math.max(0,w.creativeMode?count:Math.min(count,Math.floor((PACK_CAPACITY-packWeight(w)+1e-7)/GEAR[kind].weight)));
+}
 export function takeLootChestReward(w:World,kind:LootChestRewardKind,requested=Number.MAX_SAFE_INTEGER){
  const state=w.lootChests?.[LOOT_CHEST_ID];
  if(!state||w.stationPanel!=='rare-cache'||w.phase==='over'||w.player.hp<=0||w.player.downedUntil)return 0;
- const remaining=state.contents?.[kind]??0;
- if(remaining<=0||!Number.isFinite(requested)||requested<=0)return 0;
- const amount=Math.min(remaining,Math.floor(requested),canCarryCount(w,kind as InventoryKind,remaining));
- if(!amount)return 0;
- const taken=addInventory(w,kind as InventoryKind,amount);
- state.contents![kind]=remaining-taken;
- return taken;
+ const count=canCarryLootChestReward(w,kind,requested);
+ if(!count)return 0;
+ const bag=gear(w).bag;bag[kind]=(bag[kind]??0)+count;
+ state.contents![kind]=(state.contents![kind]??0)-count;
+ if(kind==='repairHammer')w.tools.hammer=true;
+ return count;
 }
 export function takeAllLootChestRewards(w:World){
  let taken=0;

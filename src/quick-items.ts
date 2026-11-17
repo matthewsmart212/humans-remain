@@ -52,7 +52,11 @@ export const QUICK_BAR_FRAME={
  edgeImage:{position:'absolute' as const,left:8-edgeImageWidth,top:0,width:edgeImageWidth,height:barHeight},
 };
 export const quickItemCount=(id:QuickItem,cooked:number,rabbit=0,venison=0,arrows?:number,provisions:Partial<Record<ProvisionId,number>>={})=>isProvision(id)?provisions[id]??0:id==='bow'?arrows:id==='meal'?cooked:id==='rabbitMeal'?rabbit:id==='venisonMeal'?venison:undefined;
-export function availableQuickItems({torch=false,cooked,cookedRabbit=0,cookedVenison=0,provisions={},axes={axe:0,woodenAxe:0}}:QuickBarInventory){return QUICK_ITEMS.filter(item=>(item.id!=='torch'||torch)&&quickItemCount(item.id,cooked,cookedRabbit,cookedVenison,undefined,provisions)!==0&&(!isGear(item.id)||(axes[item.id]??0)>0))}
+export function availableQuickItems({torch=false,cooked,cookedRabbit=0,cookedVenison=0,provisions={},axes={axe:0,woodenAxe:0}}:QuickBarInventory){
+ const items=QUICK_ITEMS.filter(item=>(item.id!=='torch'||torch)&&quickItemCount(item.id,cooked,cookedRabbit,cookedVenison,undefined,provisions)!==0&&(!isGear(item.id)||(axes[item.id]??0)>0));
+ // Fists remain a default action, not a carried item in an empty quickbar.
+ return items.length===1&&items[0].id==='fists'?[]:items;
+}
 export function selectedQuickItem(w:World):QuickItem{if(isProvision(w.player.equipped)&&provisionCounts(w,'bag')[w.player.equipped]>0)return w.player.equipped;return w.player.equipped==='torch'&&w.tools.torch?'torch':isGear(w.player.equipped)&&hasGear(w,w.player.equipped)?w.player.equipped:w.player.equipped==='meal'&&w.cooked>0?'meal':w.player.equipped==='rabbitMeal'&&w.cookedRabbit>0?'rabbitMeal':w.player.equipped==='venisonMeal'&&w.cookedVenison>0?'venisonMeal':'fists'}
 export function selectQuickItem(w:World,item:QuickItem){
  if(w.stationPanel||w.phase==='over'||w.player.hp<=0||w.player.downedUntil||w.dodge||w.axeSwing||w.bowShot||timeOf(w)<w.attackUntil)return false;

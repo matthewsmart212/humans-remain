@@ -7,8 +7,8 @@ export default function QuickBar({selected,torch,cooked,cookedRabbit=0,cookedVen
  const [expanded,setExpanded]=useState(false),root=useRef<HTMLElement>(null),toggle=useRef<HTMLButtonElement>(null),itemsId=useId();
  const notifyExpanded=useRef(onExpandedChange);notifyExpanded.current=onExpandedChange;
  const pointer=useRef<{id:number;x:number;y:number;moved:boolean}|null>(null);
- const items=availableQuickItems({torch,cooked,cookedRabbit,cookedVenison,provisions,axes}),active=items.find(item=>item.id===selected)??items[0],open=expanded&&!disabled;
- const visible=open?items:[active];
+ const items=availableQuickItems({torch,cooked,cookedRabbit,cookedVenison,provisions,axes}),active=items.find(item=>item.id===selected)??items[0],open=expanded&&!disabled&&items.length>0;
+ const visible=open?items:active?[active]:[];
  useEffect(()=>{notifyExpanded.current?.(open)},[open]);
  useEffect(()=>()=>notifyExpanded.current?.(false),[]);
  useEffect(()=>{if(disabled)setExpanded(false)},[disabled]);
@@ -35,7 +35,7 @@ export default function QuickBar({selected,torch,cooked,cookedRabbit=0,cookedVen
   <span className="kit-quick-skin" aria-hidden="true">{open?QUICK_BAR_SLICES.map(part=><span key={part.id} className="kit-quick-slice" style={{...('width' in part?{width:part.width}:{flex:1}),...('flip' in part?{transform:'scaleX(-1)'}:{})}}><img src="/survival/ui-field-kit-v1/vitals.png" style={quickBarSliceImage(part)} alt="" draggable={false}/></span>):<img className="kit-quick-hex" src="/survival/ui-action-hex-v1/primary.png" alt="" draggable={false}/>}</span>
   <div className="kit-quick-items" id={itemsId} role="group" aria-label={open?'Available tools and items':'Active tool or item'}>
    {visible.map(item=>{const count=quickItemCount(item.id,cooked,cookedRabbit,cookedVenison,axes?.arrows??0,provisions),size=open?layout.iconSize:layout.closedIconSize,art=quickItemArt(item.id,size);return <button type="button" key={item.id} className="kit-quick-slot"
-    aria-label={`${item.label}${count!==undefined?`, ${count} ${item.id==='bow'?'arrows':'portions'}`:''}${open?'':'. Active item. Open item selector'}`} title={open?`${item.label} · Select and close`:'Open item selector'} aria-pressed={active.id===item.id} aria-expanded={open?undefined:false} disabled={disabled}
+    aria-label={`${item.label}${count!==undefined?`, ${count} ${item.id==='bow'?'arrows':'portions'}`:''}${open?'':'. Active item. Open item selector'}`} title={open?`${item.label} · Select and close`:'Open item selector'} aria-pressed={active?.id===item.id} aria-expanded={open?undefined:false} disabled={disabled}
     {...tap(()=>{if(open){onSelect(item.id);close()}else setExpanded(true)})}>
     <span className="kit-quick-icon" aria-hidden="true" style={{width:size,height:size}}><span className="kit-quick-art-crop" style={{...art.crop,left:(size-art.crop.width)/2,top:(size-art.crop.height)/2,transform:`rotate(${art.rotation}deg)`}}><img src={item.image} style={art.image} alt="" draggable={false}/></span></span><span className="kit-quick-label">{item.label}</span>{count!==undefined&&<b>{count}</b>}
    </button>})}

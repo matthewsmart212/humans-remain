@@ -28,15 +28,14 @@ export function nearbyHeadquarters(w:World){const p=headquartersBench(w);if(!p)r
 export function openHeadquarters(w:World){if(!nearbyHeadquarters(w)||w.phase==='over'||w.player.hp<=0||w.player.downedUntil)return false;if(w.progression)w.progression.briefed=true;w.stationPanel='headquarters';return true}
 export const hasMetalworking=(w:World)=>!w.progression||campAccessLevel(w)>=2&&buildingRestored(w,'furnace');
 export const recipeUnlocked=(w:World,id:GearKind)=>buildingRestored(w,'headquarters')&&buildingRestored(w,'workshop')&&(hasMetalworking(w)||['woodenAxe','woodenPickaxe','woodenKnife','woodenSpear','woodenSword'].includes(id));
-export function starterGear():PlayerGear{const empty=()=>Object.fromEntries(Object.keys(GEAR).map(id=>[id,0])) as PlayerGear['bag'];const bag=empty();bag.woodenAxe=1;bag.woodenPickaxe=1;bag.repairHammer=1;return{bag,chest:empty()}}
+export function starterGear():PlayerGear{const empty=()=>Object.fromEntries(Object.keys(GEAR).map(id=>[id,0])) as PlayerGear['bag'];return{bag:empty(),chest:empty()}}
 function openGround(w:World,origin:Vec,radii:number[],prefer=Math.PI/3){
  for(const radius of radii)for(let i=0;i<32;i++){const a=prefer+(i%2?-1:1)*Math.ceil(i/2)*Math.PI/16,p={x:origin.x+Math.cos(a)*radius,y:origin.y+Math.sin(a)*radius};if(worldBlocked(w,p.x,p.y,75))continue;const route=pathTo(origin,p,w,6000,23);if(route.length&&Math.hypot(route.at(-1)!.x-p.x,route.at(-1)!.y-p.y)<100)return p}
  return {...origin,x:origin.x+130};
 }
 export function startExpedition(w:World){
- w.gear=starterGear();w.player.equipped='woodenAxe';w.tools={bat:false,hammer:true,torch:true};
+ w.gear=starterGear();w.player.equipped=null;w.tools={bat:false,hammer:false,torch:false};w.torchOn=false;
  for(const kind of INVENTORY_KINDS){setItemCount(w,kind,0);setStoredCount(w,kind,0)}
- setItemCount(w,'beans',2);setItemCount(w,'berries',4);
  const hq=w.layout?.items.find(p=>p.assetId==='base_shelter_t1'||p.assetId==='base_headquarters_t1'||p.id==='4d468bcc-83b9-4bb7-af01-da4b69a67d9a');
  const dock=hq?(()=>{const b=placementBounds(hq),[x,y]=placementPoint(hq,b.x+b.width*.5,b.y+b.height+80);return{x,y}})():{...w.layout!.spawn};
  const camp=openGround(w,dock,[0,80,160,240,320]),cache=openGround(w,w.layout!.spawn,[1800,1500,1200,900]);
