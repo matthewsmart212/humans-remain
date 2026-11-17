@@ -1,183 +1,123 @@
-import {
- campLootChest,LOOT_CHEST_ID,LOOT_CHEST_IMAGE_KEY,LOOT_CHEST_OPEN_TICKS,
- lootChestFrame,lootChestOpened,lootChestRemaining
-} from './loot-chest';
+import {campLootChest,LOOT_CHEST_IMAGE_KEY,lootChestFrame} from './loot-chest';
+import {lootChestFx,type LootChestFx} from './loot-chest-fx';
 import type {World} from './survival-engine';
 
-// Keep the user's approved orange chest artwork unchanged. All illumination
-// and particles are procedural and share the existing web Canvas / iOS Skia
-// adapter: no new runtime dependencies, timers, textures, or stored particles.
 const FRAME_WIDTH=440,FRAME_HEIGHT=390,COLUMNS=5;
-const ART_WIDTH=240,ART_HEIGHT=213,BASELINE_OFFSET=178;
-const TAU=Math.PI*2;
+const ART_WIDTH=240,ART_HEIGHT=213,BASELINE_OFFSET=178,TAU=Math.PI*2;
 type Viewport={x:number;y:number;width:number;height:number};
+type LightContext=CanvasRenderingContext2D&{drawLootChestLight?:(x:number,y:number,fx:LootChestFx,front:boolean)=>void};
 const clamp=(n:number)=>Math.max(0,Math.min(1,n));
-const visible=(x:number,y:number,v:Viewport)=>x>v.x-210&&x<v.x+v.width+210&&y>v.y-230&&y<v.y+v.height+120;
-const ageOf=(w:World)=>Math.max(0,w.tick-(w.lootChests?.[LOOT_CHEST_ID]?.openedAt??w.tick));
-
-function ambientLight(ctx:CanvasRenderingContext2D,x:number,y:number,power:number,night:number){
- // Soft, boundary-free amber ambience on the surrounding terrain. This is
- // deliberately NOT a ground ellipse, duplicate shadow, or interaction ring.
- const r=148;
- const gradient=ctx.createRadialGradient(x,y-53,0,x,y-53,r);
- gradient.addColorStop(0,'rgba(255,185,69,0.23)');
- gradient.addColorStop(.30,'rgba(255,136,35,0.14)');
- gradient.addColorStop(.67,'rgba(226,91,17,0.055)');
- gradient.addColorStop(1,'rgba(226,91,17,0)');
- ctx.globalAlpha=power*(.72+night*.28);
- ctx.fillStyle=gradient;
- ctx.fillRect(x-r,y-53-r,r*2,r*2);
- ctx.globalAlpha=1;
+const fract=(n:number)=>n-Math.floor(n);
+const seed=(i:number)=>fract(Math.sin(i*127.1+311.7)*43758.5453);
+const visible=(x:number,y:number,v:Viewport)=>x+220>v.x&&x-220<v.x+v.width&&y+100>v.y&&y-330<v.y+v.height;
+function diamond(ctx:CanvasRenderingContext2D,x:number,y:number,r:number,stretch=1){
+ ctx.moveTo(x,y-r*stretch);ctx.lineTo(x+r,y);ctx.lineTo(x,y+r*stretch);ctx.lineTo(x-r,y);ctx.closePath();
 }
-
-function openingRays(ctx:CanvasRenderingContext2D,x:number,y:number,t:number,opening:number,reduced:boolean){
- // Warm, transparent shafts rise *behind* the actual lid while it opens.
- // No texture overlay is ever applied to the approved sprite artwork.
- if(opening<.06)return;
- const burst=reduced?opening*.25:opening*(.77+.23*Math.sin(t*.14));
- for(let i=-2;i<=2;i++){
-  const sway=reduced?0:Math.sin(t*.032+i*1.9)*7;
-  const fromX=x+i*24;
-  ctx.globalAlpha=burst*(i===0 ? .085 :.041);
-  ctx.fillStyle=i===0?'#ffe6a4':'#ffac32';
-  ctx.beginPath();
-  ctx.moveTo(fromX-6,y-79);
-  ctx.lineTo(fromX+i*10+sway-16,y-168-opening*24);
-  ctx.lineTo(fromX+i*10+sway+12,y-168-opening*24);
-  ctx.lineTo(fromX+7,y-79);
-  ctx.closePath();ctx.fill();
- }
- ctx.globalAlpha=1;
+function star(ctx:CanvasRenderingContext2D,x:number,y:number,r:number){
+ ctx.moveTo(x,y-r);ctx.lineTo(x+r*.16,y-r*.16);ctx.lineTo(x+r*.72,y);
+ ctx.lineTo(x+r*.16,y+r*.16);ctx.lineTo(x,y+r);ctx.lineTo(x-r*.16,y+r*.16);
+ ctx.lineTo(x-r*.72,y);ctx.lineTo(x-r*.16,y-r*.16);ctx.closePath();
 }
-
-function cavityLight(ctx:CanvasRenderingContext2D,x:number,y:number,t:number,level:number,power:number,reduced:boolean){
- if(level<.05)return;
- ctx.save();
- // The dark empty cavity is approximately x=+-80, y=-78..-48 in
- // the authored art. Clip the glow INSIDE it to preserve the stone rim,
- // front crystal, and the complete upper lid silhouette.
- ctx.beginPath();
- ctx.moveTo(x-80,y-81);ctx.lineTo(x+81,y-81);
- ctx.lineTo(x+71,y-51);ctx.lineTo(x-71,y-51);
- ctx.closePath();ctx.clip();
- const breathe=reduced ? .72 :.70+.19*Math.sin(t*.083)+.11*Math.sin(t*.23+1.1);
- const intensity=clamp(level*power*breathe);
- const inner=ctx.createRadialGradient(x,y-59,0,x,y-59,96);
- inner.addColorStop(0,'rgba(255,246,188,0.90)');
- inner.addColorStop(.18,'rgba(255,196,75,0.77)');
- inner.addColorStop(.55,'rgba(255,122,21,0.39)');
- inner.addColorStop(1,'rgba(232,76,9,0)');
- ctx.fillStyle=inner;ctx.globalAlpha=intensity*.76;
- ctx.fillRect(x-97,y-90,194,50);
- // A moving light ribbon makes the interior visibly shimmer while fully open.
- if(!reduced){
-  const sweep=Math.sin(t*.055)*48;
-  ctx.globalAlpha=intensity*.24;
-  ctx.fillStyle='#fff0bc';
-  ctx.beginPath();
-  ctx.moveTo(x+sweep-10,y-89);ctx.lineTo(x+sweep+1,y-89);
-  ctx.lineTo(x+sweep+24,y-45);ctx.lineTo(x+sweep+13,y-45);
-  ctx.closePath();ctx.fill();
+/** Canvas fallback; production web and iOS use the same two-pass Skia light. */
+function light(ctx:LightContext,x:number,y:number,fx:LootChestFx,front:boolean){
+ if(ctx.drawLootChestLight){ctx.drawLootChestLight(x,y,fx,front);return}
+ ctx.save();ctx.globalCompositeOperation='screen';
+ const glow=(xx:number,yy:number,r:number,alpha:number)=>{
+  const gradient=ctx.createRadialGradient(xx,yy,0,xx,yy,r);
+  gradient.addColorStop(0,'rgba(255,207,104,'+alpha+')');gradient.addColorStop(.35,'rgba(255,133,29,'+alpha*.6+')');gradient.addColorStop(1,'rgba(255,103,13,0)');
+  ctx.fillStyle=gradient;ctx.fillRect(xx-r,yy-r,r*2,r*2);
+ };
+ ctx.globalAlpha=fx.power;
+ if(front){
+  glow(x-5,y-43,47,.63+fx.charge*.2);glow(x-53,y-38,28,.3);glow(x+43,y-36,28,.3);
+  if(fx.open){glow(x,y-69,82,fx.open*.7);glow(x,y-73,125,fx.burst*.75)}
+ }else{
+  glow(x,y-40,170,.29+fx.charge*.17+fx.open*.14);
+  if(fx.open)for(let i=-2;i<=2;i++){
+   ctx.globalAlpha=fx.power*fx.open*(.07+fx.burst*.13);ctx.fillStyle='#ffdb88';
+   ctx.beginPath();ctx.moveTo(x-10+i*8,y-72);ctx.lineTo(x+i*40-14,y-270-Math.abs(i)*12);ctx.lineTo(x+i*40+14,y-270-Math.abs(i)*12);ctx.lineTo(x+10+i*8,y-72);ctx.closePath();ctx.fill();
+  }
  }
  ctx.restore();
 }
-
-function inlayLights(ctx:CanvasRenderingContext2D,x:number,y:number,t:number,power:number,reduced:boolean){
- // The front amber bars and jewel are the actual light sources. Brighten
- // their thin interiors rather than drawing the unwanted dot/ring around them.
- const shimmer=reduced ? .72 :.70+.20*Math.sin(t*.11)+.10*Math.sin(t*.28+1.2);
- ctx.globalAlpha=clamp(power*(.28+.36*shimmer));
- ctx.fillStyle='#ff9e32';
- ctx.fillRect(x-66,y-37,26,4);
- ctx.fillRect(x+39,y-37,27,4);
- ctx.globalAlpha=clamp(power*(.30+.38*shimmer));
- ctx.fillStyle='#ffcc6b';
- ctx.fillRect(x-61,y-36,17,2);
- ctx.fillRect(x+44,y-36,17,2);
- if(!reduced){
-  const sweep=((t*.035)%1)*20;
-  ctx.globalAlpha=power*.64;
-  ctx.fillStyle='#fff5c2';
-  ctx.fillRect(x-62+sweep,y-36,2,2);
-  ctx.fillRect(x+43+(20-sweep),y-36,2,2);
- }
- // Faceted core, not a circle. Its flare is brightest for brief moments.
- const flash=reduced?0:Math.pow(Math.max(0,Math.sin(t*.075+.9)),14);
- ctx.globalAlpha=clamp(power*(.26+.40*shimmer+.28*flash));
- ctx.fillStyle='#ffe0a2';
- ctx.beginPath();
- ctx.moveTo(x,y-54);ctx.lineTo(x+5,y-43);
- ctx.lineTo(x,y-33);ctx.lineTo(x-5,y-43);
- ctx.closePath();ctx.fill();
- if(flash>.36){
-  ctx.globalAlpha=flash*power*.55;
-  ctx.fillRect(x-10,y-44,20,1.3);
-  ctx.fillRect(x-.65,y-58,1.3,29);
- }
+function inlays(ctx:CanvasRenderingContext2D,x:number,y:number,fx:LootChestFx){
+ const shimmer=.78+.15*Math.sin(fx.time*3.1)+.07*Math.sin(fx.time*7.3);
+ ctx.globalAlpha=fx.power*(.55+fx.charge*.35)*shimmer;
+ ctx.fillStyle='#ffeab1';
+ // Centres measured from the approved atlas. Keep the dark iron rims visible.
+ ctx.fillRect(x-67,y-38.5,28,1.5);ctx.fillRect(x+30,y-37.2,27,1.5);
+ ctx.beginPath();diamond(ctx,x-5,y-43,2.3,2.8);ctx.fill();
+ // An occasional pin-sharp glint across the jewel, never a permanent cross.
+ const sparkle=fx.reduced?0:Math.pow(Math.max(0,Math.sin(fx.time*1.6+.9)),18);
+ if(sparkle>.02){ctx.globalAlpha=fx.power*sparkle*.87;ctx.fillStyle='#fff5d5';ctx.beginPath();star(ctx,x-5,y-43,10+fx.charge*7);ctx.fill()}
  ctx.globalAlpha=1;
 }
-
-function embers(ctx:CanvasRenderingContext2D,x:number,y:number,t:number,open:number,power:number,reduced:boolean){
- // Life cycles are calculated from tick, so the effect is deterministic,
- // multiplayer-safe, and has no update loop or mutable particle arrays.
- const count=reduced?6:open>.20?30:16;
- const originY=y-(open>.25?78:48);
- const lift=53+open*68;
- for(let i=0;i<count;i++){
-  const phase=reduced?((i*.233)%1):((t*(.011+(i%5)*.003)+i*.187)%1);
-  const side=Math.sin(i*2.399)*((i%3===0?62:45)+open*14);
-  const wobble=reduced?0:Math.sin(t*(.018+i%4*.006)+i*1.99)*(5+open*8)*phase;
-  const xx=x+side+wobble,yy=originY-phase*lift-Math.cos(i*1.79)*10;
-  const lifetime=clamp(phase*7)*clamp((1-phase)*4);
-  const twinkle=reduced ? .7 :.75+.25*Math.sin(t*.23+i*3.23);
-  const alpha=clamp(lifetime*twinkle*power*(open>.20 ? .79 :.46));
-  if(alpha<.04)continue;
-  ctx.globalAlpha=alpha;
-  ctx.fillStyle=i%7===0?'#fff4cc':i%3===0?'#ffc56e':'#ff9231';
-  const size=i%5===0?2.6:1.7;
-  ctx.fillRect(xx,yy,size,size);
-  if(i%6===0){
-   // Occasional four-point glints instead of repetitive orbiting dots.
-   ctx.globalAlpha=alpha*.55;
-   ctx.fillRect(xx-4,yy+.8,10,1);
-   ctx.fillRect(xx+.8,yy-4,1,10);
+function motes(ctx:CanvasRenderingContext2D,x:number,y:number,fx:LootChestFx){
+ const count=fx.reduced?5:fx.empty?8:32;
+ // Three small batched paths, with size giving each mote its own life envelope.
+ // No stored particle objects, gradient per spark or native allocation per mote.
+ for(let pass=0;pass<3;pass++){
+  ctx.beginPath();
+  for(let i=0;i<count;i++){
+   const phase=fract(fx.time*(.18+seed(i+30)*.2)+seed(i+60));
+   const life=clamp(phase*6)*clamp((1-phase)*4);
+   const twinkle=.7+.3*Math.sin(fx.time*4.7+i*2.9);
+   const xx=x+(seed(i+9)-.5)*202+Math.sin(fx.time*.9+i*2.4+phase*3)*(8+fx.open*13)*phase;
+   const yy=y-54-phase*(105+fx.open*90)+Math.sin(i*1.7)*8;
+   const r=(1.1+seed(i+90)*1.5)*life*twinkle;
+   if(r<.2||pass===2&&i%3!==0)continue;
+   if(pass===0)diamond(ctx,xx,yy,r*3.3,1.3);
+   else if(i%6===0)star(ctx,xx,yy,r*(pass===2?1.8:3.7));
+   else diamond(ctx,xx,yy,r*(pass===2?.5:1),1.5);
   }
+  ctx.globalAlpha=fx.power*[.1,.8,.94][pass];ctx.fillStyle=['#ffbc53','#ffe3a0','#fff7dc'][pass];ctx.fill();
  }
  ctx.globalAlpha=1;
 }
+function openingSparks(ctx:CanvasRenderingContext2D,x:number,y:number,fx:LootChestFx){
+ const age=fx.revealAge/60;
+ if(age<0||age>1.22||fx.reduced||fx.empty)return;
+ const fade=clamp(age*16)*Math.pow(clamp(1-age/1.22),1.3)*fx.power;
+ // A single fan of ballistic sparks, timed to the first visible lid gap.
+ for(let pass=0;pass<2;pass++){
+  ctx.beginPath();
+  for(let i=0;i<38;i++){
+   const angle=-Math.PI*.94+seed(i+140)*Math.PI*.88,speed=70+seed(i+180)*180;
+   const vx=Math.cos(angle)*speed,vy=Math.sin(angle)*speed;
+   const xx=x+vx*age,yy=y-76+vy*age+78*age*age;
+   const size=(.8+seed(i+220)*1.7)*fade;
+   if(pass===0){ctx.moveTo(xx,yy);ctx.lineTo(xx-vx*.025,yy-(vy+156*age)*.025)}
+   else if(i%7===0)star(ctx,xx,yy,size*3);else diamond(ctx,xx,yy,size,1.4);
+  }
+  ctx.globalAlpha=fade*(pass===0?.46:.95);ctx.strokeStyle='#ffbd52';ctx.lineWidth=1.5;
+  ctx.fillStyle='#fff1b5';if(pass===0)ctx.stroke();else ctx.fill();
+ }
+ ctx.globalAlpha=1;
+}
+function sealFlare(ctx:CanvasRenderingContext2D,x:number,y:number,fx:LootChestFx){
+ if(fx.burst<.02||fx.reduced)return;
+ // Long tapered light streaks at the seal, with a short white-gold core.
+ ctx.beginPath();
+ const r=90+fx.burst*55,cy=y-74;
+ ctx.moveTo(x-r,cy);ctx.lineTo(x-13,cy-2.4);ctx.lineTo(x,cy-9*fx.burst);
+ ctx.lineTo(x+13,cy-2.4);ctx.lineTo(x+r,cy);ctx.lineTo(x+13,cy+2.4);
+ ctx.lineTo(x,cy+9*fx.burst);ctx.lineTo(x-13,cy+2.4);ctx.closePath();
+ ctx.globalAlpha=fx.burst*.78*fx.power;ctx.fillStyle='#fff0b8';ctx.fill();ctx.globalAlpha=1;
+}
 
-/** One depth-sorted drawable: every light and spark stays behind a survivor
- * standing in front of the chest, on web and the native Skia renderer. */
+/** All effects are one depth-sorted drawable. A survivor in front occludes
+ * sparks, beams and bloom as well as the chest, on both renderers. */
 export function lootChestDrawables(ctx:CanvasRenderingContext2D,imgs:Record<string,HTMLImageElement>,w:World,viewport:Viewport){
  const p=campLootChest(w);if(!p||!visible(p.x,p.y,viewport))return [];
- const sprite=imgs[LOOT_CHEST_IMAGE_KEY],frame=lootChestFrame(w,p.id);
- const opened=lootChestOpened(w,p.id),age=ageOf(w),t=w.tick;
- const progress=opened?clamp(age/LOOT_CHEST_OPEN_TICKS):0;
- const open=opened?clamp((frame-2)/7):0;
- const reduced=!!w.weather?.reducedMotion;
- const night=clamp(w.nightAmount??(w.phase==='night'?1:0));
- const empty=opened&&lootChestRemaining(w,p.id)===0;
- const nearby=clamp((220-Math.hypot(w.player.x-p.x,w.player.y-p.y))/160);
- const power=(empty ? .58 :1)*(1+nearby*.12);
- // Open state retains warm illumination, while the opening surge peaks as
- // the lid moves. Closed chests remain obviously rare and alive.
- const surge=opened&&progress<1?Math.sin(Math.PI*progress)**2:0;
- const pulse=reduced ? .75 :.78+.15*Math.sin(t*.079)+.07*Math.sin(t*.19);
- const aura=power*(.36+.38*open+.28*surge)*pulse;
+ const sprite=imgs[LOOT_CHEST_IMAGE_KEY],frame=lootChestFrame(w),fx=lootChestFx(w);
  return [{y:p.y,draw:()=>{
-  ctx.save();
-  const x=p.x,y=p.y;
-  ambientLight(ctx,x,y,aura,night);
-  openingRays(ctx,x,y,t,open*(.24+.76*surge),reduced);
-  if(sprite){
-   ctx.drawImage(sprite,(frame%5)*FRAME_WIDTH,Math.floor(frame/5)*FRAME_HEIGHT,
-    FRAME_WIDTH,FRAME_HEIGHT,x-ART_WIDTH/2,y-BASELINE_OFFSET,ART_WIDTH,ART_HEIGHT);
-  }else{
-   ctx.globalAlpha=.8;ctx.fillStyle='#393028';ctx.fillRect(x-83,y-70,166,70);
-  }
-  cavityLight(ctx,x,y,t,open,power,reduced);
-  inlayLights(ctx,x,y,t,power,reduced);
-  embers(ctx,x,y,t,open,power*(1+.60*surge),reduced);
+  ctx.save();const x=p.x,y=p.y;
+  light(ctx,x,y,fx,false);
+  if(sprite)ctx.drawImage(sprite,(frame%COLUMNS)*FRAME_WIDTH,Math.floor(frame/COLUMNS)*FRAME_HEIGHT,
+   FRAME_WIDTH,FRAME_HEIGHT,x-ART_WIDTH/2,y-BASELINE_OFFSET,ART_WIDTH,ART_HEIGHT);
+  else{ctx.fillStyle='#393028';ctx.fillRect(x-83,y-70,166,70)}
+  light(ctx,x,y,fx,true);
+  inlays(ctx,x,y,fx);motes(ctx,x,y,fx);openingSparks(ctx,x,y,fx);sealFlare(ctx,x,y,fx);
   ctx.restore();
  }}];
 }

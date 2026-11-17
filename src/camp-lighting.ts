@@ -36,8 +36,9 @@ const geometry=new WeakMap<WorldLayout,{sources:{placement:Placement;asset:World
 export function campLights(world:World):CampLight[]{
  const layout=world.layout,forge=furnaceLights(world);
  const chest=campLootChest(world),opened=!!chest&&lootChestOpened(world);
- // Chest emits an independent small night light, even if the fire is broken.
- const chestLight:CampLight|undefined=chest?{x:chest.x,y:chest.y-48,radius:opened?225:185,strength:opened?(lootChestRemaining(world)>0?.90:.52):.53}:undefined;
+ // Keep this field steady between state changes: the chest pulse lives in its
+ // own two light passes, so animation never rebuilds the cached night mask.
+ const chestLight:CampLight|undefined=chest?{x:chest.x,y:chest.y-48,radius:opened?(lootChestRemaining(world)>0?260:190):210,strength:opened?(lootChestRemaining(world)>0?1:.50):.95}:undefined;
  const extra=chestLight?[...forge,chestLight]:forge;
  if(!layout||!buildingRestored(world,'fire')||world.camp.hearth.fuel<=0)return extra.length?extra:NO_LIGHTS;
  let entry=geometry.get(layout);

@@ -66,3 +66,5 @@ jobs:
         working-directory: native
       - run: npm run typecheck
         working-directory: native
+      - name: Render rare chest effects with web and native Skia
+        run: node scripts/check-loot-chest-fx.mjs

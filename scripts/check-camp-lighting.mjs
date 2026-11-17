@@ -7,7 +7,7 @@ import {build} from 'esbuild';
 const require=createRequire(import.meta.url),temp=fs.mkdtempSync(path.join(os.tmpdir(),'camp-lighting-'));
 const originalFetch=globalThis.fetch,originalStorage=globalThis.localStorage;
 try{
- await build({stdin:{contents:`export * from './src/world-assets';export * from './src/camp-lighting';export * from './src/night-lighting-skia';export * from './src/world-layout';export * from './src/imported-art';export * from './src/survival-engine';export * from './src/studio-play';export * from './src/skia-web';export * from './src/placed-world-renderer';export * from './src/world-scenes';export * from './src/editor-image-sources';export {JsiSkApi} from '@shopify/react-native-skia/lib/module/skia/web/JsiSkia';`,resolveDir:process.cwd()},bundle:true,platform:'node',format:'cjs',outfile:path.join(temp,'model.cjs')});
+ await build({stdin:{contents:`export * from './src/world-assets';export * from './src/camp-lighting';export * from './src/loot-chest';export * from './src/night-lighting-skia';export * from './src/world-layout';export * from './src/imported-art';export * from './src/survival-engine';export * from './src/studio-play';export * from './src/skia-web';export * from './src/placed-world-renderer';export * from './src/world-scenes';export * from './src/editor-image-sources';export {JsiSkApi} from '@shopify/react-native-skia/lib/module/skia/web/JsiSkia';`,resolveDir:process.cwd()},bundle:true,platform:'node',format:'cjs',outfile:path.join(temp,'model.cjs')});
  const m=require(path.join(temp,'model.cjs'));
  const [artPath,layoutPath,qaDir]=process.argv.slice(2);
  if(artPath)m.installImportedArt(JSON.parse(fs.readFileSync(artPath)).records);
@@ -21,9 +21,14 @@ try{
  let strength=0;for(let i=0;i<60;i++){m.stepCampLighting(world,1/60);const next=m.nightStrength(world);assert(next>=strength);strength=next}assert.equal(strength,1);
  m.setWorldTimeOfDay(world,'day');assert.equal(m.nightStrength(world),1);m.stepCampLighting(world,1/60);assert(m.nightStrength(world)<1);m.setWorldTimeOfDay(world,'night');const partial=m.nightStrength(world);m.stepCampLighting(world,0);assert.equal(m.nightStrength(world),partial,'Hidden tabs do not advance the fade');
  m.setWorldTimeOfDay(world,'night',true);
- const lights=m.campLights(world);assert.equal(lights.length,layout.items.filter(p=>p.role==='hearth').length);assert.equal(m.campLights(world),lights,'Static geometry is reused');
- let nearLights,farLights;m.drawCampLighting({drawNightLighting(l){nearLights=l}},world,{x:1000,y:1000,width:800,height:400});m.drawCampLighting({drawNightLighting(l){farLights=l}},world,{x:10000,y:10000,width:800,height:400});assert.equal(nearLights,farLights,'Ordinary camp camera travel never invalidates the cached light field');
- assert(m.placedFireLit(world,fire));world.camp.hearth.fuel=0;assert.equal(m.campLights(world).length,0);assert(!m.placedFireLit(world,fire));world.camp.hearth.fuel=1;assert.equal(m.campLights(world),lights);
+ const lights=m.campLights(world);assert.equal(lights.length,layout.items.filter(p=>p.role==='hearth').length+1,'Camp includes the independent rare chest light');assert.equal(m.campLights(world)[0],lights[0],'Static hearth geometry is reused');
+ const chest=m.campLootChest(world);assert.deepEqual(lights.at(-1),{x:chest.x,y:chest.y-48,radius:210,strength:.95});
+ let nearLights,farLights;m.drawCampLighting({drawNightLighting(l){nearLights=l}},world,{x:1000,y:1000,width:800,height:400});m.drawCampLighting({drawNightLighting(l){farLights=l}},world,{x:10000,y:10000,width:800,height:400});assert.deepEqual(nearLights,farLights,'Ordinary camp camera travel never invalidates the cached light field');
+ assert(m.placedFireLit(world,fire));world.camp.hearth.fuel=0;assert.deepEqual(m.campLights(world),[lights.at(-1)],'Rare chest stays lit when the fire is out');assert(!m.placedFireLit(world,fire));world.camp.hearth.fuel=1;assert.equal(m.campLights(world)[0],lights[0]);
+ world.lootChests={[m.LOOT_CHEST_ID]:{openedAt:world.tick,rewardVersion:2,contents:{repairHammer:1}}};
+ const openedLight=m.campLights(world).at(-1);assert.equal(openedLight.radius,260);assert.equal(openedLight.strength,1);
+ world.tick+=45;assert.deepEqual(m.campLights(world).at(-1),openedLight,'Pulses and reveals never rebuild the cached night mask');
+ world.lootChests[m.LOOT_CHEST_ID].contents={};assert.equal(m.campLights(world).at(-1).strength,.5,'Empty cache settles down');delete world.lootChests;
  assert.equal(m.visibleCampLights(lights,{x:100000,y:100000,width:800,height:400}).length,0);
  const dense=Array.from({length:40},(_,i)=>({x:i,y:0,radius:1000,strength:1}));assert.equal(m.visibleCampLights(dense,{x:0,y:0,width:800,height:400}).length,m.MAX_NIGHT_LIGHTS);
  for(const rotation of [0,37,90,231])for(const flipX of [false,true])for(const flipY of [false,true]){
