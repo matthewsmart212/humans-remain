@@ -13,7 +13,7 @@ export function getBuildingFocus(world:object){return (world as Presentation).fi
 export function setFieldKitTarget(world:object,target?:FieldKitTarget){const p=world as Presentation;p.fieldKitTarget=target;if(target?.revealed&&target.buildingId)p.fieldKitBuildingFocus={id:target.buildingId,tick:p.tick??0}}
 /** A single ground-level brass ring, before scenery and actors. No world text. */
 export function drawFieldKitTarget(ctx:CanvasRenderingContext2D,world:object,scale:number){
- const target=getFieldKitTarget(world);if(!target)return;
+ const target=getFieldKitTarget(world);if(!target||target.id?.startsWith('rare-chest:'))return;
  const s=Math.max(.05,scale),g=target.ground??{x:target.x,y:target.y+5,rx:28,ry:10};
  const rx=Math.max(g.rx,16/s),ry=Math.max(g.ry,5/s);
  ctx.save();ctx.lineJoin='round';ctx.lineCap='round';ctx.beginPath();
