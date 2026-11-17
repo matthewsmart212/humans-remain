@@ -1,4 +1,5 @@
 import {buildingRestored} from './camp-restoration';
+import {lootChestOpened,nearbyLootChest} from './loot-chest';
 import {nearbyHeadquarters,REPAIR_CACHE} from './run-progression';
 import {nearbyFurnace} from './camp-furnace';
 import {nearbySmithy} from './camp-smithy';
@@ -13,4 +14,4 @@ export function nearbyChest(world:World){
  return nearest;
 }
 export const atStorage=(w:World)=>buildingRestored(w,'warehouse')&&!!nearbyWarehouse(w)||!!nearbyChest(w)||campAction(w)==='deposit';
-export const atStation=(w:World)=>w.stationPanel==='headquarters'?!!nearbyHeadquarters(w):w.stationPanel==='smithy'?buildingRestored(w,'workshop')&&!!w.smithyId&&nearbySmithy(w)?.placement.id===w.smithyId:w.stationPanel==='furnace'?buildingRestored(w,'furnace')&&!!w.furnaceId&&nearbyFurnace(w)?.placement.id===w.furnaceId:w.stationPanel==='fire'?campAction(w)==='cook':w.stationPanel==='storage'?atStorage(w):w.stationPanel==='warehouse'?buildingRestored(w,'warehouse')&&!!nearbyWarehouse(w):false;
+export const atStation=(w:World)=>w.stationPanel==='rare-cache'?lootChestOpened(w)&&!!nearbyLootChest(w):w.stationPanel==='headquarters'?!!nearbyHeadquarters(w):w.stationPanel==='smithy'?buildingRestored(w,'workshop')&&!!w.smithyId&&nearbySmithy(w)?.placement.id===w.smithyId:w.stationPanel==='furnace'?buildingRestored(w,'furnace')&&!!w.furnaceId&&nearbyFurnace(w)?.placement.id===w.furnaceId:w.stationPanel==='fire'?campAction(w)==='cook':w.stationPanel==='storage'?atStorage(w):w.stationPanel==='warehouse'?buildingRestored(w,'warehouse')&&!!nearbyWarehouse(w):false;
