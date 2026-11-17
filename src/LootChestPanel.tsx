@@ -3,7 +3,7 @@ import type {World} from './survival-engine';
 import StationMenu from './StationMenu';
 import {packLoad,canCarryCount} from './expedition-inventory';
 import {BAG_IMAGES} from './backpack';
-import {LOOT_CHEST_ATLAS,LOOT_CHEST_REWARDS,lootChestContents,lootChestRemaining,takeLootChestReward,takeAllLootChestRewards,type LootChestRewardKind} from './loot-chest';
+import {LOOT_CHEST_REWARDS,lootChestContents,lootChestRemaining,takeLootChestReward,takeAllLootChestRewards,type LootChestRewardKind} from './loot-chest';
 import './loot-chest-panel.css';
 type Props={world:World;onClose:()=>void;onChange:()=>void};
 export default function LootChestPanel({world,onClose,onChange}:Props){
@@ -19,9 +19,8 @@ export default function LootChestPanel({world,onClose,onChange}:Props){
   setMessage(gained?'Collected '+gained+' supplies. '+(lootChestRemaining(world)?'Anything left stays safely inside.':'The cache is empty.'):'No room in your backpack.');
   onChange();
  };
- return <StationMenu compact world={world} title="Rare cache" label="Open rare cache and its contents" subtitle="THE RECLAMATION · SEALED SUPPLIES" onClose={onClose} weight={load.weight} loadLabel={load.label} message={message} className="rare-cache-menu">
+ return <StationMenu compact world={world} title="Loot chest" label="Open rare cache and its contents" subtitle="THE RECLAMATION · SEALED SUPPLIES" onClose={onClose} weight={load.weight} loadLabel={load.label} message={message} className="rare-cache-menu">
   <div className="rare-cache-hero">
-   <div className="rare-cache-open-art" role="img" aria-label="An opened chest overflowing with turquoise light" style={{backgroundImage:'url('+LOOT_CHEST_ATLAS+')'}}/>
    <div><small>DISCOVERY UNLOCKED</small><strong>{remaining?'A forgotten supply cache':'Cache emptied'}</strong><p>{remaining?'The supplies are still inside. Choose what to take.':'You collected everything in this cache.'}</p></div>
   </div>
   <div className="rare-cache-heading"><span>CONTENTS</span><span>{remaining} remaining</span></div>
