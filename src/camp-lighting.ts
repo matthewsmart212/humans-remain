@@ -1,6 +1,7 @@
 import {buildingRestored} from './camp-restoration';
 import {bomberLights} from './bomber-renderer';
 import {furnaceLights} from './furnace-renderer';
+import {campLootChest,lootChestOpened,lootChestRemaining} from './loot-chest';
 import {torchBeam,type TorchBeam} from './torch';
 import type {World} from './survival-engine';
 import {RUN_DAY_SECONDS,RUN_NIGHT_SECONDS} from './survival-cycle';
@@ -33,7 +34,12 @@ export function nightStrength(world:World){
 export const placedFireLit=(world:World,placement:Placement)=>buildingRestored(world,'fire')&&placement.role==='hearth'&&world.camp.hearth.fuel>0;
 const geometry=new WeakMap<WorldLayout,{sources:{placement:Placement;asset:WorldAsset|undefined}[];lights:CampLight[]}>();
 export function campLights(world:World):CampLight[]{
- const layout=world.layout,forge=furnaceLights(world);if(!layout||!buildingRestored(world,'fire')||world.camp.hearth.fuel<=0)return forge.length?forge:NO_LIGHTS;
+ const layout=world.layout,forge=furnaceLights(world);
+ const chest=campLootChest(world),opened=!!chest&&lootChestOpened(world);
+ // Chest emits an independent small night light, even if the fire is broken.
+ const chestLight:CampLight|undefined=chest?{x:chest.x,y:chest.y-48,radius:opened?225:185,strength:opened?(lootChestRemaining(world)>0?.90:.52):.53}:undefined;
+ const extra=chestLight?[...forge,chestLight]:forge;
+ if(!layout||!buildingRestored(world,'fire')||world.camp.hearth.fuel<=0)return extra.length?extra:NO_LIGHTS;
  let entry=geometry.get(layout);
  if(!entry||entry.sources.some(s=>ASSET_BY_ID.get(s.placement.assetId)!==s.asset)){
   const sources=layout.items.filter(p=>p.role==='hearth').map(placement=>({placement,asset:ASSET_BY_ID.get(placement.assetId)}));
@@ -44,7 +50,7 @@ export function campLights(world:World):CampLight[]{
   });
   entry={sources,lights};geometry.set(layout,entry);
  }
- return forge.length?[...entry.lights,...forge]:entry.lights;
+ return extra.length?[...entry.lights,...extra]:entry.lights;
 }
 /** Cull off-screen lights, then apply a fixed GPU budget to unusually dense maps. */
 export function visibleCampLights(lights:CampLight[],view:LightViewport):CampLight[]{
