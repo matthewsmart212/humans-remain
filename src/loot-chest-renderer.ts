@@ -140,7 +140,9 @@ export function lootChestDrawables(ctx:CanvasRenderingContext2D,imgs:Record<stri
  const p=campLootChest(w);if(!p||!visible(p.x,p.y,viewport))return [];
  const sprite=imgs[LOOT_CHEST_IMAGE_KEY],frame=lootChestFrame(w),fx=lootChestFx(w);
  return [{y:p.y,draw:()=>{
-  ctx.save();const x=p.x,y=p.y;
+  ctx.save();ctx.translate(p.x,p.y);ctx.scale(.8,1);
+  // Narrow the chest and its aligned effects around the same world anchor.
+  const x=0,y=0;
   light(ctx,x,y,fx,false);
   if(sprite)drawChestRig(ctx,sprite,w,x,y);
   else{ctx.fillStyle='#393028';ctx.fillRect(x-83,y-70,166,70)}
