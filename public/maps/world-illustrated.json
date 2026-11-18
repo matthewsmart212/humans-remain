@@ -36,9 +36,9 @@
     },
     "roadTrace": {
       "points": 120,
-      "adjusted": 109,
-      "maxShift": 150,
-      "totalShift": 4500
+      "adjusted": 107,
+      "maxShift": 130,
+      "totalShift": 4610
     },
     "terrainElevation": "None; only bank-distance relief",
     "mutablePlacements": "Not baked; supplied by live current-layout overlay"
@@ -49,7 +49,7 @@
   },
   "terrainColour": {
     "source": "/maps/world-terrain.webp",
-    "sha256": "b88e77aafddc596ee3fc557c7334b0f8d3a08139c7ea37ae474e420bb9731179",
+    "sha256": "62d720950ec773e1d09769b43ff1d743b0d553e310b7ad62368480e6719540d5",
     "registration": "Same source bounds as the geography; no coordinate transform or displacement",
     "grid": 192,
     "blur": 2.6,
@@ -61,7 +61,7 @@
       102,
       138
     ],
-    "waterSamples": 92696,
+    "waterSamples": 92665,
     "samples": [
       {
         "name": "Camp soil",
@@ -139,18 +139,18 @@
         ],
         "terrainRGB": [
           77,
-          63,
-          23
+          62,
+          24
         ],
         "atlasPaperRGB": [
           138,
-          133,
-          90
+          132,
+          91
         ]
       }
     ]
   },
-  "bytes": 456210,
+  "bytes": 456984,
   "checks": {
     "result": "pass",
     "waterSamples": [
