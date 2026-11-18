@@ -50,7 +50,7 @@ export function bonfireFoodDrawables(ctx:CanvasRenderingContext2D,imgs:Record<st
    ctx.save();
    ctx.translate(shape.x,y);ctx.rotate(turn);const fw=Math.min(85,width*.29),fh=fw*.82,raw=imgs[meatKey(job.species)],cooked=imgs[meatKey(job.species,true)];
    if(raw)ctx.drawImage(raw,-fw/2,-fh*.67,fw,fh);if(cooked){ctx.globalAlpha=progress;ctx.drawImage(cooked,-fw/2,-fh*.67,fw,fh)}ctx.restore();
-   if(burning){ctx.save();ctx.strokeStyle='#fff0c3';ctx.lineWidth=2;for(let i=0;i<3;i++){const phase=(t*.7+i*.33)%1,x=shape.x+(i-1)*17,top=y-30-phase*42;ctx.globalAlpha=(1-phase)*.45;ctx.beginPath();for(let j=0;j<=8;j++){const xx=x+Math.sin(j*.6+t*2+i)*4,yy=top+j*2;j?ctx.lineTo(xx,yy):ctx.moveTo(xx,yy)}ctx.stroke()}ctx.restore()}
+   if(burning&&!w.weather?.reducedMotion){ctx.save();ctx.strokeStyle='#fff0c3';ctx.lineWidth=2;for(let i=0;i<3;i++){const phase=(t*.7+i*.33)%1,x=shape.x+(i-1)*17,top=y-30-phase*42;ctx.globalAlpha=(1-phase)*.45;ctx.beginPath();for(let j=0;j<=8;j++){const xx=x+Math.sin(j*.6+t*2+i)*4,yy=top+j*2;j?ctx.lineTo(xx,yy):ctx.moveTo(xx,yy)}ctx.stroke()}ctx.restore()}
   }});
   const logImage=imgs[assetImageKey(TREE_LOG_IMAGE)];
   for(const log of w.fire.logs??[]){const u=clamp((t-log.born)/(log.lands-log.born));out.push({y:shape.y+240,draw:()=>{

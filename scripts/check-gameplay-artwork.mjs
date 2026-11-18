@@ -11,6 +11,8 @@ try{
  const m=createRequire(import.meta.url)(path.join(temp,'model.cjs'));
  const snapshot=JSON.parse(fs.readFileSync('native/assets/world-snapshot.json'));m.installImportedArt(snapshot.records);
  const w=m.createCampPlaySession(m.prepareAuthoredWorld(snapshot.layout),undefined,'survival');w.animals=[];
+ // Exercise carried tool prefetch independently of the player's starting inventory.
+ Object.assign(w.gear.bag,{woodenAxe:1,woodenPickaxe:1});
  const initial=JSON.stringify(w),first=m.gameplayImageSources(w);
  assert.equal(JSON.stringify(w),initial,'Reading artwork needs must not mutate a run');
  for(const key of Object.keys(m.spawnImages('scrap-walker')))assert(key in first,'First wave is prepared before spawning');

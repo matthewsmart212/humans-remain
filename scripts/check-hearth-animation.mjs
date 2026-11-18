@@ -7,7 +7,7 @@ import {build} from 'esbuild';
 
 const temp=fs.mkdtempSync(path.join(os.tmpdir(),'hearth-animation-'));
 try{
- const modules=['world-assets','world-layout','imported-art','hearth-animation-art','camp-restoration','placed-world-renderer','authored-world','studio-play'];
+ const modules=['world-assets','world-layout','imported-art','hearth-animation-art','camp-restoration','placed-world-renderer','authored-world','studio-play','bonfire-food-renderer','editor-image-sources','food-items'];
  const out=path.join(temp,'check.cjs');
  await build({stdin:{contents:modules.map(m=>`export * from './src/${m}';`).join(''),resolveDir:process.cwd()},outfile:out,bundle:true,format:'cjs',platform:'node'});
  const game=createRequire(import.meta.url)(out),snapshot=JSON.parse(fs.readFileSync('native/assets/world-snapshot.json'));
@@ -39,5 +39,26 @@ try{
  for(const key of Object.keys(game.HEARTH_ANIMATION_IMAGES)){const partial={...images};delete partial[key];assert.deepEqual(draw(partial),[asset.image])}
  world.weather={...world.weather,reducedMotion:true};
  for(const tick of [0,31,900]){world.tick=tick;assert.deepEqual(draw(),[asset.image])}
- console.log('PASS: independent 48/36-frame wood fire, ruin, extinguished, reduced motion, streaming fallback and custom artwork.');
+ // Exercise the production Play preparation path. Pinned food cannot arrive later via streaming.
+ const meals=[['chicken','bonfireRaw','bonfireCooked'],['rabbit','rabbitRaw','rabbitCooked'],['venison','venisonRaw','venisonCooked']];
+ const native=fs.readFileSync('native/bundled-art.ts','utf8');
+ for(const role of ['survivor','engineer','hunter']){
+  const textures={};
+  await game.prepareEditorMovement({loadImages:async()=>{},warmImages:async images=>{
+   for(const [key,src] of Object.entries(images))textures[key]={src};
+  }},layout,'foreground',p,role);
+  const drawFood=()=>{calls.length=0;game.bonfireFoodDrawables(ctx,textures,world).forEach(d=>d.draw());return calls.map(([im])=>im.src)};
+  world.tick=0;
+  for(const [species,rawKey,cookedKey] of meals){
+   const raw=textures[rawKey]?.src,cooked=textures[cookedKey]?.src,recipe=game.FOOD_RECIPES[species];
+   assert(raw&&cooked,role+' has both cooking states for '+species);
+   for(const url of [raw,cooked]){assert(fs.existsSync('public'+url));assert(native.includes(JSON.stringify(url)+':require("./../public'+url+'")'))}
+   world.loot=[];world.fire.queue=[{species,remaining:recipe.seconds/2}];delete world.fire.thrown;
+   assert.deepEqual(drawFood(),[raw,cooked],'Roasting combines both registered sprites');
+   world.fire.queue=[];world.fire.thrown={species,from:p,born:0};assert.deepEqual(drawFood(),[raw],'Raw food thrown onto the spit');
+   delete world.fire.thrown;world.loot=[{kind:recipe.cooked,x:p.x,y:p.y},{kind:recipe.raw,x:p.x,y:p.y}];
+   assert.deepEqual(drawFood(),[cooked,raw],'Loose raw and cooked meals render on the ground');
+  }
+ }
+ console.log('PASS: layered hearth, cold and ruined states, reduced motion, partial loading and custom artwork; all three meats render on the spit, in flight and on the ground for each role.');
 }finally{fs.rmSync(temp,{recursive:true,force:true})}
