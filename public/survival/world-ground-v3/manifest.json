@@ -33,6 +33,6 @@
   ],
   "assembly": "Upright material repeats at native pixel scale with pre-feathered edges, unique positional offsets, 200px terrain overlaps and a continuous world-space colour field.",
   "green": "Olive material removed from active sources; green colour pass removed",
-  "camp": "Regraded camp paving and short gate approaches are packaged with the registered camp painting.",
+  "camp": "Camp is baked from the same upright wild ground at the registered world scale, with retained stone paths and a matched bonfire ground texture.",
   "prompts": "artwork-archive/world-ground-v3/prompts.json"
 }

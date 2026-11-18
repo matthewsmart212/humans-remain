@@ -6,6 +6,14 @@ const require=createRequire(import.meta.url),sharp=require('sharp'),tmp=fs.mkdte
 const tick=async()=>{for(let i=0;i<20;i++)await Promise.resolve()};
 await build({stdin:{contents:"export * from './src/world-assets';export * from './src/road-art-stream';export * from './src/terrain-stream-art';export * from './src/east-approach';export * from './src/river-art';export * from './src/terrain-renderer';export * from './src/skia-web';export * from './src/skia-adapter';export * from './src/artwork-loading';export * from './src/survival-engine';export * from './src/world-layout';export * from './src/layout-views';",resolveDir:process.cwd()},bundle:true,platform:'node',format:'cjs',outfile:path.join(tmp,'model.cjs')});
 const m=require(path.join(tmp,'model.cjs')),s=m.EAST_TERRAIN_SCALE;
+const firstCampChunk=m.CAMP_CHUNKS[0];
+const campLevels=m.streamPatches('camp').filter(p=>firstCampChunk.levels.some(l=>l.key===p.key));
+for(const [density,divisor] of [[.249,4],[.25,2],[.499,2],[.5,1],[1,1]]){
+ const pixelsPerWorldUnit=density/s;
+ const eligible=campLevels.filter(p=>pixelsPerWorldUnit>=p.minPixelsPerWorldUnit&&pixelsPerWorldUnit<p.maxPixelsPerWorldUnit);
+ assert.deepEqual(eligible.map(p=>firstCampChunk.levels.find(l=>l.key===p.key).divisor),divisor===4?[]:[divisor]);
+ assert.equal(m.campTerrainDivisor(pixelsPerWorldUnit),divisor);
+}
 const configs=[{name:'camp',patches:m.streamPatches('camp'),sources:m.CAMP_CHUNK_IMAGES,maxBytes:24*1048576},{name:'rivers',patches:m.RIVER_SECTIONS.map(p=>({...p,bytes:m.RIVER_TEXTURE_SIZES.get(p.key).bytes,minPixelsPerWorldUnit:m.RIVER_TEXTURE_SIZES.get(p.key).previewDensity/s*1.15})),sources:m.RIVER_DETAIL_IMAGES,maxBytes:20*1048576}];
 const coverage=[];
 for(const config of configs){

@@ -4,7 +4,7 @@ import {assetImageKey} from './world-assets';
 import {OUTDOOR_TILES,terrainIntersects,terrainPaintRegion,type TerrainView} from './outdoor-terrain';
 import {EAST_TERRAIN_SCALE} from './east-approach';
 import {drawRiverTerrain} from './river-art';
-import {CAMP_CHUNKS} from './terrain-stream-art';
+import {CAMP_CHUNKS,campTerrainDivisor} from './terrain-stream-art';
 
 export function clearTerrainViewport(ctx:CanvasRenderingContext2D){
  // This opaque fill already replaces the previous frame.
@@ -46,12 +46,18 @@ export function drawHomeTerrain(ctx:CanvasRenderingContext2D,imgs:Record<string,
  const stream=ctx as CanvasRenderingContext2D&{requestCampArtwork?:(v:TerrainView)=>void;drawTerrainTile?:(image:HTMLImageElement,tile:any)=>void};
  if(painted&&stream.requestCampArtwork&&view){
   stream.requestCampArtwork(view);
-  const maskBounds=terrainWorldRect(120,120,4560,4560,MAP_WIDTH,MAP_HEIGHT),fade=220*EAST_TERRAIN_SCALE;
-  for(const t of CAMP_CHUNKS){
-   const core=terrainWorldRect(t.x,t.y,t.width,t.height,MAP_WIDTH,MAP_HEIGHT);if(!terrainIntersects(core,view))continue;
-   const detail=t.levels.map(l=>imgs[l.key]).find(Boolean),image=detail||imgs.homeGround;if(!image)continue;
-   const sample=detail?t.sample:{x:0,y:0,width:4800,height:4800},r=terrainWorldRect(sample.x,sample.y,sample.width,sample.height,MAP_WIDTH,MAP_HEIGHT);
-   stream.drawTerrainTile?.(image,{...r,maskBounds,paintLeft:core.x-r.x,paintTop:core.y-r.y,paintWidth:core.width,paintHeight:core.height,fadeTop:fade,fadeBottom:fade,fadeLeft:fade,fadeRight:fade});
+  const divisor=campTerrainDivisor(ctx.canvas.width/view.width);
+  if(divisor===4&&imgs.homeGround)draw(imgs.homeGround,0,0,HOME_TERRAIN.fullSize,HOME_TERRAIN.fullSize);
+  else{
+   const maskBounds=terrainWorldRect(120,120,4560,4560,MAP_WIDTH,MAP_HEIGHT),fade=220*EAST_TERRAIN_SCALE;
+   for(const t of CAMP_CHUNKS){
+    const core=terrainWorldRect(t.x,t.y,t.width,t.height,MAP_WIDTH,MAP_HEIGHT);if(!terrainIntersects(core,view))continue;
+    const preferred=t.levels.find(l=>l.divisor===divisor);
+    const detail=(preferred?imgs[preferred.key]:undefined)||t.levels.map(l=>imgs[l.key]).find(Boolean);
+    const image=detail||imgs.homeGround;if(!image)continue;
+    const sample=detail?t.sample:{x:0,y:0,width:HOME_TERRAIN.fullSize,height:HOME_TERRAIN.fullSize},r=terrainWorldRect(sample.x,sample.y,sample.width,sample.height,MAP_WIDTH,MAP_HEIGHT);
+    stream.drawTerrainTile?.(image,{...r,maskBounds,paintLeft:core.x-r.x,paintTop:core.y-r.y,paintWidth:core.width,paintHeight:core.height,fadeTop:fade,fadeBottom:fade,fadeLeft:fade,fadeRight:fade});
+   }
   }
  }else{
  if(!HOME_TERRAIN_TILES.every(t=>imgs[t.key])&&imgs.homeGround){
