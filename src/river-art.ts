@@ -1,3 +1,4 @@
+import {EARTH_SHOULDER_SKSL} from './world-ground-colour';
 import sections from './river-sections.json';
 import loggingSections from './river-logging-sections.json';
 import extensionSections from './river-extension-sections.json';
@@ -19,6 +20,7 @@ export const RIVER_MOTION_IMAGES={riverSurfaceRipples:RIVER_SURFACE_FLOW.image,.
 // Each batch is cropped from one continuous painting. A common source origin and
 // clock preserve the approved animation across both tile and batch joins.
 export const RIVER_SHADER=`
+${EARTH_SHOULDER_SKSL}
 uniform shader artwork;
 uniform shader sideFootprint;
 uniform shader surfaceRipples;
@@ -59,7 +61,7 @@ half4 main(float2 p){
   float highlight=sqrt(max(float(light.a),0.));
   surfaceColour+=half3(.34,.66,.72)*(highlight*water*.32);
  }
- return half4(clamp(surfaceColour,half3(0.),half3(1.)),base.a)*(outer*join);
+ return blendEarthShoulder(half4(clamp(surfaceColour,half3(0.),half3(1.)),base.a))*(outer*join);
 }`;
 
 type RiverContext=CanvasRenderingContext2D&{

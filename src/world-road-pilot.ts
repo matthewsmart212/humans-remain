@@ -1,3 +1,4 @@
+import {EARTH_SHOULDER_SKSL} from './world-ground-colour';
 import {EAST_TERRAIN_SCALE} from './east-approach';
 import {terrainIntersects,type TerrainView} from './outdoor-terrain';
 import campPatches from './camp-road-patches.json';
@@ -12,6 +13,7 @@ export const ROAD_TERRAIN_PATCHES=[...completePatches,...districtPatches,{...ROA
 export const ROAD_PILOT_IMAGES:Record<string,string>={roadTerrainPilotSE:'/survival/road-pilot-v1/southeast.webp',...Object.fromEntries(campPatches.map(p=>[p.key,`/survival/camp-road-patches-v1/${p.id}.webp`])),...Object.fromEntries(districtPatches.map(p=>[p.key,`/survival/district-road-patches-v1/${p.id}.webp`])),...Object.fromEntries(completePatches.map(p=>[p.key,`/survival/complete-roads-v1/${p.id}.webp`]))};
 export const ROAD_OVERVIEW_IMAGES:Record<string,string>=Object.fromEntries(ROAD_TERRAIN_PATCHES.map(p=>[p.key+'Preview',`/survival/road-overviews-v1/${p.key}.webp`]));
 export const ROAD_PILOT_SHADER=`
+${EARTH_SHOULDER_SKSL}
 uniform shader artwork;
 uniform float4 bounds;
 uniform float scale;
@@ -24,7 +26,7 @@ half4 main(float2 p){
  // Preserve every original opaque camp pixel. Only its outer scenery changes.
  float outside=max(max(source.x,source.y)-4450.,350.-min(source.x,source.y));
  float camp=smoothstep(0.,40.,outside);
- return artwork.eval(p)*(outer*camp);
+ return blendEarthShoulder(artwork.eval(p))*(outer*camp);
 }`;
 
 export function drawRoadPilot(ctx:CanvasRenderingContext2D,imgs:Record<string,HTMLImageElement>,view?:TerrainView){

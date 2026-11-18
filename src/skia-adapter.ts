@@ -9,7 +9,6 @@ import type {WeatherState} from './weather-model';
 import {createNightLighting} from './night-lighting-skia';
 import type {CampLight,LightViewport} from './lighting-model';
 import {terrainColourPixels,TERRAIN_COLOUR_FIELD_SIZE} from './terrain-colour-field';
-import {campTerrainFinishPixels,CAMP_FINISH_SIZE,CAMP_FINISH_BOUNDS,CAMP_TERRAIN_FINISH_SHADER} from './camp-terrain-finish';
 import {WORLD_GROUND_BOUNDS} from './world-ground';
 import {WORLD_GROUND_COLOUR_SHADER} from './world-ground-colour';
 import {WORLD_ROAD_SECTION_SHADER,ROAD_SECTION_GRADES} from './world-road-materials';
@@ -30,16 +29,6 @@ export function createSkiaAdapter(Skia:Pick<typeof SkiaApi,'Paint'|'Shader'|'Col
 const lighting=open('Night lighting',()=>createNightLighting(Skia)),weather=open('Weather',()=>createWeatherRenderer(Skia)),silhouettes=open('Silhouettes',()=>createArtworkSilhouettes(Skia,diagnostics)),lightning=open('Lightning',()=>createGroundLightningRenderer(Skia));
 const chestLight=createLootChestLight(Skia);
 const groundColour=(()=>{const effect=Skia.RuntimeEffect.Make(WORLD_GROUND_COLOUR_SHADER);if(!effect)throw Error('The terrain colour shader could not compile.');return effect})();
-// A single small road-protected painted wash is shared by all camp terrain
-// chunks. The iPhone draws no additional sprites or geometry each frame.
-const campFinishEffect=(()=>{const effect=Skia.RuntimeEffect.Make(CAMP_TERRAIN_FINISH_SHADER);if(!effect)throw Error('The camp terrain finish shader could not compile.');return effect})();
-const campFinishData=Skia.Data.fromBytes(campTerrainFinishPixels());
-const campFinishImage=Skia.Image.MakeImage({width:CAMP_FINISH_SIZE,height:CAMP_FINISH_SIZE,colorType:ColorType.RGBA_8888,alphaType:AlphaType.Premul},campFinishData,CAMP_FINISH_SIZE*4);
-campFinishData.dispose();
-if(!campFinishImage)throw Error('The camp ground finish could not open.');
-const campFinishMatrix=Skia.Matrix().translate(CAMP_FINISH_BOUNDS.x,CAMP_FINISH_BOUNDS.y).scale(CAMP_FINISH_BOUNDS.width/CAMP_FINISH_SIZE,CAMP_FINISH_BOUNDS.height/CAMP_FINISH_SIZE);
-const campFinishSampler=campFinishImage.makeShaderOptions(TileMode.Clamp,TileMode.Clamp,FilterMode.Linear,MipmapMode.None,campFinishMatrix);
-campFinishMatrix.dispose();
 const roadSection=(()=>{const effect=Skia.RuntimeEffect.Make(WORLD_ROAD_SECTION_SHADER);if(!effect)throw Error('The road section shader could not compile.');return effect})();
 const roadPilot=(()=>{const effect=Skia.RuntimeEffect.Make(ROAD_PILOT_SHADER);if(!effect)throw Error('The road pilot shader could not compile.');return effect})();
 const riverEffect=(()=>{const effect=Skia.RuntimeEffect.Make(RIVER_SHADER);if(!effect)throw Error('The river shader could not compile.');return effect})();
@@ -258,9 +247,6 @@ class SkiaContext{
    const clearShader=keep(clear.makeShaderOptions(TileMode.Clamp,TileMode.Clamp,FilterMode.Linear,MipmapMode.None,matrix));
    shader=keep(groundColour.makeShaderWithChildren([s],[shader,clearShader,colourSampler(s)]));
   }
-  // Only the existing painted home terrain uses this finish. The untouched
-  // road overlays, rivers, custom terrain and exterior material tiles do not.
-  if(t.maskBounds)shader=keep(campFinishEffect.makeShaderWithChildren([],[shader,campFinishSampler]));
   const fade=(x:number,y:number,ex:number,ey:number)=>{
    const mask=keep(Skia.Shader.MakeLinearGradient({x,y},{x:ex,y:ey},[new Float32Array([1,1,1,0]),new Float32Array([1,1,1,1])],[0,1],TileMode.Clamp));
    shader=keep(Skia.Shader.MakeBlend(BlendMode.DstIn,shader,mask));
@@ -318,5 +304,5 @@ class SkiaContext{
   if(sw>1000&&sh>1000&&dw>sw*1.4)this.c.drawImageRectCubic(im,src,dst,1/3,1/3,p);else this.c.drawImageRectOptions(im,src,dst,FilterMode.Linear,MipmapMode.None,p);if(layer)im.dispose()}
 }
 
-return {SkiaContext,NativeLayer,releaseImage,shaderFieldBytes:()=>fieldSize*fieldSize*4+CAMP_FINISH_SIZE*CAMP_FINISH_SIZE*4+[...flowFields.values()].reduce((sum,f)=>sum+f.bytes,0),warmLighting:lighting.warm,disposeLighting:()=>{waterfallPaint?.dispose();waterfallPaint=undefined;for(const key of waterfallSamplerCache.keys())dropWaterfallSampler(key);for(const key of riverSamplerCache.keys())dropRiverSampler(key);for(const key of terrainCache.keys())drop(key);for(const entry of flowFields.values())for(const resource of [...entry.resources].reverse())resource.dispose();flowFields.clear();waterfallEffect.dispose();waterfallSectionEffect.dispose();lighting.dispose();weather.dispose();lightning.dispose();chestLight.dispose();for(const shader of colourSamplers.values())shader.dispose();colourSamplers.clear();colourImage.dispose();groundColour.dispose();campFinishSampler.dispose();campFinishImage.dispose();campFinishEffect.dispose();roadSection.dispose();roadPilot.dispose();riverEffect.dispose();for(const meshes of roadMeshes.values())for(const mesh of meshes)mesh?.dispose();roadMeshes.clear();for(const {paint,dash}of solidPaints.values()){paint.dispose();dash?.dispose()}solidPaints.clear();for(const paint of spritePaints.splice(0))paint?.dispose();for(const resource of spriteResources.splice(0))resource.dispose();clearPaint?.dispose();clearPaint=undefined}};
+return {SkiaContext,NativeLayer,releaseImage,shaderFieldBytes:()=>fieldSize*fieldSize*4+[...flowFields.values()].reduce((sum,f)=>sum+f.bytes,0),warmLighting:lighting.warm,disposeLighting:()=>{waterfallPaint?.dispose();waterfallPaint=undefined;for(const key of waterfallSamplerCache.keys())dropWaterfallSampler(key);for(const key of riverSamplerCache.keys())dropRiverSampler(key);for(const key of terrainCache.keys())drop(key);for(const entry of flowFields.values())for(const resource of [...entry.resources].reverse())resource.dispose();flowFields.clear();waterfallEffect.dispose();waterfallSectionEffect.dispose();lighting.dispose();weather.dispose();lightning.dispose();chestLight.dispose();for(const shader of colourSamplers.values())shader.dispose();colourSamplers.clear();colourImage.dispose();groundColour.dispose();roadSection.dispose();roadPilot.dispose();riverEffect.dispose();for(const meshes of roadMeshes.values())for(const mesh of meshes)mesh?.dispose();roadMeshes.clear();for(const {paint,dash}of solidPaints.values()){paint.dispose();dash?.dispose()}solidPaints.clear();for(const paint of spritePaints.splice(0))paint?.dispose();for(const resource of spriteResources.splice(0))resource.dispose();clearPaint?.dispose();clearPaint=undefined}};
 }

@@ -196,3 +196,10 @@ public/survival/expedition-menu-v2/loading-panel.webp -filter -diff -merge
 /public/survival/loot-chest-v1/*.webp -filter -diff -merge -text
 # Compact chest footing is bundled directly by both web and Expo.
 /public/survival/loot-chest-v4/ground-contact.webp -filter -diff -merge -text
+
+# The painted terrain is shipped as directly readable WebPs for web and Expo.
+/public/survival/terrain-stream-v2/homeGround_*.webp -filter -diff -merge -text
+/public/survival/camp-ground-v3/*.webp -filter -diff -merge -text
+/public/survival/world-ground-v2/warm.webp -filter -diff -merge -text
+/public/survival/world-ground-v2/brown.webp -filter -diff -merge -text
+/public/survival/world-ground-v3/clear-earth.webp -filter -diff -merge -text
