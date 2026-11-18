@@ -16,8 +16,8 @@ try{
   'react-native':'export const PixelRatio={get:()=>2};',
   'expo-asset':'const asset=uri=>({uri,localUri:uri,downloadAsync:async()=>{}});export const Asset={fromModule:asset,fromURI:asset};',
  };
- const modules=['world-assets','world-layout','headquarters-south-art','camp-worksites-art','camp-worksites-placement','authored-world','warehouse','camp-furnace','ironworks-data','run-save','run-progression','studio-play','editor-image-sources','layout-views','placed-world-renderer','outdoor-streaming','headquarters-cutaway'];
- await build({stdin:{contents:modules.map(id=>`export * from './src/${id}';`).join('')+"export * from './native/game-world';export * from './native/game-renderer';export * from './native/bundled-art';export {JsiSkApi} from '@shopify/react-native-skia/lib/module/skia/web/JsiSkia';",resolveDir:process.cwd()},bundle:true,platform:'node',format:'cjs',outfile:path.join(temp,'model.cjs'),logLevel:'error',plugins:[{name:'hq-native-platform',setup(b){
+ const modules=['world-assets','world-layout','headquarters-south-art','camp-worksites-art','camp-worksites-placement','authored-world','warehouse','camp-furnace','ironworks-data','furnace-animation-art','camp-restoration','run-save','run-progression','studio-play','editor-image-sources','layout-views','placed-world-renderer','outdoor-streaming','headquarters-cutaway'];
+ await build({stdin:{contents:modules.map(id=>`export * from './src/${id}';`).join('')+"export * from './native/game-world';export * from './native/game-renderer';export * from './native/bundled-art';export * from './native/camp-restoration-art';export * from './native/furnace-animation-art';export {JsiSkApi} from '@shopify/react-native-skia/lib/module/skia/web/JsiSkia';",resolveDir:process.cwd()},bundle:true,platform:'node',format:'cjs',outfile:path.join(temp,'model.cjs'),logLevel:'error',plugins:[{name:'hq-native-platform',setup(b){
   b.onResolve({filter:/^(@shopify\/react-native-skia|react-native|expo-asset)$/},a=>({path:a.path,namespace:'hq-native'}));
   b.onLoad({filter:/.*/,namespace:'hq-native'},a=>({contents:aliases[a.path],loader:'js'}));
   b.onLoad({filter:/\.(webp|png|jpg|ttf)$/},a=>({contents:`module.exports=${JSON.stringify(a.path)};`,loader:'js'}));
@@ -72,7 +72,10 @@ try{
    try{surface.getCanvas().drawPicture(picture);surface.flush();image=surface.makeImageSnapshot();const bytes=image.encodeToBytes();assert(bytes.length>25000);const file=`${v.name}-${state}.png`;fs.writeFileSync(path.join(output,file),bytes);pictures.push(file)}finally{image?.dispose();surface.dispose();picture.dispose()}
   }
  }
- for(const url of [m.IRONWORKS_IMAGES.campFurnace,...Object.values(m.WAREHOUSE_ARTWORK),m.WORKSITE_ROOT+'/furnace-broken.webp',m.WORKSITE_ROOT+'/warehouse-broken.webp'])assert(decoded.has(m.BUNDLED_ART[url]),'Native loader decoded '+url);
+ for(const url of [m.FURNACE_COLD_IMAGE,m.FURNACE_BROKEN_IMAGE,...Object.values(m.WAREHOUSE_ARTWORK),m.BROKEN_CAMP_ART.warehouse]){
+  const module=m.FURNACE_NATIVE_ART[url]??m.CAMP_RESTORATION_ART[url]??m.BUNDLED_ART[url];
+  assert(decoded.has(module),'Native loader decoded '+url);
+ }
  const report={passed:true,snapshotRevision:saved.revision,placements:layout.items.length,productionNativeRenderer:true,offline:true,pictures,physicalIPhoneTested:false};
  fs.writeFileSync(output+'/native-verification.json',JSON.stringify(report,null,2)+'\n');console.log(JSON.stringify(report));
 

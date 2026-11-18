@@ -9,7 +9,7 @@ import {GEAR,gear,type GearKind} from './player-gear';
 import {recipeUnlocked,headquartersBench,headquartersDock,RESTORE_FURNACE_COST,FORTIFY_COST} from './run-progression';
 import {blueprintFound,blueprintLearned,type HQBlueprintId} from './headquarters-plans';
 import {furnaceDock} from './camp-furnace';
-import {smithyDock,SMITHY_IMAGE} from './camp-smithy';
+import {smithyDock} from './camp-smithy';
 import {warehouseDock,WAREHOUSE_ID,WAREHOUSE_ART} from './warehouse';
 import {campAccessLevel} from './camp-levels';
 
@@ -43,9 +43,8 @@ export const buildingFor=(id:HQBuildingId)=>HQ_BUILDINGS.find(b=>b.id===id)!;
 export function buildingPlacement(w:World,b:HQBuilding){return w.layout?.items.find(p=>b.id==='garden'?GARDEN_IDS.has(p.assetId):p.assetId===b.assetId)}
 export function gardenTier(w:World){return GARDEN_ART.find(a=>a.id===buildingPlacement(w,buildingFor('garden'))?.assetId)?.tier??0}
 export function buildingArt(w:World,b:HQBuilding):HQArt{
- const replacement=campBuildingArt(w,buildingPlacement(w,b)?.assetId??b.assetId);if(replacement)return {image:replacement.roof??replacement.image};
+ const replacement=campBuildingArt(w,buildingPlacement(w,b)?.assetId??b.assetId);if(replacement)return {image:replacement.image,overlay:replacement.roof};
  if(b.id==='garden')return gardenArt(gardenTier(w));
- if(b.id==='workshop')return{image:SMITHY_IMAGE};
  if(b.id==='warehouse')return{image:WAREHOUSE_ART.empty};
  const p=buildingPlacement(w,b),a=ASSET_BY_ID.get(p?.assetId??b.assetId);
  return{image:a?.image??HQ_BENCH_ART,overlay:b.id==='headquarters'?a?.roof:undefined};

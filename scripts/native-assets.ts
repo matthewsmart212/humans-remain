@@ -29,10 +29,11 @@ const layout=prepareAuthoredWorld(checked.layout);
 // A continued/custom camp can defer the circular migration. Keep its original
 // timber walls, the existing tier variants and their ground beds offline too.
 const savedWallIds=WORLD_ASSETS.filter(a=>wallIdentity(a.id)).map(a=>a.id);
+const savedPuddleIds=WORLD_ASSETS.filter(a=>a.puddle).map(a=>a.id);
 const sources={...LOOT_CHEST_IMAGES,...Object.fromEntries(SPAWNABLES.map(v=>['spawn-thumb-'+v.id,v.image])),...EDITOR_IMAGE_SOURCES,...editorTerrainDetail(layout.terrainImage),
  ...Object.fromEntries(OUTDOOR_TILES.map(t=>[t.key,t.image])),...CAMP_CHUNK_IMAGES,...RIVER_DETAIL_IMAGES,
  ...Object.assign({},...[...SCENES.values()].map(sceneImages)),
- ...WALKER_IMAGE_SOURCES,...BOMBER_IMAGE_SOURCES,...requiredImages([...layout.items.map(p=>p.assetId),...GARDEN_ART.map(a=>a.id),...savedWallIds,...circularWallArt.map(a=>a.id)],layout.terrainImage),
+ ...WALKER_IMAGE_SOURCES,...BOMBER_IMAGE_SOURCES,...requiredImages([...layout.items.map(p=>p.assetId),...GARDEN_ART.map(a=>a.id),...savedWallIds,...savedPuddleIds,...circularWallArt.map(a=>a.id)],layout.terrainImage),
  ...Object.assign({},...[...SCENES.values()].map(s=>requiredImages(s.layout?.items.map(p=>p.assetId)||[])))};
 const redirects=Object.assign({},...['lossless-artwork','retired-road','calm-river','river-features','river-quality'].map(n=>JSON.parse(fs.readFileSync(`server/${n}-redirects.json`,'utf8'))));
 const canonical=(url:string)=>{const seen=new Set();while(redirects[url]){if(seen.has(url))throw Error('Redirect cycle');seen.add(url);url=redirects[url]}return url};

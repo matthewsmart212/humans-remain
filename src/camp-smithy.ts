@@ -1,3 +1,4 @@
+import {WORKSHOP_IDLE_FRAMES} from './workshop-animation-art';
 import {buildingRestored} from './camp-restoration';
 import {recipeUnlocked} from './run-progression';
 import {campAccessLevel} from './camp-levels';
@@ -9,7 +10,7 @@ import {ITEM_RULES,itemCount,packWeight,PACK_CAPACITY} from './expedition-invent
 import {materialEntries,canPayMaterials,payMaterials} from './camp-materials';
 
 export const SMITHY_ID='base_workshop_t1';
-export const SMITHY_IMAGE='/survival/camp-workshop-v1/camp-workshop.webp';
+export const SMITHY_IMAGE=WORKSHOP_IDLE_FRAMES[0];
 const cache=new WeakMap<WorldLayout,Placement[]>();
 export function smithies(layout?:WorldLayout){if(!layout)return[];let list=cache.get(layout);if(!list){list=layout.items.filter(p=>p.assetId===SMITHY_ID);cache.set(layout,list)}return list}
 /** The clear ground just in front of the open-front workbench, including editor transforms. */

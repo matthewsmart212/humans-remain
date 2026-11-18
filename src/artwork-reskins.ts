@@ -16,13 +16,12 @@ const replacements=[...manifest,...campManifest] as {entryId:string;sourceId:str
 export function resolveArtworkReskin(record:ArtworkRecord):ArtworkRecord{
  record=resolveTreatmentArtwork(resolveWorkshopArtwork(resolveSouthHeadquarters(resolveAnimationDefaults(record))));
  const worksite=resolveWorksiteWarehouse(record);if(worksite!==record)return worksite;
- // Registered ground-edge refreshes retain the original architectural pixels.
- // Animated bunker frames are an all-or-nothing match so a later owner upload
- // never becomes mixed with this particular three-frame doorway sequence.
+ // Match all states together so a new owner upload never mixes old and new frames.
  const structure=structureManifest.find(r=>r.entryId===record.id&&r.sourceId===record.config.base.id);
- if(structure&&record.config.kind==='sprite'&&!record.config.roof&&!record.config.unlit&&structure.frames.length===record.config.frames.length&&structure.frames.every((f,i)=>f.sourceId===record.config.frames[i].id)){
-  const file=(source:ArtworkRecord['config']['base'],art:typeof structure)=>({...source,url:art.url,name:art.name,mime:'image/webp',width:art.width,height:art.height,bytes:art.bytes});
-  return {...record,config:{...record.config,base:file(record.config.base,structure),frames:record.config.frames.map((source,i)=>file(source,{...structure,...structure.frames[i]}))}};
+ const c=record.config;
+ if(structure&&c.kind==='sprite'&&!c.roof&&structure.unlit?.sourceId===c.unlit?.id&&structure.frames.length===c.frames.length&&structure.frames.every((f,i)=>f.sourceId===c.frames[i].id)){
+  const file=(source:typeof c.base,art:Pick<typeof c.base,'url'|'name'|'width'|'height'|'bytes'>)=>({...source,url:art.url,name:art.name,mime:'image/webp',width:art.width,height:art.height,bytes:art.bytes});
+  return {...record,config:{...c,base:file(c.base,structure),frames:c.frames.map((source,i)=>file(source,structure.frames[i])),...(c.unlit&&structure.unlit?{unlit:file(c.unlit,structure.unlit)}:{})}};
  }
  const replacement=replacements.find(r=>r.entryId===record.id&&r.sourceId===record.config.base.id);
  if(!replacement||record.config.kind!=='sprite'||record.config.frames.length||record.config.roof||record.config.unlit)return record;

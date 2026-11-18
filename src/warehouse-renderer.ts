@@ -3,13 +3,12 @@ import {ASSET_BY_ID} from './world-assets';
 import {placementBounds,type Placement} from './world-layout';
 import {WAREHOUSE_ID,WAREHOUSE_ART,warehouseLevel,type WarehouseMaterial} from './warehouse';
 import {storedCount} from './expedition-inventory';
-// Clip only inside the three openings. Roof, beams and foundations never jump.
-// Normalized to the matching new warehouse paintings. Clip only the stored
-// goods: roof, walls, banner and lantern remain pixel-stable across stages.
+// The three stock regions are disjoint on the registered 1,254 px master.
+// The painted cart lip and timber bin already occlude the goods in each sprite.
 export const WAREHOUSE_MASKS={
- pallets:[[.225,.488],[.562,.488],[.585,.787],[.224,.790]],
- stone:[[.491,.696],[.817,.672],[.958,.806],[.958,.961],[.469,.961]],
- scrap:[[.625,.466],[.917,.466],[.937,.790],[.636,.814]],
+ pallets:[[.228,.536],[.498,.536],[.498,.736],[.228,.736]],
+ stone:[[.545,.669],[.731,.669],[.731,.792],[.545,.792]],
+ scrap:[[.647,.493],[.896,.493],[.896,.657],[.647,.657]],
 } as const;
 export function warehouseStockMask(kind:WarehouseMaterial){return WAREHOUSE_MASKS[kind]}
 export function drawWarehouse(ctx:CanvasRenderingContext2D,imgs:Record<string,HTMLImageElement>,w:World,p:Placement){

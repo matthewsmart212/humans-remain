@@ -432,6 +432,7 @@
   {
     "name": "bonfire",
     "sources": [
+      "/survival/camp-hearth-v4/flame-0.webp",
       "/api/asset-files/0e6f4385-99d4-4bd1-990e-1f3cb3fa87ea",
       "/api/asset-files/0e6f4385-99d4-4bd1-990e-1f3cb3fa87ea",
       "/api/asset-files/33c670e0-ef26-487e-b46f-230d28a66446",

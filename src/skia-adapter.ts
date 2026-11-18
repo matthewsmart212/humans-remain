@@ -22,7 +22,7 @@ import {riverFlowPixels} from './river-flow-field';
 import {WATERFALL_SHADER,WATERFALL_SECTION_SHADER} from './waterfall-pilot';
 import type {WaterfallSampling} from './waterfalls';
 /** Canvas2D subset used by our existing renderer, backed by native Skia. */
-import {PaintStyle,BlendMode,TileMode,FilterMode,MipmapMode,VertexMode,ClipOp,AlphaType,ColorType} from '@shopify/react-native-skia/lib/module/skia/types';
+import {PaintStyle,BlendMode,TileMode,FilterMode,MipmapMode,VertexMode,ClipOp,AlphaType,ColorType,StrokeCap,StrokeJoin} from '@shopify/react-native-skia/lib/module/skia/types';
 import type {SkCanvas,SkImage,SkShader,SkSurface,SkFont,SkPaint,Skia as SkiaApi} from '@shopify/react-native-skia';
 import type {GamePerformanceRecorder} from './performance-recording';
 const open=<T,>(name:string,run:()=>T):T=>{try{return run()}catch(e){const error=e instanceof Error?e:Error(String(e));error.message=`${name}: ${error.message}`;throw error}};
@@ -106,13 +106,14 @@ const releaseImage=(image:SkImage)=>{for(const [key,item]of terrainCache)if(item
 // serve every matching draw. Allocating one per fill, stroke or sprite made
 // thousands of short-lived native objects a second for the JS collector.
 const solidPaints=new Map<string,{paint:SkPaint;colourAlpha:number;dash?:Resource}>();
-const solidPaint=(color:string,alpha:number,stroke:boolean,width:number,erase:boolean,dash:readonly number[])=>{
- const dashed=stroke&&dash.length>0,key=(stroke?'s'+width:'f')+(erase?'x':'')+(dashed?'d'+dash.join(','):'')+'|'+color;
+const solidPaint=(color:string,alpha:number,stroke:boolean,width:number,erase:boolean,dash:readonly number[],rounded=false)=>{
+ const dashed=stroke&&dash.length>0,key=(stroke?'s'+width:'f')+(rounded?'r':'')+(erase?'x':'')+(dashed?'d'+dash.join(','):'')+'|'+color;
  // Opacity varies continuously for fades and effects. Skia snapshots a paint
  // into each draw command, so reuse its style and update only effective alpha.
  // Keep the colour's own alpha separately; never multiply an already faded one.
  let entry=solidPaints.get(key);if(entry){solidPaints.delete(key);solidPaints.set(key,entry);entry.paint.setAlphaf(entry.colourAlpha*alpha);return entry.paint}
  const paint=Skia.Paint();paint.setAntiAlias(true);paint.setColor(Skia.Color(color));const colourAlpha=paint.getAlphaf();paint.setAlphaf(colourAlpha*alpha);paint.setStyle(stroke?PaintStyle.Stroke:PaintStyle.Fill);paint.setStrokeWidth(width);paint.setBlendMode(erase?BlendMode.DstOut:BlendMode.SrcOver);
+ if(rounded){paint.setStrokeCap(StrokeCap.Round);paint.setStrokeJoin(StrokeJoin.Round)}
  const effect=dashed?Skia.PathEffect.MakeDash([...dash],0)!:undefined;if(effect)paint.setPathEffect(effect);
  solidPaints.set(key,entry={paint,colourAlpha,dash:effect});
  if(solidPaints.size>512){const [oldest,old]=solidPaints.entries().next().value!;solidPaints.delete(oldest);old.paint.dispose();old.dash?.dispose()}
@@ -163,7 +164,7 @@ class SkiaContext{
  private drawing?:ReturnType<typeof createDrawingPath>;private dash:number[]=[];private states:any[]=[];
  private get path(){return this.drawing??=createDrawingPath(Skia)}
  constructor(private c:SkCanvas,width:number,height:number,private face:SkFont,private softwareTerrain=false){this.canvas={width,height}}
- private paint(stroke=false){const color=stroke?this.strokeStyle:this.fillStyle,erase=this.globalCompositeOperation==='destination-out';if(typeof color==='string')return solidPaint(color,this.globalAlpha,stroke,this.lineWidth,erase,this.dash);const p=this.keep(Skia.Paint());p.setAntiAlias(true);p.setShader(this.keep(color.shader()));p.setAlphaf(p.getAlphaf()*this.globalAlpha);p.setStyle(stroke?PaintStyle.Stroke:PaintStyle.Fill);p.setStrokeWidth(this.lineWidth);p.setBlendMode(erase?BlendMode.DstOut:BlendMode.SrcOver);if(stroke&&this.dash.length)p.setPathEffect(this.keep(Skia.PathEffect.MakeDash(this.dash,0)!));return p}
+ private paint(stroke=false,rounded=false){const color=stroke?this.strokeStyle:this.fillStyle,erase=this.globalCompositeOperation==='destination-out';if(typeof color==='string')return solidPaint(color,this.globalAlpha,stroke,this.lineWidth,erase,this.dash,rounded);const p=this.keep(Skia.Paint());p.setAntiAlias(true);p.setShader(this.keep(color.shader()));p.setAlphaf(p.getAlphaf()*this.globalAlpha);p.setStyle(stroke?PaintStyle.Stroke:PaintStyle.Fill);p.setStrokeWidth(this.lineWidth);p.setBlendMode(erase?BlendMode.DstOut:BlendMode.SrcOver);if(stroke&&this.dash.length)p.setPathEffect(this.keep(Skia.PathEffect.MakeDash(this.dash,0)!));return p}
  save(){this.c.save();this.states.push({fillStyle:this.fillStyle,strokeStyle:this.strokeStyle,globalAlpha:this.globalAlpha,lineWidth:this.lineWidth,globalCompositeOperation:this.globalCompositeOperation,filter:this.filter,font:this.font,textAlign:this.textAlign,dash:[...this.dash]})}
  restore(){this.c.restore();Object.assign(this,this.states.pop()||{})}
  transform(a:number,b:number,c:number,d:number,e:number,f:number){this.c.concat([a,c,e,b,d,f,0,0,1])}
@@ -309,6 +310,7 @@ class SkiaContext{
  arc(x:number,y:number,r:number,start:number,end:number){this.path.addArc({x:x-r,y:y-r,width:2*r,height:2*r},start*180/Math.PI,(end-start)*180/Math.PI)}
  ellipse(x:number,y:number,rx:number,ry:number){this.path.addOval({x:x-rx,y:y-ry,width:rx*2,height:ry*2})}
  fill(){this.c.drawPath(this.path.path(),this.paint())} stroke(){this.c.drawPath(this.path.path(),this.paint(true))}
+ strokeRounded(){this.c.drawPath(this.path.path(),this.paint(true,true))}
  setLineDash(d:number[]){this.dash=d}
  createRadialGradient(x:number,y:number,r0:number,_x:number,_y:number,r1:number){return new Gradient(x,y,r0,r1)}
  private text(s:string,x:number,y:number,stroke:boolean){const size=Number(this.font.match(/([\d.]+)px/)?.[1]||30);this.face.setSize(size);let widths=textWidths.get(this.face);if(!widths)textWidths.set(this.face,widths=new Map());const key=size+'|'+s;let width=widths.get(key);if(width===undefined){width=this.face.getGlyphWidths(this.face.getGlyphIDs(s)).reduce((a,b)=>a+b,0);if(widths.size>=1024)widths.clear();widths.set(key,width)}this.c.drawText(s,this.textAlign==='center'?x-width/2:this.textAlign==='right'||this.textAlign==='end'?x-width:x,y,this.paint(stroke),this.face)}

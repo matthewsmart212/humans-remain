@@ -20,7 +20,7 @@ const textures:Record<string,number>={
  '/survival/headquarters-menu-v1/camp-plan.webp':require('../public/survival/headquarters-menu-v1/camp-plan.webp'),
  '/survival/headquarters-menu-v1/parchment.webp':require('../public/survival/headquarters-menu-v1/parchment.webp'),
  '/survival/hq-furniture-v2/exploration-bench.webp':require('../public/survival/hq-furniture-v2/exploration-bench.webp'),
- '/survival/camp-workshop-v1/camp-workshop.webp':require('../public/survival/camp-workshop-v1/camp-workshop.webp'),
+ '/survival/camp-workshop-v2/idle-00.webp':require('../public/survival/camp-workshop-v2/idle-00.webp'),
  '/survival/ui-field-kit-v1/axe.png':require('../public/survival/ui-field-kit-v1/axe.png'),
  '/survival/scrap-runner/bow-v1/bow-icon.webp':require('../public/survival/scrap-runner/bow-v1/bow-icon.webp'),
  '/survival/scrap-runner/bow-v1/arrows-icon.webp':require('../public/survival/scrap-runner/bow-v1/arrows-icon.webp'),

@@ -3,8 +3,8 @@ import {imageProcessor} from './headquarters-artwork.mjs';
 const sharp=imageProcessor(),exports=[];
 const root='public/survival/camp-craft-v2';
 fs.mkdirSync(root,{recursive:true});
-for(const name of ['furnace-idle','furnace-broken','warehouse-full','warehouse-empty','warehouse-half','warehouse-broken']){
- const width=1254,height=1254,output=`${root}/${name}.webp`;
+for(const name of ['furnace-idle','furnace-broken','warehouse-full','warehouse-empty','warehouse-half','warehouse-broken','warehouse-light']){
+ const width=name.startsWith('warehouse-')?1024:1254,height=width,output=`${root}/${name}.webp`;
  // Keep the registered frame and generated alpha; export at bounded texture size.
  await sharp(`art-source/camp-craft-v2/${name}.png`).resize(width,height).webp({quality:92,alphaQuality:100,effort:6}).toFile(output);
  exports.push({name,width,height,bytes:fs.statSync(output).size});

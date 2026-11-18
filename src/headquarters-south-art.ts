@@ -43,7 +43,7 @@ export function resolveSouthHeadquarters(record:ArtworkRecord):ArtworkRecord{
  const c=record.config;
  if(record.id!=='base_shelter_t1'||c.base.id!=='93db0d98-1245-4026-a136-6248654149f9'||c.roof?.id!=='cc6d2270-1400-486e-a12a-2014ca70f4e3')return record;
  const file=(source:typeof c.base,url:string,bytes:number)=>({...source,url,name:url.split('/').pop()!,mime:'image/webp',width:1536,height:1024,bytes});
- return {...record,config:{...c,kind:'building',base:file(c.base,HQ_SOUTH_INTERIOR,377596),roof:file(c.roof,HQ_SOUTH_ROOF,263546),worldWidth:672,anchor:HQ_SOUTH_ANCHOR,solid:true,collision:HQ_SOUTH_COLLISION,building:{left:.08,right:.92,top:.49,bottom:.76,doorSide:'south',doorStart:.30,doorEnd:.70}}};
+ return {...record,config:{...c,kind:'building',base:file(c.base,HQ_SOUTH_INTERIOR,1568262),roof:file(c.roof,HQ_SOUTH_ROOF,353678),worldWidth:672,anchor:HQ_SOUTH_ANCHOR,solid:true,collision:HQ_SOUTH_COLLISION,building:{left:.08,right:.92,top:.49,bottom:.76,doorSide:'south',doorStart:.30,doorEnd:.70}}};
 }
 
 export function withSouthHeadquartersGeometry(a:WorldAsset):WorldAsset{

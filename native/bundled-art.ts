@@ -191,6 +191,7 @@ export const BUNDLED_ART:Record<string,number>={
  "/survival/predators-v1/wolf/up-left.webp":require("./../public/survival/predators-v1/wolf/up-left.webp"),
  "/survival/predators-v1/wolf/up.webp":require("./../public/survival/predators-v1/wolf/up.webp"),
  "/survival/puddles-v1/lobed.webp":require("./../public/survival/puddles-v1/lobed.webp"),
+ "/survival/puddles-v1/long.webp":require("./../public/survival/puddles-v1/long.webp"),
  "/survival/puddles-v1/round.webp":require("./../public/survival/puddles-v1/round.webp"),
  "/survival/puddles-v1/wide.webp":require("./../public/survival/puddles-v1/wide.webp"),
  "/survival/rabbit-food-v1/cooked-rabbit.webp":require("./../public/survival/rabbit-food-v1/cooked-rabbit.webp"),

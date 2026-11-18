@@ -1,10 +1,10 @@
 import React,{useEffect,useState} from 'react';
-import {View,Text,Image,Pressable,StyleSheet} from 'react-native';
+import {View,Text,Image,Pressable,StyleSheet,type ImageSourcePropType} from 'react-native';
 import {FIELD_KIT_NATIVE_ART as art} from './field-kit-art';
 import {stationMenuLayout,presentStationMenu,type MenuInsets} from '../src/station-menu-layout';
 import type {World} from '../src/survival-engine';
 export {stationMenuLayout} from '../src/station-menu-layout';
-type Props={world:World;title:string;label?:string;subtitle?:string;image?:number;closeLabel?:string;onClose:()=>void;weight:number;loadLabel?:string;message?:string;hint?:string;kind?:'backpack';compact?:boolean;fitContent?:boolean;footerAction?:React.ReactNode;width:number;height:number;safe:MenuInsets;children:React.ReactNode};
+type Props={world:World;title:string;label?:string;subtitle?:string;image?:ImageSourcePropType;closeLabel?:string;onClose:()=>void;weight:number;loadLabel?:string;message?:string;hint?:string;kind?:'backpack';compact?:boolean;fitContent?:boolean;footerAction?:React.ReactNode;width:number;height:number;safe:MenuInsets;children:React.ReactNode};
 export default function StationMenu({world,title,label=title,subtitle,image,closeLabel=`Leave ${title.toLowerCase()}`,onClose,weight,loadLabel,message,hint,kind,compact=false,fitContent=false,footerAction,width,height,safe,children}:Props){
  const [feedback,setFeedback]=useState(message);
  useEffect(()=>{setFeedback(message);if(!message)return;const timer=setTimeout(()=>setFeedback(''),3200);return()=>clearTimeout(timer)},[message]);

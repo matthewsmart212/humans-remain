@@ -18,14 +18,44 @@ try{
  m.setItemCount(w,'stone',0);m.setStoredCount(w,'stone',0);assert.equal(m.warehouseView(w,'stone',false,1).amount,0);
  w.player.x+=1000;assert.equal(m.transferWarehouse(w,'stone',true,1),0);Object.assign(w.player,dock);
  w.player.x+=1000;assert.equal(m.transferWarehouse(w,'scrap',false,'all'),0);assert(!m.atStation(w));Object.assign(w.player,dock);w.player.downedUntil=10;assert.equal(m.transferWarehouse(w,'scrap',true,1),0);w.player.downedUntil=0;
- assert.deepEqual([0,1,19,20].map(n=>m.warehouseLevel(n,'pallets')),[0,1,1,2]);assert.deepEqual([0,1,49,50].map(n=>m.warehouseLevel(n,'scrap')),[0,1,1,2]);
+ for(const {id,fullAt} of m.WAREHOUSE_MATERIALS){
+  const half=Math.ceil(fullAt/2);
+  assert.deepEqual([0,1,half-1,half,fullAt-1,fullAt].map(n=>m.warehouseLevel(n,id)),[0,1,1,2,2,3],id);
+ }
  const before=JSON.stringify(layout),start=performance.now(),count=m.seedScrapSalvage(w,12345),piles=w.loot.filter(l=>l.salvageVariant!==undefined);assert(count>=50&&count<=64,'Ironworks keeps scarce scrap piles at the approved density');assert.equal(m.seedScrapSalvage(w,12345),0);assert.equal(JSON.stringify(layout),before);assert.equal(new Set(piles.map(l=>l.id)).size,count);assert.equal(new Set(piles.map(l=>l.salvageVariant)).size,3);for(const l of piles)assert(!m.layoutBlocked(layout,l.x,l.y,30));
  const other=m.createWorld(layout);m.seedScrapSalvage(other,54321);assert.notEqual(piles[0].x,other.loot.find(l=>l.salvageVariant!==undefined).x);console.log('Scattered',count,'piles; generation ms',Math.round(performance.now()-start));
  const item=piles[0];Object.assign(w.player,{x:item.x,y:item.y});w.stationPanel=undefined;w.bag.pallets=0;w.bag.scrap=0;const n=item.amount;assert(m.doAction(w,'pickup'));assert.equal(w.bag.scrap,n);assert(!w.loot.includes(item),'Collected pile disappears');
  const kit=await require('canvaskit-wasm')({locateFile:f=>path.join(path.dirname(require.resolve('canvaskit-wasm')),f)});globalThis.CanvasKit=kit;const skia=m.JsiSkApi(kit),{SkiaContext}=m.createSkiaAdapter(skia),font=skia.Font(undefined,14),imgs={};
  for(const [key,url] of Object.entries({...m.WAREHOUSE_IMAGES,...m.SCRAP_IMAGES})){const data=skia.Data.fromBytes(fs.readFileSync('public'+url));imgs[key]=skia.Image.MakeImageFromEncoded(data);data.dispose();assert(imgs[key],key)}
- const surface=skia.Surface.Make(1200,3600),ctx=new SkiaContext(surface.getCanvas(),1200,3600,font),b=m.placementBounds(warehouse);
- for(let wood=0;wood<3;wood++)for(let stone=0;stone<3;stone++)for(let scrap=0;scrap<3;scrap++){w.stock.stone=[0,10,40][stone];w.stock.pallets=[0,5,25][wood];w.stock.scrap=[0,15,60][scrap];ctx.save();ctx.translate(scrap*400,(wood*3+stone)*400);ctx.fillStyle='#294336';ctx.fillRect(0,0,400,400);ctx.scale(400/b.width,400/b.height);ctx.translate(-b.x,-b.y);assert(m.drawWarehouse(ctx,imgs,w,warehouse));ctx.restore()}
- surface.flush();const image=surface.makeImageSnapshot();fs.mkdirSync('docs/qa/camp-craft-v2',{recursive:true});fs.writeFileSync('docs/qa/camp-craft-v2/twenty-seven-storage-states.png',image.encodeToBytes());image.dispose();ctx.dispose();surface.dispose();font.dispose();Object.values(imgs).forEach(i=>i.dispose());
- console.log('PASS: reachable station, storage conservation, withdrawal capacity, invalid/range/downed guards, independent fill stages, random reachable scrap distribution, collect-and-remove and actual 27-state rendering.');
+ const size=256,surface=skia.Surface.Make(4*size,16*size),ctx=new SkiaContext(surface.getCanvas(),4*size,16*size,font),b=m.placementBounds(warehouse);
+ for(let wood=0;wood<4;wood++)for(let stone=0;stone<4;stone++)for(let scrap=0;scrap<4;scrap++){
+  m.setStoredCount(w,'pallets',[0,1,10,20][wood]);
+  m.setStoredCount(w,'stone',[0,1,15,30][stone]);
+  m.setStoredCount(w,'scrap',[0,1,25,50][scrap]);
+  ctx.save();ctx.translate(scrap*size,(wood*4+stone)*size);ctx.fillStyle='#454532';ctx.fillRect(0,0,size,size);
+  ctx.scale(size/b.width,size/b.height);ctx.translate(-b.x,-b.y);
+  assert(m.drawWarehouse(ctx,imgs,w,warehouse));ctx.restore();
+ }
+ surface.flush();const image=surface.makeImageSnapshot(),out=process.argv[2]||'.qa/warehouse';
+ const pixels=image.readPixels(),width=image.width();
+ for(const [index,key] of ['pallets','stone','scrap'].entries()){
+  const corners=m.warehouseStockMask(key),xs=corners.map(p=>p[0]*size),ys=corners.map(p=>p[1]*size);
+  const samples=[];
+  for(let wood=0;wood<4;wood++)for(let stone=0;stone<4;stone++)for(let scrap=0;scrap<4;scrap++){
+   const stage=[wood,stone,scrap][index],sample=[];
+   for(let y=Math.ceil(Math.min(...ys))+1;y<Math.max(...ys)-1;y+=3){
+    for(let x=Math.ceil(Math.min(...xs))+1;x<Math.max(...xs)-1;x+=3){
+     const pixel=4*(((wood*4+stone)*size+y)*width+scrap*size+x);
+     sample.push(pixels[pixel],pixels[pixel+1],pixels[pixel+2]);
+    }
+   }
+   // Integer translations of the same Skia image can round a channel by one.
+   if(samples[stage])assert(sample.every((v,i)=>Math.abs(v-samples[stage][i])<=1),key+' changes with another bay');
+   else samples[stage]=sample;
+  }
+  for(let stage=1;stage<4;stage++)assert(samples[stage].some((v,i)=>Math.abs(v-samples[stage-1][i])>20),key+' fill levels must be visible');
+ }
+ fs.mkdirSync(out,{recursive:true});fs.writeFileSync(path.join(out,'storage-states.png'),image.encodeToBytes());
+ image.dispose();ctx.dispose();surface.dispose();font.dispose();Object.values(imgs).forEach(i=>i.dispose());
+ console.log('PASS: reachable station, inventory transfers, independent stock levels, salvage collection and 64 rendered warehouse states.');
 }finally{fs.rmSync(temp,{recursive:true,force:true})}

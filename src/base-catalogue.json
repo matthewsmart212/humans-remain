@@ -1681,7 +1681,7 @@
     "presentInPrototype": true,
     "purpose": "Walkable rainwater with footstep ripples and small running splashes.",
     "improvement": "Water is a movable scene object with real foot contact.",
-    "appearance": "Painted slate-grey shallow water with an ochre damp rim and a few fallen leaves.",
+    "appearance": "Shallow woodland water with submerged stones, broken sky reflections and soft wet-earth edges.",
     "states": "Calm water, walking ripples, sprint splash, settling.",
     "image": "/survival/puddles-v1/round.webp",
     "artPreview": {
@@ -1722,7 +1722,7 @@
     "presentInPrototype": true,
     "purpose": "Walkable rainwater with footstep ripples and small running splashes.",
     "improvement": "Water is a movable scene object with real foot contact.",
-    "appearance": "Painted slate-grey shallow water with an ochre damp rim and a few fallen leaves.",
+    "appearance": "Shallow woodland water with submerged stones, broken sky reflections and soft wet-earth edges.",
     "states": "Calm water, walking ripples, sprint splash, settling.",
     "image": "/survival/puddles-v1/long.webp",
     "artPreview": {
@@ -1763,7 +1763,7 @@
     "presentInPrototype": true,
     "purpose": "Walkable rainwater with footstep ripples and small running splashes.",
     "improvement": "Water is a movable scene object with real foot contact.",
-    "appearance": "Painted slate-grey shallow water with an ochre damp rim and a few fallen leaves.",
+    "appearance": "Shallow woodland water with submerged stones, broken sky reflections and soft wet-earth edges.",
     "states": "Calm water, walking ripples, sprint splash, settling.",
     "image": "/survival/puddles-v1/wide.webp",
     "artPreview": {
@@ -1804,7 +1804,7 @@
     "presentInPrototype": true,
     "purpose": "Walkable rainwater with footstep ripples and small running splashes.",
     "improvement": "Water is a movable scene object with real foot contact.",
-    "appearance": "Painted slate-grey shallow water with an ochre damp rim and a few fallen leaves.",
+    "appearance": "Shallow woodland water with submerged stones, broken sky reflections and soft wet-earth edges.",
     "states": "Calm water, walking ripples, sprint splash, settling.",
     "image": "/survival/puddles-v1/lobed.webp",
     "artPreview": {

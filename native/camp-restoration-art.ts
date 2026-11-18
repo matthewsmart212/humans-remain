@@ -1,4 +1,13 @@
 export const CAMP_RESTORATION_ART:Record<string,number>={
+ '/survival/camp-hearth-v4/flame-0.webp':require('../public/survival/camp-hearth-v4/flame-0.webp'),
+ '/survival/camp-hearth-v4/flame-1.webp':require('../public/survival/camp-hearth-v4/flame-1.webp'),
+ '/survival/camp-hearth-v4/flame-2.webp':require('../public/survival/camp-hearth-v4/flame-2.webp'),
+ '/survival/camp-hearth-v4/flame-3.webp':require('../public/survival/camp-hearth-v4/flame-3.webp'),
+ '/survival/camp-hearth-v4/flame-4.webp':require('../public/survival/camp-hearth-v4/flame-4.webp'),
+ '/survival/camp-hearth-v4/flame-5.webp':require('../public/survival/camp-hearth-v4/flame-5.webp'),
+ '/survival/camp-hearth-v4/flame-6.webp':require('../public/survival/camp-hearth-v4/flame-6.webp'),
+ '/survival/camp-hearth-v4/flame-7.webp':require('../public/survival/camp-hearth-v4/flame-7.webp'),
+ '/survival/camp-hearth-v4/unlit.webp':require('../public/survival/camp-hearth-v4/unlit.webp'),
  '/survival/camp-ruins-v1/workshop.webp':require('../public/survival/camp-ruins-v1/workshop.png'),
  '/survival/camp-ruins-v1/treatment.webp':require('../public/survival/camp-ruins-v1/treatment.png'),
  '/survival/camp-ruins-v1/warehouse.webp':require('../public/survival/camp-ruins-v1/warehouse.png'),

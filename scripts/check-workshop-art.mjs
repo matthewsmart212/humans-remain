@@ -36,6 +36,7 @@ try{
  m.setItemCount(world,'pallets',4);
  assert(m.restoreCampBuilding(world,'headquarters'));
  world.stationPanel=undefined;
+ world.gear.bag.repairHammer=1;
  world.player.equipped='repairHammer';
  Object.assign(world.player,m.campRepairSite(world,'workshop'));
  m.setItemCount(world,'pallets',3);

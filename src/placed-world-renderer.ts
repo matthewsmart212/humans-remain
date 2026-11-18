@@ -28,7 +28,7 @@ import {drawFieldKitTarget,getFieldKitTarget} from './field-kit-target';
 import {gateDrawables} from './camp-gate-renderer';
 import {drawTree} from './tree-chopping';
 import {worldBounds} from './world-bounds';
-import {drawCampContact} from './camp-contact-renderer';
+import {drawCampContact,drawCampGroundContact,hasCampGroundContact} from './camp-contact-renderer';
 import {drawPuddle} from './puddle-renderer';
 import {visibleGroundPlacements,visiblePlacements} from './layout-views';
 import {groundLightning,type GroundStrike} from './ground-lightning';
@@ -41,7 +41,7 @@ import {drawCampLighting,placedFireLit,nightStrength} from './camp-lighting';
 import {bonfireFoodDrawables,drawCampfireHud} from './bonfire-food-renderer';
 import {stationMenuPan,menuClock} from './station-menu-layout';
 import {chestFrame} from './chest-animation';
-import {ASSET_BY_ID,assetImageKey} from './world-assets';
+import {ASSET_BY_ID,assetImageKey,type WorldAsset} from './world-assets';
 import {placedAnimationFrame} from './step-on-animation';
 import {compareWorldDrawables,placementGeometryAsset,placementBounds,placementPoint,placementBodies,type Placement,type WorldLayout} from './world-layout';
 import {timeOf,type World} from './survival-engine';
@@ -65,7 +65,16 @@ export function drawPlacedGround(ctx:CanvasRenderingContext2D,imgs:Record<string
   ctx.drawImage(im,b.x+x*b.width,b.y+y*b.height,width*b.width,height*b.height);ctx.restore();
  }
 }
-export function placedDrawables(ctx:CanvasRenderingContext2D,imgs:Record<string,HTMLImageElement>,w:World,editor=false,viewport?:FoliageViewport,hideFoliage=false){
+type CampGroundContact={placement:Placement;asset:WorldAsset;source:string};
+function drawCampGroundContacts(ctx:CanvasRenderingContext2D,contacts:readonly CampGroundContact[]){
+ for(const {placement:p,asset,source} of contacts){
+  ctx.save();
+  if(p.rotation||p.flipX||p.flipY)rotatePlacement(ctx,p);
+  drawCampGroundContact(ctx,p,asset,source);
+  ctx.restore();
+ }
+}
+export function placedDrawables(ctx:CanvasRenderingContext2D,imgs:Record<string,HTMLImageElement>,w:World,editor=false,viewport?:FoliageViewport,hideFoliage=false,contacts?:CampGroundContact[]){
  const out:{roof?:boolean;layer?:number;y:number;draw:()=>void}[]=[];if(!w.layout)return out;
  const circular:CircularWallDraw[]=[];
  for(const p of visiblePlacements(w.layout,viewport)){const a=ASSET_BY_ID.get(p.assetId);if(!a)continue;if(!editor&&['animal','enemySpawn'].includes(p.role))continue;if(!editor&&['scrap','fuel','pallets'].includes(p.role)&&!w.loot.some(l=>l.placementId===p.id))continue;if(!editor&&p.role==='crate'&&!w.breakables.some(b=>b.placementId===p.id&&b.hp>0))continue;
@@ -77,7 +86,9 @@ export function placedDrawables(ctx:CanvasRenderingContext2D,imgs:Record<string,
   const frames=restoration?undefined:a.openFrames?.length?a.openFrames:a.frames;
   const animationReady=frames?.every(url=>!!imgs[assetImageKey(url)]);
   const frame=animationReady?(a.openFrames?.length?chestFrame(w,p.id,frames!.length):placedAnimationFrame(w,p,a)):0;
-  const b=placementBounds(p),im=imgs[assetImageKey(restoration?.image||frames?.[frame]||a.image)]||imgs[assetImageKey(a.image)];if(!im)continue;
+  const requestedSource=restoration?.image||frames?.[frame]||a.image,requestedImage=imgs[assetImageKey(requestedSource)];
+  const b=placementBounds(p),im=requestedImage||imgs[assetImageKey(a.image)];if(!im)continue;
+  if(contacts&&hasCampGroundContact(a))contacts.push({placement:p,asset:a,source:restoration&&requestedImage?restoration.image:a.image});
   const southHQ=a.image===HQ_SOUTH_INTERIOR&&!!a.interior;
   const cutaway=southHQ?headquartersCutawayAmount(p,w):0;
   // The full HQ facade is a background layer when the survivor's feet are
@@ -170,13 +181,19 @@ export function editorCamera(width:number,height:number,w:World,view:EditorView,
  const pan=stationMenuPan(w,lw,lh,{x,y,scale:scale/pixelRatio},!!(view.playing&&view.follow),now);return{scale,x:x+pan.x,y:y+pan.y};
 }
 export function drawWorldEditor(ctx:CanvasRenderingContext2D,atlas:Atlas,imgs:Record<string,HTMLImageElement>,w:World,view:EditorView,fade=0,peers:readonly import('./coop-protocol').CoopPeer[]=[]){
- const c=editorCamera(ctx.canvas.width,ctx.canvas.height,w,view,Math.min(2,(ctx as CanvasRenderingContext2D&{pixelRatio?:number}).pixelRatio||globalThis.devicePixelRatio||1));clearTerrainViewport(ctx);if(w.scene){ctx.fillStyle=w.scene.background;ctx.fillRect(0,0,ctx.canvas.width,ctx.canvas.height)}ctx.save();ctx.scale(c.scale,c.scale);ctx.translate(-c.x,-c.y);if(w.combatTest&&!w.weather?.reducedMotion){const t=timeOf(w),amount=Math.min(1,Math.max(0,(w.shakeUntil-t)/.12));if(amount)ctx.translate(Math.sin(t*139)*2*amount/c.scale,Math.cos(t*113)*1.5*amount/c.scale)}if(w.scene)drawSceneTerrain(ctx,imgs,w.scene);else drawHomeTerrain(ctx,imgs,w.layout?.terrainImage,w.layout?.terrainBorder,{x:c.x,y:c.y,width:ctx.canvas.width/c.scale,height:ctx.canvas.height/c.scale});drawPlacedGround(ctx,imgs,w.layout,view.hideFoliage,{x:c.x,y:c.y,width:ctx.canvas.width/c.scale,height:ctx.canvas.height/c.scale,scale:c.scale});
+ const c=editorCamera(ctx.canvas.width,ctx.canvas.height,w,view,Math.min(2,(ctx as CanvasRenderingContext2D&{pixelRatio?:number}).pixelRatio||globalThis.devicePixelRatio||1));
+ const viewport={x:c.x,y:c.y,width:ctx.canvas.width/c.scale,height:ctx.canvas.height/c.scale,scale:c.scale};
+ clearTerrainViewport(ctx);if(w.scene){ctx.fillStyle=w.scene.background;ctx.fillRect(0,0,ctx.canvas.width,ctx.canvas.height)}ctx.save();ctx.scale(c.scale,c.scale);ctx.translate(-c.x,-c.y);if(w.combatTest&&!w.weather?.reducedMotion){const t=timeOf(w),amount=Math.min(1,Math.max(0,(w.shakeUntil-t)/.12));if(amount)ctx.translate(Math.sin(t*139)*2*amount/c.scale,Math.cos(t*113)*1.5*amount/c.scale)}if(w.scene)drawSceneTerrain(ctx,imgs,w.scene);else drawHomeTerrain(ctx,imgs,w.layout?.terrainImage,w.layout?.terrainBorder,viewport);
+ drawPlacedGround(ctx,imgs,w.layout,view.hideFoliage,viewport);
+ const campContacts=w.scene?undefined:[] as CampGroundContact[];
+ const placed=placedDrawables(ctx,imgs,w,true,viewport,view.hideFoliage,campContacts);
+ if(campContacts)drawCampGroundContacts(ctx,campContacts);
  const pickupScale=c.scale/Math.min(2,(ctx as CanvasRenderingContext2D&{pixelRatio?:number}).pixelRatio||globalThis.devicePixelRatio||1);
  if(view.playing)drawLootChestGround(ctx,imgs,w,{x:c.x,y:c.y,width:ctx.canvas.width/c.scale,height:ctx.canvas.height/c.scale});
  if(view.playing)drawFieldKitTarget(ctx,w,pickupScale);
  // Chest and effects now share one depth-sorted drawable, behind players in front.
  const pickupCues=view.playing?visiblePickupCues(w,{x:c.x,y:c.y,width:ctx.canvas.width/c.scale,height:ctx.canvas.height/c.scale,scale:c.scale}):[];
- const draws=[...stoneDrawables(ctx,imgs,w,{x:c.x,y:c.y,width:ctx.canvas.width/c.scale,height:ctx.canvas.height/c.scale}),...scrapDrawables(ctx,imgs,w,{x:c.x,y:c.y,width:ctx.canvas.width/c.scale,height:ctx.canvas.height/c.scale}),...predatorDrawables(ctx,imgs,w,{x:c.x,y:c.y,width:ctx.canvas.width/c.scale,height:ctx.canvas.height/c.scale,scale:c.scale}),...placedDrawables(ctx,imgs,w,true,{x:c.x,y:c.y,width:ctx.canvas.width/c.scale,height:ctx.canvas.height/c.scale,scale:c.scale},view.hideFoliage),...(view.playing?lootChestDrawables(ctx,imgs,w,{x:c.x,y:c.y,width:ctx.canvas.width/c.scale,height:ctx.canvas.height/c.scale}):[]),...bonfireFoodDrawables(ctx,imgs,w),...treeLogDrawables(ctx,imgs,w,{x:c.x,y:c.y,width:ctx.canvas.width/c.scale,height:ctx.canvas.height/c.scale}),...combatDrawables(ctx,imgs,w),...chickenDrawables(ctx,imgs,w,{x:c.x,y:c.y,width:ctx.canvas.width/c.scale,height:ctx.canvas.height/c.scale,scale:c.scale}),...deerDrawables(ctx,imgs,w,{x:c.x,y:c.y,width:ctx.canvas.width/c.scale,height:ctx.canvas.height/c.scale,scale:c.scale}),...rabbitDrawables(ctx,imgs,w,{x:c.x,y:c.y,width:ctx.canvas.width/c.scale,height:ctx.canvas.height/c.scale,scale:c.scale})];if(!brutePlayerCarried(w))draws.push({y:w.player.y,draw:()=>drawWorker(ctx,imgs,w,atlas)});
+ const draws=[...stoneDrawables(ctx,imgs,w,viewport),...scrapDrawables(ctx,imgs,w,viewport),...predatorDrawables(ctx,imgs,w,viewport),...placed,...(view.playing?lootChestDrawables(ctx,imgs,w,viewport):[]),...bonfireFoodDrawables(ctx,imgs,w),...treeLogDrawables(ctx,imgs,w,viewport),...combatDrawables(ctx,imgs,w),...chickenDrawables(ctx,imgs,w,viewport),...deerDrawables(ctx,imgs,w,viewport),...rabbitDrawables(ctx,imgs,w,viewport)];if(!brutePlayerCarried(w))draws.push({y:w.player.y,draw:()=>drawWorker(ctx,imgs,w,atlas)});
  draws.push(...bowArrowDrawables(ctx,imgs,w));
  const outline=!brutePlayerCarried(w)&&!view.hideFoliage&&(view.playing||view.follow)&&foliagePlayerOutline(ctx,imgs,w,c.scale);if(outline)draws.push(outline);
  // Co-op phase 1: visual peers only. No peer is inserted into the local simulation.

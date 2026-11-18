@@ -1,6 +1,9 @@
 import React,{useState} from 'react';
 import {View,Text,Image,Pressable,ScrollView,StyleSheet} from 'react-native';
 import StationMenu,{stationMenuLayout} from './StationMenu';
+import {WORKSHOP_NATIVE_ART} from './workshop-animation-art';
+import {BUNDLED_ART} from './bundled-art';
+import {WORLD_URL} from './config';
 import {ItemArt} from './InventoryUI';
 import {FIELD_KIT_NATIVE_ART as art} from './field-kit-art';
 import {smithyView} from '../src/smithy-view';
@@ -25,7 +28,7 @@ export default function SmithyPanel({world,width,height,onClose,onChange,safe}:P
  const craft=()=>{setMessage(r.craft()?`${r.name} added to backpack.`:'Check materials and backpack space.');onChange()};
  const action=r.canCraft?(r.count>1?`Craft ×${r.count}`:'Craft'):smithyAction(r);
 
- return <StationMenu compact world={world} title="Camp smithy" image={require('../public/survival/camp-workshop-v1/camp-workshop.webp')} closeLabel="Leave smithy" onClose={onClose} weight={v.weight} loadLabel={v.loadLabel} message={message} width={width} height={height} safe={safe}>
+ return <StationMenu compact world={world} title="Camp smithy" image={WORKSHOP_NATIVE_ART[v.image]??BUNDLED_ART[v.image]??{uri:v.image.startsWith('/')?WORLD_URL+v.image:v.image}} closeLabel="Leave smithy" onClose={onClose} weight={v.weight} loadLabel={v.loadLabel} message={message} width={width} height={height} safe={safe}>
   <View style={f.tabs}>{v.categories.map(c=><Pressable key={c.id} accessibilityRole="button" accessibilityLabel={c.label} accessibilityState={{selected:category===c.id}} onPress={()=>chooseCategory(c.id)} style={[f.tab,category===c.id&&f.tabOn]}><Text numberOfLines={1} style={[f.tabText,narrow&&{fontSize:16},category===c.id&&{color:'#ffe8b5'}]}>{c.label}</Text></Pressable>)}</View>
   <ScrollView style={f.catalog} contentContainerStyle={[f.catalogContent,{minHeight:rows.length*48+6*(rows.length-1)+4}]} onLayout={e=>setGridHeight(e.nativeEvent.layout.height)}>
    {rows.map((row,index)=><View key={index} style={f.catalogRow}>{row.map(item=><Pressable key={item.id} accessibilityRole="button" accessibilityLabel={`Select ${item.name}. ${item.owned} in backpack. ${item.status}`} accessibilityState={{selected:r.id===item.id}} onPress={()=>{setSelected(item.id);setMore(false);setMessage('')}} style={[f.tile,category==='tools'&&f.toolTile,r.id===item.id&&f.selected]}>
