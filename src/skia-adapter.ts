@@ -9,7 +9,8 @@ import type {WeatherState} from './weather-model';
 import {createNightLighting} from './night-lighting-skia';
 import type {CampLight,LightViewport} from './lighting-model';
 import {terrainColourPixels,TERRAIN_COLOUR_FIELD_SIZE} from './terrain-colour-field';
-import {WORLD_GROUND_BOUNDS} from './world-ground';
+import {WORLD_GROUND_BOUNDS,WORLD_GROUND_TEXTURE_SPAN} from './world-ground';
+import type {TerrainView} from './outdoor-terrain';
 import {WORLD_GROUND_COLOUR_SHADER} from './world-ground-colour';
 import {WORLD_ROAD_SECTION_SHADER,ROAD_SECTION_GRADES} from './world-road-materials';
 import type {WorldRoad} from './world-roads';
@@ -161,7 +162,7 @@ class SkiaContext{
  dispose(){this.trash.forEach(v=>v.dispose());this.trash=[];this.drawing?.dispose();this.drawing=undefined}
  private drawing?:ReturnType<typeof createDrawingPath>;private dash:number[]=[];private states:any[]=[];
  private get path(){return this.drawing??=createDrawingPath(Skia)}
- constructor(private c:SkCanvas,width:number,height:number,private face:SkFont){this.canvas={width,height}}
+ constructor(private c:SkCanvas,width:number,height:number,private face:SkFont,private softwareTerrain=false){this.canvas={width,height}}
  private paint(stroke=false){const color=stroke?this.strokeStyle:this.fillStyle,erase=this.globalCompositeOperation==='destination-out';if(typeof color==='string')return solidPaint(color,this.globalAlpha,stroke,this.lineWidth,erase,this.dash);const p=this.keep(Skia.Paint());p.setAntiAlias(true);p.setShader(this.keep(color.shader()));p.setAlphaf(p.getAlphaf()*this.globalAlpha);p.setStyle(stroke?PaintStyle.Stroke:PaintStyle.Fill);p.setStrokeWidth(this.lineWidth);p.setBlendMode(erase?BlendMode.DstOut:BlendMode.SrcOver);if(stroke&&this.dash.length)p.setPathEffect(this.keep(Skia.PathEffect.MakeDash(this.dash,0)!));return p}
  save(){this.c.save();this.states.push({fillStyle:this.fillStyle,strokeStyle:this.strokeStyle,globalAlpha:this.globalAlpha,lineWidth:this.lineWidth,globalCompositeOperation:this.globalCompositeOperation,filter:this.filter,font:this.font,textAlign:this.textAlign,dash:[...this.dash]})}
  restore(){this.c.restore();Object.assign(this,this.states.pop()||{})}
@@ -228,39 +229,55 @@ class SkiaContext{
    for(const i of [1,2,3,4,0])if(meshes[i])this.c.drawVertices(meshes[i]!,BlendMode.Modulate,paints[i]);
   }
  }
- // Blend only terrain contact/outer edges. One shader draw, no full-map bitmap,
- // offscreen surface or pixel readback; the original artwork stays unmodified.
- drawTerrainTile(image:SkImage,t:{x:number;y:number;width:number;height:number;fadeTop:number;fadeBottom:number;fadeRight:number;fadeLeft:number;paintTop:number;paintLeft?:number;paintWidth:number;paintHeight:number;rotation?:number;mirror?:boolean;maskBounds?:{x:number;y:number;width:number;height:number};groundMaterials?:{brown:SkImage;clear:SkImage;scale:number}}){
+ // Blend terrain contacts directly on the scene surface.
+ drawTerrainTile(image:SkImage,t:TerrainView&{fadeTop:number;fadeBottom:number;fadeRight:number;fadeLeft:number;paintTop:number;paintLeft?:number;paintWidth:number;paintHeight:number;texturePhase?:readonly [number,number];maskBounds?:TerrainView;groundMaterials?:{brown:SkImage;clear:SkImage;scale:number}}){
   const dependencies=t.groundMaterials?[image,t.groundMaterials.brown,t.groundMaterials.clear]:[image];
   const {groundMaterials,...geometry}=t;
-  const paint=cachedPaint('ground',dependencies,[geometry,groundMaterials?.scale],keep=>{
-  const matrix=keep(Skia.Matrix().translate(t.x+t.width/2,t.y+t.height/2).rotate((t.rotation||0)*Math.PI/2).scale((t.mirror?-1:1)*t.width/image.width(),t.height/image.height()).translate(-image.width()/2,-image.height()/2));
-  let shader=keep(image.makeShaderOptions(TileMode.Clamp,TileMode.Clamp,FilterMode.Linear,MipmapMode.None,matrix));
-  if(t.groundMaterials){
-   const {brown,clear,scale:s}=t.groundMaterials;
-   const blend=(im:SkImage,x:number,y:number,radius:number,alphas:number[],stops:number[])=>{
-    const mask=keep(Skia.Shader.MakeRadialGradient({x:(x-600)*s,y:(y-600)*s},radius*s,alphas.map(a=>new Float32Array([1,1,1,a])),stops,TileMode.Clamp));
-    const layer=keep(im.makeShaderOptions(TileMode.Clamp,TileMode.Clamp,FilterMode.Linear,MipmapMode.None,matrix));
-    shader=keep(Skia.Shader.MakeBlend(BlendMode.SrcOver,shader,keep(Skia.Shader.MakeBlend(BlendMode.DstIn,layer,mask))));
-   };
-   blend(brown,2400,2400,12000,[0,0,.8],[0,.27,1]);
-   const clearShader=keep(clear.makeShaderOptions(TileMode.Clamp,TileMode.Clamp,FilterMode.Linear,MipmapMode.None,matrix));
-   shader=keep(groundColour.makeShaderWithChildren([s],[shader,clearShader,colourSampler(s)]));
-  }
-  const fade=(x:number,y:number,ex:number,ey:number)=>{
-   const mask=keep(Skia.Shader.MakeLinearGradient({x,y},{x:ex,y:ey},[new Float32Array([1,1,1,0]),new Float32Array([1,1,1,1])],[0,1],TileMode.Clamp));
-   shader=keep(Skia.Shader.MakeBlend(BlendMode.DstIn,shader,mask));
+  const bounds={x:t.x+(t.paintLeft||0),y:t.y+t.paintTop,width:t.paintWidth,height:t.paintHeight};
+  const draw=(rect:TerrainView,source:TerrainView,mode=TileMode.Clamp)=>{
+   const paint=cachedPaint('ground',dependencies,[geometry,groundMaterials?.scale,source,mode],keep=>{
+    const sample=(im:SkImage)=>{
+     const matrix=keep(Skia.Matrix().translate(source.x,source.y).scale(source.width/im.width(),source.height/im.height()));
+     return keep(im.makeShaderOptions(mode,mode,FilterMode.Linear,MipmapMode.None,matrix));
+    };
+    let shader=sample(image);
+    if(groundMaterials){
+     const {brown,clear,scale:s}=groundMaterials;
+     const brownMask=keep(Skia.Shader.MakeRadialGradient({x:1800*s,y:1800*s},12000*s,[0,0,.8].map(a=>new Float32Array([1,1,1,a])),[0,.27,1],TileMode.Clamp));
+     const woodland=keep(Skia.Shader.MakeBlend(BlendMode.DstIn,sample(brown),brownMask));
+     const terrain=keep(Skia.Shader.MakeBlend(BlendMode.SrcOver,shader,woodland));
+     shader=keep(groundColour.makeShaderWithChildren([],[terrain,sample(clear),colourSampler(s)]));
+    }
+    const fade=(x:number,y:number,ex:number,ey:number)=>{
+     const mask=keep(Skia.Shader.MakeLinearGradient({x,y},{x:ex,y:ey},[new Float32Array([1,1,1,0]),new Float32Array([1,1,1,1])],[0,1],TileMode.Clamp));
+     shader=keep(Skia.Shader.MakeBlend(BlendMode.DstIn,shader,mask));
+    };
+    const b=t.maskBounds||t;
+    if(t.fadeTop)fade(b.x,b.y,b.x,b.y+t.fadeTop);
+    if(t.fadeBottom)fade(b.x,b.y+b.height,b.x,b.y+b.height-t.fadeBottom);
+    if(t.fadeRight)fade(b.x+b.width,b.y,b.x+b.width-t.fadeRight,b.y);
+    if(t.fadeLeft)fade(b.x,b.y,b.x+t.fadeLeft,b.y);
+    const result=keep(Skia.Paint());result.setAntiAlias(false);result.setShader(shader);
+    return result;
+   });
+   paint.setAlphaf(this.globalAlpha);
+   this.c.drawRect(rect,paint);
   };
-  const b=t.maskBounds||t;
-  if(t.fadeTop)fade(b.x,b.y,b.x,b.y+t.fadeTop);
-  if(t.fadeBottom)fade(b.x,b.y+b.height,b.x,b.y+b.height-t.fadeBottom);
-  if(t.fadeRight)fade(b.x+b.width,b.y,b.x+b.width-t.fadeRight,b.y);
-  if(t.fadeLeft)fade(b.x,b.y,b.x+t.fadeLeft,b.y);
-  const paint=keep(Skia.Paint());paint.setAntiAlias(false);paint.setShader(shader);
+  if(!groundMaterials){draw(bounds,{x:t.x,y:t.y,width:t.width,height:t.height});return}
 
-   return paint;
-  });paint.setAlphaf(this.globalAlpha);
-  this.c.drawRect({x:t.x+(t.paintLeft||0),y:t.y+t.paintTop,width:t.paintWidth,height:t.paintHeight},paint);
+  const [phaseX,phaseY]=t.texturePhase||[0,0];
+  const width=t.width*WORLD_GROUND_TEXTURE_SPAN,height=t.height*WORLD_GROUND_TEXTURE_SPAN;
+  const source={x:t.x-phaseX*width,y:t.y-phaseY*height,width,height};
+  if(!this.softwareTerrain){draw(bounds,source,TileMode.Repeat);return}
+
+  // Pre-feathered repeats share their painted edges. Draw each source rect
+  // with clamped sampling to keep CanvasKit's software path inexpensive.
+  const right=bounds.x+bounds.width,bottom=bounds.y+bounds.height;
+  for(let y=source.y;y<bottom;y+=height)for(let x=source.x;x<right;x+=width){
+   const left=Math.max(x,bounds.x),top=Math.max(y,bounds.y);
+   const w=Math.min(right,x+width)-left,h=Math.min(bottom,y+height)-top;
+   if(w>0&&h>0)draw({x:left,y:top,width:w,height:h},{x,y,width,height});
+  }
  }
  // One extra rendering of the current animated pose into a small local layer.
  // Dilated alpha minus the original alpha leaves only its true outer edge;

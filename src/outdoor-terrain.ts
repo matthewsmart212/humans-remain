@@ -4,7 +4,7 @@ import {WORLD_GROUND_TILES} from './world-ground';
 import {groundFootprint} from './terrain-footprint';
 
 export type TerrainView={x:number;y:number;width:number;height:number};
-type SourceTile=TerrainView&{key:string;image:string;paintRight:number;paintBottom:number;fadeTop:number;fadeBottom:number;fadeRight:number;fadeLeft?:number;northKey?:string;coveredTop?:number;westKey?:string;topNeighborKey?:string;northBlendKey?:string;eastBlendKey?:string;southBlendKey?:string;rotation?:number;mirror?:boolean};
+type SourceTile=TerrainView&{key:string;image:string;paintRight:number;paintBottom:number;fadeTop:number;fadeBottom:number;fadeRight:number;fadeLeft?:number;northKey?:string;coveredTop?:number;westKey?:string;topNeighborKey?:string;northBlendKey?:string;eastBlendKey?:string;southBlendKey?:string;texturePhase:readonly [number,number]};
 export const OUTDOOR_SOURCE_TILES:readonly SourceTile[]=WORLD_GROUND_TILES;
 export const OUTDOOR_TILES=OUTDOOR_SOURCE_TILES.map(t=>({...t,sourceWidth:t.width,sourceHeight:t.height,x:(t.x-HOME_TERRAIN.border)*EAST_TERRAIN_SCALE,y:(t.y-HOME_TERRAIN.border)*EAST_TERRAIN_SCALE,width:t.width*EAST_TERRAIN_SCALE,height:t.height*EAST_TERRAIN_SCALE,paintRight:t.paintRight*EAST_TERRAIN_SCALE,paintBottom:t.paintBottom*EAST_TERRAIN_SCALE,coveredTop:(t.coveredTop||0)*EAST_TERRAIN_SCALE,fadeTop:t.fadeTop*EAST_TERRAIN_SCALE,fadeBottom:t.fadeBottom*EAST_TERRAIN_SCALE,fadeRight:t.fadeRight*EAST_TERRAIN_SCALE,fadeLeft:(t.fadeLeft||0)*EAST_TERRAIN_SCALE}));
 export type OutdoorTile=typeof OUTDOOR_TILES[number];

@@ -7,7 +7,7 @@ import {createRequire} from 'node:module';
 import {build} from 'esbuild';
 const temp=fs.mkdtempSync(path.join(os.tmpdir(),'world-plan-build-'));
 try{
- await build({stdin:{contents:"export * from './src/world-master-plan';export * from './src/world-plan-geometry';export * from './src/outdoor-terrain';export * from './src/terrain-art';export * from './src/world-roads';export * from './src/world-road-materials';export * from './src/river-art';",resolveDir:process.cwd()},bundle:true,platform:'node',format:'cjs',outfile:path.join(temp,'plan.cjs')});
+ await build({stdin:{contents:"export * from './src/world-master-plan';export * from './src/world-plan-geometry';export * from './src/outdoor-terrain';export * from './src/terrain-art';export * from './src/river-art';",resolveDir:process.cwd()},bundle:true,platform:'node',format:'cjs',outfile:path.join(temp,'plan.cjs')});
  const p=createRequire(import.meta.url)(path.join(temp,'plan.cjs'));
  const errors=p.validateWorldPlan();if(errors.length)throw Error(errors.join('\n'));
  const bounds=p.WORLD_PLAN_BOUNDS,unit=bounds.width/1000;
@@ -29,23 +29,18 @@ try{
   if(!cells[j]?.[i+1])edges.push([[xs[i+1],ys[j]],[xs[i+1],ys[j+1]]]);
  }
  const river=p.WORLD_PLAN_RIVERS.filter(r=>r.id!=='western-river').map(r=>`<path d="${line(r.points)}" stroke-width="${r.width/unit+8}" class="river-bank"/><path d="${line(r.points)}" stroke-width="${r.width/unit}" class="river"/>`).join('');
- const routes=status=>p.WORLD_PLAN_ROUTES.filter(r=>r.status===status&&r.kind!=='access').map(r=>{
-  const road=p.WORLD_ROADS.find(road=>road.id===r.id),guide=status==='planned';
-  return `<path d="${line(road.sourcePoints)}" stroke-width="${r.width/unit}" class="route ${r.kind}${guide?' layout-guide':''}" data-route="${r.id}"><title>${escape(r.id.replaceAll('-',' '))}${guide?' · textured route':''}</title></path>`;
- }).join('');
  const quiet=p.WORLD_PLAN_QUIET.map(a=>`<g><polygon points="${points(a.polygon)}"/><text x="${Math.max(72,Math.min(928,xy(a.polygon.reduce((v,b)=>[v[0]+b[0]/a.polygon.length,v[1]+b[1]/a.polygon.length],[0,0]))[0]))}" y="${xy(a.polygon.reduce((v,b)=>[v[0]+b[0]/a.polygon.length,v[1]+b[1]/a.polygon.length],[0,0]))[1]}">${escape(a.name)}</text></g>`).join('');
  const districtShapes=p.WORLD_PLAN_DISTRICTS.filter(d=>d.id!=='camp').map(d=>`<polygon class="district-area" points="${points(d.outline)}" fill="${d.colour}"/>`).join('');
  const pins=p.WORLD_PLAN_DISTRICTS.map(d=>{const [x,y]=xy(d.centre);return `<g class="district-pin ${d.id==='camp'?'selected':''}" data-district="${d.id}" role="button" tabindex="0" aria-label="${escape(d.name+', '+d.direction)}" aria-pressed="${d.id==='camp'}" transform="translate(${x},${y})"><circle class="hit-target" r="48"/><circle class="pin-ring" r="24"/><circle class="pin-face" r="19" style="fill:${d.colour}"/><text class="pin-number" y="1">${d.number}</text><text class="pin-label" y="44">${escape(d.name)}</text></g>`}).join('');
  const batches=p.WORLD_PLAN_BATCHES.map(b=>`<g class="batch ${b.status}" data-batch="${b.id}" role="button" tabindex="0" aria-label="${escape(b.id+' '+b.name)}"><rect ${rect(b.bounds)}/><text x="${xy([b.bounds.x+b.bounds.width/2,b.bounds.y+b.bounds.height/2])[0]}" y="${xy([b.bounds.x+b.bounds.width/2,b.bounds.y+b.bounds.height/2])[1]}">${b.id}</text></g>`).join('');
  const svg=`<svg id="world-map" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 1000" aria-label="Planned world around the existing camp" role="group" tabindex="0">
- <title>Humans Remain — camp-anchored world plan</title><desc>Ground and separate textured roads connect all seven district areas. Twenty-six western river sections reach the southern edge, with animated water, three narrow offshoot streams, Stillwater Lake and four wooden crossings. The meadow channel, eastern creek, district buildings and scenery remain planned.</desc>
+ <title>Humans Remain — camp-anchored world plan</title><desc>Continuous terrain surrounds the camp and its six gate approaches. Twenty-six western river sections reach the southern edge, with animated water, three narrow offshoot streams, Stillwater Lake and four wooden crossings. The meadow channel, eastern creek, district buildings and scenery remain planned.</desc>
  <defs><radialGradient id="ground"><stop stop-color="#344c42"/><stop offset="1" stop-color="#152d2d"/></radialGradient><pattern id="quiet-hatch" width="12" height="12" patternUnits="userSpaceOnUse" patternTransform="rotate(35)"><path d="M0 0V12" stroke="#b5bd88" stroke-width="2" opacity=".26"/></pattern><pattern id="map-grid" width="100" height="100" patternUnits="userSpaceOnUse"><path d="M100 0H0V100" fill="none" stroke="#9eaea0" stroke-width="1" opacity=".08"/></pattern></defs>
  <rect width="1000" height="1000" fill="url(#ground)"/><rect width="1000" height="1000" fill="url(#map-grid)"/>
  <g class="districts">${districtShapes}</g>
  <g id="existing-ground"><image href="/planning/built-river-features-v4.webp" ${rect(p.OUTDOOR_SOURCE_BOUNDS)} preserveAspectRatio="none"/></g>
  <g class="quiet-areas">${quiet}</g>
- <g id="built-survey" class="built-survey">${routes('built')}</g>
- <g id="planned-routes" class="planned-routes"><g class="waterways">${river}</g>${routes('planned')}${p.WORLD_PLAN_RAIL.map(r=>`<path class="rail-base" d="${line(r.points)}"/><path class="rail-ties" d="${line(r.points)}"/>`).join('')}</g>
+ <g id="planned-routes" class="planned-routes"><g class="waterways">${river}</g>${p.WORLD_PLAN_RAIL.map(r=>`<path class="rail-base" d="${line(r.points)}"/><path class="rail-ties" d="${line(r.points)}"/>`).join('')}</g>
  <g class="built-outline">${edges.map(e=>`<path d="${line(e)}"/>`).join('')}</g>
  <g id="next-batches" class="next-batches">${batches}</g><g class="district-pins">${pins}</g>
  </svg>`;
@@ -54,9 +49,9 @@ try{
  const batchList=p.WORLD_PLAN_BATCHES.map(b=>`<button type="button" data-select-batch="${b.id}"><b>${b.id}</b><span>${escape(b.name)}<small>Ground complete</small></span><span aria-hidden="true">↗</span></button>`).join('');
  const ratio=(bounds.width*bounds.height/p.HOME_TERRAIN.fullSize**2).toFixed(1);
  fs.mkdirSync('public/planning',{recursive:true});
- const metadata={bounds,originalCampSize:p.HOME_TERRAIN.fullSize,plannedAreaVsCamp:Number(ratio),groundStatus:'complete',groundColour:'Warm and brown earth with irregular clear-soil patches; green terrain removed.',builtArea,builtTextureCount:p.OUTDOOR_SOURCE_TILES.length,uniqueGroundImages:3,builtRectangles:built,builtOverview:{path:'/planning/built-river-features-v4.webp',sourceBounds:p.OUTDOOR_SOURCE_BOUNDS},districts:p.WORLD_PLAN_DISTRICTS.map(d=>({...d,groundStatus:'built'})),nodes:p.WORLD_PLAN_NODES,routes:p.WORLD_PLAN_ROUTES,rivers:p.WORLD_PLAN_RIVERS,rail:p.WORLD_PLAN_RAIL,quietAreas:p.WORLD_PLAN_QUIET,batches:p.WORLD_PLAN_BATCHES.map(b=>({...b,contacts:p.patchRouteContacts(b.bounds)})),phases:p.WORLD_PLAN_PHASES,bridgeCrossings:p.riverRouteCrossings()};
+ const metadata={bounds,originalCampSize:p.HOME_TERRAIN.fullSize,plannedAreaVsCamp:Number(ratio),groundStatus:'complete',groundColour:'Mossy grass and warm, worn loam with gently blended woodland and clearings.',builtArea,builtTextureCount:p.OUTDOOR_SOURCE_TILES.length,uniqueGroundImages:3,builtRectangles:built,builtOverview:{path:'/planning/built-river-features-v4.webp',sourceBounds:p.OUTDOOR_SOURCE_BOUNDS},districts:p.WORLD_PLAN_DISTRICTS.map(d=>({...d,groundStatus:'built'})),nodes:p.WORLD_PLAN_NODES,rivers:p.WORLD_PLAN_RIVERS,rail:p.WORLD_PLAN_RAIL,quietAreas:p.WORLD_PLAN_QUIET,batches:p.WORLD_PLAN_BATCHES.map(({routes,...batch})=>batch),phases:p.WORLD_PLAN_PHASES,bridgeCrossings:p.riverRouteCrossings()};
  metadata.riverArtwork={stage:'western-river-features-v4',sideFeatures:p.RIVER_SIDE_FEATURES,whitewaterAreas:10,previousWhitewaterAreas:31,sections:p.RIVER_SECTIONS,bounds:p.RIVER_SOURCE,animated:true,frames:12,remainingRiver:'Meadow channel and eastern creek planned',builtCrossings:JSON.parse(fs.readFileSync('src/river-bridges.json','utf8'))};
- metadata.roadLayout={stage:p.WORLD_ROAD_STAGE,sections:p.WORLD_ROADS.length,texturesReady:true,materials:p.WORLD_ROAD_MATERIALS.map(m=>m.name)};
+ metadata.roadLayout={stage:'camp-paving',sections:6};
  fs.writeFileSync('public/planning/world-plan.json',JSON.stringify(metadata,null,2)+'\n');
  const html=fs.readFileSync('scripts/world-plan-template.html','utf8').replace('{{MAP}}',svg).replace('{{DISTRICTS}}',list).replace('{{PHASES}}',phases).replace('{{BATCHES}}',batchList).replaceAll('{{RATIO}}',ratio).replaceAll('{{TILE_COUNT}}',String(p.OUTDOOR_SOURCE_TILES.length));
  fs.writeFileSync('public/world-plan.html',html);

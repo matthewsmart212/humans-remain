@@ -3,8 +3,6 @@ import {MAP_WIDTH,MAP_HEIGHT} from './factory-map';
 import {assetImageKey} from './world-assets';
 import {OUTDOOR_TILES,terrainIntersects,terrainPaintRegion,type TerrainView} from './outdoor-terrain';
 import {EAST_TERRAIN_SCALE} from './east-approach';
-import {drawWorldRoads} from './world-road-renderer';
-import {drawRoadPilot} from './world-road-pilot';
 import {drawRiverTerrain} from './river-art';
 import {CAMP_CHUNKS} from './terrain-stream-art';
 
@@ -27,14 +25,12 @@ export function drawHomeTerrain(ctx:CanvasRenderingContext2D,imgs:Record<string,
  if(painted&&imgs.homeGround)underlay.clipOutsideRect?.(opaque.x,opaque.y,opaque.width,opaque.height);
  if(painted&&!covered)for(const t of OUTDOOR_TILES){
   const image=imgs[t.key];if(!image||view&&!terrainIntersects(t,view))continue;
-  const region={...terrainPaintRegion(t,key=>!!imgs[key]),groundMaterials:imgs.worldGroundBrown&&imgs.worldGroundClear?{brown:imgs.worldGroundBrown,clear:imgs.worldGroundClear,scale:EAST_TERRAIN_SCALE}:undefined};
+  // Keep the ground registered while its secondary materials load.
+  const region={...terrainPaintRegion(t,key=>!!imgs[key]),groundMaterials:{brown:imgs.worldGroundBrown||image,clear:imgs.worldGroundClear||image,scale:EAST_TERRAIN_SCALE}};
   const tileContext=ctx as CanvasRenderingContext2D&{drawTerrainTile?:(image:HTMLImageElement,tile:typeof region)=>void};
   if(tileContext.drawTerrainTile)tileContext.drawTerrainTile(image,region);
   else ctx.drawImage(image,t.x,t.y,t.width,t.height);
  }
- // Camp artwork masks the surveyed portions inside camp. Only the connected
- // extensions emerge through its existing edge feather; the stone paths stay intact.
- if(painted&&!covered&&imgs.worldGroundWarm)drawWorldRoads(ctx,imgs,view);
  ctx.restore();
  const draw=(im:HTMLImageElement,x:number,y:number,width:number,height:number)=>{
   const r=terrainWorldRect(x,y,width,height,MAP_WIDTH,MAP_HEIGHT);
@@ -64,7 +60,6 @@ export function drawHomeTerrain(ctx:CanvasRenderingContext2D,imgs:Record<string,
  // Open with the complete overview; each original full-resolution tile sharpens in place as it arrives.
  for(const t of HOME_TERRAIN_TILES)if(imgs[t.key])draw(imgs[t.key],t.x,t.y,t.width,t.height);
  }
- if(painted&&imgs.worldGroundWarm)drawRoadPilot(ctx,imgs,view);
  if(painted&&imgs.worldGroundWarm)drawRiverTerrain(ctx,imgs,view);
  // Replacing artwork must never silently resize a user's previously built world.
  const replacement=custom&&!usesPaintedHomeTerrain(custom)&&imgs[assetImageKey(custom.url)];

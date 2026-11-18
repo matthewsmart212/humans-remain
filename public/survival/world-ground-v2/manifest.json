@@ -12,21 +12,25 @@
   "tileCount": 256,
   "tileSize": 1437.5,
   "overlap": 200,
-  "assembly": "Existing rotations, mirrors, edge feathers and broad world-coordinate regional colour fields retained. Three shared 1254px textures; no per-sector downloads.",
+  "assembly": "Upright material repeats at native pixel scale with pre-feathered edges, unique positional offsets, 200px terrain overlaps and a continuous world-space colour field.",
   "materials": [
     {
       "name": "warm",
       "image": "/survival/world-ground-v2/warm.webp",
       "nativeWidth": 1254,
       "nativeHeight": 1254,
-      "bytes": 2358584
+      "bytes": 477550,
+      "width": 1078,
+      "height": 1078
     },
     {
       "name": "brown",
       "image": "/survival/world-ground-v2/brown.webp",
       "nativeWidth": 1254,
       "nativeHeight": 1254,
-      "bytes": 2152472
+      "bytes": 475862,
+      "width": 1078,
+      "height": 1078
     },
     {
       "name": "olive",

@@ -8,7 +8,7 @@ import {installImportedArt} from '../src/imported-art';
 import {prepareAuthoredWorld} from '../src/authored-world';
 import {EDITOR_IMAGE_SOURCES,editorTerrainDetail} from '../src/editor-image-sources';
 import {OUTDOOR_TILES} from '../src/outdoor-terrain';
-import {TERRAIN_CHUNK_IMAGES} from '../src/terrain-stream-art';
+import {CAMP_CHUNK_IMAGES} from '../src/terrain-stream-art';
 import {RIVER_DETAIL_IMAGES} from '../src/river-art';
 import {SCENES,sceneImages} from '../src/world-scenes';
 import {requiredImages,WORLD_ASSETS} from '../src/world-assets';
@@ -30,7 +30,7 @@ const layout=prepareAuthoredWorld(checked.layout);
 // timber walls, the existing tier variants and their ground beds offline too.
 const savedWallIds=WORLD_ASSETS.filter(a=>wallIdentity(a.id)).map(a=>a.id);
 const sources={...LOOT_CHEST_IMAGES,...Object.fromEntries(SPAWNABLES.map(v=>['spawn-thumb-'+v.id,v.image])),...EDITOR_IMAGE_SOURCES,...editorTerrainDetail(layout.terrainImage),
- ...Object.fromEntries(OUTDOOR_TILES.map(t=>[t.key,t.image])),...TERRAIN_CHUNK_IMAGES,...RIVER_DETAIL_IMAGES,
+ ...Object.fromEntries(OUTDOOR_TILES.map(t=>[t.key,t.image])),...CAMP_CHUNK_IMAGES,...RIVER_DETAIL_IMAGES,
  ...Object.assign({},...[...SCENES.values()].map(sceneImages)),
  ...WALKER_IMAGE_SOURCES,...BOMBER_IMAGE_SOURCES,...requiredImages([...layout.items.map(p=>p.assetId),...GARDEN_ART.map(a=>a.id),...savedWallIds,...circularWallArt.map(a=>a.id)],layout.terrainImage),
  ...Object.assign({},...[...SCENES.values()].map(s=>requiredImages(s.layout?.items.map(p=>p.assetId)||[])))};

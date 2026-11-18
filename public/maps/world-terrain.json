@@ -21,10 +21,9 @@
   "sourceOriginOffset": 600,
   "sourceScale": 0.9428090415820634,
   "terrainTiles": 256,
-  "roadPatches": 86,
   "riverSections": 26,
   "sideFeatures": 4,
-  "sourceFiles": 127,
-  "bytes": 1887574,
+  "sourceFiles": 36,
+  "bytes": 1266440,
   "placements": "Live per-layout overlay; not baked into ground"
 }

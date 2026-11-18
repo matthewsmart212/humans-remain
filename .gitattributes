@@ -203,3 +203,8 @@ public/survival/expedition-menu-v2/loading-panel.webp -filter -diff -merge
 /public/survival/world-ground-v2/warm.webp -filter -diff -merge -text
 /public/survival/world-ground-v2/brown.webp -filter -diff -merge -text
 /public/survival/world-ground-v3/clear-earth.webp -filter -diff -merge -text
+
+# Repainted map and planning overviews are compact direct blobs.
+/public/maps/world-illustrated.webp -filter -diff -merge -text
+/public/maps/world-terrain.webp -filter -diff -merge -text
+/public/planning/built-river-features-v4.webp -filter -diff -merge -text

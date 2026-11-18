@@ -3,6 +3,7 @@ import {EAST_TERRAIN_SCALE} from './east-approach';
 export const TERRAIN_CHUNKS=manifest.chunks;
 export const ROAD_CHUNKS=TERRAIN_CHUNKS.filter(t=>t.layer==='road');
 export const CAMP_CHUNKS=TERRAIN_CHUNKS.filter(t=>t.layer==='camp');
+export const CAMP_CHUNK_IMAGES=Object.fromEntries(CAMP_CHUNKS.flatMap(t=>t.levels.map(l=>[l.key,l.url])));
 export const RIVER_TEXTURE_SIZES=new Map(manifest.rivers.map(p=>[p.key,p]));
 export const TERRAIN_CHUNK_IMAGES=Object.fromEntries(TERRAIN_CHUNKS.flatMap(t=>t.levels.map(l=>[l.key,l.url])));
 export const streamPatches=(layer:'road'|'camp')=>TERRAIN_CHUNKS.filter(t=>t.layer===layer).flatMap(t=>t.levels.map(l=>({

@@ -24,8 +24,6 @@ import {AXE_IMAGE_SOURCES} from './axe-renderer';
 import {RUNNER_AXE_IMAGE_SOURCES} from './runner-axe-art';
 import {HOME_TERRAIN,usesPaintedHomeTerrain} from './terrain-art';
 import {WORLD_GROUND_MATERIAL_SOURCES} from './world-ground';
-import {WORLD_ROAD_MATERIAL_SOURCES} from './world-road-materials';
-import {ROAD_OVERVIEW_IMAGES} from './world-road-pilot';
 import {requiredImages} from './world-assets';
 import type {WorldLayout} from './world-layout';
 import type {ArtworkPriority,ArtworkProgress} from './artwork-loading';
@@ -49,7 +47,7 @@ export const editorEntryArtwork=(layout:WorldLayout,nearSpawnRadius?:number)=>re
  nearSpawnRadius===undefined?layout.items.map(p=>p.assetId):nearby(layout,layout.spawn,nearSpawnRadius),
  layout.terrainImage,{animationFrames:false}
 );
-export const editorTerrainDetail=(terrain?:{url:string})=>usesPaintedHomeTerrain(terrain)?{...WORLD_GROUND_MATERIAL_SOURCES,...WORLD_ROAD_MATERIAL_SOURCES,...ROAD_OVERVIEW_IMAGES,...RIVER_PREVIEW_IMAGES,...RIVER_MOTION_IMAGES}:{};
+export const editorTerrainDetail=(terrain?:{url:string})=>usesPaintedHomeTerrain(terrain)?{...WORLD_GROUND_MATERIAL_SOURCES,...RIVER_PREVIEW_IMAGES,...RIVER_MOTION_IMAGES}:{};
 
 type ArtworkRenderer={loadImages:(sources:Record<string,string>,progress?:((p:ArtworkProgress)=>void),priority?:ArtworkPriority)=>Promise<void>;warmImages:(sources:Record<string,string>,priority?:ArtworkPriority)=>Promise<void>};
 /** A Play/Walk request promotes these shared jobs ahead of optional map detail. */

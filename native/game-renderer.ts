@@ -22,7 +22,7 @@ export {BACKPACK_NATIVE_ART};
 import {createArtworkLoader,loadingDeadline,artworkFailureDetails,type ArtworkPriority} from '../src/artwork-loading';
 import {createSkiaAdapter} from '../src/skia-adapter';
 import {createTerrainArtStreams} from '../src/terrain-art-streams';
-import {TERRAIN_CHUNK_IMAGES} from '../src/terrain-stream-art';
+import {CAMP_CHUNK_IMAGES} from '../src/terrain-stream-art';
 import {RIVER_DETAIL_IMAGES} from '../src/river-art';
 import {drawWorldEditor,type EditorView} from '../src/placed-world-renderer';
 import type {World} from '../src/survival-engine';
@@ -109,7 +109,7 @@ export async function createNativeRenderer(view:EditorView={...PLAY_VIEW},diagno
   revision++;
  };
  const releaseImages=(keys:string[])=>{for(const key of keys)delete prepared[key];loader.release(keys);revision++};
- const streamSources={...TERRAIN_CHUNK_IMAGES,...RIVER_DETAIL_IMAGES};
+ const streamSources={...CAMP_CHUNK_IMAGES,...RIVER_DETAIL_IMAGES};
  const streams=open('Terrain streams',()=>createTerrainArtStreams(warmImages,releaseImages,keys=>{loader.promote(Object.fromEntries(keys.map(k=>[k,streamSources[k]])));const images=new Set(keys.map(k=>loader.images[k]));for(const job of queue)if(images.has(job.image))job.priority='foreground'},diagnostics,'native'));
  return {
   warmImages,releaseImages,setFrameManaged,get revision(){return revision},
@@ -119,7 +119,7 @@ export async function createNativeRenderer(view:EditorView={...PLAY_VIEW},diagno
    const preview=this.draw(world,width,height);preview.dispose();
    await streams.settled();
   },
-  textureStats:()=>({graphics:{backend:'native-skia',shaderFieldBytes:adapter.shaderFieldBytes()},roads:streams.roads.stats(),camp:streams.camp.stats(),rivers:streams.rivers.stats(),artwork:{...loader.stats(),warming:queue.length,warmQueue:queue.slice(0,12).map(job=>({key:job.key,priority:job.priority,ageMs:Math.round(performance.now()-job.queuedAt)}))}}),
+  textureStats:()=>({graphics:{backend:'native-skia',shaderFieldBytes:adapter.shaderFieldBytes()},camp:streams.camp.stats(),rivers:streams.rivers.stats(),artwork:{...loader.stats(),warming:queue.length,warmQueue:queue.slice(0,12).map(job=>({key:job.key,priority:job.priority,ageMs:Math.round(performance.now()-job.queuedAt)}))}}),
   draw(world:World,width:number,height:number,fade=0,peers:readonly CoopPeer[]=[]){
    const recorder=Skia.PictureRecorder(),canvas=recorder.beginRecording(Skia.XYWHRect(0,0,width,height));
    const density=Math.min(2,PixelRatio.get());
@@ -127,9 +127,8 @@ export async function createNativeRenderer(view:EditorView={...PLAY_VIEW},diagno
    // back into React Native points. The world footprint stays identical.
    canvas.scale(1/density,1/density);
    const ctx=new adapter.SkiaContext(canvas,width*density,height*density,font);
-   const hooks=ctx as unknown as {requestRoadArtwork:(v:TerrainView)=>void;requestCampArtwork:(v:TerrainView)=>void;requestRiverArtwork:(v:TerrainView)=>void;riverTime:number;pixelRatio:number};
+   const hooks=ctx as unknown as {requestCampArtwork:(v:TerrainView)=>void;requestRiverArtwork:(v:TerrainView)=>void;riverTime:number;pixelRatio:number};
    hooks.pixelRatio=density;
-   hooks.requestRoadArtwork=v=>streams.roads.update(v,width*density/v.width);
    hooks.requestCampArtwork=v=>streams.camp.update(v,width*density/v.width);
    hooks.requestRiverArtwork=v=>streams.rivers.update(v,width*density/v.width);
    hooks.riverTime=world.tick/60;

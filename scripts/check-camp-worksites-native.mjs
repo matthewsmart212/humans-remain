@@ -67,7 +67,7 @@ try{
    world.stock.pallets=state==='active'?25:state==='partial'?5:0;world.stock.scrap=state==='active'?60:state==='partial'?15:0;world.stock.stone=state==='active'?40:state==='partial'?10:0;
    const f=m.furnaceState(world,furnace.id);f.fuel=state==='active'?60:0;f.queue=state==='active'?[{id:1,recipe:'ore',remaining:20}]:[];
    renderer.draw(world,width,height).dispose();const deadline=performance.now()+30000;
-   while(true){const stats=renderer.textureStats(),streams=[stats.roads,stats.camp,stats.rivers];assert(streams.every(s=>s.failures===0));if(streams.every(s=>s.missing===0&&s.pending===0)&&stats.artwork.warming===0)break;assert(performance.now()<deadline,'Native terrain preparation completes');await new Promise(resolve=>setTimeout(resolve,20));}
+   while(true){const stats=renderer.textureStats(),streams=[stats.camp,stats.rivers];assert(streams.every(s=>s.failures===0));if(streams.every(s=>s.missing===0&&s.pending===0)&&stats.artwork.warming===0)break;assert(performance.now()<deadline,'Native terrain preparation completes');await new Promise(resolve=>setTimeout(resolve,20));}
    const picture=renderer.draw(world,width,height),surface=api.Surface.Make(width,height);let image;
    try{surface.getCanvas().drawPicture(picture);surface.flush();image=surface.makeImageSnapshot();const bytes=image.encodeToBytes();assert(bytes.length>25000);const file=`${v.name}-${state}.png`;fs.writeFileSync(path.join(output,file),bytes);pictures.push(file)}finally{image?.dispose();surface.dispose();picture.dispose()}
   }

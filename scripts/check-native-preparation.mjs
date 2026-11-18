@@ -82,7 +82,7 @@ try{
   b.onLoad({filter:/.*/,namespace:'native-fixture'},a=>({contents:modules[a.path],loader:'js'}));
   b.onLoad({filter:/\.(webp|png|jpg|ttf)$/},a=>({contents:`module.exports=${JSON.stringify(a.path)};`,loader:'js'}));
   b.onLoad({filter:/[\/]skia-adapter\.ts$/},()=>({contents:'export const createSkiaAdapter=()=>({releaseImage(){},disposeLighting(){},shaderFieldBytes:()=>0});',loader:'js'}));
-  b.onLoad({filter:/[\/]terrain-art-streams\.ts$/},()=>({contents:'const stream=()=>({update(){},stats:()=>({})});export const createTerrainArtStreams=(_load,_release,_promote,_diagnostics,profile)=>{globalThis.__terrainProfile=profile;return {roads:stream(),camp:stream(),rivers:stream(),settled:()=>globalThis.__terrainGate,dispose(){}}};',loader:'js'}));
+  b.onLoad({filter:/[\/]terrain-art-streams\.ts$/},()=>({contents:'const stream=()=>({update(){},stats:()=>({})});export const createTerrainArtStreams=(_load,_release,_promote,_diagnostics,profile)=>{globalThis.__terrainProfile=profile;return {camp:stream(),rivers:stream(),settled:()=>globalThis.__terrainGate,dispose(){}}};',loader:'js'}));
  }}]});
  const {createNativeRenderer}=require(path.join(temp,'renderer.cjs'));
  const shared=new NativeFrameWorkScheduler(),renderer=await createNativeRenderer(undefined,undefined,shared);

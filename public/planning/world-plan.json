@@ -8,7 +8,7 @@
   "originalCampSize": 4800,
   "plannedAreaVsCamp": 17.4,
   "groundStatus": "complete",
-  "groundColour": "Warm and brown earth with irregular clear-soil patches; green terrain removed.",
+  "groundColour": "Mossy grass and warm, worn loam with gently blended woodland and clearings.",
   "builtArea": 400000000,
   "builtTextureCount": 256,
   "uniqueGroundImages": 3,
@@ -1653,7 +1653,7 @@
       ],
       "node": "village",
       "ground": "Deeper woodland brown, muted grass and small pockets of old paving.",
-      "purpose": "A substantial exploration district with streets, enterable buildings, courtyards and wooded gaps. Approach from camp and the eastern village trail.",
+      "purpose": "A substantial exploration district with streets, enterable buildings, courtyards and wooded gaps. Explore it from the camp or eastern woodland.",
       "status": "planned",
       "colour": "#9ba86c",
       "groundStatus": "built"
@@ -1699,7 +1699,7 @@
       ],
       "node": "factory",
       "ground": "Cool brown earth, grey gravel and worn service paving.",
-      "purpose": "Large industrial buildings and outdoor yards. Existing eastern paths become the southern approaches; reserve space for the railway on the far east.",
+      "purpose": "Large industrial buildings and outdoor yards. Reserve space for the railway on the far east.",
       "status": "planned",
       "colour": "#8b9c9b",
       "groundStatus": "built"
@@ -1828,7 +1828,7 @@
         ]
       ],
       "node": "logging",
-      "ground": "Deep woodland browns, worn dirt hauling tracks and sparse leaf litter.",
+      "ground": "Deep woodland browns, worn loam and sparse leaf litter.",
       "purpose": "Forest clearings and logging structures across the river, reached by two different approaches. Trees and harvestable resources remain separate assets.",
       "status": "planned",
       "colour": "#709276",
@@ -2051,770 +2051,6 @@
       10700
     ]
   },
-  "routes": [
-    {
-      "id": "camp-access-NW",
-      "from": "camp",
-      "to": "gateNW",
-      "kind": "access",
-      "status": "built",
-      "width": 0
-    },
-    {
-      "id": "camp-access-NE",
-      "from": "camp",
-      "to": "gateNE",
-      "kind": "access",
-      "status": "built",
-      "width": 0
-    },
-    {
-      "id": "camp-access-W",
-      "from": "camp",
-      "to": "gateW",
-      "kind": "access",
-      "status": "built",
-      "width": 0
-    },
-    {
-      "id": "camp-access-SW",
-      "from": "camp",
-      "to": "gateSW",
-      "kind": "access",
-      "status": "built",
-      "width": 0
-    },
-    {
-      "id": "camp-access-S",
-      "from": "camp",
-      "to": "gateS",
-      "kind": "access",
-      "status": "built",
-      "width": 0
-    },
-    {
-      "id": "camp-access-SE",
-      "from": "camp",
-      "to": "gateSE",
-      "kind": "access",
-      "status": "built",
-      "width": 0
-    },
-    {
-      "id": "camp-northwest",
-      "from": "gateNW",
-      "to": "campNW",
-      "via": [
-        [
-          1400,
-          1130
-        ],
-        [
-          890,
-          700
-        ]
-      ],
-      "kind": "stone",
-      "status": "built",
-      "width": 160
-    },
-    {
-      "id": "camp-northeast",
-      "from": "gateNE",
-      "to": "campNE",
-      "via": [
-        [
-          3460,
-          1130
-        ],
-        [
-          4000,
-          550
-        ]
-      ],
-      "kind": "stone",
-      "status": "built",
-      "width": 150
-    },
-    {
-      "id": "camp-west",
-      "from": "gateW",
-      "to": "campW",
-      "via": [
-        [
-          1000,
-          2770
-        ],
-        [
-          500,
-          2800
-        ]
-      ],
-      "kind": "stone",
-      "status": "built",
-      "width": 155
-    },
-    {
-      "id": "camp-southwest",
-      "from": "gateSW",
-      "to": "campSW",
-      "via": [
-        [
-          1550,
-          3460
-        ],
-        [
-          900,
-          3830
-        ]
-      ],
-      "kind": "stone",
-      "status": "built",
-      "width": 160
-    },
-    {
-      "id": "camp-south-painted",
-      "from": "gateS",
-      "to": "campSouthEdge",
-      "via": [
-        [
-          2170,
-          3500
-        ],
-        [
-          2380,
-          4000
-        ],
-        [
-          2540,
-          4370
-        ],
-        [
-          2650,
-          4560
-        ]
-      ],
-      "kind": "stone",
-      "status": "built",
-      "width": 145
-    },
-    {
-      "id": "camp-south",
-      "from": "campSouthEdge",
-      "to": "campS",
-      "via": [
-        [
-          2670,
-          4910
-        ],
-        [
-          2400,
-          5210
-        ],
-        [
-          2050,
-          5520
-        ],
-        [
-          1950,
-          5750
-        ]
-      ],
-      "kind": "trail",
-      "status": "planned",
-      "width": 85
-    },
-    {
-      "id": "camp-southeast",
-      "from": "gateSE",
-      "to": "approach",
-      "via": [
-        [
-          3600,
-          3500
-        ],
-        [
-          4030,
-          4040
-        ],
-        [
-          4590,
-          4560
-        ],
-        [
-          5100,
-          4540
-        ],
-        [
-          5630,
-          4400
-        ],
-        [
-          6100,
-          4350
-        ]
-      ],
-      "kind": "stone",
-      "status": "planned",
-      "width": 180
-    },
-    {
-      "id": "village-approach",
-      "from": "approach",
-      "to": "villageEdge",
-      "via": [
-        [
-          6710,
-          3600
-        ],
-        [
-          6650,
-          3100
-        ],
-        [
-          6450,
-          2600
-        ],
-        [
-          6100,
-          2120
-        ],
-        [
-          6100,
-          1600
-        ],
-        [
-          6100,
-          1000
-        ]
-      ],
-      "kind": "lane",
-      "status": "planned",
-      "width": 110
-    },
-    {
-      "id": "works-approach",
-      "from": "approach",
-      "to": "worksJunction",
-      "via": [
-        [
-          7220,
-          4070
-        ],
-        [
-          7500,
-          3900
-        ],
-        [
-          7900,
-          3500
-        ],
-        [
-          7950,
-          2800
-        ],
-        [
-          7900,
-          2100
-        ]
-      ],
-      "kind": "lane",
-      "status": "planned",
-      "width": 140
-    },
-    {
-      "id": "works-north",
-      "from": "worksJunction",
-      "to": "worksEdge",
-      "via": [
-        [
-          8000,
-          900
-        ]
-      ],
-      "kind": "lane",
-      "status": "planned",
-      "width": 110
-    },
-    {
-      "id": "works-scrap-trail",
-      "from": "worksJunction",
-      "to": "scrapEdge",
-      "via": [
-        [
-          8500,
-          1300
-        ],
-        [
-          9000,
-          1850
-        ],
-        [
-          9410,
-          2500
-        ],
-        [
-          9460,
-          3300
-        ],
-        [
-          9300,
-          4200
-        ],
-        [
-          9420,
-          4900
-        ],
-        [
-          9360,
-          5600
-        ]
-      ],
-      "kind": "trail",
-      "status": "planned",
-      "width": 90
-    },
-    {
-      "id": "camp-village",
-      "from": "campNE",
-      "to": "villageGate",
-      "via": [
-        [
-          4400,
-          -500
-        ]
-      ],
-      "kind": "trail",
-      "status": "planned",
-      "width": 90
-    },
-    {
-      "id": "village-arrival",
-      "from": "villageEdge",
-      "to": "villageGate",
-      "via": [
-        [
-          5600,
-          -250
-        ]
-      ],
-      "kind": "lane",
-      "status": "planned",
-      "width": 160
-    },
-    {
-      "id": "village-main",
-      "from": "villageGate",
-      "to": "village",
-      "via": [
-        [
-          4900,
-          -1200
-        ]
-      ],
-      "kind": "lane",
-      "status": "planned",
-      "width": 180
-    },
-    {
-      "id": "factory-arrival",
-      "from": "worksEdge",
-      "to": "factoryGate",
-      "via": [
-        [
-          8000,
-          0
-        ]
-      ],
-      "kind": "lane",
-      "status": "planned",
-      "width": 180
-    },
-    {
-      "id": "factory-main",
-      "from": "factoryGate",
-      "to": "factory",
-      "via": [
-        [
-          9300,
-          -1100
-        ]
-      ],
-      "kind": "lane",
-      "status": "planned",
-      "width": 220
-    },
-    {
-      "id": "village-factory",
-      "from": "village",
-      "to": "factoryGate",
-      "via": [
-        [
-          5900,
-          -1900
-        ],
-        [
-          6900,
-          -1400
-        ],
-        [
-          7600,
-          -900
-        ]
-      ],
-      "kind": "lane",
-      "status": "planned",
-      "width": 170
-    },
-    {
-      "id": "scrap-arrival",
-      "from": "scrapEdge",
-      "to": "scrapGate",
-      "kind": "trail",
-      "status": "planned",
-      "width": 100
-    },
-    {
-      "id": "scrap-main",
-      "from": "scrapGate",
-      "to": "scrap",
-      "via": [
-        [
-          8800,
-          7600
-        ]
-      ],
-      "kind": "lane",
-      "status": "planned",
-      "width": 210
-    },
-    {
-      "id": "northwest-river-approach",
-      "from": "campNW",
-      "to": "b1e",
-      "via": [
-        [
-          -800,
-          -500
-        ],
-        [
-          -1600,
-          -700
-        ]
-      ],
-      "kind": "trail",
-      "status": "planned",
-      "width": 100
-    },
-    {
-      "id": "logging-bridge",
-      "from": "b1e",
-      "to": "b1w",
-      "kind": "bridge",
-      "status": "planned",
-      "width": 145
-    },
-    {
-      "id": "logging-arrival",
-      "from": "b1w",
-      "to": "logging",
-      "via": [
-        [
-          -4300,
-          -1500
-        ]
-      ],
-      "kind": "lane",
-      "status": "planned",
-      "width": 170
-    },
-    {
-      "id": "north-woodland-link",
-      "from": "b1e",
-      "to": "village",
-      "via": [
-        [
-          -1800,
-          -2200
-        ],
-        [
-          0,
-          -1700
-        ],
-        [
-          2100,
-          -1500
-        ]
-      ],
-      "kind": "trail",
-      "status": "planned",
-      "width": 90
-    },
-    {
-      "id": "west-camp-trail",
-      "from": "campW",
-      "to": "westFrontier",
-      "via": [
-        [
-          -450,
-          2740
-        ],
-        [
-          -694,
-          2640
-        ],
-        [
-          -1100,
-          2770
-        ]
-      ],
-      "kind": "trail",
-      "status": "planned",
-      "width": 100
-    },
-    {
-      "id": "west-river-approach",
-      "from": "westFrontier",
-      "to": "b2e",
-      "via": [
-        [
-          -2200,
-          3100
-        ],
-        [
-          -3300,
-          2900
-        ]
-      ],
-      "kind": "trail",
-      "status": "planned",
-      "width": 100
-    },
-    {
-      "id": "west-camp-bridge",
-      "from": "b2e",
-      "to": "b2w",
-      "kind": "bridge",
-      "status": "planned",
-      "width": 140
-    },
-    {
-      "id": "west-logging-link",
-      "from": "b2w",
-      "to": "logging",
-      "via": [
-        [
-          -5700,
-          1800
-        ],
-        [
-          -5800,
-          0
-        ],
-        [
-          -5300,
-          -1400
-        ]
-      ],
-      "kind": "trail",
-      "status": "planned",
-      "width": 85
-    },
-    {
-      "id": "southwest-camp-trail",
-      "from": "campSW",
-      "to": "southwestFrontier",
-      "via": [
-        [
-          -122,
-          4775
-        ],
-        [
-          -694,
-          5040
-        ],
-        [
-          -1100,
-          5300
-        ]
-      ],
-      "kind": "trail",
-      "status": "planned",
-      "width": 100
-    },
-    {
-      "id": "southwest-river-approach",
-      "from": "southwestFrontier",
-      "to": "b3e",
-      "via": [
-        [
-          -1700,
-          5700
-        ]
-      ],
-      "kind": "trail",
-      "status": "planned",
-      "width": 100
-    },
-    {
-      "id": "waterworks-bridge",
-      "from": "b3e",
-      "to": "b3w",
-      "kind": "bridge",
-      "status": "planned",
-      "width": 150
-    },
-    {
-      "id": "waterworks-arrival",
-      "from": "b3w",
-      "to": "waterworks",
-      "via": [
-        [
-          -3900,
-          6400
-        ]
-      ],
-      "kind": "lane",
-      "status": "planned",
-      "width": 150
-    },
-    {
-      "id": "western-bank-link",
-      "from": "b2w",
-      "to": "b3w",
-      "via": [
-        [
-          -5400,
-          4000
-        ],
-        [
-          -4400,
-          5200
-        ]
-      ],
-      "kind": "trail",
-      "status": "planned",
-      "width": 75
-    },
-    {
-      "id": "southern-trail",
-      "from": "campS",
-      "to": "southJunction",
-      "via": [
-        [
-          2000,
-          7200
-        ]
-      ],
-      "kind": "trail",
-      "status": "planned",
-      "width": 80
-    },
-    {
-      "id": "meadow-north-approach",
-      "from": "southJunction",
-      "to": "b4n",
-      "kind": "trail",
-      "status": "planned",
-      "width": 75
-    },
-    {
-      "id": "meadow-footbridge",
-      "from": "b4n",
-      "to": "b4s",
-      "kind": "bridge",
-      "status": "planned",
-      "width": 110
-    },
-    {
-      "id": "meadow-arrival",
-      "from": "b4s",
-      "to": "meadow",
-      "via": [
-        [
-          2400,
-          10100
-        ]
-      ],
-      "kind": "trail",
-      "status": "planned",
-      "width": 70
-    },
-    {
-      "id": "waterworks-south-approach",
-      "from": "waterworks",
-      "to": "b5w",
-      "via": [
-        [
-          -3400,
-          7900
-        ]
-      ],
-      "kind": "trail",
-      "status": "planned",
-      "width": 90
-    },
-    {
-      "id": "lower-river-bridge",
-      "from": "b5w",
-      "to": "b5e",
-      "kind": "bridge",
-      "status": "planned",
-      "width": 120
-    },
-    {
-      "id": "meadow-west-link",
-      "from": "b5e",
-      "to": "b4s",
-      "via": [
-        [
-          -1200,
-          9600
-        ],
-        [
-          800,
-          9700
-        ]
-      ],
-      "kind": "trail",
-      "status": "planned",
-      "width": 75
-    },
-    {
-      "id": "scrap-meadow-approach",
-      "from": "scrap",
-      "to": "b6e",
-      "via": [
-        [
-          6900,
-          9500
-        ],
-        [
-          6000,
-          9900
-        ]
-      ],
-      "kind": "trail",
-      "status": "planned",
-      "width": 90
-    },
-    {
-      "id": "creek-footbridge",
-      "from": "b6e",
-      "to": "b6w",
-      "kind": "bridge",
-      "status": "planned",
-      "width": 110
-    },
-    {
-      "id": "meadow-east-link",
-      "from": "b6w",
-      "to": "meadow",
-      "kind": "trail",
-      "status": "planned",
-      "width": 75
-    }
-  ],
   "rivers": [
     {
       "id": "western-river",
@@ -3238,35 +2474,7 @@
       "joins": [
         "original-camp"
       ],
-      "routes": [
-        "camp-southwest",
-        "southwest-camp-trail"
-      ],
-      "goal": "Continuous ground is complete. The southwest dirt trail will be a separate road overlay.",
-      "contacts": [
-        {
-          "route": "camp-southwest",
-          "side": "north",
-          "point": [
-            235,
-            4412
-          ],
-          "width": 160,
-          "kind": "stone",
-          "status": "built"
-        },
-        {
-          "route": "southwest-camp-trail",
-          "side": "west",
-          "point": [
-            -122,
-            4775
-          ],
-          "width": 100,
-          "kind": "trail",
-          "status": "planned"
-        }
-      ]
+      "goal": "Mossy ground surrounds the southwest gate approach."
     },
     {
       "id": "A2",
@@ -3283,46 +2491,7 @@
         "A1",
         "original-camp"
       ],
-      "routes": [
-        "camp-southwest",
-        "southwest-camp-trail"
-      ],
-      "goal": "Continuous ground wraps the southwest corner. Route overlays and scenery remain to be placed.",
-      "contacts": [
-        {
-          "route": "camp-southwest",
-          "side": "east",
-          "point": [
-            266,
-            4385
-          ],
-          "width": 160,
-          "kind": "stone",
-          "status": "built"
-        },
-        {
-          "route": "southwest-camp-trail",
-          "side": "west",
-          "point": [
-            -1528,
-            5520
-          ],
-          "width": 100,
-          "kind": "trail",
-          "status": "planned"
-        },
-        {
-          "route": "southwest-river-approach",
-          "side": "west",
-          "point": [
-            -1528,
-            5520
-          ],
-          "width": 100,
-          "kind": "trail",
-          "status": "planned"
-        }
-      ]
+      "goal": "Continuous ground wraps the southwest corner."
     },
     {
       "id": "A3",
@@ -3339,46 +2508,7 @@
         "A2",
         "original-camp"
       ],
-      "routes": [
-        "camp-west",
-        "west-camp-trail"
-      ],
-      "goal": "Continuous ground reaches the western district areas. The trail and river crossing remain planned.",
-      "contacts": [
-        {
-          "route": "camp-west",
-          "side": "east",
-          "point": [
-            266,
-            2755
-          ],
-          "width": 155,
-          "kind": "stone",
-          "status": "built"
-        },
-        {
-          "route": "west-camp-trail",
-          "side": "west",
-          "point": [
-            -1528,
-            2860
-          ],
-          "width": 100,
-          "kind": "trail",
-          "status": "planned"
-        },
-        {
-          "route": "west-river-approach",
-          "side": "west",
-          "point": [
-            -1528,
-            2860
-          ],
-          "width": 100,
-          "kind": "trail",
-          "status": "planned"
-        }
-      ]
+      "goal": "Continuous ground reaches the western river crossing."
     },
     {
       "id": "A4",
@@ -3395,9 +2525,7 @@
         "A3",
         "original-camp"
       ],
-      "routes": [],
-      "goal": "Broad road-free brown earth connects above the western exit, ready for separately placed foliage.",
-      "contacts": []
+      "goal": "Broad road-free brown earth connects above the western exit, ready for separately placed foliage."
     },
     {
       "id": "A5",
@@ -3414,35 +2542,7 @@
         "A4",
         "original-camp"
       ],
-      "routes": [
-        "camp-northwest",
-        "northwest-river-approach"
-      ],
-      "goal": "Northwest ground is complete. Add the logging approach as a separate overlay later.",
-      "contacts": [
-        {
-          "route": "camp-northwest",
-          "side": "south",
-          "point": [
-            769,
-            588
-          ],
-          "width": 160,
-          "kind": "stone",
-          "status": "built"
-        },
-        {
-          "route": "northwest-river-approach",
-          "side": "west",
-          "point": [
-            -1528,
-            -682
-          ],
-          "width": 100,
-          "kind": "trail",
-          "status": "planned"
-        }
-      ]
+      "goal": "Continuous ground connects the northwest gate approach to woodland."
     },
     {
       "id": "A6",
@@ -3459,42 +2559,14 @@
         "A5",
         "original-camp"
       ],
-      "routes": [
-        "camp-northeast",
-        "camp-village"
-      ],
-      "goal": "Northern ground is complete. Both village approaches remain planned road overlays.",
-      "contacts": [
-        {
-          "route": "camp-northeast",
-          "side": "south",
-          "point": [
-            3965,
-            588
-          ],
-          "width": 150,
-          "kind": "stone",
-          "status": "built"
-        },
-        {
-          "route": "camp-village",
-          "side": "east",
-          "point": [
-            4740,
-            -500
-          ],
-          "width": 90,
-          "kind": "trail",
-          "status": "planned"
-        }
-      ]
+      "goal": "Continuous ground connects the north camp fringe to woodland."
     }
   ],
   "phases": [
     {
       "number": 1,
       "name": "Ground foundation — complete",
-      "detail": "The entire 20,000 × 20,000 terrain-pixel world is covered. The original camp stays fixed; surrounding ground uses large overlapping camp-style images with gradual colour blends."
+      "detail": "The entire 20,000 × 20,000 terrain-pixel world is covered. Short stone approaches from camp fade into surrounding grass and loam."
     },
     {
       "number": 2,
@@ -3504,17 +2576,17 @@
     {
       "number": 3,
       "name": "Northern village",
-      "detail": "Connect both northern approaches, then build the district footprint and the woodland link back to the logging crossing."
+      "detail": "Build the village footprint and the woodland around the logging crossing."
     },
     {
       "number": 4,
       "name": "Factory and scrap districts",
-      "detail": "Add separate eastern road overlays into the northern factory and southern scrap warehouse. Reserve the railway and building footprints first."
+      "detail": "Reserve the railway and building footprints for the factory and scrap districts."
     },
     {
       "number": 5,
       "name": "Southern meadows",
-      "detail": "Extend the southern trail, build the meadow crossings, and close the waterworks–meadow–scrap loop with substantial off-road ground."
+      "detail": "Build the meadow crossings and dress the open ground between the waterworks and scrap districts."
     },
     {
       "number": 6,
@@ -4189,15 +3261,7 @@
     ]
   },
   "roadLayout": {
-    "stage": "painted-road-sections",
-    "sections": 42,
-    "texturesReady": true,
-    "materials": [
-      "Bedded camp stone",
-      "Worn earth trail",
-      "Woodland earth track",
-      "Factory gravel track",
-      "Salvage earth track"
-    ]
+    "stage": "camp-paving",
+    "sections": 6
   }
 }

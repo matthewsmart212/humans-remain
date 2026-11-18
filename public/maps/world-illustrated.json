@@ -28,14 +28,17 @@
     "riverSections": 26,
     "sideFeatures": 4,
     "bridges": 4,
-    "roads": "WORLD_ROADS production geometry refined against registered painted road pixels within bounded corridors; camp ring traced from CAMP_INNER_RING and actual camp artwork",
-    "roadPaths": 39,
-    "paintedRoadPatches": 86,
+    "roads": "Camp ring and six short gate aprons traced from registered gameplay terrain",
+    "roadPaths": 7,
+    "gateApronFade": {
+      "fadeStart": 120,
+      "fadeEnd": 310
+    },
     "roadTrace": {
-      "points": 2484,
-      "adjusted": 1991,
-      "maxShift": 180,
-      "totalShift": 67995
+      "points": 120,
+      "adjusted": 108,
+      "maxShift": 140,
+      "totalShift": 4580
     },
     "terrainElevation": "None; only bank-distance relief",
     "mutablePlacements": "Not baked; supplied by live current-layout overlay"
@@ -46,7 +49,7 @@
   },
   "terrainColour": {
     "source": "/maps/world-terrain.webp",
-    "sha256": "feafc26c47f6ba027aabf85abf7917be5d4bac89122f8d67dc23248b328f0b3a",
+    "sha256": "c7e72d293ee4948a29830f7f42391daf5005752b49f41fc05ff786bec54d4216",
     "registration": "Same source bounds as the geography; no coordinate transform or displacement",
     "grid": 192,
     "blur": 2.6,
@@ -58,7 +61,7 @@
       102,
       138
     ],
-    "waterSamples": 92459,
+    "waterSamples": 92684,
     "samples": [
       {
         "name": "Camp soil",
@@ -67,14 +70,14 @@
           2400
         ],
         "terrainRGB": [
-          199,
-          122,
-          41
+          86,
+          64,
+          28
         ],
         "atlasPaperRGB": [
-          213,
-          165,
-          108
+          145,
+          136,
+          96
         ]
       },
       {
@@ -84,14 +87,14 @@
           -400
         ],
         "terrainRGB": [
-          225,
-          133,
-          43
+          84,
+          59,
+          30
         ],
         "atlasPaperRGB": [
-          226,
-          168,
-          107
+          142,
+          129,
+          95
         ]
       },
       {
@@ -101,14 +104,14 @@
           -2000
         ],
         "terrainRGB": [
-          150,
-          99,
-          57
+          68,
+          50,
+          27
         ],
         "atlasPaperRGB": [
-          171,
-          139,
-          103
+          121,
+          114,
+          82
         ]
       },
       {
@@ -118,14 +121,14 @@
           1000
         ],
         "terrainRGB": [
-          169,
-          99,
-          38
+          73,
+          53,
+          29
         ],
         "atlasPaperRGB": [
-          188,
-          142,
-          96
+          129,
+          120,
+          87
         ]
       },
       {
@@ -135,19 +138,19 @@
           10500
         ],
         "terrainRGB": [
-          125,
-          91,
-          57
+          77,
+          62,
+          24
         ],
         "atlasPaperRGB": [
-          167,
-          147,
-          111
+          138,
+          132,
+          91
         ]
       }
     ]
   },
-  "bytes": 601854,
+  "bytes": 456378,
   "checks": {
     "result": "pass",
     "waterSamples": [

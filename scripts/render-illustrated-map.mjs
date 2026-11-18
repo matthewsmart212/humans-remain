@@ -1,5 +1,5 @@
 // Registered illustrated geography is rebuilt from the installed river masks
-// and rendered roads. Actual terrain supplies soft colour washes and evidence
+// and camp paving. Actual terrain supplies soft colour washes and evidence
 // for tracing painted road centres; its gameplay texture is never copied.
 // Mutable placements belong to the live map overlay and are never baked here.
 import fs from 'node:fs';
@@ -102,7 +102,7 @@ function pathData(points,project,closed=false){
 
 try{
  assert(width>=1024&&width<=4096,'Atlas size must be between 1024 and 4096');
- await build({stdin:{contents:"export * from './src/world-roads';export * from './src/world-road-pilot';export * from './src/river-layout';export * from './src/river-collision';export * from './src/camp-foliage';export * from './src/outdoor-terrain';export * from './src/east-approach';",resolveDir:process.cwd()},bundle:true,platform:'node',format:'cjs',outfile:path.join(temporary,'geography.cjs'),logLevel:'error'});
+ await build({stdin:{contents:"export * from './src/river-layout';export * from './src/river-collision';export * from './src/camp-foliage';export * from './src/outdoor-terrain';export * from './src/east-approach';",resolveDir:process.cwd()},bundle:true,platform:'node',format:'cjs',outfile:path.join(temporary,'geography.cjs'),logLevel:'error'});
  const geography=require(path.join(temporary,'geography.cjs'));
  const bounds=geography.OUTDOOR_SOURCE_BOUNDS,unit=width/bounds.width;
  const project=([x,y])=>[(x-bounds.x)*unit,(y-bounds.y)*unit];
@@ -196,23 +196,19 @@ try{
    return[p[0]+x/total,p[1]+y/total];
   });
  }
- // Two bridge-tagged plan routes currently render as ordinary road surfaces
- // over dry land. Keep their real route connectivity without inventing water
- // or deck symbols. Only installed crossing records become engraved bridges.
- const roads=geography.WORLD_ROADS.filter(r=>r.kind!=='bridge'||!bridges.some(b=>b.id===r.id)).map(road=>({...road,traced:traceRoad(road.sourcePoints,Math.max(90,road.width))}));
- // Reuse the exact painted-road trace that draws the atlas for wall openings.
- // Export-only mode leaves both gameplay terrain and the atlas image untouched.
- const campRoads=roads.filter(r=>r.from.startsWith('gate')).map(r=>({id:r.id,width:r.width*geography.EAST_TERRAIN_SCALE,points:r.traced.filter(([x,y])=>x>-200&&x<5000&&y>-200&&y<5000).map(([x,y])=>[nice((x-600)*geography.EAST_TERRAIN_SCALE),nice((y-600)*geography.EAST_TERRAIN_SCALE)])}));
- fs.writeFileSync('src/player-map-camp-roads.json',JSON.stringify({source:'Existing atlas road traces from registered gameplay terrain; world coordinates',roads:campRoads})+'\n');
- if(process.argv.includes('--export-camp-roads'))console.log('Exported '+campRoads.length+' camp road traces; terrain unchanged.');
- else{
- const ring=geography.CAMP_INNER_RING.map(([x,y])=>[x/geography.EAST_TERRAIN_SCALE+600,y/geography.EAST_TERRAIN_SCALE+600]);
+ const campRoads=read('src/player-map-camp-roads.json').roads;
+ const wall=read('src/camp-circular-wall-layout.json');
+ const toSource=([x,y])=>[x/geography.EAST_TERRAIN_SCALE+600,y/geography.EAST_TERRAIN_SCALE+600];
+ const gateApron={fadeStart:120,fadeEnd:310};
+ const ring=geography.CAMP_INNER_RING.map(toSource);
  const centre=ring.reduce((c,p)=>[c[0]+p[0]/ring.length,c[1]+p[1]/ring.length],[0,0]);
  const ringGuide=ring.map(p=>{const d=distance(p,centre);return[p[0]+(p[0]-centre[0])/d*58,p[1]+(p[1]-centre[1])/d*58]});
- const ringPath=pathData(traceRoad(ringGuide,150,true),project,true);
- const roadPaths=roads.map(r=>({id:r.id,kind:r.kind,d:pathData(r.traced,project),w:(r.kind==='stone'?7.2:r.kind==='lane'?5.7:4.5)*width/3072}));
- roadPaths.push({id:'painted-camp-ring',kind:'stone',d:ringPath,w:8*width/3072});
- const roadGroups=roadPaths.map(p=>`<g><path d="${p.d}" stroke="#eed7a7" stroke-width="${p.w+6}" opacity=".48"/><path d="${p.d}" stroke="#51462e" stroke-width="${p.w+2.4}" opacity=".94"/><path d="${p.d}" stroke="#b09258" stroke-width="${p.w}"/><path d="${p.d}" stroke="#806236" stroke-width="${p.kind==='stone'?'1':'.8'}" stroke-dasharray="${p.kind==='stone'?'2 5':'3 8'}" opacity=".8"/></g>`).join('');
+ const roadPaths=campRoads.map(r=>({d:pathData(r.points.map(toSource),project),w:7.2*width/3072}));
+ roadPaths.push({d:pathData(traceRoad(ringGuide,150,true),project,true),w:8*width/3072});
+ const roadGroups=roadPaths.map(p=>`<g><path d="${p.d}" stroke="#eed7a7" stroke-width="${p.w+6}" opacity=".48"/><path d="${p.d}" stroke="#51462e" stroke-width="${p.w+2.4}" opacity=".94"/><path d="${p.d}" stroke="#b09258" stroke-width="${p.w}"/><path d="${p.d}" stroke="#806236" stroke-width="1" stroke-dasharray="2 5" opacity=".8"/></g>`).join('');
+ const [wallX,wallY]=project(toSource(wall.centre));
+ const fadeRadius=wall.radius+gateApron.fadeEnd,maskRadius=fadeRadius/geography.EAST_TERRAIN_SCALE*unit;
+ const apronFade=`<defs><radialGradient id="apron" gradientUnits="userSpaceOnUse" cx="${wallX}" cy="${wallY}" r="${maskRadius}"><stop offset="${(wall.radius+gateApron.fadeStart)/fadeRadius}" stop-color="#fff"/><stop offset="1" stop-color="#fff" stop-opacity="0"/></radialGradient><mask id="camp-roads"><rect width="${width}" height="${height}" fill="url(#apron)"/></mask></defs>`;
  const bridgeGroups=bridges.map(bridge=>{
   const a=project(bridge.from),b=project(bridge.to),dx=b[0]-a[0],dy=b[1]-a[1],length=Math.hypot(dx,dy),angle=Math.atan2(dy,dx)*180/Math.PI,w=bridge.width*unit;
   let ties='';for(let x=3;x<length-2;x+=7.5)ties+=`M${nice(x)} ${nice(-w*.46)}V${nice(w*.46)}`;
@@ -236,13 +232,13 @@ try{
  const paper=await sharp(tintedPaper,{raw:{width,height,channels:3}}).png().toBuffer();
  // Order is intentional: water overlays road ink where no real crossing exists.
  // Every bridge is redrawn over water in the final engraved overlay.
- const withoutBridges=Buffer.from(`<svg xmlns="http://www.w3.org/2000/svg" width="${width}" height="${height}"><g fill="none" stroke-linejoin="round" stroke-linecap="round">${roadGroups}</g></svg>`);
+ const withoutBridges=Buffer.from(`<svg xmlns="http://www.w3.org/2000/svg" width="${width}" height="${height}">${apronFade}<g mask="url(#camp-roads)" fill="none" stroke-linejoin="round" stroke-linecap="round">${roadGroups}</g></svg>`);
  const finalDetails=Buffer.from(`<svg xmlns="http://www.w3.org/2000/svg" width="${width}" height="${height}"><g fill="none" stroke-linecap="round"><path d="${shoreHatches.join('')}" stroke="#5c5934" stroke-width="1.1" opacity=".58"/></g>${bridgeGroups}</svg>`);
  fs.mkdirSync('public/maps',{recursive:true});
  await sharp(paper).composite([{input:withoutBridges},{input:waterInk},{input:finalDetails}]).webp({quality:92,effort:6}).toFile('public/maps/world-illustrated.webp');
  const metadata={version:2,style:'Engraved terrain-colour atlas with ochre soil, olive woodland ink, turquoise water and traced routes',image:'/maps/world-illustrated.webp',pixels:{width,height},sourceBounds:bounds,worldBounds,
   sourceOriginOffset:600,sourceScale:geography.EAST_TERRAIN_SCALE,geography:{water:'Installed collision mask rows with exact batch ownership and every disjoint side span',mainMaskRows:maskRows,sideMaskSpans:sideSpans,mainBatches:masks.length,riverSections:26,sideFeatures:sides.length,bridges:bridges.length,
-   roads:'WORLD_ROADS production geometry refined against registered painted road pixels within bounded corridors; camp ring traced from CAMP_INNER_RING and actual camp artwork',roadPaths:roadPaths.length,paintedRoadPatches:geography.ROAD_TERRAIN_PATCHES.length,roadTrace:tracing,terrainElevation:'None; only bank-distance relief',mutablePlacements:'Not baked; supplied by live current-layout overlay'},
+   roads:'Camp ring and six short gate aprons traced from registered gameplay terrain',roadPaths:roadPaths.length,gateApronFade:gateApron,roadTrace:tracing,terrainElevation:'None; only bank-distance relief',mutablePlacements:'Not baked; supplied by live current-layout overlay'},
   paper:{path:paperFile,sha256:crypto.createHash('sha256').update(fs.readFileSync(paperFile)).digest('hex')},terrainColour:{source:'/maps/world-terrain.webp',sha256:crypto.createHash('sha256').update(fs.readFileSync('public/maps/world-terrain.webp')).digest('hex'),registration:'Same source bounds as the geography; no coordinate transform or displacement',grid:terrainWash.grid,blur:terrainWash.blur,terrainBlend:.57,paperBlend:.43,waterExcludedFromGround:true,sampledWaterRGB:terrainWash.water,waterSamples:terrainWash.wetSamples,samples:colourSamples},bytes:fs.statSync('public/maps/world-illustrated.webp').size};
  // Published cartography can be reviewed against its exact geographic metadata.
  fs.writeFileSync('public/maps/world-illustrated.json',JSON.stringify(metadata,null,2)+'\n');
@@ -267,5 +263,4 @@ try{
  metadata.checks={result:'pass',waterSamples:assertions,runtimeWaterSamples:checked,bankSamplingDifferences,maxBankSamplingDistance,registration:'Identical to existing terrain and live-player map coordinates'};
  fs.writeFileSync('public/maps/world-illustrated.json',JSON.stringify(metadata,null,2)+'\n');
  console.log(JSON.stringify(metadata,null,2));
- }
 }finally{fs.rmSync(temporary,{recursive:true,force:true})}

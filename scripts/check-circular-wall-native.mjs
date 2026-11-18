@@ -104,7 +104,7 @@ try{
   renderer.draw(world,width,height).dispose();
   const deadline=performance.now()+30000;
   while(true){
-   const stats=renderer.textureStats(),streams=[stats.roads,stats.camp,stats.rivers];
+   const stats=renderer.textureStats(),streams=[stats.camp,stats.rivers];
    assert(streams.every(s=>s.failures===0),'Native terrain preparation did not fail');
    if(streams.every(s=>s.missing===0&&s.pending===0)&&stats.artwork.warming===0)break;
    assert(performance.now()<deadline,'Native terrain settles within the focused QA deadline');

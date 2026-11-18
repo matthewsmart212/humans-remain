@@ -51,9 +51,9 @@ try{
    for(let i=active.length-1;i>=0;i--)if(active[i].due<=clock)active.splice(i,1)[0].resolve();await settle();pump();
    while(index+1<points.length-1&&points[index+1][0]<=at)index++;
    const p=points[index],q=points[index+1],mix=Math.min(1,(at-p[0])/(q[0]-p[0])),x=p[1]+(q[1]-p[1])*mix,y=p[2]+(q[2]-p[2])*mix,view={x:x-width/2,y:y-height*.53,width,height};
-   for(const layer of ['roads','camp','rivers']){const stream=streams[layer];stream.update(view,scale,clock);const stats=stream.stats(clock);assert(stats.bytes<=stats.budgetBytes,'Actual manifest byte budget');assert(stats.pending<=2);if(at-first>1000)missingChunkMs+=stats.missing*50;peakMiB=Math.max(peakMiB,stats.bytes/1048576)}
+   for(const layer of ['camp','rivers']){const stream=streams[layer];stream.update(view,scale,clock);const stats=stream.stats(clock);assert(stats.bytes<=stats.budgetBytes,'Actual manifest byte budget');assert(stats.pending<=2);if(at-first>1000)missingChunkMs+=stats.missing*50;peakMiB=Math.max(peakMiB,stats.bytes/1048576)}
   }
-  const stats=Object.fromEntries(['roads','camp','rivers'].map(layer=>[layer,streams[layer].stats(clock)]));streams.dispose();
+  const stats=Object.fromEntries(['camp','rivers'].map(layer=>[layer,streams[layer].stats(clock)]));streams.dispose();
   for(const job of [...active,...queued])job.resolve();active.length=0;queued.length=0;await settle();
   return {requests:requests.length,uniqueTiles:new Set(requests).size,releases,quickReloads,missingChunkMs,peakLayerMiB:+peakMiB.toFixed(2),failures:Object.values(stats).reduce((n,s)=>n+s.failures,0)};
  };

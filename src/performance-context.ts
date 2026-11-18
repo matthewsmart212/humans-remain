@@ -1,5 +1,5 @@
 import type {World} from './survival-engine';
-export type TerrainPerformance=Record<'roads'|'camp'|'rivers',{bytes:number;missing:number}>&{graphics?:{backend:string;gpuCacheBytes?:number|null;gpuCacheLimitBytes?:number|null;shaderFieldBytes:number}};
+export type TerrainPerformance=Record<'camp'|'rivers',{bytes:number;missing:number}>&{graphics?:{backend:string;gpuCacheBytes?:number|null;gpuCacheLimitBytes?:number|null;shaderFieldBytes:number}};
 /** Cheap lengths/coordinates; no scene traversal, screenshots or asset copies. */
 export function performanceWorldContext(world:World,zoom:number,terrain:TerrainPerformance|undefined,width:number,height:number){
  return {scene:world.scene?.id||'camp',tick:world.tick,player:{x:Math.round(world.player.x),y:Math.round(world.player.y),sprinting:world.player.sprinting},

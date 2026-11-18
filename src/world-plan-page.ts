@@ -39,7 +39,7 @@ const zoom=(factor:number)=>{const size=clamp(view.size*factor,240,1000);setView
 get('zoom-in').addEventListener('click',()=>zoom(.75));get('zoom-out').addEventListener('click',()=>zoom(4/3));
 function layers(){
  const ground=get<HTMLInputElement>('show-ground').checked,routes=get<HTMLInputElement>('show-routes').checked,batches=get<HTMLInputElement>('show-batches').checked;
- get<SVGElement>('existing-ground').style.display=ground?'':'none';get<SVGElement>('built-survey').style.display=ground?'none':'block';
+ get<SVGElement>('existing-ground').style.display=ground?'':'none';
  get<SVGElement>('planned-routes').style.display=routes?'':'none';get<SVGElement>('next-batches').style.display=batches?'block':'none';
  get<SVGElement>('world-map').classList.toggle('showing-batches',batches);
 }
@@ -52,7 +52,7 @@ function selectBatch(id:string){
  get('batch-detail').removeAttribute('hidden');get('batch-title').textContent=batch.id+' · '+batch.name;get('batch-goal').textContent=batch.goal;
  // Selection also updates the visible description beside the map on desktop.
  get('detail-direction').textContent='Ground complete · '+batch.id;get('detail-title').textContent=batch.name;get('detail-purpose').textContent=batch.goal;
- get('detail-ground').textContent='Warm and brown camp-style earth with softly blended clear-soil patches. Separate stone, dirt and gravel roads change gradually with the district. Foliage will be placed separately.';
+ get('detail-ground').textContent='Mossy grass and worn loam blend across the camp fringe. Short stone approaches mark the wall openings.';
  get<HTMLButtonElement>('focus-district').hidden=true;
  document.querySelectorAll<HTMLElement>('[data-select]').forEach(b=>b.setAttribute('aria-pressed','false'));
  document.querySelectorAll<SVGElement>('[data-district]').forEach(pin=>{pin.classList.remove('selected');pin.setAttribute('aria-pressed','false')});

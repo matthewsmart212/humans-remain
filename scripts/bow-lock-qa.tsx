@@ -24,7 +24,7 @@ function QA(){
  useEffect(()=>{
   let closed=false,frame=0,last=0,acc=0;let renderer:Awaited<ReturnType<typeof createWebWorld>>|undefined;
   const sources=Object.fromEntries(Object.entries({...EDITOR_ENTRY_IMAGES,...EDITOR_MOVEMENT_IMAGES}).filter(([key])=>!key.startsWith('art-')).map(([key,url])=>[key,(redirects as Record<string,string>)[url]??url]));
-  createWebWorld(canvas.current!,(ctx,atlas,imgs,w)=>drawWorldEditor(ctx,atlas,imgs,w,view),{}, {sources,streamRoads:false,streamRivers:false}).then(r=>{
+  createWebWorld(canvas.current!,(ctx,atlas,imgs,w)=>drawWorldEditor(ctx,atlas,imgs,w,view),{}, {sources,streamRivers:false}).then(r=>{
    if(closed){r.dispose();return}renderer=r;setStatus('Ready');
    const draw=(now:number)=>{
     const w=world.current;acc+=Math.min(.1,(now-(last||now))/1000);last=now;

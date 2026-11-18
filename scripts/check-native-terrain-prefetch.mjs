@@ -47,9 +47,9 @@ try{
  let requests=0;const streams=m.createTerrainArtStreams(async()=>{requests++},()=>{},undefined,undefined,'native');
  let peak=0;for(const [i,p] of fixture.positions.entries()){
   const ppu=i%11===0?.3:1.5,view={x:p[1]-844/ppu,y:p[2]-390/ppu,width:1688/ppu,height:780/ppu};clock+=200;
-  for(const name of ['roads','camp','rivers'])streams[name].update(view,ppu,clock);
+  for(const name of ['camp','rivers'])streams[name].update(view,ppu,clock);
   await streams.settled();
-  for(const name of ['roads','camp','rivers']){const st=streams[name].stats();assert.equal(st.missing,0);assert(st.bytes<=st.budgetBytes);peak=Math.max(peak,st.bytes)}
+  for(const name of ['camp','rivers']){const st=streams[name].stats();assert.equal(st.missing,0);assert(st.bytes<=st.budgetBytes);peak=Math.max(peak,st.bytes)}
  }
  streams.dispose();
  const failed=m.createTerrainArtStreams(async()=>{throw Error('decode failed')},()=>{},undefined,undefined,'native');

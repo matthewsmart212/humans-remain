@@ -16,7 +16,6 @@ export const WORLD_GROUND_COLOUR_SHADER=`
 uniform shader terrain;
 uniform shader clearEarth;
 uniform shader colourField;
-uniform float sourceScale;
 half4 main(float2 xy){
  half4 ground=terrain.eval(xy);
  float3 field=float3(colourField.eval(xy).rgb);

@@ -46,7 +46,7 @@ try{
   Object.assign(world.player,{x:hall.x,y:b.y+b.height*position,equipped:null,direction:'up'});
   renderer.draw(world,width,height).dispose();
   const deadline=performance.now()+30000;
-  while(true){const stats=renderer.textureStats(),streams=[stats.roads,stats.camp,stats.rivers];assert(streams.every(s=>s.failures===0));if(streams.every(s=>s.missing===0&&s.pending===0)&&stats.artwork.warming===0)break;assert(performance.now()<deadline,'Native terrain preparation completes');await new Promise(resolve=>setTimeout(resolve,20));}
+  while(true){const stats=renderer.textureStats(),streams=[stats.camp,stats.rivers];assert(streams.every(s=>s.failures===0));if(streams.every(s=>s.missing===0&&s.pending===0)&&stats.artwork.warming===0)break;assert(performance.now()<deadline,'Native terrain preparation completes');await new Promise(resolve=>setTimeout(resolve,20));}
   const picture=renderer.draw(world,width,height),surface=api.Surface.Make(width,height);let image;
   try{surface.getCanvas().drawPicture(picture);surface.flush();image=surface.makeImageSnapshot();const bytes=image.encodeToBytes();assert(bytes.length>25000);const file=`native-${broken?'ruined':'repaired'}-${position===1.08?'exterior':inside?'interior':'step-'+String(position).replace('.','-')}.png`;fs.writeFileSync(path.join(output,file),bytes);pictures.push(file)}finally{image?.dispose();surface.dispose();picture.dispose()}
  }

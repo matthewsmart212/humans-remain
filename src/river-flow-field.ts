@@ -1,4 +1,5 @@
 import type {RiverBatch} from './river-layout';
+import headwaterMask from './river-water-mask.json';
 
 type Point=readonly number[];
 const floatBits=new Float32Array(1),integerBits=new Uint32Array(floatBits.buffer);
@@ -18,6 +19,20 @@ function routeAt(x:number,y:number,points:readonly Point[],branch=false){
  const length=Math.hypot(vx,vy);
  return {x:length>.000001?vx/length:0,y:length>.000001?vy/length:branch?0:1,distance};
 }
+// The headwater painting has a solid rectangular soil margin. Feather it
+// around the registered water spans, with room for the banks and their stones.
+function bankOpacity(x:number,y:number,batch:RiverBatch){
+ if(batch.bankMask!=='headwater')return 1;
+ const {source}=batch,{step,rows}=headwaterMask;
+ const row=(y-source.y)/step-.5,index=Math.floor(row);
+ const a=rows[Math.max(0,index)],b=rows[Math.min(rows.length-1,index+1)];
+ const span=a??b;
+ if(!span)return 0;
+ const next=b??span,t=row-index;
+ const left=source.x+(span[0]+(next[0]-span[0])*t)*step;
+ const right=source.x+(span[1]+(next[1]-span[1])*t)*step;
+ return 1-smooth(122,258,Math.max(left-x,x-right,0));
+}
 /** Static route direction and bank masks. Water colour and moving ripple
  * samples stay in the live shader. The small interpolated grid keeps broad
  * bends/shoreline gradients smooth without per-fragment route searches. */
@@ -34,7 +49,7 @@ function buildRiverFlowPixels(batch:RiverBatch,sidePoints?:readonly Point[]){
  for(let row=0;row<height;row++)for(let col=0;col<width;col++){
   const x=source.x+(col+.5)*source.width/width,y=source.y+(row+.5)*source.height/height,v=routeAt(x,y,points),at=(row*width+col)*4;
   main[at]=half(v.x*.5+.5);main[at+1]=half(v.y*.5+.5);
-  main[at+2]=half(batch.corridor?1-smooth(batch.corridor.inner,batch.corridor.outer,v.distance):1);main[at+3]=half(1);
+  main[at+2]=half(batch.corridor?1-smooth(batch.corridor.inner,batch.corridor.outer,v.distance):bankOpacity(x,y,batch));main[at+3]=half(1);
   if(side&&branch){const b=routeAt(x,y,branch,true);side[at]=half(b.x*.5+.5);side[at+1]=half(b.y*.5+.5);side[at+2]=half(smooth(-50,100,v.distance-b.distance));side[at+3]=half(1)}
  }
  return {width,height,main:new Uint8Array(main.buffer),side:side?new Uint8Array(side.buffer):undefined};
