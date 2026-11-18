@@ -3,6 +3,7 @@ import {provisionImageKey} from './food-provisions-art';
 import {timeOf,type World,type Vec} from './survival-engine';
 import {placementBounds} from './world-layout';
 import {buildingRestored} from './camp-restoration';
+import {hearthFirelight} from './hearth-animation-art';
 import {FOOD_RECIPES,isCookedFood,type FoodSpecies} from './food-items';
 import {assetImageKey,TREE_LOG_IMAGE} from './world-assets';
 
@@ -33,8 +34,16 @@ export function bonfireFoodDrawables(ctx:CanvasRenderingContext2D,imgs:Record<st
   const job=w.fire.queue?.[0],burning=shape.fuel>0;
   const spit=imgs.campSpit;
   if(spit&&buildingRestored(w,'fire')){
-   const sw=width*.94,sh=sw*366/768;
-   out.push({y:shape.y+3,draw:()=>ctx.drawImage(spit,shape.x-sw/2,shape.y-height*.44-sh*.18,sw,sh)});
+   const sw=width*.94,sh=sw*366/768,x=shape.x-sw/2,y=shape.y-height*.44-sh*.18;
+   out.push({y:shape.y+3,draw:()=>{
+    ctx.drawImage(spit,x,y,sw,sh);
+    if(burning&&imgs.campSpitLight){
+     ctx.save();
+     ctx.globalAlpha*=hearthFirelight(w.weather?.reducedMotion?0:t);
+     ctx.drawImage(imgs.campSpitLight,x,y,sw,sh);
+     ctx.restore();
+    }
+   }});
   }
   if(job)out.push({y:shape.y+3,draw:()=>{
    const y=shape.y-height*.44,progress=clamp(1-job.remaining/FOOD_RECIPES[job.species].seconds),turn=w.weather?.reducedMotion?0:Math.sin(t*2)*.055;

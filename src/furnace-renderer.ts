@@ -7,7 +7,7 @@ import {assetImageKey} from './world-assets';
 import {placementBounds,placementPoint,type Placement} from './world-layout';
 import {timeOf,type World} from './survival-engine';
 import type {CampLight} from './lighting-model';
-import {FURNACE_FIREBOX} from './camp-worksites-art';
+import {FURNACE_FIREBOX,FURNACE_INGOT_RACK} from './camp-worksites-art';
 
 export function drawCampFurnace(ctx:CanvasRenderingContext2D,imgs:Record<string,HTMLImageElement>,w:World,p:Placement){
  if(p.assetId!==FURNACE_ID)return false;
@@ -19,7 +19,12 @@ export function drawCampFurnace(ctx:CanvasRenderingContext2D,imgs:Record<string,
  const image=working?(imgs[`furnaceFire${frame}`]??imgs[assetImageKey(FURNACE_ACTIVE_FRAMES[frame])]??imgs.furnaceFire0??cold):cold;
  if(!image)return false;
  ctx.drawImage(image,b.x,b.y,b.width,b.height);
- if(station?.ready&&imgs.ironIngot)for(let i=0;i<Math.min(3,station.ready);i++)ctx.drawImage(imgs.ironIngot,b.x+b.width*(.673+i*.027),b.y+b.height*(.568-i*.01),b.width*.055,b.width*.041);
+ if(station?.ready&&imgs.ironIngot){
+  const {x,y,stepX,stepY,width,height}=FURNACE_INGOT_RACK;
+  for(let i=0;i<Math.min(3,station.ready);i++){
+   ctx.drawImage(imgs.ironIngot,b.x+b.width*(x+i*stepX),b.y+b.height*(y+i*stepY),b.width*width,b.height*height);
+  }
+ }
  return true;
 }
 

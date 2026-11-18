@@ -22,22 +22,45 @@ export function headquartersCutawayAmount(p:Placement,w:World){
  return Math.max(doorway,room)*smooth((v-.32)/.035);
 }
 
-/** The entrance steps, stone plinth, crates and log store use the ORIGINAL
- * exterior pixels in every state. Only artwork above this seam fades. */
-export function clipHeadquartersLayer(ctx:CanvasRenderingContext2D,b:{x:number;y:number;width:number;height:number},upper:boolean){
- const seam:[[number,number],...Array<[number,number]>]=[[0,.70],[.333,.70],[.333,.78],[.666,.78],[.666,.70],[1,.70]];
- const points=upper?[[0,0],[1,0],...seam.slice().reverse()]:[...seam,[1,1],[0,1]];
- ctx.beginPath();points.forEach(([u,v],i)=>i?ctx.lineTo(b.x+u*b.width,b.y+v*b.height):ctx.moveTo(b.x+u*b.width,b.y+v*b.height));ctx.closePath();ctx.clip();
+// Follow the tops of the two lintels and the sloped timber that frames the gable.
+// Both restored and ruined fronts share these 1536 × 1024 source coordinates.
+const frontEave:readonly (readonly [number,number])[]=[
+ [0,505],[97,505],[105,504],[487,503],[499,507],[502,501],[767,340],
+ [1032,501],[1040,510],[1046,503],[1429,506],[1436,505],[1536,505],
+];
+
+export function drawHeadquartersExterior(ctx:CanvasRenderingContext2D,image:CanvasImageSource,
+ b:{x:number;y:number;width:number;height:number},cutaway:number){
+ if(cutaway<=0){ctx.drawImage(image,b.x,b.y,b.width,b.height);return}
+ // Reveal the roof first, then the front walls. At the midpoint the grounded
+ // timber facade remains crisp against the open room on either side of the door.
+ const drawLayer=(top:boolean,opacity:number)=>{
+  if(opacity<=0)return;
+  ctx.save();
+  ctx.globalAlpha*=opacity;
+  ctx.beginPath();
+  ctx.moveTo(b.x,top?b.y:b.y+b.height);
+  for(const [x,y] of frontEave)ctx.lineTo(b.x+x/1536*b.width,b.y+y/1024*b.height);
+  ctx.lineTo(b.x+b.width,top?b.y:b.y+b.height);
+  ctx.closePath();
+  ctx.clip();
+  ctx.drawImage(image,b.x,b.y,b.width,b.height);
+  ctx.restore();
+ };
+ drawLayer(true,1-smooth(cutaway*2));
+ drawLayer(false,1-smooth(cutaway*2-1));
 }
 
 /** The doorway is an aperture onto the same room used by the cutaway. These
  * pixel contours follow the inner jambs/braces, including the broken hanging
  * timber. Never show the second, painted room baked into the exterior sprite. */
 export function clipHeadquartersDoorway(ctx:CanvasRenderingContext2D,b:{x:number;y:number;width:number;height:number},broken:boolean,outside=false){
+ // Stay inside the upright jambs and end the cast shade on the wooden
+ // threshold. The projecting stone lantern plinths belong to the sunlit front.
  const top:readonly (readonly [number,number])[]=broken
-  ?[[.37,.47],[.42,.42],[.595,.42],[.665,.47]]
-  :[[.365,.47],[.42,.42],[.60,.42],[.665,.47]];
- const points=[...top,[.665,.735],[.365,.735]];
+  ?[[.388,.555],[.391,.506],[.414,.471],[.445,.439],[.475,.431],[.525,.431],[.561,.442],[.591,.474],[.609,.507],[.612,.555]]
+  :[[.388,.63],[.391,.556],[.399,.503],[.426,.463],[.468,.438],[.530,.438],[.564,.455],[.596,.492],[.601,.52],[.612,.63]];
+ const points=[...top,[.612,.722],[.389,.722]];
  const native=ctx as CanvasRenderingContext2D&{clipOutsidePath?:()=>void};
  ctx.beginPath();
  if(outside&&!native.clipOutsidePath){ctx.moveTo(b.x-1,b.y-1);ctx.lineTo(b.x+b.width+1,b.y-1);ctx.lineTo(b.x+b.width+1,b.y+b.height+1);ctx.lineTo(b.x-1,b.y+b.height+1);ctx.closePath()}

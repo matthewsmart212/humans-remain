@@ -5,7 +5,7 @@ export const TREATMENT_IDLE_FRAMES=Array.from({length:5},(_,i)=>`${TREATMENT_ART
 export const TREATMENT_PULSE_FRAMES=[0,1,2,3,4,3,2,1].map(i=>TREATMENT_IDLE_FRAMES[i]);
 export const TREATMENT_BROKEN_IMAGE=`${TREATMENT_ART_ROOT}/broken.webp`;
 export const TREATMENT_ANIMATION_FPS=3;
-const TREATMENT_FRAME_BYTES=[1201174,1203786,1203782,1203766,1203710];
+const TREATMENT_FRAME_BYTES=[1163078,1164812,1165774,1169594,1165572];
 
 /** Upgrade original treatment artwork, preserving later custom uploads and placement geometry. */
 export function resolveTreatmentArtwork(record:ArtworkRecord):ArtworkRecord{

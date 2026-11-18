@@ -9,8 +9,9 @@ export const WAREHOUSE_ANCHOR:[number,number]=[.5,.84];
 // Trace the diagonal ground footprint, never the elevated eaves or chimney.
 export const WAREHOUSE_COLLISION:AssetCollision={lineWidth:.008,paths:[{closed:true,points:[[.06,.64],[.51,.42],[.94,.70],[.94,.79],[.76,.84],[.65,.77],[.64,.66],[.60,.64],[.40,.64],[.23,.76],[.06,.70]]}]};
 export const FURNACE_COLLISION:AssetCollision={lineWidth:.008,paths:[{closed:true,points:[[.08,.74],[.33,.67],[.64,.63],[.92,.72],[.92,.77],[.69,.88],[.29,.93],[.08,.84]]}]};
-export const FURNACE_FIREBOX={x:.600,y:.535,width:.217,height:.198,light:[.482,.60] as const,
- points:[[.602,.730],[.607,.649],[.637,.590],[.680,.552],[.723,.536],[.767,.555],[.798,.607],[.814,.701]] as const};
+export const FURNACE_FIREBOX={light:[.482,.609] as const};
+// The front of the new workbench stays clear of the bellows and crucible.
+export const FURNACE_INGOT_RACK={x:.695,y:.568,stepX:.016,stepY:-.004,width:.033,height:.025};
 
 /** Replace this approved source only. Future owner-uploaded artwork wins. */
 export function resolveWorksiteWarehouse(record:ArtworkRecord):ArtworkRecord{

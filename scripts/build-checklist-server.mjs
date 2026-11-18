@@ -86,6 +86,8 @@ console.log(JSON.stringify({publishedCircularWallImages:circularWallImages.size,
 // illustrated map and v3 walker sprites remain in the published bundle.
 const historicalPublishExports=[
  '/maps/world-terrain.webp','/maps/world-terrain.json','/survival/scrap-walker-v2',
+ // The Worker redirects old furnace frames to the same registered canvas.
+ '/survival/camp-furnace-v3',
  // Unused sword study, retired HQ map art and duplicate food PNG exports.
  // Source/native copies remain available; the browser uses the food WebPs.
  '/survival/scrap-runner/sword-west-study-v1.webp',

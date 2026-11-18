@@ -11,6 +11,17 @@ try{
  const m=createRequire(import.meta.url)(path.join(temp,'game.cjs')),snapshot=JSON.parse(fs.readFileSync('native/assets/world-snapshot.json'));
  m.installImportedArt(snapshot.records);
  const make=()=>{const w=m.createCampPlaySession(snapshot.layout);w.animals=[];w.enemies=[];w.loot=[];w.fire={queue:[],rack:[],updatedAt:0,cookUntil:0,ready:false};w.camp.hearth.fuel=100;Object.assign(w.player,m.stationFront(w.camp,'hearth'));return w};
+ // The reflected light follows the same cooking frame on both renderers.
+ const camp=make(),spitImages={campSpit:{},campSpitLight:{}},calls=[];
+ const paint={globalAlpha:1,save(){},restore(){this.globalAlpha=1},drawImage(image,...rect){calls.push({image,rect,opacity:this.globalAlpha})}};
+ const spitPass=()=>{calls.length=0;for(const d of m.bonfireFoodDrawables(paint,spitImages,camp))d.draw();return calls.map(c=>c.image)};
+ assert.deepEqual(spitPass(),[spitImages.campSpit,spitImages.campSpitLight]);
+ assert.deepEqual(calls[0].rect,calls[1].rect);assert(calls[1].opacity>0&&calls[1].opacity<1);
+ const initialLight=calls[1].opacity;camp.tick+=37;spitPass();assert.notEqual(calls[1].opacity,initialLight);
+ camp.weather={...camp.weather,reducedMotion:true};spitPass();
+ const steady=calls[1].opacity;camp.tick+=37;spitPass();assert.equal(calls[1].opacity,steady);
+ camp.camp.hearth.fuel=0;assert.deepEqual(spitPass(),[spitImages.campSpit]);
+ camp.progression={...camp.progression,campLevel:0,restoredBuildings:[]};assert.deepEqual(spitPass(),[]);
  const advance=(w,seconds)=>{w.tick+=Math.round(seconds*60);m.stepKitchen(w)};
  const w=make();m.setItemCount(w,'rawMeat',1);assert(m.queueFood(w,'chicken'));advance(w,12);
  assert.equal(w.loot.length,1);const meal=w.loot[0];assert.equal(meal.kind,'cookedMeat');assert.equal(meal.amount,1);assert.equal(meal.flight.born,12);assert.equal(meal.flight.lands,12+m.COOKED_FOOD_HOP_SECONDS);
@@ -37,5 +48,5 @@ try{
  // If the editor leaves no walkable ground nearby, retain the finished job.
  const blocked=make(),hearth={...blocked.camp.hearth};blocked.camp.hearth.x=-1e8;blocked.camp.hearth.y=-1e8;blocked.fire.queue=[{id:blocked.serial++,species:'rabbit',remaining:8}];advance(blocked,8);assert.equal(blocked.loot.length,0);assert.equal(blocked.fire.queue[0].remaining,0);
  Object.assign(blocked.camp.hearth,hearth,{fuel:0});m.stepKitchen(blocked);assert.equal(blocked.fire.queue.length,0);assert.equal(blocked.loot.length,1,'A completed job retries safely even after the fuel runs out');
- console.log('PASS: authored camp walkability, random directions, hop rendering, no table, landing-gated pickup, all meats, catch-up timing, reload safety, legacy meals and blocked-ground retry.');
+ console.log('PASS: spit firelight registration and motion preferences, authored camp walkability, random directions, hop rendering, no table, landing-gated pickup, all meats, catch-up timing, reload safety, legacy meals and blocked-ground retry.');
 }finally{Math.random=random;fs.rmSync(temp,{recursive:true,force:true})}

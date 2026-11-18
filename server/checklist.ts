@@ -8,6 +8,7 @@ import calmRiverRedirects from './calm-river-redirects.json';
 import retiredRoadRedirects from './retired-road-redirects.json';
 import riverFeaturesRedirects from './river-features-redirects.json';
 import riverQualityRedirects from './river-quality-redirects.json';
+import {FURNACE_ART_ROOT,FURNACE_COLD_IMAGE,FURNACE_BROKEN_IMAGE,FURNACE_ACTIVE_FRAMES} from '../src/furnace-animation-art';
 import {handleMcp} from './mcp';
 import {openingMediaResponse} from './opening-media';
 import {renderPublicChecklist} from './public-checklist';
@@ -24,6 +25,7 @@ const db=(env:Env)=>{if(!env.DB)throw Error('Checklist storage unavailable');ret
 // Each replacement retains the original texture rectangle and coordinate scale.
 const retiredTerrain:Record<string,string>={
  ...retiredRoadRedirects,
+ ...Object.fromEntries([FURNACE_COLD_IMAGE,FURNACE_BROKEN_IMAGE,...FURNACE_ACTIVE_FRAMES].map(url=>[url.replace(FURNACE_ART_ROOT,'/survival/camp-furnace-v3'),url])),
  ...calmRiverRedirects,
  ...riverFeaturesRedirects,
  ...riverQualityRedirects,

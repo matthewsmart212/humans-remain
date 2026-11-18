@@ -1,4 +1,6 @@
 import {CAMP_RESTORATION_ART} from './camp-restoration-art';
+import {FURNACE_NATIVE_ART} from './furnace-animation-art';
+import {IRONWORKS_NATIVE_ART} from './ironworks-art';
 import React,{useEffect} from 'react';
 import {View,Text,Pressable,ScrollView,StyleSheet,Image,BackHandler,type ImageSourcePropType} from 'react-native';
 import type {World} from '../src/survival-engine';
@@ -14,7 +16,7 @@ import {packWeight} from '../src/expedition-inventory';
 import {canPayMaterials} from '../src/camp-materials';
 import {costRows,RESTORE_FURNACE_COST} from '../src/run-progression';
 type Props={world:World;width:number;height:number;safe:{top:number;bottom:number;left:number;right:number};onClose:()=>void;onChange:()=>void};
-const furnaceArt=require('../public/survival/camp-craft-v2/furnace-idle.webp');
+const furnaceArt=IRONWORKS_NATIVE_ART.campFurnaceRuined;
 const textures:Record<string,number>={
  '/survival/ui-field-kit-v1/logs.png':require('../public/survival/ui-field-kit-v1/logs.png'),
  '/survival/headquarters-menu-v1/camp-plan.webp':require('../public/survival/headquarters-menu-v1/camp-plan.webp'),
@@ -25,7 +27,7 @@ const textures:Record<string,number>={
  '/survival/scrap-runner/bow-v1/bow-icon.webp':require('../public/survival/scrap-runner/bow-v1/bow-icon.webp'),
  '/survival/scrap-runner/bow-v1/arrows-icon.webp':require('../public/survival/scrap-runner/bow-v1/arrows-icon.webp'),
 };
-const source=(path:string):ImageSourcePropType=>CAMP_RESTORATION_ART[path]??textures[path]??BUNDLED_ART[path]??BACKPACK_NATIVE_ART[path]??{uri:path.startsWith('/')?WORLD_URL+path:path};
+const source=(path:string):ImageSourcePropType=>FURNACE_NATIVE_ART[path]??CAMP_RESTORATION_ART[path]??textures[path]??BUNDLED_ART[path]??BACKPACK_NATIVE_ART[path]??{uri:path.startsWith('/')?WORLD_URL+path:path};
 export default function HeadquartersPanel({world,width,height,safe,onClose,onChange}:Props){
  const available={width:Math.max(1,width-safe.left-safe.right-16),height:Math.max(1,height-safe.top-safe.bottom-16)};
  useEffect(()=>{presentStationMenu(world,true,false,safe);const back=BackHandler.addEventListener('hardwareBackPress',()=>{onClose();return true});return()=>{back.remove();presentStationMenu(world,false)}},[world.fire,onClose,safe.top,safe.left,safe.right,safe.bottom]);

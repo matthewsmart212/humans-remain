@@ -1,5 +1,6 @@
 import {FURNACE_COLLISION,WAREHOUSE_ARTWORK,WAREHOUSE_ASSET_ID} from './camp-worksites-art';
 import {restorationImages} from './camp-restoration';
+import {hasPaintedHearthAnimation,HEARTH_ANIMATION_IMAGES} from './hearth-animation-art';
 import {withSouthHeadquartersGeometry,HQ_SOUTH_INTERIOR,HQ_FOUNDATION_DRESSING} from './headquarters-south-art';
 import {IRONWORKS_WORLD_ART,FURNACE_ID} from './ironworks-data';
 import {GARDEN_ART,GARDEN_ANCHOR,GARDEN_COLLISION} from './camp-garden-art';
@@ -114,7 +115,17 @@ const legacyGarden=ASSET_BY_ID.get('art_camp_garden_t1');
 if(legacyGarden)ASSET_BY_ID.set('art_camp_garden_t2',{...legacyGarden,id:'art_camp_garden_t2'});
 export const TREE_LOG_IMAGE='/survival/world-scenery-v1/hollow-birch-log.webp';
 export const assetImageKey=(url:string)=>'placed:'+url;
-export function requiredImages(assetIds:string[],terrain?:{url:string},options:{animationFrames?:boolean}={}){const out:Record<string,string>=terrain&&!usesPaintedHomeTerrain(terrain)?{[assetImageKey(terrain.url)]:terrain.url}:{};for(const id of new Set(assetIds)){const a=ASSET_BY_ID.get(id);if(!a)continue;const frames=options.animationFrames===false?[a.frames?.[0],a.openFrames?.[0]]:[...(a.frames||[]),...(a.openFrames||[])];for(const url of [...restorationImages(id),a.image,a.roof,a.unlit,a.ground?.image,...(a.image===HQ_SOUTH_INTERIOR?HQ_FOUNDATION_DRESSING.map(d=>d.image):[]),a.gate?.leaf,a.gate?.post,a.gate?.states?.closed,a.gate?.states?.open,...frames])if(url)out[assetImageKey(url)]=url;if(treeArt.some(t=>t.id===id))out[assetImageKey(TREE_LOG_IMAGE)]=TREE_LOG_IMAGE;
+export function requiredImages(assetIds:string[],terrain?:{url:string},options:{animationFrames?:boolean}={}){
+ const out:Record<string,string>=terrain&&!usesPaintedHomeTerrain(terrain)?{[assetImageKey(terrain.url)]:terrain.url}:{};
+ for(const id of new Set(assetIds)){
+  const a=ASSET_BY_ID.get(id);if(!a)continue;
+  const hearth=hasPaintedHearthAnimation(a);
+  // Poster frames remain available to the asset inspector. In the world, only the two
+  // cropped motion sheets and charcoal base are needed once optional animation warms.
+  const frames=options.animationFrames===false||hearth?[a.frames?.[0],a.openFrames?.[0]]:[...(a.frames||[]),...(a.openFrames||[])];
+  for(const url of [...restorationImages(id),a.image,a.roof,a.unlit,a.ground?.image,...(a.image===HQ_SOUTH_INTERIOR?HQ_FOUNDATION_DRESSING.map(d=>d.image):[]),a.gate?.leaf,a.gate?.post,a.gate?.states?.closed,a.gate?.states?.open,...frames])if(url)out[assetImageKey(url)]=url;
+  if(hearth&&options.animationFrames!==false)Object.assign(out,HEARTH_ANIMATION_IMAGES);
+  if(treeArt.some(t=>t.id===id))out[assetImageKey(TREE_LOG_IMAGE)]=TREE_LOG_IMAGE;
   // Warehouse stock states are independent textures, not placed: URL keys.
   // The warehouse renderer needs all four to change wood, stone and scrap on demand.
   if(id===WAREHOUSE_ASSET_ID)Object.assign(out,{warehouseEmpty:WAREHOUSE_ARTWORK.empty,warehouseLight:WAREHOUSE_ARTWORK.light,warehouseHalf:WAREHOUSE_ARTWORK.half,warehouseFull:WAREHOUSE_ARTWORK.full});

@@ -1,6 +1,7 @@
+import {drawBurningHearth,hasPaintedHearthAnimation} from './hearth-animation-art';
 import {drawBuildingCondition} from './building-condition-renderer';
 import {lootChestDrawables,drawLootChestGround} from './loot-chest-renderer';
-import {headquartersCutawayAmount,clipHeadquartersDoorway} from './headquarters-cutaway';
+import {headquartersCutawayAmount,clipHeadquartersDoorway,drawHeadquartersExterior} from './headquarters-cutaway';
 import {HQ_SOUTH_INTERIOR} from './headquarters-south-art';
 import {headquartersRoofBottom,withinRoofApproach,headquartersRaidVisible} from './headquarters-roof';
 import {campBuildingArt} from './camp-restoration';
@@ -126,6 +127,7 @@ export function placedDrawables(ctx:CanvasRenderingContext2D,imgs:Record<string,
    return;
   }if(drawPotatoPatch(ctx,imgs,w,p))return;if(restoration){const ruin=imgs[assetImageKey(restoration.image)];if(ruin){ctx.drawImage(ruin,b.x,b.y,b.width,b.height);return}}if(drawCampFurnace(ctx,imgs,w,p))return;if(drawWarehouse(ctx,imgs,w,p))return;if(drawForagePlant(ctx,imgs,w,p))return;if(drawTree(ctx,im,w,p))return;if(drawMineableRock(ctx,im,w,p,a.crop))return;if(a.puddle){drawPuddle(ctx,im,w,p,a);return}if(a.foliage){drawFoliage(ctx,im,w,p,a,animatePlant);return}drawCampContact(ctx,p,a);ctx.save();const [px,py]=placementPoint(p,w.player.x,w.player.y,true);if((p.allowTransparency??placementGeometryAsset(p)?.allowTransparency)!==false&&!a.interior&&py<p.y&&py>b.y&&Math.abs(px-p.x)<b.width*.3)ctx.globalAlpha=.6;
    if(p.role==='hearth'&&!placedFireLit(w,p)&&a.unlit){const off=imgs[assetImageKey(a.unlit)];if(off){const anchor=a.unlitAnchor||[627,1190],size=a.unlitSize||[1254,1254];ctx.drawImage(off,p.frame?b.x:p.x-anchor[0]/size[0]*b.width,p.frame?b.y:p.y-anchor[1]/size[1]*b.height,b.width,b.height)}else ctx.drawImage(im,...a.crop as [number,number,number,number],b.x,b.y,b.width,b.height)}
+   else if(hasPaintedHearthAnimation(a))drawBurningHearth(ctx,imgs,imgs[assetImageKey(a.image)]||im,b,timeOf(w),!!w.weather?.reducedMotion);
    else ctx.drawImage(im,...a.crop as [number,number,number,number],b.x,b.y,b.width,b.height);ctx.restore()};
   // The north stockade is behind the HQ on the map. Paint the complete
   // HQ interior AFTER the rear wall and distant tree, but BEFORE actors in
@@ -140,20 +142,20 @@ export function placedDrawables(ctx:CanvasRenderingContext2D,imgs:Record<string,
   if(roofImage&&p.roof!=='hidden'&&!(southHQ&&cutaway===1)){
    const rect=a.roofRect||[0,0,a.crop[2],a.crop[3]];
    out.push({roof:!playerInFrontOfHQ,layer:playerInFrontOfHQ?0:undefined,y:playerInFrontOfHQ?b.y+b.height*.79:100000,draw:()=>{
-    ctx.save();ctx.globalAlpha=southHQ?1-cutaway:revealRoof?.08:1;
-    // The transparent doorway reveals the actual matching interior. Dim only
-    // that aperture while the façade is present; as the roof fades indoors,
-    // the shade fades with it. Apply identically to repaired and ruined HQ.
+    ctx.save();
     if(southHQ){
      ctx.save();
+     ctx.globalAlpha*=1-cutaway;
      clipHeadquartersDoorway(ctx,b,!!restoration?.roof);
      ctx.fillStyle='rgba(0,0,0,0.16)';
      ctx.fillRect(b.x,b.y,b.width,b.height);
      ctx.restore();
+     drawHeadquartersExterior(ctx,roofImage,b,cutaway);
+     ctx.restore();
+     return;
     }
-    // The roof/exterior is complete artwork, including its own doorway.
-    // Fade the whole matching sprite over the room rather than masking a square.
-    const bottom=southHQ?undefined:headquartersRoofBottom(p);
+    ctx.globalAlpha=revealRoof?.08:1;
+    const bottom=headquartersRoofBottom(p);
     if(bottom!==undefined){ctx.beginPath();ctx.moveTo(b.x,b.y);ctx.lineTo(b.x+b.width,b.y);ctx.lineTo(b.x+b.width,bottom);ctx.lineTo(b.x,bottom);ctx.closePath();ctx.clip()}
     ctx.drawImage(roofImage,b.x+rect[0]/a.crop[2]*b.width,b.y+rect[1]/a.crop[3]*b.height,rect[2]/a.crop[2]*b.width,rect[3]/a.crop[3]*b.height);ctx.restore();
    }});

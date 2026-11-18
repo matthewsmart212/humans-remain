@@ -1,6 +1,6 @@
 import {buildingRestored} from './camp-restoration';
 import {gardenBeds,potatoGrowth,type CropKind} from './potato-farming';
-import {cropStage,cropStageUrl,cropPickedUrl} from './crop-art';
+import {cropStage,cropStageUrl,cropPickedUrl,gardenCropStageUrl} from './crop-art';
 import {POTATO_PATCH_BROKEN,potatoStageUrl} from './potato-patch-art';
 import {assetImageKey} from './world-assets';
 import {placementBounds,type Placement} from './world-layout';
@@ -39,7 +39,7 @@ export function drawPotatoPatch(ctx:Ctx,imgs:LoadedImages,w:World,p:Placement){
  if(broken)return true;
  for(let index=0;index<BED_CENTRES.length;index++){
   const crop=beds[index];if(!crop)continue;
-  const plant=imgs[assetImageKey(cropStageUrl(crop.kind,cropStage(potatoGrowth(w,crop.plantedAt))))];
+  const plant=imgs[assetImageKey(gardenCropStageUrl(crop.kind,cropStage(potatoGrowth(w,crop.plantedAt))))];
   if(!plant)continue;
   const [rx,ry]=BED_CENTRES[index],size=width*.13;
   for(const [dx,dy] of BED_PLANTS){
@@ -50,7 +50,7 @@ export function drawPotatoPatch(ctx:Ctx,imgs:LoadedImages,w:World,p:Placement){
  return true;
 }
 
-/** Cultivated and wild crops share their art and root anchor. */
+/** Wild forage uses its own ripe and picked sprites. */
 export function drawWildPotatoPlant(ctx:Ctx,imgs:LoadedImages,w:World,p:Placement,ripe:boolean,kind:CropKind='potato'){
  const image=imgs[assetImageKey(ripe?cropStageUrl(kind,3):cropPickedUrl(kind))];
  if(!image)return false;

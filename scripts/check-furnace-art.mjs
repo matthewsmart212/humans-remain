@@ -7,7 +7,7 @@ import {build} from 'esbuild';
 const require=createRequire(import.meta.url);
 const temp=fs.mkdtempSync(path.join(os.tmpdir(),'furnace-art-'));
 try{
- const modules=['world-assets','world-layout','furnace-animation-art','furnace-renderer','camp-restoration','run-progression','studio-play','authored-world','imported-art','expedition-inventory','camp-materials','camp-furnace','ironworks-data','editor-image-sources','placed-world-renderer'];
+ const modules=['world-assets','world-layout','furnace-animation-art','furnace-renderer','camp-restoration','run-progression','studio-play','authored-world','imported-art','expedition-inventory','camp-materials','camp-furnace','ironworks-data','editor-image-sources','placed-world-renderer','player-gear'];
  await build({stdin:{contents:modules.map(id=>`export * from './src/${id}';`).join(''),resolveDir:process.cwd()},bundle:true,platform:'node',format:'cjs',outfile:path.join(temp,'model.cjs'),logLevel:'error'});
  const m=require(path.join(temp,'model.cjs'));
  const saved=JSON.parse(fs.readFileSync('native/assets/world-snapshot.json'));
@@ -28,7 +28,7 @@ try{
  assert(render().includes(m.FURNACE_COLD_IMAGE),'Repaired empty furnace stays cold');
  station.fuel=60;station.queue=[{id:1,recipe:'ore',remaining:20}];
  for(let i=0;i<16;i++){
-  world.tick=i*14.4+.01;
+  world.tick=i*60/m.FURNACE_ANIMATION_FPS+.01;
   assert(render().includes(m.FURNACE_ACTIVE_FRAMES[i]),`Working frame ${i}`);
  }
  assert(m.furnaceLights(world).length>0);
@@ -45,9 +45,11 @@ try{
  world.progression.furnaceRestored=false;
  world.progression.restoredBuildings=m.CAMP_BUILDING_IDS.filter(id=>id!=='furnace');
  assert(render().includes(m.FURNACE_BROKEN_IMAGE),'Broken furnace uses the approved ruin');
+ m.gear(world).bag.repairHammer=1;
  world.player.equipped='repairHammer';world.stationPanel=undefined;
  Object.assign(world.player,m.campRepairSite(world,'furnace'));
  for(const [id,count] of Object.entries(m.CAMP_REPAIRS.furnace.cost))m.setItemCount(world,id,count);
+ assert.equal(m.buildingRepairStatus(world,'furnace'),'Ready');
  assert(m.restoreCampBuilding(world,'furnace'),'Existing repair action restores the furnace');
  assert(render().includes(m.FURNACE_COLD_IMAGE));
  assert.equal(JSON.stringify(p),original,'Artwork states retain the saved footprint');

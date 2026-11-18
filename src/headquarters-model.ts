@@ -3,7 +3,7 @@ import {buildingRestored,buildingNeedsRepair,buildingHp,buildingMaxHp,campBuildi
 import type {World} from './survival-engine';
 import {ASSET_BY_ID} from './world-assets';
 import {GARDEN_ART,GARDEN_IDS} from './camp-garden-art';
-import {FURNACE_ID} from './ironworks-data';
+import {FURNACE_ID,IRONWORKS_IMAGES} from './ironworks-data';
 import {FORGE_RECIPES,craftCategory,FURNACE_UPGRADE_COST,type MaterialCost} from './forge-recipes';
 import {GEAR,gear,type GearKind} from './player-gear';
 import {recipeUnlocked,headquartersBench,headquartersDock,RESTORE_FURNACE_COST,FORTIFY_COST} from './run-progression';
@@ -24,7 +24,7 @@ export type HQBuilding={id:HQBuildingId;name:string;short:string;group:string;as
 export const HQ_BUILDINGS:readonly HQBuilding[]=[
  {id:'headquarters',name:'Headquarters',short:'Headquarters',group:'CAMP PLANNING',assetId:'base_shelter_t1',purpose:'Camp plans, discoveries and defences.',hint:'Repairs restore headquarters and the perimeter.',position:[50,16,34,31]},
  {id:'treatment',name:'Treatment centre',short:'Treatment',group:'CARE & RECOVERY',assetId:'base_medical_t2',purpose:'A sheltered place for medical supplies and recovery.',hint:'Treatment facilities are a future camp addition.',preview:true,position:[15,28,28,32]},
- {id:'garden',name:'Garden',short:'Garden',group:'FOOD PRODUCTION',assetId:'art_camp_garden_broken',purpose:'Farming and garden repairs are not playable yet.',hint:'Explore the planned vegetable patch, raised beds and greenhouse appearances.',preview:true,position:[15,57,26,25]},
+ {id:'garden',name:'Garden',short:'Garden',group:'FOOD PRODUCTION',assetId:'art_camp_garden_broken',purpose:'Grow potatoes and carrots in four garden beds.',hint:'Repair the vegetable patch, then plant a potato or carrot in an empty bed.',position:[15,57,26,25]},
  {id:'workshop',name:'Camp workshop',short:'Workshop',group:'TOOLS & WEAPONS',assetId:'base_workshop_t1',purpose:'Craft tools, blades, spears, bows and arrows.',hint:'Craft at the workshop using backpack and camp materials.',position:[84,29,30,34]},
  {id:'furnace',name:'Camp furnace',short:'Furnace',group:'METALWORKING',assetId:FURNACE_ID,purpose:'Smelt ore and recycle scrap into iron ingots.',hint:'Unlocked at Camp level 2. Repair at its existing site with your hammer.',position:[84,62,24,31]},
  {id:'bunker',name:'Bunker',short:'Bunker',group:'UNDERGROUND',assetId:'misc_2dd09bb8-883b-42e3-b765-c2a1c735b016',purpose:'A passage to the underground shelter.',hint:'Enter through the hatch. The camp remains exposed during a raid.',position:[24,83,27,24]},
@@ -43,13 +43,16 @@ export const buildingFor=(id:HQBuildingId)=>HQ_BUILDINGS.find(b=>b.id===id)!;
 export function buildingPlacement(w:World,b:HQBuilding){return w.layout?.items.find(p=>b.id==='garden'?GARDEN_IDS.has(p.assetId):p.assetId===b.assetId)}
 export function gardenTier(w:World){return GARDEN_ART.find(a=>a.id===buildingPlacement(w,buildingFor('garden'))?.assetId)?.tier??0}
 export function buildingArt(w:World,b:HQBuilding):HQArt{
- const replacement=campBuildingArt(w,buildingPlacement(w,b)?.assetId??b.assetId);if(replacement)return {image:replacement.image,overlay:replacement.roof};
- if(b.id==='garden')return gardenArt(gardenTier(w));
+ const replacement=campBuildingArt(w,buildingPlacement(w,b)?.assetId??b.assetId);
+ if(b.id==='garden'){
+  const art=gardenArt(gardenTier(w));return replacement?{...art,image:replacement.image}:art;
+ }
+ if(replacement)return {image:replacement.image,overlay:replacement.roof};
  if(b.id==='warehouse')return{image:WAREHOUSE_ART.empty};
  const p=buildingPlacement(w,b),a=ASSET_BY_ID.get(p?.assetId??b.assetId);
  return{image:a?.image??HQ_BENCH_ART,overlay:b.id==='headquarters'?a?.roof:undefined};
 }
-export const gardenArt=(tier:number):HQArt=>({image:GARDEN_ART[Math.max(0,Math.min(GARDEN_ART.length-1,tier))].image,clip:[.06,.31,.88,.59]});
+export const gardenArt=(tier:number):HQArt=>({image:GARDEN_ART[Math.max(0,Math.min(GARDEN_ART.length-1,tier))].image,clip:[0,.16,1,.75]});
 export function buildingStatus(w:World,b:HQBuilding){
  if(!buildingPlacement(w,b))return 'Not in camp';
  if(!buildingRestored(w,b.id))return 'Broken';
@@ -69,7 +72,7 @@ export type HQPlan={id:string;title:string;name:string;category:HQCategory;build
 export function headquartersPlans(w:World):HQPlan[]{
  const art=(id:HQBuildingId)=>buildingArt(w,buildingFor(id));
  const buildings:HQPlan[]=[
-  ...[1].map(tier=>({id:`gardening-${tier}`,title:'Vegetable patch',name:['','Vegetable patch','Raised potato beds'][tier],category:'buildings' as const,building:'garden' as const,tier,art:gardenArt(tier),description:'Four independent growing beds.',benefit:['','A small start for home-grown food.','More growing space in the same camp lot.'][tier],hint:'Grow potatoes or carrots in the four camp beds.',preview:true})),
+  {id:'gardening-1',title:'Vegetable patch',name:'Vegetable patch',category:'buildings',building:'garden',tier:1,art:gardenArt(1),description:'Four independent growing beds.',benefit:'A small start for home-grown food.',hint:'Grow potatoes or carrots in the four camp beds.',preview:true},
   {id:'metalworking',title:'Furnace',name:'Furnace',category:'buildings',building:'furnace',tier:1,art:art('furnace'),description:'Smelt ore and recycle scrap into iron ingots.',benefit:'Repair the existing furnace with your hammer to enable metal equipment.',hint:'Repair on site with your hammer after unlocking Camp level 2.',learn:'metalworking',cost:RESTORE_FURNACE_COST},
   {id:'furnace-bellows',title:'Improved bellows',name:'Furnace upgrade',category:'buildings',building:'furnace',tier:2,art:art('furnace'),description:'Faster smelting and larger batches.',benefit:'25% faster · 6 queued batches · 12 ingot storage.',hint:'Fit the upgrade at the restored furnace.',cost:FURNACE_UPGRADE_COST},
   {id:'shelter',title:'Headquarters',name:'Headquarters',category:'buildings',building:'headquarters',tier:1,art:art('headquarters'),description:'Upgrade your camp and unlock new plans.',benefit:'Camp progression, plans and journal.',hint:'Upgrade at headquarters using resources.'},
@@ -81,7 +84,17 @@ export function headquartersPlans(w:World):HQPlan[]{
   {id:'cooking',title:'Camp cooking',name:'Camp bonfire',category:'food',building:'fire',tier:1,art:art('fire'),description:'Cook chicken, rabbit and venison.',benefit:'Log fuel, a cooking queue and meals to collect.',hint:'Cooking is managed beside the fire.'},
   {id:'reinforced-camp',title:'Camp defences',name:'Reinforced defences',category:'defences',building:'headquarters',tier:2,art:art('headquarters'),description:'Stronger protection against night attacks.',benefit:'Increases camp defence from 120 to 220.',hint:'Unlocked at Camp level 2.',learn:'reinforced-camp',cost:FORTIFY_COST},
  ];
- for(const plan of buildings){if(w.progression?.restoredBuildings&&(plan.id==='gardening-1'||plan.id==='treatment')){plan.preview=false;plan.art=art(plan.building);plan.description=plan.building==='garden'?'Restore the abandoned vegetable patch. Planting and harvesting are coming later.':'Repair the damaged medical tent. Medical treatment is coming later.';plan.hint='Restore this structure at its existing camp site.';}}
+ for(const plan of buildings){
+  if(!w.progression?.restoredBuildings||(plan.building!=='garden'&&plan.building!=='treatment'))continue;
+  plan.preview=false;plan.art=art(plan.building);
+  if(plan.building==='garden'){
+   plan.description='Grow potatoes and carrots in the reclaimed beds.';
+   plan.hint=buildingRestored(w,'garden')?'Plant a potato or carrot in an empty bed.':'Repair the fence at the vegetable patch to begin planting.';
+  }else{
+   plan.description='Repair the damaged medical tent. Medical treatment is coming later.';
+   plan.hint='Restore this structure at its existing camp site.';
+  }
+ }
  return [...buildings,...FORGE_RECIPES.map(r=>({id:`equipment-${r.id}`,title:r.name,name:r.name,category:(craftCategory(r.id)==='tools'?'tools':'weapons') as HQCategory,building:'workshop' as const,tier:r.id.startsWith('wooden')?1:2,art:{image:GEAR[r.id].image},description:r.id==='arrows'?'A bundle of ten steel-tipped arrows.':`${GEAR[r.id].damage} ${r.id.includes('Pickaxe')?'rock damage':'damage'} · ${GEAR[r.id].weight} kg`,benefit:r.id==='metalPickaxe'?'Mines iron-veined deposits.':r.id==='bow'?'Ranged hunting. Each shot uses one arrow.':'Craft at the camp workshop.',hint:recipeUnlocked(w,r.id)?'Recipe available at the workshop.':'Requires a restored furnace.',gearId:r.id,cost:r.cost}))];
 }
 export function planStatus(w:World,p:HQPlan){
@@ -110,7 +123,7 @@ export function discoveries(w:World){
  const p=w.progression,entries:{id:string;title:string;body:string;image:string}[]=[];
  if(!p||p.briefed)entries.push({id:'camp',title:'The old camp',body:'A central planning table, useful workstations and unfinished places to restore.',image:HQ_BENCH_ART});
  if(p&&campAccessLevel(w)>=2)entries.push({id:'camp-expanded',title:'A working camp',body:'Headquarters has access to metalworking plans. Restoring the furnace enables metal equipment at the workshop.',image:HQ_BENCH_ART});
- if(p?.repairPart)entries.push({id:'bellows',title:'Recovered furnace bellows',body:'The salvaged bellows came with smelting notes for the camp furnace.',image:'/survival/camp-craft-v2/furnace-idle.webp'});
+ if(p?.repairPart)entries.push({id:'bellows',title:'Recovered furnace bellows',body:'The salvaged bellows came with smelting notes for the camp furnace.',image:IRONWORKS_IMAGES.campFurnace});
  if(p?.furnaceRestored)entries.push({id:'furnace',title:'Metalworking restored',body:'Ore and scrap can now become iron ingots at the furnace.',image:'/survival/ironworks-v1/iron-ingot.png'});
  if(p?.metalCrafted)entries.push({id:'metal',title:'Working with metal',body:'A forged weapon revealed how metal fittings can reinforce the perimeter.',image:GEAR.metalSpear.image});
  if(p?.fortified)entries.push({id:'fortified',title:'A stronger perimeter',body:'The camp defences have been reinforced.',image:'/survival/ui-backpack-v1/scrap.png'});

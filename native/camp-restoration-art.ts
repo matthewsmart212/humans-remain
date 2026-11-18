@@ -1,4 +1,7 @@
 export const CAMP_RESTORATION_ART:Record<string,number>={
+ '/survival/camp-hearth-v4/burning-base.webp':require('../public/survival/camp-hearth-v4/burning-base.webp'),
+ '/survival/camp-hearth-v4/rear-flames.webp':require('../public/survival/camp-hearth-v4/rear-flames.webp'),
+ '/survival/camp-hearth-v4/front-flames.webp':require('../public/survival/camp-hearth-v4/front-flames.webp'),
  '/survival/camp-hearth-v4/flame-0.webp':require('../public/survival/camp-hearth-v4/flame-0.webp'),
  '/survival/camp-hearth-v4/flame-1.webp':require('../public/survival/camp-hearth-v4/flame-1.webp'),
  '/survival/camp-hearth-v4/flame-2.webp':require('../public/survival/camp-hearth-v4/flame-2.webp'),
