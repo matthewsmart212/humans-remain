@@ -2,7 +2,7 @@
   {
     "id": "camp_circular_wall_01",
     "name": "Circular camp wall 01",
-    "image": "/survival/camp-circular-wall-weathered-v1/wall-01.webp",
+    "image": "/survival/camp-circular-wall-weathered-v2/wall-01.webp",
     "size": [
       979,
       564
@@ -443,7 +443,7 @@
   {
     "id": "camp_circular_wall_02_ne_v2",
     "name": "Circular camp wall 02 · aligned NE road",
-    "image": "/survival/camp-circular-wall-ne-v2/wall-02.webp",
+    "image": "/survival/camp-circular-wall-weathered-v2/wall-02-ne-v2.webp",
     "size": [
       948,
       957
@@ -905,7 +905,7 @@
   {
     "id": "camp_circular_wall_03_ne_v2",
     "name": "Circular camp wall 03 · aligned NE road",
-    "image": "/survival/camp-circular-wall-ne-v2/wall-03.webp",
+    "image": "/survival/camp-circular-wall-weathered-v2/wall-03-ne-v2.webp",
     "size": [
       346,
       747
@@ -1367,7 +1367,7 @@
   {
     "id": "camp_circular_wall_04",
     "name": "Circular camp wall 04",
-    "image": "/survival/camp-circular-wall-weathered-v1/wall-04.webp",
+    "image": "/survival/camp-circular-wall-weathered-v2/wall-04.webp",
     "size": [
       312,
       1212
@@ -1808,7 +1808,7 @@
   {
     "id": "camp_circular_wall_05",
     "name": "Circular camp wall 05",
-    "image": "/survival/camp-circular-wall-weathered-v1/wall-05.webp",
+    "image": "/survival/camp-circular-wall-weathered-v2/wall-05.webp",
     "size": [
       316,
       1226
@@ -2249,7 +2249,7 @@
   {
     "id": "camp_circular_wall_06",
     "name": "Circular camp wall 06",
-    "image": "/survival/camp-circular-wall-weathered-v1/wall-06.webp",
+    "image": "/survival/camp-circular-wall-weathered-v2/wall-06.webp",
     "size": [
       495,
       958
@@ -2711,7 +2711,7 @@
   {
     "id": "camp_circular_wall_07",
     "name": "Circular camp wall 07",
-    "image": "/survival/camp-circular-wall-weathered-v1/wall-07.webp",
+    "image": "/survival/camp-circular-wall-weathered-v2/wall-07.webp",
     "size": [
       743,
       770
@@ -3173,7 +3173,7 @@
   {
     "id": "camp_circular_wall_08",
     "name": "Circular camp wall 08",
-    "image": "/survival/camp-circular-wall-weathered-v1/wall-08.webp",
+    "image": "/survival/camp-circular-wall-weathered-v2/wall-08.webp",
     "size": [
       925,
       584
@@ -3635,7 +3635,7 @@
   {
     "id": "camp_circular_wall_09",
     "name": "Circular camp wall 09",
-    "image": "/survival/camp-circular-wall-weathered-v1/wall-09.webp",
+    "image": "/survival/camp-circular-wall-weathered-v2/wall-09.webp",
     "size": [
       726,
       525
@@ -4097,7 +4097,7 @@
   {
     "id": "camp_circular_wall_10",
     "name": "Circular camp wall 10",
-    "image": "/survival/camp-circular-wall-weathered-v1/wall-10.webp",
+    "image": "/survival/camp-circular-wall-weathered-v2/wall-10.webp",
     "size": [
       628,
       672
@@ -4559,7 +4559,7 @@
   {
     "id": "camp_circular_wall_11",
     "name": "Circular camp wall 11",
-    "image": "/survival/camp-circular-wall-weathered-v1/wall-11.webp",
+    "image": "/survival/camp-circular-wall-weathered-v2/wall-11.webp",
     "size": [
       597,
       1071
@@ -5042,7 +5042,7 @@
   {
     "id": "camp_circular_wall_12",
     "name": "Circular camp wall 12",
-    "image": "/survival/camp-circular-wall-weathered-v1/wall-12.webp",
+    "image": "/survival/camp-circular-wall-weathered-v2/wall-12.webp",
     "size": [
       214,
       848
@@ -5504,7 +5504,7 @@
   {
     "id": "camp_circular_wall_13",
     "name": "Circular camp wall 13",
-    "image": "/survival/camp-circular-wall-weathered-v1/wall-13.webp",
+    "image": "/survival/camp-circular-wall-weathered-v2/wall-13.webp",
     "size": [
       316,
       1191
@@ -5945,7 +5945,7 @@
   {
     "id": "camp_circular_wall_14",
     "name": "Circular camp wall 14",
-    "image": "/survival/camp-circular-wall-weathered-v1/wall-14.webp",
+    "image": "/survival/camp-circular-wall-weathered-v2/wall-14.webp",
     "size": [
       575,
       1056
@@ -6407,7 +6407,7 @@
   {
     "id": "camp_circular_wall_15",
     "name": "Circular camp wall 15",
-    "image": "/survival/camp-circular-wall-nw-v1/wall-15.webp",
+    "image": "/survival/camp-circular-wall-weathered-v2/wall-15.webp",
     "size": [
       670,
       672
@@ -6869,7 +6869,7 @@
   {
     "id": "camp_circular_wall_16",
     "name": "Circular camp wall 16",
-    "image": "/survival/camp-circular-wall-weathered-v1/wall-16.webp",
+    "image": "/survival/camp-circular-wall-weathered-v2/wall-16.webp",
     "size": [
       972,
       540
@@ -7310,7 +7310,7 @@
   {
     "id": "camp_circular_wall_02",
     "name": "Circular camp wall 02",
-    "image": "/survival/camp-circular-wall-weathered-v1/wall-02.webp",
+    "image": "/survival/camp-circular-wall-weathered-v2/wall-02.webp",
     "size": [
       652,
       686
@@ -7772,7 +7772,7 @@
   {
     "id": "camp_circular_wall_03",
     "name": "Circular camp wall 03",
-    "image": "/survival/camp-circular-wall-weathered-v1/wall-03.webp",
+    "image": "/survival/camp-circular-wall-weathered-v2/wall-03.webp",
     "size": [
       591,
       1061
