@@ -1,7 +1,7 @@
 import {chooseInteractionFocus} from './interaction-focus';
 import type {FieldKitTarget} from './field-kit-target';
 import {canMineRock,type MiningTarget} from './rock-mining';
-import {TREE_ART,treeRoot} from './tree-chopping';
+import {activeTreeChop,TREE_ART,treeRoot} from './tree-chopping';
 import {visiblePlacements} from './layout-views';
 import {placementBounds} from './world-layout';
 import {axeProfile} from './axe-combat';
@@ -19,7 +19,7 @@ export function nearbyTreeFocus(w:World):FieldKitTarget|undefined{
  const spec=axeProfile({tool:w.player.equipped==='woodenAxe'?'woodenAxe':'axe'}),angle=DIRECTION_ANGLES[w.player.direction];
  const candidates=[];
  for(const p of visiblePlacements(w.layout,{x:w.player.x-150,y:w.player.y-150,width:300,height:300})){
-  const art=TREE_ART.get(p.assetId),state=w.treeChops?.[p.id];if(!art||state?.hp===0)continue;
+  const art=TREE_ART.get(p.assetId),state=activeTreeChop(w,p.id);if(!art||state?.hp===0)continue;
   const root=treeRoot(p),dx=root.x-w.player.x,dy=root.y-w.player.y,d=Math.hypot(dx,dy);
   if(d>spec.reach||Math.cos(Math.atan2(dy,dx)-angle)<Math.cos(spec.halfArc))continue;
   const ratio=Math.max(0,d-(38*p.scale+5))/(d||1);

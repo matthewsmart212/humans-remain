@@ -5,7 +5,7 @@ import {FORAGE_BY_ID} from './forage-art';
 import {drawForagePlant} from './forage-renderer';
 import {FORAGE_PICK_SHAKE} from './foliage-motion';
 import {forageRemaining,forageRoot} from './foraging';
-import {TREE_ART,treeRoot} from './tree-chopping';
+import {activeTreeChop,drawTree,TREE_ART,treeRoot} from './tree-chopping';
 import {MINEABLE_ROCKS,rockContact} from './rock-mining';
 import {isAxe} from './player-gear';
 import {SCRAP_KEYS} from './scrap-salvage';
@@ -40,7 +40,7 @@ export function nearbyResourceOutlines(w:World,v:ResourceOutlineView,hideFoliage
  const cues:ResourceOutlineCue[]=[];
  for(const p of cache.placements){
   const forage=FORAGE_BY_ID.get(p.assetId),tree=TREE_ART.has(p.assetId),rock=MINEABLE_ROCKS.has(p.assetId);
-  if(forage&&(!forageRemaining(w,p)||hideFoliage)||tree&&(hideFoliage||w.treeChops?.[p.id]?.hp===0)||rock&&(!p.solid||w.rockMining?.[p.id]?.hp===0))continue;
+  if(forage&&(!forageRemaining(w,p)||hideFoliage)||tree&&(hideFoliage||activeTreeChop(w,p.id)?.hp===0)||rock&&(!p.solid||w.rockMining?.[p.id]?.hp===0))continue;
   const kind=forage?'forage':tree?'tree':'rock';
   const root=forage?forageRoot(p):tree?treeRoot(p):rockContact(p,w.player);
   const distance=Math.hypot(root.x-w.player.x,root.y-w.player.y);if(distance>=RESOURCE_OUTLINE_RANGE)continue;
@@ -111,6 +111,7 @@ export function drawResourceOutlines(ctx:OutlineContext,imgs:Record<string,HTMLI
    draw=()=>{
     ctx.save();transform(ctx,placement);
     if(registered&&drawForagePlant(ctx,imgs,w,placement,animate,'outline')){ctx.restore();return}
+    if(cue.kind==='tree'&&drawTree(ctx,image,w,placement,'outline')){ctx.restore();return}
     if(off)ctx.drawImage(off,b.x,b.y,b.width,b.height);
     else ctx.drawImage(image,...asset.crop as [number,number,number,number],b.x,b.y,b.width,b.height);
     ctx.restore();

@@ -28,11 +28,35 @@ try{
    const {p,w}=make(art);Object.assign(p,{rotation,flipX,scale});w.layout={...w.layout,items:[p]};const root=m.treeRoot(p);w.player.x=root.x;w.player.y=root.y+110;
    assert(m.chopTree(w,-Math.PI/2,136,1,40,(a,b)=>m.lineClear(a,b,w)),`Transformed root ${rotation}/${flipX}/${scale}`);cases++;
   }
-  const draws=[],ctx={globalAlpha:1,save(){},restore(){},translate(){},rotate(){},drawImage(...args){draws.push(args)}};
-  const clean=make(art);m.drawTree(ctx,{},clean.w,clean.p);assert.deepEqual(draws[0].slice(1,5),art.frames[0].crop);draws.length=0;
+  const draws=[],clips=[],ctx={
+   globalAlpha:1,save(){},restore(){},translate(){},rotate(){},scale(){},fillRect(){},
+   beginPath(){},moveTo(){},lineTo(){},closePath(){},clip(){clips.push(true)},
+   createRadialGradient(){return{addColorStop(){}}},
+   drawImage(...args){draws.push(args)}
+  };
+  const clean=make(art);m.drawTree(ctx,{},clean.w,clean.p);assert.deepEqual(draws[0].slice(1,5),art.frames[0].crop);assert.equal(clips.length,1,'Healthy sprite clips buried roots');draws.length=0;
   if(art.damageRect){const [x,y,cw,ch]=art.damageRect,[,,hw,hh]=art.frames[0].crop;assert(x>=0&&y>=0&&x+cw<=hw&&y+ch<=hh);assert.deepEqual(art.frames[1].anchor,[art.frames[0].anchor[0]-x,art.frames[0].anchor[1]-y]);assert.deepEqual(art.frames[1].crop.slice(2),[cw,ch]);clean.w.treeChops={tree:{hp:art.hp-40,hitAt:0,direction:1}};clean.w.tick=120;m.drawTree(ctx,{},clean.w,clean.p);assert.equal(draws.length,5);assert.equal(draws.reduce((n,d)=>n+d[3]*d[4],0),hw*hh,'Footprint drawn once');assert.deepEqual(draws[4].slice(1,5),art.frames[1].crop);draws.length=0;}
   clean.w.treeChops={tree:{hp:0,hitAt:0,felledAt:0,direction:1}};clean.w.tick=120;m.drawTree(ctx,{},clean.w,clean.p);assert.equal(draws.length,1);assert.deepEqual(draws[0].slice(1,5),art.frames[2].crop);
   draws.length=0;clean.w.tick=0;clean.w.weather={reducedMotion:true};m.drawTree(ctx,{},clean.w,clean.p);assert.equal(draws.length,1,'Reduced motion skips the fall');
+  // Preserve the original placement across saved ticks, including a legacy
+  // save with no explicit felling timestamp.
+  delete clean.w.treeChops.tree.felledAt;
+  for(const [tick,scale] of [[899,0],[900,.19],[1799,.19],[1800,.44],[2699,.44],[2700,.73],[3599,.73],[3600,1]]){
+   clean.w.tick=tick;
+   assert.equal(m.treeGrowthScale(clean.w,clean.w.treeChops.tree),scale);
+   assert.equal(!!m.activeTreeChop(clean.w,'tree'),scale<1);
+   draws.length=0;m.drawTree(ctx,{},clean.w,clean.p);
+   assert.equal(draws.length,1);
+   assert.deepEqual(draws[0].slice(1,5),art.frames[scale===0?2:0].crop);
+   assert(draws[0][8]>0);
+   if(scale>0)assert(Math.abs(draws[0][7]-m.placementBounds(clean.p).width*scale)<1e-6);
+   if(scale<1)assert.equal(m.chopTree(clean.w,-Math.PI/2,136,1,40,()=>true),false,'Growing tree cannot be chopped');
+  }
+  assert.equal(m.chopTree(clean.w,-Math.PI/2,136,1,40,()=>true),true);
+  assert.equal(clean.w.treeChops.tree.hp,art.hp-40,'Mature tree returns at full health');
+  assert.equal(clean.w.loot.filter(l=>l.sourceTreeId==='tree').length,0);
+  assert.equal(m.chopTree(clean.w,-Math.PI/2,136,1,999,()=>true),true);
+  assert.equal(clean.w.loot.filter(l=>l.sourceTreeId==='tree').length,1,'A new felling drops logs once');
  }
  assert(bytes<12000000,'Keep transfer budget bounded');
  const sources=m.requiredImages(Array.from({length:1000},(_,i)=>arts[i%arts.length].id));
@@ -60,5 +84,5 @@ try{
   const image=surface.makeImageSnapshot();await sharp(Buffer.from(image.encodeToBytes())).webp({quality:96}).toFile(out+'/'+species+'-states.webp');image.delete();renderer.dispose();captures.push(species+'-states.webp');
  }
  globalThis.fetch=originalFetch;
- const report={result:'pass',species:6,designs:arts.length,stages:arts.length*3,captures,transformAndArcCases:cases,sharedTextures:arts.length,compressedBytes:bytes,maxDecodedMiB:arts.reduce((n,a)=>n+a.size[0]*a.size[1]*4,0)/1048576,checks:['contact timing','single damage per swing','health and stump','reach and facing','occlusion callback','rotated/mirrored/scaled roots','Walk and Play','draft unchanged','restart reset','library visibility','shared images','CanvasKit raster output'],limits:'No physical device or browser GPU playtest. Log pickup uses the wood supply slot; no timed regrowth.'};fs.writeFileSync(out+'/checks.json',JSON.stringify(report,null,2)+'\n');console.log(JSON.stringify(report,null,2));
+ const report={result:'pass',species:6,designs:arts.length,stages:arts.length*3,captures,transformAndArcCases:cases,sharedTextures:arts.length,compressedBytes:bytes,maxDecodedMiB:arts.reduce((n,a)=>n+a.size[0]*a.size[1]*4,0)/1048576,checks:['contact timing','single damage per swing','health and stump','staged regrowth at 15/30/45/60 seconds','repeat harvest','root clipping','reach and facing','occlusion callback','rotated/mirrored/scaled roots','Walk and Play','draft unchanged','restart reset','library visibility','shared images','CanvasKit raster output'],limits:'No physical device or browser GPU playtest. Log pickup uses the wood supply slot.'};fs.writeFileSync(out+'/checks.json',JSON.stringify(report,null,2)+'\n');console.log(JSON.stringify(report,null,2));
 }finally{fs.rmSync(tmp,{recursive:true,force:true})}
