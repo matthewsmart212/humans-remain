@@ -11,7 +11,7 @@ export const treeShadeFrames=new Map(Object.entries(frames));
 export function drawTreeShade(ctx:CanvasRenderingContext2D,sheet:HTMLImageElement,w:World,p:Placement,frame:number,daylight:number){
  let opacity=daylight;
  const chop=activeTreeChop(w,p.id),growth=treeGrowthScale(w,chop);
- if(chop?.hp===0)opacity*=growth||1-treeFallProgress(w,chop);
+ if(chop?.hp===0)opacity*=Math.max(growth,1-treeFallProgress(w,chop));
  if(opacity<=0)return;
  const [x,y]=placementPoint(p,p.x,p.y),width=placementBounds(p).width*(growth||1);
  ctx.save();

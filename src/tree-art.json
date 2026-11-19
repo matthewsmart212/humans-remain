@@ -9,6 +9,7 @@
     ],
     "worldWidth": 310,
     "hp": 160,
+    "cutHeight": 168,
     "frames": [
       {
         "crop": [
@@ -58,6 +59,7 @@
     ],
     "worldWidth": 240,
     "hp": 120,
+    "cutHeight": 164,
     "frames": [
       {
         "crop": [
@@ -107,6 +109,7 @@
     ],
     "worldWidth": 250,
     "hp": 100,
+    "cutHeight": 171,
     "frames": [
       {
         "crop": [
@@ -156,6 +159,7 @@
     ],
     "worldWidth": 270,
     "hp": 80,
+    "cutHeight": 233,
     "frames": [
       {
         "crop": [
@@ -205,6 +209,7 @@
     ],
     "worldWidth": 270,
     "hp": 120,
+    "cutHeight": 172,
     "frames": [
       {
         "crop": [
@@ -254,6 +259,7 @@
     ],
     "worldWidth": 330,
     "hp": 160,
+    "cutHeight": 168,
     "frames": [
       {
         "crop": [
@@ -303,6 +309,7 @@
     ],
     "worldWidth": 270,
     "hp": 100,
+    "cutHeight": 171,
     "frames": [
       {
         "crop": [
@@ -358,6 +365,7 @@
     ],
     "worldWidth": 257,
     "hp": 100,
+    "cutHeight": 169,
     "frames": [
       {
         "crop": [
@@ -413,6 +421,7 @@
     ],
     "worldWidth": 311,
     "hp": 160,
+    "cutHeight": 188,
     "frames": [
       {
         "crop": [
@@ -468,6 +477,7 @@
     ],
     "worldWidth": 344,
     "hp": 160,
+    "cutHeight": 169,
     "frames": [
       {
         "crop": [
@@ -523,6 +533,7 @@
     ],
     "worldWidth": 239,
     "hp": 120,
+    "cutHeight": 162,
     "frames": [
       {
         "crop": [
@@ -578,6 +589,7 @@
     ],
     "worldWidth": 242,
     "hp": 120,
+    "cutHeight": 176,
     "frames": [
       {
         "crop": [
@@ -633,6 +645,7 @@
     ],
     "worldWidth": 265,
     "hp": 80,
+    "cutHeight": 217,
     "frames": [
       {
         "crop": [
@@ -688,6 +701,7 @@
     ],
     "worldWidth": 293,
     "hp": 80,
+    "cutHeight": 231,
     "frames": [
       {
         "crop": [
@@ -743,6 +757,7 @@
     ],
     "worldWidth": 260,
     "hp": 120,
+    "cutHeight": 166,
     "frames": [
       {
         "crop": [
@@ -798,6 +813,7 @@
     ],
     "worldWidth": 246,
     "hp": 120,
+    "cutHeight": 177,
     "frames": [
       {
         "crop": [
@@ -853,6 +869,7 @@
     ],
     "worldWidth": 329,
     "hp": 160,
+    "cutHeight": 168,
     "frames": [
       {
         "crop": [
@@ -908,6 +925,7 @@
     ],
     "worldWidth": 362,
     "hp": 160,
+    "cutHeight": 161,
     "frames": [
       {
         "crop": [
