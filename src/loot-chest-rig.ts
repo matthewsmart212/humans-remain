@@ -1,12 +1,17 @@
 import {LOOT_CHEST_ID,LOOT_CHEST_OPEN_TICKS} from './loot-chest';
 import type {World} from './survival-engine';
 type Point=readonly [number,number];
+export type ChestInterior=readonly [top:number,bottom:number,leftTop:number,rightTop:number,leftBottom:number,rightBottom:number];
 export const CHEST_WIDTH_SCALE=.8,CHEST_DEPTH_SCALE=1.18;
+export const CHEST_LOCK_X=-7;
 const ART_SCALE=213/390,MOUTH_SOURCE_HEIGHT=46;
 const MOUTH_FRONT=-178+(178+MOUTH_SOURCE_HEIGHT)*ART_SCALE;
 export const CHEST_MOUTH_BACK=MOUTH_FRONT-MOUTH_SOURCE_HEIGHT*ART_SCALE*CHEST_DEPTH_SCALE;
 export const CHEST_MOUTH_FRONT=MOUTH_FRONT;
-const HINGE_Y=-58-24*CHEST_DEPTH_SCALE,LID_RISE=75*CHEST_DEPTH_SCALE;
+// The well follows the inset rim in the atlas, including its angled sidewalls.
+export const CHEST_MOUTH_INTERIOR:ChestInterior=[CHEST_MOUTH_BACK+4,CHEST_MOUTH_FRONT-.5,-77,86,-91,72];
+export const CHEST_LID_OPEN_RISE=67;
+const HINGE_Y=-58-24*CHEST_DEPTH_SCALE;
 export function chestHinge(w:World){
  const state=w.lootChests?.[LOOT_CHEST_ID];
  const t=state?Math.max(0,Math.min(1,(w.tick-state.openedAt)/LOOT_CHEST_OPEN_TICKS)):0;
@@ -14,7 +19,7 @@ export function chestHinge(w:World){
  const eased=t*t*(3-2*t),angle=eased*Math.PI/2;
  // A deeper rigid lid rotates around the same fixed back hinge. The front
  // rail and stationary body keep their existing height and narrower width.
- const back=HINGE_Y,front=back+24*CHEST_DEPTH_SCALE*Math.cos(angle)-LID_RISE*Math.sin(angle);
+ const back=HINGE_Y,front=back+24*CHEST_DEPTH_SCALE*Math.cos(angle)-CHEST_LID_OPEN_RISE*Math.sin(angle);
  const frontWidth=99-15*Math.sin(angle),backWidth=89;
  return {t,front,back,frontWidth,backWidth,inside:front<back};
 }

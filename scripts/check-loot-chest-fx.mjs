@@ -54,6 +54,8 @@ try{
   };
   const terrainOnly=render(null,'terrain'),groundOnly=render('footing','ground');
   assert(difference(terrainOnly,groundOnly)>500,'Authored footing visibly beds the chest into the terrain');
+  assert(regionGain(terrainOnly,groundOnly,250,420,24,6)<0,'Ground darkens where the left chest foot meets the terrain');
+  assert(regionGain(terrainOnly,groundOnly,358,420,24,6)<0,'Ground darkens where the right chest foot meets the terrain');
   for(let y=0;y<560;y++)for(let x=0;x<640;x++)if(x<212||x>=428||y<396||y>=446){
    const i=(y*640+x)*4;for(let c=0;c<4;c++)assert.equal(groundOnly[i+c],terrainOnly[i+c],'Footing remains a small local terrain detail');
   }
@@ -91,17 +93,26 @@ try{
   }
   world.tick=15000;assert(m.lootChestFx(world).burst<.0001,'Saved opened chest never repeats its one-shot reveal');
   const persistentOpen=render('persistent-open'),openArt=render('open-art','rig');
-  // Compare against the identical unlit geometry, following its deeper lid.
-  const hinge=m.chestHinge(world),lidTop=Math.round(420+hinge.front);
-  assert(Math.abs(hinge.back-hinge.front-75*1.18)<1e-6,'Fully open lid retains the deeper rigid dimensions');
-  const lidGain=regionGain(openArt,persistentOpen,285,lidTop+28,70,24);
+  // Measure the same parts of the surface in each pose against the unlit art.
+  const hinge=m.chestHinge(world),lidTop=Math.round(420+hinge.front),lidRise=hinge.back-hinge.front;
+  assert(lidRise>=64&&lidRise<=70,'Fully open lid has a lower profile while the closed lid stays deep');
+  const upperLid=Math.round(lidTop+lidRise*.28),lidSampleHeight=Math.round(lidRise*.22);
+  const lidGain=regionGain(openArt,persistentOpen,285,upperLid,70,lidSampleHeight);
   const rimGain=regionGain(openArt,persistentOpen,270,lidTop,100,10);
   assert(lidGain>18,'Light must remain visible across the upper inside of a fully raised lid');
   assert(rimGain>5,'The upper rail catches the light, not only the compartment below');
-  const compartmentGain=regionGain(openArt,persistentOpen,300,342,40,10);
-  const frontLipGain=regionGain(openArt,persistentOpen,285,364,70,3);
+  const lidMiddle=Math.round(lidTop+lidRise*.46);
+  const nearHinge=Math.round(lidTop+lidRise*.75);
+  const lidMiddleGain=regionGain(openArt,persistentOpen,316,lidMiddle,8,8);
+  assert(regionGain(openArt,persistentOpen,259,lidMiddle,8,8)>lidMiddleGain*.35,'Reflection reaches the left side of the inner lid');
+  assert(regionGain(openArt,persistentOpen,373,lidMiddle,8,8)>lidMiddleGain*.35,'Reflection reaches the right side of the inner lid');
+  const mouthMiddle=Math.round(420+(m.CHEST_MOUTH_BACK+m.CHEST_MOUTH_FRONT)/2);
+  const compartmentGain=regionGain(openArt,persistentOpen,300,mouthMiddle-4,40,8);
+  const frontLipGain=regionGain(openArt,persistentOpen,285,Math.round(420+m.CHEST_MOUTH_FRONT),70,3);
   assert(compartmentGain>frontLipGain*2,'Light originates inside the compartment without a flat white front rim');
-  assert(regionGain(openArt,persistentOpen,285,lidTop+70,70,12)>regionGain(openArt,persistentOpen,285,lidTop+26,70,12),'Warm reflection is strongest near the hinges');
+  assert(regionGain(openArt,persistentOpen,255,mouthMiddle-4,8,8)>compartmentGain*.3,'Light reaches the left side of the compartment');
+  assert(regionGain(openArt,persistentOpen,375,mouthMiddle-4,8,8)>compartmentGain*.3,'Light reaches the right side of the compartment');
+  assert(regionGain(openArt,persistentOpen,285,nearHinge,70,8)>regionGain(openArt,persistentOpen,285,upperLid,70,8),'Warm reflection is strongest near the hinges');
   // In the air above the lid, a filled soft glow replaces the three narrow
   // bright prongs. Subtract the actual terrain and average out its grain.
   const profile=[];
@@ -112,7 +123,7 @@ try{
   assert(difference(persistentOpen,flowing)>1000,'Open mist and embers remain visibly alive');
   world.phase='night';world.nightAmount=1;
   const nightArt=render(null,'rig'),nightLid=render('persistent-night-open');
-  assert(regionGain(nightArt,nightLid,285,lidTop+28,70,24)>12,'Night shading preserves the reflected lid light');
+  assert(regionGain(nightArt,nightLid,285,upperLid,70,lidSampleHeight)>12,'Night shading preserves the reflected lid light');
   world.phase='day';world.nightAmount=0;
   world.lootChests[m.LOOT_CHEST_ID].contents={repairHammer:0,woodenAxe:0,woodenPickaxe:0};const empty=render('empty');
   assert(lightGain(art,empty)<lightGain(art,open),'Claimed chest settles to a much quieter light');
@@ -131,12 +142,16 @@ try{
   // occludes the entire effect rather than having a beam painted over their head.
   assert.deepEqual(m.lootChestDrawables({},imgs,world,viewport).map(d=>d.y),[420]);
   const groundCalls=[];
-  m.drawLootChestGround({save(){groundCalls.push('save')},restore(){groundCalls.push('restore')},drawImage(){groundCalls.push('image')}},imgs,world,viewport);
-  assert.deepEqual(groundCalls,['save','image','restore'],'Ground contact uses one image draw and restores canvas state');
+  m.drawLootChestGround({
+   save(){groundCalls.push('save')},restore(){groundCalls.push('restore')},
+   drawImage(){groundCalls.push('image')},fillRect(){groundCalls.push('shadow')},
+   translate(){},scale(){},createRadialGradient(){return {addColorStop(){}}},
+  },imgs,world,viewport);
+  assert.deepEqual(groundCalls,['save','image','shadow','restore'],'Ground contact draws one decal and shadow, then restores canvas state');
   assert.doesNotThrow(()=>m.drawLootChestGround({},imgs,world,{x:4000,y:4000,width:100,height:100}),'Offscreen footing does no drawing');
   assert.doesNotThrow(()=>m.drawLootChestGround({},imgs,{...world,scene:{}},viewport),'Footing never appears in another scene');
   atlas.dispose();ground.dispose();terrain?.dispose();surface.dispose();font.dispose();adapter.disposeLighting();
   results.push({target,version:JSON.parse(fs.readFileSync(path.join(skiaRoot,'package.json'))).version,openingSeconds:m.LOOT_CHEST_OPEN_TICKS/60,glowCoverage:+coverage.toFixed(3),closedEffectPixels:changed,lidBrightnessGain:+lidGain.toFixed(1),topRailBrightnessGain:+rimGain.toFixed(1),realTerrain:!!terrain});
  }
- console.log(JSON.stringify({passed:true,results,checks:['shader compilation','approved atlas','transparent local ground footing','18 percent deeper rigid lid and compartment','visible daylight glow','moving idle particles','twice-as-fast opening and menu reveal','sprite-synchronised burst','continuous hinged lid','identical stationary body pixels','persistent reflected lid and upper-rail light','restrained glow without broad haze','flowing open mist','night reflections','persistent opened state','quiet empty state','steady reduced motion','offscreen culling','shared depth ordering','resource disposal'],physicalIPhoneTested:false},null,2));
+ console.log(JSON.stringify({passed:true,results,checks:['shader compilation','approved atlas','transparent local ground footing','deep closed chest and low-profile open lid','visible daylight glow','moving idle particles','twice-as-fast opening and menu reveal','sprite-synchronised burst','continuous hinged lid','identical stationary body pixels','persistent light across the compartment, inner lid and upper rail','restrained glow without broad haze','flowing open mist','night reflections','persistent opened state','quiet empty state','steady reduced motion','offscreen culling','shared depth ordering','resource disposal'],physicalIPhoneTested:false},null,2));
 }finally{fs.rmSync(temp,{recursive:true,force:true})}

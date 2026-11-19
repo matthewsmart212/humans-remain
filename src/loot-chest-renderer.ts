@@ -1,4 +1,4 @@
-import {drawChestRig,CHEST_WIDTH_SCALE,CHEST_MOUTH_BACK,CHEST_MOUTH_FRONT} from './loot-chest-rig';
+import {drawChestRig,CHEST_LOCK_X,CHEST_WIDTH_SCALE,CHEST_MOUTH_INTERIOR,type ChestInterior} from './loot-chest-rig';
 import {campLootChest,LOOT_CHEST_IMAGE_KEY,LOOT_CHEST_GROUND_KEY} from './loot-chest';
 import {lootChestFx,type LootChestFx} from './loot-chest-fx';
 import type {World} from './survival-engine';
@@ -27,19 +27,34 @@ function light(ctx:LightContext,x:number,y:number,fx:LootChestFx,front:boolean){
   gradient.addColorStop(0,'rgba(195,255,220,'+alpha+')');gradient.addColorStop(.35,'rgba(83,220,165,'+alpha*.6+')');gradient.addColorStop(1,'rgba(62,180,133,0)');
   ctx.fillStyle=gradient;ctx.fillRect(xx-r,yy-r,r*2,r*2);
  };
+ const reflect=([top,bottom,leftTop,rightTop,leftBottom,rightBottom]:ChestInterior,upper:number,lower:number)=>{
+  const gradient=ctx.createLinearGradient(x,y+top,x,y+bottom);
+  gradient.addColorStop(0,'rgba(162,255,204,0)');
+  gradient.addColorStop(.16,`rgba(162,255,204,${upper})`);
+  gradient.addColorStop(.76,`rgba(162,255,204,${lower})`);
+  gradient.addColorStop(1,'rgba(162,255,204,0)');
+  ctx.fillStyle=gradient;
+  // Build up the reflected light across soft sidewalls, following the drawn taper.
+  for(const [inset,weight] of [[0,.18],[3,.32],[6,.64]]){
+   ctx.globalAlpha=fx.power*fx.open*weight;
+   ctx.beginPath();ctx.moveTo(x+leftTop+inset,y+top);ctx.lineTo(x+rightTop-inset,y+top);
+   ctx.lineTo(x+rightBottom-inset,y+bottom);ctx.lineTo(x+leftBottom+inset,y+bottom);ctx.closePath();ctx.fill();
+  }
+  ctx.globalAlpha=fx.power;
+ };
  ctx.globalAlpha=fx.power;
  if(front){
-  glow(x-7,y-38,42,.23+fx.charge*.2);glow(x-55,y-37,28,.3);glow(x+44,y-37,28,.3);
+  glow(x+CHEST_LOCK_X,y-38,42,.23+fx.charge*.2);glow(x-55,y-37,28,.3);glow(x+44,y-37,28,.3);
   if(fx.open){
-   glow(x,(CHEST_MOUTH_BACK+CHEST_MOUTH_FRONT)/2+y,65,fx.open*.56);glow(x,y-73,125,fx.burst*.65);
-   const [top,bottom,leftTop,rightTop,leftBottom,rightBottom]=fx.lid;
-   ctx.save();ctx.beginPath();ctx.moveTo(x+leftTop,y+top);ctx.lineTo(x+rightTop,y+top);
-   ctx.lineTo(x+rightBottom,y+bottom);ctx.lineTo(x+leftBottom,y+bottom);ctx.closePath();ctx.clip();
-   glow(x,y+bottom-4,112,fx.open*.85);ctx.restore();
-   glow(x,y+top-10,70,fx.open*.18);
+   reflect(CHEST_MOUTH_INTERIOR,.46,.57);
+   reflect(fx.lid,.33,.59);
+   glow(x,y+fx.lid[0],55,fx.open*.12);
+   glow(x,y-73,125,fx.burst*.65);
   }
  }else{
-  glow(x,y-40,170,.29+fx.charge*.17+fx.open*.14);
+  ctx.save();ctx.translate(x,y-13);ctx.scale(1,.3);
+  glow(0,0,140,.17+fx.charge*.15+fx.open*.09);ctx.restore();
+  glow(x,y-74,140,.13+fx.charge*.10);
   if(fx.open){
    glow(x+Math.sin(fx.time*1.1)*18,y-125,112,fx.open*.44);
    glow(x+Math.cos(fx.time*.7)*22,y-173,82,fx.open*.20);
@@ -55,7 +70,7 @@ function inlays(ctx:CanvasRenderingContext2D,x:number,y:number,fx:LootChestFx){
  ctx.fillRect(x-69,y-37.2,27,1.2);ctx.fillRect(x+31,y-37.2,27,1.2);
  // An occasional pin-sharp glint across the lock, never a permanent cross.
  const sparkle=fx.reduced?0:Math.pow(Math.max(0,Math.sin(fx.time*1.6+.9)),18);
- if(sparkle>.02){ctx.globalAlpha=fx.power*sparkle*.87;ctx.fillStyle='#eaffef';ctx.beginPath();star(ctx,x-7,y-38,6+fx.charge*5);ctx.fill()}
+ if(sparkle>.02){ctx.globalAlpha=fx.power*sparkle*.87;ctx.fillStyle='#eaffef';ctx.beginPath();star(ctx,x+CHEST_LOCK_X,y-38,6+fx.charge*5);ctx.fill()}
  ctx.globalAlpha=1;
 }
 function lidGlints(ctx:CanvasRenderingContext2D,x:number,y:number,fx:LootChestFx){
@@ -83,7 +98,11 @@ function motes(ctx:CanvasRenderingContext2D,x:number,y:number,fx:LootChestFx){
    const phase=fract(fx.time*(.18+seed(i+30)*.2+fx.open*.14)+seed(i+60));
    const life=clamp(phase*6)*clamp((1-phase)*4);
    const twinkle=.7+.3*Math.sin(fx.time*4.7+i*2.9);
-   const xx=x+(seed(i+9)-.5)*(152+phase*(40+fx.open*40))+Math.sin(fx.time*.9+i*2.4+phase*TAU)*(8+fx.open*13)*phase;
+   // Sharp glints rise above the lock, then drift outward as the lid opens.
+   const focus=i%7===0?1-clamp(fx.open*4):0;
+   const spread=focus*(32+phase*16)+(1-focus)*(152+phase*(40+fx.open*40));
+   const sway=focus*3+(1-focus)*(8+fx.open*13);
+   const xx=x+CHEST_LOCK_X*focus+(seed(i+9)-.5)*spread+Math.sin(fx.time*.9+i*2.4+phase*TAU)*sway*phase;
    const yy=y-54-fx.open*19-phase*(105+fx.open*125)+Math.sin(i*1.7)*8;
    const depth=i%5===0?1.35:1;
    const r=(1.1+seed(i+90)*1.5)*life*twinkle*depth;
@@ -154,12 +173,20 @@ function openingScan(ctx:CanvasRenderingContext2D,x:number,y:number,fx:LootChest
  ctx.stroke();ctx.restore();
 }
 
-/** A single small authored decal on the terrain pass, beneath every actor. */
+/** The worn soil and contact shadow sit on the terrain beneath every actor. */
 export function drawLootChestGround(ctx:CanvasRenderingContext2D,imgs:Record<string,HTMLImageElement>,w:World,viewport:Viewport){
  const p=campLootChest(w),ground=imgs[LOOT_CHEST_GROUND_KEY];
  if(!p||!ground||!visible(p.x,p.y,viewport))return;
- ctx.save();ctx.globalAlpha=.46;
- ctx.drawImage(ground,p.x-120*CHEST_WIDTH_SCALE,p.y-22,240*CHEST_WIDTH_SCALE,38);
+ ctx.save();ctx.globalAlpha=.28;
+ ctx.drawImage(ground,p.x-124*CHEST_WIDTH_SCALE,p.y-15,248*CHEST_WIDTH_SCALE,38);
+ // The skids end at the world anchor. Keep the shade low and under both feet.
+ ctx.globalAlpha=1;
+ ctx.translate(p.x,p.y);ctx.scale(90,14);
+ const shade=ctx.createRadialGradient(0,0,0,0,0,1);
+ shade.addColorStop(0,'#21190e98');
+ shade.addColorStop(.65,'#21190e72');
+ shade.addColorStop(1,'#21190e00');
+ ctx.fillStyle=shade;ctx.fillRect(-1,-1,2,2);
  ctx.restore();
 }
 
