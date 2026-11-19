@@ -34,9 +34,7 @@ try{
    const ctx=new adapter.SkiaContext(surface.getCanvas(),640,560,font);
    ctx.fillStyle='#b67835';ctx.fillRect(0,0,640,560);
    if(terrain)ctx.drawImage(terrain,0,0,terrain.width(),terrain.height(),0,0,640,560);
-   if(mode==='art'){
-    const f=m.lootChestFrame(world);ctx.drawImage(atlas,f%5*440,Math.floor(f/5)*390,440,390,200,242,240,213);
-   }else if(mode==='rig'){
+   if(mode==='rig'){
     ctx.save();ctx.translate(320,420);ctx.scale(m.CHEST_WIDTH_SCALE,1);m.drawChestRig(ctx,atlas,world,0,0);ctx.restore();
    }else{
     if(mode==='fx'||mode==='ground')m.drawLootChestGround(ctx,imgs,world,viewport);

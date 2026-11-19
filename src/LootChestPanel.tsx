@@ -21,7 +21,7 @@ export default function LootChestPanel({world,onClose,onChange}:Props){
  };
  return <StationMenu compact world={world} title="Loot chest" label="Open loot chest and its contents" subtitle="THE RECLAMATION · STARTER TOOLS" onClose={onClose} weight={load.weight} loadLabel={load.label} message={message} className="rare-cache-menu">
   <div className="rare-cache-hero">
-   <div><small>DISCOVERY UNLOCKED</small><strong>{remaining?'Essential survival equipment':'Cache emptied'}</strong><p>{remaining?'The supplies are still inside. Choose what to take.':'You collected everything in this cache.'}</p></div>
+   <div><small>ROBOT SUPPLY DROP</small><strong>{remaining?'Essential survival equipment':'Cache emptied'}</strong><p>{remaining?'The supplies are still inside. Choose what to take.':'You collected everything in this cache.'}</p></div>
   </div>
   <div className="rare-cache-heading"><span>CONTENTS</span><span>{remaining} remaining</span></div>
   <div className="rare-cache-list" aria-label="Supplies stored inside the loot chest">

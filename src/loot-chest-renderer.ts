@@ -24,12 +24,12 @@ function light(ctx:LightContext,x:number,y:number,fx:LootChestFx,front:boolean){
  ctx.save();ctx.globalCompositeOperation='screen';
  const glow=(xx:number,yy:number,r:number,alpha:number)=>{
   const gradient=ctx.createRadialGradient(xx,yy,0,xx,yy,r);
-  gradient.addColorStop(0,'rgba(255,207,104,'+alpha+')');gradient.addColorStop(.35,'rgba(255,133,29,'+alpha*.6+')');gradient.addColorStop(1,'rgba(255,103,13,0)');
+  gradient.addColorStop(0,'rgba(195,255,220,'+alpha+')');gradient.addColorStop(.35,'rgba(83,220,165,'+alpha*.6+')');gradient.addColorStop(1,'rgba(62,180,133,0)');
   ctx.fillStyle=gradient;ctx.fillRect(xx-r,yy-r,r*2,r*2);
  };
  ctx.globalAlpha=fx.power;
  if(front){
-  glow(x-5,y-43,47,.63+fx.charge*.2);glow(x-53,y-38,28,.3);glow(x+43,y-36,28,.3);
+  glow(x-7,y-38,42,.23+fx.charge*.2);glow(x-55,y-37,28,.3);glow(x+44,y-37,28,.3);
   if(fx.open){
    glow(x,(CHEST_MOUTH_BACK+CHEST_MOUTH_FRONT)/2+y,65,fx.open*.56);glow(x,y-73,125,fx.burst*.65);
    const [top,bottom,leftTop,rightTop,leftBottom,rightBottom]=fx.lid;
@@ -50,13 +50,12 @@ function light(ctx:LightContext,x:number,y:number,fx:LootChestFx,front:boolean){
 function inlays(ctx:CanvasRenderingContext2D,x:number,y:number,fx:LootChestFx){
  const shimmer=.78+.15*Math.sin(fx.time*3.1)+.07*Math.sin(fx.time*7.3);
  ctx.globalAlpha=fx.power*(.55+fx.charge*.35)*shimmer;
- ctx.fillStyle='#ffeab1';
- // Centres measured from the approved atlas. Keep the dark iron rims visible.
- ctx.fillRect(x-67,y-38.5,28,1.5);ctx.fillRect(x+30,y-37.2,27,1.5);
- ctx.beginPath();diamond(ctx,x-5,y-43,2.3,2.8);ctx.fill();
- // An occasional pin-sharp glint across the jewel, never a permanent cross.
+ ctx.fillStyle='#c9fbe1';
+ // Light stays inside the recessed status strips.
+ ctx.fillRect(x-69,y-37.2,27,1.2);ctx.fillRect(x+31,y-37.2,27,1.2);
+ // An occasional pin-sharp glint across the lock, never a permanent cross.
  const sparkle=fx.reduced?0:Math.pow(Math.max(0,Math.sin(fx.time*1.6+.9)),18);
- if(sparkle>.02){ctx.globalAlpha=fx.power*sparkle*.87;ctx.fillStyle='#fff5d5';ctx.beginPath();star(ctx,x-5,y-43,10+fx.charge*7);ctx.fill()}
+ if(sparkle>.02){ctx.globalAlpha=fx.power*sparkle*.87;ctx.fillStyle='#eaffef';ctx.beginPath();star(ctx,x-7,y-38,6+fx.charge*5);ctx.fill()}
  ctx.globalAlpha=1;
 }
 function lidGlints(ctx:CanvasRenderingContext2D,x:number,y:number,fx:LootChestFx){
@@ -67,9 +66,9 @@ function lidGlints(ctx:CanvasRenderingContext2D,x:number,y:number,fx:LootChestFx
   const pulse=Math.pow(Math.max(0,Math.sin(fx.time*(i?1.3:1.1)+i*2.8)),8);
   if(pulse<.03)continue;
   const xx=x+left+(right-left)*(i?.87:.13),yy=y+top-9;
-  ctx.globalAlpha=fx.power*fx.open*pulse*.18;ctx.fillStyle='#ffbb48';
+  ctx.globalAlpha=fx.power*fx.open*pulse*.18;ctx.fillStyle='#64d8aa';
   ctx.beginPath();diamond(ctx,xx,yy,9,1.2);ctx.fill();
-  ctx.globalAlpha=fx.power*fx.open*pulse*.9;ctx.fillStyle='#fff5cf';
+  ctx.globalAlpha=fx.power*fx.open*pulse*.9;ctx.fillStyle='#e6fff0';
   ctx.beginPath();star(ctx,xx,yy,3+pulse*5);ctx.fill();
  }
  ctx.globalAlpha=1;
@@ -98,7 +97,7 @@ function motes(ctx:CanvasRenderingContext2D,x:number,y:number,fx:LootChestFx){
     ctx.lineTo(xx+Math.sin(i*2.4)*3,yy+(6+seed(i+121)*9)*life);ctx.closePath();
    }
   }
-  ctx.globalAlpha=fx.power*[.14,.84,.98][pass];ctx.fillStyle=['#ffba42','#ffe8a0','#fffef0'][pass];ctx.fill();
+  ctx.globalAlpha=fx.power*[.14,.84,.98][pass];ctx.fillStyle=['#76d8ad','#acf2cd','#eefdf4'][pass];ctx.fill();
  }
  ctx.globalAlpha=1;
 }
@@ -117,20 +116,42 @@ function openingSparks(ctx:CanvasRenderingContext2D,x:number,y:number,fx:LootChe
    if(pass===0){ctx.moveTo(xx,yy);ctx.lineTo(xx-vx*.025,yy-(vy+156*age)*.025)}
    else if(i%7===0)star(ctx,xx,yy,size*3);else diamond(ctx,xx,yy,size,1.4);
   }
-  ctx.globalAlpha=fade*(pass===0?.46:.95);ctx.strokeStyle='#ffbd52';ctx.lineWidth=1.5;
-  ctx.fillStyle='#fff1b5';if(pass===0)ctx.stroke();else ctx.fill();
+  ctx.globalAlpha=fade*(pass===0?.46:.95);ctx.strokeStyle='#8bedc1';ctx.lineWidth=1.5;
+  ctx.fillStyle='#dcffea';if(pass===0)ctx.stroke();else ctx.fill();
  }
  ctx.globalAlpha=1;
 }
 function sealFlare(ctx:CanvasRenderingContext2D,x:number,y:number,fx:LootChestFx){
  if(fx.burst<.02||fx.reduced)return;
- // Long tapered light streaks at the seal, with a short white-gold core.
+ // Long tapered light streaks at the seal, with a short pale core.
  ctx.beginPath();
  const r=90+fx.burst*55,cy=y-74;
  ctx.moveTo(x-r,cy);ctx.lineTo(x-13,cy-2.4);ctx.lineTo(x,cy-9*fx.burst);
  ctx.lineTo(x+13,cy-2.4);ctx.lineTo(x+r,cy);ctx.lineTo(x+13,cy+2.4);
  ctx.lineTo(x,cy+9*fx.burst);ctx.lineTo(x-13,cy+2.4);ctx.closePath();
- ctx.globalAlpha=fx.burst*.78*fx.power;ctx.fillStyle='#fff0b8';ctx.fill();ctx.globalAlpha=1;
+ ctx.globalAlpha=fx.burst*.78*fx.power;ctx.fillStyle='#dbffec';ctx.fill();ctx.globalAlpha=1;
+}
+
+/** A short projected calibration sweep climbs out of the opening. */
+function openingScan(ctx:CanvasRenderingContext2D,x:number,y:number,fx:LootChestFx){
+ const progress=fx.revealAge/54;
+ if(fx.reduced||fx.empty||progress<=0||progress>=1)return;
+ const opacity=Math.sin(progress*Math.PI)*fx.power;
+ const cy=y-80-progress*91,rx=33+progress*41,ry=8+progress*7;
+ ctx.save();
+ ctx.strokeStyle='#9cf4cf';ctx.lineWidth=1.4;ctx.globalAlpha=opacity*.53;
+ ctx.beginPath();
+ for(const side of [-1,1]){
+  const edge=x+side*rx;
+  ctx.moveTo(edge,cy-ry*.32);ctx.lineTo(edge,cy);
+  ctx.lineTo(x+side*rx*.44,cy+ry);
+  ctx.moveTo(edge,cy-ry*.32);ctx.lineTo(x+side*rx*.50,cy-ry);
+ }
+ ctx.stroke();
+ ctx.lineWidth=1;ctx.globalAlpha=opacity*.20;
+ ctx.beginPath();ctx.moveTo(x-rx*.88,cy);ctx.lineTo(x+rx*.88,cy);
+ ctx.moveTo(x-rx*.52,cy+ry*.55);ctx.lineTo(x+rx*.52,cy+ry*.55);
+ ctx.stroke();ctx.restore();
 }
 
 /** A single small authored decal on the terrain pass, beneath every actor. */
@@ -155,7 +176,7 @@ export function lootChestDrawables(ctx:CanvasRenderingContext2D,imgs:Record<stri
   if(sprite)drawChestRig(ctx,sprite,w,x,y);
   else{ctx.fillStyle='#393028';ctx.fillRect(x-83,y-70,166,70)}
   light(ctx,x,y,fx,true);
-  inlays(ctx,x,y,fx);lidGlints(ctx,x,y,fx);motes(ctx,x,y,fx);openingSparks(ctx,x,y,fx);sealFlare(ctx,x,y,fx);
+  openingScan(ctx,x,y,fx);inlays(ctx,x,y,fx);lidGlints(ctx,x,y,fx);motes(ctx,x,y,fx);openingSparks(ctx,x,y,fx);sealFlare(ctx,x,y,fx);
   ctx.restore();
  }}];
 }

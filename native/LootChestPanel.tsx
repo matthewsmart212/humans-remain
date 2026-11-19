@@ -22,7 +22,7 @@ export default function LootChestPanel({world,width,height,safe,onClose,onChange
  const canTake=LOOT_CHEST_REWARDS.some(r=>(contents[r.kind]??0)>0&&canCarryLootChestReward(world,r.kind,contents[r.kind]??0)>0);
  return <StationMenu compact world={world} title="Loot chest" subtitle="THE RECLAMATION · STARTER TOOLS" label="Loot chest supplies" onClose={onClose} width={width} height={height} safe={safe} weight={load.weight} loadLabel={load.label} message={message}>
   <View style={s.hero}>
-   <View style={{flex:1}}><Text style={s.eyebrow}>DISCOVERY UNLOCKED</Text><Text style={s.headline}>{remaining?'Essential survival equipment':'Cache emptied'}</Text><Text style={s.description}>{remaining?'See what is inside and choose what to take.':'Everything in this cache has been collected.'}</Text></View>
+   <View style={{flex:1}}><Text style={s.eyebrow}>ROBOT SUPPLY DROP</Text><Text style={s.headline}>{remaining?'Essential survival equipment':'Cache emptied'}</Text><Text style={s.description}>{remaining?'See what is inside and choose what to take.':'Everything in this cache has been collected.'}</Text></View>
   </View>
   <View style={s.labelRow}><Text style={s.label}>CONTENTS</Text><Text style={s.count}>{remaining} remaining</Text></View>
   <ScrollView style={{flex:1,minHeight:0}} contentContainerStyle={{gap:5,paddingBottom:4}} showsVerticalScrollIndicator={remaining>4}>
