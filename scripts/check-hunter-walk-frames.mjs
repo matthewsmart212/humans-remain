@@ -9,11 +9,12 @@ async function loadSource(path){
  return import('data:text/javascript;base64,'+Buffer.from(result.outputFiles[0].text).toString('base64'));
 }
 
-const [hunter,{axeAttachment},{drawWorker},{createWorld},{playerMovementImagesForRole},{torchPose},skia]=await Promise.all([
+const [hunter,{axeAttachment},{drawWorker},{createWorld,movePlayer,STEP},{emptyLayout},{playerMovementImagesForRole},{torchPose},skia]=await Promise.all([
  loadSource('src/hunter-sprites.ts'),
  loadSource('src/axe-renderer.ts'),
  loadSource('src/worker-renderer.ts'),
  loadSource('src/survival-engine.ts'),
+ loadSource('src/world-layout.ts'),
  loadSource('src/gameplay-artwork.ts'),
  loadSource('src/torch.ts'),
  CanvasKitInit()
@@ -35,6 +36,40 @@ const pngSignature=Buffer.from([137,80,78,71,13,10,26,10]);
 let checked=0;
 const hunterPreload=playerMovementImagesForRole('hunter');
 const survivorPreload=playerMovementImagesForRole('survivor');
+
+// Measure a stride from actual movement at full speed on open ground.
+function measureStride(role,running){
+ const w=createWorld(emptyLayout());
+ w.survivorRole=role;
+ const p=w.player,startX=p.x;
+ p.runBlend=running?1:0;
+ const poses=new Set();
+ for(let step=1;step<=120;step++){
+  const previous=p.walkDistance;
+  if(role==='hunter'&&running)poses.add(hunterCycle('right',previous,true).sprite);
+  movePlayer(w,{x:1,y:0},running);
+  assert(p.moving,'Open ground permits movement');
+  if(p.walkDistance>=previous)continue;
+
+  const distance=p.x-startX,seconds=step*STEP;
+  const stoppedPhase=p.walkDistance;
+  movePlayer(w,{x:0,y:0},false);
+  assert.equal(p.walkDistance,stoppedPhase,'Stopping holds the gait phase');
+  return {distance,seconds,poses:[...poses],speed:distance/seconds};
+ }
+ assert.fail(role+' gait never wrapped');
+}
+const survivorRun=measureStride('survivor',true);
+const hunterRun=measureStride('hunter',true);
+assert.deepEqual(hunterRun.poses,HUNTER_ART.right.run,'All eight run poses appear in order before wrapping');
+assert(Math.abs(hunterRun.speed-survivorRun.speed)<1e-8,'Hunter and Survivor cover the same ground per second');
+assert(hunterRun.seconds>=.64&&hunterRun.seconds<.64+STEP,'Hunter matches the 640 ms source loop within one simulation step');
+for(const role of ['survivor','medic','engineer']){
+ const gait=role==='survivor'?survivorRun:measureStride(role,true);
+ assert(gait.distance>=200&&gait.distance<200+gait.speed*STEP,role+' completes a sprint stride in 200 world units');
+}
+const hunterWalk=measureStride('hunter',false);
+assert(hunterWalk.distance>=160&&hunterWalk.distance<160+hunterWalk.speed*STEP,'Hunter walking stride remains 160 world units');
 
 for(const [direction,view] of Object.entries(views)){
  const mirror=!!view.mirror;

@@ -90,6 +90,16 @@ export function moveBody(w:World,p:Vec,dx:number,dy:number,r=19){
  for(let i=0;i<n;i++){if(dx!==0){const nx=p.x+dx/n;if(!blockedAt(nx,p.y))p.x=nx}if(dy!==0){const ny=p.y+dy/n;if(!blockedAt(p.x,ny))p.y=ny}}
 }
 export const SPRINT_SPEED=1.55;
+const WALK_SPEED=285;
+// Hunter's source GIF holds each of its eight poses for 80 ms at full sprint.
+const HUNTER_SPRINT_STRIDE=WALK_SPEED*SPRINT_SPEED*(8*.080);
+
+function advancePlayerGait(w:World,travelled:number){
+ const p=w.player;
+ const sprintStride=w.survivorRole==='hunter'?HUNTER_SPRINT_STRIDE:200;
+ const stride=160+(sprintStride-160)*p.runBlend;
+ p.walkDistance=(p.walkDistance+travelled*112/stride)%112;
+}
 /** A short, committed sidestep. Dodge cannot pass through authored collision,
  * cancel a strike before contact or be held to become permanently invulnerable. */
 export function dodgePlayer(w:World,input:Vec={x:0,y:0}){
@@ -114,7 +124,7 @@ export function movePlayer(w:World,input:Vec,sprint=false){
   const speed=COMBAT_DODGE.speed*(1-.45*dodgeAge/COMBAT_DODGE.duration);
   moveBody(w,p,Math.cos(angle)*speed*STEP,Math.sin(angle)*speed*STEP);
   const travelled=distance(p,before);p.moving=travelled>.001;p.sprinting=p.moving;p.runBlend=1;p.walkBlend=p.moving?1:0;
-  if(p.moving)p.walkDistance=(p.walkDistance+travelled*112/200)%112;
+  if(p.moving)advancePlayerGait(w,travelled);
   return;
  }
  const swinging=w.axeSwing&&timeOf(w)-w.axeSwing.started<axeProfile(w.axeSwing).duration;
@@ -131,13 +141,11 @@ export function movePlayer(w:World,input:Vec,sprint=false){
  // Movement cannot change inventory; share this tick's weight calculation
  // between speed and sprint cost instead of traversing the pack twice.
  const load=p.downedUntil?undefined:packLoad(w);
- const speed=p.downedUntil?65:285*load!.speed*(1+(SPRINT_SPEED-1)*(swinging||thrusting||swordThrusting?0:p.runBlend))*(swinging?axeMoveScale(w.axeSwing!,timeOf(w)):thrusting?.6:swordThrusting?.65:1);
+ const speed=p.downedUntil?65:WALK_SPEED*load!.speed*(1+(SPRINT_SPEED-1)*(swinging||thrusting||swordThrusting?0:p.runBlend))*(swinging?axeMoveScale(w.axeSwing!,timeOf(w)):thrusting?.6:swordThrusting?.65:1);
  moveBody(w,p,dx*speed*STEP,dy*speed*STEP);
  const travelled=distance(p,before);p.moving=travelled>.001;p.sprinting=requested&&p.moving;
  if(p.sprinting&&needsActive(w))spendSprintStamina(w,STEP*load!.stamina,timeOf(w));
- // Running lengthens the stride as well as increasing the cadence. Advance by
- // real displacement so a wall or released joystick never runs on the spot.
- if(p.moving)p.walkDistance=(p.walkDistance+travelled*112/(160+40*p.runBlend))%112;
+ if(p.moving)advancePlayerGait(w,travelled);
  const target=p.moving&&!p.downedUntil?1:0;
  p.walkBlend=target+((p.walkBlend??0)-target)*Math.exp(-STEP*(target?24:28));
  if(p.walkBlend<.001)p.walkBlend=0;
