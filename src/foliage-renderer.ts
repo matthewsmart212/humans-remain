@@ -14,6 +14,13 @@ export function foliageVisible(p:Placement,view?:FoliageViewport){
  return p.x+radius>=view.x&&p.x-radius<=view.x+view.width&&p.y+radius>=view.y&&p.y-radius<=view.y+view.height;
 }
 
+/** The scene applies the placement transform after drawing. Convert the push
+ * from walking direction to the local axes of the painted leaves. */
+export function localFoliageMotion(p:Placement,motion:{x:number;y:number}){
+ const angle=(p.rotation||0)*Math.PI/180,c=Math.cos(angle),s=Math.sin(angle);
+ return {x:(motion.x*c+motion.y*s)*(p.flipX?-1:1),y:(-motion.x*s+motion.y*c)*(p.flipY?-1:1)};
+}
+
 export function foliageMesh(p:Placement,a:WorldAsset,motion:{x:number;y:number},_time:number,reduced=false):Mesh{
  const b=placementBounds(p),anchor=placementFrame(p).anchor[1];
  const signature=[...a.crop,anchor].join(',');let g=meshes.get(p);
@@ -27,10 +34,8 @@ export function foliageMesh(p:Placement,a:WorldAsset,motion:{x:number;y:number},
   for(let row=0;row<rows.length-1;row++)for(let col=0;col<4;col++){const i=row*5+col;g.mesh.indices.push(i,i+1,i+5,i+1,i+6,i+5)}
   meshes.set(p,g);
  }
- const angle=(p.rotation||0)*Math.PI/180,c=Math.cos(angle),s=Math.sin(angle);
- // Simulation pushes in world directions; transform back to the sprite's axes.
- const mx=reduced?0:(motion.x*c+motion.y*s)*(p.flipX?-1:1),my=reduced?0:(-motion.x*s+motion.y*c)*(p.flipY?-1:1);
- const bx=b.width*mx*.22,by=b.height*(my*.17+Math.abs(mx)*.045);
+ const local=localFoliageMotion(p,motion);
+ const bx=reduced?0:b.width*local.x*.22,by=reduced?0:b.height*(local.y*.17+Math.abs(local.x)*.045);
  for(let i=0;i<g.mesh.positions.length;i++){
   const v=g.mesh.positions[i],weight=g.weight[i];
   v.x=b.x+g.u[i]*b.width+bx*weight;

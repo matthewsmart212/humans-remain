@@ -6,9 +6,11 @@ const compiled=await build({stdin:{contents:modules.map(m=>`export * from './src
 fs.mkdirSync('.qa/foliage-composition',{recursive:true});fs.writeFileSync('.qa/foliage-composition/check.mjs',compiled.outputFiles[0].text);
 const m=await import('../.qa/foliage-composition/check.mjs?'+Date.now()),snapshot=JSON.parse(fs.readFileSync('native/assets/world-snapshot.json','utf8'));
 m.installImportedArt(snapshot.records);
-const start=performance.now(),layout=m.prepareAuthoredWorld(snapshot.layout),duration=performance.now()-start;
-const before=snapshot.layout.items.filter(m.decorativeFoliage),after=layout.items.filter(m.decorativeFoliage);
-assert(after.length<=before.length*.77,'Crowded automatic foliage was reduced');
+// Exercise the one-time forage scenery migration even after it was shipped in the snapshot.
+const sourceLayout={...snapshot.layout,forageSceneryVersion:undefined};
+const start=performance.now(),layout=m.prepareAuthoredWorld(sourceLayout),duration=performance.now()-start;
+const before=sourceLayout.items.filter(m.decorativeFoliage),after=layout.items.filter(m.decorativeFoliage);
+assert(before.length-after.length>=Math.round(before.length*.23),'Crowded automatic foliage was reduced');
 assert(after.length>before.length*.45,'Woodland is not stripped bare');
 assert.equal(m.refineForageScenery(layout),layout,'One-time migration is idempotent');
 assert.equal(m.validateLayout(layout).layout.forageSceneryVersion,1,'Version survives editor/cloud validation');
@@ -50,7 +52,7 @@ assert(cue?.selected,'Outline follows the actual HUD pick target');
 assert(cue.alpha>m.resourceOutlineAlpha(cue.distance,true),'Crops receive a stronger discovery outline');
 let outlines=0,draws=0;
 const ctx={save(){},restore(){},translate(){},rotate(){},scale(){},drawSpriteOutline(draw){outlines++;draw()},drawImage(){draws++}};
-const images={[m.assetImageKey('/survival/vegetable-crops-v1/potato-stage-3.webp')]:{}};
+const images={[m.assetImageKey(m.ASSET_BY_ID.get(sample.assetId).image)]:{}};
 m.drawResourceOutlines(ctx,images,game,view,false,[]);assert(outlines>=1&&draws>=1,'Production crop outline draws');
 Object.assign(game.player,{x:sample.x+500,y:sample.y});
 assert(!m.nearbyResourceOutlines(game,view,false,[]).some(c=>c.placement?.id===sample.id),'Distant crops have no outline');

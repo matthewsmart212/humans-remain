@@ -28,6 +28,7 @@ import {clampPlayZoom,FULL_PLAY_ZOOM,MIN_PLAY_ZOOM} from './play-zoom';
 import {drawFieldKitTarget,getFieldKitTarget} from './field-kit-target';
 import {gateDrawables} from './camp-gate-renderer';
 import {drawTree} from './tree-chopping';
+import {drawTreeShade,treeShadeFrames} from './tree-shade';
 import {worldBounds} from './world-bounds';
 import {drawCampContact,drawCampGroundContact,hasCampGroundContact} from './camp-contact-renderer';
 import {drawPuddle} from './puddle-renderer';
@@ -66,9 +67,15 @@ export function drawPlacedGround(ctx:CanvasRenderingContext2D,imgs:Record<string
   ctx.drawImage(im,b.x+x*b.width,b.y+y*b.height,width*b.width,height*b.height);ctx.restore();
  }
 }
-type CampGroundContact={placement:Placement;asset:WorldAsset;source:string};
-function drawCampGroundContacts(ctx:CanvasRenderingContext2D,contacts:readonly CampGroundContact[]){
- for(const {placement:p,asset,source} of contacts){
+type CampGroundContact={placement:Placement;asset:WorldAsset;source:string;canopy?:number};
+function drawCampGroundContacts(ctx:CanvasRenderingContext2D,contacts:readonly CampGroundContact[],w:World,shade?:HTMLImageElement){
+ const overcast=Math.max(w.weather?.rain??0,w.weather?.fog??0);
+ const daylight=(1-nightStrength(w))*(1-.65*overcast);
+ for(const {placement:p,asset,source,canopy} of contacts){
+  if(canopy!==undefined){
+   if(shade)drawTreeShade(ctx,shade,w,p,canopy,daylight);
+   continue;
+  }
   ctx.save();
   if(p.rotation||p.flipX||p.flipY)rotatePlacement(ctx,p);
   drawCampGroundContact(ctx,p,asset,source);
@@ -89,7 +96,10 @@ export function placedDrawables(ctx:CanvasRenderingContext2D,imgs:Record<string,
   const frame=animationReady?(a.openFrames?.length?chestFrame(w,p.id,frames!.length):placedAnimationFrame(w,p,a)):0;
   const requestedSource=restoration?.image||frames?.[frame]||a.image,requestedImage=imgs[assetImageKey(requestedSource)];
   const b=placementBounds(p),im=requestedImage||imgs[assetImageKey(a.image)];if(!im)continue;
-  if(contacts&&hasCampGroundContact(a))contacts.push({placement:p,asset:a,source:restoration&&requestedImage?restoration.image:a.image});
+  if(contacts){
+   const canopy=treeShadeFrames.get(a.image);
+   if(canopy!==undefined||hasCampGroundContact(a))contacts.push({placement:p,asset:a,source:restoration&&requestedImage?restoration.image:a.image,canopy});
+  }
   const southHQ=a.image===HQ_SOUTH_INTERIOR&&!!a.interior;
   const cutaway=southHQ?headquartersCutawayAmount(p,w):0;
   // The full HQ facade is a background layer when the survivor's feet are
@@ -125,7 +135,7 @@ export function placedDrawables(ctx:CanvasRenderingContext2D,imgs:Record<string,
    drawCampContact(ctx,p,a);
    ctx.drawImage(im,b.x,b.y,b.width,b.height);
    return;
-  }if(drawPotatoPatch(ctx,imgs,w,p))return;if(restoration){const ruin=imgs[assetImageKey(restoration.image)];if(ruin){ctx.drawImage(ruin,b.x,b.y,b.width,b.height);return}}if(drawCampFurnace(ctx,imgs,w,p))return;if(drawWarehouse(ctx,imgs,w,p))return;if(drawForagePlant(ctx,imgs,w,p))return;if(drawTree(ctx,im,w,p))return;if(drawMineableRock(ctx,im,w,p,a.crop))return;if(a.puddle){drawPuddle(ctx,im,w,p,a);return}if(a.foliage){drawFoliage(ctx,im,w,p,a,animatePlant);return}drawCampContact(ctx,p,a);ctx.save();const [px,py]=placementPoint(p,w.player.x,w.player.y,true);if((p.allowTransparency??placementGeometryAsset(p)?.allowTransparency)!==false&&!a.interior&&py<p.y&&py>b.y&&Math.abs(px-p.x)<b.width*.3)ctx.globalAlpha=.6;
+  }if(drawPotatoPatch(ctx,imgs,w,p))return;if(restoration){const ruin=imgs[assetImageKey(restoration.image)];if(ruin){ctx.drawImage(ruin,b.x,b.y,b.width,b.height);return}}if(drawCampFurnace(ctx,imgs,w,p))return;if(drawWarehouse(ctx,imgs,w,p))return;if(drawForagePlant(ctx,imgs,w,p,animatePlant))return;if(drawTree(ctx,im,w,p))return;if(drawMineableRock(ctx,im,w,p,a.crop))return;if(a.puddle){drawPuddle(ctx,im,w,p,a);return}if(a.foliage){drawFoliage(ctx,im,w,p,a,animatePlant);return}drawCampContact(ctx,p,a);ctx.save();const [px,py]=placementPoint(p,w.player.x,w.player.y,true);if((p.allowTransparency??placementGeometryAsset(p)?.allowTransparency)!==false&&!a.interior&&py<p.y&&py>b.y&&Math.abs(px-p.x)<b.width*.3)ctx.globalAlpha=.6;
    if(p.role==='hearth'&&!placedFireLit(w,p)&&a.unlit){const off=imgs[assetImageKey(a.unlit)];if(off){const anchor=a.unlitAnchor||[627,1190],size=a.unlitSize||[1254,1254];ctx.drawImage(off,p.frame?b.x:p.x-anchor[0]/size[0]*b.width,p.frame?b.y:p.y-anchor[1]/size[1]*b.height,b.width,b.height)}else ctx.drawImage(im,...a.crop as [number,number,number,number],b.x,b.y,b.width,b.height)}
    else if(hasPaintedHearthAnimation(a))drawBurningHearth(ctx,imgs,imgs[assetImageKey(a.image)]||im,b,timeOf(w),!!w.weather?.reducedMotion);
    else ctx.drawImage(im,...a.crop as [number,number,number,number],b.x,b.y,b.width,b.height);ctx.restore()};
@@ -189,7 +199,7 @@ export function drawWorldEditor(ctx:CanvasRenderingContext2D,atlas:Atlas,imgs:Re
  drawPlacedGround(ctx,imgs,w.layout,view.hideFoliage,viewport);
  const campContacts=w.scene?undefined:[] as CampGroundContact[];
  const placed=placedDrawables(ctx,imgs,w,true,viewport,view.hideFoliage,campContacts);
- if(campContacts)drawCampGroundContacts(ctx,campContacts);
+ if(campContacts)drawCampGroundContacts(ctx,campContacts,w,imgs.treeCanopyShade);
  const pickupScale=c.scale/Math.min(2,(ctx as CanvasRenderingContext2D&{pixelRatio?:number}).pixelRatio||globalThis.devicePixelRatio||1);
  if(view.playing)drawLootChestGround(ctx,imgs,w,{x:c.x,y:c.y,width:ctx.canvas.width/c.scale,height:ctx.canvas.height/c.scale});
  if(view.playing)drawFieldKitTarget(ctx,w,pickupScale);

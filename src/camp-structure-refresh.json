@@ -51,7 +51,7 @@
     "name": "flame-0.webp",
     "width": 1254,
     "height": 1254,
-    "bytes": 344220,
+    "bytes": 386656,
     "frames": [
       {
         "sourceId": "0e6f4385-99d4-4bd1-990e-1f3cb3fa87ea",
@@ -59,7 +59,7 @@
         "name": "flame-0.webp",
         "width": 1254,
         "height": 1254,
-        "bytes": 344220
+        "bytes": 386656
       },
       {
         "sourceId": "33c670e0-ef26-487e-b46f-230d28a66446",
@@ -67,7 +67,7 @@
         "name": "flame-1.webp",
         "width": 1254,
         "height": 1254,
-        "bytes": 331728
+        "bytes": 399822
       },
       {
         "sourceId": "c63dbbf8-c089-49b4-9559-94f40439ab97",
@@ -75,7 +75,7 @@
         "name": "flame-2.webp",
         "width": 1254,
         "height": 1254,
-        "bytes": 327136
+        "bytes": 408526
       },
       {
         "sourceId": "f24d5a53-da03-4ef1-81c3-84bbfda7f56f",
@@ -83,7 +83,7 @@
         "name": "flame-3.webp",
         "width": 1254,
         "height": 1254,
-        "bytes": 331430
+        "bytes": 394160
       },
       {
         "sourceId": "71d702cf-d32a-45da-9f28-ef28d1d5dc36",
@@ -91,7 +91,7 @@
         "name": "flame-4.webp",
         "width": 1254,
         "height": 1254,
-        "bytes": 327724
+        "bytes": 400794
       },
       {
         "sourceId": "10f7b0ab-a198-4373-a434-bfe90aacec5d",
@@ -99,7 +99,7 @@
         "name": "flame-5.webp",
         "width": 1254,
         "height": 1254,
-        "bytes": 332896
+        "bytes": 405332
       },
       {
         "sourceId": "18bea2f8-1dd6-4d86-b767-89473f47eda6",
@@ -107,7 +107,7 @@
         "name": "flame-6.webp",
         "width": 1254,
         "height": 1254,
-        "bytes": 316094
+        "bytes": 404518
       },
       {
         "sourceId": "c9095651-2b46-40dd-8eaf-c73ea3ee5f5b",
@@ -115,7 +115,7 @@
         "name": "flame-7.webp",
         "width": 1254,
         "height": 1254,
-        "bytes": 332946
+        "bytes": 394914
       }
     ],
     "unlit": {

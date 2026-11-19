@@ -3,7 +3,7 @@ import fs from 'node:fs';
 import assert from 'node:assert/strict';
 import {createRequire} from 'node:module';
 const sharp=createRequire(import.meta.url)('sharp');
-const assets=["/survival/equipment/metal-pickaxe-v1.png", "/survival/equipment/metal-spear-v1.png", "/survival/equipment/metal-sword-v1.png", "/survival/equipment/scrap-knife-v1.png", "/survival/equipment/wooden-knife-v1.png", "/survival/equipment/wooden-pickaxe-v1.png", "/survival/equipment/wooden-spear-v1.png", "/survival/equipment/wooden-sword-v1.png", "/survival/forage-v1/apple-tree.png", "/survival/forage-v1/berry-bush.png", "/survival/ironworks-v1/camp-furnace.png", "/survival/ironworks-v1/iron-boulder.png", "/survival/ironworks-v1/iron-ingot.png", "/survival/ironworks-v1/iron-ore.png", "/survival/scrapling.png", "/survival/ui-field-kit-v1/vitals.png"];
+const assets=["/survival/equipment/metal-pickaxe-v1.png", "/survival/equipment/metal-spear-v1.png", "/survival/equipment/metal-sword-v1.png", "/survival/equipment/scrap-knife-v1.png", "/survival/equipment/wooden-knife-v1.png", "/survival/equipment/wooden-pickaxe-v1.png", "/survival/equipment/wooden-spear-v1.png", "/survival/equipment/wooden-sword-v1.png", "/survival/ironworks-v1/camp-furnace.png", "/survival/ironworks-v1/iron-boulder.png", "/survival/ironworks-v1/iron-ingot.png", "/survival/ironworks-v1/iron-ore.png", "/survival/scrapling.png", "/survival/ui-field-kit-v1/vitals.png"];
 const redirects=JSON.parse(fs.readFileSync('server/lossless-artwork-redirects.json','utf8'));
 const report=[];
 for(const name of assets){

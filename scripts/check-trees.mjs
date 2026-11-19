@@ -7,7 +7,7 @@ import {build} from 'esbuild';
 const require=createRequire(import.meta.url),sharp=require(process.env.CODEX_PRIMARY_RUNTIME_NODE_MODULES+'/sharp');
 const tmp=fs.mkdtempSync(path.join(os.tmpdir(),'tree-check-')),out=process.argv[2]||'docs/qa/trees-v1';fs.mkdirSync(out,{recursive:true});
 try{
- await build({stdin:{contents:"export * from './src/world-assets';export * from './src/world-layout';export * from './src/survival-engine';export * from './src/tree-chopping';export * from './src/studio-play';export * from './src/placed-world-renderer';export * from './src/skia-web';export * from './src/asset-library-policy';",resolveDir:process.cwd()},bundle:true,platform:'node',format:'cjs',outfile:path.join(tmp,'model.cjs')});
+ await build({stdin:{contents:"export * from './src/world-assets';export * from './src/world-layout';export * from './src/survival-engine';export * from './src/tree-chopping';export * from './src/tree-shade';export * from './src/studio-play';export * from './src/placed-world-renderer';export * from './src/skia-web';export * from './src/asset-library-policy';",resolveDir:process.cwd()},bundle:true,platform:'node',format:'cjs',outfile:path.join(tmp,'model.cjs')});
  const m=require(path.join(tmp,'model.cjs')),arts=[...m.TREE_ART.values()];
  assert.equal(arts.length,18);assert.equal(m.libraryAssets(m.WORLD_ASSETS).filter(a=>m.TREE_ART.has(a.id)).length,arts.length);
  let bytes=0,cases=0;
@@ -35,7 +35,17 @@ try{
   draws.length=0;clean.w.tick=0;clean.w.weather={reducedMotion:true};m.drawTree(ctx,{},clean.w,clean.p);assert.equal(draws.length,1,'Reduced motion skips the fall');
  }
  assert(bytes<12000000,'Keep transfer budget bounded');
- assert.equal(Object.keys(m.requiredImages(Array.from({length:1000},(_,i)=>arts[i%arts.length].id))).length,arts.length+1,'Instances and stages share one image per design plus one shared log sprite');
+ const sources=m.requiredImages(Array.from({length:1000},(_,i)=>arts[i%arts.length].id));
+ assert.equal(sources.treeCanopyShade,m.TREE_SHADE_IMAGE);
+ assert.equal(Object.keys(sources).length,arts.length+2,'Instances and stages share the crown shade and dropped log textures');
+ const oak=arts.find(a=>a.id==='art_tree_oak'),shade=make(oak),sheet={},passes=[];
+ const ink={globalAlpha:1,save(){},restore(){this.globalAlpha=1},drawImage(...rect){passes.push({alpha:this.globalAlpha,rect})}};
+ const cast=()=>m.drawTreeShade(ink,sheet,shade.w,shade.p,m.treeShadeFrames.get(oak.image),1);
+ shade.w.tick=60;cast();assert.equal(passes[0].alpha,1);
+ shade.w.treeChops={tree:{hp:0,hitAt:1,felledAt:1,direction:1}};
+ shade.w.tick=75;cast();assert(passes[1].alpha>0&&passes[1].alpha<1);
+ shade.w.weather={reducedMotion:true};cast();assert.equal(passes.length,2,'Reduced motion switches directly to the stump');
+ shade.w.tick=120;shade.w.weather.reducedMotion=false;cast();assert.equal(passes.length,2,'A felled crown leaves no cast shadow');
  // Render all stages using the actual production CanvasKit adapter.
  globalThis.window={};process.type='renderer';globalThis.devicePixelRatio=1;delete globalThis.createImageBitmap;
  const originalFetch=globalThis.fetch;globalThis.fetch=async url=>String(url).startsWith('blob:')?originalFetch(url):new Response(fs.readFileSync(path.resolve('public'+String(url))));

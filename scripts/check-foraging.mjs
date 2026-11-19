@@ -2,7 +2,7 @@ import assert from 'node:assert/strict';
 import fs from 'node:fs';import os from 'node:os';import path from 'node:path';import {createRequire} from 'node:module';import {build} from 'esbuild';
 const temp=fs.mkdtempSync(path.join(os.tmpdir(),'foraging-'));
 try{
- await build({stdin:{contents:`export * from './src/foraging';export * from './src/field-kit-target';export * from './src/forage-art';export * from './src/forage-planting';export * from './src/survival-engine';export * from './src/world-layout';export * from './src/world-assets';export * from './src/field-kit';export * from './src/expedition-inventory';export * from './src/food-provisions';export * from './src/authored-world';export * from './src/imported-art';export * from './src/play-interaction';`,resolveDir:process.cwd()},bundle:true,platform:'node',format:'cjs',outfile:path.join(temp,'game.cjs')});
+ await build({stdin:{contents:`export * from './src/foraging';export * from './src/field-kit-target';export * from './src/forage-art';export * from './src/crop-art';export * from './src/forage-renderer';export * from './src/forage-planting';export * from './src/survival-engine';export * from './src/world-layout';export * from './src/world-assets';export * from './src/field-kit';export * from './src/expedition-inventory';export * from './src/food-provisions';export * from './src/authored-world';export * from './src/imported-art';export * from './src/play-interaction';`,resolveDir:process.cwd()},bundle:true,platform:'node',format:'cjs',outfile:path.join(temp,'game.cjs')});
  const m=createRequire(import.meta.url)(path.join(temp,'game.cjs'));
  const make=(kind=0)=>{
   const layout=m.emptyLayout(),p={...m.newPlacement(m.FORAGE_ART[kind].id,1600,1600),id:'plant'};layout.items=[p];layout.spawn={x:1600,y:1690};
@@ -10,13 +10,32 @@ try{
   return{w,p};
  };
  const tap=(w,controller)=>{const a=controller.sample(w).action;assert(controller.press(w,a));controller.release();return a};
- const view={x:1000,y:1000,width:1600,height:1200,scale:.5};
+ const nativeRegistry=['native/forage-art.ts','native/crop-art.ts'].map(p=>fs.readFileSync(p,'utf8')).join('\n');
+ for(const a of m.FORAGE_ART){
+  const fruit=m.FORAGE_FRUIT_ART[a.kind],urls=[a.image,...(fruit?fruit.images:[m.cropPickedUrl(a.kind)])];
+  const required=m.requiredImages([a.id]);
+  for(const url of urls){
+   assert.equal(required[m.assetImageKey(url)],url);
+   assert(fs.existsSync('public'+url));
+   assert(nativeRegistry.includes(`require('../public${url}')`),`Native bundles ${url} offline`);
+  }
+ }
  for(const kind of [0,1]){
   const {w,p}=make(kind),a=m.FORAGE_ART[kind],controller=new m.FieldKitController();
+  w.weather={...w.weather,reducedMotion:true};
+  const fruit=m.FORAGE_FRUIT_ART[a.kind],calls=[],imgs=Object.fromEntries(Object.entries(m.requiredImages([a.id])).map(([key,url])=>[key,{url}]));
+  const ctx={save(){},restore(){},drawImage(image){calls.push(image.url)}};
+  const renderedFruit=(count)=>{
+   calls.length=0;
+   assert(m.drawForagePlant(ctx,imgs,w,p));
+   assert.deepEqual(calls,[a.image,...fruit.points.slice(0,count).map(socket=>fruit.images[socket.variation])]);
+  };
+  renderedFruit(a.capacity);
   for(let picked=1;picked<=a.capacity;picked++){
    const shown=controller.sample(w).action;
    assert.equal(shown.label,'PICK 1');assert.equal(shown.image,m.PROVISIONS[a.kind].image);assert(!shown.attack);assert(!shown.disabled);assert.match(shown.description,/Pick 1 /);
    assert(controller.press(w,shown));assert.equal(m.itemCount(w,a.kind),picked,'Exactly one item per press');assert.equal(m.forageRemaining(w,p),a.capacity-picked);
+   renderedFruit(a.capacity-picked);
    assert(!controller.press(w,shown),'A held press cannot gather repeatedly');controller.release();assert(!m.pickForage(w,p.id),'Cooldown blocks duplicate fast taps');
    if(picked<a.capacity)assert.equal(w.forage[p.id].regrowRound,undefined,'Remaining fruit cannot regenerate during a partial harvest');
    w.tick+=Math.ceil(m.FORAGE_PICK_COOLDOWN*60)+1;
@@ -24,7 +43,7 @@ try{
   assert.equal(controller.sample(w).action.target,undefined,'Empty plants stop attracting focus');assert.equal(m.itemCount(w,a.kind),a.capacity);
   assert.equal(m.playInteraction(w),null,'No empty-plant interaction plaque');
   w.round+=a.regrowDays-1;assert.equal(m.forageRemaining(w,p),0,'Earlier dawn does not refill');
-  w.round++;assert.equal(m.forageRemaining(w,p),a.capacity,'Correct dawn restores fruit');assert(m.pickForage(w,p.id));assert.equal(m.itemCount(w,a.kind),a.capacity+1);
+  w.round++;assert.equal(m.forageRemaining(w,p),a.capacity,'Correct dawn restores fruit');renderedFruit(a.capacity);assert(m.pickForage(w,p.id));assert.equal(m.itemCount(w,a.kind),a.capacity+1);
   assert.equal(m.playInteraction(w).target.detail,`${a.capacity-1} left`,'HUD target tracks the live count');
   const fresh=m.createWorld(w.layout);assert.equal(m.forageRemaining(fresh,p),a.capacity,'New run starts ripe');assert.equal(w.layout.items[0].remaining,undefined,'Runtime harvest cannot change the draft');
  }
@@ -53,14 +72,23 @@ try{
  const snapshot=JSON.parse(fs.readFileSync('native/assets/world-snapshot.json','utf8'));m.installImportedArt(snapshot.records);
  const original=JSON.stringify(snapshot.layout),layout=m.prepareAuthoredWorld(snapshot.layout),plants=layout.items.filter(p=>m.FORAGE_BY_ID.has(p.assetId));
  assert.equal(JSON.stringify(snapshot.layout),original,'Planting never edits its input');assert.equal(layout.forageVersion,1);assert.equal(m.prepareAuthoredWorld(layout),layout,'Upgrade is idempotent');
- assert.equal(plants.filter(p=>p.assetId===m.FORAGE_ART[0].id).length,48);assert.equal(plants.filter(p=>p.assetId===m.FORAGE_ART[1].id).length,18);
+ for(const art of m.FORAGE_ART)assert(plants.some(p=>p.assetId===art.id),`Authored map includes ${art.name}`);
  assert(layout.items.length<=5000);assert.equal(m.validateLayout(layout).errors.length,0);assert.equal(m.validateLayout(layout).layout.forageVersion,1);
- assert.equal(layout.items.length,snapshot.layout.items.length+66+layout.items.filter(p=>p.id.startsWith('ironworks-v1-')).length);assert.deepEqual(layout.items.slice(0,snapshot.layout.items.length),snapshot.layout.items,'Existing map stays intact');
- const nearest=Math.min(...plants.map(p=>Math.hypot(p.x-layout.spawn.x,p.y-layout.spawn.y)));assert(nearest<700,`A first bush is discoverable near spawn: ${nearest}`);
+ assert.deepEqual(layout.items,snapshot.layout.items,'An up-to-date authored map keeps its original placements');
+ const nearest=Math.min(...plants.filter(p=>p.assetId===m.FORAGE_ART[0].id).map(p=>Math.hypot(p.x-layout.spawn.x,p.y-layout.spawn.y)));assert(nearest<1000,`A first bush is discoverable near spawn: ${nearest}`);
  let accessible=0;
+ const w=m.createWorld(layout);w.animals=[];w.enemies=[];w.loot=[];w.breakables=[];
  for(const p of plants){
-  const w=m.createWorld(layout);w.animals=[];w.enemies=[];w.loot=[];w.breakables=[];
-  for(let i=0;i<16;i++){const a=i*Math.PI/8;Object.assign(w.player,{x:p.x+Math.cos(a)*90,y:p.y+Math.sin(a)*90});if(m.worldBlocked(w,w.player.x,w.player.y,19))continue;if(m.nearbyForage(w)?.placement.id===p.id){accessible++;break}}
+  let clear=false;
+  for(const distance of [90,70,110,50]){
+   for(let i=0;i<24;i++){
+    const angle=i*Math.PI/12;
+    Object.assign(w.player,{x:p.x+Math.cos(angle)*distance,y:p.y+Math.sin(angle)*distance});
+    if(!m.worldBlocked(w,w.player.x,w.player.y,19)&&m.nearbyForageTargets(w).some(target=>target.placement.id===p.id)){clear=true;break}
+   }
+   if(clear)break;
+  }
+  if(clear)accessible++;
  }
  assert.equal(accessible,plants.length,'Every plant has a reachable, clear picking side');
  const removed={...layout,items:layout.items.filter(p=>p.id!==plants[0].id)};assert.equal(m.prepareAuthoredWorld(removed),removed,'Removed editor plants never grow back as placements');

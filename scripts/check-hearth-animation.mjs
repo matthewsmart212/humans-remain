@@ -30,12 +30,34 @@ try{
  world.progression.restoredBuildings=['headquarters','fire'];
  world.camp.hearth.fuel=0;assert.deepEqual(draw(),[asset.unlit]);
  world.camp.hearth.fuel=2;
- const rear=new Set(),front=new Set();
+ const rear=new Set(),front=new Map();
  for(let tick=0;tick<2160;tick++){
   world.tick=tick;assert.deepEqual(draw(),layers);
-  rear.add(calls[1].slice(1,3).join(','));front.add(calls[2].slice(1,3).join(','));
+  rear.add(calls[1].slice(1,3).join(','));front.set(calls[2].slice(1,3).join(','),calls[2].slice(1));
  }
  assert.equal(rear.size,48);assert.equal(front.size,36);
+ // Sample the decoded moving foreground inside the camera-facing timber, above the coal bed.
+ // Sampling in hearth coordinates also catches a correct sheet drawn at the wrong offset.
+ const kit=await createRequire(import.meta.url)('canvaskit-wasm')();
+ const atlas=kit.MakeImageFromEncoded(fs.readFileSync('public'+game.HEARTH_ANIMATION_IMAGES.hearthFrontFire));
+ const atlasWidth=atlas.width();
+ const pixels=atlas.readPixels(0,0,{width:atlasWidth,height:atlas.height(),colorType:kit.ColorType.RGBA_8888,alphaType:kit.AlphaType.Unpremul,colorSpace:kit.ColorSpace.SRGB});
+ const bounds=game.placementBounds(p);
+ for(const [cx,cy] of [[758,775],[839,861]]){
+  const coverage=[];
+  for(const [sx,sy,sw,sh,dx,dy,dw,dh] of front.values()){
+   let warm=0,samples=0;
+   for(let y=cy-10;y<=cy+10;y+=4)for(let x=cx-15;x<=cx+15;x+=5){
+    const px=Math.round(sx+(bounds.x+x/1254*bounds.width-dx)/dw*sw);
+    const py=Math.round(sy+(bounds.y+y/1254*bounds.height-dy)/dh*sh);
+    const i=4*(py*atlasWidth+px);samples++;
+    if(pixels[i]>pixels[i+2]+50&&pixels[i+1]>76)warm+=pixels[i+3]/255;
+   }
+   coverage.push(warm/samples);
+  }
+  assert(Math.max(...coverage)>.25&&Math.max(...coverage)-Math.min(...coverage)>.12,'Live flame crosses and uncovers the near log face');
+ }
+ atlas.delete();
  for(const key of Object.keys(game.HEARTH_ANIMATION_IMAGES)){const partial={...images};delete partial[key];assert.deepEqual(draw(partial),[asset.image])}
  world.weather={...world.weather,reducedMotion:true};
  for(const tick of [0,31,900]){world.tick=tick;assert.deepEqual(draw(),[asset.image])}

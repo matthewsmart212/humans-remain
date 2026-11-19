@@ -14,9 +14,15 @@ export function hasPaintedHearthAnimation(asset:WorldAsset){
   &&asset.frames?.length===editorFrames.length&&asset.frames.every((url,i)=>url===editorFrames[i]);
 }
 
+// Drafts change the speed of the rising gases independently of the flame at the
+// wood. Both clocks advance continuously and return to their phase after 36s.
+const turn=Math.PI*2;
+const rearTime=(seconds:number)=>seconds+.095*Math.sin(turn*seconds/9)+.048*Math.sin(turn*seconds/4);
+const frontTime=(seconds:number)=>seconds+.105*Math.sin(turn*seconds/12)-.037*Math.sin(turn*seconds/6);
+
 /** Same phase as the hot coal texture under the front timber. */
 export function hearthFirelight(seconds:number){
- const phase=seconds*17/36,turn=Math.PI*2;
+ const phase=frontTime(seconds)*17/36;
  return .76+.085*Math.sin(turn*(phase+.12))+.055*Math.sin(turn*(3*phase-.17));
 }
 
@@ -40,6 +46,6 @@ export function drawBurningHearth(ctx:CanvasRenderingContext2D,images:Record<str
   return;
  }
  ctx.drawImage(hearthCharcoal,b.x,b.y,b.width,b.height);
- drawSheet(ctx,hearthRearFire,rear,b,seconds);
- drawSheet(ctx,hearthFrontFire,front,b,seconds);
+ drawSheet(ctx,hearthRearFire,rear,b,rearTime(seconds));
+ drawSheet(ctx,hearthFrontFire,front,b,frontTime(seconds));
 }

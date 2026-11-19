@@ -1,9 +1,11 @@
 import {ASSET_BY_ID} from './world-assets';
-import {placementBounds,type Placement,type WorldLayout} from './world-layout';
+import {placementBounds,placementPoint,type WorldLayout} from './world-layout';
 import type {World} from './survival-engine';
 
 export type FoliageMotion={x:number;y:number;vx:number;vy:number;lastTouch:number};
-type Plant={p:Placement;rx:number;ry:number};
+type Plant={id:string;x:number;y:number;rx:number;ry:number};
+export const BERRY_CONTACT_BEND=.16;
+export const FORAGE_PICK_SHAKE=.023;
 const CELL=160;
 const targetsByWorld=new WeakMap<World,Map<string,{x:number;y:number}>>();
 let indices=new WeakMap<WorldLayout,{cells:Map<string,Plant[]>;ids:Set<string>}>();
@@ -19,9 +21,10 @@ function plantIndex(layout:WorldLayout){
   if(!ASSET_BY_ID.get(p.assetId)?.foliage)continue;
   const b=placementBounds(p),radius=Math.max(b.width,b.height)*.5;
   // A circular broad phase remains conservative for flipped/rotated plants.
-  const plant={p,rx:radius+24,ry:radius*.62+21};index.ids.add(p.id);
-  for(let x=Math.floor((p.x-plant.rx)/CELL);x<=Math.floor((p.x+plant.rx)/CELL);x++)
-   for(let y=Math.floor((p.y-plant.ry)/CELL);y<=Math.floor((p.y+plant.ry)/CELL);y++){
+  const [rootX,rootY]=placementPoint(p,p.x,p.y);
+  const plant={id:p.id,x:rootX,y:rootY,rx:radius+24,ry:radius*.62+21};index.ids.add(p.id);
+  for(let x=Math.floor((rootX-plant.rx)/CELL);x<=Math.floor((rootX+plant.rx)/CELL);x++)
+   for(let y=Math.floor((rootY-plant.ry)/CELL);y<=Math.floor((rootY+plant.ry)/CELL);y++){
     const key=x+','+y,list=index.cells.get(key)||[];list.push(plant);index.cells.set(key,list);
    }
  }
@@ -41,14 +44,14 @@ export function stepFoliage(w:World,seconds:number){
  const dt=Math.min(1/30,Math.max(0,seconds));if(!dt)return;
  const time=w.tick/60;let targets=targetsByWorld.get(w);if(!targets){targets=new Map();targetsByWorld.set(w,targets)}else targets.clear();
  const touch=(actor:{x:number;y:number},strength:number,flowX=0,flowY=0)=>{
-  for(const {p,rx,ry}of index.cells.get(Math.floor(actor.x/CELL)+','+Math.floor(actor.y/CELL))||[]){
-   const dx=(p.x-actor.x)/rx,dy=(p.y-actor.y)/ry,d2=dx*dx+dy*dy;if(d2>=1)continue;
+  for(const {id,x,y,rx,ry}of index.cells.get(Math.floor(actor.x/CELL)+','+Math.floor(actor.y/CELL))||[]){
+   const dx=(x-actor.x)/rx,dy=(y-actor.y)/ry,d2=dx*dx+dy*dy;if(d2>=1)continue;
    const distance=Math.sqrt(d2),amount=(1-d2)*strength;
-   const target=targets.get(p.id)||{x:0,y:0};
+   const target=targets.get(id)||{x:0,y:0};
    // Push away from the boots, with a little follow-through in travel direction.
    target.x=clamp(target.x+((distance>.08?dx/distance:0)*.78+flowX*.32)*amount);
    target.y=clamp(target.y+((distance>.08?dy/distance:0)*.78+flowY*.32)*amount);
-   targets.set(p.id,target);
+   targets.set(id,target);
   }
  };
  const p=w.player,direction=p.direction;

@@ -7,7 +7,8 @@ import {GARDEN_ART,GARDEN_ANCHOR,GARDEN_COLLISION} from './camp-garden-art';
 import {CROP_IMAGES,cropPickedUrl} from './crop-art';
 import {POTATO_PATCH_IMAGES} from './potato-patch-art';
 import {MINEABLE_ROCKS} from './mining-rocks';
-import {FORAGE_ART} from './forage-art';
+import {FORAGE_ART,FORAGE_BY_ID,FORAGE_FRUIT_ART} from './forage-art';
+import {TREE_SHADE_IMAGE,treeShadeFrames} from './tree-shade';
 import perimeterArt from './camp-perimeter-art.json';
 import circularWallArt from './camp-circular-wall-art.json';
 import type {AnimationMode,AnimationArea} from './asset-animation';
@@ -113,7 +114,7 @@ export const ASSET_BY_ID=new Map(WORLD_ASSETS.map(a=>[a.id,a]));
 // Keep old world snapshots readable without presenting a Tier 2 choice in the editor.
 const legacyGarden=ASSET_BY_ID.get('art_camp_garden_t1');
 if(legacyGarden)ASSET_BY_ID.set('art_camp_garden_t2',{...legacyGarden,id:'art_camp_garden_t2'});
-export const TREE_LOG_IMAGE='/survival/world-scenery-v1/hollow-birch-log.webp';
+export const TREE_LOG_IMAGE='/survival/woodland-deadwood-v1/hollow-birch-log.webp';
 export const assetImageKey=(url:string)=>'placed:'+url;
 export function requiredImages(assetIds:string[],terrain?:{url:string},options:{animationFrames?:boolean}={}){
  const out:Record<string,string>=terrain&&!usesPaintedHomeTerrain(terrain)?{[assetImageKey(terrain.url)]:terrain.url}:{};
@@ -125,13 +126,17 @@ export function requiredImages(assetIds:string[],terrain?:{url:string},options:{
   const frames=options.animationFrames===false||hearth?[a.frames?.[0],a.openFrames?.[0]]:[...(a.frames||[]),...(a.openFrames||[])];
   for(const url of [...restorationImages(id),a.image,a.roof,a.unlit,a.ground?.image,...(a.image===HQ_SOUTH_INTERIOR?HQ_FOUNDATION_DRESSING.map(d=>d.image):[]),a.gate?.leaf,a.gate?.post,a.gate?.states?.closed,a.gate?.states?.open,...frames])if(url)out[assetImageKey(url)]=url;
   if(hearth&&options.animationFrames!==false)Object.assign(out,HEARTH_ANIMATION_IMAGES);
+  if(treeShadeFrames.has(a.image))out.treeCanopyShade=TREE_SHADE_IMAGE;
   if(treeArt.some(t=>t.id===id))out[assetImageKey(TREE_LOG_IMAGE)]=TREE_LOG_IMAGE;
   // Warehouse stock states are independent textures, not placed: URL keys.
   // The warehouse renderer needs all four to change wood, stone and scrap on demand.
   if(id===WAREHOUSE_ASSET_ID)Object.assign(out,{warehouseEmpty:WAREHOUSE_ARTWORK.empty,warehouseLight:WAREHOUSE_ARTWORK.light,warehouseHalf:WAREHOUSE_ARTWORK.half,warehouseFull:WAREHOUSE_ARTWORK.full});
   // Runtime-selected potato states must be preloaded on web and packaged on iOS.
   if(GARDEN_ART.some(g=>g.id===id)||id==='art_camp_garden_t2')for(const url of [...POTATO_PATCH_IMAGES,...CROP_IMAGES])out[assetImageKey(url)]=url;
-  const crop=FORAGE_ART.find(a=>a.id===id);
-  if(crop&&(crop.kind==='potato'||crop.kind==='carrot')){const url=cropPickedUrl(crop.kind);out[assetImageKey(url)]=url;}
+  const forage=FORAGE_BY_ID.get(id);
+  if(forage){
+   const urls=forage.kind==='berries'||forage.kind==='apple'?FORAGE_FRUIT_ART[forage.kind].images:[cropPickedUrl(forage.kind)];
+   for(const url of urls)out[assetImageKey(url)]=url;
+  }
  }return out}
 export const ROLE_LABELS:Record<WorldRole,string>={prop:'Visual prop',generator:'Generator / workshop',hearth:'Cooking hearth',well:'Drinking well',storage:'Shared supplies',lamp:'Powered lamp',scrap:'Scrap pickup',fuel:'Fuel pickup',pallets:'Pallet pickup',crate:'Smashable crate',search:'Searchable locker',animal:'Animal spawn',enemySpawn:'Enemy entrance',crusher:'Crusher',shutter:'Security shutter'};

@@ -1,0 +1,18 @@
+{
+  "/survival/trees-v2/oak.webp": 0,
+  "/survival/trees-v2/pine.webp": 1,
+  "/survival/trees-v2/birch.webp": 2,
+  "/survival/trees-world-v1/rowan.webp": 3,
+  "/survival/trees-world-v1/willow.webp": 4,
+  "/survival/tree-variants-v1/birch-branching.webp": 5,
+  "/survival/tree-variants-v1/birch-bent.webp": 6,
+  "/survival/tree-variants-v1/oak-forked.webp": 7,
+  "/survival/tree-variants-v1/oak-leaning.webp": 8,
+  "/survival/tree-variants-v1/pine-branching.webp": 9,
+  "/survival/tree-variants-v1/pine-bent.webp": 10,
+  "/survival/tree-variants-v1/rowan-forked.webp": 11,
+  "/survival/tree-variants-v1/rowan-bent.webp": 12,
+  "/survival/tree-variants-v1/willow-forked.webp": 13,
+  "/survival/tree-variants-v1/willow-bent.webp": 14,
+  "/survival/woodland-forage-v2/apple-tree.webp": 15
+}

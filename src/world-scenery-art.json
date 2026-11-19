@@ -365,7 +365,7 @@
     "kind": "prop",
     "zone": "Fallen wood",
     "description": "one broad fallen oak log resting horizontally diagonally from lower left to upper right, warm ridged illustrated bark, broken golden end grain facing lower left, moss following the upper ridge, two short broken branch nubs; no loose surrounding props",
-    "image": "/survival/world-scenery-v1/mossy-fallen-oak.webp",
+    "image": "/survival/woodland-deadwood-v1/mossy-fallen-oak.webp",
     "size": [
       768,
       649
@@ -390,7 +390,7 @@
     "kind": "prop",
     "zone": "Fallen wood",
     "description": "one short fallen hollow birch trunk lying diagonally horizontally, ivory peeling bark with charcoal markings, dark hollow opening at lower right, weathered warm interior wood and restrained moss along the upper surface",
-    "image": "/survival/world-scenery-v1/hollow-birch-log.webp",
+    "image": "/survival/woodland-deadwood-v1/hollow-birch-log.webp",
     "size": [
       640,
       429
@@ -415,7 +415,7 @@
     "kind": "prop",
     "zone": "Fallen wood",
     "description": "a weathered fallen broken trunk with a small spreading tangle of thick exposed roots at one end, warm grey-brown carved bark, patches of moss and no canopy, compact wide low silhouette, readable as a natural forest obstacle",
-    "image": "/survival/world-scenery-v1/twisted-root-log.webp",
+    "image": "/survival/woodland-deadwood-v1/twisted-root-log.webp",
     "size": [
       640,
       469

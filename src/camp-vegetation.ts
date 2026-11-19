@@ -1,7 +1,9 @@
 import {ASSET_BY_ID,type WorldAsset} from './world-assets';
-import {placementBounds,placementPoint,type Placement,type WorldLayout} from './world-layout';
+import {placementBounds,placementFrame,placementPoint,type Placement,type WorldLayout} from './world-layout';
 import {usesPaintedHomeTerrain} from './terrain-art';
 import {isFoliageAsset} from './foliage-display';
+import {FORAGE_BY_ID,FORAGE_FRUIT_ART,type ForageArt} from './forage-art';
+import {BERRY_CONTACT_BEND,FORAGE_PICK_SHAKE} from './foliage-motion';
 import plan from './camp-circular-wall-layout.json';
 import treeArt from './tree-art.json';
 
@@ -62,7 +64,48 @@ function wallShape(p:Placement):Wall{
  const shapes=strips?strips.flatMap((range,i)=>range?[rectangle(p,b.x+i*b.width/strips.length,b.y+range[0]*b.height/1000,b.x+(i+1)*b.width/strips.length,b.y+range[1]*b.height/1000)]:[]):[rectangle(p,b.x,b.y,b.x+b.width,b.y+b.height)];
  return {id:p.id,shapes,bounds:shape(shapes.flatMap(s=>s.points))};
 }
-function vegetationShape(p:Placement,a:WorldAsset){
+// Source-pixel bounds of the default art, including picked soil. Short bands
+// on leafy crops keep stationary roots separate from their flexible tips.
+type PaintBand=[number,number,number,number];
+export const FORAGE_PAINT_BANDS:Record<ForageArt['kind'],PaintBand[]>={
+ berries:[[15,193,1239,1065]],apple:[[14,37,1248,1220]],
+ potato:[[29,43,208,64],[22,64,208,96],[21,96,231,128],[21,128,231,160],[21,160,231,192],[29,192,231,224],[74,224,228,232]],
+ carrot:[[22,42,226,64],[30,64,220,96],[22,96,231,128],[22,128,229,160],[24,160,229,192],[31,192,223,224],[47,224,185,232]],
+};
+function forageShapes(p:Placement,art:ForageArt){
+ const b=placementBounds(p),angle=(p.rotation||0)*Math.PI/180;
+ const localLimit=Math.abs(Math.cos(angle))+Math.abs(Math.sin(angle)),anchor=placementFrame(p).anchor[1];
+ return FORAGE_PAINT_BANDS[art.kind].map(([x0,y0,x1,y1])=>{
+  let left=b.x+x0*b.width/art.size[0],top=b.y+y0*b.height/art.size[1];
+  let right=b.x+x1*b.width/art.size[0],bottom=b.y+y1*b.height/art.size[1];
+  let padX=CAMP_VEGETATION_WALL_GAP,padY=padX;
+  if(art.kind==='potato'||art.kind==='carrot'){
+   // The mesh weights are bounded by a linear ramp from the root to the top.
+   const leafWeight=Math.max(0,1-y0/art.size[1]/Math.max(.01,anchor));
+   padX+=b.width*.22*leafWeight*localLimit;
+   padY+=b.height*(.17+.045)*leafWeight*localLimit;
+  }else{
+   const fruit=FORAGE_FRUIT_ART[art.kind],halfSize=fruit.size*p.scale/2;
+   // Fruit size is in world units. An editor-resized frame may carry clusters
+   // outside the base sprite's painted bounds.
+   for(const point of fruit.points){
+    const x=b.x+point.x*b.width,y=b.y+point.y*b.height;
+    left=Math.min(left,x-halfSize);right=Math.max(right,x+halfSize);
+    top=Math.min(top,y-halfSize);bottom=Math.max(bottom,y+halfSize);
+   }
+   const dx=Math.max(Math.abs(left-p.x),Math.abs(right-p.x)),dy=Math.max(Math.abs(top-p.y),Math.abs(bottom-p.y));
+   const stretch=art.kind==='berries'?BERRY_CONTACT_BEND*localLimit:0;
+   const tilt=stretch+FORAGE_PICK_SHAKE,sine=Math.sin(tilt),turn=1-Math.cos(tilt);
+   // Rotation follows the vertical stretch, both around the registered root.
+   padX+=dx*turn+dy*(1+stretch)*sine;
+   padY+=dx*sine+dy*(turn+stretch);
+  }
+  return rectangle(p,left-padX,top-padY,right+padX,bottom+padY);
+ });
+}
+function vegetationShapes(p:Placement,a:WorldAsset){
+ const forage=FORAGE_BY_ID.get(p.assetId);
+ if(forage&&a.image===forage.image)return forageShapes(p,forage);
  const b=placementBounds(p);let left=b.x,top=b.y,right=b.x+b.width,bottom=b.y+b.height;
  const tree=TREE_ART.get(p.assetId);
  if(tree){
@@ -74,18 +117,21 @@ function vegetationShape(p:Placement,a:WorldAsset){
   }
  }
  let padX=CAMP_VEGETATION_WALL_GAP,padY=padX;
- if(a.foliage&&!p.assetId.startsWith('art_forage_')){
+ if(a.foliage){
   // Contact motion clamps both world components to [-1,1]. A rotated sprite
   // can receive sqrt(2) in local axes; cover its mesh's full bending range.
   padX+=b.width*.22*Math.SQRT2;padY+=b.height*(.17+.045)*Math.SQRT2;
  }else{
-  // Standing tree hit sway and berry/apple gathering rotate around the root.
+  // Standing tree hit sway rotates around the root.
   // The brief falling-tree effect is intentionally not a standing footprint.
   const radius=Math.max(...[[left,top],[right,top],[right,bottom],[left,bottom]].map(([x,y])=>Math.hypot(x-p.x,y-p.y)));
-  const sway=radius*(p.assetId.startsWith('art_forage_')?.048:.025);
+  const sway=radius*.025;
   padX+=sway;padY+=sway;
  }
- return rectangle(p,left-padX,top-padY,right+padX,bottom+padY);
+ return [rectangle(p,left-padX,top-padY,right+padX,bottom+padY)];
+}
+function touchesWall(p:Placement,a:WorldAsset,walls:Wall[]){
+ return vegetationShapes(p,a).some(plant=>walls.some(w=>boundsOverlap(plant,w.bounds)&&w.shapes.some(s=>overlaps(plant,s))));
 }
 function campContext(layout:WorldLayout){
  if(layout.terrain!=='home'||!usesPaintedHomeTerrain(layout.terrainImage))return;
@@ -100,8 +146,7 @@ export function campWallClearance(layout:WorldLayout){
  const walls=campContext(layout)?.walls??[];
  return (p:Placement)=>{
   const a=ASSET_BY_ID.get(p.assetId);if(!a)return false;
-  const plant=vegetationShape(p,a);
-  return !walls.some(w=>boundsOverlap(plant,w.bounds)&&w.shapes.some(s=>overlaps(plant,s)));
+  return !touchesWall(p,a,walls);
  };
 }
 const decorative=(a:WorldAsset)=>!!a.foliage&&!a.id.startsWith('art_forage_');
@@ -120,8 +165,7 @@ function analyse(layout:WorldLayout){
   const decor=decorative(a),out=outside(p,context.hearth),forage=p.assetId.startsWith('art_forage_');
   if(decor){if(out){result.outdoorFoliage++;candidates.push(p)}else result.interiorFoliage++}
   else if(forage)result.forage++;else result.trees++;
-  const plant=vegetationShape(p,a);
-  if(!context.walls.some(w=>boundsOverlap(plant,w.bounds)&&w.shapes.some(s=>overlaps(plant,s))))continue;
+  if(!touchesWall(p,a,context.walls))continue;
   result.wallOverlapIds.push(p.id);
   if(decor)(out?result.outdoorWallFoliageIds:result.interiorWallFoliageIds).push(p.id);
   else if(forage)result.wallForageIds.push(p.id);else result.wallTreeIds.push(p.id);

@@ -2,6 +2,8 @@ import {ASSET_BY_ID,assetImageKey,TREE_LOG_IMAGE} from './world-assets';
 import {visiblePlacements} from './layout-views';
 import {insideBuilding,placementBounds,placementContains,placementPoint,type Placement,type WorldLayout} from './world-layout';
 import {FORAGE_BY_ID} from './forage-art';
+import {drawForagePlant} from './forage-renderer';
+import {FORAGE_PICK_SHAKE} from './foliage-motion';
 import {forageRemaining,forageRoot} from './foraging';
 import {TREE_ART,treeRoot} from './tree-chopping';
 import {MINEABLE_ROCKS,rockContact} from './rock-mining';
@@ -15,7 +17,7 @@ import {placedAnimationFrame} from './step-on-animation';
 import {placedFireLit} from './camp-lighting';
 import {getFieldKitTarget} from './field-kit-target';
 import {visiblePickupCues} from './pickup-visibility';
-import {lineClear,type World,type Loot} from './survival-engine';
+import {lineClear,timeOf,type World,type Loot} from './survival-engine';
 
 export const RESOURCE_OUTLINE_RANGE=260,RESOURCE_OUTLINE_LIMIT=8;
 export type ResourceOutlineView={x:number;y:number;width:number;height:number;scale:number};
@@ -95,8 +97,24 @@ export function drawResourceOutlines(ctx:OutlineContext,imgs:Record<string,HTMLI
    const image=imgs[assetImageKey(frames?.[frame]||asset.image)]??imgs[assetImageKey(asset.image)];if(!image)continue;
    let b=placementBounds(p);const placement=p,off=p.role==='hearth'&&!placedFireLit(w,p)&&asset.unlit?imgs[assetImageKey(asset.unlit)]:undefined;
    if(off&&!p.frame){const anchor=asset.unlitAnchor??[627,1190],size=asset.unlitSize??[1254,1254];b={...b,x:p.x-anchor[0]/size[0]*b.width,y:p.y-anchor[1]/size[1]*b.height}}
-   bounds=transformedBounds(p,b);
-   draw=()=>{ctx.save();transform(ctx,placement);if(off)ctx.drawImage(off,b.x,b.y,b.width,b.height);else ctx.drawImage(image,...asset.crop as [number,number,number,number],b.x,b.y,b.width,b.height);ctx.restore()};
+   const forage=cue.kind==='forage'&&FORAGE_BY_ID.get(p.assetId);
+   const registered=forage&&forage.image===asset.image;
+   const animate=!!asset.foliage&&v.scale>=.42&&!!w.foliageMotions?.[p.id]&&!w.weather?.reducedMotion;
+   // The outline layer must contain leaves outside the resting rectangle. Use
+   // the live spring magnitude so an untouched crown keeps its small layer.
+   const motion=animate?w.foliageMotions?.[p.id]:undefined;
+   const picked=registered&&w.forage?.[p.id];
+   const shake=picked&&!w.weather?.reducedMotion&&timeOf(w)-picked.pickedAt<.3?FORAGE_PICK_SHAKE:0;
+   const bend=registered&&motion?(Math.abs(motion.x)+Math.abs(motion.y))*.3:0;
+   const margin=registered?Math.hypot(b.width,b.height)*(bend+shake):0;
+   bounds=transformedBounds(p,{x:b.x-margin,y:b.y-margin,width:b.width+2*margin,height:b.height+2*margin});
+   draw=()=>{
+    ctx.save();transform(ctx,placement);
+    if(registered&&drawForagePlant(ctx,imgs,w,placement,animate,'outline')){ctx.restore();return}
+    if(off)ctx.drawImage(off,b.x,b.y,b.width,b.height);
+    else ctx.drawImage(image,...asset.crop as [number,number,number,number],b.x,b.y,b.width,b.height);
+    ctx.restore();
+   };
   }else if(cue.loot){
    const sprite=pickupOutlineSprite(cue.loot),image=sprite&&imgs[sprite.key];if(!sprite||!image)continue;
    bounds=sprite;draw=()=>ctx.drawImage(image,sprite.x,sprite.y,sprite.width,sprite.height);

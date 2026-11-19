@@ -1,8 +1,9 @@
 import {buildingRestored} from './camp-restoration';
 import {gardenBeds,potatoGrowth,type CropKind} from './potato-farming';
-import {cropStage,cropStageUrl,cropPickedUrl,gardenCropStageUrl} from './crop-art';
+import {cropStage,cropRipeUrl,cropPickedUrl,gardenCropStageUrl} from './crop-art';
 import {POTATO_PATCH_BROKEN,potatoStageUrl} from './potato-patch-art';
-import {assetImageKey} from './world-assets';
+import {ASSET_BY_ID,assetImageKey} from './world-assets';
+import {drawFoliage} from './foliage-renderer';
 import {placementBounds,type Placement} from './world-layout';
 import type {World} from './survival-engine';
 
@@ -51,9 +52,14 @@ export function drawPotatoPatch(ctx:Ctx,imgs:LoadedImages,w:World,p:Placement){
 }
 
 /** Wild forage uses its own ripe and picked sprites. */
-export function drawWildPotatoPlant(ctx:Ctx,imgs:LoadedImages,w:World,p:Placement,ripe:boolean,kind:CropKind='potato'){
- const image=imgs[assetImageKey(ripe?cropStageUrl(kind,3):cropPickedUrl(kind))];
+export function drawWildPotatoPlant(ctx:Ctx,imgs:LoadedImages,w:World,p:Placement,ripe:boolean,kind:CropKind='potato',animate=true){
+ const image=imgs[assetImageKey(ripe?cropRipeUrl(kind):cropPickedUrl(kind))];
  if(!image)return false;
+ const asset=ASSET_BY_ID.get(p.assetId);
+ if(ripe&&asset&&animate&&w.foliageMotions?.[p.id]){
+  drawFoliage(ctx,image,w,p,asset);
+  return true;
+ }
  const bounds=placementBounds(p);
  ctx.drawImage(image,bounds.x,bounds.y,bounds.width,bounds.height);
  return true;
