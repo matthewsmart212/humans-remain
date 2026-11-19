@@ -283,7 +283,7 @@ function Game({role,onHome,entryVisible,onBootProgress,onBootError,coop}:{role:S
      </Pressable>)}</View>
      {characterLoading&&<Text style={s.description}>Loading character artwork…</Text>}
      {!!characterError&&<Text accessibilityRole="alert" style={s.description}>{characterError}</Text>}
-     <Text style={s.description}>Hunter running temporarily uses walking sprites. Medic uses Survivor artwork.</Text>
+     <Text style={s.description}>Medic uses Survivor artwork.</Text>
      {button('Back to settings',()=>setCharacterOpen(false),characterLoading)}
     </View>:mode==='paused'&&<View style={[s.menu,wide&&s.menuWide]}>
      {w?.phase!=='over'&&!saveBlocked.current&&button('Resume',()=>{clear();change('playing');saveRun()},false,wide&&s.menuItem)}

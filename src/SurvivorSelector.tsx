@@ -29,7 +29,7 @@ export default function SurvivorSelector({selected,onSelect,portrait}:Props){
     <Text style={s.statLine}>Support  {current.support}/5</Text>
    </View>
   </View>
-  <Text style={s.footnote}>Your chosen character is used in game. Hunter walking art is a preview; sprint and combat poses are still temporary, and the stats shown here are a preview.</Text>
+  <Text style={s.footnote}>Your chosen character is used in game. Hunter combat poses and the stats shown here are temporary.</Text>
  </View>;
 }
 const s=StyleSheet.create({

@@ -1,6 +1,6 @@
 import {drawRepairHammer} from './repair-hammer';
 import {ENGINEER_ART,engineerCycle} from './engineer-sprites';
-import {HUNTER_ART,HUNTER_LEGACY_ART,hunterCycle,hunterLegacyCycle,hunterFacing} from './hunter-sprites';
+import {HUNTER_ART,HUNTER_LEGACY_ART,hunterCycle,hunterFacing} from './hunter-sprites';
 import {isPickaxe} from './pickaxes';
 import {drawPickaxe} from './mining-renderer';
 import {heldProvision} from './food-provisions';
@@ -11,7 +11,7 @@ import {axeAttachment,drawAxe,drawAxeGrip} from './axe-renderer';
 import {timeOf,type World} from './survival-engine';
 import {workerAnimation} from './worker-animation';
 import {SURVIVOR_ART} from './survivor-art';
-import {runnerCycle,runnerFacing} from './runner-cycles';
+import {runnerCycle,runnerFacing,type RunnerSprite} from './runner-cycles';
 import {runnerLegView,drawRunnerLegs,drawRunnerTorso} from './runner-leg-motion';
 import type {Atlas} from './packaging-renderer';
 import {drawMovingSwordThrust} from './runner-thrust-renderer';
@@ -36,8 +36,8 @@ export function drawWorker(ctx:CanvasRenderingContext2D,imgs:Record<string,HTMLI
  const swordMoving=isSword(p.equipped)&&!!w.swordThrust&&p.moving;
  const moving=(animation.pose==='walk'||animation.pose==='run'||swordMoving||isPickaxe(p.equipped)&&!!w.axeSwing&&p.moving)&&!p.downedUntil;
  const running=!w.swordThrust&&(p.runBlend??0)>.45;
- const cycle=moving?(hunter?(hunterV2Ready?hunterCycle(animation.direction,p.walkDistance,running):hunterLegacyCycle(animation.direction,p.walkDistance,running)):engineer?engineerCycle(animation.direction,p.walkDistance,running):runnerCycle(animation.direction,p.walkDistance,running)):undefined;
- const f=animation.pose==='punch'?art.punch:cycle?.sprite??art.idle;
+ const cycle=moving?(hunter?hunterCycle(animation.direction,p.walkDistance,running,imgs):engineer?engineerCycle(animation.direction,p.walkDistance,running):runnerCycle(animation.direction,p.walkDistance,running)):undefined;
+ const f:RunnerSprite=animation.pose==='punch'?art.punch:cycle?.sprite??art.idle;
  const image=imgs[f.sheet];if(!image)return;
  const [sx,sy,sw,sh]=f.crop,k=f.scale;
  ctx.save();ctx.translate(held?.x??p.x,held?.y??p.y-(w.bruteGrab?.lift??0));
@@ -55,13 +55,18 @@ export function drawWorker(ctx:CanvasRenderingContext2D,imgs:Record<string,HTMLI
  const meal=(food||provision)&&!p.downedUntil&&mealImage?axeAttachment(w,cycle?animation.direction:facing.view,animation.pose,cycle):undefined;
  const drawMeal=()=>{if(meal)ctx.drawImage(mealImage,meal.hand[0]-12,meal.hand[1]-17,24,20)};
  const knife=knifePose(w),knifeImage=knife?imgs[knife.item]:undefined;
- if(knife?.behind&&knifeImage)drawKnife(ctx,knifeImage,knife);
  const sword=swordPose(w),swordImage=sword?imgs[sword.item]:undefined;
- if(sword?.behind&&swordImage)drawSword(ctx,swordImage,sword);
  const spear=spearPose(w),spearImage=spear?imgs[spear.item]:undefined;
- if(spear&&spearImage)drawSpear(ctx,spearImage,spear,spear.behind?'whole':'tail');
- const torch=imgs.torch?torchPose(w):undefined;
+ const torch=imgs.torch?torchPose(w,imgs):undefined;
  const bow=imgs.bowCarry?bowCarryPose(w):undefined;
+ if(f.hand){
+  for(const attachment of [axe,meal,knife,sword,spear,bow]){
+   if(attachment)attachment.hand=f.hand;
+  }
+ }
+ if(knife?.behind&&knifeImage)drawKnife(ctx,knifeImage,knife);
+ if(sword?.behind&&swordImage)drawSword(ctx,swordImage,sword);
+ if(spear&&spearImage)drawSpear(ctx,spearImage,spear,spear.behind?'whole':'tail');
  if(bow?.behind)drawBowCarry(ctx,imgs.bowCarry,bow);
  if(torch?.behind)drawTorch(ctx,imgs.torch,torch,w.torchOn);
  if(axe?.behind)(hammer?drawRepairHammer:pickaxe?drawPickaxe:drawAxe)(ctx,axeImage,axe);

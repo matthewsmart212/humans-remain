@@ -33,7 +33,7 @@ export default function GamePlayMenu({paused,fullscreen,hideButton=false,defeate
     </div>
     {characterError&&<p role="alert">{characterError}</p>}
     {changingCharacter&&<p role="status">Loading character artwork…</p>}
-    <p className="game-character-note">Hunter uses his walking sprites while running. Medic temporarily uses Survivor artwork.</p>
+    <p className="game-character-note">Medic temporarily uses Survivor artwork.</p>
     <button type="button" disabled={changingCharacter} {...tap(()=>setCharacterOpen(false))}><ArrowLeft size={18}/>Back to game settings</button>
    </section>:<section>
     <small>HUMANS REMAIN · {survival?'SURVIVAL':'SANDBOX'}</small><h1 id={title}>{confirmNew?'Start a new run?':defeated?'Run ended':'Paused'}</h1>

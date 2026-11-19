@@ -1,7 +1,7 @@
 import type {Direction} from './survival-engine';
 import registered from './runner-cycle-frames.json';
 
-export type RunnerSprite={sheet:string;crop:readonly number[];anchor:readonly number[];scale:number};
+export type RunnerSprite={sheet:string;crop:readonly number[];anchor:readonly number[];scale:number;hand?:readonly [number,number]};
 export const RUNNER_CYCLES:Record<string,readonly RunnerSprite[]>=registered;
 export const RUNNER_CYCLE_SOURCES={
  runnerCycleDown:'/survival/scrap-runner/scrap-runner-down-walk-sprint-v1.png',
