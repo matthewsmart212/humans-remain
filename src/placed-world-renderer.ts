@@ -5,6 +5,7 @@ import {headquartersCutawayAmount,clipHeadquartersDoorway,drawHeadquartersExteri
 import {HQ_SOUTH_INTERIOR} from './headquarters-south-art';
 import {headquartersRoofBottom,withinRoofApproach,headquartersRaidVisible} from './headquarters-roof';
 import {campBuildingArt} from './camp-restoration';
+import {campBuildingLayers} from './camp-building-depth';
 import {drawBomberGround,drawBomberEmissives} from './bomber-renderer';
 import {drawCampFurnace} from './furnace-renderer';
 import {drawRockGround} from './rock-ground';
@@ -84,8 +85,9 @@ function drawCampGroundContacts(ctx:CanvasRenderingContext2D,contacts:readonly C
   ctx.restore();
  }
 }
+type WorldDraw={roof?:boolean;layer?:number;y:number;draw:()=>void;paintingBase?:Placement;bakedInto?:Placement};
 export function placedDrawables(ctx:CanvasRenderingContext2D,imgs:Record<string,HTMLImageElement>,w:World,editor=false,viewport?:FoliageViewport,hideFoliage=false,contacts?:CampGroundContact[],outline?:ReturnType<typeof playerOutlinePass>){
- const out:{roof?:boolean;layer?:number;y:number;draw:()=>void}[]=[];if(!w.layout)return out;
+ const out:WorldDraw[]=[];if(!w.layout)return out;
  const circular:CircularWallDraw[]=[];
  for(const p of visiblePlacements(w.layout,viewport)){const a=ASSET_BY_ID.get(p.assetId);if(!a)continue;if(!editor&&['animal','enemySpawn'].includes(p.role))continue;if(!editor&&['scrap','fuel','pallets'].includes(p.role)&&!w.loot.some(l=>l.placementId===p.id))continue;if(!editor&&p.role==='crate'&&!w.breakables.some(b=>b.placementId===p.id&&b.hp>0))continue;
   if(hideFoliage&&isFoliageAsset(a)||a.foliage&&!foliageVisible(p,viewport))continue;
@@ -143,13 +145,19 @@ export function placedDrawables(ctx:CanvasRenderingContext2D,imgs:Record<string,
    }):curve;
    const depth=circularWallDepth(ground,{x:(w.player.x-p.x)/p.scale,y:(w.player.y-p.y)/p.scale},a.perimeterRise??(a.perimeterCurve?180:235));
    const distant=a.perimeterCurve?0:(ground[0][1]+ground[1][1])*.5;
-   const drawable={layer:p.layer??0,y:p.y+(depth.near?depth.depth:distant)*p.scale,draw:()=>{
+   // These two stockade bays were sent to the background to clear the old HQ.
+   // The hall now sorts at its back wall, so their original feet can sort with
+   // the survivor again. Other placed walls keep their editor layer.
+   const rearBay=p.id==='camp-circular-wall-v1-01'&&a.id==='camp_circular_wall_01'&&p.layer===-9
+    ||p.id==='camp-circular-wall-v1-16'&&a.id==='camp_circular_wall_16'&&p.layer===-10;
+   const layer=rearBay?0:p.layer??0;
+   const drawable={layer,y:p.y+(depth.near?depth.depth:distant)*p.scale,draw:()=>{
     if(transformed){ctx.save();rotatePlacement(ctx,p)}
     ctx.drawImage(im,...a.crop as [number,number,number,number],b.x,b.y,b.width,b.height);
     if(transformed)ctx.restore();
    }};
    add(drawable);
-   if(a.perimeterCurve&&!transformed)circular.push({drawable,order:a.perimeterDrawOrder??0,priority:depth.near?1000:1,group:circularWallGroup(curve,p)});
+   if(a.perimeterCurve&&!transformed)circular.push({drawable,order:a.perimeterDrawOrder??0,priority:depth.near?1000:1,group:circularWallGroup(curve,rearBay?{...p,layer}:p)});
    continue;
   }
   // Only contacted/recovering plants need deformed geometry. All idle plants
@@ -167,13 +175,15 @@ export function placedDrawables(ctx:CanvasRenderingContext2D,imgs:Record<string,
    else if(rock)drawRockFace(ctx,im,a.crop,b,rock,!!a.groundDetail);
    else if(hasPaintedHearthAnimation(a))drawBurningHearth(ctx,imgs,imgs[assetImageKey(a.image)]||im,b,timeOf(w),!!w.weather?.reducedMotion);
    else ctx.drawImage(im,...a.crop as [number,number,number,number],b.x,b.y,b.width,b.height);ctx.restore()};
-  // The north stockade is behind the HQ on the map. Paint the complete
-  // HQ interior AFTER the rear wall and distant tree, but BEFORE actors in
-  // the room. The sprite's own alpha hides only what it actually covers;
-  // no polygon punches a gap through the surrounding palisade.
-  // Rear wall feet begin at v=.34; indoor player feet start at v>.36.
-  const hallFloorDepth=b.y+b.height*.35;
-  add({y:southHQ?hallFloorDepth:a.interior?-10000:a.id==='art_hq_woven_rug'?-9999:placementPoint(p,p.x,p.y)[1],draw:drawBase});
+  const painting=campBuildingLayers(ctx,p,restoration&&requestedImage?restoration.image:a.image,drawBase,viewport);
+  if(painting){
+   // The shipped bunker has a legacy layer of 2, which put even its steps
+   // above actors. Keep authored depth on other editor-assigned layers.
+   const originalBunker=p.id==='8cde8ee6-163e-4426-b328-f011b092f148'&&p.layer===2;
+   for(const part of painting)add({...part,layer:southHQ||originalBunker?0:p.layer});
+  }else{
+   add({y:a.interior?-10000:a.id==='art_hq_woven_rug'?-9999:placementPoint(p,p.x,p.y)[1],draw:drawBase});
+  }
   for(const f of southHQ||restoration?[]:a.foreground||[])add({y:placementPoint(p,b.x+(f[0]+f[2]/2)/a.crop[2]*b.width,b.y+(f[1]+f[3])/a.crop[3]*b.height)[1],draw:()=>ctx.drawImage(im,a.crop[0]+f[0],a.crop[1]+f[1],f[2],f[3],b.x+f[0]/a.crop[2]*b.width,b.y+f[1]/a.crop[3]*b.height,f[2]/a.crop[2]*b.width,f[3]/a.crop[3]*b.height)});
   // The fixed foundation remains below actors; roof and front panels fade
   // continuously over the revealed room and disappear completely indoors.
@@ -199,9 +209,7 @@ export function placedDrawables(ctx:CanvasRenderingContext2D,imgs:Record<string,
    }});
   }
   for(let i=first;i<out.length;i++){
-   // HQ interior uses world depth regardless of the saved building editor
-   // layer. It follows the back wall but precedes valid indoor actors.
-   out[i].layer=southHQ&&i===first?0:(out[i].layer??p.layer??0);
+   out[i].layer??=p.layer??0;
   }
   if(p.rotation||p.flipX||p.flipY)for(let i=first;i<out.length;i++){const draw=out[i].draw;out[i].draw=()=>{ctx.save();rotatePlacement(ctx,p);draw();ctx.restore()}}
  }
@@ -243,7 +251,7 @@ export function drawWorldEditor(ctx:CanvasRenderingContext2D,atlas:Atlas,imgs:Re
    if(Math.abs(chest.x-w.player.x)<160&&Math.abs(chest.y-w.player.y)<250)outline.covers.push({y:chest.y,draw:chest.mask});
   }
  }
- const draws=[...groundLoot,...predatorDrawables(ctx,imgs,w,viewport),...placed,...chests,...bonfireFoodDrawables(ctx,imgs,w),...combatDrawables(ctx,imgs,w),...chickenDrawables(ctx,imgs,w,viewport),...deerDrawables(ctx,imgs,w,viewport),...rabbitDrawables(ctx,imgs,w,viewport)];if(!brutePlayerCarried(w))draws.push({y:w.player.y,draw:()=>drawWorker(ctx,imgs,w,atlas)});
+ const draws:WorldDraw[]=[...groundLoot,...predatorDrawables(ctx,imgs,w,viewport),...placed,...chests,...bonfireFoodDrawables(ctx,imgs,w),...combatDrawables(ctx,imgs,w),...chickenDrawables(ctx,imgs,w,viewport),...deerDrawables(ctx,imgs,w,viewport),...rabbitDrawables(ctx,imgs,w,viewport)];if(!brutePlayerCarried(w))draws.push({y:w.player.y,draw:()=>drawWorker(ctx,imgs,w,atlas)});
  draws.push(...bowArrowDrawables(ctx,imgs,w));
  // Co-op phase 1: visual peers only. No peer is inserted into the local simulation.
  for(const peer of peers){
@@ -264,7 +272,13 @@ export function drawWorldEditor(ctx:CanvasRenderingContext2D,atlas:Atlas,imgs:Re
   }
  }
  const edge=outline?.drawable();if(edge)draws.push(edge);
- draws.sort(compareWorldDrawables).forEach(o=>o.draw());
+ // A panel already exists in its full base painting. Replay it only if a
+ // different drawable has been painted since, including actors and furniture.
+ let uninterruptedBase:Placement|undefined;
+ for(const d of draws.sort(compareWorldDrawables)){
+  if(d.bakedInto&&d.bakedInto===uninterruptedBase)continue;
+  d.draw();uninterruptedBase=d.paintingBase;
+ }
  drawCampLighting(ctx,w,{x:c.x,y:c.y,width:ctx.canvas.width/c.scale,height:ctx.canvas.height/c.scale},imgs);
  if(w.scene?.weather!=='sheltered'&&w.scene?.lighting!=='baked'&&w.weather){const weatherCtx=ctx as CanvasRenderingContext2D&{artworkSilhouette?:(image:HTMLImageElement,crop?:readonly number[])=>ShelterOutline;drawWeather?:(s:WeatherState,v:WeatherView,n:number,shelters:readonly (readonly [number,number][])[])=>void};weatherCtx.drawWeather?.(w.weather,{x:c.x,y:c.y,width:ctx.canvas.width/c.scale,height:ctx.canvas.height/c.scale,scale:c.scale,pixelRatio:Math.min(2,(ctx as CanvasRenderingContext2D&{pixelRatio?:number}).pixelRatio||globalThis.devicePixelRatio||1)},nightStrength(w),w.weather.rain&&weatherCtx.artworkSilhouette?weatherShelters(w,imgs,(im,crop)=>weatherCtx.artworkSilhouette!(im,crop)):[])}
  if(w.weather){const strike=groundLightning(w,{x:c.x,y:c.y,width:ctx.canvas.width/c.scale,height:ctx.canvas.height/c.scale});if(strike)(ctx as CanvasRenderingContext2D&{drawGroundLightning?:(strike:GroundStrike,age:number,reduced:boolean)=>void}).drawGroundLightning?.(strike,w.weather.strikeAge,w.weather.reducedMotion)}

@@ -40,9 +40,9 @@ try{
  const imgs=Object.fromEntries(walls.map(p=>{const a=m.ASSET_BY_ID.get(p.assetId);return[m.assetImageKey(a.image),{id:p.assetId}]}));
  const calls=[],stack=[];
  const ctx={globalAlpha:1,save(){stack.push(this.globalAlpha)},restore(){this.globalAlpha=stack.pop()},drawImage(image){calls.push({id:image.id,alpha:this.globalAlpha})}};
- const render=(player,viewport)=>{
+ const render=(player,viewport,items=walls)=>{
   calls.length=0;
-  const world={layout:{...layout,items:walls},player};
+  const world={layout:{...layout,items},player};
   const draws=m.placedDrawables(ctx,imgs,world,true,viewport);
   draws.push({y:player.y,draw:()=>calls.push({id:'player',alpha:1})});
   draws.sort(m.compareWorldDrawables).forEach(o=>o.draw());
@@ -52,6 +52,7 @@ try{
  const atCentre=render(layout.spawn);
  assert.deepEqual(atCentre.filter(c=>c.id!=='player').map(c=>c.id),expected,'Actual draw calls preserve the approved overlapping-post order');
  const reviewed=[];
+ const currentWalls=JSON.parse(fs.readFileSync('native/assets/world-snapshot.json')).layout.items.filter(p=>p.assetId.startsWith('camp_circular_wall_'));
  for(const id of ['camp_circular_wall_01','camp_circular_wall_08','camp_circular_wall_09','camp_circular_wall_16']){
   const p=walls.find(p=>p.assetId===id),a=m.ASSET_BY_ID.get(id),ground=a.perimeterCurve[Math.floor(a.perimeterCurve.length/2)];
   for(const behind of [true,false]){
@@ -60,6 +61,10 @@ try{
    assert.equal(wall.alpha,1,id+' stays opaque on both sides of the survivor');
    assert.equal(wallIndex>playerIndex,behind,id+' interleaves at the local ground depth');
    assert.deepEqual(result.filter(c=>c.id!=='player').map(c=>c.id),expected,'Nearby depth changes cannot reopen the northern joins');
+   if(id==='camp_circular_wall_01'||id==='camp_circular_wall_16'){
+    const live=render(player,undefined,currentWalls);
+    assert.equal(live.findIndex(c=>c.id===id)>live.findIndex(c=>c.id==='player'),behind,id+' sorts at its feet in the shipped camp');
+   }
   }
   reviewed.push(id);
  }

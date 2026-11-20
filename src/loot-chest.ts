@@ -1,4 +1,5 @@
 import {withinActionReach,type World} from './survival-engine';
+import {hitCollider,type Collider} from './camp-collision';
 import {PACK_CAPACITY,packWeight} from './expedition-inventory';
 import {GEAR,gear} from './player-gear';
 
@@ -47,8 +48,18 @@ export function lootChestFrame(w:ChestWorld,id=LOOT_CHEST_ID){
  const elapsed=Math.max(0,w.tick-state.openedAt);
  return Math.min(LOOT_CHEST_FRAMES-1,Math.floor(elapsed/LOOT_CHEST_OPEN_TICKS*(LOOT_CHEST_FRAMES-1)+.001));
 }
+// Ground contacts of the stationary case and skids, in rendered world units
+// relative to the chest anchor. The raised lid and earth decal have no feet.
+const caseFoot={
+ id:LOOT_CHEST_ID,shape:'polygon',x:0,y:-15,hw:84,hh:16,
+ points:[[-82,-16],[-67,-30],[80,-30],[83,-18],[68,0],[43,1],[-78,1]],
+} satisfies Collider;
 export function lootChestBlocked(w:ChestWorld,x:number,y:number,r:number){
- const p=campLootChest(w);return !!p&&Math.abs(x-p.x)<49+r&&Math.abs(y-(p.y-5))<21+r;
+ const chest=campLootChest(w);
+ if(!chest)return false;
+ const dx=x-chest.x,dy=y-chest.y;
+ if(Math.abs(dx-caseFoot.x)>caseFoot.hw+r||Math.abs(dy-caseFoot.y)>caseFoot.hh+r)return false;
+ return hitCollider(caseFoot,dx,dy,r);
 }
 function accessibleLootChest(w:World){
  const p=campLootChest(w);

@@ -30,6 +30,12 @@ try{
   if(fs.statSync(terrainFile).size>200){const d=api.Data.fromBytes(fs.readFileSync(terrainFile));terrain=api.Image.MakeImageFromEncoded(d);d.dispose()}
   const imgs={[m.LOOT_CHEST_IMAGE_KEY]:atlas,[m.LOOT_CHEST_GROUND_KEY]:ground},viewport={x:0,y:0,width:640,height:560};
   const world={layout:{items:[]},camp:{hearth:{x:320,y:705}},player:{x:320,y:510},breakables:[],enemies:[],tick:90,phase:'day',weather:{reducedMotion:false}};
+  const chest=m.campLootChest(world);
+  for(const side of [-1,1]){
+   assert(m.lootChestBlocked(world,chest.x+side*74,chest.y-15,1),'Both ends of the painted case block feet');
+   assert(!m.lootChestBlocked(world,chest.x+side*106,chest.y-15,19),'Survivor clears the outer skid');
+  }
+  assert(!m.lootChestBlocked(world,chest.x,chest.y+23,19),'Ground in front of the skids is walkable');
   const render=(name,mode='fx')=>{
    const ctx=new adapter.SkiaContext(surface.getCanvas(),640,560,font);
    ctx.fillStyle='#b67835';ctx.fillRect(0,0,640,560);

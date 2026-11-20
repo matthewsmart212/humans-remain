@@ -1,3 +1,5 @@
+import {nearbyClearGround} from './nearby-clear-ground';
+import {campStateBlocked} from './camp-state-collision';
 import {buildingRestored} from './camp-restoration';
 import {lootChestBlocked,stepLootChest} from './loot-chest';
 import {stepFurnaces} from './camp-furnace';
@@ -78,7 +80,7 @@ export function beginNight(w:World){const BASE=worldBase(w);if(w.phase!=='day')r
 function dawn(w:World){releaseBruteGrab(w,'',false);const BASE=worldBase(w);w.survived=w.round;w.round++;w.phase='day';w.phaseLeft=DAY_SECONDS;w.enemies=[];if(w.hunger>=25&&w.thirst>=25)w.player.hp=Math.min(100,w.player.hp+25);if(w.player.downedUntil>0){w.player.hp=40;w.player.downedUntil=0;w.player.revive=0}seedLoot(w);seedAnimals(w);announce(w,'SHIFT SURVIVED',3);effect(w,'dawn',BASE);}
 export const SHUTTER_BODY={x:SHUTTER.x,y:SHUTTER.y,hw:59,hh:15},BARRICADE_BODY={x:BARRICADE.x,y:BARRICADE.y,hw:32,hh:53};
 export function blocked(x:number,y:number,r=19,includeBase=true){const b=originalCampBounds();if(x<b.left+r||x>b.right-r||y<b.top+r||y>b.bottom-r)return true;if(includeBase&&circleRect(x,y,r,BASE.x,BASE.y-10,48,35))return true;return staticBlocked(x,y,r)}
-export function worldBlocked(w:World,x:number,y:number,r=19,includeBase=true,ignoreId=-1){if(lootChestBlocked(w,x,y,r))return true;if(!w.scene&&w.layout&&usesPaintedHomeTerrain(w.layout.terrainImage)&&!outdoorTerrainReadyAt(w.outdoorReady,x,y,r))return true;if(!w.scene&&w.layout&&usesPaintedHomeTerrain(w.layout.terrainImage)&&riverWaterBlocked(x,y,r))return true;if(w.scene&&sceneBlocked(w.scene,x,y,r))return true;if(w.layout&&gatesBlocked(w,x,y,r))return true;if(w.layout&&w.editorPreview)return layoutBlocked(w.layout,x,y,r,[],undefined,w.scene,true,w.minedRockColliders);if(w.layout)return layoutBlocked(w.layout,x,y,r,includeBase?['crate','shutter']:['generator','crate','shutter'],undefined,w.scene,true,w.minedRockColliders)||(timeOf(w)<w.shutterUntil&&circleRect(x,y,r,worldMachine(w,'shutter').x,worldMachine(w,'shutter').y,59,15))||w.breakables.some(b=>{if(b.hp<=0||b.id===ignoreId)return false;const placement=w.layout!.items.find(p=>p.id===b.placementId);return placement?placementBodies(placement).some(c=>hitCollider(c,x,y,r)):circleRect(x,y,r,b.x,b.y-13,31,25)});const generatorScale=(142+(w.generator.level-1)*22)/142;return blocked(x,y,r,false)||STATION_IDS.some(id=>{const b=stationBody(w.camp,id);return circleRect(x,y,r,b.x,b.y,b.hw,b.hh)})||(includeBase&&circleRect(x,y,r,BASE.x,BASE.y-10,48*generatorScale,35*generatorScale))||w.breakables.some(b=>b.hp>0&&b.id!==ignoreId&&circleRect(x,y,r,b.x,b.y-13,31,25))||(timeOf(w)<w.shutterUntil&&circleRect(x,y,r,SHUTTER_BODY.x,SHUTTER_BODY.y,SHUTTER_BODY.hw,SHUTTER_BODY.hh))||(w.barrierHp>0&&circleRect(x,y,r,BARRICADE_BODY.x,BARRICADE_BODY.y,BARRICADE_BODY.hw,BARRICADE_BODY.hh))}
+export function worldBlocked(w:World,x:number,y:number,r=19,includeBase=true,ignoreId=-1){if(lootChestBlocked(w,x,y,r)||campStateBlocked(w,x,y,r))return true;if(!w.scene&&w.layout&&usesPaintedHomeTerrain(w.layout.terrainImage)&&!outdoorTerrainReadyAt(w.outdoorReady,x,y,r))return true;if(!w.scene&&w.layout&&usesPaintedHomeTerrain(w.layout.terrainImage)&&riverWaterBlocked(x,y,r))return true;if(w.scene&&sceneBlocked(w.scene,x,y,r))return true;if(w.layout&&gatesBlocked(w,x,y,r))return true;if(w.layout&&w.editorPreview)return layoutBlocked(w.layout,x,y,r,[],undefined,w.scene,true,w.minedRockColliders);if(w.layout)return layoutBlocked(w.layout,x,y,r,includeBase?['crate','shutter']:['generator','crate','shutter'],undefined,w.scene,true,w.minedRockColliders)||(timeOf(w)<w.shutterUntil&&circleRect(x,y,r,worldMachine(w,'shutter').x,worldMachine(w,'shutter').y,59,15))||w.breakables.some(b=>{if(b.hp<=0||b.id===ignoreId)return false;const placement=w.layout!.items.find(p=>p.id===b.placementId);return placement?placementBodies(placement).some(c=>hitCollider(c,x,y,r)):circleRect(x,y,r,b.x,b.y-13,31,25)});const generatorScale=(142+(w.generator.level-1)*22)/142;return blocked(x,y,r,false)||STATION_IDS.some(id=>{const b=stationBody(w.camp,id);return circleRect(x,y,r,b.x,b.y,b.hw,b.hh)})||(includeBase&&circleRect(x,y,r,BASE.x,BASE.y-10,48*generatorScale,35*generatorScale))||w.breakables.some(b=>b.hp>0&&b.id!==ignoreId&&circleRect(x,y,r,b.x,b.y-13,31,25))||(timeOf(w)<w.shutterUntil&&circleRect(x,y,r,SHUTTER_BODY.x,SHUTTER_BODY.y,SHUTTER_BODY.hw,SHUTTER_BODY.hh))||(w.barrierHp>0&&circleRect(x,y,r,BARRICADE_BODY.x,BARRICADE_BODY.y,BARRICADE_BODY.hw,BARRICADE_BODY.hh))}
 /** Fixed substeps cover knockback as well as walking, so thin fences cannot be skipped. */
 export function moveBody(w:World,p:Vec,dx:number,dy:number,r=19){
  // A zero displacement never resolves penetration: the old sweep only wrote
@@ -86,7 +88,12 @@ export function moveBody(w:World,p:Vec,dx:number,dy:number,r=19){
  if(dx===0&&dy===0)return;
  const n=Math.max(1,Math.ceil(Math.max(Math.abs(dx),Math.abs(dy))/8));
  const blockedAt=(x:number,y:number)=>worldBlocked(w,x,y,r)||(
-  p===w.player&&w.combatTest&&!w.dodge&&(w.enemies.some(e=>e.hp>0&&Math.hypot(x-e.x,y-e.y)<r+combatEnemyBody(e.kind)&&Math.hypot(x-e.x,y-e.y)<distance(p,e)-.001)||w.animals.some(a=>a.hp>0&&a.predator&&Math.hypot(x-a.x,y-a.y)<r+22&&Math.hypot(x-a.x,y-a.y)<distance(p,a)-.001)));
+  p===w.player&&!!w.combatTest&&!w.dodge&&(w.enemies.some(e=>e.hp>0&&Math.hypot(x-e.x,y-e.y)<r+combatEnemyBody(e.kind)&&Math.hypot(x-e.x,y-e.y)<distance(p,e)-.001)||w.animals.some(a=>a.hp>0&&a.predator&&Math.hypot(x-a.x,y-a.y)<r+22&&Math.hypot(x-a.x,y-a.y)<distance(p,a)-.001)));
+ // A ruin or newly stocked bay can change underneath an occupant.
+ if(p===w.player&&campStateBlocked(w,p.x,p.y,r)){
+  const clear=nearbyClearGround(p,blockedAt);
+  if(clear)Object.assign(p,clear);
+ }
  for(let i=0;i<n;i++){if(dx!==0){const nx=p.x+dx/n;if(!blockedAt(nx,p.y))p.x=nx}if(dy!==0){const ny=p.y+dy/n;if(!blockedAt(p.x,ny))p.y=ny}}
 }
 export const SPRINT_SPEED=1.55;
@@ -175,7 +182,7 @@ function navigationBlocked(w:World,layout:WorldLayout,cells:NavigationCells,gate
   else{const hits=layoutColliderHits(layout,x,y,r,w.scene);if(hits===true)state|=NAV_BLOCKED;else if(hits.length){state|=NAV_HITS;cells.hits.set(id,hits.map(c=>c.id))}}
   cells.state[id]=state;
  }
- if(state&NAV_BLOCKED)return true;
+ if(state&NAV_BLOCKED||lootChestBlocked(w,x,y,r)||campStateBlocked(w,x,y,r))return true;
  for(const c of gates)if(hitCollider(c,x,y,r))return true;
  if(!(state&NAV_HITS))return false;
  const mined=w.minedRockColliders;for(const c of cells.hits.get(id)!)if(!mined?.has(c))return true;

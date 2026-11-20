@@ -1,4 +1,4 @@
-import {IRON_ROCK_FOOT,HEARTH_FOOT} from './camp-fixture-collision';
+import {IRON_ROCK_FOOT,HEARTH_FOOT,WELL_IMAGE,WELL_FOOT} from './camp-fixture-collision';
 import {FURNACE_COLLISION,WAREHOUSE_ARTWORK,WAREHOUSE_ASSET_ID} from './camp-worksites-art';
 import {restorationImages} from './camp-restoration';
 import {hasPaintedHearthAnimation,HEARTH_ANIMATION_IMAGES} from './hearth-animation-art';
@@ -71,6 +71,7 @@ for(const e of entries.filter(e=>e.image&&!e.canonicalArt&&!e.id.startsWith('map
  if(role==='hearth')a.body=[{x:0,y:-23,hw:43*width/112,hh:23*width/112}];
  if(a.image==='/survival/camp-hearth-v4/flame-0.webp'){a.body=[];a.collision=HEARTH_FOOT;}
  if(role==='well')a.body=[{x:0,y:-30,hw:46,hh:30}];
+ if(a.image===WELL_IMAGE){a.body=[];a.collision=WELL_FOOT;}
  if(role==='storage')a.body=[{x:0,y:-26,hw:46,hh:26}];
  if(role==='lamp')a.body=[{x:0,y:0,hw:10,hh:9}];
  // Keep the open-front workshop's blockers on the ground, below the roof overhang.

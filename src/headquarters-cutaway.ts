@@ -17,9 +17,13 @@ export function headquartersCutawayAmount(p:Placement,w:World){
  // Restrict this early reveal to the central entrance; the outer walls keep
  // their full exterior silhouette until the survivor is genuinely indoors.
  const entrance=smooth((.22-Math.abs(u-.5))/.06);
- const doorway=entrance*smooth((1.19-v)/.15);
- const room=smooth((u-.07)/.035)*smooth((.93-u)/.035)*smooth((v-.35)/.035)*smooth((.79-v)/.04);
- return Math.max(doorway,room)*smooth((v-.32)/.035);
+ const doorway=entrance*smooth((1.19-v)/.15)*smooth((v-.66)/.055);
+ // The rear shelf feet reach v=.296. Finish the reveal at that line so
+ // a survivor in the aisle behind the chair stays visible.
+ // The angled side walls narrow toward the bookshelves at the rear.
+ const sideInset=.119+.153*(1-smooth((v-.285)/.24));
+ const room=smooth((u-sideInset)/.028)*smooth((1-sideInset-u)/.028)*smooth((.79-v)/.04);
+ return Math.max(doorway,room)*smooth((v-.25)/.046);
 }
 
 // Follow the tops of the two lintels and the sloped timber that frames the gable.

@@ -7,14 +7,15 @@ import {validRestorationSave} from './camp-restoration';
 import {validBlueprintSave} from './headquarters-plans';
 import {campAccessLevel,validCampLevelSave} from './camp-levels';
 import {validJournalSave} from './headquarters-journal';
-import type {World} from './survival-engine';
+import {worldBlocked,type World} from './survival-engine';
+import {nearbyClearGround} from './nearby-clear-ground';
 import type {SceneTravel,TravelSnapshot} from './scene-travel';
 import {SCENES,CAMP_SCENE_ID} from './world-scenes';
 import {resetHound} from './hound-ai';
 import {addApprovedCampGarden} from './camp-garden-placement';
 import {addWildPotatoes,addWildCarrots,addNorthwestTestCrops} from './potato-planting';
 import {GARDEN_PLACEMENT_ID} from './camp-garden-art';
-import {placementBodies,layoutBlocked,type WorldLayout} from './world-layout';
+import {placementBodies,layoutBlocked} from './world-layout';
 import {placeSouthFacingHeadquarters} from './headquarters-south-placement';
 import {fitHeadquartersInterior,headquartersRefitReturnPoint} from './headquarters-interior';
 import {hitCollider} from './camp-collision';
@@ -41,18 +42,6 @@ function validateNumbers(value:unknown,depth=0):boolean{if(depth>35)return false
 const point=(p:any)=>p&&Number.isFinite(p.x)&&Number.isFinite(p.y);
 const counters=(p:any)=>p&&typeof p==='object'&&!Array.isArray(p)&&Object.values(p).every(v=>typeof v==='number'&&Number.isFinite(v)&&v>=0);
 type SavedPoint={x:number;y:number};
-function nearbyClearGround(layout:WorldLayout,from:SavedPoint):SavedPoint|undefined{
- if(!layoutBlocked(layout,from.x,from.y,19))return from;
- // Search nearest rings first. A boundary update only nudges an occupied
- // landing to nearby clear ground; it never resets the run to camp spawn.
- for(let radius=6;radius<=480;radius+=6){
-  const count=Math.max(16,Math.min(192,Math.ceil(2*Math.PI*radius/6)));
-  for(let i=0;i<count;i++){
-   const angle=i*Math.PI*2/count,position={x:from.x+Math.cos(angle)*radius,y:from.y+Math.sin(angle)*radius};
-   if(!layoutBlocked(layout,position.x,position.y,19))return position;
-  }
- }
-}
 /** Continued expeditions own their own layout snapshots. Upgrade only their
  * perimeter, retaining all run state and safe camp return points. */
 export function migrateSavedCampPerimeter(w:World,route:{sceneId:string;spawn:SavedPoint}[]){
@@ -69,7 +58,7 @@ export function migrateSavedCampPerimeter(w:World,route:{sceneId:string;spawn:Sa
  for(const target of points){
   const refit=headquartersRefitReturnPoint(w.layout,next,target);
   if(!refit&&!occupied(target))continue;
-  const position=nearbyClearGround(next,refit||target);
+  const position=nearbyClearGround(refit||target,(x,y)=>layoutBlocked(next,x,y,19));
   // An unusually obstructed custom landing keeps the old snapshot until a
   // later load. Never trap the survivor or discard progress to force an edit.
   if(!position)return false;
@@ -117,6 +106,12 @@ export function decodeRun(text:string):TravelSnapshot{
    // saved with the old rectangular body remains walkable after retracing.
    if(w.rockMining)for(const p of w.layout.items){
     if(w.rockMining[p.id]?.hp===0)for(const c of placementBodies(p))w.minedRockColliders.add(c.id);
+   }
+   // The same saved layout can acquire new shared art outlines. Check actual
+   // gameplay collision after restoring mined rocks, gates and building state.
+   for(const target of landings){
+    const clear=nearbyClearGround(target,(x,y)=>worldBlocked(w,x,y,19));
+    if(clear&&clear!==target)Object.assign(target,clear);
    }
   }
  }
