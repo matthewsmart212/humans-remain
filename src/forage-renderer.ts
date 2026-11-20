@@ -23,7 +23,6 @@ export function drawForagePlant(ctx:CanvasRenderingContext2D,imgs:Record<string,
  const fruitImage=(variation:number)=>imgs[assetImageKey(fruit.images[variation])]??imgs[`provision_${art.kind}`];
  ctx.save();
  if(art.kind==='apple'&&pass==='world')drawTreeContact(ctx,p.x,p.y,b.width*.15);
- if(art.kind==='apple'&&p.allowTransparency!==false){const [px,py]=placementPoint(p,w.player.x,w.player.y,true);if(py<p.y&&py>b.y&&Math.abs(px-p.x)<b.width*.34)ctx.globalAlpha*=.6}
  if(angle||stretch!==1){ctx.translate(p.x,p.y);ctx.rotate(angle);ctx.scale(1,stretch);ctx.translate(-p.x,-p.y)}
  ctx.drawImage(base,b.x,b.y,b.width,b.height);
  for(let i=0;i<Math.min(count,fruit.points.length);i++){

@@ -29,7 +29,7 @@ try{
   const terrainFile='public/survival/world-ground-v3/clear-earth.webp';
   if(fs.statSync(terrainFile).size>200){const d=api.Data.fromBytes(fs.readFileSync(terrainFile));terrain=api.Image.MakeImageFromEncoded(d);d.dispose()}
   const imgs={[m.LOOT_CHEST_IMAGE_KEY]:atlas,[m.LOOT_CHEST_GROUND_KEY]:ground},viewport={x:0,y:0,width:640,height:560};
-  const world={layout:{items:[]},camp:{hearth:{x:320,y:705}},player:{x:320,y:510},enemies:[],tick:90,phase:'day',weather:{reducedMotion:false}};
+  const world={layout:{items:[]},camp:{hearth:{x:320,y:705}},player:{x:320,y:510},breakables:[],enemies:[],tick:90,phase:'day',weather:{reducedMotion:false}};
   const render=(name,mode='fx')=>{
    const ctx=new adapter.SkiaContext(surface.getCanvas(),640,560,font);
    ctx.fillStyle='#b67835';ctx.fillRect(0,0,640,560);

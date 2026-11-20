@@ -47,10 +47,13 @@ try{
  assert.equal(m.foliagePlayerOcclusion(layout,{x:1000,y:1001}),undefined,'No outline when the character is in front');
  assert.equal(m.foliagePlayerOcclusion({...layout,items:[{...p,layer:-1}]},{x:1000,y:982}),undefined,'Ground-layer plants do not trigger an outline');
  const wall={...m.newPlacement('base_well_t1',1000,1030),solid:true,scale:3};
- assert.equal(m.foliagePlayerOcclusion({...layout,items:[p,wall]},{x:1000,y:982}),undefined,'No seeing through solid props');
+ const mixed={...layout,items:[p,wall]},viewer={x:1000,y:982},pass=m.playerOutlinePass(
+  {drawSpriteOutline(){},drawMaskedSpriteOutline(){}},{},{layout:mixed,player:viewer},1);
+ assert(pass.placements.has(p)&&pass.placements.has(wall),'Dense foliage and overlapping solid props both mask the player outline');
+ assert.equal(pass.drawable(),undefined,'An outline needs an actual foreground draw call');
  const world=m.createCampPlaySession(layout);Object.assign(world.player,{x:1000,y:982,moving:true,direction:'right'});
  for(let i=0;i<30;i++){world.tick++;m.stepFoliage(world,1/60)}assert(world.foliageMotions[p.id]);
- const report={result:'pass',previousPlants:plants(before).length,removedFromInnerCircle:plants(before).filter(m.foliageOverlapsInnerRing).length,refinedPlants:plants(after).length,totalObjects:after.items.length,checks:['inner ring including crown overlap is clear','non-foliage placements and collisions unchanged','manual changes outside the clearing preserved','idempotence and deletion preservation','migration marker JSON round trip','varied size and clustered density','outline only for foreground foliage','outline suppressed at solid props','contact motion retained'],limitations:'Software Skia visual QA; no new iPhone/browser performance measurement. Four unavailable remote uploaded props omitted only from visual fixtures.'};
+ const report={result:'pass',previousPlants:plants(before).length,removedFromInnerCircle:plants(before).filter(m.foliageOverlapsInnerRing).length,refinedPlants:plants(after).length,totalObjects:after.items.length,checks:['inner ring including crown overlap is clear','non-foliage placements and collisions unchanged','manual changes outside the clearing preserved','idempotence and deletion preservation','migration marker JSON round trip','varied size and clustered density','outline only for foreground foliage','overlapping solid scenery participates in the mask','contact motion retained'],limitations:'Software Skia visual QA; no new iPhone/browser performance measurement. Four unavailable remote uploaded props omitted only from visual fixtures.'};
  fs.writeFileSync(out+'/verification.json',JSON.stringify(report,null,2)+'\n');
  fs.writeFileSync(out+'/camp-after.json',JSON.stringify({fixtureNote:'Migrated prior QA draft; never uploaded over the owner draft.',draft:after})+'\n');
  console.log(JSON.stringify(report));

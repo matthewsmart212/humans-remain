@@ -1,6 +1,6 @@
 import {timeOf,facing,STEP,type World,type Vec} from './survival-engine';
 import {CAMP_REPAIRS,buildingEstablished,type CampBuildingId} from './camp-restoration';
-import {buildingRepairStatus,buildingRepairCost,restoreCampBuilding,headquartersBench,headquartersDock,nearbyHeadquarters} from './run-progression';
+import {buildingRepairStatus,buildingRepairCost,restoreCampBuilding} from './run-progression';
 import {campRepairSite} from './camp-repair-site';
 import {hasGear} from './player-gear';
 
@@ -11,8 +11,7 @@ export function holdBuildingRepair(w:World,held:boolean){
  w.buildingRepair.held=held;return true;
 }
 export function repairAnchor(w:World,id:CampBuildingId){
- if(id==='headquarters'&&nearbyHeadquarters(w)){const bench=headquartersBench(w);if(bench)return headquartersDock(bench)}
- return campRepairSite(w,id);
+ return campRepairSite(w,id,w.player);
 }
 export function beginBuildingRepair(w:World,id:CampBuildingId){
  if(w.creativeMode)return restoreCampBuilding(w,id);

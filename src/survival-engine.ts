@@ -456,10 +456,15 @@ export function stepAxe(w:World){
  }
  if(elapsed>=spec.duration)w.axeSwing=undefined;
 }
-export function lineClear(a:Vec,b:Vec,w?:World,ignoreId=-1){const steps=Math.ceil(distance(a,b)/15);for(let i=1;i<steps;i++){const x=a.x+(b.x-a.x)*i/steps,y=a.y+(b.y-a.y)*i/steps;if(w?worldBlocked(w,x,y,3,false,ignoreId):blocked(x,y,3,false))return false}return true}
+export function lineClear(a:Vec,b:Vec,w?:World,ignoreId=-1,spacing=15){const steps=Math.ceil(distance(a,b)/spacing);for(let i=1;i<steps;i++){const x=a.x+(b.x-a.x)*i/steps,y=a.y+(b.y-a.y)*i/steps;if(w?worldBlocked(w,x,y,3,false,ignoreId):blocked(x,y,3,false))return false}return true}
+/** Reach is measured from the survivor’s feet to a clear point at the usable face. */
+export const ACTION_REACH=64;
+export function withinActionReach(w:World,point:Vec,reach=ACTION_REACH){
+ return distance(w.player,point)<=reach&&lineClear(w.player,point,w,-1,5);
+}
 export function nearestBreakable(w:World){return w.breakables.filter(b=>b.hp>0&&distance(b,w.player)<130&&lineClear(w.player,b,w,b.id)).sort((a,b)=>distance(a,w.player)-distance(b,w.player))[0]}
 export function searchTarget(w:World){return worldFurniture(w).map((f,id)=>({...f,id,front:{x:f.x,y:f.y+50}})).filter(f=>f.search&&!w.searched.includes(f.id)&&distance(w.player,f.front)<110&&lineClear(w.player,f.front,w)).sort((a,b)=>distance(a.front,w.player)-distance(b.front,w.player))[0]}
-export function pickupTarget(w:World){return chooseInteractionFocus(w,w.loot.filter(l=>l.amount>0&&(!l.flight||timeOf(w)>=l.flight.lands)&&distance(w.player,l)<112&&lineClear(w.player,l,w)).map(value=>({id:`pickup:${value.id}`,x:value.x,y:value.y,available:canCarryCount(w,value.kind,value.amount)>0,value})))??undefined}
+export function pickupTarget(w:World){return chooseInteractionFocus(w,w.loot.filter(l=>l.amount>0&&(!l.flight||timeOf(w)>=l.flight.lands)&&withinActionReach(w,l)).map(value=>({id:`pickup:${value.id}`,x:value.x,y:value.y,available:canCarryCount(w,value.kind,value.amount)>0,value})))??undefined}
 export function pickup(w:World){if(w.bruteGrab)return false;
  if(w.phase==='over'||w.player.downedUntil)return false;const l=pickupTarget(w);if(!l)return false;
  const amount=addInventory(w,l.kind,l.amount);if(!amount){announce(w,'Backpack full · Drop or store supplies');return false}
@@ -563,7 +568,7 @@ export function finishRun(w:World):SurvivalRun{const p=readProgress(),best=Math.
 
 // Interactions use clear approach points, so walls cannot grant access to water or cooking.
 export const WELL_FRONT={x:WELL_POINT.x,y:WELL_POINT.y+65},FIRE_FRONT={x:FIRE_POINT.x,y:FIRE_POINT.y+65};
-export function campAction(w:World):'drink'|'cook'|'deposit'|null{const options=[{kind:'drink' as const,p:stationFront(w.camp,'well')},{kind:'cook' as const,p:stationFront(w.camp,'hearth')},{kind:'deposit' as const,p:stationFront(w.camp,'storage')}];return options.filter(o=>buildingRestored(w,o.kind==='drink'?'well':o.kind==='cook'?'fire':'headquarters')&&distance(w.player,o.p)<115&&lineClear(w.player,o.p,w)).sort((a,b)=>distance(w.player,a.p)-distance(w.player,b.p))[0]?.kind||null}
+export function campAction(w:World):'drink'|'cook'|'deposit'|null{const options=[{kind:'drink' as const,p:stationFront(w.camp,'well',w.layout)},{kind:'cook' as const,p:stationFront(w.camp,'hearth',w.layout)},{kind:'deposit' as const,p:stationFront(w.camp,'storage',w.layout)}];return options.filter(o=>buildingRestored(w,o.kind==='drink'?'well':o.kind==='cook'?'fire':'headquarters')&&withinActionReach(w,o.p)).sort((a,b)=>distance(w.player,a.p)-distance(w.player,b.p))[0]?.kind||null}
 export function fireLabel(w:World){return w.camp.hearth.fuel<=0?'FIRE OUT · ADD WOOD':w.fire.ready?'MEALS READY':w.fire.cookUntil>0?'COOKING '+Math.ceil(w.fire.cookUntil-timeOf(w))+'s':'COOKING FIRE'}
 export function stepBonfireCooking(w:World){stepKitchen(w);stepFurnaces(w)}
 

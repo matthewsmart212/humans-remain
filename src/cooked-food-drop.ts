@@ -13,7 +13,7 @@ function walkClear(w:World,a:Vec,b:Vec){
  * inside scenery or across a wall. Randomise the reachable landing direction. */
 export function cookedFoodLanding(w:World):Vec|null{
  const hearth=w.camp.hearth,p=w.layout?.items.find(p=>p.role==='hearth'),b=p?placementBounds(p):{width:112,height:112};
- const front=stationFront(w.camp,'hearth'),start=Math.floor(Math.random()*16),extra=Math.random()*24;
+ const front=stationFront(w.camp,'hearth',w.layout),start=Math.floor(Math.random()*16),extra=Math.random()*24;
  for(let band=0;band<3;band++){
   const rx=b.width*.5+48+extra+band*32,ry=b.height*.24+48+extra+band*24;
   const points=Array.from({length:16},(_,i)=>({x:hearth.x+Math.cos(i*Math.PI/8)*rx,y:hearth.y-b.height*.2+Math.sin(i*Math.PI/8)*ry}));

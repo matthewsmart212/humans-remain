@@ -1,3 +1,5 @@
+import {placementContact as rockContact} from './placement-contact';
+export {rockContact};
 import {isPickaxe,PICKAXE_GEAR} from './pickaxes';
 import {hasGear} from './player-gear';
 import {ORE_BONUS_CHANCE} from './ironworks-data';
@@ -18,19 +20,7 @@ export function bonusIronOre(w:World,id:string){
  return n/0x100000000<ORE_BONUS_CHANCE?1:0;
 }
 export const canMineRock=(w:World,target:MiningTarget)=>isPickaxe(w.player.equipped)&&hasGear(w,w.player.equipped)&&(!target.metalOnly||w.player.equipped==='metalPickaxe');
-const segmentPoint=(a:Vec,b:Vec,p:Vec)=>{const dx=b.x-a.x,dy=b.y-a.y,t=Math.max(0,Math.min(1,((p.x-a.x)*dx+(p.y-a.y)*dy)/(dx*dx+dy*dy||1)));return{x:a.x+dx*t,y:a.y+dy*t}};
-
-/** Use the traced ground footprint, including rotated/flipped rocks, rather than their tall painted bounds. */
-export function rockContact(p:Placement,origin:Vec){
- const points:Vec[]=[];
- for(const c of placementBodies(p)){
-  if(c.shape==='rect')points.push({x:Math.max(c.x-c.hw,Math.min(c.x+c.hw,origin.x)),y:Math.max(c.y-c.hh,Math.min(c.y+c.hh,origin.y))});
-  else if(c.shape==='polygon')for(let i=0;i<c.points.length;i++){const a=c.points[i],b=c.points[(i+1)%c.points.length];points.push(segmentPoint({x:a[0],y:a[1]},{x:b[0],y:b[1]},origin))}
-  else if(c.shape==='segment'){const q=segmentPoint(c,{x:c.ex,y:c.ey},origin),d=Math.hypot(origin.x-q.x,origin.y-q.y)||1;points.push({x:q.x+(origin.x-q.x)/d*c.r,y:q.y+(origin.y-q.y)/d*c.r})}
- }
- return points.sort((a,b)=>Math.hypot(a.x-origin.x,a.y-origin.y)-Math.hypot(b.x-origin.x,b.y-origin.y))[0]??{x:p.x,y:p.y};
-}
-export function nearbyMineableRock(w:World,angle?:number,reach=140):MiningTarget|null{
+export function nearbyMineableRock(w:World,angle?:number,reach=76):MiningTarget|null{
  if(!w.layout||w.scene)return null;
  const candidates:MiningTarget[]=[];
  for(const p of visiblePlacements(w.layout,{x:w.player.x-reach-450,y:w.player.y-reach-450,width:2*(reach+450),height:2*(reach+450)})){

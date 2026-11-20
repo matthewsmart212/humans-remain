@@ -1,3 +1,4 @@
+import {placementUseFace} from './placement-contact';
 import {buildingRestored} from './camp-restoration';
 import {hasMetalworking} from './run-progression';
 import {FURNACE_ID,FURNACE_RULES,FURNACE_LOG_SECONDS,SMELT_RECIPES,type SmeltRecipe} from './ironworks-data';
@@ -5,18 +6,18 @@ import {FURNACE_UPGRADE_COST} from './forge-recipes';
 import {storedCount,setStoredCount,addInventory} from './expedition-inventory';
 import {payMaterials} from './camp-materials';
 export {materialTotal,canPayMaterials} from './camp-materials';
-import {placementBounds,placementPoint,type WorldLayout,type Placement} from './world-layout';
-import {lineClear,timeOf,type World} from './survival-engine';
+import {type WorldLayout,type Placement} from './world-layout';
+import {withinActionReach,timeOf,type Vec,type World} from './survival-engine';
 
 export type SmeltingJob={id:number;recipe:SmeltRecipe;remaining:number};
 export type FurnaceState={level:1|2;fuel:number;queue:SmeltingJob[];ready:number;updatedAt:number};
 export type IronworksState={stations:Record<string,FurnaceState>};
 const cache=new WeakMap<WorldLayout,Placement[]>();
 export function furnaces(layout?:WorldLayout){if(!layout)return[];let list=cache.get(layout);if(!list){list=layout.items.filter(p=>p.assetId===FURNACE_ID);cache.set(layout,list)}return list}
-export function furnaceDock(p:Placement){const b=placementBounds(p),[x,y]=placementPoint(p,b.x+b.width*.72,b.y+b.height*.96);return{x,y}}
+export function furnaceDock(p:Placement,from?:Vec){return placementUseFace(p,[.51,.945],[.73,.898],from)}
 export function nearbyFurnace(w:World){
- if(w.scene)return null;let nearest:{placement:Placement;x:number;y:number}|null=null,best=145;
- for(const p of furnaces(w.layout)){const dock=furnaceDock(p),d=Math.hypot(w.player.x-dock.x,w.player.y-dock.y);if(d<best&&lineClear(w.player,dock,w)){best=d;nearest={placement:p,...dock}}}return nearest;
+ if(w.scene)return null;let nearest:{placement:Placement;x:number;y:number}|null=null,best=Infinity;
+ for(const p of furnaces(w.layout)){const dock=furnaceDock(p,w.player),d=Math.hypot(w.player.x-dock.x,w.player.y-dock.y);if(d<best&&withinActionReach(w,dock)){best=d;nearest={placement:p,...dock}}}return nearest;
 }
 export function furnaceState(w:World,id:string):FurnaceState{
  const stations=(w.ironworks??={stations:Object.create(null)}).stations;

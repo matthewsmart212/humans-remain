@@ -1,21 +1,34 @@
-import type {World} from './survival-engine';
-import {lineClear} from './survival-engine';
+import type {Vec,World} from './survival-engine';
+import {GARDEN_GATE_CENTRE} from './camp-garden-art';
+import {headquartersDock} from './run-progression';
+import {withinActionReach} from './survival-engine';
 import {campBuildingPlacements,type CampBuildingId} from './camp-restoration';
-import {placementBounds,placementPoint} from './world-layout';
+import {placementArtPoint} from './world-layout';
 import {smithyDock} from './camp-smithy';
 import {warehouseDock} from './warehouse';
 import {furnaceDock} from './camp-furnace';
 import {stationFront} from './camp-stations';
 
 /** Existing ruins retain their authored placement, geometry and use socket. */
-export function campRepairSite(w:World,id:CampBuildingId){
+export function campRepairSite(w:World,id:CampBuildingId,from?:Vec){
  if(w.scene)return undefined;
  const site=campBuildingPlacements(w.layout).find(site=>site.id===id);if(!site)return undefined;
- const p=site.placement,b=placementBounds(p),[x,y]=placementPoint(p,b.x+b.width/2,b.y+b.height+12*p.scale);
- const dock=id==='garden'?{x:b.x+b.width*.82,y:b.y+b.height*.63}:id==='workshop'?smithyDock(p):id==='warehouse'?warehouseDock(p):id==='furnace'?furnaceDock(p):id==='well'?stationFront(w.camp,'well'):id==='fire'?stationFront(w.camp,'hearth'):{x,y};
+ const p=site.placement;
+ let dock;
+ switch(id){
+  case 'garden': dock=placementArtPoint(p,...GARDEN_GATE_CENTRE);break;
+  case 'headquarters': dock=headquartersDock(p,from);break;
+  case 'bunker': dock=placementArtPoint(p,.40,.90);break;
+  case 'treatment': dock=placementArtPoint(p,.41,.86);break;
+  case 'workshop': dock=smithyDock(p,from);break;
+  case 'warehouse': dock=warehouseDock(p,from);break;
+  case 'furnace': dock=furnaceDock(p,from);break;
+  case 'well': dock=stationFront(w.camp,'well',w.layout);break;
+  case 'fire': dock=stationFront(w.camp,'hearth',w.layout);break;
+ }
  return {...site,...dock};
 }
 export function atCampRepairSite(w:World,id:CampBuildingId){
- const site=campRepairSite(w,id);
- return !!site&&Math.hypot(w.player.x-site.x,w.player.y-site.y)<145&&lineClear(w.player,site,w);
+ const site=campRepairSite(w,id,w.player);
+ return !!site&&withinActionReach(w,site);
 }

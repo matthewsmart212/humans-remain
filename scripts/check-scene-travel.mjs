@@ -7,7 +7,7 @@ try{
  const m=createRequire(import.meta.url)(path.join(temp,'model.cjs'));
  const fixture=JSON.parse(fs.readFileSync('scripts/fixtures/bunker-step-on.json')),record=fixture.record,savedLayout=process.argv[3]?JSON.parse(fs.readFileSync(process.argv[3])).draft:null,placement=savedLayout?.items.find(p=>p.assetId===fixture.placement.assetId)??fixture.placement;m.installImportedArt(process.argv[2]?JSON.parse(fs.readFileSync(process.argv[2])).records:[record]);
  const point=(p,u,v)=>{const b=m.placementBounds(p),[x,y]=m.placementPoint(p,b.x+u*b.width,b.y+v*b.height);return{x,y}};
- const outside=point(placement,.26,.9),step=point(placement,.47,.70),door=point(placement,.59,.61);
+ const outside=point(placement,.405,1.04),step=point(placement,.405,.94),door=point(placement,.405,.85);
  const layout={...(savedLayout??{...m.emptyLayout(),items:[placement]}),spawn:outside},before=JSON.stringify(layout),camp=m.createCampPlaySession(layout);
  const resources={ready:()=>true,prepare:async()=>{},pin:()=>{}},travel=new m.SceneTravel(camp,resources);
  const tick=(n=1,input={x:0,y:0})=>{for(let i=0;i<n;i++){if(!travel.busy)m.stepCampPlaySession(travel.current,input,false,false);travel.tick(m.STEP)}};
@@ -39,7 +39,7 @@ try{
  // Geometry follows artwork changes, including copies, frozen dimensions and flips.
  for(const rotation of [0,37,90,231])for(const flipX of [false,true])for(const flipY of [false,true]){
   const p={...placement,rotation,flipX,flipY,scale:.65},w=m.createWorld({...layout,items:[p]});
-  const portal=m.scenePortals(w)[0],a=point(p,.59,.61),b=point(p,.42,.75);assert(m.inSceneArea(portal.area,a.x,a.y));assert.equal(portal.returnSpawn.x,b.x);assert.equal(portal.returnSpawn.y,b.y);
+  const portal=m.scenePortals(w)[0],a=point(p,.405,.85),b=point(p,.405,1.03);assert(m.inSceneArea(portal.area,a.x,a.y));assert.equal(portal.returnSpawn.x,b.x);assert.equal(portal.returnSpawn.y,b.y);
  }
  // A destination is kept invisible until it is ready; errors leave the source usable.
  let finish,failed=false;const pendingResources={ready:()=>false,prepare:()=>new Promise((resolve,reject)=>{finish=()=>failed?reject(Error('offline')):resolve()}),pin:()=>{}};

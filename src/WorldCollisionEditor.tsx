@@ -1,3 +1,4 @@
+import {placedCollision} from './camp-fixture-collision';
 import React,{useEffect,useRef,useState} from 'react';
 import {X,Check,RotateCcw} from 'lucide-react';
 import CollisionEditor from './CollisionEditor';
@@ -9,7 +10,8 @@ import './base-checklist.css';
 
 export function placedOutline(p:Placement,a:WorldAsset):AssetCollision{
  a=placementGeometryAsset(p)||a;
- if(p.collision)return structuredClone(p.collision);
+ const collision=placedCollision(a,p.collision);
+ if(collision)return structuredClone(collision);
  if(a.collision||!p.footprint)return assetOutline(a)||emptyCollision();
  return assetOutline({...a,segments:[],body:[{x:0,y:-p.footprint.depth/2,hw:p.footprint.width/2,hh:p.footprint.depth/2}]})||emptyCollision();
 }

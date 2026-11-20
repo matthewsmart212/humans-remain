@@ -110,8 +110,14 @@ export function decodeRun(text:string):TravelSnapshot{
    const next=addNorthwestTestCrops(addWildCarrots(addWildPotatoes(addApprovedCampGarden(w.layout)))),garden=next.items.find(p=>p.id===GARDEN_PLACEMENT_ID);
    // A returning player standing on the new lot keeps their position. Add it on
    // a later load once clear rather than trapping or teleporting the player.
-   if(!garden||!placementBodies(garden).some(c=>hitCollider(c,w.player.x,w.player.y,19)))w.layout=next;
+   const landings=[w.player,next.spawn,...data.route.filter((r:any)=>r?.sceneId===CAMP_SCENE_ID&&point(r.spawn)).map((r:any)=>r.spawn)];
+   if(!garden||!placementBodies(garden).some(c=>landings.some(landing=>hitCollider(c,landing.x,landing.y,19))))w.layout=next;
    w.layout=refineCampVegetation(w.layout);
+   // Rebuild the ignored IDs from the current geometry. A depleted boulder
+   // saved with the old rectangular body remains walkable after retracing.
+   if(w.rockMining)for(const p of w.layout.items){
+    if(w.rockMining[p.id]?.hp===0)for(const c of placementBodies(p))w.minedRockColliders.add(c.id);
+   }
   }
  }
  if(!ids.has(CAMP_SCENE_ID)||!ids.has(data.currentId)||data.route.some((r:any)=>!ids.has(r?.sceneId)||!r.spawn||!Number.isFinite(r.spawn.x)||!Number.isFinite(r.spawn.y)))throw Error('The expedition return route is missing.');

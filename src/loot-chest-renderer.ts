@@ -195,15 +195,18 @@ export function drawLootChestGround(ctx:CanvasRenderingContext2D,imgs:Record<str
 export function lootChestDrawables(ctx:CanvasRenderingContext2D,imgs:Record<string,HTMLImageElement>,w:World,viewport:Viewport){
  const p=campLootChest(w);if(!p||!visible(p.x,p.y,viewport))return [];
  const sprite=imgs[LOOT_CHEST_IMAGE_KEY],fx=lootChestFx(w);
- return [{y:p.y,draw:()=>{
-  ctx.save();ctx.translate(p.x,p.y);ctx.scale(CHEST_WIDTH_SCALE,1);
-  // Narrow the chest and its aligned effects around the same world anchor.
+ const body=()=>{
+  if(sprite)drawChestRig(ctx,sprite,w,0,0);
+  else{ctx.fillStyle='#393028';ctx.fillRect(-83,-70,166,70)}
+ };
+ const atChest=(draw:()=>void)=>{
+  ctx.save();ctx.translate(p.x,p.y);ctx.scale(CHEST_WIDTH_SCALE,1);draw();ctx.restore();
+ };
+ return [{x:p.x,y:p.y,mask:()=>atChest(body),draw:()=>atChest(()=>{
   const x=0,y=0;
   light(ctx,x,y,fx,false);
-  if(sprite)drawChestRig(ctx,sprite,w,x,y);
-  else{ctx.fillStyle='#393028';ctx.fillRect(x-83,y-70,166,70)}
+  body();
   light(ctx,x,y,fx,true);
   openingScan(ctx,x,y,fx);inlays(ctx,x,y,fx);lidGlints(ctx,x,y,fx);motes(ctx,x,y,fx);openingSparks(ctx,x,y,fx);sealFlare(ctx,x,y,fx);
-  ctx.restore();
- }}];
+ })}];
 }

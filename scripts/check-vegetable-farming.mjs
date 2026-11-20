@@ -11,11 +11,14 @@ m.installImportedArt(snapshot.records);
 const layout=m.prepareAuthoredWorld(snapshot.layout);
 const game=m.createCampPlaySession(layout,undefined,'survival');
 game.tick=6000;
-const site=m.gardenLocation(game);Object.assign(game.player,{x:site.x,y:site.y});
+const site=m.gardenLocation(game);
+const visitBed=index=>Object.assign(game.player,m.gardenBedPoint(site.placement,index));
+visitBed(0);
 m.addInventory(game,'potato',3);m.addInventory(game,'carrot',3);
 assert.equal(m.plantPotato(game,'carrot'),false,'Broken patch cannot be planted');
 game.progression.restoredBuildings.push('headquarters','garden');game.progression.campLevel=1;
-for(const kind of ['potato','carrot','potato','carrot']){
+for(const [index,kind] of ['potato','carrot','potato','carrot'].entries()){
+ visitBed(index);
  game.player.equipped=kind;
  assert.equal(m.potatoPatchAction(game).crop,kind,'Quick bar selects crop to plant');
  assert(m.potatoPatchAction(game).perform());
@@ -27,6 +30,7 @@ assert.equal(m.itemCount(game,'potato'),inventory,'Full patch consumes nothing')
 game.tick=339*60;assert.equal(m.readyPotatoes(game),0);assert(!m.harvestPotatoes(game));
 assert.deepEqual([0,.25,.6,1].map(m.cropStage),[0,1,2,3]);
 game.tick=340*60;assert.equal(m.readyPotatoes(game),4);
+visitBed(0);
 const action=m.potatoPatchAction(game),other=m.gardenBeds(game)[1];
 assert(action.perform());assert.equal(m.itemCount(game,'potato'),inventory+4);
 assert.equal(m.gardenBeds(game)[0],null);
@@ -34,6 +38,7 @@ assert.equal(m.gardenBeds(game)[1],other,'Harvest does not move any other bed');
 assert(!action.perform(),'Double tap cannot harvest another bed');
 assert(m.plantPotato(game,'carrot'));assert.equal(m.gardenBeds(game)[0].kind,'carrot');
 assert.equal(m.gardenBeds(game)[1],other,'Replant fills only the empty bed');
+visitBed(1);
 const ripe=m.gardenBeds(game)[1];
 m.setItemCount(game,'pallets',99);
 assert.equal(m.potatoPatchAction(game).shortLabel,'PACK FULL');

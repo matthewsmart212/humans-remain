@@ -12,12 +12,18 @@ function migrateLegacyGarden(p:Placement):Placement{
 
 /** Place the initial broken plot once; retain authored owner moves/removals. */
 export function addApprovedCampGarden(layout:WorldLayout):WorldLayout{
- const migrated=layout.items.map(migrateLegacyGarden);
- if(layout.potatoGardenVersion===1)return migrated.every((p,i)=>p===layout.items[i])?layout:{...layout,items:migrated,updatedAt:new Date().toISOString()};
+ const migrated=layout.items.map(p=>{
+  const garden=migrateLegacyGarden(p);
+  // Version 1 shipped the camp plot explicitly non-solid. Upgrade that lot
+  // once while preserving custom outlines, other placements and later edits.
+  if(layout.potatoGardenVersion!==2&&garden.id===GARDEN_PLACEMENT_ID&&GARDEN_IDS.has(garden.assetId)&&!garden.solid&&!garden.collision&&!garden.footprint)return {...garden,solid:true};
+  return garden;
+ });
+ if(layout.potatoGardenVersion)return layout.potatoGardenVersion===2&&migrated.every((p,i)=>p===layout.items[i])?layout:{...layout,potatoGardenVersion:2,items:migrated,updatedAt:new Date().toISOString()};
  const puddle=migrated.find(p=>p.id==='camp-puddle-v1-4');
  const original=migrated.find(p=>p.id===GARDEN_PLACEMENT_ID||GARDEN_IDS.has(p.assetId));
  const x=puddle?puddle.x+490:original?.x??840,y=puddle?puddle.y+315:original?.y??1345;
- const items=original?migrated.map(p=>p===original?{...p,x,y,assetId:GARDEN_ART[0].id,scale:1,locked:true,allowTransparency:false,solid:false}:p):
-   migrated.length<MAX_LAYOUT_ITEMS?[...migrated,{...newPlacement(GARDEN_ART[0].id,x,y),id:GARDEN_PLACEMENT_ID,locked:true,allowTransparency:false,solid:false}]:migrated;
- return {...layout,campGardenVersion:1,potatoGardenVersion:1,items,updatedAt:new Date().toISOString()};
+ const items=original?migrated.map(p=>p===original?{...p,x,y,assetId:GARDEN_ART[0].id,scale:1,locked:true,allowTransparency:false,solid:true}:p):
+   migrated.length<MAX_LAYOUT_ITEMS?[...migrated,{...newPlacement(GARDEN_ART[0].id,x,y),id:GARDEN_PLACEMENT_ID,locked:true,allowTransparency:false,solid:true}]:migrated;
+ return {...layout,campGardenVersion:1,potatoGardenVersion:2,items,updatedAt:new Date().toISOString()};
 }

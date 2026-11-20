@@ -1,3 +1,4 @@
+import {alignImportedFixture} from './camp-fixture-collision';
 import {resolveWorksiteWarehouse} from './camp-worksites-art';
 import {resolveAnimationDefaults} from './asset-animation-defaults';
 import {resolveWorkshopArtwork} from './workshop-animation-art';
@@ -14,6 +15,10 @@ const replacements=[...manifest,...campManifest] as {entryId:string;sourceId:str
  * anchors and world dimensions remain authoritative; future uploads take priority.
  */
 export function resolveArtworkReskin(record:ArtworkRecord):ArtworkRecord{
+ return alignImportedFixture(replacedArtwork(record));
+}
+
+function replacedArtwork(record:ArtworkRecord):ArtworkRecord{
  record=resolveTreatmentArtwork(resolveWorkshopArtwork(resolveSouthHeadquarters(resolveAnimationDefaults(record))));
  const worksite=resolveWorksiteWarehouse(record);if(worksite!==record)return worksite;
  // Match all states together so a new owner upload never mixes old and new frames.

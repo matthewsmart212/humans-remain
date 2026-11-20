@@ -12,7 +12,7 @@ import {drawRockFace,rockMaterials,type RockMaterial} from './rock-surface';
 import {drawMineableRock} from './rock-mining';
 import {stoneDrawables} from './mining-renderer';
 import {drawForagePlant} from './forage-renderer';
-import {drawPotatoPatch} from './potato-patch-renderer';
+import {potatoPatchDrawables} from './potato-patch-renderer';
 import {drawBowLock} from './bow-lock-renderer';
 import {scrapDrawables} from './scrap-salvage';
 import {drawWarehouse} from './warehouse-renderer';
@@ -52,7 +52,7 @@ import {MAP_WIDTH,MAP_HEIGHT} from './factory-map';
 import {drawWorker} from './worker-renderer';
 import {brutePlayerCarried} from './brute-control';
 import {bowArrowDrawables} from './bow-art';
-import {foliagePlayerOutline} from './foliage-visibility';
+import {playerOutlinePass} from './foliage-visibility';
 import {isFoliageAsset} from './foliage-display';
 import type {Atlas} from './packaging-renderer';
 import {clearTerrainViewport,drawHomeTerrain} from './terrain-renderer';
@@ -84,12 +84,31 @@ function drawCampGroundContacts(ctx:CanvasRenderingContext2D,contacts:readonly C
   ctx.restore();
  }
 }
-export function placedDrawables(ctx:CanvasRenderingContext2D,imgs:Record<string,HTMLImageElement>,w:World,editor=false,viewport?:FoliageViewport,hideFoliage=false,contacts?:CampGroundContact[]){
+export function placedDrawables(ctx:CanvasRenderingContext2D,imgs:Record<string,HTMLImageElement>,w:World,editor=false,viewport?:FoliageViewport,hideFoliage=false,contacts?:CampGroundContact[],outline?:ReturnType<typeof playerOutlinePass>){
  const out:{roof?:boolean;layer?:number;y:number;draw:()=>void}[]=[];if(!w.layout)return out;
  const circular:CircularWallDraw[]=[];
  for(const p of visiblePlacements(w.layout,viewport)){const a=ASSET_BY_ID.get(p.assetId);if(!a)continue;if(!editor&&['animal','enemySpawn'].includes(p.role))continue;if(!editor&&['scrap','fuel','pallets'].includes(p.role)&&!w.loot.some(l=>l.placementId===p.id))continue;if(!editor&&p.role==='crate'&&!w.breakables.some(b=>b.placementId===p.id&&b.hp>0))continue;
   if(hideFoliage&&isFoliageAsset(a)||a.foliage&&!foliageVisible(p,viewport))continue;
-  if(a.gate){const bounds=placementBounds(p);if(viewport&&!p.rotation&&!p.flipX&&!p.flipY&&(bounds.x+bounds.width<viewport.x||bounds.x>viewport.x+viewport.width||bounds.y+bounds.height<viewport.y||bounds.y>viewport.y+viewport.height))continue;for(const v of gateDrawables(ctx,imgs,w,p,a)){const draw=v.draw;out.push({...v,layer:p.layer??0,draw:()=>{ctx.save();rotatePlacement(ctx,p);draw();ctx.restore()}})}continue;}
+  const add=(d:typeof out[number],ground=false)=>{
+   out.push(d);
+   if(!ground&&outline?.placements.has(p)){
+    outline.covers.push(d);if(a.foliage)outline.leaves.add(d);
+   }
+  };
+  if(a.gate&&viewport&&!p.rotation&&!p.flipX&&!p.flipY){
+   const b=placementBounds(p);
+   if(b.x+b.width<viewport.x||b.x>viewport.x+viewport.width||b.y+b.height<viewport.y||b.y>viewport.y+viewport.height)continue;
+  }
+  const parts=a.gate?gateDrawables(ctx,imgs,w,p,a):potatoPatchDrawables(ctx,imgs,w,p);
+  if(parts){
+   for(const part of parts){
+    const ground='ground' in part&&part.ground===true;
+    add({y:part.y,layer:ground?Math.min(0,p.layer??0):p.layer??0,draw:()=>{
+     ctx.save();rotatePlacement(ctx,p);part.draw();ctx.restore();
+    }},ground);
+   }
+   continue;
+  }
   const first=out.length,restoration=campBuildingArt(w,p.assetId);
   // Hold the approved first pose until the complete cycle arrives. A delayed
   // animation frame must never make an object disappear or flicker in Build.
@@ -111,21 +130,26 @@ export function placedDrawables(ctx:CanvasRenderingContext2D,imgs:Record<string,
   const playerInFrontOfHQ=southHQ&&p.roof==='auto'&&playerLocalY>=b.y+b.height*.79;
   const revealRoof=!!(restoration?.roof||a.roof)&&(p.allowTransparency??placementGeometryAsset(p)?.allowTransparency)!==false&&p.roof==='auto'&&(withinRoofApproach(p,w.player.x,w.player.y)||headquartersRaidVisible(p,w));
   const roofImage=(restoration?.roof||a.roof)&&imgs[assetImageKey(restoration?.roof||a.roof!)];
-  if(a.perimeterCurve?.length&&!p.rotation&&!p.flipX&&!p.flipY){
-   if(viewport&&(b.x+b.width<viewport.x||b.x>viewport.x+viewport.width||b.y+b.height<viewport.y||b.y>viewport.y+viewport.height))continue;
-   const depth=circularWallDepth(a.perimeterCurve,{x:(w.player.x-p.x)/p.scale,y:(w.player.y-p.y)/p.scale},a.perimeterRise??180);
-   const drawable={layer:p.layer??0,y:p.y+(depth.near?depth.depth*p.scale:0),draw:()=>{ctx.save();if((p.allowTransparency??a.allowTransparency)!==false&&depth.obscuresPlayer)ctx.globalAlpha=.48;ctx.drawImage(im,...a.crop as [number,number,number,number],b.x,b.y,b.width,b.height);ctx.restore()}};
-   out.push(drawable);circular.push({drawable,order:a.perimeterDrawOrder??0,priority:depth.near?1000:1,group:circularWallGroup(a.perimeterCurve,p)});
-   continue;
-  }
-  if(a.perimeter==='wall'&&a.segments?.[0]&&!p.rotation&&!p.flipX&&!p.flipY){
-   if(viewport&&(b.x+b.width<viewport.x||b.x>viewport.x+viewport.width||b.y+b.height<viewport.y||b.y>viewport.y+viewport.height))continue;
-   // A painted bay is one volume. Slicing adjacent bays in screen columns made
-   // steep walls interleave their timber faces and leave visible vertical cuts.
-   const segment=a.segments[0],y=p.y+(segment.y+segment.ey)*.5*p.scale,ax=p.x+segment.x*p.scale,ay=p.y+segment.y*p.scale,bx=p.x+segment.ex*p.scale,by=p.y+segment.ey*p.scale,rise=(a.perimeterRise??235)*p.scale;
-   const vertical=Math.abs(by-ay)>Math.abs(bx-ax),t=vertical?Math.max(0,Math.min(1,(w.player.y+rise*.4-ay)/(by-ay||1))):Math.max(0,Math.min(1,(w.player.x-ax)/(bx-ax||1))),groundX=ax+(bx-ax)*t,groundY=ay+(by-ay)*t;
-   const obscuresPlayer=Math.abs(w.player.x-groundX)<65*p.scale&&w.player.y<groundY&&w.player.y>groundY-rise-20;
-   out.push({layer:p.layer??0,y,draw:()=>{ctx.save();if(p.allowTransparency!==false&&obscuresPlayer)ctx.globalAlpha=.48;ctx.drawImage(im,...a.crop as [number,number,number,number],b.x,b.y,b.width,b.height);ctx.restore()}});
+  const segment=a.perimeter==='wall'?a.segments?.[0]:undefined;
+  const curve=a.perimeterCurve??(segment?[[segment.x,segment.y],[segment.ex,segment.ey]]:undefined);
+  if(curve?.length){
+   const transformed=!!(p.rotation||p.flipX||p.flipY);
+   if(viewport&&!transformed&&(b.x+b.width<viewport.x||b.x>viewport.x+viewport.width||b.y+b.height<viewport.y||b.y>viewport.y+viewport.height))continue;
+   // Sort the complete painted bay at its ground line in the survivor's column.
+   // Rotated and mirrored wall placements use the same world-space comparison.
+   const ground=transformed?curve.map(([x,y])=>{
+    const [wx,wy]=placementPoint(p,p.x+x*p.scale,p.y+y*p.scale);
+    return [(wx-p.x)/p.scale,(wy-p.y)/p.scale];
+   }):curve;
+   const depth=circularWallDepth(ground,{x:(w.player.x-p.x)/p.scale,y:(w.player.y-p.y)/p.scale},a.perimeterRise??(a.perimeterCurve?180:235));
+   const distant=a.perimeterCurve?0:(ground[0][1]+ground[1][1])*.5;
+   const drawable={layer:p.layer??0,y:p.y+(depth.near?depth.depth:distant)*p.scale,draw:()=>{
+    if(transformed){ctx.save();rotatePlacement(ctx,p)}
+    ctx.drawImage(im,...a.crop as [number,number,number,number],b.x,b.y,b.width,b.height);
+    if(transformed)ctx.restore();
+   }};
+   add(drawable);
+   if(a.perimeterCurve&&!transformed)circular.push({drawable,order:a.perimeterDrawOrder??0,priority:depth.near?1000:1,group:circularWallGroup(curve,p)});
    continue;
   }
   // Only contacted/recovering plants need deformed geometry. All idle plants
@@ -138,7 +162,7 @@ export function placedDrawables(ctx:CanvasRenderingContext2D,imgs:Record<string,
    drawCampContact(ctx,p,a);
    ctx.drawImage(im,b.x,b.y,b.width,b.height);
    return;
-  }if(drawPotatoPatch(ctx,imgs,w,p))return;if(restoration){const ruin=imgs[assetImageKey(restoration.image)];if(ruin){ctx.drawImage(ruin,b.x,b.y,b.width,b.height);return}}if(drawCampFurnace(ctx,imgs,w,p))return;if(drawWarehouse(ctx,imgs,w,p))return;if(drawForagePlant(ctx,imgs,w,p,animatePlant))return;if(drawTree(ctx,im,w,p))return;if(drawMineableRock(ctx,im,w,p,a.crop))return;if(a.puddle){drawPuddle(ctx,im,w,p,a);return}if(a.foliage){drawFoliage(ctx,im,w,p,a,animatePlant);return}drawCampContact(ctx,p,a);ctx.save();const [px,py]=placementPoint(p,w.player.x,w.player.y,true);if((p.allowTransparency??placementGeometryAsset(p)?.allowTransparency)!==false&&!a.interior&&py<p.y&&py>b.y&&Math.abs(px-p.x)<b.width*.3)ctx.globalAlpha=.6;
+  }if(restoration){const ruin=imgs[assetImageKey(restoration.image)];if(ruin){ctx.drawImage(ruin,b.x,b.y,b.width,b.height);return}}if(drawCampFurnace(ctx,imgs,w,p))return;if(drawWarehouse(ctx,imgs,w,p))return;if(drawForagePlant(ctx,imgs,w,p,animatePlant))return;if(drawTree(ctx,im,w,p))return;if(drawMineableRock(ctx,im,w,p,a.crop))return;if(a.puddle){drawPuddle(ctx,im,w,p,a);return}if(a.foliage){drawFoliage(ctx,im,w,p,a,animatePlant);return}drawCampContact(ctx,p,a);ctx.save();
    if(p.role==='hearth'&&!placedFireLit(w,p)&&a.unlit){const off=imgs[assetImageKey(a.unlit)];if(off){const anchor=a.unlitAnchor||[627,1190],size=a.unlitSize||[1254,1254];ctx.drawImage(off,p.frame?b.x:p.x-anchor[0]/size[0]*b.width,p.frame?b.y:p.y-anchor[1]/size[1]*b.height,b.width,b.height)}else ctx.drawImage(im,...a.crop as [number,number,number,number],b.x,b.y,b.width,b.height)}
    else if(rock)drawRockFace(ctx,im,a.crop,b,rock,!!a.groundDetail);
    else if(hasPaintedHearthAnimation(a))drawBurningHearth(ctx,imgs,imgs[assetImageKey(a.image)]||im,b,timeOf(w),!!w.weather?.reducedMotion);
@@ -149,13 +173,13 @@ export function placedDrawables(ctx:CanvasRenderingContext2D,imgs:Record<string,
   // no polygon punches a gap through the surrounding palisade.
   // Rear wall feet begin at v=.34; indoor player feet start at v>.36.
   const hallFloorDepth=b.y+b.height*.35;
-  out.push({y:southHQ?hallFloorDepth:a.interior?-10000:a.id==='art_hq_woven_rug'?-9999:p.y,draw:drawBase});
-  for(const f of southHQ||restoration?[]:a.foreground||[])out.push({y:placementPoint(p,b.x+(f[0]+f[2]/2)/a.crop[2]*b.width,b.y+(f[1]+f[3])/a.crop[3]*b.height)[1],draw:()=>ctx.drawImage(im,a.crop[0]+f[0],a.crop[1]+f[1],f[2],f[3],b.x+f[0]/a.crop[2]*b.width,b.y+f[1]/a.crop[3]*b.height,f[2]/a.crop[2]*b.width,f[3]/a.crop[3]*b.height)});
+  add({y:southHQ?hallFloorDepth:a.interior?-10000:a.id==='art_hq_woven_rug'?-9999:placementPoint(p,p.x,p.y)[1],draw:drawBase});
+  for(const f of southHQ||restoration?[]:a.foreground||[])add({y:placementPoint(p,b.x+(f[0]+f[2]/2)/a.crop[2]*b.width,b.y+(f[1]+f[3])/a.crop[3]*b.height)[1],draw:()=>ctx.drawImage(im,a.crop[0]+f[0],a.crop[1]+f[1],f[2],f[3],b.x+f[0]/a.crop[2]*b.width,b.y+f[1]/a.crop[3]*b.height,f[2]/a.crop[2]*b.width,f[3]/a.crop[3]*b.height)});
   // The fixed foundation remains below actors; roof and front panels fade
   // continuously over the revealed room and disappear completely indoors.
   if(roofImage&&p.roof!=='hidden'&&!(southHQ&&cutaway===1)){
    const rect=a.roofRect||[0,0,a.crop[2],a.crop[3]];
-   out.push({roof:!playerInFrontOfHQ,layer:playerInFrontOfHQ?0:undefined,y:playerInFrontOfHQ?b.y+b.height*.79:100000,draw:()=>{
+   add({roof:!playerInFrontOfHQ,layer:playerInFrontOfHQ?0:undefined,y:playerInFrontOfHQ?b.y+b.height*.79:100000,draw:()=>{
     ctx.save();
     if(southHQ){
      ctx.save();
@@ -202,24 +226,45 @@ export function drawWorldEditor(ctx:CanvasRenderingContext2D,atlas:Atlas,imgs:Re
  clearTerrainViewport(ctx);if(w.scene){ctx.fillStyle=w.scene.background;ctx.fillRect(0,0,ctx.canvas.width,ctx.canvas.height)}ctx.save();ctx.scale(c.scale,c.scale);ctx.translate(-c.x,-c.y);if(w.combatTest&&!w.weather?.reducedMotion){const t=timeOf(w),amount=Math.min(1,Math.max(0,(w.shakeUntil-t)/.12));if(amount)ctx.translate(Math.sin(t*139)*2*amount/c.scale,Math.cos(t*113)*1.5*amount/c.scale)}if(w.scene)drawSceneTerrain(ctx,imgs,w.scene);else drawHomeTerrain(ctx,imgs,w.layout?.terrainImage,w.layout?.terrainBorder,viewport);
  drawPlacedGround(ctx,imgs,w.layout,view.hideFoliage,viewport);
  const campContacts=w.scene?undefined:[] as CampGroundContact[];
- const placed=placedDrawables(ctx,imgs,w,true,viewport,view.hideFoliage,campContacts);
+ const outline=(view.playing||view.follow)&&!brutePlayerCarried(w)?playerOutlinePass(ctx,imgs,w,c.scale):undefined;
+ const placed=placedDrawables(ctx,imgs,w,true,viewport,view.hideFoliage,campContacts,outline);
  if(campContacts)drawCampGroundContacts(ctx,campContacts,w,imgs.treeCanopyShade,view.hideFoliage);
  const pickupScale=c.scale/Math.min(2,(ctx as CanvasRenderingContext2D&{pixelRatio?:number}).pixelRatio||globalThis.devicePixelRatio||1);
  if(view.playing)drawLootChestGround(ctx,imgs,w,{x:c.x,y:c.y,width:ctx.canvas.width/c.scale,height:ctx.canvas.height/c.scale});
- if(view.playing)drawFieldKitTarget(ctx,w,pickupScale);
  // Chest and effects now share one depth-sorted drawable, behind players in front.
  const pickupCues=view.playing?visiblePickupCues(w,{x:c.x,y:c.y,width:ctx.canvas.width/c.scale,height:ctx.canvas.height/c.scale,scale:c.scale}):[];
- const draws=[...stoneDrawables(ctx,imgs,w,viewport),...scrapDrawables(ctx,imgs,w,viewport),...predatorDrawables(ctx,imgs,w,viewport),...placed,...(view.playing?lootChestDrawables(ctx,imgs,w,viewport):[]),...bonfireFoodDrawables(ctx,imgs,w),...treeLogDrawables(ctx,imgs,w,viewport),...combatDrawables(ctx,imgs,w),...chickenDrawables(ctx,imgs,w,viewport),...deerDrawables(ctx,imgs,w,viewport),...rabbitDrawables(ctx,imgs,w,viewport)];if(!brutePlayerCarried(w))draws.push({y:w.player.y,draw:()=>drawWorker(ctx,imgs,w,atlas)});
+ const groundLoot=[...stoneDrawables(ctx,imgs,w,viewport),...scrapDrawables(ctx,imgs,w,viewport),...treeLogDrawables(ctx,imgs,w,viewport)];
+ const chests=view.playing?lootChestDrawables(ctx,imgs,w,viewport):[];
+ if(outline){
+  for(const loot of groundLoot){
+   if(Math.abs(loot.x-w.player.x)<110&&Math.abs(loot.y-w.player.y)<160)outline.covers.push(loot);
+  }
+  for(const chest of chests){
+   if(Math.abs(chest.x-w.player.x)<160&&Math.abs(chest.y-w.player.y)<250)outline.covers.push({y:chest.y,draw:chest.mask});
+  }
+ }
+ const draws=[...groundLoot,...predatorDrawables(ctx,imgs,w,viewport),...placed,...chests,...bonfireFoodDrawables(ctx,imgs,w),...combatDrawables(ctx,imgs,w),...chickenDrawables(ctx,imgs,w,viewport),...deerDrawables(ctx,imgs,w,viewport),...rabbitDrawables(ctx,imgs,w,viewport)];if(!brutePlayerCarried(w))draws.push({y:w.player.y,draw:()=>drawWorker(ctx,imgs,w,atlas)});
  draws.push(...bowArrowDrawables(ctx,imgs,w));
- const outline=!brutePlayerCarried(w)&&!view.hideFoliage&&(view.playing||view.follow)&&foliagePlayerOutline(ctx,imgs,w,c.scale);if(outline)draws.push(outline);
  // Co-op phase 1: visual peers only. No peer is inserted into the local simulation.
  for(const peer of peers){
   if(peer.sceneId!==(w.scene?.id||'camp'))continue;
   const other:World={...w,survivorRole:peer.role,player:{...w.player,x:peer.x,y:peer.y,direction:peer.direction,moving:peer.moving,sprinting:peer.sprinting,walkDistance:peer.walkDistance,walkBlend:peer.moving?1:0,runBlend:peer.sprinting?1:0,equipped:null,downedUntil:0,hurtUntil:0},attackReady:0,axeSwing:undefined,spearThrust:undefined,swordThrust:undefined,bowShot:undefined,bruteGrab:undefined,buildingRepair:undefined,repairHammerUntil:undefined};
   draws.push({y:peer.y,draw:()=>drawWorker(ctx,imgs,other,atlas)});
  }
+ if(w.scene){
+  const scene=w.scene;
+  for(const polygon of scene.foreground){
+   const face={roof:true,layer:Infinity,y:0,draw:()=>{
+    ctx.save();ctx.beginPath();polygon.forEach(([x,y],i)=>i?ctx.lineTo(x,y):ctx.moveTo(x,y));
+    ctx.closePath();ctx.clip();drawSceneTerrain(ctx,imgs,scene);ctx.restore();
+   }};
+   draws.push(face);
+   if(outline&&!polygon.every(([x])=>x<outline.bounds.x)&&!polygon.every(([x])=>x>outline.bounds.x+outline.bounds.width)&&
+    !polygon.every(([,y])=>y<outline.bounds.y)&&!polygon.every(([,y])=>y>outline.bounds.y+outline.bounds.height))outline.covers.push(face);
+  }
+ }
+ const edge=outline?.drawable();if(edge)draws.push(edge);
  draws.sort(compareWorldDrawables).forEach(o=>o.draw());
- if(w.scene)for(const polygon of w.scene.foreground){ctx.save();ctx.beginPath();polygon.forEach(([x,y],i)=>i?ctx.lineTo(x,y):ctx.moveTo(x,y));ctx.closePath();ctx.clip();drawSceneTerrain(ctx,imgs,w.scene);ctx.restore()}
  drawCampLighting(ctx,w,{x:c.x,y:c.y,width:ctx.canvas.width/c.scale,height:ctx.canvas.height/c.scale},imgs);
  if(w.scene?.weather!=='sheltered'&&w.scene?.lighting!=='baked'&&w.weather){const weatherCtx=ctx as CanvasRenderingContext2D&{artworkSilhouette?:(image:HTMLImageElement,crop?:readonly number[])=>ShelterOutline;drawWeather?:(s:WeatherState,v:WeatherView,n:number,shelters:readonly (readonly [number,number][])[])=>void};weatherCtx.drawWeather?.(w.weather,{x:c.x,y:c.y,width:ctx.canvas.width/c.scale,height:ctx.canvas.height/c.scale,scale:c.scale,pixelRatio:Math.min(2,(ctx as CanvasRenderingContext2D&{pixelRatio?:number}).pixelRatio||globalThis.devicePixelRatio||1)},nightStrength(w),w.weather.rain&&weatherCtx.artworkSilhouette?weatherShelters(w,imgs,(im,crop)=>weatherCtx.artworkSilhouette!(im,crop)):[])}
  if(w.weather){const strike=groundLightning(w,{x:c.x,y:c.y,width:ctx.canvas.width/c.scale,height:ctx.canvas.height/c.scale});if(strike)(ctx as CanvasRenderingContext2D&{drawGroundLightning?:(strike:GroundStrike,age:number,reduced:boolean)=>void}).drawGroundLightning?.(strike,w.weather.strikeAge,w.weather.reducedMotion)}
@@ -229,6 +274,7 @@ export function drawWorldEditor(ctx:CanvasRenderingContext2D,atlas:Atlas,imgs:Re
  drawCombatFeedback(ctx,w,imgs);
  if(view.playing){drawAnimalHealth(ctx,w,{x:c.x,y:c.y,width:ctx.canvas.width/c.scale,height:ctx.canvas.height/c.scale,scale:pickupScale});drawAnimalHitFeedback(ctx,w,pickupScale)}
  if(view.playing)drawPickupGlints(ctx,pickupCues,pickupScale,timeOf(w),getFieldKitTarget(w),!!w.weather?.reducedMotion);
+ if(view.playing)drawFieldKitTarget(ctx,w,pickupScale);
  if(view.playing){drawBuildingCondition(ctx,w,pickupScale,{x:c.x,y:c.y,width:ctx.canvas.width/c.scale,height:ctx.canvas.height/c.scale})}
  if(view.playing)drawCampfireHud(ctx,imgs,w,pickupScale);
  if(view.playing)drawBowLock(ctx,w,{x:c.x,y:c.y,width:ctx.canvas.width/c.scale,height:ctx.canvas.height/c.scale,scale:pickupScale});

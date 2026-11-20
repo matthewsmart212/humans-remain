@@ -1,10 +1,11 @@
+import {placementUseFace} from './placement-contact';
 import {nearbyFurnace} from './camp-furnace';
 import {atCampRepairSite,campRepairSite} from './camp-repair-site';
 export {atCampRepairSite,campRepairSite};
 import {CAMP_BUILDING_IDS,CAMP_REPAIRS,campBuildingId,buildingRestored,buildingEstablished,buildingHp,buildingMaxHp,buildingNeedsRepair,type CampBuildingId} from './camp-restoration';
 import {blueprintFound,blueprintLearned,learnedBlueprints,type HQBlueprintId} from './headquarters-plans';
 import type {World,Vec} from './survival-engine';
-import {worldBlocked,lineClear,pathTo,timeOf,facing} from './survival-engine';
+import {worldBlocked,withinActionReach,pathTo,timeOf,facing} from './survival-engine';
 import {placementBounds,placementPoint,type Placement,type WorldLayout} from './world-layout';
 import {GEAR,hasGear,type GearKind,type PlayerGear} from './player-gear';
 import {setItemCount,setStoredCount,INVENTORY_KINDS} from './expedition-inventory';
@@ -24,8 +25,12 @@ export type RunProgression={
 };
 const benches=new WeakMap<WorldLayout,Placement[]>();
 export function headquartersBench(w:World){if(!w.layout||w.scene)return undefined;let items=benches.get(w.layout);if(!items){items=w.layout.items.filter(p=>p.assetId==='base_shelter_t1');if(!items.length)items=w.layout.items.filter(p=>p.assetId===HQ_BENCH);benches.set(w.layout,items)}return items[0]}
-export function headquartersDock(p:Placement){const b=placementBounds(p),[x,y]=p.assetId==='base_shelter_t1'?placementPoint(p,b.x+b.width*.5,b.y+b.height*.68):placementPoint(p,b.x+b.width*.5,b.y+b.height+Math.max(25*p.scale,32));return{x,y}}
-export function nearbyHeadquarters(w:World){const p=headquartersBench(w);if(!p)return null;const dock=headquartersDock(p);return Math.hypot(w.player.x-dock.x,w.player.y-dock.y)<155&&lineClear(w.player,dock,w)?{placement:p,...dock}:null}
+export function headquartersDock(p:Placement,from?:Vec){
+ if(p.assetId==='base_shelter_t1')return placementUseFace(p,[.40,.68],[.60,.68],from);
+ const b=placementBounds(p),[x,y]=placementPoint(p,b.x+b.width*.5,b.y+b.height+Math.max(25*p.scale,32));
+ return {x,y};
+}
+export function nearbyHeadquarters(w:World){const p=headquartersBench(w);if(!p)return null;const dock=headquartersDock(p,w.player);return withinActionReach(w,dock)?{placement:p,...dock}:null}
 export function openHeadquarters(w:World){if(!nearbyHeadquarters(w)||w.phase==='over'||w.player.hp<=0||w.player.downedUntil)return false;if(w.progression)w.progression.briefed=true;w.stationPanel='headquarters';return true}
 export const hasMetalworking=(w:World)=>!w.progression||campAccessLevel(w)>=2&&buildingRestored(w,'furnace');
 export const recipeUnlocked=(w:World,id:GearKind)=>buildingRestored(w,'headquarters')&&buildingRestored(w,'workshop')&&(hasMetalworking(w)||['woodenAxe','woodenPickaxe','woodenKnife','woodenSpear','woodenSword'].includes(id));

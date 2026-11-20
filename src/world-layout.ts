@@ -1,3 +1,4 @@
+import {placedCollision} from './camp-fixture-collision';
 import {editorTokenHeaders} from './editor-token';
 import {gateColliders} from './camp-gates';
 import {MAX_LAYOUT_ITEMS} from './layout-limits';
@@ -16,7 +17,7 @@ export type PlacementFrame={sourceAssetId:string;width:number;height:number;anch
  * before the first tier-specific move; pre-existing worlds need no migration. */
 export type TierPositions=Record<string,{x:number;y:number}>;
 export type Placement={id:string;assetId:string;x:number;y:number;scale:number;frame?:PlacementFrame;tierPositions?:TierPositions;rotation?:number;flipX?:boolean;flipY?:boolean;locked?:boolean;layer?:number;solid:boolean;allowTransparency?:boolean;roof:'auto'|'hidden'|'shown';role:WorldRole;collision?:AssetCollision;footprint?:{width:number;depth:number}};
-export type WorldLayout={forageSceneryVersion?:1;campWorksitesVersion?:1|2|3;headquartersSpaceVersion?:1;headquartersArtworkVersion?:1|2;headquartersInteriorVersion?:1|2;headquartersSouthVersion?:1;campVegetationVersion?:1;campGardenVersion?:1;potatoGardenVersion?:1;potatoForageVersion?:1;carrotForageVersion?:1;ironworksVersion?:1|2;forageVersion?:1;treeVariantsVersion?:1;campFringeVersion?:1;worldPlantingVersion?:1;woodlandZonesVersion?:1;campRiverVersion?:1;campOutskirtsVersion?:1;campPerimeterVersion?:1|2|3|4|5|6|7;terrainPuddleVersion?:1|2;terrainFoliageVersion?:1|2;foliageTrialVersion?:1|2|3;campCentreVersion?:1;hqPropsVersion?:1|2|3;version:1;name:string;terrain:'home';terrainImage?:ArtworkFile;terrainBorder?:number;spawn:{x:number;y:number};items:Placement[];updatedAt:string};
+export type WorldLayout={forageSceneryVersion?:1;campWorksitesVersion?:1|2|3;headquartersSpaceVersion?:1;headquartersArtworkVersion?:1|2;headquartersInteriorVersion?:1|2;headquartersSouthVersion?:1;campVegetationVersion?:1;campGardenVersion?:1;potatoGardenVersion?:1|2;potatoForageVersion?:1;carrotForageVersion?:1;ironworksVersion?:1|2;forageVersion?:1;treeVariantsVersion?:1;campFringeVersion?:1;worldPlantingVersion?:1;woodlandZonesVersion?:1;campRiverVersion?:1;campOutskirtsVersion?:1;campPerimeterVersion?:1|2|3|4|5|6|7;terrainPuddleVersion?:1|2;terrainFoliageVersion?:1|2;foliageTrialVersion?:1|2|3;campCentreVersion?:1;hqPropsVersion?:1|2|3;version:1;name:string;terrain:'home';terrainImage?:ArtworkFile;terrainBorder?:number;spawn:{x:number;y:number};items:Placement[];updatedAt:string};
 export const LAYOUT_KEY='safety-last-world-draft-v1',APPLIED_KEY='safety-last-world-applied-v1';
 export const emptyLayout=():WorldLayout=>({version:1,name:'My home camp',terrain:'home',spawn:{x:MAP_WIDTH*.5,y:MAP_HEIGHT*.55},items:[],updatedAt:new Date().toISOString()});
 let placementSequence=0;
@@ -31,6 +32,11 @@ export function placementPoint(p:Placement,x:number,y:number,inverse=false,asset
  const mirror=(x:number,y:number):[number,number]=>{if(!p.flipX&&!p.flipY)return[x,y];const b=placementBounds(p,assets);return[p.flipX?2*b.x+b.width-x:x,p.flipY?2*b.y+b.height-y:y]};
  if(!inverse)[x,y]=mirror(x,y);
  const angle=(p.rotation||0)*Math.PI/180*(inverse?-1:1),c=Math.cos(angle),s=Math.sin(angle),dx=x-p.x,dy=y-p.y,result:[number,number]=[p.x+dx*c-dy*s,p.y+dx*s+dy*c];return inverse?mirror(...result):result;
+}
+/** A point painted into the sprite, in normalized artwork coordinates. */
+export function placementArtPoint(p:Placement,u:number,v:number){
+ const b=placementBounds(p),[x,y]=placementPoint(p,b.x+u*b.width,b.y+v*b.height);
+ return {x,y};
 }
 export function placementContains(p:Placement,x:number,y:number){const b=placementBounds(p),[lx,ly]=placementPoint(p,x,y,true);return lx>=b.x&&lx<=b.x+b.width&&ly>=b.y&&ly<=b.y+b.height}
 /** Layer zero preserves automatic depth; other layers order complete assets. */
@@ -86,7 +92,7 @@ export function placementBodies(p:Placement,assets=ASSET_BY_ID):Collider[]{
  const a=placementGeometryAsset(p,assets);if(!a||!p.solid||['scrap','fuel','pallets','animal','enemySpawn'].includes(p.role))return[];
  const f=placementFrame(p,assets);
  // A placed-object outline overrides its shared asset default.
- const collision=p.collision??a.collision;
+ const collision=placedCollision(a,p.collision);
  if(collision){const w=f.width*p.scale,h=f.height*p.scale,[ax,ay]=f.anchor;return collision.paths.flatMap((path,i):Collider[]=>{const points=path.points.map(([x,y]):[number,number]=>[p.x+(x-ax)*w,p.y+(y-ay)*h]);if(path.closed){const xs=points.map(v=>v[0]),ys=points.map(v=>v[1]),left=Math.min(...xs),right=Math.max(...xs),top=Math.min(...ys),bottom=Math.max(...ys);return[{id:p.id+':outline'+i,shape:'polygon',points,x:(left+right)/2,y:(top+bottom)/2,hw:(right-left)/2,hh:(bottom-top)/2}]}return points.slice(1).map(([ex,ey],j)=>({id:p.id+':wall'+i+':'+j,shape:'segment',x:points[j][0],y:points[j][1],ex,ey,r:collision.lineWidth*w/2}))})}
  const bodies=p.footprint?[{x:0,y:-p.footprint.depth/2,hw:p.footprint.width/2,hh:p.footprint.depth/2}]:a.body;
  return [...bodies.map((b,i):Collider=>({id:p.id+':'+i,shape:'rect',x:p.x+b.x*p.scale,y:p.y+b.y*p.scale,hw:b.hw*p.scale,hh:b.hh*p.scale})),...(!p.footprint?a.segments||[]:[]).map((b,i):Collider=>({id:p.id+':segment'+i,shape:'segment',x:p.x+b.x*p.scale,y:p.y+b.y*p.scale,ex:p.x+b.ex*p.scale,ey:p.y+b.ey*p.scale,r:b.r*p.scale}))]
@@ -125,7 +131,7 @@ export function validateLayout(raw:unknown,forGame=false,assets=ASSET_BY_ID):{la
  if(v.forageSceneryVersion!==undefined&&v.forageSceneryVersion!==1)return{errors:['Invalid forage scenery version']};
  if(v.campGardenVersion!==undefined&&v.campGardenVersion!==1)return{errors:['Invalid camp garden version']};
   if(v.carrotForageVersion!==undefined&&v.carrotForageVersion!==1)return{errors:['Invalid carrot world version']};
-  if((v.potatoGardenVersion!==undefined&&v.potatoGardenVersion!==1)||(v.potatoForageVersion!==undefined&&v.potatoForageVersion!==1))return{errors:['Invalid potato world version']};
+  if((v.potatoGardenVersion!==undefined&&v.potatoGardenVersion!==1&&v.potatoGardenVersion!==2)||(v.potatoForageVersion!==undefined&&v.potatoForageVersion!==1))return{errors:['Invalid potato world version']};
  if(v.ironworksVersion!==undefined&&![1,2].includes(v.ironworksVersion))return{errors:['Invalid ironworks version']};
  if(v.forageVersion!==undefined&&v.forageVersion!==1)return{errors:['Invalid foraging version']};
  if(v.treeVariantsVersion!==undefined&&v.treeVariantsVersion!==1)return{errors:['Invalid tree variants version']};

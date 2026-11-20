@@ -31,9 +31,9 @@ try{
  assert.equal(m.resolveAnimationDefaults({...record,id:'misc_other'}).config.animationMode,undefined);
  assert.equal(m.resolveAnimationDefaults({...record,config:{...record.config,frames:[...record.config.frames].reverse()}}).config.animationMode,undefined,'Other frame sets never inherit a mismatched trigger');
  m.installImportedArt([record]);
- const asset=m.ASSET_BY_ID.get(record.id);assert.equal(asset.frames.length,3);assert.deepEqual(asset.animationArea,animationArea);
+ const asset=m.ASSET_BY_ID.get(record.id);assert.equal(asset.frames.length,3);assert.deepEqual(asset.animationArea.points,[[.29,.79],[.52,.79],[.52,.97],[.29,.97]],'Current bunker painting opens on its front steps');
  const point=(p,u,v)=>{const b=m.placementBounds(p);const [x,y]=m.placementPoint(p,b.x+u*b.width,b.y+v*b.height);return{x,y}};
- const inside=point(placement,.5,.66),outside=point(placement,.26,.9);
+ const inside=point(placement,.405,.88),outside=point(placement,.405,1.04);
  const layout={...m.emptyLayout(),spawn:outside,items:[placement]},before=JSON.stringify(layout);
  assert(!m.layoutBlocked(layout,inside.x,inside.y,19),'The real placed bunker steps are reachable, not a solid activation collider');
  assert(!m.layoutBlocked(layout,outside.x,outside.y,19),'Approach is clear');
@@ -64,15 +64,15 @@ try{
  assert.equal(m.placedAnimationFrame(m.createCampPlaySession(layout),placement,asset),0,'Restart begins closed');
  // Transform the same image-relative area with all supported placement geometry.
  for(const scale of [.25,.5,1.5])for(const rotation of [0,37,90,231])for(const flipX of [false,true])for(const flipY of [false,true]){
-  const p={...placement,scale,rotation,flipX,flipY},on=point(p,.5,.66),off=point(p,.12,.45);
+  const p={...placement,scale,rotation,flipX,flipY},on=point(p,.405,.88),off=point(p,.12,.45);
   assert(m.onAnimationArea(p,asset,on.x,on.y));assert(!m.onAnimationArea(p,asset,off.x,off.y));
  }
  const heldGeometry={...placement,frame:{sourceAssetId:asset.id,width:820,height:750,anchor:[.3,.8]},rotation:24,flipX:true};
- const on=point(heldGeometry,.5,.66);assert(m.onAnimationArea(heldGeometry,asset,on.x,on.y),'Captured tier geometry also preserves the trigger');
- const other={...placement,id:'second-bunker',x:placement.x+900};world.layout.items.push(other);
- Object.assign(world.player,point(placement,.5,.66));tick(80);
+ const on=point(heldGeometry,.405,.88);assert(m.onAnimationArea(heldGeometry,asset,on.x,on.y),'Captured tier geometry also preserves the trigger');
+ const other={...placement,id:'second-bunker',x:placement.x+900};world.layout={...world.layout,items:[...world.layout.items,other]};
+ Object.assign(world.player,point(placement,.405,.88));tick(80);
  assert.equal(m.placedAnimationFrame(world,placement,asset),2);assert.equal(m.placedAnimationFrame(world,other,asset),0,'Copies activate independently');
- Object.assign(world.player,point(other,.5,.66));tick(80);
+ Object.assign(world.player,point(other,.405,.88));tick(80);
  assert.equal(m.placedAnimationFrame(world,placement,asset),0);assert.equal(m.placedAnimationFrame(world,other,asset),2);
  // The actual renderer selects the same held frame without advancing playback.
  const draws=[],ctx=new Proxy({globalAlpha:1,drawImage:(im)=>draws.push(im)},{get:(o,k)=>k in o?o[k]:()=>{}});
@@ -82,7 +82,7 @@ try{
  const motions=JSON.stringify(world.stepOnMotions);m.placedDrawables(ctx,images,world,true).forEach(d=>d.draw());assert.equal(JSON.stringify(world.stepOnMotions),motions,'Drawing has no simulation side effects');
  const loop={...asset,animationMode:'loop'};
  assert.deepEqual([0,20,40,60].map(tick=>m.placedAnimationFrame({...world,tick},placement,loop)),[0,1,2,0],'Existing looping assets retain their timing');
- world.layout.items=[];tick();assert.deepEqual(world.stepOnMotions,{},'Removed placements discard runtime animation state');
+ world.layout={...world.layout,items:[]};tick();assert.deepEqual(world.stepOnMotions,{},'Removed placements discard runtime animation state');
 
  // Exercise the real storage handler, including canonical configuration and revisions.
  for(const file of fs.readdirSync('drizzle').filter(f=>f.endsWith('.sql')).sort())db.exec(fs.readFileSync('drizzle/'+file,'utf8'));
@@ -109,7 +109,7 @@ try{
   {...wire,animationArea:{points:[[0,0],[2,0],[0,1]]}}, {...wire,animationArea:{points:[[0,0],[0,0],[1,1]]}}
  ])assert.equal((await save(config)).status,400,'Invalid step-on settings are rejected');
  const saved=await save();assert.equal(saved.status,200,await saved.clone().text());
- const next=(await saved.json()).record;assert.deepEqual(next.config,resolved.config);assert.equal(next.revision,record.revision+1);
+ const next=(await saved.json()).record;assert.deepEqual(next.config,current.config);assert.equal(next.revision,record.revision+1);
  assert.equal((await save()).status,409,'Stale saves cannot overwrite new artwork');
  assert.equal((await save({...wire,animationMode:'loop',animationArea:undefined},next.revision)).status,200);
  assert.equal((await(await get()).json()).records.find(r=>r.id===record.id).config.animationMode,'loop','Owner can turn the default off durably');

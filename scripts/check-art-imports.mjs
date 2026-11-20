@@ -53,8 +53,8 @@ try{
  const aw=m.createWorld({...m.emptyLayout(),items:[m.newPlacement('base_workshop_t1',1200,1900)]});aw.tick=5;m.placedDrawables(ctx,imgs,aw,true).forEach(o=>o.draw());assert(draws.includes(f2.url),'renderer uses uploaded frame timing');
  const html=await(await call('/checklist.html')).text();assert(html.includes(origin+roof.url));assert(html.includes('<code>base_shelter_t4</code>'));assert(!html.includes('<script'));assert(html.includes('Original'));assert(html.includes('Imported artwork'));
  const groups=m.groupCatalogue(m.buildEntries),hearth=groups.filter(g=>g.name==='Camp hearth');assert.equal(hearth.length,1);assert.equal(hearth[0].items.filter(e=>e.tier!==null).length,3);assert.equal(groups[0].name,'Camp hearth');
- // Asset-wide automatic transparency survives owner save/reload and reaches both render paths.
- assert.equal(single.config.allowTransparency,true,'legacy configurations retain automatic fading');
+ // Imported visibility settings survive save/reload and control interior roof cutaways.
+ assert.equal(single.config.allowTransparency,true,'legacy configurations retain the saved visibility setting');
  assert.equal((await save('base_workshop_t1',{...config(f),allowTransparency:'false'},5)).status,400,'boolean required');
  r=await save('base_workshop_t1',{...config(f),frames:[f.id,f2.id],fps:12,collision,allowTransparency:false},5);assert.equal(r.status,200);
  r=await save('base_shelter_t4',{...building,collision:walls,allowTransparency:false},2);assert.equal(r.status,200);
@@ -68,11 +68,11 @@ try{
   const images=Object.fromEntries([a.image,a.roof,...(a.frames||[])].filter(Boolean).map(url=>[m.assetImageKey(url),url]));
   m.placedDrawables(context,images,w,true).forEach(d=>d.draw());return seen.find(d=>d.im===target)?.alpha;
  }
- assert.equal(renderedOpacity('base_workshop_t1',false),1);assert.equal(renderedOpacity('base_workshop_t1',true),.6);
+ assert.equal(renderedOpacity('base_workshop_t1',false),1);assert.equal(renderedOpacity('base_workshop_t1',true),1);
  assert.equal(renderedOpacity('base_shelter_t4',false),1);assert.equal(renderedOpacity('base_shelter_t4',true),.08);
  assert.equal(renderedOpacity('base_shelter_t4',false,'hidden'),undefined,'explicit roof hiding remains available');
- console.log('PASS: automatic transparency setting persists; props and roofs obey off/on; manual roof hiding preserved.');
- assert.equal(renderedOpacity('base_workshop_t1',true,'auto',false),1,'placement can disable library fade');
+ console.log('PASS: imported props stay opaque, the interior roof cutaway respects its setting and manual roof hiding works.');
+ assert.equal(renderedOpacity('base_workshop_t1',true,'auto',false),1,'legacy prop settings keep scenery opaque');
  assert.equal(renderedOpacity('base_shelter_t4',false,'auto',true),.08,'placement can override opaque library roof');
  // Terrain is an immutable owner upload, persisted with the world and publicly downloadable after save.
  const terrainUpload=(body=png,headers=owner)=>call('/api/world-terrain',{method:'POST',headers:{Origin:origin,'Content-Type':'image/png','X-File-Name':'new-ground.png',...headers},body});

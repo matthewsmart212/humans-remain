@@ -85,12 +85,12 @@ export function stepCampPlaySession(world:World,input:{x:number;y:number},sprint
 
 export function campInteraction(world:World):{label:string;action:'pickup'|'cook'|'drink'|'deposit';disabled:boolean}|null{
  const pickup=pickupTarget(world);
- if(pickup){const fits=canCarryCount(world,pickup.kind,pickup.amount);return{label:fits?`Collect ${fits} ${ITEM_RULES[pickup.kind].name.toLowerCase()}`:'Backpack full · Drop or store supplies',action:'pickup',disabled:!fits}}
+ if(pickup){const fits=canCarryCount(world,pickup.kind,pickup.amount);if(fits)return{label:`Collect ${fits} ${ITEM_RULES[pickup.kind].name.toLowerCase()}`,action:'pickup',disabled:false}}
  const action=campAction(world);
  if(action==='cook')return{label:'Manage cooking and firewood',action,disabled:false};
  if(action==='deposit')return{label:'Open camp storage',action,disabled:false};
  if(action==='drink')return{label:'Drink from the well · Restore water',action,disabled:world.thirst>99||world.tick*STEP<world.drinkReady};
- return null;
+ return pickup?{label:'Backpack full · Drop or store supplies',action:'pickup',disabled:true}:null;
 }
 export function performCampInteraction(world:World){if(world.bruteGrab)return false;
  const interaction=campInteraction(world);if(!interaction||interaction.disabled)return false;

@@ -1,3 +1,4 @@
+import {IRON_ROCK_FOOT,HEARTH_FOOT} from './camp-fixture-collision';
 import {FURNACE_COLLISION,WAREHOUSE_ARTWORK,WAREHOUSE_ASSET_ID} from './camp-worksites-art';
 import {restorationImages} from './camp-restoration';
 import {hasPaintedHearthAnimation,HEARTH_ANIMATION_IMAGES} from './hearth-animation-art';
@@ -68,6 +69,7 @@ for(const e of entries.filter(e=>e.image&&!e.canonicalArt&&!e.id.startsWith('map
   a.note='Walkable interior · roof fades inside · wall footprints can be inspected';
  }
  if(role==='hearth')a.body=[{x:0,y:-23,hw:43*width/112,hh:23*width/112}];
+ if(a.image==='/survival/camp-hearth-v4/flame-0.webp'){a.body=[];a.collision=HEARTH_FOOT;}
  if(role==='well')a.body=[{x:0,y:-30,hw:46,hh:30}];
  if(role==='storage')a.body=[{x:0,y:-26,hw:46,hh:26}];
  if(role==='lamp')a.body=[{x:0,y:0,hw:10,hh:9}];
@@ -93,12 +95,12 @@ for(const e of entries.filter(e=>e.image&&!e.canonicalArt&&!e.id.startsWith('map
  if(puddle){a.anchor=[crop[2]/2,crop[3]/2];a.puddle={water:puddle.water};a.solid=false;a.body=[];a.collision={lineWidth:.008,paths:[]};a.allowTransparency=false;a.note='Walkable rainwater · footsteps create ripples and sprinting produces small splashes.';}
  if(e.id==='prop_tree')a.body=[{x:0,y:-12,hw:24,hh:20}];
  const tree=treeArt.find(t=>t.id===e.id);
- if(tree){a.anchor=[...tree.frames[0].anchor];a.body=[{x:0,y:-10,hw:22,hh:18}];a.note='Choppable tree · axe-notched trunk, then a stump. Drops collectible logs into the existing wood supply slot.';}
+ if(tree){a.anchor=[...tree.frames[0].anchor];a.body=[{x:-2,y:tree.id.includes('deadwood')?-24:-17,hw:23,hh:12}];a.note='Choppable tree · axe-notched trunk, then a stump. Drops collectible logs into the existing wood supply slot.';}
  const forage=FORAGE_ART.find(f=>f.id===e.id);
  if(forage&&(forage.kind==='potato'||forage.kind==='carrot')){a.width=forage.worldWidth;a.height=a.width*forage.size[1]/forage.size[0];}
- if(forage){a.anchor=forage.anchor.map((v,i)=>v*forage.size[i]);a.solid=forage.kind==='apple';a.body=a.solid?[{x:0,y:-8,hw:20,hh:15}]:[];a.foliage=forage.kind!=='apple';a.allowTransparency=a.solid;a.note=forage.kind==='potato'||forage.kind==='carrot'?`Pick a wild ${forage.kind}, then eat it or plant it in a camp bed. The picked soil remains.`:`Pick ${forage.kind==='berries'?'berries':'apples'} nearby with the action button. Fruit regrows after ${forage.regrowDays} dawns.`;}
+ if(forage){a.anchor=forage.anchor.map((v,i)=>v*forage.size[i]);a.solid=forage.kind==='apple';a.body=a.solid?[{x:0,y:-17,hw:20,hh:12}]:[];a.foliage=forage.kind!=='apple';a.allowTransparency=a.solid;a.note=forage.kind==='potato'||forage.kind==='carrot'?`Pick a wild ${forage.kind}, then eat it or plant it in a camp bed. The picked soil remains.`:`Pick ${forage.kind==='berries'?'berries':'apples'} nearby with the action button. Fruit regrows after ${forage.regrowDays} dawns.`;}
  const ironworks=IRONWORKS_WORLD_ART.find(f=>f.id===e.id);
- if(ironworks){a.anchor=ironworks.anchor.map((v,i)=>v*ironworks.size[i]);a.width=ironworks.worldWidth;a.height=a.width*ironworks.size[1]/ironworks.size[0];a.body=e.id===FURNACE_ID?[{x:-15,y:-29,hw:61,hh:31},{x:76,y:-21,hw:27,hh:24}]:[{x:0,y:-13,hw:72,hh:27}];if(e.id===FURNACE_ID){a.body=[];a.collision=FURNACE_COLLISION;}a.solid=true;a.allowTransparency=false;a.note=e.id===FURNACE_ID?'Smelt ore or recycle scrap with log fuel. Collect ingots, craft gear and reinforce the bellows.':'Iron-veined boulder · metal pickaxe required · guaranteed iron ore and stone.';}
+ if(ironworks){a.anchor=ironworks.anchor.map((v,i)=>v*ironworks.size[i]);a.width=ironworks.worldWidth;a.height=a.width*ironworks.size[1]/ironworks.size[0];a.body=[];a.collision=e.id===FURNACE_ID?FURNACE_COLLISION:IRON_ROCK_FOOT;a.solid=true;a.allowTransparency=false;a.note=e.id===FURNACE_ID?'Smelt ore or recycle scrap with log fuel. Collect ingots, craft gear and reinforce the bellows.':'Iron-veined boulder · metal pickaxe required · guaranteed iron ore and stone.';}
  if(GARDEN_ART.some(g=>g.id===e.id)){a.anchor=GARDEN_ANCHOR.map((v,i)=>v*crop[i+2]);a.body=[];a.collision=GARDEN_COLLISION;a.allowTransparency=false;a.note='Repair the vegetable patch, then plant potatoes or carrots independently in its four soil beds.';}
  if(role==='generator')a.body=[{x:0,y:-10,hw:48,hh:35}];
  add(withSouthHeadquartersGeometry(a),['crate','search'].includes(role)||e.id==='art_forage_wild_potato'?false:true);

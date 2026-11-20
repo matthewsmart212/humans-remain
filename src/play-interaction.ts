@@ -18,13 +18,13 @@ import {getFieldKitTarget,type FieldKitTarget} from './field-kit-target';
 import {nearbyForageTargets,pickForage,canForage} from './foraging';
 import {FORAGE_BY_ID} from './forage-art';
 import {isProvision,PROVISIONS} from './food-provisions-data';
-import {timeOf,pickupTarget,campAction,type World} from './survival-engine';
+import {timeOf,withinActionReach,pickupTarget,campAction,type World} from './survival-engine';
 import {nearbyWarehouse,WAREHOUSE_ART} from './warehouse';
 import {layoutViews} from './layout-views';
-import {placementBounds} from './world-layout';
-import {nearbyChest} from './station-access';
+import {stationFront} from './camp-stations';
+import {nearbyChest,chestDock} from './station-access';
 export {nearbyChest} from './station-access';
-import {nearbyGate,toggleGate,gateActionLabel} from './camp-gates';
+import {nearbyGate,nearbyGateAction,toggleGate,gateActionLabel} from './camp-gates';
 import {chestIsOpen,toggleChest} from './chest-animation';
 import {nearbyLootChest,openLootChest,lootChestOpened,lootChestRemaining} from './loot-chest';
 import {campInteraction,performCampInteraction} from './studio-play';
@@ -62,7 +62,7 @@ export function repairTargetInfo(world:World,id:import('./camp-restoration').Cam
 }
 /** A repair is its own action, so equipping a hammer never takes away a usable station. */
 function repairInteraction(world:World,id:CampBuildingId,placementId:string):PlayInteraction|null{
- const site=repairAnchor(world,id);if(!site||Math.hypot(world.player.x-site.x,world.player.y-site.y)>=145)return null;
+ const site=repairAnchor(world,id);if(!site||!withinActionReach(world,site))return null;
  const job=world.buildingRepair?.id===id?world.buildingRepair:undefined,status=buildingRepairStatus(world,id);
  if(job){
   const cost=costRows(world,job.cost).map(row=>`${row.needed} ${materialName(row)}`).join(' · ');
@@ -77,7 +77,8 @@ function repairInteraction(world:World,id:CampBuildingId,placementId:string):Pla
  return {key:'broken:'+placementId+':'+status,repair:!instant&&!blocked&&!equip,
   label:`${verb} ${CAMP_REPAIRS[id].name.toLowerCase()} · ${detail}`,shortLabel:blocked?'INSPECT':equip?'EQUIP':'REPAIR',
   icon:'chest',image:REPAIR_HAMMER_IMAGE,disabled:blocked,target:{id:'broken:'+placementId,buildingId:id,x:site.x,y:site.y,label:CAMP_REPAIRS[id].name,repairInfo:repairTargetInfo(world,id),detail,blocked},perform:()=>{
-  if(needsHQ)return false;
+  const current=repairAnchor(world,id);
+  if(needsHQ||!current||!withinActionReach(world,current))return false;
   if(equip)return hasGear(world,'repairHammer')&&selectQuickItem(world,'repairHammer');
   return instant?restoreCampBuilding(world,id):beginBuildingRepair(world,id);
  }};
@@ -99,24 +100,24 @@ export function playInteraction(world:World):PlayInteraction|null{
  const furnace=nearbyFurnace(world);
  if(furnace&&world.progression&&!world.progression.repairPart){add({key:'furnace-bellows',label:'Recover furnace bellows',shortLabel:'RECOVER',icon:'collect',image:stationArt.furnace,disabled:false,target:{id:'furnace-bellows',x:furnace.x,y:furnace.y,label:'Camp furnace',detail:'Furnace bellows'},perform:()=>nearbyFurnace(world)?.placement.id===furnace.placement.id&&recoverRepairPart(world)})}
  const rareCache=nearbyLootChest(world);if(rareCache){const opened=lootChestOpened(world,rareCache.id),remaining=lootChestRemaining(world,rareCache.id);add({key:'rare-chest:'+rareCache.id,label:opened?'View loot chest contents':'Open the glowing loot chest',shortLabel:opened?'LOOT':'OPEN',icon:'chest',disabled:false,target:{id:'rare-chest:'+rareCache.id,x:rareCache.x,y:rareCache.y,label:'Loot chest',detail:opened?(remaining?remaining+' supplies inside':'Cache emptied'):'An unopened supply chest'},perform:()=>openLootChest(world,rareCache.id)});}
-  const gate=nearbyGate(world);if(gate){const label=gateActionLabel(world,gate.id);add({key:`gate:${gate.id}:${label}`,label,shortLabel:gateButtonLabels[label],icon:'gate',disabled:false,target:{id:`gate:${gate.id}`,x:gate.x,y:gate.y,label:'Camp gate'},perform:()=>nearbyGate(world)?.id===gate.id&&gateActionLabel(world,gate.id)===label&&toggleGate(world,gate.id)})}
+  const gatePoint=nearbyGateAction(world);if(gatePoint){const gate=gatePoint.placement;const label=gateActionLabel(world,gate.id);add({key:`gate:${gate.id}:${label}`,label,shortLabel:gateButtonLabels[label],icon:'gate',disabled:false,target:{id:`gate:${gate.id}`,x:gatePoint.x,y:gatePoint.y,label:'Camp gate'},perform:()=>nearbyGate(world)?.id===gate.id&&gateActionLabel(world,gate.id)===label&&toggleGate(world,gate.id)})}
  if(furnace&&buildingRestored(world,'furnace')){const f=world.ironworks?.stations[furnace.placement.id];add({key:`furnace:${furnace.placement.id}`,label:hasMetalworking(world)?'Use camp furnace · Smelt iron':'Inspect damaged furnace',shortLabel:hasMetalworking(world)?'FURNACE':'INSPECT',icon:'cook',image:stationArt.furnace,disabled:false,target:{id:`furnace:${furnace.placement.id}`,buildingId:'furnace',x:furnace.x,y:furnace.y,label:hasMetalworking(world)?'Camp furnace':'Damaged furnace',detail:!hasMetalworking(world)?'Restore metalworking':f?.ready?`${f.ready} ingots ready`:furnaceWorking(f)?'Smelting':f?.queue.length&&!f.fuel?'Add wood':'Smelt iron'},perform:()=>openFurnace(world,furnace.placement.id)})}
  const smithy=nearbySmithy(world);if(smithy&&buildingRestored(world,'workshop'))add({key:`smithy:${smithy.placement.id}`,label:'Use camp smithy · Craft tools and weapons',shortLabel:'CRAFT',icon:'chest',image:stationArt.workshop,disabled:false,target:{id:`smithy:${smithy.placement.id}`,buildingId:'workshop',x:smithy.x,y:smithy.y,label:'Camp smithy',detail:'Tools & weapons'},perform:()=>openSmithy(world,smithy.placement.id)});
  const warehouse=nearbyWarehouse(world);if(warehouse&&buildingRestored(world,'warehouse'))add({key:`warehouse:${warehouse.placement.id}`,label:'Open warehouse',shortLabel:'STORE',icon:'chest',image:stationArt.warehouse,disabled:false,target:{id:`warehouse:${warehouse.placement.id}`,buildingId:'warehouse',x:warehouse.x,y:warehouse.y,label:'Warehouse',detail:'Wood, stone & scrap storage'},perform:()=>{if(nearbyWarehouse(world)?.placement.id!==warehouse.placement.id)return false;world.stationPanel='warehouse';return true}});
- const chest=nearbyChest(world);if(chest){const open=chestIsOpen(world,chest),p=layoutViews(world.layout).chests.find(p=>p.id===chest)!;add({key:`chest:${chest}:${open}`,label:'Open camp storage',shortLabel:'STORAGE',icon:'chest',disabled:false,target:{id:`chest:${chest}`,x:p.x,y:p.y,label:'Supply chest',detail:'Equipment & supplies'},perform:()=>{if(nearbyChest(world)!==chest||chestIsOpen(world,chest)!==open)return false;if(!open)toggleChest(world,chest);world.stationPanel='storage';return true}})}
+ const chest=nearbyChest(world);if(chest){const open=chestIsOpen(world,chest),p=layoutViews(world.layout).chests.find(p=>p.id===chest)!;add({key:`chest:${chest}:${open}`,label:'Open camp storage',shortLabel:'STORAGE',icon:'chest',disabled:false,target:{id:`chest:${chest}`,...chestDock(p),label:'Supply chest',detail:'Equipment & supplies'},perform:()=>{if(nearbyChest(world)!==chest||chestIsOpen(world,chest)!==open)return false;if(!open)toggleChest(world,chest);world.stationPanel='storage';return true}})}
  const action=campInteraction(world),pickup=action?.action==='pickup'?pickupTarget(world):null;
  if(action){
-  const station=action.action==='drink'?world.camp.well:action.action==='deposit'?world.camp.storage:world.camp.hearth;
+  const station=stationFront(world.camp,action.action==='drink'?'well':action.action==='deposit'?'storage':'hearth',world.layout);
   const name=pickup?(pickup.appearance==='logs'||pickup.kind==='pallets'?'Fallen logs':ITEM_RULES[pickup.kind].name):action.action==='drink'?'Camp well':action.action==='deposit'?'Supply chest':'Campfire';
   const detail=pickup?(action.disabled?'Backpack full':`×${pickup.amount}`):action.action==='drink'?(world.thirst>99?'Fully hydrated':action.disabled?'Drink again shortly':'Restore water'):action.action==='deposit'?'Equipment & supplies':world.camp.hearth.fuel<=0?'Add wood':world.fire.rack?.length?`${world.fire.rack.length} meals ready`:`Fuel ${Math.floor(world.camp.hearth.fuel/60)}:${String(Math.floor(world.camp.hearth.fuel)%60).padStart(2,'0')}`;
   add({...action,image:pickup?pickupImage(pickup.kind):undefined,key:pickup?`pickup:${pickup.id}`:`camp:${action.action}`,shortLabel:action.action==='pickup'?(action.disabled?'PACK FULL':'COLLECT'):action.action==='drink'?'DRINK':action.action==='deposit'?'STORAGE':'FIRE',icon:action.action==='pickup'?'collect':action.action==='drink'?'water':action.action==='deposit'?'chest':'cook',target:{id:pickup?`pickup:${pickup.id}`:`camp:${action.action}`,buildingId:action.action==='drink'?'well':action.action==='cook'?'fire':undefined,x:pickup?.x??station.x,y:pickup?.y??station.y,label:name,detail,blocked:action.disabled,...(pickup?{pickupId:pickup.id}:{})},perform:()=>{if(pickup?pickupTarget(world)?.id!==pickup.id:campAction(world)!==action.action)return false;return performCampInteraction(world)}});
  }
  for(const forage of nearbyForageTargets(world)){
-  const {placement:p,remaining,fits,root}=forage;if(!remaining)continue;
-  const art=FORAGE_BY_ID.get(p.assetId)!,b=placementBounds(p),noun=art.kind==='berries'?'berry portion':art.kind,cooling=timeOf(world)<(world.forageReadyAt??0);
-  add({key:`forage:${p.id}:${remaining}`,label:!fits?'Backpack full · Drop or store supplies':`Pick 1 ${noun} · ${remaining} left`,shortLabel:!fits?'PACK FULL':'PICK 1',icon:'collect',image:PROVISIONS[art.kind].image,available:!!fits,disabled:!fits||cooling||!canForage(world),target:{id:`forage:${p.id}`,...root,forageId:p.id,label:art.kind==='berries'?'Wild berries':art.kind==='apple'?'Apple tree':`Wild ${art.kind} plant`,detail:fits?`${remaining} left`:'Backpack full',blocked:!fits,ground:{x:root.x,y:root.y-3,rx:b.width*(art.kind==='berries'?.46:art.kind!=='apple'?.32:.16),ry:b.width*(art.kind==='berries'?.12:art.kind!=='apple'?.09:.05)}},perform:()=>pickForage(world,p.id)});
+  const {placement:p,remaining,fits,contact}=forage;if(!remaining)continue;
+  const art=FORAGE_BY_ID.get(p.assetId)!,noun=art.kind==='berries'?'berry portion':art.kind,cooling=timeOf(world)<(world.forageReadyAt??0);
+  add({key:`forage:${p.id}:${remaining}`,label:!fits?'Backpack full · Drop or store supplies':`Pick 1 ${noun} · ${remaining} left`,shortLabel:!fits?'PACK FULL':'PICK 1',icon:'collect',image:PROVISIONS[art.kind].image,available:!!fits,disabled:!fits||cooling||!canForage(world),target:{id:`forage:${p.id}`,...contact,forageId:p.id,label:art.kind==='berries'?'Wild berries':art.kind==='apple'?'Apple tree':`Wild ${art.kind} plant`,detail:fits?`${remaining} left`:'Backpack full',blocked:!fits},perform:()=>pickForage(world,p.id)});
  }
- const patch=nearPotatoPatch(world),patchAction=patch?potatoPatchAction(world):null;
+ const patch=buildingRestored(world,'garden')?nearPotatoPatch(world):null,patchAction=patch?potatoPatchAction(world,patch):null;
  if(patch&&patchAction)add({
   key:`garden:${patchAction.kind}:${patchAction.crop??'none'}:${patchAction.bed}:${world.potatoPatch?.plantedAt.length??0}`,
   label:patchAction.label,shortLabel:patchAction.shortLabel,icon:patchAction.kind==='harvest'?'collect':'chest',

@@ -31,7 +31,7 @@ try{
  }
  assert.equal(new Set(m.WORLD_ASSETS.map(a=>a.id)).size,m.WORLD_ASSETS.length,'No duplicate auto-registered wall assets');
 
- // The last leg of a bend must take part in fading and depth, not just its
+ // The last leg of a bend must take part in occlusion and depth, not just its
  // first chord. This is an independent shape, not a copy of production data.
  const bent=m.circularWallDepth([[0,0],[100,0],[100,300]],{x:110,y:220},180);
  assert(bent.obscuresPlayer&&bent.depth>220&&bent.depth<320);
@@ -57,7 +57,7 @@ try{
   for(const behind of [true,false]){
    const player={x:p.x+ground[0]*p.scale,y:p.y+ground[1]*p.scale+(behind?-80:80)};
    const result=render(player),wall=result.find(c=>c.id===id),wallIndex=result.findIndex(c=>c.id===id),playerIndex=result.findIndex(c=>c.id==='player');
-   assert.equal(wall.alpha,behind?.48:1,id+' fades only when the survivor is behind its face');
+   assert.equal(wall.alpha,1,id+' stays opaque on both sides of the survivor');
    assert.equal(wallIndex>playerIndex,behind,id+' interleaves at the local ground depth');
    assert.deepEqual(result.filter(c=>c.id!=='player').map(c=>c.id),expected,'Nearby depth changes cannot reopen the northern joins');
   }
@@ -149,8 +149,13 @@ try{
  assert(Math.abs((repaired03.x-target03.x)-(liveOld03.x-3107.041416813492))<1e-9);
  assert(Math.abs((repaired03.y-target03.y)-(liveOld03.y-682.7097574064716))<1e-9);
  assert.deepEqual({...repaired03,assetId:liveOld03.assetId,x:liveOld03.x,y:liveOld03.y},liveOld03,'The small owner adjustment and non-geometric settings survive');
- const retainedMixedIds=new Set(m.refineCampVegetation(m.addApprovedCampPerimeter(mixedLayout)).items.map(p=>p.id));
- for(const p of mixedLayout.items)if(p.id!==liveOld03.id)assert.deepEqual(repairedCamp.layout.items.find(q=>q.id===p.id),retainedMixedIds.has(p.id)?p:undefined,'The partial-migration repair changes no unrelated placement beyond the approved vegetation removal');
+ // Use the same saved world with an already-correct perimeter as a control.
+ // Both loads also apply the current camp layout migrations (HQ, garden and worksites).
+ const controlSnapshot=JSON.parse(mixedSnapshot);
+ controlSnapshot.worlds.find(([id])=>id===m.CAMP_SCENE_ID)[1].layout=layout;
+ const control=m.decodeRun(JSON.stringify(controlSnapshot)).worlds.find(([id])=>id===m.CAMP_SCENE_ID)[1];
+ const unaffected=world=>world.layout.items.filter(p=>p.id!==liveOld03.id);
+ assert.deepEqual(unaffected(repairedCamp),unaffected(control),'Repairing the wall leaves the same assets as a normal continue');
  const repairedState=JSON.stringify({world:repairedCamp,route:repairedRun.route});
  assert.equal(m.migrateSavedCampPerimeter(repairedCamp,repairedRun.route),false);
  assert.equal(JSON.stringify({world:repairedCamp,route:repairedRun.route}),repairedState,'The repaired save does not shift again on later loads');
@@ -172,5 +177,5 @@ try{
  for(const old of placedOriginalWalls)assert(Object.values(resumedSources).includes(old.url),'A saved interior also prepares its deferred original camp wall: '+old.url);
  await assert.rejects(m.prepareSavedCampArtwork(deferredSnapshot,async()=>{throw Error('artwork unavailable')}),/artwork unavailable/,'Restore must report image failure so the caller can keep the original save');
  assert.equal(JSON.stringify({world:deferred,route:deferredRoute}),beforeDeferral,'Artwork preparation never rewrites saved game data');
- console.log(JSON.stringify({result:'pass',assets:walls.length,groundShape:'annular polygons',requiredImageURLsResolve:true,reviewedFrontBehind:reviewed,cardinalSides:true,drawOrder:expected,continuedCampRun:true,continuedInteriorRun:true,continuedVersion5Run:true,continuedMixedVersion6Run:true,revision80RoadReopened:true,ownerTranslationAndUnlockedStatePreserved:true,unrelatedMixedRunPlacementsPreserved:retainedMixedIds.size-1,approvedVegetationRemovalAllowed:true,originalNortheastGeometryRetained:true,version5ReturnLandingPreserved:true,resourcesHealthAndProgressPreserved:true,occupiedLandingAdjustment:displacement,deferredMigrationPreservesAllState:true,savedCampArtworkPreparedFromInterior:true},null,2));
+ console.log(JSON.stringify({result:'pass',assets:walls.length,groundShape:'annular polygons',requiredImageURLsResolve:true,reviewedFrontBehind:reviewed,cardinalSides:true,drawOrder:expected,continuedCampRun:true,continuedInteriorRun:true,continuedVersion5Run:true,continuedMixedVersion6Run:true,revision80RoadReopened:true,ownerTranslationAndUnlockedStatePreserved:true,unrelatedMixedRunPlacementsPreserved:unaffected(control).length,approvedVegetationRemovalAllowed:true,originalNortheastGeometryRetained:true,version5ReturnLandingPreserved:true,resourcesHealthAndProgressPreserved:true,occupiedLandingAdjustment:displacement,deferredMigrationPreservesAllState:true,savedCampArtworkPreparedFromInterior:true},null,2));
 }finally{fs.rmSync(temp,{recursive:true,force:true})}

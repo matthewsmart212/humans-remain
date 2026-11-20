@@ -308,6 +308,24 @@ class SkiaContext{
   this.c.saveLayer(paint,Skia.XYWHRect(bounds.x,bounds.y,bounds.width,bounds.height));
   try{draw()}finally{this.c.restore()}
  }
+ // Intersect the animated outline with the alpha of the actual foreground
+ // draw calls. Transparent branches, open gates and roof cutaways leave gaps.
+ drawMaskedSpriteOutline(draw:()=>void,mask:()=>void,bounds:{x:number;y:number;width:number;height:number},alpha:number,width:number){
+  const rect=Skia.XYWHRect(bounds.x,bounds.y,bounds.width,bounds.height);
+  const intersect=cachedPaint('outline-mask',[],0,keep=>{
+   const p=keep(Skia.Paint());p.setBlendMode(BlendMode.DstIn);return p;
+  });
+  this.c.save();
+  try{
+   this.c.clipRect(rect,ClipOp.Intersect,false);
+   this.c.saveLayer(undefined,rect);
+   try{
+    this.drawSpriteOutline(draw,bounds,alpha,width);
+    this.c.saveLayer(intersect,rect);
+    try{mask()}finally{this.c.restore()}
+   }finally{this.c.restore()}
+  }finally{this.c.restore()}
+ }
  drawGroundLightning(strike:GroundStrike|undefined,age:number,reduced:boolean){lightning.draw(this.c,strike,age,reduced)}
  drawLootChestLight(x:number,y:number,fx:LootChestFx,front:boolean){chestLight.draw(this.c,x,y,fx,front)}
  drawWeather(state:WeatherState|undefined,view:WeatherView,night:number,shelters:readonly (readonly [number,number][])[]){weather.draw(this.c,state,view,night,shelters)}

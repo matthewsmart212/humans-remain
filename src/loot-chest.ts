@@ -1,4 +1,4 @@
-import type {World} from './survival-engine';
+import {withinActionReach,type World} from './survival-engine';
 import {PACK_CAPACITY,packWeight} from './expedition-inventory';
 import {GEAR,gear} from './player-gear';
 
@@ -50,11 +50,14 @@ export function lootChestFrame(w:ChestWorld,id=LOOT_CHEST_ID){
 export function lootChestBlocked(w:ChestWorld,x:number,y:number,r:number){
  const p=campLootChest(w);return !!p&&Math.abs(x-p.x)<49+r&&Math.abs(y-(p.y-5))<21+r;
 }
-export function lootChestInMenuRange(w:ChestWorld){const p=campLootChest(w);return !!p&&Math.hypot(w.player.x-p.x,w.player.y-p.y)<215}
-export function nearbyLootChest(w:ChestWorld){
+function accessibleLootChest(w:World){
  const p=campLootChest(w);
- return p&&w.rareCacheMenuAt===undefined&&Math.hypot(w.player.x-p.x,w.player.y-p.y)<150?p:null;
+ if(!p)return null;
+ const latch={x:p.x,y:p.y+28};
+ return withinActionReach(w,latch)?{id:p.id,...latch}:null;
 }
+export const lootChestInMenuRange=(w:World)=>!!accessibleLootChest(w);
+export const nearbyLootChest=(w:World)=>w.rareCacheMenuAt===undefined?accessibleLootChest(w):null;
 /** Initiate the reveal once; the panel appears after the full opening animation. */
 export function openLootChest(w:World,id=LOOT_CHEST_ID){
  const p=nearbyLootChest(w);
@@ -98,7 +101,7 @@ export function canCarryLootChestReward(w:World,kind:LootChestRewardKind,request
 }
 export function takeLootChestReward(w:World,kind:LootChestRewardKind,requested=Number.MAX_SAFE_INTEGER){
  const state=w.lootChests?.[LOOT_CHEST_ID];
- if(!state||w.stationPanel!=='rare-cache'||w.phase==='over'||w.player.hp<=0||w.player.downedUntil)return 0;
+ if(!state||w.stationPanel!=='rare-cache'||w.phase==='over'||w.player.hp<=0||w.player.downedUntil||!lootChestInMenuRange(w))return 0;
  const count=canCarryLootChestReward(w,kind,requested);
  if(!count)return 0;
  const bag=gear(w).bag;bag[kind]=(bag[kind]??0)+count;

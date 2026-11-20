@@ -37,7 +37,7 @@ try{
  const starter={...m.newPlacement(m.FURNACE_ID,1438.8575749932425,1215.1547517146687),id:'ironworks-v1-camp-furnace'};
  const migrated=m.placeFurnaceByWorkshop({...m.emptyLayout(),ironworksVersion:1,items:[workshop,starter]}).items.find(p=>p.id===starter.id);
  assert.equal(migrated.x,workshop.x+m.FURNACE_WORKSHOP_OFFSET.x);assert.equal(migrated.y,workshop.y+m.FURNACE_WORKSHOP_OFFSET.y);
- const camp=m.createWorld(layout),dock=m.furnaceDock(furnace);Object.assign(camp.player,{x:dock.x,y:dock.y+70});assert(!m.worldBlocked(camp,camp.player.x,camp.player.y,19));assert.equal(m.nearbyFurnace(camp).placement.id,furnace.id);assert(m.openFurnace(camp,furnace.id));
+ const camp=m.createWorld(layout),dock=m.furnaceDock(furnace);Object.assign(camp.player,{x:dock.x,y:dock.y+44});assert(!m.worldBlocked(camp,camp.player.x,camp.player.y,19));assert.equal(m.nearbyFurnace(camp).placement.id,furnace.id);assert(m.openFurnace(camp,furnace.id));
  const later={...layout,ironworksVersion:1,items:layout.items.map(p=>p===furnace?{...p,x:1800,y:1600}:p)},moved=m.placeFurnaceByWorkshop(later);assert.equal(moved.items.find(p=>p.id===furnace.id).x,1800,'Later manual furnace moves survive');const removed=m.placeFurnaceByWorkshop({...layout,ironworksVersion:1,items:layout.items.filter(p=>p.id!==furnace.id)});assert(!removed.items.some(p=>p.assetId===m.FURNACE_ID),'Deleted furnaces stay deleted');
  // Use the real shared Skia implementation: only the alpha edge may change.
  const kit=await require('canvaskit-wasm')({locateFile:f=>path.join(path.dirname(require.resolve('canvaskit-wasm')),f)}),skia=m.JsiSkApi(kit);let filters=0;

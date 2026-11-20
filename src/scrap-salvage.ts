@@ -23,7 +23,7 @@ export function seedScrapSalvage(w:World,seed=Math.floor(Math.random()*0xfffffff
  return placed.length;
 }
 export function scrapDrawables(ctx:CanvasRenderingContext2D,imgs:Record<string,HTMLImageElement>,w:World,view:{x:number;y:number;width:number;height:number}){
- return w.loot.filter(l=>l.salvageVariant!==undefined&&l.amount>0&&l.x>view.x-90&&l.x<view.x+view.width+90&&l.y>view.y-90&&l.y<view.y+view.height+90).map(l=>({y:l.y,draw:()=>{
+ return w.loot.filter(l=>l.salvageVariant!==undefined&&l.amount>0&&l.x>view.x-90&&l.x<view.x+view.width+90&&l.y>view.y-90&&l.y<view.y+view.height+90).map(l=>({x:l.x,y:l.y,draw:()=>{
   const image=imgs[SCRAP_KEYS[l.salvageVariant!]];if(!image)return;ctx.save();ctx.fillStyle='#231a123d';ctx.beginPath();ctx.ellipse(l.x,l.y,30,10,0,0,Math.PI*2);ctx.fill();ctx.drawImage(image,l.x-43,l.y-59,86,68);ctx.restore();
  }}));
 }

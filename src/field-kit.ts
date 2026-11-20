@@ -112,7 +112,7 @@ export class FieldKitController{
  press(w:World,shown:FieldKitAction,channel:'primary'|'repair'='primary'){
   if(this.locked||shown.owner!==w||w.phase==='over'||w.player.downedUntil||w.player.hp<=0)return false;
   const sampled=this.sample(w),current=channel==='repair'?sampled.repairAction:sampled.action;
-  if(!current||shown.key!==current.key||shown.image!==current.image)return false;
+  if(!current||shown.key!==current.key||shown.image!==current.image||shown.target?.id!==current.target?.id)return false;
   if(current.target){this.inspected=current.target;this.inspectedUntil=timeOf(w)+4}
   if(current.disabled)return false;
   this.locked={world:w,action:shown,channel};

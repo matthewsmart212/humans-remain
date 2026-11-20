@@ -1,3 +1,5 @@
+import {BUNKER_DOOR_AREA,BUNKER_IMAGE} from './camp-fixture-collision';
+import {ASSET_BY_ID} from './world-assets';
 import {buildingRestored} from './camp-restoration';
 import {worldBounds} from './world-bounds';
 import type {CollisionPoint} from './asset-collision';
@@ -43,7 +45,9 @@ export function scenePortals(world:World):ScenePortal[]{
  const cached=portalCache.get(world.layout);if(cached)return cached;
  const portals:ScenePortal[]=[];
  for(const p of world.layout.items){
-  const connection=ASSET_CONNECTIONS[p.assetId];if(!connection)continue;
+  const original=ASSET_CONNECTIONS[p.assetId];if(!original)continue;
+  const connection:AssetConnection=ASSET_BY_ID.get(p.assetId)?.image===BUNKER_IMAGE
+   ?{...original,area:BUNKER_DOOR_AREA,returnPoint:[.405,1.03],exitVector:[0,.1]}:original;
   const [x,y]=imagePoint(p,connection.returnPoint),[ex,ey]=imagePoint(p,[connection.returnPoint[0]+connection.exitVector[0],connection.returnPoint[1]+connection.exitVector[1]]);
   const returnSpawn:SceneSpawn={x,y,direction:facing(ex-x,ey-y)};
   portals.push({id:'asset:'+p.id,area:connection.area.map(v=>imagePoint(p,v)),destination:connection.destination,returnSpawn,...(connection.waitForAnimation?{animationPlacementId:p.id}:{})});

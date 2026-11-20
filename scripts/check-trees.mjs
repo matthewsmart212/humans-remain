@@ -11,21 +11,22 @@ try{
  const m=require(path.join(tmp,'model.cjs')),arts=[...m.TREE_ART.values()];
  assert.equal(arts.length,18);assert.equal(m.libraryAssets(m.WORLD_ASSETS).filter(a=>m.TREE_ART.has(a.id)).length,arts.length);
  let bytes=0,cases=0;
- const make=(art)=>{const p={...m.newPlacement(art.id,900,1000),id:'tree'},layout={...m.emptyLayout(),spawn:{x:900,y:1100},items:[p]};return{p,layout,w:m.createCampPlaySession(layout)}};
+ const make=(art)=>{const p={...m.newPlacement(art.id,900,1000),id:'tree'},layout={...m.emptyLayout(),spawn:{x:900,y:1072},items:[p]};return{p,layout,w:m.createCampPlaySession(layout)}};
  const swing=(w,angle=-Math.PI/2)=>{w.axeSwing={started:w.tick/60,angle,cut:1,resolved:false,queued:false};w.tick+=15;m.stepAxe(w);w.tick++;m.stepAxe(w)};
  for(const art of arts){
   const file='public'+art.image,meta=await sharp(file).metadata();assert(meta.hasAlpha);assert.deepEqual([meta.width,meta.height],art.size);bytes+=fs.statSync(file).size;
   for(const f of art.frames){assert(f.crop[0]+f.crop[2]<=meta.width&&f.crop[1]+f.crop[3]<=meta.height);assert(f.anchor.every(Number.isFinite))}
-  const {p,layout,w}=make(art),original=JSON.stringify(layout);assert(m.layoutBlocked(layout,p.x,p.y,3));assert(!m.layoutBlocked(layout,p.x+100,p.y-100,3));
+  const {p,layout,w}=make(art),original=JSON.stringify(layout);assert(m.layoutBlocked(layout,p.x,p.y-18,3));assert(!m.layoutBlocked(layout,p.x+100,p.y-100,3));
   w.axeSwing={started:0,angle:-Math.PI/2,cut:1,resolved:false,queued:false};w.tick=15;m.stepAxe(w);assert.equal(w.treeChops,undefined,'No early contact');w.tick=16;m.stepAxe(w);assert.equal(w.treeChops.tree.hp,art.hp-40);w.tick++;m.stepAxe(w);assert.equal(w.treeChops.tree.hp,art.hp-40,'One hit per swing');
   while(w.treeChops.tree.hp>0){w.tick+=60;swing(w)}assert.equal(w.treeChops.tree.hp,0);const fell=w.treeChops.tree.felledAt;w.tick+=60;swing(w);assert.equal(w.treeChops.tree.felledAt,fell,'Stump cannot be damaged again');assert.equal(JSON.stringify(layout),original);assert.equal(m.createCampPlaySession(layout).treeChops,undefined);
   for(const angle of [0,Math.PI/2,Math.PI]){const {w}=make(art);swing(w,angle);assert.equal(w.treeChops,undefined,'Facing away misses');cases++}
   {const {w}=make(art);w.player.y=1200;swing(w);assert.equal(w.treeChops,undefined,'Out of reach misses')}
   {const {w}=make(art);assert.equal(m.chopTree(w,-Math.PI/2,136,1,40,()=>false),false,'Occluded target misses')}
-  {const {w}=make(art);w.layout={...w.layout,items:[...w.layout.items,{...m.newPlacement('art_rock_moss_capped_boulder',900,1065),id:'blocker'}]};swing(w);assert.equal(w.treeChops,undefined,'Real trunk collision blocks axe reach')}
+  {const {w}=make(art);w.layout={...w.layout,items:[...w.layout.items,{...m.newPlacement('art_rock_moss_capped_boulder',900,1042),id:'blocker'}]};swing(w);assert.equal(w.treeChops,undefined,'Real trunk collision blocks axe reach')}
   {const {w}=make(art);w.combatTest=false;swing(w);assert.equal(w.treeChops.tree.hp,art.hp-40,'Walk preview can chop')}
   for(const rotation of [0,90,180,270])for(const flipX of [false,true])for(const scale of [.5,1,2]){
-   const {p,w}=make(art);Object.assign(p,{rotation,flipX,scale});w.layout={...w.layout,items:[p]};const root=m.treeRoot(p);w.player.x=root.x;w.player.y=root.y+110;
+   const {p,w}=make(art);Object.assign(p,{rotation,flipX,scale});w.layout={...w.layout,items:[p]};const body=m.placementBodies(p)[0];
+   w.player.x=body.x;w.player.y=body.y+body.hh+60;
    assert(m.chopTree(w,-Math.PI/2,136,1,40,(a,b)=>m.lineClear(a,b,w)),`Transformed root ${rotation}/${flipX}/${scale}`);cases++;
   }
   const draws=[],turns=[],ctx={

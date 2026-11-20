@@ -1,3 +1,4 @@
+import {placementContact} from './placement-contact';
 import treeArt from './tree-art.json';
 import {visiblePlacements} from './layout-views';
 import {placementBounds,placementPoint} from './world-layout';
@@ -47,18 +48,22 @@ export function treeFallProgress(w:World,state:TreeChopState){
 }
 /** Match the visual root even when the editor mirrors or rotates the placement. */
 export function treeRoot(p:Placement){const [x,y]=placementPoint(p,p.x,p.y);return{x,y}}
+/** HUD focus and the contact frame use the same reachable face of the trunk. */
+export function treeStrikePoint(p:Placement,player:Vec,angle:number,reach:number,halfArc:number,clear:(from:Vec,to:Vec)=>boolean){
+ const contact=placementContact(p,player),dx=contact.x-player.x,dy=contact.y-player.y;
+ if(Math.hypot(dx,dy)>Math.min(100,reach)||Math.cos(Math.atan2(dy,dx)-angle)<Math.cos(halfArc))return;
+ if(clear(player,contact))return contact;
+}
 export function chopTree(w:World,angle:number,reach:number,halfArc:number,damage:number,clear:(from:Vec,to:Vec)=>boolean){
  if(!w.layout)return false;
  const player=w.player,t=w.tick/60;
  const candidates=visiblePlacements(w.layout,{x:player.x-reach-80,y:player.y-reach-80,width:2*(reach+80),height:2*(reach+80)});
  let nearest:{p:Placement;distance:number}|undefined;const focused=getFieldKitTarget(w)?.treeId;
  for(const p of candidates){const art=TREE_ART.get(p.assetId);if(!art||activeTreeChop(w,p.id)?.hp===0)continue;
-  const root=treeRoot(p),dx=root.x-player.x,dy=root.y-player.y,d=Math.hypot(dx,dy);
-  if(d>reach||Math.cos(Math.atan2(dy,dx)-angle)<Math.cos(halfArc))continue;
+  const contact=treeStrikePoint(p,player,angle,reach,halfArc,clear);
+  if(!contact)continue;
+  const d=Math.hypot(contact.x-player.x,contact.y-player.y);
   if(nearest&&(nearest.p.id===focused||p.id!==focused&&d>=nearest.distance))continue;
-  // Stop at the near face of the trunk, not inside its own movement blocker.
-  const radius=38*p.scale+5,ratio=Math.max(0,d-radius)/(d||1);
-  if(!clear(player,{x:player.x+dx*ratio,y:player.y+dy*ratio}))continue;
   nearest={p,distance:d};
  }
  if(!nearest)return false;
@@ -104,10 +109,7 @@ export function drawTree(ctx:CanvasRenderingContext2D,im:HTMLImageElement,w:Worl
  ctx.save();
  const growth=treeGrowthScale(w,state);
  const alpha=ctx.globalAlpha;
- // The player can already be behind a growing crown when it reaches maturity.
  const crownWidth=treeCrownScale(growth);
- const [px,py]=placementPoint(p,w.player.x,w.player.y,true);
- const covered=mode==='world'&&p.allowTransparency!==false&&py<p.y&&py>p.y+(b.y-p.y)*growth&&Math.abs(px-p.x)<b.width*.3*crownWidth;
  if(state?.hp===0){
   const elapsed=timeSinceFelling(state,w.tick);
   const stump=1-smoothTransition(4,saplingStart,elapsed);
@@ -121,7 +123,6 @@ export function drawTree(ctx:CanvasRenderingContext2D,im:HTMLImageElement,w:Worl
    // The whole sapling uses this species' painting from its first visible
    // frame. Young crowns fill out more slowly than the leader gains height.
    if(mode==='world')drawTreeContact(ctx,p.x,p.y,baseScale*80*crownWidth);
-   if(covered)ctx.globalAlpha*=.6;
    draw(0,crownWidth,growth);
   }
   const fall=treeFallProgress(w,state);
@@ -139,7 +140,6 @@ export function drawTree(ctx:CanvasRenderingContext2D,im:HTMLImageElement,w:Worl
   }
  }else{
   if(mode==='world')drawTreeContact(ctx,p.x,p.y,baseScale*80);
-  if(covered)ctx.globalAlpha*=.6;
   if(!reduced&&age<.24){ctx.translate(p.x,p.y);ctx.rotate(Math.sin(age/.24*Math.PI*3)*.025*(1-age/.24)*state!.direction);ctx.translate(-p.x,-p.y)}
   draw(state?1:0);
  }

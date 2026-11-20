@@ -3,7 +3,6 @@ export type FieldKitTarget={
  repairInfo?:{condition:string;materials:{id:string;name:string;have:number;needed:number}[];hint:string};
  x:number;y:number;label:string;id?:string;detail?:string;blocked?:boolean;
  rockId?:string;forageId?:string;treeId?:string;pickupId?:number;
- ground?:{x:number;y:number;rx:number;ry:number};
  progress?:number;progressLabel?:string;
 };
 type Presentation={tick?:number;fieldKitTarget?:FieldKitTarget;fieldKitBuildingFocus?:{id:import('./camp-restoration').CampBuildingId;tick:number}};
@@ -11,17 +10,36 @@ export function getFieldKitTarget(world:object){return (world as Presentation).f
 export function getBuildingFocus(world:object){return (world as Presentation).fieldKitBuildingFocus}
 // Presentation only; presentPlayer carries this through its shallow World copy.
 export function setFieldKitTarget(world:object,target?:FieldKitTarget){const p=world as Presentation;p.fieldKitTarget=target;if(target?.revealed&&target.buildingId)p.fieldKitBuildingFocus={id:target.buildingId,tick:p.tick??0}}
-/** A single ground-level brass ring, before scenery and actors. No world text. */
+// The short tail points to the usable spot while the plate sits beside the actor.
+const pinOutline = [[0,0],[3,-8],[3,-19],[7,-23],[19,-23],[23,-19],[23,-9],[19,-5],[8,-5]] as const;
+const hand = [[7,-14],[10,-12],[10,-18],[11.5,-18],[11.5,-14],[12,-14],[12,-19.5],[13.5,-19.5],[13.5,-14],[14,-14],[14,-19],[15.5,-19],[15.5,-14],[16,-14],[16,-17.5],[17.5,-17.5],[17.5,-12],[16,-9],[11,-9],[7,-13]] as const;
+
+function polygon(ctx:CanvasRenderingContext2D,points:readonly (readonly [number,number])[]){
+ ctx.beginPath();
+ ctx.moveTo(...points[0]);
+ for(let i=1;i<points.length;i++)ctx.lineTo(...points[i]);
+ ctx.closePath();
+}
+
 export function drawFieldKitTarget(ctx:CanvasRenderingContext2D,world:object,scale:number){
- const target=getFieldKitTarget(world);if(!target||target.id?.startsWith('rare-chest:'))return;
- const s=Math.max(.05,scale),g=target.ground??{x:target.x,y:target.y+5,rx:28,ry:10};
- const rx=Math.max(g.rx,16/s),ry=Math.max(g.ry,5/s);
- ctx.save();ctx.lineJoin='round';ctx.lineCap='round';ctx.beginPath();
- // Explicit arcs also work with the native Skia adapter's full-oval ellipse API.
- for(const start of [.12,Math.PI+.12])for(let i=0;i<=24;i++){
-  const angle=start+(Math.PI-.24)*i/24,x=g.x+Math.cos(angle)*rx,y=g.y+Math.sin(angle)*ry;
-  if(i)ctx.lineTo(x,y);else ctx.moveTo(x,y);
+ const target=getFieldKitTarget(world);
+ if(!target||typeof target.id==='string'&&target.id.startsWith('rare-chest:'))return;
+ ctx.save();
+ ctx.translate(target.x,target.y);
+ const unit=1/Math.max(.05,scale);
+ ctx.scale(unit,unit);
+ polygon(ctx,pinOutline);
+ ctx.fillStyle=target.blocked?'#39352e':'#233d36';
+ ctx.fill();
+ ctx.strokeStyle=target.blocked?'#bc9e77':'#e4bf78';
+ ctx.lineWidth=1.6;
+ ctx.stroke();
+ ctx.fillStyle=target.blocked?'#ffc09b':'#ffdf9f';
+ if(target.blocked){
+  ctx.fillRect(8.5,-15,9,2);
+ }else{
+  polygon(ctx,hand);
+  ctx.fill();
  }
- ctx.strokeStyle='#182c25cc';ctx.lineWidth=3.8/s;ctx.stroke();
- ctx.strokeStyle=target.blocked?'#b7aa85':'#e6cf92';ctx.lineWidth=1.25/s;ctx.stroke();ctx.restore();
+ ctx.restore();
 }

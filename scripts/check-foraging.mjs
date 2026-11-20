@@ -5,7 +5,7 @@ try{
  await build({stdin:{contents:`export * from './src/foraging';export * from './src/field-kit-target';export * from './src/forage-art';export * from './src/crop-art';export * from './src/forage-renderer';export * from './src/forage-planting';export * from './src/survival-engine';export * from './src/world-layout';export * from './src/world-assets';export * from './src/field-kit';export * from './src/expedition-inventory';export * from './src/food-provisions';export * from './src/authored-world';export * from './src/imported-art';export * from './src/play-interaction';`,resolveDir:process.cwd()},bundle:true,platform:'node',format:'cjs',outfile:path.join(temp,'game.cjs')});
  const m=createRequire(import.meta.url)(path.join(temp,'game.cjs'));
  const make=(kind=0)=>{
-  const layout=m.emptyLayout(),p={...m.newPlacement(m.FORAGE_ART[kind].id,1600,1600),id:'plant'};layout.items=[p];layout.spawn={x:1600,y:1690};
+  const layout=m.emptyLayout(),p={...m.newPlacement(m.FORAGE_ART[kind].id,1600,1600),id:'plant'};layout.items=[p];layout.spawn={x:1600,y:1654};
   const w=m.createWorld(layout);w.animals=[];w.enemies=[];w.loot=[];w.breakables=[];Object.assign(w.player,layout.spawn);for(const k of Object.keys(w.gear.bag))w.gear.bag[k]=0;
   return{w,p};
  };
@@ -57,13 +57,13 @@ try{
  const cueWorld=make(),cueController=new m.FieldKitController();m.setFieldKitTarget(cueWorld.w,cueController.sample(cueWorld.w).action.target);
  const first=cueController.sample(cueWorld.w).action.target;assert.equal(first.forageId,'plant');assert.equal(first.detail,'4 left');
  tap(cueWorld.w,cueController);const next=cueController.sample(cueWorld.w).action.target;assert.equal(next.detail,'3 left','HUD count updates after one tap, including during the pick cooldown');
- const labels=[],ctx={save(){},restore(){},beginPath(){},moveTo(){},lineTo(){},stroke(){},fillText:t=>labels.push(t)};
+ const labels=[],ctx={save(){},restore(){},translate(){},scale(){},beginPath(){},moveTo(){},lineTo(){},closePath(){},stroke(){},fill(){},fillText:t=>labels.push(t)};
  for(const scale of [.4,1,2])m.drawFieldKitTarget(ctx,cueWorld.w,scale);
- assert.equal(labels.length,0,'The focused ground ring never draws text');
+ assert.equal(labels.length,0,'The interaction pin draws without a world label');
  const fullTarget=new m.FieldKitController().sample(full.w).action.target;assert(fullTarget.blocked);assert.equal(fullTarget.detail,'Backpack full');
- const distant=make();distant.w.player.x+=900;assert.equal(new m.FieldKitController().sample(distant.w).action.target,undefined,'Distant plants have no focus or labels');
+ const distant=make();distant.w.player.y=1670;assert.equal(new m.FieldKitController().sample(distant.w).action.target,undefined,'Distant plants have no focus or labels');
  const stale=make(),c=new m.FieldKitController(),shown=c.sample(stale.w).action;stale.w.player.x+=500;assert(!c.press(stale.w,shown),'A moved-away target is revalidated');assert.equal(m.itemCount(stale.w,'berries'),0);
- const covered=make();covered.w.layout.items.push({...m.newPlacement('art_hq_storage_chest',1600,1645),id:'wall',solid:true,frame:{sourceAssetId:'art_hq_storage_chest',width:200,height:12,anchor:[.5,.5]},collision:{lineWidth:.01,paths:[{closed:true,points:[[0,0],[1,0],[1,1],[0,1]]}]}});assert.equal(m.nearbyForage(covered.w),null,'Cannot pick through a wall');assert(!m.playInteraction(covered.w)?.key.startsWith('forage:'),'No fruit focus through cover');
+ const covered=make();covered.w.layout.items.push({...m.newPlacement('art_hq_storage_chest',1600,1628),id:'wall',solid:true,frame:{sourceAssetId:'art_hq_storage_chest',width:200,height:12,anchor:[.5,.5]},collision:{lineWidth:.01,paths:[{closed:true,points:[[0,0],[1,0],[1,1],[0,1]]}]}});assert.equal(m.nearbyForage(covered.w),null,'Cannot pick through a wall');assert(!m.playInteraction(covered.w)?.key.startsWith('forage:'),'No fruit focus through cover');
  for(const flag of ['axeSwing','spearThrust','swordThrust','bowShot','dodge']){const {w}=make();w[flag]={};assert(!m.pickForage(w,'plant'),flag)}
  for(const state of ['over','dead','downed','hurt','station']){const {w}=make();if(state==='over')w.phase='over';if(state==='dead')w.player.hp=0;if(state==='downed')w.player.downedUntil=50;if(state==='hurt')w.player.hurtUntil=50;if(state==='station')w.stationPanel='storage';assert(!m.pickForage(w,'plant'),state)}
  const loot=make();loot.w.loot.push({id:100,x:loot.w.player.x,y:loot.w.player.y,kind:'scrap',amount:2});assert.match(m.playInteraction(loot.w).key,/^pickup:/,'Loose loot keeps priority over picking a plant');
