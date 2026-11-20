@@ -11,7 +11,6 @@ export const WATERFALL_IMAGES={
 // The mask is an exact, feathered water-only stencil from the unchanged artwork.
 // Two downstream samples crossfade before their offsets reset, avoiding a jump
 // at the loop boundary. Generated frames add falling strands and landing foam.
-// Both variants share exactly the approved flow and generated foam treatment.
 // The pilot keeps its original native sampling; other drops sample existing tiles.
 function waterfallShader(section=false){return `
 uniform shader artwork;
@@ -31,28 +30,41 @@ half4 frameAt(float index,float2 uv){
 half4 main(float2 p){
  float2 uv=(p-bounds.xy)/bounds.zw;
  float2 pixel=uv*${section?'nativeSize':'float2(280.,260.)'};
- ${section?'float2 across=float2(direction.y,-direction.x);float2 flowUv=float2(dot(uv-.5,across),dot(uv-.5,direction))+.5;':''}
+ float2 down=${section?'direction':'float2(0.,1.)'};
+ float2 across=float2(down.y,-down.x);
+ float2 flowUv=float2(dot(uv-.5,across),dot(uv-.5,down))+.5;
  half mask=stencil.eval(pixel).r;
  if(mask<.001)return half4(0.);
  float t=mod(clock,1.5)/1.5;
  float t2=fract(t+.5);
  float blend=abs(t*2.-1.);
- // Fast downward flow on the drop, slower spreading flow in the plunge pool.
- float landing=smoothstep(.48,.76,${section?'flowUv':'uv'}.y);
- float2 travel=${section?'mix(direction*19.,across*(flowUv.x-.5)*12.+direction*9.,landing)':'mix(float2(0.,19.),float2((uv.x-.5)*12.,9.),landing)'};
+ // Neighbouring ribbons slip over the ledge at slightly different speeds.
+ float landing=smoothstep(.47,.76,flowUv.y);
+ float lane=sin(22.*flowUv.x+1.4*sin(9.*flowUv.x));
+ float2 drop=down*(22.+4.*lane);
+ float2 outflow=down*10.+across*((flowUv.x-.5)*20.);
+ float2 travel=mix(drop,outflow,landing);
  float2 a=pixel-travel*(t-.5),b=pixel-travel*(t2-.5);
  half4 base=${section?'sampleArtwork':'artwork.eval'}(pixel);
  half4 fa=mix(base,${section?'sampleArtwork':'artwork.eval'}(a),stencil.eval(a).r);
  half4 fb=mix(base,${section?'sampleArtwork':'artwork.eval'}(b),stencil.eval(b).r);
  half4 flowing=mix(base,mix(fa,fb,blend),.85);
  float phase=t*12.;
- half4 foam=mix(frameAt(floor(phase),${section?'flowUv':'uv'}),frameAt(mod(floor(phase)+1.,12.),${section?'flowUv':'uv'}),fract(phase));
- // Premultiplied generated foam preserves the transparent gaps and keeps the
-// waterfall blue-white rather than painting a solid bright rectangle.
+ half4 foam=mix(frameAt(floor(phase),flowUv),frameAt(mod(floor(phase)+1.,12.),flowUv),fract(phase));
+ // Catch light on the existing foam strands as they spill over the lip.
  half3 straight=foam.rgb/max(foam.a,.001);
- half highlights=smoothstep(.86,.98,min(straight.r,min(straight.g,straight.b)));
- half opacity=mix(.28,.14,landing)*highlights*(1.-smoothstep(.72,.87,${section?'flowUv':'uv'}.y));
+ half highlights=smoothstep(.78,.97,min(straight.r,min(straight.g,straight.b)));
+ half opacity=mix(.39,.18,landing)*highlights*(1.-smoothstep(.72,.90,flowUv.y));
  half3 colour=flowing.rgb*(1.-foam.a*opacity)+foam.rgb*opacity;
+
+ // Broken crests fan out from the impact into the plunge pool. Paint
+ // brightness breaks the arcs over dark water and preserves the rock stencil.
+ float2 fromImpact=(flowUv-float2(.49,.53))*float2(1.,1.7);
+ float radius=length(fromImpact);
+ float wave=cos(47.*radius-6.2831853*t+.6*lane);
+ float crest=smoothstep(.48,.96,wave)*landing*(1.-smoothstep(.34,.64,radius));
+ float glint=crest*smoothstep(.23,.76,flowing.g)*.19;
+ colour=mix(colour,half3(.81,.90,.89),glint);
  return half4(colour*mask,mask);
 }`;}
 export const WATERFALL_SHADER=waterfallShader();

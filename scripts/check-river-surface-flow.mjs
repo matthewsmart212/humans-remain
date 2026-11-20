@@ -62,24 +62,30 @@ try{
   await sharp(firstBytes).webp({lossless:true}).toFile(dir+'/'+location.id+'.webp');
   const report={id:location.id,batch:location.batch,waterPixels:water,movingFraction:moving/water,dryPixels:dry,dryChanged,shorelineBlendPixels,loopMeanChannelDelta:loopDelta,paintingStationary:true};reports.push(report);console.log(report);
  }
- let approvedBridgeMeanDelta;
+ let bridgeDeckMeanDelta;
  if(selected.includes(3)){
   // Match the trial's exact detail residency: its small upper overlap used
   // medium batch-2 artwork while only batch 3 was promoted to high detail.
   canvas.clientWidth=300;canvas.clientHeight=480;frame={x:-4900,y:2050,width:1000,height:1600};await loadFrame(3);mode='after';clock=0;
   const currentBytes=render();
-  // Compare the bridge's own painting, excluding the upper neighbouring
-  // batch overlap. Composite alpha before comparing PNG against WebP so
-  // invisible RGB stored in transparent pixels does not affect the metric.
-  const core=bytes=>sharp(bytes).extract({left:0,top:80,width:300,height:400}).flatten({background:'#000000'}).raw().toBuffer();
-  const current=await core(currentBytes),approved=await core(fs.readFileSync('docs/qa/river-surface-flow-v1/after.webp'));
+  // The crop from main at 6fe2c5b spans the timber deck and both rails.
+  // Keep those registered and dry as the surrounding water changes.
+  const deck=bytes=>sharp(bytes).extract({left:70,top:194,width:178,height:42}).flatten({background:'#000000'}).raw().toBuffer();
+  const moving=await deck(currentBytes);
+  mode='paint';
+  const painted=await deck(render());
+  assert.deepEqual(moving,painted,'Surface highlights stay off the bridge deck');
+  clock=.5;mode='after';
+  assert.deepEqual(moving,await deck(render()),'The deck stays still over the current');
+  const approved=await sharp('scripts/fixtures/west-camp-bridge-deck.png').removeAlpha().raw().toBuffer();
+  let delta=0;for(let i=0;i<painted.length;i++)delta+=Math.abs(painted[i]-approved[i]);
+  bridgeDeckMeanDelta=delta/painted.length;
+  assert(bridgeDeckMeanDelta<.03,'The timber and rails keep their painted colour and registration: '+bridgeDeckMeanDelta);
   await sharp(currentBytes).webp({lossless:true}).toFile(dir+'/approved-bridge.webp');
-  let delta=0;for(let i=0;i<current.length;i++)delta+=Math.abs(current[i]-approved[i]);approvedBridgeMeanDelta=delta/current.length;
-  console.log({approvedBridgeMeanDelta});assert(approvedBridgeMeanDelta<.03,'The approved bridge look is preserved');
  }
  const shaderFieldBytes=renderer.textureStats().graphics.shaderFieldBytes;
  renderer.dispose();renderer.dispose();
  const meta=await sharp('public'+m.RIVER_SURFACE_FLOW.image).metadata();
- const report={passed:true,batches:selected,locations:reports,approvedBridgeMeanDelta,waterfallOverlaysLoaded:0,sharedSurfaceTextureBytes:meta.width*meta.height*4,shaderFieldBytes,physicalIPhoneTested:false};
+ const report={passed:true,batches:selected,locations:reports,bridgeDeckMeanDelta,waterfallOverlaysLoaded:0,sharedSurfaceTextureBytes:meta.width*meta.height*4,shaderFieldBytes,physicalIPhoneTested:false};
  fs.writeFileSync(dir+'/checks-'+selected.join('-')+'.json',JSON.stringify(report,null,2)+'\n');console.log(report);
 }finally{globalThis.fetch=original.fetch;globalThis.window=original.window;process.type=original.type;globalThis.devicePixelRatio=original.dpr;fs.rmSync(temp,{recursive:true,force:true})}

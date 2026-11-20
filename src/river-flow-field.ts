@@ -1,5 +1,27 @@
-import type {RiverBatch} from './river-layout';
+import {RIVER_BATCHES,RIVER_SIDE_FEATURES,type RiverBatch} from './river-layout';
 import headwaterMask from './river-water-mask.json';
+import loggingMask from './river-logging-water-mask.json';
+import extensionMasks from './river-extension-water-masks.json';
+
+const waterSpans=[headwaterMask,loggingMask,...extensionMasks];
+type SpanMask=typeof headwaterMask;
+
+/** Average nearby painted water spans so individual shoreline stones do not
+ * kink the current. A narrow channel carries a faster thread down its middle. */
+function channelAtRow(mask:SpanMask|undefined,y:number){
+ if(!mask)return undefined;
+ const row=Math.floor(y/mask.step);
+ let left=0,right=0,total=0;
+ for(let offset=-8;offset<=8;offset+=2){
+  const span=mask.rows[Math.max(0,Math.min(mask.rows.length-1,row+offset))];
+  if(!span)continue;
+  const weight=9-Math.abs(offset);
+  left+=weight*span[0];right+=weight*span[1];total+=weight;
+ }
+ if(!total)return undefined;
+ const width=(right-left)*mask.step/total;
+ return {centre:(left+right)*mask.step/(2*total),radius:Math.max(width*.5,1),speed:1-.31*smooth(240,740,width)};
+}
 
 type Point=readonly number[];
 const floatBits=new Float32Array(1),integerBits=new Uint32Array(floatBits.buffer);
@@ -44,13 +66,23 @@ export function riverFlowPixels(batch:RiverBatch,sidePoints?:readonly Point[]){
 function buildRiverFlowPixels(batch:RiverBatch,sidePoints?:readonly Point[]){
  const source=batch.source,width=Math.min(512,Math.ceil(source.width/8)),height=Math.min(512,Math.ceil(source.height/8));
  const main=new Uint16Array(width*height*4),side=sidePoints?.length?new Uint16Array(main.length):undefined;
- const route=batch.flowPoints||batch.corridor?.points||[[0,0]],points=Array.from({length:12},(_,i)=>route[Math.min(i,route.length-1)]);
- const branch=sidePoints?.length?Array.from({length:6},(_,i)=>sidePoints[Math.min(i,sidePoints.length-1)]):undefined;
- for(let row=0;row<height;row++)for(let col=0;col<width;col++){
-  const x=source.x+(col+.5)*source.width/width,y=source.y+(row+.5)*source.height/height,v=routeAt(x,y,points),at=(row*width+col)*4;
-  main[at]=half(v.x*.5+.5);main[at+1]=half(v.y*.5+.5);
-  main[at+2]=half(batch.corridor?1-smooth(batch.corridor.inner,batch.corridor.outer,v.distance):bankOpacity(x,y,batch));main[at+3]=half(1);
-  if(side&&branch){const b=routeAt(x,y,branch,true);side[at]=half(b.x*.5+.5);side[at+1]=half(b.y*.5+.5);side[at+2]=half(smooth(-50,100,v.distance-b.distance));side[at+3]=half(1)}
+ const points=batch.flowPoints||batch.corridor?.points||[[0,0]];
+ const batchIndex=RIVER_BATCHES.indexOf(batch),mask=waterSpans[batchIndex];
+ const lake=RIVER_SIDE_FEATURES.some(feature=>feature.batch===batchIndex&&feature.kind==='lake');
+ const branchSpeed=lake ? .27 : .86;
+ for(let row=0;row<height;row++){
+  const localY=(row+.5)*source.height/height,y=source.y+localY,channel=channelAtRow(mask,localY);
+  for(let col=0;col<width;col++){
+   const localX=(col+.5)*source.width/width,x=source.x+localX,v=routeAt(x,y,points),at=(row*width+col)*4;
+   const speed=channel?channel.speed*(1-.42*smooth(.35,1,Math.abs(localX-channel.centre)/channel.radius)):1;
+   main[at]=half(v.x*speed*.5+.5);main[at+1]=half(v.y*speed*.5+.5);
+   main[at+2]=half(batch.corridor?1-smooth(batch.corridor.inner,batch.corridor.outer,v.distance):bankOpacity(x,y,batch));main[at+3]=half(1);
+   if(side&&sidePoints){
+    const b=routeAt(x,y,sidePoints,true);
+    side[at]=half(b.x*branchSpeed*.5+.5);side[at+1]=half(b.y*branchSpeed*.5+.5);
+    side[at+2]=half(smooth(-50,100,v.distance-b.distance));side[at+3]=half(1);
+   }
+  }
  }
  return {width,height,main:new Uint8Array(main.buffer),side:side?new Uint8Array(side.buffer):undefined};
 }

@@ -6,6 +6,7 @@ import {placementBodies,placementBounds,placementPoint,type Placement} from './w
 import {lineClear,worldBlocked,timeOf,type World,type Vec} from './survival-engine';
 import {chooseInteractionFocus} from './interaction-focus';
 
+import {drawRockFace,rockMaterials} from './rock-surface';
 import {MINEABLE_ROCKS} from './mining-rocks';
 export {MINEABLE_ROCKS} from './mining-rocks';
 export type RockMiningState={hp:number;hitAt:number;contact:Vec;ore?:number;brokenAt?:number};
@@ -65,26 +66,105 @@ export function mineRock(w:World,angle:number){
  return true;
 }
 
-/** Reuse the original painted rock for every damage state; cracks and chips are local, cached-art drawing. */
-export function drawMineableRock(ctx:CanvasRenderingContext2D,image:HTMLImageElement,w:World,p:Placement,crop:readonly number[]){
- const spec=MINEABLE_ROCKS.get(p.assetId);if(!spec)return false;
- const b=placementBounds(p),state=w.rockMining?.[p.id],age=state?timeOf(w)-state.hitAt:Infinity;
+
+type RockBounds = ReturnType<typeof placementBounds>;
+type RockPoint = readonly [number, number];
+
+function fillFace(ctx:CanvasRenderingContext2D, points:readonly RockPoint[], color:string) {
+ ctx.beginPath();
+ ctx.moveTo(...points[0]);
+ for (let i=1; i<points.length; i++) ctx.lineTo(...points[i]);
+ ctx.closePath();
+ ctx.fillStyle=color;
+ ctx.fill();
+}
+
+// Narrow, tapered clefts and a light-catching lip expose fresh material under the weathered face.
+const split:RockPoint[]=[[.35,.34],[.43,.44],[.414,.50],[.52,.567],[.504,.64],[.56,.735],[.489,.646],[.502,.578],[.397,.511],[.417,.45]];
+const splitLip:RockPoint[]=[[.349,.342],[.418,.449],[.398,.511],[.495,.575],[.389,.514],[.41,.451]];
+const leftBranch:RockPoint[]=[[.409,.509],[.349,.533],[.313,.509],[.259,.552],[.314,.522],[.349,.547]];
+const rightBranch:RockPoint[]=[[.501,.637],[.57,.604],[.6,.536],[.671,.51],[.611,.547],[.58,.618]];
+
+function drawFracture(ctx:CanvasRenderingContext2D, b:RockBounds, damage:number, iron:boolean) {
  ctx.save();
+ ctx.translate(b.x,b.y);
+ ctx.scale(b.width,b.height);
+ // The split lengthens toward the base as the boulder loses strength.
+ const length=.48+damage*.52;
+ ctx.translate(.42*(1-length),.51*(1-length));
+ ctx.scale(length,length);
+ fillFace(ctx,split,'rgba(41,34,28,.85)');
+ fillFace(ctx,splitLip,iron?'rgba(213,167,119,.78)':'rgba(211,199,167,.69)');
+ if(damage>=.35) fillFace(ctx,leftBranch,'rgba(48,39,32,.75)');
+ if(damage>=.65) fillFace(ctx,rightBranch,'rgba(45,37,31,.83)');
+ ctx.restore();
+}
+
+// Offset into separate areas of the original painted surface for each broken fragment.
+const rubble = [
+ {x:.08,y:-.22,width:.22,height:.18,u:.49,v:.47,flip:false},
+ {x:-.20,y:-.11,width:.32,height:.24,u:.39,v:.58,flip:true},
+ {x:.245,y:-.035,width:.23,height:.15,u:.48,v:.62,flip:false},
+ {x:-.035,y:.015,width:.16,height:.105,u:.52,v:.60,flip:false},
+ {x:-.29,y:.038,width:.084,height:.063,u:.42,v:.44,flip:true},
+];
+const shard:RockPoint[]=[[-.51,-.40],[-.19,-.92],[.21,-1],[.49,-.65],[.39,-.21],[.10,0],[-.34,-.13]];
+const cleavedEdge:RockPoint[]=[[-.51,-.40],[-.19,-.24],[.20,-.34],[.49,-.65],[.39,-.21],[.1,0],[-.34,-.13]];
+
+function drawRubble(ctx:CanvasRenderingContext2D, image:HTMLImageElement, crop:readonly number[], p:Placement, b:RockBounds, iron:boolean) {
+ const [sx,sy,sw,sh]=crop;
+ for(const piece of rubble) {
+  ctx.save();
+  ctx.translate(p.x+piece.x*b.width,p.y+piece.y*b.height);
+  ctx.scale(piece.width*b.width*(piece.flip?-1:1),piece.height*b.height);
+  ctx.beginPath();
+  ctx.ellipse(.03,-.06,.55,.18,0,0,Math.PI*2);
+  ctx.fillStyle='rgba(32,32,24,.24)';
+  ctx.fill();
+  fillFace(ctx,shard,iron?'#665445':'#716b59');
+  ctx.clip();
+  ctx.drawImage(image,sx+(piece.u-.07)*sw,sy+(piece.v-.07)*sh,.14*sw,.14*sh,-.52,-1,1.04,1.01);
+  fillFace(ctx,cleavedEdge,iron?'rgba(60,41,31,.55)':'rgba(52,49,38,.49)');
+  ctx.restore();
+ }
+}
+
+const chipFaces:RockPoint[]=[[-1,-.25],[-.35,-.62],[1,-.10],[.32,.57],[-.61,.34]];
+const stoneChips=['#c2b99e','#827d6b','#a49d85'];
+const ironChips=['#c5b8a5','#986744','#7e817b'];
+
+function drawChips(ctx:CanvasRenderingContext2D, p:Placement, contact:Vec, age:number, iron:boolean) {
+ const [cx,cy]=placementPoint(p,contact.x,contact.y,true);
+ const colors=iron?ironChips:stoneChips;
+ const opacity=ctx.globalAlpha;
+ for(let i=0;i<7;i++){
+  const angle=i*2.399, speed=38+(i%4)*16, lift=64+(i%3)*20;
+  ctx.save();
+  ctx.globalAlpha=opacity*(1-Math.pow(age/.42,2));
+  ctx.translate(cx+Math.cos(angle)*speed*age*p.scale,cy+(Math.sin(angle)*speed*.42*age-lift*age+220*age*age)*p.scale);
+  ctx.rotate(angle+age*(i%2?5:-4));
+  const size=(2+(i%3))*p.scale;
+  ctx.scale(size,size);
+  fillFace(ctx,chipFaces,colors[i%3]);
+  ctx.restore();
+ }
+}
+
+export function drawMineableRock(ctx:CanvasRenderingContext2D,image:HTMLImageElement,w:World,p:Placement,crop:readonly number[]){
+ const spec=MINEABLE_ROCKS.get(p.assetId);
+ if(!spec)return false;
+ const b=placementBounds(p),state=w.rockMining?.[p.id];
+ const age=state?Math.max(0,timeOf(w)-state.hitAt):Infinity;
+ const motion=!w.weather?.reducedMotion,iron=!!spec.metalOnly;
  if(state?.hp===0){
-  for(const [dx,dy,s]of [[-.23,-.06,.30],[.15,-.01,.24],[.02,-.16,.20]] as const){const width=b.width*s,height=b.height*s*.62;ctx.drawImage(image,...crop as [number,number,number,number],p.x+dx*b.width-width/2,p.y+dy*b.height-height,width,height)}
+  drawRubble(ctx,image,crop,p,b,iron);
  }else{
-  if(age<.18&&!w.weather?.reducedMotion)ctx.translate(Math.sin(age*90)*(1-age/.18)*2,0);
-  ctx.drawImage(image,...crop as [number,number,number,number],b.x,b.y,b.width,b.height);
-  if(state){
-   ctx.strokeStyle='#2c2c24';ctx.lineWidth=Math.max(1.5,b.width*.012);ctx.lineJoin='round';
-   const lines=[[[.47,.28],[.43,.47],[.55,.58],[.46,.77]],[[.43,.47],[.26,.53],[.2,.66]],[[.55,.58],[.7,.48],[.77,.57]]];
-   for(const line of lines.slice(0,state.hp<spec.hp*.5?3:2)){ctx.beginPath();line.forEach(([x,y],i)=>i?ctx.lineTo(b.x+b.width*x,b.y+b.height*y):ctx.moveTo(b.x+b.width*x,b.y+b.height*y));ctx.stroke()}
-  }
+  ctx.save();
+  if(motion&&age<.18)ctx.translate(Math.sin(age*90)*(1-age/.18)*2*p.scale,0);
+  drawRockFace(ctx,image,crop,b,rockMaterials.get(p.assetId)!);
+  if(state)drawFracture(ctx,b,1-state.hp/spec.hp,iron);
+  ctx.restore();
  }
- if(state&&age<.38&&!w.weather?.reducedMotion){
-  // Convert the world contact into this placement's unrotated drawing coordinates.
-  const point=placementPoint(p,state.contact.x,state.contact.y,true);
-  for(let i=0;i<7;i++){const a=i*2.399,r=12+age*90,x=point[0]+Math.cos(a)*r,y=point[1]+Math.sin(a)*r*.35-age*80+age*age*190;ctx.globalAlpha=1-age/.38;ctx.fillStyle=i%2?'#bab09a':'#746e60';ctx.fillRect(x,y,3+(i%3),3+(i%2))}
- }
- ctx.restore();return true;
+ if(state&&motion&&age<.42)drawChips(ctx,p,state.contact,age,iron);
+ return true;
 }

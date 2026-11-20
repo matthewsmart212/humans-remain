@@ -8,6 +8,8 @@ import {campBuildingArt} from './camp-restoration';
 import {drawProgressionMarkers} from './progression-renderer';
 import {drawBomberGround,drawBomberEmissives} from './bomber-renderer';
 import {drawCampFurnace} from './furnace-renderer';
+import {drawRockGround} from './rock-ground';
+import {drawRockFace,rockMaterials,type RockMaterial} from './rock-surface';
 import {drawMineableRock} from './rock-mining';
 import {stoneDrawables} from './mining-renderer';
 import {drawForagePlant} from './forage-renderer';
@@ -67,18 +69,19 @@ export function drawPlacedGround(ctx:CanvasRenderingContext2D,imgs:Record<string
   ctx.drawImage(im,b.x+x*b.width,b.y+y*b.height,width*b.width,height*b.height);ctx.restore();
  }
 }
-type CampGroundContact={placement:Placement;asset:WorldAsset;source:string;canopy?:number};
-function drawCampGroundContacts(ctx:CanvasRenderingContext2D,contacts:readonly CampGroundContact[],w:World,shade?:HTMLImageElement){
+type CampGroundContact={placement:Placement;asset:WorldAsset;source:string;canopy?:number;rock?:RockMaterial};
+function drawCampGroundContacts(ctx:CanvasRenderingContext2D,contacts:readonly CampGroundContact[],w:World,shade?:HTMLImageElement,hideFoliage=false){
  const overcast=Math.max(w.weather?.rain??0,w.weather?.fog??0);
  const daylight=(1-nightStrength(w))*(1-.65*overcast);
- for(const {placement:p,asset,source,canopy} of contacts){
+ for(const {placement:p,asset,source,canopy,rock} of contacts){
   if(canopy!==undefined){
    if(shade)drawTreeShade(ctx,shade,w,p,canopy,daylight);
    continue;
   }
   ctx.save();
   if(p.rotation||p.flipX||p.flipY)rotatePlacement(ctx,p);
-  drawCampGroundContact(ctx,p,asset,source);
+  if(rock)drawRockGround(ctx,p,asset,placementBounds(p),rock,hideFoliage);
+  else drawCampGroundContact(ctx,p,asset,source);
   ctx.restore();
  }
 }
@@ -96,9 +99,10 @@ export function placedDrawables(ctx:CanvasRenderingContext2D,imgs:Record<string,
   const frame=animationReady?(a.openFrames?.length?chestFrame(w,p.id,frames!.length):placedAnimationFrame(w,p,a)):0;
   const requestedSource=restoration?.image||frames?.[frame]||a.image,requestedImage=imgs[assetImageKey(requestedSource)];
   const b=placementBounds(p),im=requestedImage||imgs[assetImageKey(a.image)];if(!im)continue;
+  const rock=rockMaterials.get(a.id);
   if(contacts){
    const canopy=treeShadeFrames.get(a.image);
-   if(canopy!==undefined||hasCampGroundContact(a))contacts.push({placement:p,asset:a,source:restoration&&requestedImage?restoration.image:a.image,canopy});
+   if(canopy!==undefined||hasCampGroundContact(a)||(rock&&!a.groundDetail&&w.rockMining?.[p.id]?.hp!==0))contacts.push({placement:p,asset:a,source:restoration&&requestedImage?restoration.image:a.image,canopy,rock});
   }
   const southHQ=a.image===HQ_SOUTH_INTERIOR&&!!a.interior;
   const cutaway=southHQ?headquartersCutawayAmount(p,w):0;
@@ -137,6 +141,7 @@ export function placedDrawables(ctx:CanvasRenderingContext2D,imgs:Record<string,
    return;
   }if(drawPotatoPatch(ctx,imgs,w,p))return;if(restoration){const ruin=imgs[assetImageKey(restoration.image)];if(ruin){ctx.drawImage(ruin,b.x,b.y,b.width,b.height);return}}if(drawCampFurnace(ctx,imgs,w,p))return;if(drawWarehouse(ctx,imgs,w,p))return;if(drawForagePlant(ctx,imgs,w,p,animatePlant))return;if(drawTree(ctx,im,w,p))return;if(drawMineableRock(ctx,im,w,p,a.crop))return;if(a.puddle){drawPuddle(ctx,im,w,p,a);return}if(a.foliage){drawFoliage(ctx,im,w,p,a,animatePlant);return}drawCampContact(ctx,p,a);ctx.save();const [px,py]=placementPoint(p,w.player.x,w.player.y,true);if((p.allowTransparency??placementGeometryAsset(p)?.allowTransparency)!==false&&!a.interior&&py<p.y&&py>b.y&&Math.abs(px-p.x)<b.width*.3)ctx.globalAlpha=.6;
    if(p.role==='hearth'&&!placedFireLit(w,p)&&a.unlit){const off=imgs[assetImageKey(a.unlit)];if(off){const anchor=a.unlitAnchor||[627,1190],size=a.unlitSize||[1254,1254];ctx.drawImage(off,p.frame?b.x:p.x-anchor[0]/size[0]*b.width,p.frame?b.y:p.y-anchor[1]/size[1]*b.height,b.width,b.height)}else ctx.drawImage(im,...a.crop as [number,number,number,number],b.x,b.y,b.width,b.height)}
+   else if(rock)drawRockFace(ctx,im,a.crop,b,rock,!!a.groundDetail);
    else if(hasPaintedHearthAnimation(a))drawBurningHearth(ctx,imgs,imgs[assetImageKey(a.image)]||im,b,timeOf(w),!!w.weather?.reducedMotion);
    else ctx.drawImage(im,...a.crop as [number,number,number,number],b.x,b.y,b.width,b.height);ctx.restore()};
   // The north stockade is behind the HQ on the map. Paint the complete
@@ -199,7 +204,7 @@ export function drawWorldEditor(ctx:CanvasRenderingContext2D,atlas:Atlas,imgs:Re
  drawPlacedGround(ctx,imgs,w.layout,view.hideFoliage,viewport);
  const campContacts=w.scene?undefined:[] as CampGroundContact[];
  const placed=placedDrawables(ctx,imgs,w,true,viewport,view.hideFoliage,campContacts);
- if(campContacts)drawCampGroundContacts(ctx,campContacts,w,imgs.treeCanopyShade);
+ if(campContacts)drawCampGroundContacts(ctx,campContacts,w,imgs.treeCanopyShade,view.hideFoliage);
  const pickupScale=c.scale/Math.min(2,(ctx as CanvasRenderingContext2D&{pixelRatio?:number}).pixelRatio||globalThis.devicePixelRatio||1);
  if(view.playing)drawLootChestGround(ctx,imgs,w,{x:c.x,y:c.y,width:ctx.canvas.width/c.scale,height:ctx.canvas.height/c.scale});
  if(view.playing)drawFieldKitTarget(ctx,w,pickupScale);
@@ -232,7 +237,18 @@ export function drawWorldEditor(ctx:CanvasRenderingContext2D,atlas:Atlas,imgs:Re
  if(view.grid&&!view.playing&&!w.scene){ctx.strokeStyle=nightStrength(w)>.5?'#a4c6c344':'#153d4430';ctx.lineWidth=1/c.scale;ctx.beginPath();const bounds=worldBounds(w);for(let x=Math.ceil(bounds.left/80)*80;x<bounds.right;x+=80){ctx.moveTo(x,bounds.top);ctx.lineTo(x,bounds.bottom)}for(let y=Math.ceil(bounds.top/80)*80;y<bounds.bottom;y+=80){ctx.moveTo(bounds.left,y);ctx.lineTo(bounds.right,y)}ctx.stroke()}
  if(view.collision&&!view.playing)for(const p of w.layout?.items||[])for(const b of placementBodies(p)){ctx.fillStyle='#ff6c4130';ctx.strokeStyle='#ff805d';ctx.lineWidth=2/c.scale;if(b.shape==='rect'){ctx.fillRect(b.x-b.hw,b.y-b.hh,b.hw*2,b.hh*2);ctx.strokeRect(b.x-b.hw,b.y-b.hh,b.hw*2,b.hh*2)}else if(b.shape==='polygon'){ctx.beginPath();b.points.forEach(([x,y],i)=>i?ctx.lineTo(x,y):ctx.moveTo(x,y));ctx.closePath();ctx.fill();ctx.stroke()}else if(b.shape==='segment'){ctx.lineWidth=b.r*2;ctx.globalAlpha=.5;ctx.beginPath();ctx.moveTo(b.x,b.y);ctx.lineTo(b.ex,b.ey);ctx.stroke();ctx.globalAlpha=1}}
  const selection=w.layout?.items.find(p=>p.id===view.selected);if(selection&&!view.playing&&!w.scene&&!(view.hideFoliage&&isFoliageAsset(ASSET_BY_ID.get(selection.assetId)))){const b=placementBounds(selection);ctx.save();rotatePlacement(ctx,selection);ctx.strokeStyle=selection.locked?'#a2ecdf':'#ffe3a3';ctx.lineWidth=2.5/c.scale;ctx.setLineDash([8/c.scale,5/c.scale]);ctx.strokeRect(b.x,b.y,b.width,b.height);ctx.restore();ctx.setLineDash([]);ctx.fillStyle='#ffcf62';ctx.beginPath();ctx.arc(selection.x,selection.y,7/c.scale,0,Math.PI*2);ctx.fill();if(['generator','hearth','well','storage'].includes(selection.role)){ctx.strokeStyle='#8ae0d0';ctx.beginPath();ctx.arc(selection.x,selection.y+(selection.role==='generator'?85:65),19,0,Math.PI*2);ctx.stroke()}}
- if(view.ghost&&!view.playing&&!w.scene){const p=view.ghost,a=ASSET_BY_ID.get(p.assetId),im=a&&imgs[assetImageKey(a.image)];if(a&&im&&!(view.hideFoliage&&isFoliageAsset(a))){const b=placementBounds(p);ctx.save();rotatePlacement(ctx,p);ctx.globalAlpha=.65;if(!drawTree(ctx,im,w,p,'preview'))ctx.drawImage(im,...a.crop as [number,number,number,number],b.x,b.y,b.width,b.height);ctx.restore()}}
+ if(view.ghost&&!view.playing&&!w.scene){
+  const p=view.ghost,a=ASSET_BY_ID.get(p.assetId),im=a&&imgs[assetImageKey(a.image)];
+  if(a&&im&&!(view.hideFoliage&&isFoliageAsset(a))){
+   const b=placementBounds(p),rock=rockMaterials.get(a.id);
+   ctx.save();rotatePlacement(ctx,p);ctx.globalAlpha=.65;
+   if(rock){
+    drawRockGround(ctx,p,a,b,rock,view.hideFoliage);
+    drawRockFace(ctx,im,a.crop,b,rock,!!a.groundDetail);
+   }else if(!drawTree(ctx,im,w,p,'preview'))ctx.drawImage(im,...a.crop as [number,number,number,number],b.x,b.y,b.width,b.height);
+   ctx.restore();
+  }
+ }
  const spawn=w.layout?.spawn;if(spawn&&!view.playing&&!w.scene){ctx.strokeStyle='#a2ecdf';ctx.lineWidth=2/c.scale;ctx.beginPath();ctx.arc(spawn.x,spawn.y,24,0,Math.PI*2);ctx.moveTo(spawn.x-33,spawn.y);ctx.lineTo(spawn.x+33,spawn.y);ctx.moveTo(spawn.x,spawn.y-33);ctx.lineTo(spawn.x,spawn.y+33);ctx.stroke();ctx.fillStyle='#133338';ctx.fillRect(spawn.x-45,spawn.y+32,90,24);ctx.fillStyle='#b7ecdf';ctx.font="900 18px 'Barlow Condensed'";ctx.textAlign='center';ctx.fillText('SPAWN',spawn.x,spawn.y+50)}ctx.restore();
  drawCombatScreenFeedback(ctx,w);
  if(fade>0){ctx.save();ctx.globalAlpha=Math.min(1,fade);ctx.fillStyle='#100e0c';ctx.fillRect(0,0,ctx.canvas.width,ctx.canvas.height);ctx.restore()}
