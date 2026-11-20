@@ -8,7 +8,7 @@ import type {FoodSpecies} from '../src/food-items';
 import type {World} from '../src/survival-engine';
 import type {MenuInsets} from '../src/station-menu-layout';
 import {stationPalette as palette} from '../src/station-palette';
-import {RecipeRow, SectionHeading, StationButton, StationDetails} from './StationControls';
+import {RecipeBatch, RecipeRow, SectionHeading, StationButton, StationDetails} from './StationControls';
 import StationMenu from './StationMenu';
 import {ItemArt} from './FieldItemArt';
 
@@ -19,48 +19,34 @@ type Props = {world: World; width: number; height: number; safe: MenuInsets; onC
 
 export default function CampfirePanel({world, width, height, safe, onClose, onChange}: Props) {
  const [details, setDetails] = useState<FoodSpecies | 'meal' | null>(null);
- const [picking, setPicking] = useState<FoodSpecies | null>(null);
  const [message, setMessage] = useStationFeedback();
  const v = campfireView(world);
  const owned = v.food.filter(f => f.count > 0);
  const jobs = v.jobs.filter(j => j !== null);
  const food = owned.find(f => f.species === details);
+ const batch = food && campfireFoodSelection(v, food.species, 1);
  useEffect(() => {
   if (details === 'meal' ? !v.preparedMeal.count : details && !food) setDetails(null);
  }, [details, food?.species, v.preparedMeal.count]);
- useEffect(() => {if (picking && !owned.some(f => f.species === picking)) setPicking(null);}, [picking, owned]);
 
  const closeDetails = () => setDetails(null);
- const back = details ? closeDetails : picking ? () => setPicking(null) : onClose;
+ const back = details ? closeDetails : onClose;
  const cook = (species: FoodSpecies, amount: number) => {
   const n = queueCampfireFood(world, species, amount);
   setMessage(n ? `${n} ${n === 1 ? 'portion' : 'portions'} added.${v.burning || v.incoming ? '' : ' Add wood to cook.'}` : 'Supplies or fire space changed.');
-  setPicking(null); onChange();
+  onChange();
  };
  const fuel = <View style={s.row}>
   <ItemArt id="logs" size={24} />
   <Text style={s.growText}>{v.burning ? `Heat · ${v.time}` : v.incoming ? 'Lighting…' : 'Fire out'}</Text>
-  <StationButton label={!v.logs ? 'Need wood' : !v.canStoke ? 'Fire full' : 'Add wood'} disabled={!v.canStoke}
+  <StationButton label={!v.logs ? 'Need wood' : !v.canStoke ? 'Fuel full' : 'Add wood'} disabled={!v.canStoke}
    accessibilityLabel={`Add wood. ${v.logs} logs available. One log adds ${LOG_BURN_SECONDS} seconds.`}
    onPress={() => {setMessage(v.stoke() ? `Added ${LOG_BURN_SECONDS}s of heat.` : 'Wood supply changed.'); onChange();}} />
  </View>;
  const needsHeat = jobs.length > 0 && !v.burning && !v.incoming;
- return <StationMenu compact fitContent={!details} world={world} title="Campfire" label="Tend the campfire" image={require('../public/survival/ui-field-kit-v1/cook.png')}
-  closeLabel="Leave campfire" onClose={onClose} onBack={back} width={width} height={height} safe={safe} message={message}
-  footerAction={v.preparedMeal.count > 0 ? <StationButton label="Prepare meal" onPress={() => {setPicking(null); setDetails('meal');}} /> : undefined}>
-  <ScrollView nestedScrollEnabled style={s.scroll} contentContainerStyle={s.body} accessibilityElementsHidden={!!details} importantForAccessibility={details ? 'no-hide-descendants' : 'auto'}>
-   {needsHeat && fuel}
-   {owned.length ? owned.map(f => {
-    const name = `Raw ${f.name.toLowerCase()}`;
-    const {limit, blocked} = campfireFoodSelection(v, f.species, 1);
-    return <RecipeRow key={f.species} name={name} image={foodIds[f.species].raw} detail={`×${f.count} · ${f.seconds}s`} blocked={blocked} verb="Cook"
-     limit={limit} picking={picking === f.species} onPicker={() => setPicking(picking === f.species ? null : f.species)}
-     onPickerClose={() => setPicking(null)}
-     onDetails={() => {setPicking(null); setDetails(f.species);}} onSubmit={n => cook(f.species, n)} />;
-   }) : <Text style={s.bodyText}>No raw food in your backpack</Text>}
-   {!needsHeat && fuel}
-   {jobs.length > 0 && <>
-    <SectionHeading title="On the fire" info={`${jobs.length} / ${v.queueMax}`} />
+ const full = jobs.length >= v.queueMax;
+ const queueList = jobs.length > 0 && <>
+    <SectionHeading title={full ? 'Fire full' : 'On the fire'} info={`${jobs.length} / ${v.queueMax}`} />
     {jobs.map(j => <View key={j.id} style={s.row}>
      <ItemArt id={foodIds[j.species].raw} size={26} /><View style={s.grow}><Text style={s.bodyText}>{j.name}</Text>
       <Text style={s.note}>{j.label === 'NO HEAT' ? v.incoming ? 'Lighting…' : 'Needs wood' : j.label === 'WAIT' ? 'Waiting' : `${j.label} left`}</Text></View>
@@ -69,10 +55,27 @@ export default function CampfirePanel({world, width, height, safe, onClose, onCh
      }} />
     </View>)}
     <Text style={s.note}>Cooked food lands on the ground beside the fire.</Text>
-   </>}
+   </>;
+
+ return <StationMenu compact fitContent={!details} world={world} title="Campfire" label="Tend the campfire" image={require('../public/survival/ui-field-kit-v1/cook.png')}
+  closeLabel="Leave campfire" onClose={onClose} onBack={back} width={width} height={height} safe={safe} message={message}
+  footerAction={v.preparedMeal.count > 0 ? <StationButton label="Prepare meal" onPress={() => setDetails('meal')} /> : undefined}>
+  <ScrollView nestedScrollEnabled style={s.scroll} contentContainerStyle={s.body} accessibilityElementsHidden={!!details} importantForAccessibility={details ? 'no-hide-descendants' : 'auto'}>
+   {needsHeat && fuel}
+   {full && queueList}
+   {owned.length ? owned.map(f => {
+    const name = `Raw ${f.name.toLowerCase()}`;
+    const {blocked} = campfireFoodSelection(v, f.species, 1);
+    return <RecipeRow key={f.species} name={name} image={foodIds[f.species].raw} detail={`×${f.count} · ${f.seconds}s`} disabled={!!blocked} blocked={full ? '' : blocked} verb="Cook"
+     actionLabel={`Cook 1 ${name.toLowerCase()}`} onDetails={() => setDetails(f.species)} onSubmit={() => cook(f.species, 1)} />;
+   }) : <Text style={s.bodyText}>No raw food in your backpack</Text>}
+   {!needsHeat && fuel}
+   {!full && queueList}
   </ScrollView>
-  {food && <StationDetails title={`Raw ${food.name.toLowerCase()}`} closeLabel="Close food information" onClose={closeDetails}>
+  {food && batch && <StationDetails title={`Raw ${food.name.toLowerCase()}`} closeLabel="Close food information" onClose={closeDetails}>
    <View style={s.row}><ItemArt id={foodIds[food.species].cooked} size={38} /><Text style={s.growText}>{food.seconds}s · +{food.food} food{food.health ? ` · +${food.health} health` : ''}</Text></View>
+   <RecipeBatch action="Cook" limit={batch.limit} blocked={batch.blocked} actionLabel={n => `Cook ${n} raw ${food.name.toLowerCase()}`}
+    onSubmit={n => {cook(food.species, n); closeDetails();}} />
   </StationDetails>}
   {details === 'meal' && <StationDetails title="Hunter’s meal" onClose={closeDetails}>
    <View style={s.row}><ItemArt id="huntersMeal" size={38}/><Text style={s.growText}>{v.preparedMeal.ingredientLabel}</Text></View>

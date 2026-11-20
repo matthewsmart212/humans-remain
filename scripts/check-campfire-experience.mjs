@@ -75,13 +75,16 @@ try{
  const invoke=node=>{assert(node,'Expected a control');(node.props.onClick??node.props.onPress)()};
  const press=node=>{assert(node&&!node.props.disabled,'Expected an enabled control');invoke(node)};
  const chooseAmount=(draw,name,n)=>{
-  const picker=nodes(draw()).find(el=>label(el)===`Quantity for raw ${name}`);
-  assert(picker, 'Quantity picker is available');
-  if (picker.type==='select') {
+  const main = draw();
+  assert(!nodes(main).some(el=>el.type==='select'||/^Use quantity /.test(label(el))), 'The main menu has only direct recipe actions');
+  press(rawTile(main,name));
+  const details = draw();
+  const picker=nodes(details).find(el=>el.type==='select'&&label(el)===`Quantity for raw ${name}`);
+  if (picker) {
    assert(nodes(picker).some(node=>node.type==='option'&&node.props.value===n));
    picker.props.onChange({currentTarget:{value:String(n)}});
   } else {
-   press(picker); press(find(draw(),new RegExp(`^Use quantity ${n}$`)));
+   press(find(details,new RegExp(`^Use quantity ${n}$`)));
   }
   assert(action(draw(),name,n),'The action uses the selected quantity');
  };
@@ -106,13 +109,14 @@ try{
   world.bag.pallets=2;m.setItemCount(world,'rawMeat',2);m.setItemCount(world,'rawRabbit',3);tree=draw();
   assert(!action(tree,'chicken').props.disabled);assert(!action(tree,'rabbit').props.disabled);
   const before=JSON.stringify({bag:world.bag,queue:world.fire.queue});
-  chooseAmount(draw,'chicken',2);
   press(rawTile(draw(),'chicken'));tree=draw();assert(text(tree).includes('35 food'));assert(text(tree).includes('8 health'));
   if(platform==='Native'){
    const modal=nodes(tree).find(node=>node.props.accessibilityViewIsModal&&node.props.onAccessibilityEscape);
    modal.props.onAccessibilityEscape();assert.equal(world.stationPanel,'fire');
   }else press(find(tree,/^Close food information$/));
   tree=draw();assert(!text(tree).includes('35 food'));assert.equal(JSON.stringify({bag:world.bag,queue:world.fire.queue}),before,'Inspecting food and choosing a quantity never pays ingredients');
+  chooseAmount(draw,'chicken',2);tree=draw();
+  assert.equal(JSON.stringify({bag:world.bag,queue:world.fire.queue}),before,'Adjusting a batch never pays ingredients');
   const staleAdd=action(tree,'chicken',2);press(staleAdd);tree=draw();
   assert.equal(world.bag.rawMeat,0);assert.equal(world.fire.queue.length,2);assert(!rawTile(tree,'chicken'));
   assert(/Needs wood/.test(text(tree)));assert.equal(m.storedCount(world,'rawMeat'),20);
@@ -125,7 +129,7 @@ try{
   m.setItemCount(world,'rawRabbit',5);tree=draw();assert(action(tree,'rabbit',1),'Restocking starts at one');
   press(action(tree,'rabbit',1));tree=draw();assert.equal(world.fire.queue.length,2,'Default Cook takes a single press');
   chooseAmount(draw,'rabbit',2);press(action(draw(),'rabbit',2));tree=draw();
-  assert.equal(world.fire.queue.length,4);assert(action(tree,'rabbit').props.disabled);assert(text(tree).includes('Fire full'));
+  assert.equal(world.fire.queue.length,4);assert(action(tree,'rabbit').props.disabled);assert.equal((text(tree).match(/Fire full/g)??[]).length,1,'A full fire is explained once at the queue');
   press(find(tree,/^Return raw chicken to backpack\./i));tree=draw();assert.equal(world.bag.rawMeat,1);assert.equal(world.fire.queue.length,3);
   press(action(tree,'rabbit',1));tree=draw();assert.equal(world.bag.rawRabbit,1);assert.equal(world.fire.queue.length,4);
   assert(!find(tree,/^Prepare (?:a )?meal(?: ›)?$/));m.setItemCount(world,'cookedVenison',1);m.setItemCount(world,'berries',2);tree=draw();

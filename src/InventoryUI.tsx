@@ -1,6 +1,6 @@
 import React from 'react';
 import {fieldKitArt} from './field-kit';
-import type {BagItem,BagItemId} from './backpack';
+import {backpackDetail, type BagItem, type BagItemId} from './backpack';
 import './inventory-ui.css';
 import './inventory-catalog.css';
 
@@ -33,10 +33,27 @@ export function InventoryGrid({items,selected,equipped,onSelect,showCounts=false
  </div>;
 }
 export function InventoryDetail({item,children,showInfo=true}:{item:BagItem;children?:React.ReactNode;showInfo?:boolean}){
- const benefits=[{icon:'food',amount:item.food,label:'food'},{icon:'heart',amount:item.health,label:'health'},{icon:'water',amount:item.water,label:'water'},{icon:'stamina',amount:item.stamina,label:'stamina'},{icon:'heart',amount:item.healthOverTime,label:`health over ${item.duration??20}s`}] as const;
- return <article className="supply-detail" aria-label="Selected item"><div className="supply-detail-copy"><div className="supply-item-heading"><div className="supply-item-art"><img src={item.image} alt=""/></div><div><small>{item.raw?'RAW · COOK FIRST':item.food?'READY TO EAT':item.category==='Gear'?'SURVIVAL GEAR':'CAMP MATERIAL'}</small><h3>{item.name}</h3></div></div>
- {benefits.some(b=>(b.amount??0)>0)&&<div className="supply-benefits">{benefits.filter(b=>(b.amount??0)>0).map(b=><span key={b.label}><img src={fieldKitArt(b.icon)} alt=""/><b>+{b.amount}</b> {b.label}</span>)}{item.raw&&<small>AFTER COOKING</small>}</div>}
- <dl className="supply-facts">{item.facts.map(([label,value])=><div key={label}><dt>{label}</dt><dd>{value}</dd></div>)}</dl>{showInfo&&<details className="supply-more"><summary>Item info</summary><p className="supply-description">{item.description}</p><p className="supply-hint">{item.hint}</p></details>}</div>{children}</article>;
+ const {benefits, benefitLabel, keyFact, otherFacts} = backpackDetail(item);
+ const facts = <dl className="supply-facts">{otherFacts.map(([name, value]) =>
+  <div key={name}><dt>{name}</dt><dd>{value}</dd></div>
+ )}</dl>;
+ return <article className="supply-detail" aria-label="Selected item">
+  <div className="supply-detail-copy">
+   <div className="supply-item-heading">
+    <div className="supply-item-art"><img src={item.image} alt=""/></div>
+    <div><h3>{item.name}</h3>{keyFact&&<span className="bag-key-fact">{keyFact.join(' · ')}</span>}</div>
+   </div>
+   {benefitLabel&&<small className="bag-benefit-label">{benefitLabel}</small>}
+   {benefits.length>0&&<div className="supply-benefits">{benefits.map(b=>
+    <span key={b.label}><img src={fieldKitArt(b.icon)} alt=""/><b>+{b.amount}</b> {b.label}</span>
+   )}</div>}
+   {showInfo ? <details key={item.id} className="supply-more">
+    <summary>Item details</summary>{facts}
+    <p className="supply-description">{item.description}</p><p className="supply-hint">{item.hint}</p>
+   </details> : facts}
+  </div>
+  {children}
+ </article>;
 }
 export function InventoryEmpty({kind,title,children}:{kind:'chest'|'backpack';title:string;children:React.ReactNode}){
  return <div className="supply-empty"><div className="supply-empty-art"><img src={fieldKitArt(kind)} alt=""/></div><h3>{title}</h3>{children}</div>;

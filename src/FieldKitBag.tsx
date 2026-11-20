@@ -1,18 +1,18 @@
 import {useStationFeedback} from './use-station-feedback';
 import StationMenu from './StationMenu';
 import React,{useEffect,useState} from 'react';
-import {backpackItems,type BagItemId,type BagResult} from './backpack';
+import {backpackItems,currentBagItem,type BagItemId,type BagResult} from './backpack';
 import type {FieldKitSnapshot} from './field-kit';
 import {InventoryGrid,InventoryDetail,InventoryEmpty} from './InventoryUI';
 type Props={open:boolean;stats:FieldKitSnapshot;onClose:()=>void;onUse:(id:BagItemId)=>boolean;onDrop:(id:BagItemId,quantity:1|'all')=>BagResult};
 export default function FieldKitBag({open,stats,onClose,onUse,onDrop}:Props){
- const [selected,setSelected]=useState<BagItemId>('raw'),[message,setMessage]=useStationFeedback();
- const items=backpackItems(stats),item=items.find(i=>i.id===selected)??items.find(i=>i.category==='Food')??items[0];
+ const [selected,setSelected]=useState<BagItemId>(),[message,setMessage]=useStationFeedback();
+ const items=backpackItems(stats),item=currentBagItem(items,selected,stats.selected);
  useEffect(()=>{if(open)setMessage('')},[open]);
  const use=()=>{const ok=onUse(item!.id);setMessage(ok?item?.food?'Meal eaten.':`${item!.name} ${stats.selected===item!.id?'stowed':'equipped'}.`:'Cannot use right now.')};
  const drop=(quantity:1|'all')=>setMessage(onDrop(item!.id,quantity).message);
  if(!open)return null;
  return <StationMenu world={stats.action.owner} kind="backpack" className="backpack-menu" title="Backpack" label="Backpack" subtitle="Game paused" onClose={onClose} weight={stats.weight} loadLabel={stats.loadLabel} message={message}>
-  <div className="supply-body" data-empty={!item}>{item?<><div className="supply-inventory"><div className="supply-inventory-label"><span>Contents</span><span>{items.length} {items.length===1?'item':'items'}</span></div><InventoryGrid items={items} selected={item.id} equipped={stats.selected} onSelect={id=>{setSelected(id);setMessage('')}}/></div><InventoryDetail item={item}><div className="supply-actions">{item.useLabel&&<button className="supply-primary" disabled={item.useDisabled} onClick={use}>{item.useLabel}</button>}{item.droppable&&<><button className="supply-drop" disabled={stats.downed} onClick={()=>drop(1)}>Drop</button>{item.count>1&&<button className="supply-drop" disabled={stats.downed} onClick={()=>drop('all')}>Drop stack</button>}</>}</div></InventoryDetail></>:<InventoryEmpty kind="backpack" title="Your pack is empty"><p>Take equipment from the headquarters chest or gather supplies in the field.</p></InventoryEmpty>}</div>
+  <div className="supply-body" data-empty={!item}>{item?<><div className="supply-inventory"><InventoryGrid items={items} selected={item.id} equipped={stats.selected} onSelect={id=>{setSelected(id);setMessage('')}}/></div><InventoryDetail key={item.id} item={item}><div className="supply-actions">{item.useLabel&&<button className="supply-primary" disabled={item.useDisabled} onClick={use}>{item.useLabel}</button>}{item.droppable&&<><button className="supply-drop" disabled={stats.downed} onClick={()=>drop(1)}>Drop</button>{item.count>1&&<button className="supply-drop" disabled={stats.downed} onClick={()=>drop('all')}>Drop stack</button>}</>}</div></InventoryDetail></>:<InventoryEmpty kind="backpack" title="Your pack is empty"><p>Pick up supplies or take an item from storage.</p></InventoryEmpty>}</div>
  </StationMenu>;
 }

@@ -83,7 +83,7 @@ try{
   const world=make(),ui=mount(platform,world);let tree=ui.draw();
   assertNoSelection(tree,true);assert(!text(tree).includes('Raw chicken'));
   for(const spec of Object.values(m.GEAR)){
-   const tile=itemButton(tree,spec.name,1);assert(tile,`${platform}: ${spec.name} is listed`);assert(text(tile).includes('×1'),'Single items display their quantity');
+   const tile=itemButton(tree,spec.name,1);assert(tile,`${platform}: ${spec.name} is listed`);assert(!text(tile).includes('×1'),'A single tool does not need a count badge');
   }
   press(button(tree,'Take one Wooden axe'));tree=ui.draw();
   assert.equal(world.gear.bag.woodenAxe,1,'One press transfers directly from the list');
@@ -96,20 +96,20 @@ try{
   press(button(tree,'Materials'));tree=ui.draw();
   m.setStoredCount(world,'stone',0);tree=ui.draw();
   assert(text(tree).includes('No materials here'));assertNoSelection(tree,true);
-  press(button(tree,'Show all items'));tree=ui.draw();
+  press(button(tree,'All'));tree=ui.draw();
   for(const [id,spec] of Object.entries(m.GEAR)){
    const beforeSelection=inventory(world);press(itemButton(tree,spec.name,1));tree=ui.draw();assert.equal(inventory(world),beforeSelection,'Selection does not transfer');
    assert(!button(tree,'Increase quantity'),'Single items do not need a quantity picker');
-   const item=m.chestItems(world,'chest').find(item=>item.id===id);assert(!text(tree).includes(item.description),'Item description is optional');
+   const item=m.chestItems(world,'chest').find(item=>item.id===id);assert(text(tree).includes(item.description),'Opening the row reveals its item details directly');
    if(id==='woodenAxe'){
-    press(button(tree,`About ${spec.name}`));tree=ui.draw();assert(text(tree).includes(item.description));assert(text(tree).includes('Damage'));assert(text(tree).includes('20 / 24'));
-    press(button(tree,'Close item information'));tree=ui.draw();assert(!text(tree).includes(item.description));assert.equal(label(transferButton(tree,true)),`Take 1 ${spec.name}`);
+    assert(text(tree).includes(item.description));assert(text(tree).includes('Damage'));assert(text(tree).includes('20 / 24'));
+    press(itemButton(tree,spec.name,1));tree=ui.draw();assert(!text(tree).includes(item.description));press(itemButton(tree,spec.name,1));tree=ui.draw();
    }
    const action=transferButton(tree,true);assert.equal(text(action),'Take');press(action);tree=ui.draw();
    assert.equal(world.gear.bag[id],1);assert.equal(world.gear.chest[id],0);assert(!itemButton(tree,spec.name,1));assertNoSelection(tree,true);
    const after=inventory(world);invoke(action);tree=ui.draw();assert.equal(inventory(world),after,'A repeated stale last-unit action cannot take a neighbouring item');assertNoSelection(tree,true);
   }
-  assert(text(tree).includes('Nothing stored yet'));press(button(tree,'Store supplies'));tree=ui.draw();assertNoSelection(tree,false);
+  assert(text(tree).includes('Nothing stored yet'));press(button(tree,'Store from backpack'));tree=ui.draw();assertNoSelection(tree,false);
   for(const [id,spec] of Object.entries(m.GEAR)){
    press(itemButton(tree,spec.name,1,'pack'));tree=ui.draw();world.player.equipped=id;press(transferButton(tree,false));tree=ui.draw();
    assert.equal(world.player.equipped,null,'Storing the equipped last item returns to fists');assert.equal(world.gear.bag[id],0);assert.equal(world.gear.chest[id],1);assertNoSelection(tree,false);
@@ -118,7 +118,7 @@ try{
 
   // Selection and Max must not leak between modes, filters, or source items.
   m.setStoredCount(world,'pallets',30);m.setStoredCount(world,'scrap',8);
-  press(button(tree,'Browse chest'));tree=ui.draw();press(button(tree,'Materials'));tree=ui.draw();
+  press(button(tree,'Take from chest'));tree=ui.draw();press(button(tree,'Materials'));tree=ui.draw();
   press(itemButton(tree,'Logs',30));tree=ui.draw();press(button(tree,'Select maximum quantity'));tree=ui.draw();assert.equal(selectedQuantity(tree),19);
   press(button(tree,'Store from backpack'));tree=ui.draw();assertNoSelection(tree,false);
   press(button(tree,'Take from chest'));tree=ui.draw();assertNoSelection(tree,true);
@@ -126,11 +126,11 @@ try{
   press(button(tree,'Select maximum quantity'));tree=ui.draw();press(button(tree,'Gear'));tree=ui.draw();assertNoSelection(tree,true);
   press(button(tree,'Materials'));tree=ui.draw();assertNoSelection(tree,true);press(itemButton(tree,'Logs',30));tree=ui.draw();assert.equal(selectedQuantity(tree),1,'Changing category clears the previous Max');
   press(button(tree,'Select maximum quantity'));tree=ui.draw();press(itemButton(tree,'Metal scrap',8));tree=ui.draw();assert.equal(selectedQuantity(tree),1,'A different item starts at one');
-  press(itemButton(tree,'Logs',30));tree=ui.draw();press(button(tree,'About Logs'));tree=ui.draw();assert(button(tree,'Close item information'));
+  press(itemButton(tree,'Logs',30));tree=ui.draw();assert(text(tree).includes('In backpack'));
   press(button(tree,'Gear'));tree=ui.draw();assertNoSelection(tree,true);press(button(tree,'Materials'));tree=ui.draw();
 
   // An external depletion is also reconciled; restoring that ID must not select it.
-  press(itemButton(tree,'Logs',30));tree=ui.draw();press(button(tree,'Select maximum quantity'));tree=ui.draw();press(button(tree,'About Logs'));tree=ui.draw();
+  press(itemButton(tree,'Logs',30));tree=ui.draw();press(button(tree,'Select maximum quantity'));tree=ui.draw();
   m.setStoredCount(world,'pallets',0);tree=ui.draw();assertNoSelection(tree,true);assert(itemButton(tree,'Metal scrap',8));
   m.setStoredCount(world,'pallets',30);tree=ui.draw();assertNoSelection(tree,true);press(itemButton(tree,'Logs',30));tree=ui.draw();assert.equal(selectedQuantity(tree),1);
 
@@ -144,22 +144,27 @@ try{
   assert.equal(world.stock.pallets,30);assert.equal(world.bag.pallets,0);assertNoSelection(tree,false);
   press(button(tree,'Leave supply chest'));assert(ui.isClosed());
 
-  // Food effects stay behind the information button, and transfer never eats food.
+  // Opening an item reveals its benefits, and transfer never eats food.
   const food=make(0);m.setStoredCount(food,'cookedMeat',3);m.setStoredCount(food,'rawMeat',2);
   const foodUI=mount(platform,food);tree=foodUI.draw();assertNoSelection(tree,true);assert(!button(tree,'Food'),'Food-only chest skips filters');
-  press(itemButton(tree,'Cooked chicken',3));tree=foodUI.draw();assert(!text(tree).includes('+35 food'));assert(!text(tree).includes('+8 health'));
-  press(button(tree,'About Cooked chicken'));tree=foodUI.draw();assert(text(tree).includes('+35 food'));assert(text(tree).includes('+8 health'));assert(text(tree).includes('0.45 kg'));assert(text(tree).includes('1.35 kg'));assert(!text(tree).includes('After cooking'));
-  press(button(tree,'Close item information'));tree=foodUI.draw();assert(!text(tree).includes('+35 food'));
+  press(itemButton(tree,'Cooked chicken',3));tree=foodUI.draw();assert(text(tree).includes('+35 food'));assert(text(tree).includes('+8 health'));assert(text(tree).includes('0.45 kg'));assert(text(tree).includes('1.35 kg'));assert(!text(tree).includes('After cooking'));
+  press(itemButton(tree,'Cooked chicken',3));tree=foodUI.draw();assert(!text(tree).includes('+35 food'));press(itemButton(tree,'Cooked chicken',3));tree=foodUI.draw();
   const hunger=food.hunger,health=food.player.hp;press(transferButton(tree,true));tree=foodUI.draw();
   assert.equal(food.cooked,1);assert.equal(m.storedCount(food,'cookedMeat'),2);assert.equal(food.hunger,hunger);assert.equal(food.player.hp,health);
-  press(itemButton(tree,'Raw chicken',2));tree=foodUI.draw();press(button(tree,'About Raw chicken'));tree=foodUI.draw();assert(text(tree).includes('After cooking'));assert(text(tree).includes('+35 food'));assert(text(tree).includes('+8 health'));
+  press(itemButton(tree,'Raw chicken',2));tree=foodUI.draw();assert(text(tree).includes('After cooking'));assert(text(tree).includes('+35 food'));assert(text(tree).includes('+8 health'));
   press(button(tree,'Store from backpack'));tree=foodUI.draw();assertNoSelection(tree,false);assert(!text(tree).includes('After cooking'));
-  press(itemButton(tree,'Cooked chicken',1,'pack'));tree=foodUI.draw();assert(text(itemButton(tree,'Cooked chicken',1,'pack')).includes('×1'));press(transferButton(tree,false));tree=foodUI.draw();assert.equal(food.cooked,0);assert.equal(m.storedCount(food,'cookedMeat'),3);assertNoSelection(tree,false);
+  press(itemButton(tree,'Cooked chicken',1,'pack'));tree=foodUI.draw();assert(!text(itemButton(tree,'Cooked chicken',1,'pack')).includes('×1'));press(transferButton(tree,false));tree=foodUI.draw();assert.equal(food.cooked,0);assert.equal(m.storedCount(food,'cookedMeat'),3);assertNoSelection(tree,false);
+
+  const emptyChest=make(0);m.setItemCount(emptyChest,'pallets',3);
+  const emptyUI=mount(platform,emptyChest);tree=emptyUI.draw();
+  assert(button(tree,'Store one Logs'),'A newly opened, empty chest offers carried stock immediately');
+  press(button(tree,'Store one Logs'));tree=emptyUI.draw();assert.equal(m.storedCount(emptyChest,'pallets'),1);
+  assert(button(tree,'Store one Logs'),'Storing an item keeps the chosen direction');
 
   // Capture a valid UI action, then move out of range before it is pressed.
   const ranged=make(0);m.setStoredCount(ranged,'pallets',3);const rangeUI=mount(platform,ranged);tree=rangeUI.draw();press(itemButton(tree,'Logs',3));tree=rangeUI.draw();const stale=transferButton(tree,true),beforeRange=inventory(ranged);
   ranged.player.x+=1000;press(stale);tree=rangeUI.draw();assert.equal(inventory(ranged),beforeRange,'A stale UI action cannot transfer out of range');assert(transferButton(tree,true).props.disabled);
-  dispose();console.log(`PASS ${platform}: all 12 gear round trips, ×1 badges, optional gear/food details, mode/filter/item resets, external depletion, stale last-unit safety, exact quantities, capacity-bound Max, empty states and stale out-of-range actions.`);
+  dispose();console.log(`PASS ${platform}: all gear round trips, stack-only badges, optional gear/food details, mode/filter/item resets, external depletion, stale last-unit safety, exact quantities, capacity-bound Max, empty states and stale out-of-range actions.`);
  }
 
  // Existing model-level boundary checks complement the actual component actions.

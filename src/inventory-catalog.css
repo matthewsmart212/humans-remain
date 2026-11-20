@@ -73,3 +73,10 @@
 .station-menu .supply-detail-copy { scroll-padding: 6px; }
 .backpack-menu .supply-quantity output,
 .station-menu .supply-facts dd { font-variant-numeric: tabular-nums; }
+
+.backpack-menu .bag-key-fact, .backpack-menu .bag-benefit-label {
+ color: var(--station-muted);
+ font: 500 13px/1.35 Barlow,sans-serif;
+}
+.backpack-menu .bag-benefit-label { display: block; margin-top: 6px; }
+.backpack-menu .supply-more > summary { min-height: 36px; align-content: center; }

@@ -7,15 +7,16 @@ import {stationPalette as palette} from '../src/station-palette';
 type ButtonProps = {
  label: string;
  accessibilityLabel?: string;
+ accessibilityHint?: string;
  onPress: () => void;
  disabled?: boolean;
  primary?: boolean;
  grow?: boolean;
 };
 
-export function StationButton({label, accessibilityLabel = label, onPress, disabled, primary, grow}: ButtonProps) {
+export function StationButton({label, accessibilityLabel = label, accessibilityHint, onPress, disabled, primary, grow}: ButtonProps) {
  return (
-  <Pressable accessibilityRole="button" accessibilityLabel={accessibilityLabel} accessibilityState={{disabled}}
+  <Pressable accessibilityRole="button" accessibilityLabel={accessibilityLabel} accessibilityHint={accessibilityHint} accessibilityState={{disabled}}
    disabled={disabled} onPress={onPress} style={({pressed}) => [
     s.button, grow && s.grow, primary && !disabled && s.primary, disabled && s.off, pressed && s.pressed,
    ]}>
@@ -25,34 +26,40 @@ export function StationButton({label, accessibilityLabel = label, onPress, disab
 }
 
 type RecipeRowProps = {
- name: string; image: BagItemId; detail: string; verb: string; blocked?: string;
- limit?: number; picking?: boolean;
- onDetails: () => void; onPicker?: () => void; onPickerClose?: () => void; onSubmit: (n: number) => void;
+ name: string; image: BagItemId; detail: string; verb: string; actionLabel: string; blocked?: string; disabled?: boolean;
+ onDetails: () => void; onSubmit: () => void;
 };
 
-export function RecipeRow({name, image, detail, verb, blocked, limit = 1, picking, onDetails, onPicker, onPickerClose, onSubmit}: RecipeRowProps) {
+export function RecipeRow({name, image, detail, verb, actionLabel, blocked, disabled = !!blocked, onDetails, onSubmit}: RecipeRowProps) {
+ return <View style={[s.recipe, s.row]}>
+  <Pressable accessibilityRole="button" accessibilityLabel={`About ${name.toLowerCase()}`} accessibilityHint={blocked || detail} onPress={onDetails} style={s.recipeInfo}>
+   <ItemArt id={image} size={34} />
+   <View style={s.details}><Text style={s.recipeName}>{name} <Text accessible={false} style={s.note}>›</Text></Text><Text style={[s.note, blocked && s.warning]}>{blocked || detail}</Text></View>
+  </Pressable>
+  <StationButton primary label={verb} accessibilityLabel={actionLabel} accessibilityHint={blocked || detail} disabled={disabled} onPress={onSubmit} />
+ </View>;
+}
+
+type BatchProps = {
+ action: string; limit: number; blocked: string;
+ actionLabel: (n: number) => string; onSubmit: (n: number) => void;
+};
+
+export function RecipeBatch({action, limit, blocked, actionLabel, onSubmit}: BatchProps) {
  const [chosen, setChosen] = useState(1);
- const quantity = Math.max(1, Math.min(chosen, limit));
- useEffect(() => {
-  if (chosen !== quantity) setChosen(quantity);
-  if (picking && limit <= 1) onPickerClose?.();
- }, [chosen, quantity, limit, picking, onPickerClose]);
- const item = name.toLowerCase();
- const actionLabel = onPicker ? `${verb} ${quantity} ${item}` : `${verb} ${item}`;
- return <View style={s.recipe}>
-  <View style={s.row}>
-   <Pressable accessibilityRole="button" accessibilityLabel={`About ${item}`} accessibilityHint={detail} onPress={onDetails} style={s.recipeInfo}>
-    <ItemArt id={image} size={34} />
-    <View style={s.details}><Text style={s.recipeName}>{name}</Text><Text style={[s.note, blocked && s.warning]}>{blocked || detail}</Text></View>
-   </Pressable>
-   {onPicker && limit > 1 && <Pressable accessibilityRole="button" accessibilityLabel={`Quantity for ${item}`} accessibilityValue={{text: String(quantity)}}
-    accessibilityState={{expanded: picking}} onPress={onPicker} style={s.numberButton}><Text style={s.buttonText}>×{quantity} ⌄</Text></Pressable>}
-   <StationButton primary label={verb} accessibilityLabel={actionLabel} disabled={!limit || !!blocked} onPress={() => {onSubmit(quantity); setChosen(1);}} />
-  </View>
-  {picking && limit > 1 && <View style={s.choices}>{Array.from({length: limit}, (_, i) => i + 1).map(n =>
-   <Pressable key={n} accessibilityRole="button" accessibilityLabel={`Use quantity ${n}`} accessibilityState={{selected: n === quantity}}
-    onPress={() => {setChosen(n); onPickerClose?.();}} style={[s.numberButton, n === quantity && s.chosen]}><Text style={s.buttonText}>{n}</Text></Pressable>
-  )}</View>}
+ const quantity = Math.max(1, Math.min(limit, chosen));
+ useEffect(() => {if (chosen !== quantity) setChosen(quantity);}, [chosen, quantity]);
+ return <View style={s.batch}>
+  {limit > 1 && <>
+   <Text style={s.note}>Quantity</Text>
+   <View style={s.choices}>{Array.from({length: limit}, (_, i) => i + 1).map(n =>
+    <Pressable key={n} accessibilityRole="button" accessibilityLabel={`Use quantity ${n}`} accessibilityState={{selected: n === quantity}}
+     onPress={() => setChosen(n)} style={[s.numberButton, n === quantity && s.chosen]}><Text style={s.buttonText}>{n}</Text></Pressable>
+   )}</View>
+  </>}
+  {!!blocked && <Text style={s.warning}>{blocked}</Text>}
+  <StationButton primary label={quantity > 1 ? `${action} ×${quantity}` : action} accessibilityLabel={actionLabel(quantity)}
+   disabled={!limit} onPress={() => onSubmit(quantity)} />
  </View>;
 }
 
@@ -82,7 +89,7 @@ const s = StyleSheet.create({
  recipe: {padding: 6, gap: 5, backgroundColor: palette.surface, borderRadius: 7},
  recipeInfo: {flex: 1, minHeight: 44, flexDirection: 'row', alignItems: 'center', gap: 7},
  details: {flex: 1, minWidth: 0}, recipeName: {fontFamily: 'FieldKitBarlow', fontSize: 17, color: palette.text},
- choices: {flexDirection: 'row', flexWrap: 'wrap', justifyContent: 'flex-end', gap: 4},
+ batch: {gap: 5}, choices: {flexDirection: 'row', flexWrap: 'wrap', gap: 4},
  numberButton: {minWidth: 40, minHeight: 44, paddingHorizontal: 4, alignItems: 'center', justifyContent: 'center', borderWidth: 1, borderColor: palette.line, borderRadius: 5, backgroundColor: palette.inset},
  chosen: {borderColor: palette.brass}, warning: {color: palette.danger},
  shade: {...StyleSheet.absoluteFill, backgroundColor: 'rgba(8,12,10,.74)', justifyContent: 'center', alignItems: 'center', padding: 6, zIndex: 6},

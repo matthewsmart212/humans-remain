@@ -4,9 +4,9 @@
 .warehouse-row { display: flex; align-items: center; gap: 8px; padding: 8px 0; border-bottom: 1px solid var(--station-line); }
 .warehouse-row:last-child { border-bottom: 0; }
 .warehouse-row img { width: 36px; height: 36px; object-fit: contain; }
-.warehouse-stock { flex: 1; min-width: 0; }
+.warehouse-stock { display: flex; align-items: baseline; flex: 1; min-width: 0; column-gap: 6px; flex-wrap: wrap; }
 .warehouse-stock strong { display: block; font: 700 19px/1.05 'Barlow Condensed', sans-serif; color: var(--station-text); }
-.warehouse-stock span { display: block; margin-top: 4px; font: 500 13px/1.25 Barlow,sans-serif; color: var(--station-muted); }
+.warehouse-stock span { font: 500 13px/1.25 Barlow,sans-serif; color: var(--station-muted); }
 .warehouse-actions { display: flex; align-items: center; gap: 4px; }
 .camp-studio .field-kit .warehouse-actions button { min-height: 44px; min-width: 44px; padding: 5px 8px; }
 @container (max-width: 330px) {

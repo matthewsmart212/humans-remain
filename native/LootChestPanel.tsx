@@ -21,22 +21,22 @@ export default function LootChestPanel({world, width, height, safe, onClose, onC
   const count = contents[reward.kind] ?? 0;
   return {...reward, count, capacity: canCarryLootChestReward(world, reward.kind, count)};
  }).filter(reward=>reward.count>0);
- const canTake = rewards.some(reward => reward.count > 0 && reward.capacity > 0);
+ const canTake = rewards.some(reward => reward.capacity > 0);
  const collect = (gained: number) => {
   setMessage(gained ? `Collected ${gained} ${gained === 1 ? 'item' : 'items'}.` : 'Backpack full. Make room before collecting.');
   onChange();
  };
  return <StationMenu compact fitContent world={world} title="Loot chest" label="Loot chest supplies" onClose={onClose} width={width} height={height} safe={safe} weight={load.weight} loadLabel={load.label} message={message}>
-  {!remaining&&<Text style={s.name}>Chest empty</Text>}
+  {(!remaining||!canTake)&&<Text style={s.name}>{remaining?'Backpack full':'Chest empty'}</Text>}
   <ScrollView style={s.list} contentContainerStyle={s.content} accessibilityLabel="Loot chest contents">
    {rewards.map(({kind, artId, name, description, count, capacity}) => <View key={kind} style={s.reward}>
     <ItemArt id={artId} size={38}/>
     <View style={s.details}><Text style={s.name}>{name}</Text><Text style={s.note}>{description}</Text></View>
     {count>1&&<Text style={s.amount}>×{count}</Text>}
-    <StationButton label={!capacity ? 'Pack full' : 'Take'} accessibilityLabel={`Take ${name}`} disabled={!capacity} onPress={() => collect(takeLootChestReward(world, kind))} />
+    <StationButton label={canTake && !capacity ? 'Pack full' : 'Take'} accessibilityLabel={`Take ${name}`} disabled={!capacity} onPress={() => collect(takeLootChestReward(world, kind))} />
    </View>)}
   </ScrollView>
-  {rewards.length>1&&<StationButton primary label={canTake ? 'Take all that fits' : 'Backpack full'} accessibilityLabel="Collect all rewards that fit in backpack" disabled={!canTake} onPress={() => collect(takeAllLootChestRewards(world))} />}
+  {canTake&&rewards.length>1&&<StationButton primary label="Take all that fits" accessibilityLabel="Collect all rewards that fit in backpack" onPress={() => collect(takeAllLootChestRewards(world))} />}
  </StationMenu>;
 }
 const s = StyleSheet.create({

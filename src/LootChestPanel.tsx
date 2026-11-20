@@ -26,22 +26,22 @@ export default function LootChestPanel({world,onClose,onChange}:Props){
   setMessage(gained?`Collected ${gained} ${gained===1?'item':'items'}. ${lootChestRemaining(world)?'The rest stays in the chest.':'The chest is empty.'}`:'No room in your backpack.');
   onChange();
  };
- const canTake=rewards.some(reward=>reward.count>0&&reward.capacity>0);
+ const canTake=rewards.some(reward=>reward.capacity>0);
  return <StationMenu compact fitContent world={world} title="Loot chest" label="Open loot chest and its contents" onClose={onClose}
   weight={load.weight} loadLabel={load.label} message={message} className="rare-cache-menu">
-  {!remaining&&<p className="rare-cache-empty">Chest empty</p>}
+  {(!remaining||!canTake)&&<p className="rare-cache-empty">{remaining?'Backpack full':'Chest empty'}</p>}
   <div className="rare-cache-list" aria-label="Loot chest contents">
    {rewards.map(({kind,name,description,count,capacity})=><div className="rare-cache-reward" key={kind}>
     <img src={GEAR[kind].image} alt="" draggable={false}/>
     <div><strong>{name}</strong><small>{description}</small></div>
     {count>1&&<span className="rare-cache-quantity">×{count}</span>}
     <button type="button" disabled={!capacity} aria-label={`Take ${name}`} onClick={()=>take(kind)}>
-     {!capacity?'Pack full':'Take'}
+     {canTake&&!capacity?'Pack full':'Take'}
     </button>
    </div>)}
   </div>
-  {rewards.length>1&&<button className="supply-primary rare-cache-collect-all" disabled={!canTake} onClick={takeAll}>
-   {canTake?'Take all that fits':'Backpack full'}
+  {canTake&&rewards.length>1&&<button className="supply-primary rare-cache-collect-all" onClick={takeAll}>
+   Take all that fits
   </button>}
  </StationMenu>;
 }

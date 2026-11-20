@@ -15,8 +15,8 @@ export default function HeadquartersPanel({world,onClose,onChange}:Props){
  useLayoutEffect(()=>{const el=layer.current;if(!el)return;const previous=document.activeElement as HTMLElement|null;
   const resize=()=>{const box=el.getBoundingClientRect();setSize({width:box.width,height:box.height})};resize();
   presentStationMenu(world,true);const ro=new ResizeObserver(resize);ro.observe(el);
-  const focus=requestAnimationFrame(()=>el.querySelector<HTMLElement>('[aria-label="Leave headquarters"]')?.focus());
-  return()=>{cancelAnimationFrame(focus);ro.disconnect();presentStationMenu(world,false);previous?.focus({preventScroll:true})};
+  el.focus({preventScroll:true});
+  return()=>{ro.disconnect();presentStationMenu(world,false);previous?.focus({preventScroll:true})};
  },[world.fire]);
  const focusControl=useCallback((id:string)=>{
   const control=layer.current?.querySelector<HTMLElement>(`[data-testid="${id}"]`);
@@ -36,11 +36,17 @@ export default function HeadquartersPanel({world,onClose,onChange}:Props){
   const controls=Array.from(layer.current?.querySelectorAll<HTMLElement>('button:not(:disabled),[tabindex="0"]')??[])
    .filter(el=>el.getClientRects().length>0&&el.getAttribute('aria-disabled')!=='true');
   const first=controls[0],last=controls.at(-1);
+  if(active===layer.current&&controls.length){
+   event.preventDefault();
+   const campAction=controls.find(el=>el.dataset.testid==='hq-camp-action');
+   (event.shiftKey?last:campAction??first)?.focus();
+   return;
+  }
   if(event.shiftKey&&active===first){event.preventDefault();last?.focus()}
   else if(!event.shiftKey&&active===last){event.preventDefault();first?.focus()}
  };
  return createPortal(<div className="headquarters-overlay" onPointerDown={e=>e.stopPropagation()} onKeyUp={e=>e.stopPropagation()} onKeyDown={onKeyDown}>
-  <div ref={layer} className="headquarters-full-menu" role="dialog" aria-modal="true" aria-label="Headquarters">
+  <div ref={layer} tabIndex={-1} className="headquarters-full-menu" role="dialog" aria-modal="true" aria-label="Headquarters">
    <HeadquartersContent world={world} {...size} source={source} navigation={navigation} focusControl={focusControl} onClose={onClose} onChange={onChange}/>
   </div>
  </div>,document.body);

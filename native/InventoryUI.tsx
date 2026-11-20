@@ -1,7 +1,7 @@
 import {stationPalette as palette} from '../src/station-palette';
 import React,{useState} from 'react';
 import {View,Text,Image,Pressable,ScrollView,StyleSheet} from 'react-native';
-import type {BagItem,BagItemId} from '../src/backpack';
+import {backpackDetail, type BagItem, type BagItemId} from '../src/backpack';
 import {FIELD_KIT_NATIVE_ART as art} from './field-kit-art';
 import {ItemArt} from './FieldItemArt';
 export {ItemArt};
@@ -17,11 +17,31 @@ export function InventoryGrid({items,selected,equipped,onSelect,showCounts=false
 }
 export function InventoryDetail({item,wide,maxHeight=340,children,showInfo=true,compact=false}:{item:BagItem;wide:boolean;maxHeight?:number;children?:React.ReactNode;showInfo?:boolean;compact?:boolean}){
  const [more,setMore]=useState(false);
- const benefits=[{icon:'food',amount:item.food,label:'food'},{icon:'heart',amount:item.health,label:'health'},{icon:'water',amount:item.water,label:'water'},{icon:'stamina',amount:item.stamina,label:'stamina'},{icon:'heart',amount:item.healthOverTime,label:`health over ${item.duration??20}s`}] as const;
- const facts=<View style={[s.facts,compact&&{flex:1.3,marginVertical:0}]}>{item.facts.map(([label,value])=><View key={label} style={s.fact}><Text style={s.factLabel}>{label}</Text><Text style={s.factValue}>{value}</Text></View>)}</View>;
- return <View style={[s.detail,wide?{flex:1}:{maxHeight,flexShrink:0}]}><ScrollView style={{flexShrink:1}} contentContainerStyle={{padding:compact?8:12,paddingBottom:0}}><View style={compact?{flexDirection:'row',alignItems:'center',gap:8}:undefined}><View style={[s.itemHeading,compact&&{flex:1,minWidth:0,marginBottom:0}]}><View style={[s.itemArt,compact&&{width:28,height:28}]}><ItemArt id={item.id} size={compact?28:36}/></View><View style={{flex:1}}>{showInfo&&<Text style={s.eyebrow}>{item.raw?'RAW · COOK FIRST':item.food?'READY TO EAT':item.category==='Gear'?'SURVIVAL GEAR':'CAMP MATERIAL'}</Text>}<Text style={[s.itemTitle,compact&&{fontSize:20}]}>{item.name}</Text></View></View>{compact&&facts}</View>
- {benefits.some(b=>(b.amount??0)>0)&&<View style={s.benefits}>{benefits.filter(b=>(b.amount??0)>0).map(b=><View key={b.label} style={s.benefit}><Image source={art[b.icon]} style={s.benefitIcon}/><Text style={s.gain}>+{b.amount}</Text><Text style={s.small}>{b.label}</Text></View>)}{item.raw&&<Text style={s.eyebrow}>AFTER COOKING</Text>}</View>}
- {!compact&&facts}{showInfo&&<Pressable accessibilityRole="button" accessibilityLabel="Item info" accessibilityState={{expanded:more}} onPress={()=>setMore(!more)} style={{minHeight:44,justifyContent:'center'}}><Text style={s.hint}>{more?'Hide item info':'Item info'}</Text></Pressable>}{showInfo&&more&&<><Text style={s.description}>{item.description}</Text><Text style={s.hint}>{item.hint}</Text></>}</ScrollView><View style={{padding:compact?8:12,paddingTop:compact?6:0,flexShrink:0}}>{children}</View></View>;
+ const {benefits,benefitLabel,keyFact,otherFacts} = backpackDetail(item);
+ const facts = <View style={s.facts}>{otherFacts.map(([name,value])=><View key={name} style={s.fact}>
+  <Text style={s.factLabel}>{name}</Text><Text style={s.factValue}>{value}</Text>
+ </View>)}</View>;
+ return <View style={[s.detail, wide ? {flex:1} : {maxHeight,flexShrink:1}]}>
+  <ScrollView style={{flexShrink:1}} contentContainerStyle={{padding:compact?8:12,paddingBottom:0}}>
+   <View style={s.itemHeading}>
+    <View style={s.itemArt}><ItemArt id={item.id} size={36}/></View>
+    <View style={{flex:1}}><Text style={s.itemTitle}>{item.name}</Text>
+     {keyFact&&<Text style={s.small}>{keyFact.join(' · ')}</Text>}
+    </View>
+   </View>
+   {!!benefitLabel&&<Text style={s.eyebrow}>{benefitLabel}</Text>}
+   {benefits.length>0&&<View style={s.benefits}>{benefits.map(b=><View key={b.label} style={s.benefit}>
+    <Image source={art[b.icon]} style={s.benefitIcon}/><Text style={s.gain}>+{b.amount}</Text><Text style={s.small}>{b.label}</Text>
+   </View>)}</View>}
+   {showInfo&&<Pressable accessibilityRole="button" accessibilityLabel="Item details" accessibilityState={{expanded:more}}
+    onPress={()=>setMore(!more)} style={{minHeight:44,justifyContent:'center'}}>
+    <Text style={s.hint}>{more?'Hide details':'Item details'}</Text>
+   </Pressable>}
+   {(!showInfo||more)&&facts}
+   {showInfo&&more&&<><Text style={s.description}>{item.description}</Text><Text style={s.hint}>{item.hint}</Text></>}
+  </ScrollView>
+  <View style={{padding:compact?8:12,paddingTop:compact?6:0,flexShrink:0}}>{children}</View>
+ </View>;
 }
 export function InventoryEmpty({kind,title,children}:{kind:'chest'|'backpack';title:string;children:React.ReactNode}){
  return <View style={s.empty}><Image source={art[kind]} style={{width:75,height:75}}/><Text style={s.itemTitle}>{title}</Text>{children}</View>;

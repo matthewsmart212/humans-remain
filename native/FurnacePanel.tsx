@@ -7,7 +7,7 @@ import {furnaceBatchSelection, queueFurnaceBatches, smeltMaterialName, smeltCost
 import {stationPalette as palette} from '../src/station-palette';
 import {ItemArt} from './FieldItemArt';
 import StationMenu from './StationMenu';
-import {SectionHeading, RecipeRow, StationDetails, StationButton} from './StationControls';
+import {SectionHeading, RecipeBatch, RecipeRow, StationDetails, StationButton} from './StationControls';
 import {IRONWORKS_NATIVE_ART as art} from './ironworks-art';
 import type {World} from '../src/survival-engine';
 import type {MenuInsets} from '../src/station-menu-layout';
@@ -17,14 +17,14 @@ type Props = {world: World; width: number; height: number; onClose: () => void; 
 export default function FurnacePanel({world, width, height, onClose, onChange, safe}: Props) {
  const [message, setMessage] = useStationFeedback();
  const [details, setDetails] = useState<SmeltRecipe | 'upgrade' | null>(null);
- const [picking, setPicking] = useState<SmeltRecipe | null>(null);
  const v = furnaceView(world);
  if (!v) return null;
  const recipe = v.recipes.find(r => r.id === details);
+ const batch = recipe && furnaceBatchSelection(v, recipe.id, 1);
  const collectCount = furnaceCollectCount(world, v);
  const upgrade = FURNACE_RULES[2];
  const closeDetails = () => setDetails(null);
- const back = details ? closeDetails : picking ? () => setPicking(null) : onClose;
+ const back = details ? closeDetails : onClose;
  const act = (run: () => boolean | number, success: string) => {
   setMessage(run() ? success : 'Supplies or backpack space changed.');
   onChange();
@@ -32,7 +32,7 @@ export default function FurnacePanel({world, width, height, onClose, onChange, s
  const smelt = (id: SmeltRecipe, amount: number) => {
   const count = queueFurnaceBatches(world, id, amount);
   setMessage(count ? `${count} ${count === 1 ? 'ingot' : 'ingots'} queued.${v.fuel ? '' : ' Add wood to start.'}` : 'Supplies or queue space changed.');
-  setPicking(null); onChange();
+  onChange();
  };
  const fuel = <View style={s.row}>
   <ItemArt id="logs" size={24} /><Text style={s.growText}>{v.fuel ? `Heat · ${furnaceFuelTime(v.fuel)}` : 'Furnace cold'}</Text>
@@ -40,35 +40,41 @@ export default function FurnacePanel({world, width, height, onClose, onChange, s
    disabled={!v.canFuel} onPress={() => act(v.feed, `Added ${FURNACE_LOG_SECONDS}s of heat.`)} />
  </View>;
  const needsHeat = v.jobs.length > 0 && !v.fuel;
+ const full = v.queueSize >= v.queueMax;
+ const queueList = v.jobs.length > 0 && <>
+    <SectionHeading title={full ? 'Queue full' : 'Smelting'} info={`${v.queueSize} / ${v.queueMax}`}/>
+    {v.jobs.map(j => <View key={j.id} style={s.row}>
+     <ItemArt id={j.name.includes('ore') ? 'ironOre' : 'scrap'} size={26}/>
+     <View style={s.grow}><Text style={s.bodyText}>{j.name}</Text><Text style={s.note}>{furnaceJobLabel(j.label)}</Text></View>
+     <StationButton label="Cancel" accessibilityLabel={`Cancel ${j.name}. Return materials to camp stores.`} disabled={!j.canCancel} onPress={() => act(j.cancel, 'Materials returned to camp stores.')} />
+    </View>)}
+   </>;
+
  return <StationMenu compact fitContent={!details} world={world} title="Camp furnace" image={art.campFurnace} closeLabel="Leave furnace"
   onClose={onClose} onBack={back} message={message} width={width} height={height} safe={safe}
-  footerAction={!v.upgrade.complete ? <StationButton label="Bellows upgrade" onPress={() => {setPicking(null); setDetails('upgrade');}}/> : undefined}>
+  footerAction={!v.upgrade.complete ? <StationButton label="Bellows upgrade" onPress={() => setDetails('upgrade')}/> : undefined}>
   <ScrollView nestedScrollEnabled style={s.scroll} contentContainerStyle={s.body} accessibilityElementsHidden={!!details} importantForAccessibility={details ? 'no-hide-descendants' : 'auto'}>
    {v.ready > 0 && <View style={s.row}><ItemArt id="ironIngot" size={30} /><Text style={s.growText}>{v.ready} {v.ready === 1 ? 'ingot' : 'ingots'} ready</Text>
     <StationButton primary label={collectCount ? 'Collect' : 'Backpack full'} accessibilityLabel={`Collect ${collectCount} ready ingots`}
      disabled={!v.canTake} onPress={() => act(v.collect, 'Ingots added to backpack.')} />
    </View>}
    {needsHeat && fuel}
+   {full && queueList}
    {v.recipes.map(r => {
-    const {limit, blocked} = furnaceBatchSelection(v, r.id, 1);
-    return <RecipeRow key={r.id} name={smeltMaterialName(r.id)} image={r.id === 'ore' ? 'ironOre' : 'scrap'} detail={`${smeltCostLabel(r.id)} · ${r.available} held`}
-     verb="Smelt" limit={limit} blocked={blocked} picking={picking === r.id}
-     onPicker={() => setPicking(picking === r.id ? null : r.id)} onPickerClose={() => setPicking(null)}
-     onDetails={() => {setPicking(null); setDetails(r.id);}} onSubmit={n => smelt(r.id, n)} />;
+    const {blocked} = furnaceBatchSelection(v, r.id, 1);
+    return <RecipeRow key={r.id} name={smeltMaterialName(r.id)} image={r.id === 'ore' ? 'ironOre' : 'scrap'} detail={smeltCostLabel(r.id)}
+     verb="Smelt" disabled={!!blocked} blocked={full ? '' : blocked} actionLabel={`Smelt 1 ingot from ${smeltMaterialName(r.id).toLowerCase()}`}
+     onDetails={() => setDetails(r.id)} onSubmit={() => smelt(r.id, 1)} />;
    })}
    {!needsHeat && fuel}
-   {v.jobs.length > 0 && <>
-    <SectionHeading title="Smelting" info={`${v.queueSize} / ${v.queueMax}`}/>
-    {v.jobs.map(j => <View key={j.id} style={s.row}>
-     <ItemArt id={j.name.includes('ore') ? 'ironOre' : 'scrap'} size={26}/>
-     <View style={s.grow}><Text style={s.bodyText}>{j.name}</Text><Text style={s.note}>{furnaceJobLabel(j.label)}</Text></View>
-     <StationButton label="Cancel" accessibilityLabel={`Cancel ${j.name}. Return materials to camp stores.`} disabled={!j.canCancel} onPress={() => act(j.cancel, 'Materials returned to camp stores.')} />
-    </View>)}
-   </>}
+   {!full && queueList}
   </ScrollView>
-  {recipe && <StationDetails title={smeltMaterialName(recipe.id)} onClose={closeDetails}>
+  {recipe && batch && <StationDetails title={smeltMaterialName(recipe.id)} onClose={closeDetails}>
    <View style={s.row}><ItemArt id="ironIngot" size={36}/><Text style={s.growText}>{smeltCostLabel(recipe.id)} · {Math.ceil(recipe.seconds)}s</Text></View>
-   <Text style={s.note}>Materials from backpack + camp</Text>
+   <Text style={s.note}>{recipe.available} available in backpack and camp stores.</Text>
+   <RecipeBatch action="Smelt" limit={batch.limit} blocked={batch.blocked}
+    actionLabel={n => `Smelt ${n} ${n === 1 ? 'ingot' : 'ingots'} from ${smeltMaterialName(recipe.id).toLowerCase()}`}
+    onSubmit={n => {smelt(recipe.id, n); closeDetails();}} />
   </StationDetails>}
   {details === 'upgrade' && <StationDetails title="Bellows upgrade" onClose={closeDetails}>
    <Text style={s.bodyText}>Faster smelting · {upgrade.queue} queue slots · {upgrade.rack} output slots · {upgrade.fuel}s fuel</Text>

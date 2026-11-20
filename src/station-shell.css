@@ -116,3 +116,6 @@
   transform: rotate(45deg);
 }
 .station-close-mark::after { transform: rotate(-45deg); }
+
+/* The opening announcement focuses the dialog; focus rings belong on its controls. */
+.station-menu-layer .station-menu:focus, .headquarters-full-menu:focus { outline: none; }

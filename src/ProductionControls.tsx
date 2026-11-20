@@ -1,4 +1,4 @@
-import React, {useEffect, useLayoutEffect, useRef, useState} from 'react';
+import React, {useEffect, useId, useLayoutEffect, useRef, useState} from 'react';
 import {BAG_IMAGES} from './backpack';
 import './production-menu.css';
 
@@ -37,34 +37,40 @@ export function ProductionJob({name, image, status, progress, cancelLabel, canCa
 }
 
 type ProductionRecipeProps = {
- name: string; image: string; detail: string; blocked: string; limit: number;
- action: string; actionLabel: (count: number) => string;
- onDetails: () => void; onSubmit: (count: number) => void;
+ name: string; image: string; detail: string; blocked: string; disabled?: boolean;
+ action: string; actionLabel: string;
+ onDetails: () => void; onSubmit: () => void;
 };
 
-export function ProductionRecipe({name, image, detail, blocked, limit, action, actionLabel, onDetails, onSubmit}: ProductionRecipeProps) {
- const [quantity, setQuantity] = useState(1);
- const amount = Math.max(1, Math.min(quantity, limit));
- useEffect(() => {
-  if (quantity !== amount) setQuantity(amount);
- }, [quantity, amount]);
- const submit = () => {
-  if (limit < 1) return;
-  onSubmit(amount);
-  setQuantity(1);
- };
+export function ProductionRecipe({name, image, detail, blocked, disabled = !!blocked, action, actionLabel, onDetails, onSubmit}: ProductionRecipeProps) {
+ const summaryId = useId();
  return <li className="production-recipe">
-  <button type="button" className="production-recipe-info" aria-label={`About ${name.toLowerCase()}`} aria-haspopup="dialog" onClick={onDetails}>
+  <button type="button" className="production-recipe-info" aria-label={`About ${name.toLowerCase()}`} aria-haspopup="dialog" aria-describedby={summaryId} onClick={onDetails}>
    <img src={image} alt="" />
-   <span><strong>{name}</strong><small>{detail}</small>
-    {blocked && <small data-blocked="true">{blocked}</small>}
-   </span>
+   <span><strong>{name}<span className="production-disclosure" aria-hidden="true">›</span></strong><small id={summaryId} data-blocked={!!blocked || undefined}>{blocked || detail}</small></span>
   </button>
-  {limit > 1 && <select className="production-quantity" aria-label={`Quantity for ${name.toLowerCase()}`} value={amount} onChange={event => setQuantity(Number(event.currentTarget.value))}>
-   {Array.from({length:limit}, (_, i) => <option key={i + 1} value={i + 1}>×{i + 1}</option>)}
-  </select>}
-  <button type="button" className="production-primary" disabled={limit < 1} aria-label={actionLabel(amount)} onClick={submit}>{action}</button>
+  <button type="button" className="production-primary" disabled={disabled} aria-label={actionLabel} aria-describedby={summaryId} onClick={onSubmit}>{action}</button>
  </li>;
+}
+
+type BatchProps = {
+ name: string; action: string; limit: number; blocked: string;
+ actionLabel: (n: number) => string; onSubmit: (n: number) => void;
+};
+
+export function ProductionBatch({name, action, limit, blocked, actionLabel, onSubmit}: BatchProps) {
+ const [chosen, setChosen] = useState(1);
+ const amount = Math.max(1, Math.min(limit, chosen));
+ useEffect(() => {if (chosen !== amount) setChosen(amount);}, [chosen, amount]);
+ return <div className="production-batch">
+  {limit > 1 && <label>Quantity<select className="production-quantity" aria-label={`Quantity for ${name.toLowerCase()}`}
+   value={amount} onChange={e => setChosen(Number(e.currentTarget.value))}>
+   {Array.from({length: limit}, (_,i) => <option key={i + 1} value={i + 1}>{i + 1}</option>)}
+  </select></label>}
+  {blocked && <span data-blocked="true">{blocked}</span>}
+  <button type="button" className="production-primary" disabled={!limit} aria-label={actionLabel(amount)}
+   onClick={() => onSubmit(amount)}>{action}{amount > 1 ? ` ×${amount}` : ''}</button>
+ </div>;
 }
 
 export function ProductionDialog({title, closeLabel = 'Close details', onClose, children}: {title: string; closeLabel?: string; onClose: () => void; children: React.ReactNode}) {
@@ -80,7 +86,7 @@ export function ProductionDialog({title, closeLabel = 'Close details', onClose, 
   event.stopPropagation();
   if (event.key === 'Escape') { event.preventDefault(); onClose(); return; }
   if (event.key !== 'Tab') return;
-  const buttons = dialog.current?.querySelectorAll<HTMLButtonElement>('button:not(:disabled)');
+  const buttons = dialog.current?.querySelectorAll<HTMLElement>('button:not(:disabled), select:not(:disabled)');
   if (!buttons?.length) return;
   const first = buttons[0], last = buttons[buttons.length - 1];
   if (event.shiftKey && document.activeElement === first) { event.preventDefault(); last.focus(); }

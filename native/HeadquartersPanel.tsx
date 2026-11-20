@@ -13,6 +13,7 @@ import StationMenu from './StationMenu';
 type Props={world:World;width:number;height:number;safe:{top:number;bottom:number;left:number;right:number};onClose:()=>void;onChange:()=>void};
 const furnaceArt=IRONWORKS_NATIVE_ART.campFurnaceRuined;
 const textures:Record<string,number>={
+ '/survival/headquarters-menu-v1/camp-dawn.webp':require('../public/survival/headquarters-menu-v1/camp-dawn.webp'),
  '/survival/ui-field-kit-v1/logs.png':require('../public/survival/ui-field-kit-v1/logs.png'),
  '/survival/headquarters-menu-v1/camp-plan.webp':require('../public/survival/headquarters-menu-v1/camp-plan.webp'),
  '/survival/headquarters-menu-v1/parchment.webp':require('../public/survival/headquarters-menu-v1/parchment.webp'),

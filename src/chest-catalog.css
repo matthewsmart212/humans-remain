@@ -8,7 +8,7 @@
 }
 .chest-browser { flex: 0 1 auto; min-height: 0; overflow: auto; overscroll-behavior: contain; scrollbar-width: thin; padding: 3px; }
 .chest-item { padding: 4px 0; border-bottom: 1px solid var(--station-line); }
-.chest-item-row,.chest-options,.chest-stepper { display: flex; align-items: center; gap: 6px; }
+.chest-item-row,.chest-stepper { display: flex; align-items: center; gap: 6px; }
 .camp-studio .field-kit .chest-menu button.chest-item-toggle {
  display: flex; align-items: center; flex: 1; gap: 8px; min-width: 0; min-height: 48px;
  padding: 4px; text-align: left; border: 0; background: transparent; color: var(--station-text);
@@ -20,10 +20,11 @@
 .chest-item-toggle[aria-expanded=true] i { transform: rotate(225deg); }
 .camp-studio .field-kit .chest-menu button.chest-move { min-width: 68px; min-height: 44px; padding: 5px 8px; }
 .chest-expanded { padding: 5px 8px; background: var(--station-inset); border-radius: 6px; }
-.chest-options { justify-content: space-between; flex-wrap: wrap; }
+.chest-empty { margin: 10px 0; font-size: 15px; color: var(--station-muted); }
 .chest-stepper output { min-width: 22px; color: var(--station-text); text-align: center; }
 .camp-studio .field-kit .chest-menu .chest-expanded button { min-width: 36px; min-height: 42px; padding: 4px 7px; }
 .chest-item-info { color: var(--station-text); font: 500 14px/1.4 Barlow,sans-serif; }
-.chest-item-info dl { display: flex; flex-wrap: wrap; gap: 14px; }
+.chest-item-info p { margin: 6px 0; }
+.chest-item-info dl { margin: 6px 0; display: flex; flex-wrap: wrap; gap: 14px; }
 .chest-item-info dt { color: var(--station-muted); font-size: 12px; }
 .chest-item-info dd { margin: 2px 0 0; }

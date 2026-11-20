@@ -10,10 +10,14 @@ export function warehouseTransferRows(world:World,taking:boolean){
   const blocked=limit?'':!taking&&world.creativeMode?'Creative stock':available?'Pack full':'Empty';
   return {
    material,available,limit,
-   stockLabel:taking?`${stored} stored${bag?` · ${bag} in pack`:''}`:`${bag} in pack${stored?` · ${stored} stored`:''}`,
    itemId:material.id==='pallets'?'logs' as const:material.id,
    singleLabel:blocked||(limit>1?`${verb} 1`:verb),
    stackLabel:limit===available?`${verb} all`:`${verb} ${limit}`,
   };
  }).filter(row=>row.available>0);
+}
+
+/** Prefer a useful source on entry, then leave subsequent direction changes to the player. */
+export function warehouseStartsTaking(world: World) {
+ return warehouseTransferRows(world, true).length > 0 || !warehouseTransferRows(world, false).some(row => row.limit > 0);
 }

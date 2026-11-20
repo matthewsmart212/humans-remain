@@ -19,6 +19,32 @@ export type BagFilter='All'|'Food'|'Materials'|'Gear';
 export type BagItem={id:BagItemId;name:string;category:Exclude<BagFilter,'All'>;count:number;image:string;description:string;facts:readonly [string,string][];hint:string;food?:number;health?:number;water?:number;stamina?:number;healthOverTime?:number;duration?:number;raw?:boolean;useLabel?:string;useDisabled:boolean;droppable:boolean};
 export const BAG_IMAGES={repairHammer:GEAR.repairHammer.image,ironOre:IRONWORKS_MATERIALS.ironOre.image,ironIngot:IRONWORKS_MATERIALS.ironIngot.image,stone:STONE_IMAGE,woodenPickaxe:PICKAXE_GEAR.woodenPickaxe.image,metalPickaxe:PICKAXE_GEAR.metalPickaxe.image,...Object.fromEntries(PROVISION_IDS.map(id=>[id,PROVISIONS[id].image])) as Record<ProvisionId,string>,bow:BOW_GEAR.bow.image,arrows:BOW_GEAR.arrows.image,woodenSword:SWORD_GEAR.woodenSword.image,metalSword:SWORD_GEAR.metalSword.image,woodenSpear:SPEAR_GEAR.woodenSpear.image,metalSpear:SPEAR_GEAR.metalSpear.image,woodenKnife:KNIFE_GEAR.woodenKnife.image,scrapKnife:KNIFE_GEAR.scrapKnife.image,woodenAxe:AXE_GEAR.woodenAxe.image,axe:'/survival/ui-field-kit-v1/axe.png',raw:BONFIRE_FOOD_IMAGES.bonfireRaw,meal:BONFIRE_FOOD_IMAGES.bonfireCooked,rabbitRaw:RABBIT_FOOD_IMAGES.rabbitRaw,rabbitMeal:RABBIT_FOOD_IMAGES.rabbitCooked,venisonRaw:VENISON_FOOD_IMAGES.venisonRaw,venisonMeal:VENISON_FOOD_IMAGES.venisonCooked,logs:'/survival/ui-field-kit-v1/logs.png',scrap:'/survival/ui-backpack-v1/scrap.png',fuel:'/survival/ui-backpack-v1/fuel.png'} as const;
 export type BackpackContents=Pick<FieldKitSnapshot,'axes'|'selected'|'downed'|'raw'|'cooked'|'rawRabbit'|'cookedRabbit'|'rawVenison'|'cookedVenison'|'logs'|'scrap'|'fuel'|'mealCooldown'|'health'|'hunger'>&Partial<Pick<FieldKitSnapshot,'ironOre'|'ironIngot'|'stone'|'provisions'|'stamina'|'thirst'|'mealRecoveryRemaining'|'creativeMode'>>;
+export function currentBagItem(items: BagItem[], selection: BagItemId | undefined, held: string) {
+ return items.find(item => item.id === selection)
+  ?? items.find(item => item.id === held)
+  ?? items.find(item => item.category === 'Food' && !item.useDisabled)
+  ?? items[0];
+}
+
+/** Keep the comparison stat by the action; the full specification is one disclosure away. */
+export function backpackDetail(item: BagItem) {
+ const benefits = [
+  {icon:'food', amount:item.food, label:'food'},
+  {icon:'heart', amount:item.health, label:'health'},
+  {icon:'water', amount:item.water, label:'water'},
+  {icon:'stamina', amount:item.stamina, label:'stamina'},
+  {icon:'heart', amount:item.healthOverTime, label:`health over ${item.duration ?? 20}s`},
+ ] as const;
+ const keyFact = item.category === 'Gear' ? item.facts[0]
+  : item.category === 'Materials' ? item.facts.find(([name]) => name === 'Stack') : undefined;
+ return {
+  benefits: benefits.filter(b => (b.amount ?? 0) > 0),
+  benefitLabel: item.raw ? 'AFTER COOKING' : item.category === 'Food' && !item.useDisabled ? 'READY TO EAT' : '',
+  keyFact,
+  otherFacts: item.facts.filter(fact => fact !== keyFact),
+ };
+}
+
 export function backpackItems(s:BackpackContents):BagItem[]{
  const items:BagItem[]=(['woodenAxe','axe'] as const).filter(id=>s.axes[id]>0).map(id=>{const a=AXE_GEAR[id];return{id,name:a.name,category:'Gear',count:s.axes[id],image:BAG_IMAGES[id],description:id==='woodenAxe'?'A carved wooden axe. Faster and safer than fists; weaker than the camp axe.':'A sturdy steel axe. The fastest tool for chopping trees.',facts:[['Damage',`${a.damage} / ${a.returnDamage}`],['Stamina','No cost'],['Weight',`${a.weight} kg`]],hint:'Take or store tools in the headquarters chest.',useLabel:s.selected===id?'Stow axe':'Equip axe',useDisabled:s.downed,droppable:false}});
  if(s.axes.repairHammer)items.push({id:'repairHammer',name:'Repair hammer',category:'Gear',count:s.axes.repairHammer,image:GEAR.repairHammer.image,description:'Restore camp ruins and repair robot damage on site.',facts:[['Use','Repair on site'],['Stamina','No cost'],['Weight','1.2 kg']],hint:'Equip the hammer and approach a damaged building. Hold REPAIR to fill the wheel. Releasing drains progress; materials are used only at 100%.',useLabel:s.selected==='repairHammer'?'Stow hammer':'Equip hammer',useDisabled:s.downed,droppable:false});

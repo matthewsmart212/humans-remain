@@ -105,6 +105,10 @@
 .production-recipe-info > img { flex: none; width: 49px; height: 49px; object-fit: contain; }
 .production-recipe-info > span { display: grid; gap: 3px; }
 .production-recipe-info strong { font: 700 22px/1.05 'Barlow Condensed', sans-serif; }
+.production-disclosure { margin-left: 6px; color: var(--work-muted); font: 500 15px/1 Barlow, sans-serif; }
+.production-batch { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+.production-batch label { display: flex; align-items: center; gap: 8px; font: 600 14px/1.25 Barlow, sans-serif; }
+.production-batch > button { min-width: 90px; }
 .production-recipe-info small { color: var(--work-muted); font: 500 13px/1.25 Barlow, sans-serif; }
 .camp-studio .field-kit .production-menu select.production-quantity {
  width: 52px;
