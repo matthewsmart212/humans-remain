@@ -5,36 +5,42 @@ import {packLoad} from './expedition-inventory';
 import {GEAR} from './player-gear';
 import {LOOT_CHEST_REWARDS,lootChestContents,lootChestRemaining,canCarryLootChestReward,takeLootChestReward,takeAllLootChestRewards,type LootChestRewardKind} from './loot-chest';
 import './loot-chest-panel.css';
+
 type Props={world:World;onClose:()=>void;onChange:()=>void};
+
 export default function LootChestPanel({world,onClose,onChange}:Props){
  const [message,setMessage]=useState('');
  const contents=lootChestContents(world),remaining=lootChestRemaining(world),load=packLoad(world);
+ const rewards=LOOT_CHEST_REWARDS.map(reward=>{
+  const count=contents[reward.kind]??0;
+  return {...reward,count,capacity:canCarryLootChestReward(world,reward.kind,count)};
+ });
  const take=(kind:LootChestRewardKind)=>{
   const gained=takeLootChestReward(world,kind);
-  setMessage(gained?'Collected '+gained+' item'+(gained===1?'':'s')+' into your backpack.':'Not enough room in your backpack.');
+  setMessage(gained?`Collected ${gained} ${gained===1?'item':'items'} into your backpack.`:'Not enough room in your backpack.');
   onChange();
  };
- const all=()=>{
+ const takeAll=()=>{
   const gained=takeAllLootChestRewards(world);
-  setMessage(gained?'Collected '+gained+' supplies. '+(lootChestRemaining(world)?'Anything left stays safely inside.':'The cache is empty.'):'No room in your backpack.');
+  setMessage(gained?`Collected ${gained} ${gained===1?'item':'items'}. ${lootChestRemaining(world)?'The rest stays in the chest.':'The chest is empty.'}`:'No room in your backpack.');
   onChange();
  };
- return <StationMenu compact world={world} title="Loot chest" label="Open loot chest and its contents" subtitle="THE RECLAMATION · STARTER TOOLS" onClose={onClose} weight={load.weight} loadLabel={load.label} message={message} className="rare-cache-menu">
-  <div className="rare-cache-hero">
-   <div><small>ROBOT SUPPLY DROP</small><strong>{remaining?'Essential survival equipment':'Cache emptied'}</strong><p>{remaining?'The supplies are still inside. Choose what to take.':'You collected everything in this cache.'}</p></div>
+ const canTake=rewards.some(reward=>reward.count>0&&reward.capacity>0);
+ return <StationMenu compact world={world} title="Loot chest" label="Open loot chest and its contents" onClose={onClose}
+  weight={load.weight} loadLabel={load.label} message={message} className="rare-cache-menu">
+  <div className="rare-cache-heading"><h3>Starter equipment</h3><span>{remaining} remaining</span></div>
+  <div className="rare-cache-list" aria-label="Loot chest contents">
+   {rewards.map(({kind,name,description,count,capacity})=><div className="rare-cache-reward" key={kind}>
+    <img src={GEAR[kind].image} alt="" draggable={false}/>
+    <div><strong>{name}</strong><small>{description}</small></div>
+    <span className="rare-cache-quantity">×{count}</span>
+    <button type="button" disabled={!count||!capacity} aria-label={`Take ${name}`} onClick={()=>take(kind)}>
+     {!count?'Taken':!capacity?'Pack full':'Take'}
+    </button>
+   </div>)}
   </div>
-  <div className="rare-cache-heading"><span>CONTENTS</span><span>{remaining} remaining</span></div>
-  <div className="rare-cache-list" aria-label="Supplies stored inside the loot chest">
-   {LOOT_CHEST_REWARDS.map(reward=>{
-    const count=contents[reward.kind]??0,capacity=canCarryLootChestReward(world,reward.kind,count);
-    return <div className="rare-cache-reward" key={reward.kind} data-empty={!count}>
-     <img src={GEAR[reward.kind].image} alt="" draggable={false}/>
-     <div className="rare-cache-reward-copy"><strong>{reward.name}</strong><small>{reward.description}</small></div>
-     <span className="rare-cache-quantity">×{count}</span>
-     <button type="button" disabled={!count||!capacity} onClick={()=>take(reward.kind)}>{count?'TAKE':'EMPTY'}</button>
-    </div>;
-   })}
-  </div>
-  <button className="rare-cache-collect-all" disabled={!remaining||!LOOT_CHEST_REWARDS.some(r=>(contents[r.kind]??0)>0&&canCarryLootChestReward(world,r.kind,contents[r.kind]??0)>0)} onClick={all}>Collect all that fits <span>→</span></button>
+  <button className="supply-primary rare-cache-collect-all" disabled={!canTake} onClick={takeAll}>
+   {!remaining?'Chest empty':!canTake?'Backpack full':'Collect all that fits'}
+  </button>
  </StationMenu>;
 }

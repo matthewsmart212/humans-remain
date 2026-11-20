@@ -3,7 +3,7 @@
 .game-start-scene{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;pointer-events:none}
 .game-start-shade{position:absolute;inset:0;pointer-events:none;background:linear-gradient(90deg,transparent 58%,#05191b38 71%,#05191bc4 100%),linear-gradient(0deg,#06191be0,transparent 26%)}
 .game-start [role=button]:focus-visible{outline:2px solid #ffc66c;outline-offset:4px}
-.game-start [aria-label="PLAY"]:focus,.game-start [aria-label="PLAY"]:focus-visible{outline:none!important;outline-offset:0!important;box-shadow:none!important;background-color:transparent}
+.game-start [aria-label="PLAY"]:focus-visible{outline:3px solid #e4c17b;outline-offset:4px}
 @media(orientation:portrait){.game-start-shade{background:linear-gradient(0deg,#05191bfa 2%,#05191bd9 43%,#05191b22 80%)}}
 
 /* Each illustrated plaque is a transparent extracted WebP.
@@ -256,3 +256,34 @@
 @media(orientation:portrait){.game-start-skip-art{width:clamp(130px,28vw,164px)}}
 
 @media(prefers-reduced-motion:reduce){.game-start-skip-art{transition:transform .12s ease,filter .12s ease}}
+
+.start-panel-dialog {
+  inset: 0;
+  width: min(510px, calc(100% - max(32px, env(safe-area-inset-left) + env(safe-area-inset-right) + 16px)));
+  max-height: calc(100dvh - max(32px, env(safe-area-inset-top) + env(safe-area-inset-bottom) + 16px));
+  padding: 0;
+  margin: auto;
+  border: 1px solid var(--station-line);
+  border-top-color: var(--station-brass);
+  border-radius: 10px;
+  background: linear-gradient(150deg,#303630,var(--station-panel) 40%);
+  color: var(--station-text);
+  box-shadow: 0 16px 60px #090c0ab0;
+  overscroll-behavior: contain;
+}
+.start-panel-dialog::backdrop { background: #101411b8; backdrop-filter: blur(4px); }
+#start-panel-content { max-height: inherit; width: 100%; border: none; background: transparent; border-radius: 0; }
+#start-panel-header { padding-bottom: 10px; border-bottom: 1px solid var(--station-line); }
+#start-panel-header [role=heading] { font: 800 clamp(28px,5vw,34px)/1.1 'Barlow Condensed',sans-serif; color: var(--station-text); }
+.start-panel-dialog [role=button], .start-panel-dialog [role=radio], .start-panel-dialog input {
+  border-radius: 6px;
+  border-color: var(--station-line);
+  background-color: var(--station-surface);
+}
+.start-panel-dialog [aria-label="Close panel"] { border: 1px solid var(--station-line); }
+.start-panel-dialog [aria-selected=true] { border-color: var(--station-brass); }
+.start-panel-dialog [role=button]:focus-visible,
+.start-panel-dialog [role=radio]:focus-visible,
+.start-panel-dialog input:focus-visible { outline: 3px solid var(--station-brass); outline-offset: 2px; }
+#start-panel-primary { background: var(--station-brass); border-color: var(--station-brass); }
+#start-panel-primary > * { color: var(--station-ink); }

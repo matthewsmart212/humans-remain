@@ -5,8 +5,7 @@ import {warehouseStockMask} from './warehouse-renderer';
 import {transferWarehouse,warehouseView} from './warehouse-storage';
 import {warehouseInventoryItems,warehouseMaterialForItem} from './warehouse-inventory';
 import {packLoad,storedCount} from './expedition-inventory';
-import {fieldKitArt} from './field-kit';
-import {InventoryGrid,InventoryDetail} from './InventoryUI';
+import {InventoryGrid,InventoryDetail,InventorySources} from './InventoryUI';
 import StationMenu from './StationMenu';
 import './warehouse.css';
 
@@ -24,10 +23,8 @@ export default function WarehousePanel({world,onClose,onChange}:{world:World;onC
   setMessage(n?`${taking?'Took':'Stored'} ${n} ${n===1?v.material.singular:v.material.unit} ${taking?'into your backpack':'in the warehouse'}.`:'Supplies or backpack space changed.');
   onChange();
  };
- return <StationMenu world={world} title="Warehouse" label="Warehouse storage" onClose={onClose} weight={load.weight} loadLabel={load.label} message={message} className="warehouse-menu" compact fitContent>
-  <div className="supply-tabs warehouse-tabs" role="group" aria-label="Choose inventory">
-   {[true,false].map(t=><button key={String(t)} aria-pressed={taking===t} aria-label={t?'View warehouse resources':'View backpack resources'} onClick={()=>{setTaking(t);setMessage('')}}><img src={fieldKitArt(t?'chest':'backpack')} alt=""/>{t?'Warehouse':'Backpack'}</button>)}
-  </div>
+ return <StationMenu world={world} title="Warehouse" image={WAREHOUSE_ART.empty} label="Warehouse storage" onClose={onClose} weight={load.weight} loadLabel={load.label} message={message} className="warehouse-menu" compact fitContent>
+  <InventorySources store="Warehouse" fromStore={taking} onChange={fromWarehouse=>{setTaking(fromWarehouse);setMessage('')}}/>
   <div className="supply-body warehouse-inventory-body">
    <div className="supply-inventory" role="group" aria-label={taking?'Warehouse resources':'Backpack resources'}>
     <InventoryGrid items={items} selected={item.id} showCounts onSelect={id=>{const material=warehouseMaterialForItem(id);if(material){setSelected(material);setMessage('')}}}/>

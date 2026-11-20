@@ -15,7 +15,7 @@ const source=fs.readFileSync('native/App.tsx','utf8');
 const ast=ts.createSourceFile('App.tsx',source,ts.ScriptTarget.Latest,true,ts.ScriptKind.TSX);
 const component=ast.statements.find(n=>ts.isFunctionDeclaration(n)&&n.name?.text==='Game');
 const styles=ast.statements.flatMap(n=>ts.isVariableStatement(n)?[...n.declarationList.declarations]:[]).find(n=>n.name.getText(ast)==='s');
-const modules=['run-save','station-menu-layout','continuous-zoom-state','continuous-zoom','studio-play','survival-engine','player-presentation','camp-lighting','weather-model','placed-world-renderer','editor-image-sources','world-assets','world-layout','terrain-art','scene-resources','scene-travel','world-scenes','performance-recording','performance-context','field-kit'];
+const modules=['station-palette','run-save','station-menu-layout','continuous-zoom-state','continuous-zoom','studio-play','survival-engine','player-presentation','camp-lighting','weather-model','placed-world-renderer','editor-image-sources','world-assets','world-layout','terrain-art','scene-resources','scene-travel','world-scenes','performance-recording','performance-context','field-kit'];
 const noop=()=>{};
 const nodes=tree=>Array.isArray(tree)?tree.flatMap(nodes):tree&&typeof tree==='object'&&tree.props?[tree,...nodes(tree.props.children)]:[];
 const text=tree=>Array.isArray(tree)?tree.map(text).join(' '):typeof tree==='string'?tree:tree?.props?text(tree.props.children):'';

@@ -1,68 +1,69 @@
-import React,{useCallback,useEffect,useId,useRef,useState} from 'react';
+import React,{useState} from 'react';
 import StationMenu from './StationMenu';
-import {fieldKitArt} from './field-kit';
+import {ProductionDialog,RecipeChoice} from './ProductionControls';
 import {smithyView} from './smithy-view';
 import {smithyAction} from './station-menu-model';
 import type {World} from './survival-engine';
 import type {GearKind} from './player-gear';
 import type {CraftCategory} from './forge-recipes';
+import './inventory-catalog.css';
 import './smithy.css';
 
 export default function SmithyPanel({world,onClose,onChange}:{world:World;onClose:()=>void;onChange:()=>void}){
  const [category,setCategory]=useState<CraftCategory>('tools');
  const [selected,setSelected]=useState<GearKind>('woodenAxe');
  const [more,setMore]=useState(false),[message,setMessage]=useState('');
- const infoButton=useRef<HTMLButtonElement>(null),infoClose=useRef<HTMLButtonElement>(null);
- const closeInfo=useCallback(()=>{setMore(false);infoButton.current?.focus({preventScroll:true})},[]);
- useEffect(()=>{
-  if(!more)return;
-  infoClose.current?.focus({preventScroll:true});
-  const escape=(event:KeyboardEvent)=>{if(event.key==='Escape'){event.preventDefault();event.stopPropagation();closeInfo()}};
-  document.addEventListener('keydown',escape,true);
-  return()=>document.removeEventListener('keydown',escape,true);
- },[more,closeInfo]);
- const infoId=useId(),v=smithyView(world);
+ const v=smithyView(world);
  if(!v)return null;
  const recipes=v.recipes.filter(recipe=>recipe.category===category);
- const r=recipes.find(recipe=>recipe.id===selected)??recipes[0];
+ const recipe=recipes.find(item=>item.id===selected)??recipes[0];
  const chooseCategory=(next:CraftCategory)=>{
   setCategory(next);
-  setSelected(v.recipes.find(recipe=>recipe.category===next)!.id);
-  setMore(false);setMessage('');
+  setSelected(v.recipes.find(item=>item.category===next)!.id);
+  setMore(false);
+  setMessage('');
  };
- const craft=()=>{setMessage(r.craft()?`${r.name} added to your backpack.`:'Supplies or space changed. Check the recipe.');onChange()};
- const action=r.canCraft?(r.count>1?`Craft ×${r.count}`:'Craft'):smithyAction(r);
+ const craft=()=>{
+  setMessage(recipe.craft()?`${recipe.name} added to your backpack.`:'Supplies or space changed. Check the recipe.');
+  onChange();
+ };
+ const status=recipe.canCraft?'Ready to craft':smithyAction(recipe);
 
- return <StationMenu compact world={world} title="Camp smithy" image={v.image} closeLabel="Leave smithy" onClose={onClose} weight={v.weight} loadLabel={v.loadLabel} message={message} className="smithy-menu">
+ return <StationMenu compact world={world} title="Camp smithy" image={v.image} closeLabel="Leave smithy" onClose={onClose}
+  weight={v.weight} loadLabel={v.loadLabel} message={message} className="production-menu smithy-menu">
   <div className="smithy-category-tabs" role="group" aria-label="Equipment category">
-   {v.categories.map(c=><button key={c.id} aria-pressed={category===c.id} onClick={()=>chooseCategory(c.id)}>{c.label}</button>)}
+   {v.categories.map(c=><button key={c.id} type="button" aria-pressed={category===c.id} onClick={()=>chooseCategory(c.id)}>{c.label}</button>)}
   </div>
-  <div className="smithy-catalog" data-category={category} role="group" aria-label={`${v.categories.find(c=>c.id===category)!.label} recipes`}>
-   {recipes.map(item=><button className="smithy-tile" key={item.id} aria-pressed={r.id===item.id} aria-label={`Select ${item.name}. ${item.owned} in backpack. ${item.status}`} onClick={()=>{setSelected(item.id);setMore(false);setMessage('')}}>
-    <img className="smithy-tile-art" src={item.image} alt=""/>
-    <strong>{item.name}</strong>
-    {item.owned>0&&<span className="smithy-bag-badge" aria-label={`${item.owned} in backpack`}><img src={fieldKitArt('backpack')} alt=""/>×{item.owned}</span>}
-   </button>)}
+  <div className="smithy-catalog production-recipes" role="group" aria-label={`${v.categories.find(c=>c.id===category)!.label} recipes`}>
+   {recipes.map(item=><RecipeChoice key={item.id} name={item.name} image={item.image}
+    detail={item.canCraft?'Ready to craft':smithyAction(item)} stock={`${item.owned} in backpack`}
+    label={`Select ${item.name}. ${item.owned} in backpack. ${item.status}`} selected={recipe.id===item.id}
+    onSelect={()=>{setSelected(item.id);setMore(false);setMessage('')}} />)}
   </div>
-  <section className="smithy-selection" aria-label="Selected recipe">
-   <div className="smithy-selection-heading">
-    <img src={r.image} alt=""/><h3>{r.name}</h3>
-    <button ref={infoButton} className="smithy-info-toggle" aria-label={`Item information for ${r.name}`} aria-expanded={more} aria-controls={infoId} onClick={()=>more?closeInfo():setMore(true)}><span aria-hidden="true">i</span></button>
-    <small>Backpack + camp</small>
+  <section className="production-batch" aria-label="Selected recipe">
+   <div className="production-batch-summary">
+    <strong>{recipe.name}</strong>
+    <button type="button" className="production-icon" aria-haspopup="dialog" aria-label={`Item information for ${recipe.name}`} onClick={()=>setMore(true)}>
+     <span className="production-info-mark" aria-hidden="true">i</span>
+    </button>
+    <span data-blocked={!recipe.canCraft||undefined}>{status}</span>
    </div>
-   {more&&<div id={infoId} className="smithy-info-card" role="region" aria-label={`${r.name} information`} onKeyDown={e=>{if(e.key==='Escape'){e.preventDefault();e.stopPropagation();closeInfo()}}}>
-    <div className="smithy-info-heading"><strong>{r.name}</strong><button ref={infoClose} aria-label="Close item information" onClick={closeInfo}>×</button></div>
-    <p className="smithy-info-stats">{r.stat[0]} <b>{r.stat[1]}</b><span> · {r.weight.toFixed(2).replace(/0$/,'')} kg</span></p>
-    <p>{r.description}</p><p className="smithy-info-ownership">Backpack <b>{r.owned}</b><span>Storage <b>{r.stored}</b></span></p>
-   </div>}
    <div className="smithy-craft-row">
-    <div className="smithy-costs" aria-label="Materials needed">
-     {r.ingredients.map(m=><div className="smithy-cost" key={m.id} data-enough={m.enough} title={`${m.bag} in backpack · ${m.camp} in camp stores`}>
-      <img src={m.image} alt=""/><span>{m.name}</span><b aria-label={`${m.available} available, ${m.needed} needed`}>{m.available}<small> / {m.needed}</small></b>
+    <div className="smithy-costs" role="group" aria-label="Materials available and required from backpack and camp">
+     {recipe.ingredients.map(m=><div className="smithy-cost" key={m.id} data-blocked={!m.enough||undefined}
+      title={`${m.bag} in backpack · ${m.camp} in camp stores`}>
+      <img src={m.image} alt=""/><span>{m.name}<b aria-label={`${m.available} available, ${m.needed} needed`}>{m.available} / {m.needed}</b></span>
      </div>)}
     </div>
-    <button className="supply-primary smithy-craft-action" disabled={!r.canCraft} aria-label={`Craft ${r.name}. ${r.status}`} onClick={craft}>{action}</button>
+    <button type="button" className="production-primary" disabled={!recipe.canCraft}
+     aria-label={`Craft ${recipe.name}. ${status}`} onClick={craft}>{recipe.count>1?`Craft ×${recipe.count}`:'Craft'}</button>
    </div>
   </section>
+  {more&&<ProductionDialog title={recipe.name} closeLabel="Close item information" onClose={()=>setMore(false)}>
+   <div className="production-output"><img src={recipe.image} alt=""/><strong>{recipe.stat[0]} · {recipe.stat[1]}</strong></div>
+   <p>{recipe.description}</p>
+   <p>{Number(recipe.weight.toFixed(2))} kg · {recipe.owned} in backpack · {recipe.stored} in storage</p>
+   <p>{v.hint}</p>
+  </ProductionDialog>}
  </StationMenu>;
 }

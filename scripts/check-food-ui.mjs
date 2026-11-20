@@ -9,13 +9,13 @@ const require=createRequire(import.meta.url),temp=fs.mkdtempSync(path.join(os.tm
 let state=[],cursor=0;
 globalThis.__foodUIReact={
  createElement:(type,props,...children)=>({type,props:{...props,children}}),
- useId:()=> 'food-ui-id',useRef:value=>({current:value}),useEffect:()=>{},
+ useId:()=> 'food-ui-id',useRef:value=>({current:value}),useEffect:()=>{},useLayoutEffect:()=>{},
  useState:value=>{const i=cursor++;if(!(i in state))state[i]=typeof value==='function'?value():value;return[state[i],next=>{state[i]=typeof next==='function'?next(state[i]):next}]},
 };
 const aliases={
  react:'module.exports=globalThis.__foodUIReact;',
  'react/jsx-runtime':"export const jsx=(type,props)=>({type,props});export const jsxs=jsx;export const Fragment='fragment';",
- 'react-native':`export const View='view',Text='text',Image='image',Pressable='pressable',ScrollView='scroll';
+ 'react-native':`export const View='view',Text='text',Image='image',Pressable='pressable',ScrollView='scroll';export const BackHandler={addEventListener:()=>({remove(){}})};
   export const AccessibilityInfo={isReduceMotionEnabled:async()=>true,addEventListener:()=>({remove(){}})};
   export const Animated={View:'animated-view',Value:class{constructor(value){this.value=value}},timing:()=>({start(){},stop(){}})};
   export const StyleSheet={create:x=>x,absoluteFill:{position:'absolute',left:0,right:0,top:0,bottom:0}};`,
@@ -49,7 +49,7 @@ try{
  const m=require(path.join(temp,'ui.cjs'));
  const make=()=>{const w=m.createWorld();w.loot=[];w.animals=[];w.enemies=[];for(const id of Object.keys(w.gear.bag))w.gear.bag[id]=0;Object.assign(w.player,{x:1500,y:1500,hp:40,stamina:20});w.hunger=20;w.thirst=20;return w};
  const sample=w=>new m.FieldKitController().sample(w);
- const expected={berries:['+6food'],apple:['+14food','+6water'],beans:['+32food'],energyBar:['+18food','+30stamina'],huntersMeal:['+65food','+20healthover20s']};
+ const expected={potato:['+12food'],carrot:['+12food'],berries:['+6food'],apple:['+14food','+6water'],beans:['+32food'],energyBar:['+18food','+30stamina'],huntersMeal:['+65food','+20healthover20s']};
  const reports=[];
  for(const platform of ['web','native']){
   const Detail=m[platform==='web'?'WebDetail':'NativeDetail'],Quick=m[platform==='web'?'WebQuick':'NativeQuick'],Fire=m[platform==='web'?'WebFire':'NativeFire'];
@@ -84,12 +84,28 @@ try{
 
   state=[];const fireWorld=make();Object.assign(fireWorld.player,m.stationFront(fireWorld.camp,'hearth'));m.setItemCount(fireWorld,'cookedVenison',2);m.setItemCount(fireWorld,'berries',4);let changed=0;
   const fireProps={world:fireWorld,width:844,height:390,safe:{top:0,right:0,bottom:0,left:0},onClose(){},onChange(){changed++}};
-  const prepare=n=>buttons(n).find(b=>label(b).startsWith('Prepare Hunter’s meal.'));
-  tree=render(Fire,fireProps);let button=prepare(tree);assert(button&&!button.props.disabled);assert(label(button).includes('1 cooked meat + 2 berries'));assert(label(button).includes('20 health over 20 seconds'));
-  press(button);assert.equal(changed,1);assert.equal(m.itemCount(fireWorld,'cookedVenison'),1);assert.equal(m.itemCount(fireWorld,'berries'),2);assert.equal(m.itemCount(fireWorld,'huntersMeal'),1);
-  tree=render(Fire,fireProps);button=prepare(tree);assert(normalized(button).includes('×1'),'Craftable count updates after preparing a meal');press(button);assert.equal(m.itemCount(fireWorld,'huntersMeal'),2);
-  tree=render(Fire,fireProps);assert(prepare(tree).props.disabled,'Preparation disables after the remaining ingredients are used');assert.equal(m.itemCount(fireWorld,'berries'),0);assert.equal(m.itemCount(fireWorld,'cookedVenison'),0);
-  reports.push(`${platform}: five food benefit displays and pending-recovery no-waste state; owned quick slots and exact counts; selection and last-stack fallback; working campfire preparation and state refresh`);
+  const mealDetails = tree => buttons(tree).find(button => /^Prepare (?:a )?meal$/i.test(label(button) || text(button)));
+  const prepare = tree => buttons(tree).find(button => label(button) === 'Prepare Hunter’s meal');
+  const openMeal = () => {
+   const entry = mealDetails(render(Fire, fireProps));
+   press(entry);
+   return render(Fire, fireProps);
+  };
+  tree = openMeal();
+  assert.match(text(tree), /1 cooked meat \+ 2 berries/i);
+  assert.match(text(tree), /20 health over 20(?: seconds|s)/);
+  press(prepare(tree));
+  assert.equal(changed, 1);
+  assert.equal(m.itemCount(fireWorld, 'cookedVenison'), 1);
+  assert.equal(m.itemCount(fireWorld, 'berries'), 2);
+  assert.equal(m.itemCount(fireWorld, 'huntersMeal'), 1);
+  press(prepare(openMeal()));
+  assert.equal(m.itemCount(fireWorld, 'huntersMeal'), 2);
+  tree = render(Fire, fireProps);
+  assert(!mealDetails(tree), 'Preparation closes once all ingredients have been used');
+  assert.equal(m.itemCount(fireWorld, 'berries'), 0);
+  assert.equal(m.itemCount(fireWorld, 'cookedVenison'), 0);
+  reports.push(`${platform}: all provision benefit displays and pending-recovery no-waste state; owned quick slots and exact counts; selection and last-stack fallback; working campfire preparation and state refresh`);
  }
  console.log(JSON.stringify({passed:true,checks:reports,browserTested:false,physicalDeviceTested:false},null,2));
 }finally{fs.rmSync(temp,{recursive:true,force:true});delete globalThis.__foodUIReact}

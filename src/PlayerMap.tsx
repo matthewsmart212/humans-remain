@@ -8,6 +8,7 @@ import {playerMapLabels} from './player-map-labels';
 import {PLAYER_MAP_NIGHT,playerMapNightAmount,playerMapInk} from './player-map-lighting';
 import {clearWaypoint,currentWaypoint,placeWaypoint,WaypointTap,WAYPOINT_PIN} from './waypoint';
 import './player-map.css';
+import {stationCSSColors} from './station-css-colors';
 
 type Props={world:RefObject<World>;open:boolean;onClose:()=>void;continuous?:{zoom:number;entry:number;opacity:number;focus:Vec}};
 type Position={world:World;layout:World['layout'];scene:World['scene'];x:number;y:number;direction:Direction;waypoint:World['waypoint'];night:number;fireLit:boolean};
@@ -18,7 +19,7 @@ export function preloadPlayerMap(world:World){prefetchPlayerMapImages([...player
 
 /** The map owns its camera. Its terrain and marker share the game's world units. */
 export default function PlayerMap({world,open,onClose,continuous}:Props){
- return <div className="player-map-dialog live-atlas" style={{display:open?'block':'none',opacity:continuous?.opacity??1}} role="region" aria-label="World map">
+ return <div className="player-map-dialog live-atlas" style={{...stationCSSColors,display:open?'block':'none',opacity:continuous?.opacity??1}} role="region" aria-label="World map">
   {open&&<PlayerMapContent open={open} world={world} onClose={onClose} titleId="world-map" continuous={continuous}/>}
  </div>;
 }
@@ -129,10 +130,10 @@ function PlayerMapContent({world,onClose,continuous}:Props&{titleId:string}){
  const visibleLandmarks=playerMapLabels(features,view,size.width,size.height,camera.zoom,point,artReady);
 
  return <section className="player-map-shell" data-night={position.night.toFixed(3)} style={{'--map-night':position.night,'--map-ink':playerMapInk(position.night),'--map-caption-shadow':`rgba(3,15,27,${Math.min(1,position.night*3)})`} as CSSProperties}>
-  <button type="button" className="player-map-close" aria-label="Exit map" title="Exit map (M / Esc)" onClick={onClose}><X size={22} strokeWidth={3}/><span className="player-map-close-binding" aria-hidden="true"/></button>
-  <button type="button" className="player-map-close player-map-place" aria-label={placingWaypoint?'Cancel waypoint placement':'Place waypoint'} aria-pressed={placingWaypoint} title="Place waypoint" onPointerDown={e=>e.stopPropagation()} onClick={()=>{waypointTap.current.cancel();setPlacingWaypoint(v=>!v)}}><MapPinPlus size={23}/><span className="player-map-close-binding" aria-hidden="true"/></button>
+  <button type="button" className="player-map-close" aria-label="Exit map" title="Exit map (M / Esc)" onClick={onClose}><X size={22} strokeWidth={2}/></button>
+  <button type="button" className="player-map-close player-map-place" aria-label={placingWaypoint?'Cancel waypoint placement':'Place waypoint'} aria-pressed={placingWaypoint} title="Place waypoint" onPointerDown={e=>e.stopPropagation()} onClick={()=>{waypointTap.current.cancel();setPlacingWaypoint(v=>!v)}}><MapPinPlus size={23}/></button>
   {position.waypoint&&<button type="button" className="player-map-close player-map-clear" aria-label="Remove waypoint" title="Remove waypoint" onPointerDown={e=>e.stopPropagation()} onClick={removeDestination}><Trash2 size={20}/></button>}
-  {placingWaypoint&&<div className="player-map-placement-hint" role="status">Tap a spot to set your waypoint</div>}
+  {placingWaypoint&&<div className="player-map-placement-hint" role="status">Select a spot, or focus the map and press Enter.</div>}
   <div ref={viewport} className={`player-map-viewport${placingWaypoint?' is-placing-waypoint':''}`} aria-label={`Map of ${model.name}. You are facing ${currentHeading}. Drag to explore; pinch or scroll to zoom.`} tabIndex={0}
    onPointerDown={e=>{if(e.button!==0)return;e.preventDefault();if(!continuous||!e.currentTarget.closest('.we-world')?.hasPointerCapture(e.pointerId))e.currentTarget.setPointerCapture(e.pointerId);const p=local(e);if(e.isPrimary){fingers.current.clear();gesture.current=null;waypointTap.current.cancel()}fingers.current.set(e.pointerId,p);if(placingWaypoint)waypointTap.current.begin(e.pointerId,p.x,p.y,fingers.current.size);beginGesture()}} onPointerMove={move} onPointerUp={e=>{const p=local(e);if(placingWaypoint&&fingers.current.size===1&&waypointTap.current.end(e.pointerId,p.x,p.y))setDestination(p);end(e)}} onPointerCancel={e=>{waypointTap.current.cancel();end(e)}} onLostPointerCapture={e=>{waypointTap.current.cancel();end(e)}} onContextMenu={e=>e.preventDefault()}
    onKeyDown={e=>{if(placingWaypoint&&(e.key==='Enter'||e.key==='Escape')){e.preventDefault();e.stopPropagation();if(e.key==='Enter')setDestination({x:size.width/2,y:size.height/2});else setPlacingWaypoint(false);return}if(['ArrowUp','ArrowDown','ArrowLeft','ArrowRight','+','=','-','0','f','F'].includes(e.key)){e.preventDefault();e.stopPropagation();if(e.key==='+'||e.key==='=')zoomBy(1.4);else if(e.key==='-')zoomBy(1/1.4);else if(e.key==='0')fit();else if(e.key.toLowerCase()==='f')locate();else{const center=centerOfView(),step=80/view.scale;setFollowing(false);setCamera(old=>({...old,focus:{x:center.x+(e.key==='ArrowRight'?step:e.key==='ArrowLeft'?-step:0),y:center.y+(e.key==='ArrowDown'?step:e.key==='ArrowUp'?-step:0)}}))}}}}>

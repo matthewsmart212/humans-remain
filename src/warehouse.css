@@ -2,7 +2,6 @@
 .warehouse-picture img{position:absolute;inset:0;width:100%;height:100%;object-fit:contain}
 
 /* Use the backpack's slots and detail panel; only the source and actions change. */
-.station-menu.warehouse-menu .warehouse-tabs{position:static;inset:auto;width:auto;margin:0;flex-shrink:0}
 .station-menu.warehouse-menu .warehouse-inventory-body{display:grid;grid-template-columns:minmax(0,.9fr) minmax(0,1.1fr);grid-template-rows:1fr;gap:8px;flex:0 1 auto;min-height:0;overflow:hidden}
 .station-menu.warehouse-menu .supply-inventory{min-height:0;max-height:none;overflow:auto;padding:2px}
 .station-menu.warehouse-menu .supply-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
@@ -10,11 +9,11 @@
 .station-menu.warehouse-menu .supply-detail-copy{flex:1;min-height:0;overflow:auto}
 .station-menu.warehouse-menu .supply-item-heading small{display:none}
 .station-menu.warehouse-menu .supply-facts{margin:5px 0 0;gap:6px}
-.station-menu.warehouse-menu .supply-facts dt{font-size:10px}
+.station-menu.warehouse-menu .supply-facts dt{font-size:13px}
 .station-menu.warehouse-menu .supply-facts dd{font-size:17px;font-variant-numeric:tabular-nums}
 .station-menu.warehouse-menu .warehouse-transfer-actions{flex-shrink:0;flex-wrap:nowrap;margin-top:auto}
-.camp-studio .field-kit .station-menu.warehouse-menu .warehouse-transfer-actions button{min-width:0;min-height:44px;padding:7px 5px;font-size:12px}
-.warehouse-empty-reason{margin:0;color:#c2cfb6;font:400 10px/1.3 Barlow,sans-serif}
+.camp-studio .field-kit .station-menu.warehouse-menu .warehouse-transfer-actions button{min-width:0;min-height:44px;padding:7px 5px;font-size:13px}
+.warehouse-empty-reason{margin:0;color:var(--station-muted);font:500 13px/1.3 Barlow,sans-serif}
 
 /* Portrait uses one row of slots and keeps both actions in sight. */
 .station-menu.warehouse-menu[data-wide=false] .warehouse-inventory-body{display:flex;flex-direction:column;gap:6px}
@@ -25,5 +24,13 @@
 .station-menu.warehouse-menu[data-wide=false] .supply-item-heading{margin:0}
 .station-menu.warehouse-menu[data-wide=false] .supply-item-heading h3{font-size:20px}
 .station-menu.warehouse-menu[data-wide=false] .supply-facts{margin:0;gap:4px}
-.station-menu.warehouse-menu[data-wide=false] .supply-facts dt{font-size:9px}
+.station-menu.warehouse-menu[data-wide=false] .supply-facts dt{font-size:13px}
 .station-menu.warehouse-menu[data-wide=false] .supply-facts dd{font-size:15px}
+@media (max-height: 440px) and (orientation: landscape) {
+ .station-menu.warehouse-menu .supply-item-heading { margin-bottom: 2px; gap: 6px; }
+ .station-menu.warehouse-menu .supply-item-art,.station-menu.warehouse-menu .supply-item-art img { width: 31px; height: 31px; }
+ .station-menu.warehouse-menu .supply-facts { margin: 2px 0; gap: 5px; }
+ .station-menu.warehouse-menu .supply-facts > div { padding: 2px; }
+ .station-menu.warehouse-menu .supply-facts dd { margin-top: 1px; font-size: 14px; }
+ .station-menu.warehouse-menu .supply-detail { padding: 5px; gap: 3px; }
+}

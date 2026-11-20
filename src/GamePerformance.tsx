@@ -12,10 +12,10 @@ export function GamePerformanceOverlay({recorder}:{recorder:GamePerformanceRecor
   {s.recording&&<b>● REC {performanceDuration(s.wallSeconds)}</b>}
  </div>;
 }
-export function PerformanceMenuOptions({recorder,onOpen,onSpawn}:{recorder:GamePerformanceRecorder;onOpen:()=>void;onSpawn?:()=>void}){
+export function PerformanceMenuOptions({recorder,onOpen,onSpawn}:{recorder:GamePerformanceRecorder;onOpen:(trigger?:HTMLButtonElement)=>void;onSpawn?:(trigger?:HTMLButtonElement)=>void}){
  const s=usePerformanceSnapshot(recorder);
  return <><button type="button" role="switch" aria-checked={s.overlay} onClick={()=>recorder.setOverlay(!s.overlay)}><Activity size={18}/>Show FPS &amp; frame time <b className="performance-toggle">{s.overlay?'ON':'OFF'}</b></button>
-  <div className="game-menu-tools"><button type="button" onClick={onOpen}><Activity size={18}/>{s.recording?'Performance · recording':'Performance recording'}</button>{onSpawn&&<button type="button" onClick={onSpawn}><Plus size={18}/>Spawn</button>}</div></>;
+  <div className="game-menu-tools"><button type="button" onClick={e=>onOpen(e?.currentTarget)}><Activity size={18}/>{s.recording?'Performance · recording':'Performance recording'}</button>{onSpawn&&<button type="button" onClick={e=>onSpawn(e.currentTarget)}><Plus size={18}/>Spawn</button>}</div></>;
 }
 export async function exportPerformanceLog(recorder:GamePerformanceRecorder){
  const json=recorder.exportJson(),file=new File([json],recorder.filename(),{type:'application/json'});

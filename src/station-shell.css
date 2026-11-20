@@ -1,0 +1,130 @@
+/* A single field-equipment frame around every camp interaction. */
+.station-menu-layer {
+  background: linear-gradient(90deg, transparent 18%, #14181530 70%, #11161270);
+}
+.camp-studio .field-kit .station-menu-layer .station-menu {
+  gap: 10px;
+  padding: 12px 16px 10px;
+  border: 1px solid var(--station-line);
+  border-top-color: var(--station-brass);
+  border-radius: 10px;
+  background: linear-gradient(150deg, #303630, var(--station-panel) 40%);
+  color: var(--station-text);
+  box-shadow: 0 16px 60px #090c0ab0, inset 0 1px #ffffff0a;
+}
+.station-menu-layer .station-menu::before,
+.station-menu-layer .station-menu::after { content: none; }
+.station-menu-layer .station-menu-header {
+  box-sizing: border-box;
+  gap: 12px;
+  height: auto;
+  min-height: 54px;
+  padding: 0 0 9px;
+  border-color: var(--station-line);
+}
+.station-menu-layer .station-menu-header > img {
+  box-sizing: border-box;
+  width: 44px;
+  height: 44px;
+  padding: 3px;
+  object-fit: contain;
+  filter: drop-shadow(0 2px 3px #0006);
+}
+.station-menu-layer .station-menu-header h2 {
+  margin: 0;
+  font: 800 clamp(25px, 5cqi, 34px)/1 'Barlow Condensed', sans-serif;
+  color: var(--station-text);
+}
+.station-menu-layer .station-menu-header small {
+  margin-top: 3px;
+  font: 500 12px/1.25 Barlow, sans-serif;
+  color: var(--station-muted);
+}
+.camp-studio .field-kit .station-menu-layer .station-menu button.station-menu-close {
+  display: grid;
+  place-items: center;
+  width: 44px;
+  height: 44px;
+  min-width: 44px;
+  min-height: 44px;
+  padding: 0;
+  border: 1px solid var(--station-line);
+  border-radius: 7px;
+  background: var(--station-surface);
+  color: var(--station-text);
+}
+.station-menu-layer .station-menu-content { gap: 9px; }
+.station-menu-layer .station-menu-footer {
+  border-color: var(--station-line);
+  padding-top: 7px;
+  gap: 4px;
+}
+.station-menu-layer .station-menu-footer > p,
+.station-menu-layer .station-menu .station-menu-load {
+  color: var(--station-muted);
+  font: 500 12px/1.25 Barlow, sans-serif;
+}
+.station-menu-layer .station-menu .station-menu-load strong {
+  color: var(--station-text);
+  font-variant-numeric: tabular-nums;
+}
+.station-menu-layer .station-menu-load > img { width: 20px; height: 20px; }
+.station-menu-layer .station-menu .station-menu-load > div[role=progressbar] {
+  flex: 1 1 28px;
+  max-width: 100px;
+  order: 0;
+  background: var(--station-inset);
+}
+.station-menu-layer .station-menu-load i { background: var(--station-muted); }
+.station-menu-layer .station-menu-load [data-heavy=true] i { background: var(--station-danger); }
+.station-menu-layer .station-menu-load .station-load-status { color: var(--station-danger); margin: 0; }
+.station-menu-layer .station-menu .station-menu-footer-action { margin-left: auto; }
+.camp-studio .field-kit .station-menu .station-menu-footer-action button {
+  min-height: 32px;
+  font-size: 13px;
+  color: var(--station-text);
+}
+.camp-studio .field-kit .station-menu-layer .station-menu button.supply-primary:not(:disabled) {
+  border-color: var(--station-brass);
+  background: var(--station-brass);
+  color: var(--station-ink);
+  text-shadow: none;
+}
+.camp-studio .field-kit .station-menu-layer .station-menu button.supply-primary:hover:not(:disabled) {
+  color: var(--station-ink);
+  background: #f0d6a5 !important;
+}
+.station-menu-layer .station-menu :is(button, summary, input, select):focus-visible {
+  outline: 2px solid #fff2c7;
+  outline-offset: -3px;
+}
+.station-menu-layer .station-menu .station-menu-feedback {
+  flex: 1 1 12ch;
+  min-height: 20px;
+  margin: 0;
+  padding-left: 8px;
+  border-left: 2px solid var(--station-brass);
+  color: var(--station-text);
+  font: 500 13px/20px Barlow, sans-serif;
+}
+.camp-studio .field-kit .station-menu-layer .station-menu[data-short=true] { padding: 6px 10px; gap: 5px; }
+.station-menu-layer .station-menu[data-short=true] .station-menu-header { min-height: 44px; padding-bottom: 2px; gap: 8px; }
+.station-menu-layer .station-menu[data-short=true] .station-menu-header > img { width: 34px; height: 34px; }
+.station-menu-layer .station-menu[data-short=true] .station-menu-header h2 { font-size: 24px; }
+.station-menu-layer .station-menu[data-short=true] .station-menu-footer { padding-top: 3px; }
+.station-close-mark {
+  display: grid;
+  width: 19px;
+  height: 19px;
+  place-items: center;
+}
+.station-close-mark::before, .station-close-mark::after {
+  content: '';
+  grid-area: 1 / 1;
+  width: 19px;
+  height: 2px;
+  border-radius: 2px;
+  background: currentColor;
+  transform: rotate(45deg);
+}
+.station-close-mark::after { transform: rotate(-45deg); }

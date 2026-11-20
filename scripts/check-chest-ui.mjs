@@ -27,7 +27,7 @@ globalThis.__chestReact={
 const aliases={
  react:'module.exports=globalThis.__chestReact;',
  'react/jsx-runtime':"export const jsx=(type,props)=>({type,props});export const jsxs=jsx;export const Fragment='fragment';",
- 'react-native':"export const View='view',Text='text',Image='image',Pressable='pressable',ScrollView='scroll';export const useWindowDimensions=()=>({width:844,height:390});export const StyleSheet={create:x=>x,absoluteFill:{position:'absolute',left:0,right:0,top:0,bottom:0}};",
+ 'react-native':"export const View='view',Text='text',Image='image',Pressable='pressable',ScrollView='scroll';export const BackHandler={addEventListener:()=>({remove(){}})};export const useWindowDimensions=()=>({width:844,height:390});export const StyleSheet={create:x=>x,absoluteFill:{position:'absolute',left:0,right:0,top:0,bottom:0}};",
 };
 const expand=node=>node==null||typeof node==='boolean'?null:Array.isArray(node)?node.flat(9).map(expand).filter(Boolean):typeof node!=='object'?node:typeof node.type==='function'?expand(node.type(node.props)):{...node,props:{...node.props,children:expand(node.props?.children)}};
 const all=node=>node==null?[]:Array.isArray(node)?node.flatMap(all):typeof node!=='object'?[]:[node,...all(node.props?.children)];
@@ -56,14 +56,14 @@ const assertNoSelection=(tree,packing)=>{
 const inventory=world=>JSON.stringify({bag:world.bag,stock:world.stock,gear:world.gear,cooked:world.cooked,cookedRabbit:world.cookedRabbit,cookedVenison:world.cookedVenison,kit:world.kit,equipped:world.player.equipped});
 
 try{
- await build({stdin:{contents:"export {default as WebChest} from './src/ChestPanel';export {default as NativeChest} from './native/ChestPanel';export * from './src/chest-inventory';export * from './src/world-layout';export * from './src/survival-engine';export * from './src/player-gear';export * from './src/expedition-inventory';",resolveDir:process.cwd()},bundle:true,platform:'node',format:'cjs',outfile:path.join(tmp,'check.cjs'),loader:{'.css':'empty'},plugins:[{name:'platform-stubs',setup(builder){
+ await build({stdin:{contents:"export {default as WebChest} from './src/ChestPanel';export {default as NativeChest} from './native/ChestPanel';export * from './src/chest-inventory';export * from './src/world-layout';export {chestDock} from './src/station-access';export * from './src/survival-engine';export * from './src/player-gear';export * from './src/expedition-inventory';",resolveDir:process.cwd()},bundle:true,platform:'node',format:'cjs',outfile:path.join(tmp,'check.cjs'),loader:{'.css':'empty'},plugins:[{name:'platform-stubs',setup(builder){
   builder.onResolve({filter:/^(react(?:\/jsx-runtime)?|react-native)$/},args=>({path:args.path,namespace:'platform'}));
   builder.onLoad({filter:/.*/,namespace:'platform'},args=>({contents:aliases[args.path],loader:'js'}));
   builder.onLoad({filter:/\.(png|webp|ttf)$/},args=>({contents:`module.exports=${JSON.stringify(args.path)}`,loader:'js'}));
  }}]});
  const m=require(path.join(tmp,'check.cjs'));
  const make=(gearCount=1)=>{
-  const chest={...m.newPlacement('art_hq_storage_chest',1600,1600),id:'chest'},world=m.createWorld({...m.emptyLayout(),spawn:{x:1600,y:1690},items:[chest]});
+  const chest={...m.newPlacement('art_hq_storage_chest',1600,1600),id:'chest'},world=m.createWorld({...m.emptyLayout(),spawn:m.chestDock(chest),items:[chest]});
   world.stationPanel='storage';for(const id of Object.keys(m.GEAR)){world.gear.bag[id]=0;world.gear.chest[id]=gearCount}world.animals=[];world.enemies=[];world.loot=[];return world;
  };
  const mount=(platform,world)=>{

@@ -1,3 +1,4 @@
+import {stationPalette as palette} from '../src/station-palette';
 import React,{useState} from 'react';
 import {View,Text,Pressable,ScrollView,Image,StyleSheet} from 'react-native';
 import StationMenu,{stationMenuLayout} from './StationMenu';
@@ -41,7 +42,7 @@ export default function WarehousePanel({world,width,height,onClose,onChange,safe
  </StationMenu>;
 }
 const n=StyleSheet.create({
- tabs:{padding:2,flexShrink:0},tab:{minHeight:44},tabIcon:{width:23,height:23},tabText:{fontSize:13,fontWeight:'700',color:'#f1e3be'},
+ tabs:{padding:2,flexShrink:0},tab:{minHeight:44},tabIcon:{width:23,height:23},tabText:{fontSize:13,fontWeight:'700',color:palette.text},
  layout:{gap:8},inventoryWide:{flex:0,width:'44%'},inventoryPortrait:{flex:0,height:82,minHeight:0},inventoryContent:{padding:3},
- actions:{flexWrap:'nowrap'},blocked:{fontSize:10,lineHeight:13,color:'#c2cfb6',marginBottom:5},
+ actions:{flexWrap:'nowrap'},blocked:{fontSize:10,lineHeight:13,color:palette.muted,marginBottom:5},
 });

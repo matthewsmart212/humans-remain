@@ -1,59 +1,105 @@
-import React,{useEffect,useRef,useState} from 'react';
+import React, {useEffect, useRef, useState} from 'react';
 import type {World} from './survival-engine';
 import type {FoodSpecies} from './food-items';
 import {campfireView} from './campfire-view';
-import {campfireFoodSelection,queueCampfireFood} from './campfire-menu';
-import {BAG_IMAGES} from './backpack';
+import {campfireFoodSelection, queueCampfireFood} from './campfire-menu';
+import {LOG_BURN_SECONDS} from './camp-kitchen';
 import {packLoad} from './expedition-inventory';
+import {BatchAction, FuelControl, ProductionDialog, ProductionJob, RecipeChoice} from './ProductionControls';
 import StationMenu from './StationMenu';
-import './campfire-inventory.css';
 
-export default function CampfirePanel({world,onClose,onChange}:{world:World;onClose:()=>void;onChange:()=>void}){
- const [selected,setSelected]=useState<FoodSpecies|null>(null),[quantity,setQuantity]=useState(1),[message,setMessage]=useState(''),[more,setMore]=useState<'food'|'meal'|null>(null);
- const body=useRef<HTMLDivElement>(null),focusInside=useRef<HTMLElement|null>(null),fuelButton=useRef<HTMLButtonElement>(null),focusAfterAdd=useRef(false);
- const v=campfireView(world),load=packLoad(world),available=v.food.filter(f=>f.count>0),jobs=v.jobs.filter(j=>j!==null);
- const {food,limit,amount,blocked}=campfireFoodSelection(v,selected,quantity),ownedKey=available.map(f=>`${f.species}:${f.count}`).join(',');
- useEffect(()=>{
-  if(selected&&!available.some(f=>f.species===selected)){setSelected(null);setQuantity(1);setMore(null)}
-  if(focusAfterAdd.current){focusAfterAdd.current=false;(body.current??fuelButton.current)?.focus({preventScroll:true})}
- },[selected,ownedKey]);
- useEffect(()=>{const previous=focusInside.current;if(previous&&!previous.isConnected){focusInside.current=null;if(document.activeElement===document.body)body.current?.focus({preventScroll:true})}});
- const act=(run:()=>boolean|number,success:string)=>{setMessage(run()?success:'Supplies or backpack space changed.');onChange()};
- const add=()=>{
-  if(!food||!amount)return;
-  const n=queueCampfireFood(world,food.species,amount),remaining=campfireView(world).food.find(f=>f.species===food.species)!.count;
-  setMessage(n?`${n} ${n===1?'portion':'portions'} added to the fire.${v.burning?'':' Add wood to cook.'}`:'Food or fire space changed.');
-  setQuantity(1);setMore(null);
-  if(n&&!remaining){setSelected(null);focusAfterAdd.current=true}
+type Props = {world: World; onClose: () => void; onChange: () => void};
+
+export default function CampfirePanel({world, onClose, onChange}: Props) {
+ const [selected, setSelected] = useState<FoodSpecies | null>(null);
+ const [quantity, setQuantity] = useState(1);
+ const [message, setMessage] = useState('');
+ const [details, setDetails] = useState<'food' | 'meal' | null>(null);
+ const body = useRef<HTMLDivElement>(null);
+ const focusInside = useRef<HTMLElement | null>(null);
+ const v = campfireView(world), load = packLoad(world);
+ const available = v.food.filter(f => f.count > 0), jobs = v.jobs.filter(j => j !== null);
+ const {food, amount, limit, blocked} = campfireFoodSelection(v, selected, quantity);
+ const foodName = food ? `Raw ${food.name.toLowerCase()}` : '';
+ // A queued or consumed last portion removes its card, selection and details.
+ useEffect(() => {
+  if (selected && !food) {
+   setSelected(null); setQuantity(1);
+   if (details === 'food') setDetails(null);
+  }
+ }, [selected, food, details]);
+ useEffect(() => {
+  if (focusInside.current && !focusInside.current.isConnected && document.activeElement === document.body) {
+   focusInside.current = null;
+   body.current?.focus({preventScroll:true});
+  }
+ });
+ const act = (run: () => boolean | number, success: string) => {
+  setMessage(run() ? success : 'Supplies or backpack space changed.');
   onChange();
  };
- const jobLabel=(label:string)=>label==='NO HEAT'?'Waiting for wood':label==='WAIT'?'Waiting':`${label} left`;
- const waiting=jobs.length&&!v.burning?(v.incoming?'Lighting the fire…':'Add wood to cook'):'';
- return <StationMenu compact fitContent={!available.length&&!jobs.length&&!more} world={world} title="Campfire" label="Tend the campfire" image="/survival/ui-field-kit-v1/cook.png" closeLabel="Leave campfire" onClose={onClose} weight={load.weight} loadLabel={load.label} message={message} className="campfire-menu" footerAction={v.preparedMeal.count>0?<button className="campfire-prepare-link" aria-expanded={more==='meal'} onClick={()=>setMore('meal')}>Prepare meal <span aria-hidden="true">›</span></button>:undefined}>
-  <div ref={body} className="campfire-body" tabIndex={-1} role="region" aria-label="Campfire food and cooking" onFocusCapture={event=>{focusInside.current=event.target as HTMLElement}}>
-   <section className="campfire-fuel-card" aria-label="Campfire fuel">
-    <img src={BAG_IMAGES.logs} alt=""/><div><strong>{v.burning?`Fire ${v.time}`:v.incoming?'Lighting…':'Fire out'}</strong><div className="campfire-meter" role="progressbar" aria-label="Fire fuel remaining" aria-valuemin={0} aria-valuemax={v.fuelMax} aria-valuenow={Math.ceil(v.fuel*v.fuelMax)}><i style={{width:`${v.fuel*100}%`}}/></div></div>
-    <small>{v.logs} wood</small><button ref={fuelButton} disabled={!v.canStoke} title="1 log adds 90 seconds of fire" aria-label={`Add wood. ${v.packLogs} in backpack, ${v.storedLogs} in camp`} onClick={()=>act(v.stoke,'Added a log · +90s fire.')}>{!v.logs?'Need wood':!v.canStoke?'Fire full':'Add wood'}</button>
-   </section>
-   <section className="campfire-bag-section" aria-label="Raw food in your backpack">
-    <div className="campfire-section-title"><h3>In your backpack</h3>{available.length>0&&<span>Raw food</span>}</div>
-    {available.length?<div className="campfire-food-grid">{available.map(f=><button className="campfire-food-tile" key={f.species} aria-pressed={selected===f.species} aria-label={`Select raw ${f.name.toLowerCase()}, ${f.count} in backpack`} onClick={()=>{setSelected(f.species);setQuantity(1);setMore(null);setMessage('')}}><img src={f.raw} alt=""/><strong>Raw {f.name.toLowerCase()}</strong><b>×{f.count}</b></button>)}</div>:<div className="campfire-empty"><strong>No raw food in your backpack</strong><p>{jobs.length?'Food already on the fire is shown below.':'Bring raw food here to cook.'}</p></div>}
-   </section>
-   {(jobs.length>0)&&<div className="campfire-status" data-both={false}>
-    {jobs.length>0&&<section className="campfire-cooking"><div className="campfire-section-title"><h3>On the fire</h3><span>{jobs.length} / {v.queueMax}</span></div><div className="campfire-job-grid">{jobs.map(job=><button key={job.id} className="campfire-job" data-active={job.active} disabled={!job.canReturn} aria-label={`Return raw ${job.name.toLowerCase()} to backpack. ${jobLabel(job.label)}`} title="Return raw food to backpack" onClick={()=>act(job.remove,'Raw food returned to backpack.')}><img src={job.image} alt=""/><span><strong>{job.name}</strong><small>{jobLabel(job.label)}</small></span><b aria-hidden="true">×</b><div className="campfire-job-progress" role="progressbar" aria-label={`${job.name} cooking`} aria-valuemin={0} aria-valuemax={100} aria-valuenow={Math.round(job.progress*100)}><i style={{width:`${job.progress*100}%`}}/></div></button>)}</div></section>}
-   </div>}
-   <p className="campfire-waiting">Cooked food lands on the ground. Close this menu to collect it.</p>
-   {!!waiting&&<p className="campfire-waiting" role="status">{waiting}</p>}
-  </div>
-  {available.length>0&&<section className="campfire-transfer" aria-label="Add selected raw food to fire" onFocusCapture={event=>{focusInside.current=event.target as HTMLElement}}><div className="campfire-selection">{food?<><img src={food.raw} alt=""/><strong>Raw {food.name.toLowerCase()}</strong><button className="campfire-info-button" aria-label={`About raw ${food.name.toLowerCase()}`} aria-expanded={more==='food'} onClick={()=>setMore('food')}>i</button><span>{limit?`${food.count} in bag`:blocked}</span></>:<span className="campfire-prompt">Select raw food to add</span>}</div><div className="campfire-transfer-controls" role="group" aria-label="Food quantity"><button aria-label="Decrease food quantity" disabled={amount<=1} onClick={()=>setQuantity(amount-1)}>−</button><output aria-label="Selected food quantity" aria-live="polite">{amount}</output><button aria-label="Increase food quantity" disabled={!limit||amount>=limit} onClick={()=>setQuantity(amount+1)}>+</button><button aria-label="Select maximum food that fits on fire" disabled={!limit} onClick={()=>setQuantity(limit)}>Max</button><button className="campfire-add-action" disabled={!food||!amount} aria-label={food?`Add ${amount} raw ${food.name.toLowerCase()} to fire`:'Select raw food to add to fire'} onClick={add}>{food&&!limit?'Fire full':<>Add to fire{amount>0&&` ×${amount}`}</>}</button></div></section>}
-  {more==='food'&&food&&<CampfireInfo title={`Raw ${food.name.toLowerCase()}`} onClose={()=>setMore(null)}><div className="campfire-output"><img src={food.raw} alt=""/><span aria-hidden="true">→</span><img src={food.cooked} alt=""/><strong>Cooked {food.name.toLowerCase()}</strong></div><p>Each portion cooks in {food.seconds} seconds while the fire is lit.</p><p>Cooked food restores {food.food} food{food.health>0?` and ${food.health} health`:''}. When ready, it hops onto the ground beside the fire. Close this menu and collect it.</p><p className="campfire-info-note">Only food in your backpack can be added. Cooking waits safely if the fire goes out.</p></CampfireInfo>}
-  {more==='meal'&&<CampfireInfo title="Hunter’s meal" onClose={()=>setMore(null)}><div className="campfire-output"><img src={v.preparedMeal.image} alt=""/><strong>1 cooked meat + 2 berries</strong></div><p>Prepare a meal using ingredients in your backpack.</p><p>Restores {v.preparedMeal.food} food and {v.preparedMeal.healthOverTime} health over {v.preparedMeal.duration} seconds.</p><button className="campfire-prepare-action" disabled={!v.preparedMeal.canPrepare} onClick={()=>{if(v.preparedMeal.prepare()){setMessage('Hunter’s meal added to backpack.');setMore(null)}else setMessage('Ingredients or backpack space changed.');onChange()}}>{v.preparedMeal.canPrepare?'Prepare meal':!v.preparedMeal.count?'Need ingredients':v.preparedMeal.actionLabel==='PACK FULL'?'Backpack full':'Wait a moment'}</button></CampfireInfo>}
- </StationMenu>;
-}
+ const cook = () => {
+  if (!food || !amount) return;
+  const n = queueCampfireFood(world, food.species, amount);
+  setMessage(n ? `${n} ${n === 1 ? 'portion' : 'portions'} added to the fire.${v.burning || v.incoming ? '' : ' Add wood to cook.'}` : 'Food or fire space changed.');
+  setQuantity(1);
+  if (n && !campfireView(world).food.find(f => f.species === food.species)?.count) {
+   setSelected(null);
+   body.current?.focus({preventScroll:true});
+  }
+  onChange();
+ };
 
-function CampfireInfo({title,onClose,children}:{title:string;onClose:()=>void;children:React.ReactNode}){
- const dialog=useRef<HTMLDivElement>(null),close=useRef<HTMLButtonElement>(null);
- useEffect(()=>{const previous=document.activeElement as HTMLElement|null,fallback=dialog.current?.closest('.station-menu')?.querySelector<HTMLButtonElement>('.station-menu-close');close.current?.focus({preventScroll:true});return()=>{(previous?.isConnected?previous:fallback)?.focus({preventScroll:true})}},[]);
- const keys=(event:React.KeyboardEvent)=>{event.stopPropagation();if(event.key==='Escape'){event.preventDefault();onClose()}else if(event.key==='Tab'){const buttons=Array.from(dialog.current?.querySelectorAll<HTMLButtonElement>('button:not(:disabled)')??[]),first=buttons[0],last=buttons[buttons.length-1];if(event.shiftKey&&document.activeElement===first){event.preventDefault();last?.focus()}else if(!event.shiftKey&&document.activeElement===last){event.preventDefault();first?.focus()}}};
- return <div className="campfire-info-backdrop" onClick={onClose}><div ref={dialog} className="campfire-info" role="dialog" aria-modal="true" aria-label={title} onClick={event=>event.stopPropagation()} onKeyDown={keys}><header><h3>{title}</h3><button ref={close} aria-label="Close food information" onClick={onClose}>×</button></header><div>{children}</div></div></div>;
+ return <StationMenu compact fitContent={!available.length && !jobs.length && !details} world={world} title="Campfire"
+  label="Tend the campfire" image="/survival/ui-field-kit-v1/cook.png" closeLabel="Leave campfire" onClose={onClose}
+  weight={load.weight} loadLabel={load.label} message={message} className="campfire-menu production-menu"
+  footerAction={v.preparedMeal.count > 0 && <button type="button" aria-haspopup="dialog" onClick={() => setDetails('meal')}>Prepare meal</button>}>
+  <div className="production-scroll" ref={body} tabIndex={-1} role="region" aria-label="Campfire food and cooking"
+   onFocusCapture={event => {focusInside.current = event.target as HTMLElement;}}>
+   <section className="production-section" aria-label="Raw food in your backpack">
+    {available.length > 0 ? <>
+     <header><h3>Raw food</h3><small>Backpack</small></header>
+     <div className="production-recipes">{available.map(f =>
+      <RecipeChoice key={f.species} name={`Raw ${f.name.toLowerCase()}`} image={f.raw} detail={`${f.seconds}s per portion`} stock={`×${f.count} in bag`} label={`Select raw ${f.name.toLowerCase()}, ${f.count} in backpack`}
+       selected={selected === f.species} onSelect={() => {setSelected(f.species); setQuantity(1); setMessage('');}} />
+     )}</div>
+    </> : <div className="production-empty">
+     <img src="/survival/camp-cooking-v1/roasting-spit.webp" alt="" />
+     <div><h3>No raw food in your backpack</h3><p>Bring raw meat, chicken or rabbit to cook here.</p></div>
+    </div>}
+   </section>
+   <FuelControl label={v.burning ? `Fire · ${v.time}` : v.incoming ? 'Lighting fire…' : 'Fire out'}
+    seconds={Math.ceil(v.fuel * v.fuelMax)} capacity={v.fuelMax} logs={v.logs}
+    duration={LOG_BURN_SECONDS} disabled={!v.canStoke} onAdd={() => act(v.stoke, `Added one log · +${LOG_BURN_SECONDS}s fire.`)} />
+   {jobs.length > 0 && <section className="production-section" aria-label="Cooking queue">
+    <header><h3>On the fire</h3><small>{jobs.length} / {v.queueMax}</small></header>
+    <ul className="production-jobs">{jobs.map(job =>
+     <ProductionJob key={job.id} name={job.name} image={job.image} progress={job.progress}
+      status={job.label === 'NO HEAT' ? v.incoming ? 'Lighting fire…' : 'Needs wood' : job.label === 'WAIT' ? 'Waiting' : `${job.label} left`}
+      canCancel={job.canReturn} cancelLabel={`Return raw ${job.name.toLowerCase()} to backpack. ${job.canReturn ? 'Cancel cooking.' : 'Backpack full.'}`}
+      onCancel={() => act(job.remove, 'Raw food returned to backpack.')} />
+    )}</ul>
+    <p className="production-quiet">Cooked food lands on the ground beside the fire.</p>
+   </section>}
+  </div>
+  {available.length > 0 && <BatchAction name={foodName || 'Select raw food'}
+   detail={food ? (blocked || `${food.seconds * amount}s cook time`) : ''} blocked={!!food && !!blocked}
+   infoLabel={`About ${foodName.toLowerCase()}`} onInfo={food ? () => setDetails('food') : undefined}
+   amount={amount} limit={limit} onQuantity={setQuantity} action={amount ? `Cook ×${amount}` : 'Cook'}
+   actionLabel={food ? `Add ${amount} raw ${food.name.toLowerCase()} to fire. Cook selected portions.` : 'Select raw food to add to fire'} onSubmit={cook} />}
+  {details === 'food' && food && <ProductionDialog title={foodName} closeLabel="Close food information" onClose={() => setDetails(null)}>
+   <div className="production-output"><img src={food.cooked} alt="" /><strong>Cooked {food.name.toLowerCase()}</strong></div>
+   <p>One portion cooks in {food.seconds} seconds and restores {food.food} food{food.health > 0 ? ` and ${food.health} health` : ''}.</p>
+   <p>Cooking pauses when the fire goes out. Collect finished portions from the ground beside the fire.</p>
+  </ProductionDialog>}
+  {details === 'meal' && <ProductionDialog title="Hunter’s meal" onClose={() => setDetails(null)}>
+   <div className="production-output"><img src={v.preparedMeal.image} alt="" /><strong>{v.preparedMeal.ingredientLabel}</strong></div>
+   <p>Uses ingredients from your backpack. Restores {v.preparedMeal.food} food and {v.preparedMeal.healthOverTime} health over {v.preparedMeal.duration} seconds.</p>
+   <button type="button" className="production-primary" aria-label="Prepare Hunter’s meal" disabled={!v.preparedMeal.canPrepare} onClick={() => {
+    if (v.preparedMeal.prepare()) {setMessage('Hunter’s meal added to backpack.'); setDetails(null);}
+    else setMessage('Ingredients or backpack space changed.');
+    onChange();
+   }}>{v.preparedMeal.canPrepare ? 'Prepare meal' : !v.preparedMeal.count ? 'Need ingredients' : v.preparedMeal.actionLabel === 'PACK FULL' ? 'Backpack full' : 'Wait a moment'}</button>
+  </ProductionDialog>}
+ </StationMenu>;
 }

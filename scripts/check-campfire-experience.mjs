@@ -12,7 +12,7 @@ globalThis.__fireReact={createElement:(type,props,...children)=>({type,props:{..
 const previousDocument=globalThis.document;
 globalThis.document={activeElement:null,addEventListener:()=>{},removeEventListener:()=>{}};
 try{
- const aliases={react:'module.exports=globalThis.__fireReact;', 'react/jsx-runtime':"export const jsx=(type,props)=>({type,props});export const jsxs=jsx;export const Fragment='fragment';",'react-native':"export const View='view',Text='text',Image='image',Pressable='pressable',ScrollView='scroll';export const useWindowDimensions=()=>({width:844,height:390});export const StyleSheet={create:x=>x,absoluteFill:{position:'absolute',left:0,right:0,top:0,bottom:0}};"};
+ const aliases={react:'module.exports=globalThis.__fireReact;', 'react/jsx-runtime':"export const jsx=(type,props)=>({type,props});export const jsxs=jsx;export const Fragment='fragment';",'react-native':"export const View='view',Text='text',Image='image',Pressable='pressable',ScrollView='scroll';export const BackHandler={addEventListener:()=>({remove(){}})};export const useWindowDimensions=()=>({width:844,height:390});export const StyleSheet={create:x=>x,absoluteFill:{position:'absolute',left:0,right:0,top:0,bottom:0}};"};
  await build({stdin:{contents:`export * from './src/survival-engine';export * from './src/studio-play';export * from './src/camp-kitchen';export * from './src/campfire-view';export * from './src/campfire-menu';export * from './src/campfire-layout';export * from './src/expedition-inventory';export * from './src/tree-chopping';export * from './src/imported-art';export * from './src/placed-world-renderer';export {stationFront} from './src/camp-stations';export {default as WebPanel} from './src/CampfirePanel';export {default as NativePanel} from './native/CampfirePanel';`,resolveDir:process.cwd()},bundle:true,platform:'node',format:'cjs',outfile:path.join(temp,'game.cjs'),loader:{'.css':'empty'},plugins:[{name:'platform-only',setup(b){b.onResolve({filter:/^(react(?:\/jsx-runtime)?|react-native)$/},a=>({path:a.path,namespace:'platform'}));b.onLoad({filter:/.*/,namespace:'platform'},a=>({contents:aliases[a.path],loader:'js'}));b.onLoad({filter:/\.(png|webp)$/},a=>({contents:`module.exports=${JSON.stringify(a.path)}`,loader:'js'}))}}]});
  const m=require(path.join(temp,'game.cjs')),snapshot=JSON.parse(fs.readFileSync('native/assets/world-snapshot.json'));m.installImportedArt(snapshot.records);
  const make=()=>{const w=m.createCampPlaySession(snapshot.layout);w.enemies=[];w.loot=[];w.bag.pallets=0;w.bag.rawMeat=0;w.stock.pallets=0;w.camp.hearth.fuel=0;return w};
@@ -60,7 +60,12 @@ try{
   const beforeSelection=JSON.stringify({bag:world.bag,queue:world.fire.queue});press(rawTile(tree,'chicken',2));tree=draw();assert.equal(JSON.stringify({bag:world.bag,queue:world.fire.queue}),beforeSelection,'Selecting raw food does not cook it');assert.equal(quantity(tree),1);assert(!/35 food/.test(text(tree)),'Food benefits stay out of the main view');
   press(find(tree,/^Increase (?:food )?quantity$/));tree=draw();assert.equal(quantity(tree),2);assert(find(tree,/^Increase (?:food )?quantity$/).props.disabled);
   press(find(tree,/^(?:About raw chicken|Raw chicken information)$/i));tree=draw();assert(/35 food/.test(text(tree)));assert(/8 health/.test(text(tree)));assert.equal(quantity(tree),2);
-  press(find(tree,/^Close food information$/));tree=draw();assert(!/35 food/.test(text(tree)));assert.equal(quantity(tree),2);
+  if (platform === 'Native') {
+   const modal = nodes(tree).find(node => node.props.accessibilityViewIsModal && node.props.onAccessibilityEscape);
+   modal.props.onAccessibilityEscape();
+   assert.equal(world.stationPanel, 'fire', 'Backing out of food information keeps the fire open');
+  } else press(find(tree,/^Close food information$/));
+  tree=draw();assert(!/35 food/.test(text(tree)));assert.equal(quantity(tree),2);
   const staleAdd=action(tree,'chicken',2);press(staleAdd);tree=draw();assert.equal(world.bag.rawMeat,0);assert.equal(world.fire.queue.length,2);assert(!rawTile(tree,'chicken',2));unselected(tree);
   assert(/Waiting for wood|Needs wood/.test(text(tree)),'A cold queue explains that wood is needed');assert.equal(m.storedCount(world,'rawMeat'),20,'Adding food never silently uses camp stock');
   invoke(staleAdd);tree=draw();assert.equal(world.fire.queue.length,2);assert.equal(world.bag.rawRabbit,3,'A repeated last-unit action never adds another food');unselected(tree);

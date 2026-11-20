@@ -1,43 +1,120 @@
-import React,{useState} from 'react';
-import {View,Text,Pressable,ScrollView,StyleSheet,type StyleProp,type ViewStyle} from 'react-native';
+import React, {useState} from 'react';
+import {View, Text, Pressable, ScrollView, StyleSheet} from 'react-native';
 import {furnaceView} from '../src/furnace-view';
-import {FURNACE_LOG_SECONDS,FURNACE_RULES,type SmeltRecipe} from '../src/ironworks-data';
-import {furnaceBatchSelection,queueFurnaceBatches,smeltMaterialName,smeltCostLabel,furnaceCollectCount,furnaceFuelTime,furnaceJobLabel} from '../src/furnace-menu';
+import {FURNACE_LOG_SECONDS, FURNACE_RULES, type SmeltRecipe} from '../src/ironworks-data';
+import {furnaceBatchSelection, queueFurnaceBatches, smeltMaterialName, smeltCostLabel, furnaceCollectCount, furnaceFuelTime, furnaceJobLabel} from '../src/furnace-menu';
+import {stationPalette as palette} from '../src/station-palette';
 import {ItemArt} from './InventoryUI';
-import StationMenu,{stationMenuLayout} from './StationMenu';
+import StationMenu, {stationMenuLayout} from './StationMenu';
+import {SectionHeading, FuelMeter, QuantityControl, StationButton} from './StationControls';
 import {IRONWORKS_NATIVE_ART as art} from './ironworks-art';
 import type {World} from '../src/survival-engine';
+import type {MenuInsets} from '../src/station-menu-layout';
 
-type Props={world:World;width:number;height:number;onClose:()=>void;onChange:()=>void;safe:{top:number;bottom:number;left:number;right:number}};
-export default function FurnacePanel({world,width,height,onClose,onChange,safe}:Props){
- const [message,setMessage]=useState(''),[selected,setSelected]=useState<SmeltRecipe>('ore'),[quantity,setQuantity]=useState(1),[more,setMore]=useState<'recipe'|'upgrade'|null>(null),[contentHeight,setContentHeight]=useState(0);
- const v=furnaceView(world);if(!v)return null;
- const {recipe:r,input,limit,amount,blocked}=furnaceBatchSelection(v,selected,quantity);
- const available=contentHeight||stationMenuLayout(width,height,safe).panel.height-100,micro=available<215,tiny=available<290,dense=available<330,gap=micro?3:tiny?4:6;
- const utilityHeight=micro?32:tiny?36:dense?46:64,selectionHeight=micro?20:tiny?22:dense?26:32,actionHeight=micro?30:tiny?34:dense?40:46,headingHeight=micro?10:tiny?12:dense?16:20;
- const transferHeight=selectionHeight+actionHeight+7,remaining=Math.max(80,available-utilityHeight-transferHeight-gap*3),recipeHeight=Math.floor(remaining*.55),queueHeight=remaining-recipeHeight;
- const act=(run:()=>boolean|number,text:string)=>{setMessage(run()?text:'Supplies or backpack space changed.');onChange()};
- const queue=()=>{const count=queueFurnaceBatches(world,r.id,amount);setMessage(count?`Queued ${count} ${count===1?'ingot':'ingots'}${v.fuel?'.':' · add wood to start.'}`:'Supplies or queue space changed.');setQuantity(1);onChange()};
- const upgradeRules=FURNACE_RULES[2],collectCount=furnaceCollectCount(world,v);
- const heading=(title:string,info:string)=><View style={[n.heading,{height:headingHeight}]}><Text style={[n.sectionTitle,{fontSize:tiny?13:dense?16:19}]}>{title}</Text><Text style={[n.small,{fontSize:tiny?8:10}]}>{info}</Text></View>;
- return <StationMenu compact world={world} title="Camp furnace" image={art.campFurnace} closeLabel="Leave furnace" onClose={onClose} weight={v.weight} loadLabel={v.loadLabel} message={message} width={width} height={height} safe={safe} footerAction={<Pressable accessibilityRole="button" accessibilityLabel="Bellows upgrade" accessibilityState={{expanded:more==='upgrade'}} onPress={()=>setMore(more==='upgrade'?null:'upgrade')} style={n.upgradeLink}><Text style={n.upgradeLabel}>{v.upgrade.complete?'✓ Bellows':'Bellows upgrade'} ›</Text></Pressable>}>
-  <View style={n.dashboard} onLayout={event=>{const next=event.nativeEvent.layout.height;if(Math.abs(next-contentHeight)>1)setContentHeight(next)}}>
-   <View accessibilityElementsHidden={!!more} importantForAccessibility={more?'no-hide-descendants':'auto'} style={{gap}}>
-    <View style={[n.row,{height:utilityHeight,gap}]}>
-     <View style={[n.utility,{padding:tiny?4:6,gap:tiny?4:6}]}><ItemArt id="logs" size={tiny?18:dense?24:32}/><View style={{flex:1,minWidth:0}}><Text style={[n.utilityText,{fontSize:tiny?10:dense?12:15}]} numberOfLines={1}>Fuel {furnaceFuelTime(v.fuel)}</Text><Meter amount={v.fuel} max={v.fuelMax} label="Furnace heat"/></View><FurnaceButton disabled={!v.canFuel} label={v.fuel>v.fuelMax-FURNACE_LOG_SECONDS?'Fuel full':`Add wood (${v.logs})`} accessibilityLabel={`Add wood. ${v.logs} logs available. ${v.heatLabel}`} onPress={()=>act(v.feed,`Added a log · +${FURNACE_LOG_SECONDS}s heat.`)} small style={{height:utilityHeight-8,maxWidth:'48%',paddingHorizontal:tiny?4:6}}/></View>
-     <View style={[n.utility,{padding:tiny?4:6,gap:tiny?4:6},v.ready>0&&n.ready]}><ItemArt id="ironIngot" size={tiny?18:dense?24:32}/><View style={{flex:1,minWidth:0}}><Text style={[n.utilityText,{fontSize:tiny?10:dense?12:15}]} numberOfLines={1}>Ready {v.ready} / {v.rackMax}</Text>{!tiny&&<Text style={[n.small,{fontSize:9}]} numberOfLines={1}>{v.ready>=v.rackMax?'Output full':v.ready&&!v.canTake?'Backpack full':'Iron ingots'}</Text>}</View><FurnaceButton primary={v.canTake} disabled={!v.canTake} label={`Collect${collectCount?` ×${collectCount}`:''}`} accessibilityLabel={`Collect ${collectCount} ready ${collectCount===1?'ingot':'ingots'}`} onPress={()=>act(v.collect,'Ingots added to backpack.')} small style={{height:utilityHeight-8,maxWidth:'46%',paddingHorizontal:tiny?4:6}}/></View>
+type Props = {world: World; width: number; height: number; onClose: () => void; onChange: () => void; safe: MenuInsets};
+
+export default function FurnacePanel({world, width, height, onClose, onChange, safe}: Props) {
+ const [message, setMessage] = useState('');
+ const [selected, setSelected] = useState<SmeltRecipe>('ore');
+ const [quantity, setQuantity] = useState(1);
+ const [more, setMore] = useState<'recipe' | 'upgrade' | null>(null);
+ const v = furnaceView(world);
+ if (!v) return null;
+
+ const {recipe, input, limit, amount, blocked} = furnaceBatchSelection(v, selected, quantity);
+ const material = smeltMaterialName(recipe.id);
+ const wide = stationMenuLayout(width, height, safe).panel.width >= 470;
+ const collectCount = furnaceCollectCount(world, v);
+ const upgrade = FURNACE_RULES[2];
+ const back = more ? () => setMore(null) : onClose;
+ const act = (run: () => boolean | number, success: string) => {
+  setMessage(run() ? success : 'Supplies or backpack space changed.');
+  onChange();
+ };
+ const queue = () => {
+  const count = queueFurnaceBatches(world, recipe.id, amount);
+  setMessage(count ? `Queued ${count} ${count === 1 ? 'ingot' : 'ingots'}.${v.fuel ? '' : ' Add wood to start.'}` : 'Supplies or queue space changed.');
+  setQuantity(1);
+  onChange();
+ };
+
+ return <StationMenu compact world={world} title="Camp furnace" image={art.campFurnace} closeLabel="Leave furnace"
+  onClose={onClose} onBack={back} weight={v.weight} loadLabel={v.loadLabel} message={message} width={width} height={height} safe={safe}
+  footerAction={<Pressable accessibilityRole="button" accessibilityLabel="Bellows upgrade" accessibilityState={{expanded: more === 'upgrade'}} onPress={() => setMore('upgrade')} style={s.link}><Text style={s.linkText}>{v.upgrade.complete ? 'Reinforced bellows' : 'Bellows upgrade'}</Text></Pressable>}>
+  <ScrollView nestedScrollEnabled style={s.scroll} contentContainerStyle={s.body} accessibilityElementsHidden={!!more} importantForAccessibility={more ? 'no-hide-descendants' : 'auto'}>
+   <View style={[s.utilities, wide && s.row]}>
+    <View style={[s.utility, wide && s.utilityWide]}>
+     <ItemArt id="logs" size={28} />
+     <View style={s.details}><Text style={s.title}>{v.fuel ? `Fuel · ${furnaceFuelTime(v.fuel)}` : 'Furnace cold'}</Text><FuelMeter amount={v.fuel} max={v.fuelMax} label="Furnace heat" /></View>
+     <StationButton label={v.fuel > v.fuelMax - FURNACE_LOG_SECONDS ? 'Fuel full' : v.logs ? `Add wood (${v.logs})` : 'Need wood'} accessibilityLabel={`Add wood. ${v.logs} logs available. ${v.heatLabel}`} disabled={!v.canFuel} onPress={() => act(v.feed, `Added one log · +${FURNACE_LOG_SECONDS}s heat.`)} />
     </View>
-    <View style={{height:recipeHeight,gap:tiny?2:4}}>{heading('Smelt','Backpack + camp')}<View style={[n.row,{flex:1,gap}]}>{v.recipes.map(recipe=><Pressable key={recipe.id} accessibilityRole="button" accessibilityState={{selected:recipe.id===r.id}} accessibilityLabel={`Select ${smeltMaterialName(recipe.id)}. ${recipe.cost} makes one ingot. ${recipe.available} available.`} onPress={()=>{setSelected(recipe.id);setQuantity(1);setMessage('');setMore(null)}} style={[n.recipe,{padding:tiny?5:8,gap:tiny?5:8},recipe.id===r.id&&n.recipeSelected]}><ItemArt id={recipe.id==='ore'?'ironOre':'scrap'} size={tiny?26:dense?34:48}/><View style={{flex:1,minWidth:0,gap:tiny?3:5,paddingTop:tiny?3:0}}><Text numberOfLines={1} style={[n.recipeTitle,{fontSize:tiny?14:dense?17:21,paddingRight:32}]}>{smeltMaterialName(recipe.id)}</Text><View style={[n.row,{justifyContent:'space-between',gap:3}]}><Text numberOfLines={1} style={[n.small,{fontSize:tiny?8:dense?9:11,flexShrink:1}]}>{smeltCostLabel(recipe.id)}</Text><Text style={[n.small,{fontSize:tiny?8:10}]}>{Math.ceil(recipe.seconds)}s</Text></View></View><Text style={[n.stock,{fontSize:tiny?8:10,top:tiny?3:6,right:tiny?3:6}]}>Have {recipe.available}</Text></Pressable>)}</View></View>
-    <View style={{height:queueHeight,gap:tiny?2:4}}>{heading('Queue',`${v.queueSize} / ${v.queueMax}`)}<View style={[n.row,{flex:1,gap:tiny?4:6}]} accessibilityLabel="Smelting queue">{Array.from({length:v.queueMax},(_,i)=>{const job=v.jobs[i];return job?<View key={job.id} style={[n.job,{padding:tiny?3:5,gap:tiny?2:3},i===0&&n.jobActive]}><View style={[n.row,{gap:4,paddingRight:tiny?15:20}]}>{!dense&&v.queueMax<=4&&<ItemArt id={job.name.includes('ore')?'ironOre':'scrap'} size={20}/>}<Text numberOfLines={1} style={[n.jobTitle,{fontSize:tiny?10:dense?12:14,lineHeight:tiny?11:dense?14:16}]}>{job.name.includes('ore')?'Iron ore':'Scrap'}</Text></View><Text numberOfLines={1} style={[n.jobState,{fontSize:tiny?8:dense?9:11,lineHeight:tiny?9:dense?11:13},i===0&&(v.state==='NEEDS WOOD'||v.state==='OUTPUT FULL')&&n.warning]}>{furnaceJobLabel(job.label)}</Text><Meter amount={Math.round(job.progress*100)} max={100} label={`${job.name} progress`} compact/><Pressable accessibilityRole="button" accessibilityLabel={`Cancel ${job.name}. Return ingredients to camp stores`} accessibilityState={{disabled:!job.canCancel}} disabled={!job.canCancel} hitSlop={5} onPress={()=>act(job.cancel,'Materials returned to camp stores.')} style={[n.cancel,{width:tiny?23:28,height:tiny?23:28}]}><Text style={{fontSize:tiny?17:20,color:job.canCancel?'#e7d9b3':'#8e9a83'}}>×</Text></Pressable></View>:<View key={`empty-${i}`} accessible accessibilityLabel={`Empty queue slot ${i+1}`} style={[n.job,n.emptyJob]}/>})}</View></View>
-    <View style={[n.transfer,{height:transferHeight}]}><View style={[n.row,{height:selectionHeight,gap:5}]}><ItemArt id={r.id==='ore'?'ironOre':'scrap'} size={tiny?16:22}/><Text style={[n.selectedName,{fontSize:tiny?13:16}]}>{smeltMaterialName(r.id)}</Text><Pressable accessibilityRole="button" accessibilityLabel={`${smeltMaterialName(r.id)} recipe information`} accessibilityState={{expanded:more==='recipe'}} hitSlop={6} onPress={()=>setMore(more==='recipe'?null:'recipe')} style={[n.info,{width:tiny?23:28,height:tiny?23:28}]}><Text style={n.infoText}>i</Text></Pressable><Text accessibilityLiveRegion="polite" style={[n.shortfall,{fontSize:tiny?9:10}]}>{blocked}</Text></View><View style={[n.row,{height:actionHeight,gap:tiny?4:6}]}><FurnaceButton label="−" accessibilityLabel="Queue one fewer ingot" disabled={amount<=1} onPress={()=>setQuantity(amount-1)} style={{width:tiny?34:40,height:actionHeight}}/><Text accessibilityLiveRegion="polite" accessibilityLabel={`Selected ingot quantity ${amount}`} style={[n.amount,{height:actionHeight,lineHeight:actionHeight-2,width:tiny?28:32}]}>{amount}</Text><FurnaceButton label="+" accessibilityLabel="Queue one more ingot" disabled={!limit||amount>=limit} onPress={()=>setQuantity(amount+1)} style={{width:tiny?34:40,height:actionHeight}}/><FurnaceButton label="Max" accessibilityLabel="Select maximum ingots that fit in the queue" disabled={!limit} onPress={()=>setQuantity(limit)} style={{width:tiny?43:52,height:actionHeight}}/><FurnaceButton primary label={`Queue ×${amount}`} accessibilityLabel={`Queue ${amount} ${amount===1?'ingot':'ingots'} using ${smeltMaterialName(r.id).toLowerCase()}${blocked?`. ${blocked}`:''}`} disabled={!limit} onPress={queue} style={{flex:1,height:actionHeight}}/></View></View>
+    <View style={[s.utility, wide && s.utilityWide]}>
+     <ItemArt id="ironIngot" size={28} />
+     <View style={s.details}><Text style={s.title}>{v.ready} ready</Text><Text style={s.meta}>{v.ready && !v.canTake ? 'Backpack full' : v.ready >= v.rackMax ? 'Output full' : 'Iron ingots'}</Text></View>
+     <StationButton label={collectCount ? `Collect ×${collectCount}` : 'Collect'} disabled={!v.canTake} onPress={() => act(v.collect, 'Ingots added to backpack.')} />
+    </View>
    </View>
-   {more&&<View style={n.overlay}><Pressable accessible={false} onPress={()=>setMore(null)} style={StyleSheet.absoluteFill}/><View accessibilityViewIsModal style={n.popover}><View style={n.popoverHeader}><Text style={n.popoverTitle}>{more==='recipe'?smeltMaterialName(r.id):v.upgrade.complete?'Reinforced bellows':'Bellows upgrade'}</Text><FurnaceButton label="×" accessibilityLabel="Close furnace information" onPress={()=>setMore(null)} style={{width:38,height:38}}/></View><ScrollView contentContainerStyle={{gap:10,paddingTop:10}}>{more==='recipe'?<><Text style={n.description}>{input.count} {r.id==='ore'?'iron ore':'metal scrap'} → 1 iron ingot · {Math.ceil(r.seconds)} seconds per ingot.</Text><Text style={n.description}>Uses materials from your backpack first, then camp stores. Each ingot takes one queue space.</Text><Text style={n.description}>{v.heatLabel}. Queued work pauses safely without wood or when the output is full. Smelting continues while you explore.</Text></>:<><Text style={n.description}>Faster smelting · {upgradeRules.queue} queue slots · {upgradeRules.rack} output spaces · {upgradeRules.fuel}s heat.</Text>{v.upgrade.complete?<Text style={n.description}>Your furnace already has reinforced bellows.</Text>:<>{v.upgrade.ingredients.map(m=><View key={m.id} style={[n.row,{gap:8}]}><ItemArt id={m.id==='pallets'?'logs':m.id as 'stone'|'ironIngot'} size={25}/><Text style={[n.description,{flex:1}]}>{m.name}</Text><Text style={[n.description,!m.enough&&n.warning]}>{m.available} / {m.needed}</Text></View>)}<FurnaceButton primary disabled={!v.upgrade.canUpgrade} label="Upgrade bellows" onPress={()=>{if(v.upgrade.run()){setMessage('Bellows reinforced.');setMore(null)}else setMessage('Supplies changed.');onChange()}} style={{height:42}}/></>}</>}</ScrollView></View></View>}
+   <SectionHeading title="Smelting recipes" info="Backpack + camp" />
+   <View style={s.row}>{v.recipes.map(r => (
+    <Pressable key={r.id} accessibilityRole="button" accessibilityState={{selected: selected === r.id}}
+     accessibilityLabel={`Select ${smeltMaterialName(r.id)}. ${r.cost} makes one ingot. ${r.available} available.`}
+     onPress={() => {setSelected(r.id); setQuantity(1); setMessage('');}} style={[s.recipe, selected === r.id && s.selected]}>
+     <ItemArt id={r.id === 'ore' ? 'ironOre' : 'scrap'} size={40} />
+     <Text style={s.title}>{smeltMaterialName(r.id)}</Text><Text style={s.recipeInfo}>{smeltCostLabel(r.id)}</Text><Text style={s.recipeInfo}>{r.available} available</Text>
+    </Pressable>
+   ))}</View>
+   <SectionHeading title="Smelting queue" info={`${v.queueSize} / ${v.queueMax}`} />
+   {v.jobs.length ? v.jobs.map(job => (
+    <View key={job.id} style={s.utility}>
+     <ItemArt id={job.name.includes('ore') ? 'ironOre' : 'scrap'} size={28}/>
+     <View style={s.details}><Text style={s.title}>{job.name}</Text><Text style={s.meta}>{furnaceJobLabel(job.label)}</Text><FuelMeter label={`${job.name} progress`} amount={Math.round(job.progress * 100)} max={100}/></View>
+     <StationButton label="Cancel" accessibilityLabel={`Cancel ${job.name}. Return materials to camp stores.`} disabled={!job.canCancel} onPress={() => act(job.cancel, 'Materials returned to camp stores.')} />
+    </View>
+   )) : <Text style={s.meta}>No ingots queued.</Text>}
+  </ScrollView>
+  <View style={s.tray} accessibilityElementsHidden={!!more} importantForAccessibility={more ? 'no-hide-descendants' : 'auto'}>
+   <View style={s.row}>
+    <Pressable accessibilityRole="button" accessibilityLabel={`${material} recipe details`} onPress={() => setMore('recipe')} style={s.recipeLink}><Text style={s.linkText}>{material} · Info</Text></Pressable>
+    <Text accessibilityLiveRegion="polite" style={[s.cost, !!blocked && s.warning]}>{blocked || `${input.count * amount} ${recipe.id === 'ore' ? 'ore' : 'scrap'} · ${Math.ceil(recipe.seconds * amount)}s`}</Text>
+   </View>
+   <View style={s.row}><QuantityControl amount={amount} limit={limit} onChange={setQuantity} />
+    <StationButton grow primary label={`Queue ×${amount}`} accessibilityLabel={`Queue ${amount} ${amount === 1 ? 'ingot' : 'ingots'} using ${material.toLowerCase()}`} disabled={!limit} onPress={queue} />
+   </View>
   </View>
+  {more && <View style={s.overlay}>
+   <Pressable accessible={false} onPress={back} style={StyleSheet.absoluteFill} />
+   <View accessibilityViewIsModal onAccessibilityEscape={back} style={s.dialog}>
+    <View style={s.row}><Text accessibilityRole="header" style={s.dialogTitle}>{more === 'recipe' ? material : v.upgrade.complete ? 'Reinforced bellows' : 'Bellows upgrade'}</Text><StationButton label="×" accessibilityLabel="Close furnace information" onPress={back}/></View>
+    <ScrollView contentContainerStyle={s.body}>{more === 'recipe' ? <>
+     <Text style={s.title}>{smeltCostLabel(recipe.id)}</Text>
+     <Text style={s.copy}>Each ingot takes {Math.ceil(recipe.seconds)} seconds. The furnace uses materials from your backpack first, then camp stores.</Text>
+     <Text style={s.copy}>Add wood to keep smelting and collect finished ingots to free up space. Queued batches keep their progress while you explore.</Text>
+    </> : <>
+     <Text style={s.copy}>Reinforced bellows smelt faster and hold {upgrade.queue} queued ingots, {upgrade.rack} finished ingots and {upgrade.fuel} seconds of fuel.</Text>
+     {v.upgrade.complete ? <Text style={s.meta}>Installed on this furnace.</Text> : <>
+      {v.upgrade.ingredients.map(m => <View key={m.id} style={s.row}><ItemArt id={m.id === 'pallets' ? 'logs' : m.id as 'stone' | 'ironIngot'} size={25}/><Text style={s.copy}>{m.name}</Text><Text style={[s.cost, !m.enough && s.warning]}>{m.enough ? `${m.available} / ${m.needed}` : `Need ${m.needed - m.available} more`}</Text></View>)}
+      <StationButton primary disabled={!v.upgrade.canUpgrade} label="Upgrade bellows" onPress={() => {
+       if (v.upgrade.run()) {setMore(null); setMessage('Bellows reinforced.');} else setMessage('Supplies changed.');
+       onChange();
+      }}/>
+     </>}
+    </>}</ScrollView>
+   </View>
+  </View>}
  </StationMenu>;
 }
 
-function FurnaceButton({label,accessibilityLabel=label,onPress,disabled=false,primary=false,small=false,style}:{label:string;accessibilityLabel?:string;onPress:()=>void;disabled?:boolean;primary?:boolean;small?:boolean;style?:StyleProp<ViewStyle>}){
- return <Pressable accessibilityRole="button" accessibilityLabel={accessibilityLabel} accessibilityState={{disabled}} disabled={disabled} onPress={onPress} style={[n.button,primary&&n.primaryButton,disabled&&n.disabledButton,primary&&disabled&&n.disabledPrimary,style]}><Text numberOfLines={2} style={[n.buttonText,small&&{fontSize:10},primary&&{color:'#1b3128'},disabled&&{color:primary?'#c3c6a7':'#9fa98e'}]}>{label}</Text></Pressable>;
-}
-function Meter({amount,max,label,compact=false}:{amount:number;max:number;label:string;compact?:boolean}){return <View accessibilityRole="progressbar" accessibilityLabel={label} accessibilityValue={{min:0,max,now:amount}} style={[n.meter,compact&&{marginTop:0,height:3}]}><View style={{height:'100%',width:`${Math.max(0,Math.min(100,amount/max*100))}%`,backgroundColor:'#d8ba78'}}/></View>}
-const n=StyleSheet.create({dashboard:{flex:1,minHeight:0,position:'relative'},row:{flexDirection:'row',alignItems:'center'},utility:{flex:1,minWidth:0,height:'100%',flexDirection:'row',alignItems:'center',borderWidth:1,borderColor:'#80915b66',borderRadius:7,backgroundColor:'#0c2723'},ready:{borderColor:'#b2a16280'},utilityText:{fontFamily:'FieldKitBarlow',color:'#f0e1bd'},small:{fontSize:10,color:'#b8c5a7'},meter:{height:4,borderRadius:2,backgroundColor:'#071f1b',marginTop:4,overflow:'hidden'},heading:{flexDirection:'row',alignItems:'center',justifyContent:'space-between'},sectionTitle:{fontFamily:'FieldKitBarlow',color:'#f2e1b6'},recipe:{height:'100%',flex:1,minWidth:0,flexDirection:'row',alignItems:'center',borderWidth:1,borderColor:'#7c8b6166',borderRadius:8,backgroundColor:'#102b25'},recipeSelected:{borderColor:'#e1c386',backgroundColor:'#45563b'},recipeTitle:{fontFamily:'FieldKitBarlow',color:'#f5e7c6'},stock:{position:'absolute',paddingVertical:2,paddingHorizontal:4,borderWidth:1,borderColor:'#a4ae7a44',borderRadius:4,backgroundColor:'#0d2923cf',color:'#e9dfb9'},job:{flex:1,height:'100%',minWidth:0,borderWidth:1,borderColor:'#6f835955',borderRadius:6,backgroundColor:'#0e2923',justifyContent:'center'},jobActive:{borderColor:'#b6a26c88'},emptyJob:{borderStyle:'dashed',backgroundColor:'#0b25234d'},jobTitle:{fontFamily:'FieldKitBarlow',color:'#e9dcba',flexShrink:1},jobState:{color:'#bdc9a8'},cancel:{position:'absolute',right:0,top:0,alignItems:'center',justifyContent:'center',borderRadius:16},warning:{color:'#e7bd76'},transfer:{borderTopWidth:1,borderTopColor:'#b39c674d',paddingTop:4,gap:3},selectedName:{fontFamily:'FieldKitBarlow',color:'#f1e2bd'},info:{alignItems:'center',justifyContent:'center',borderRadius:14},infoText:{fontFamily:'Georgia',fontSize:17,fontWeight:'900',color:'#f2d294'},shortfall:{flex:1,textAlign:'right',color:'#ebbd7c'},amount:{textAlign:'center',fontFamily:'FieldKitBarlow',fontSize:18,color:'#f5e7c7',borderWidth:1,borderColor:'#7a8a6255',borderRadius:6,backgroundColor:'#0e2923'},button:{alignItems:'center',justifyContent:'center',paddingHorizontal:6,borderWidth:1,borderColor:'#89957277',borderRadius:6,backgroundColor:'#243e34'},buttonText:{fontFamily:'FieldKitBarlow',fontSize:16,color:'#f3e6c6',textAlign:'center'},primaryButton:{backgroundColor:'#dfc38c',borderColor:'#e4ca8d',borderBottomWidth:3,borderBottomColor:'#967348'},disabledButton:{backgroundColor:'#20372f',borderColor:'#71826144'},disabledPrimary:{backgroundColor:'#566048',borderColor:'#8e936260'},upgradeLink:{height:26,justifyContent:'center'},upgradeLabel:{fontSize:9,color:'#d5c99e'},overlay:{...StyleSheet.absoluteFill,alignItems:'center',justifyContent:'center',padding:7,backgroundColor:'#081e1b99',borderRadius:8,zIndex:5},popover:{width:'100%',maxWidth:440,maxHeight:'100%',padding:12,borderWidth:1,borderColor:'#b7a36f',borderRadius:10,backgroundColor:'#193a2f'},popoverHeader:{flexDirection:'row',alignItems:'center',justifyContent:'space-between',gap:8,paddingBottom:6,borderBottomWidth:1,borderBottomColor:'#ab9d6a55'},popoverTitle:{fontFamily:'FieldKitBarlow',fontSize:22,color:'#f5e4ba',flex:1},description:{fontSize:12,lineHeight:17,color:'#c8d2b6'}});
+const s = StyleSheet.create({
+ scroll: {flex: 1, minHeight: 0}, body: {gap: 8, padding: 1, paddingBottom: 6}, row: {flexDirection: 'row', alignItems: 'center', gap: 6},
+ utilities: {gap: 6}, utilityWide: {flex: 1}, utility: {minHeight: 55, flexDirection: 'row', alignItems: 'center', gap: 7, padding: 6, borderRadius: 7, backgroundColor: palette.surface},
+ details: {flex: 1, minWidth: 0}, title: {color: palette.text, fontFamily: 'FieldKitBarlow', fontSize: 16},
+ meta: {fontSize: 12, color: palette.muted}, recipeInfo: {fontSize: 12, color: palette.muted, textAlign: 'center'},
+ recipe: {flex: 1, minWidth: 0, alignItems: 'center', padding: 8, gap: 3, borderWidth: 1, borderBottomWidth: 3, borderColor: palette.line, backgroundColor: palette.inset, borderRadius: 7},
+ selected: {borderColor: palette.brass, backgroundColor: palette.surface},
+ tray: {flexShrink: 0, gap: 4, paddingTop: 4, borderTopWidth: 1, borderColor: palette.line},
+ link: {minHeight: 30, justifyContent: 'center'}, recipeLink: {minHeight: 32, justifyContent: 'center'},
+ linkText: {fontWeight: '700', fontSize: 13, color: palette.brass}, cost: {flex: 1, textAlign: 'right', fontSize: 13, color: palette.text},
+ warning: {color: palette.danger}, overlay: {...StyleSheet.absoluteFill, backgroundColor: 'rgba(8,12,10,.72)', justifyContent: 'center', alignItems: 'center', padding: 6, zIndex: 5},
+ dialog: {width: '100%', maxWidth: 440, maxHeight: '100%', gap: 6, padding: 10, borderWidth: 1, borderColor: palette.brass, borderRadius: 8, backgroundColor: palette.panel},
+ dialogTitle: {flex: 1, fontSize: 22, fontFamily: 'FieldKitBarlow', color: palette.text}, copy: {fontSize: 14, lineHeight: 20, color: palette.text},
+});

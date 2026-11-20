@@ -10,7 +10,7 @@ try{
  await build({stdin:{contents:`export * from './src/headquarters-model';export * from './src/headquarters-plans';export * from './src/headquarters-journal';export * from './src/run-progression';export * from './src/run-save';export * from './src/studio-play';export * from './src/imported-art';export * from './src/authored-world';export * from './src/scene-travel';export * from './src/world-scenes';export * from './src/camp-furnace';export * from './src/expedition-inventory';`,resolveDir:process.cwd()},bundle:true,platform:'node',format:'cjs',outfile:path.join(tmp,'model.cjs'),logLevel:'error'});
  const m=createRequire(import.meta.url)(path.join(tmp,'model.cjs'));
  const snapshot=JSON.parse(fs.readFileSync('native/assets/world-snapshot.json'));m.installImportedArt(snapshot.records);
- const layout=m.prepareAuthoredWorld(snapshot.layout),make=()=>{const w=m.createCampPlaySession(layout,undefined,'survival');delete w.progression.restoredBuildings;w.progression.campLevel=1;delete w.waypoint;delete w.progression.trackedObjective;return w;};
+ const layout=m.prepareAuthoredWorld(snapshot.layout),make=()=>{const w=m.createCampPlaySession(layout,undefined,'survival');delete w.progression.restoredBuildings;w.progression.campLevel=1;w.gear.bag.repairHammer=1;delete w.waypoint;delete w.progression.trackedObjective;return w;};
  const resources={pin(){},prepare:async()=>{},ready:()=>true};
  const atHQ=w=>{Object.assign(w.player,m.headquartersDock(m.headquartersBench(w)));assert(m.openHeadquarters(w))};
  const saved=w=>m.encodeRun(new m.SceneTravel(w,resources));
@@ -126,7 +126,7 @@ try{
 
  Object.assign(w.progression,{repairPart:true,furnaceRestored:true,metalCrafted:true,fortified:true});
  const arts=[m.HQ_MAP,m.HQ_PAPER,m.HQ_BENCH_ART,...m.HQ_CATEGORIES.map(c=>c.image),...m.HQ_BUILDINGS.flatMap(b=>Object.values(m.buildingArt(w,b)).filter(v=>typeof v==='string')),...plans.flatMap(p=>[p.art.image,p.art.overlay]),...m.discoveries(w).map(e=>e.image)].filter(Boolean);
- const registry=['native/bundled-art.ts','native/backpack-art.ts','native/HeadquartersPanel.tsx','native/camp-restoration-art.ts'].map(p=>fs.readFileSync(p,'utf8')).join('\n');
+ const registry=['native/bundled-art.ts','native/backpack-art.ts','native/HeadquartersPanel.tsx','native/camp-restoration-art.ts','native/furnace-animation-art.ts'].map(p=>fs.readFileSync(p,'utf8')).join('\n');
  for(const image of new Set(arts)){
   if(image.startsWith('/survival/'))assert(fs.existsSync('public'+image),'Missing web art '+image);
   assert(registry.includes(JSON.stringify(image))||registry.includes("'"+image+"'"),'Missing offline native art '+image);

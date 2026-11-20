@@ -1,5 +1,6 @@
 import React,{useEffect,useLayoutEffect,useRef,useState} from 'react';
 import {createPortal} from 'react-dom';
+import {stationCSSColors} from './station-css-colors';
 import StartingScreen from './StartingScreen';
 import {WEB_START_SCREEN_ART} from './start-screen-art';
 import {START_PROFILE_KEY,readStartProfile,type StartProfile} from './start-profile';
@@ -16,6 +17,18 @@ type IntroUiPhase='hidden'|'revealing'|'shown';
 const {intro:INTRO_URL,soundtrack:SOUNDTRACK_URL,menuLoop:MENU_LOOP_URL}=openingMedia;
 const MENU_POSTER_URL='/previews/dawn-camp/start-scene-poster.jpg';
 const LOGO_URL='/survival/starting-screen-ui-v2/humans-remain-logo.png';
+
+function StartPanelDialog({title,onClose,children}:{title:string;onClose:()=>void;children:React.ReactNode}){
+ const dialog=useRef<HTMLDialogElement>(null);
+ useLayoutEffect(()=>{
+  const el=dialog.current;
+  if(!el)return;
+  el.showModal();
+  return()=>el.close();
+ },[]);
+ return <dialog ref={dialog} className="start-panel-dialog" style={stationCSSColors} aria-label={title}
+  onCancel={e=>{e.preventDefault();onClose()}}>{children}</dialog>;
+}
 
 export default function GameStart({onPlay,onBack,busy,notice,playDisabled,loadingProgress,onLoadingComplete,gameMounted=false}:{
  onPlay:()=>void;onBack:()=>void;busy:boolean;notice?:string;playDisabled?:boolean;loadingProgress?:number;
@@ -271,9 +284,9 @@ export default function GameStart({onPlay,onBack,busy,notice,playDisabled,loadin
     onEnded={finishToMenu}
     onError={()=>{if(phase==='watching')finishToMenu()}}/>
   </div>
-  <div className="game-start-menu-ui"
+  <div className="game-start-menu-ui" inert={phase!=='menu'||busy||loadingProgress!==undefined}
    style={{pointerEvents:phase==='menu'?'auto':'none'}}>
-   <StartingScreen {...size}
+   <StartingScreen {...size} renderPanel={(title,close,children)=><StartPanelDialog title={title} onClose={close}>{children}</StartPanelDialog>}
     profile={profile} onProfile={save} onPlay={onPlay} onBack={onBack}
     busy={busy} loadingProgress={loadingProgress}
     reducedMotion={reduced||!profile.motion} onLoadingComplete={onLoadingComplete}

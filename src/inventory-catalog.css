@@ -1,0 +1,75 @@
+/* Backpacks and stores share the same source selector, item tiles and details. */
+.inventory-sources,
+.smithy-category-tabs {
+ display: flex;
+ gap: 4px;
+ flex: none;
+ padding: 3px;
+ background: var(--station-inset);
+ border: 1px solid var(--station-line);
+ border-radius: 7px;
+}
+.camp-studio .field-kit .station-menu :is(.inventory-sources,.smithy-category-tabs) button {
+ display: flex;
+ flex: 1;
+ align-items: center;
+ justify-content: center;
+ gap: 8px;
+ min-width: 0;
+ min-height: 42px;
+ padding: 6px 8px;
+ font: 600 15px/1.1 Barlow,sans-serif;
+ color: var(--station-muted);
+ background: transparent;
+ border: 1px solid transparent;
+ border-radius: 4px;
+ box-shadow: none;
+}
+.camp-studio .field-kit .station-menu :is(.inventory-sources,.smithy-category-tabs) button[aria-pressed=true] {
+ color: var(--station-text);
+ background: var(--station-surface);
+ border-color: var(--station-line);
+ box-shadow: inset 0 -2px var(--station-brass);
+}
+.inventory-sources img { width: 24px; height: 24px; object-fit: contain; }
+
+.camp-studio .field-kit .station-menu button.supply-slot {
+ min-width: 0;
+ padding: 6px;
+ background: var(--station-surface);
+ border: 1px solid var(--station-line);
+ border-radius: 5px;
+ box-shadow: none;
+}
+.camp-studio .field-kit .station-menu button.supply-slot[aria-pressed=true] {
+ border-color: var(--station-brass);
+ background: color-mix(in srgb,var(--station-surface),var(--station-brass) 14%);
+ box-shadow: inset 0 -2px var(--station-brass);
+}
+.station-menu .supply-slot[aria-pressed=true]::after { display: none; }
+.station-menu .supply-slot > span { color: var(--station-text); font-size: 13px; font-weight: 600; }
+.station-menu .supply-slot > b {
+ background: var(--station-inset);
+ color: var(--station-text);
+ font: 600 12px/1.15 Barlow,sans-serif;
+ font-variant-numeric: tabular-nums;
+}
+.station-menu .supply-detail {
+ border: 1px solid var(--station-line);
+ border-radius: 6px;
+ background: var(--station-inset);
+ box-shadow: none;
+}
+.station-menu .supply-item-heading h3,
+.station-menu .supply-facts dd { color: var(--station-text); }
+.station-menu .supply-item-heading small,
+.station-menu .supply-inventory-label,
+.station-menu .supply-facts dt { color: var(--station-muted); }
+.station-menu .supply-inventory-label { font-size: 13px; }
+.station-menu .supply-inventory-label > span:last-child { opacity: 1; }
+.station-menu .supply-facts > div { background: var(--station-surface); border-color: var(--station-line); }
+.station-menu .supply-facts dt { font-size: 12px; }
+.station-menu .supply-more summary { color: var(--station-brass); }
+.station-menu .supply-detail-copy { scroll-padding: 6px; }
+.backpack-menu .supply-quantity output,
+.station-menu .supply-facts dd { font-variant-numeric: tabular-nums; }

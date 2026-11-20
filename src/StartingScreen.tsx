@@ -9,11 +9,11 @@ import SurvivorSelector from './SurvivorSelector';
 import {survivorRole,type SurvivorRoleId} from './survivor-roles';
 
 
-type Props={width:number;height:number;safe?:{top:number;bottom:number;left:number;right:number};background:React.ReactNode;shade:React.ReactNode;portrait:ImageSourcePropType;artwork:StartScreenArtwork;fontFamily?:string;profile:StartProfile;onProfile:(p:StartProfile)=>void;onPlay:()=>void;onFriends?:()=>void;onBack?:()=>void;busy?:boolean;notice?:string;playDisabled?:boolean;loadingProgress?:number;reducedMotion?:boolean;onLoadingComplete?:()=>void;introUiPhase?:'hidden'|'revealing'|'shown';transparentBackground?:boolean};
+type Props={renderPanel?:(title:string,close:()=>void,children:React.ReactNode)=>React.ReactNode;width:number;height:number;safe?:{top:number;bottom:number;left:number;right:number};background:React.ReactNode;shade:React.ReactNode;portrait:ImageSourcePropType;artwork:StartScreenArtwork;fontFamily?:string;profile:StartProfile;onProfile:(p:StartProfile)=>void;onPlay:()=>void;onFriends?:()=>void;onBack?:()=>void;busy?:boolean;notice?:string;playDisabled?:boolean;loadingProgress?:number;reducedMotion?:boolean;onLoadingComplete?:()=>void;introUiPhase?:'hidden'|'revealing'|'shown';transparentBackground?:boolean};
 type Panel='customise'|'upgrades'|'settings'|null;
 const serif=Platform.OS==='ios'?'Georgia':Platform.OS==='web'?'Georgia, serif':'serif';
 const AnimatedPressable=Animated.createAnimatedComponent(Pressable);
-export default function StartingScreen({width,height,safe={top:0,bottom:0,left:0,right:0},background,shade,portrait,artwork,fontFamily=START_SCREEN_MENU_FONT,profile,onProfile,onPlay,onFriends,onBack,busy=false,notice='',playDisabled=false,loadingProgress,reducedMotion=false,onLoadingComplete,introUiPhase='shown',transparentBackground=false}:Props){
+export default function StartingScreen({renderPanel,width,height,safe={top:0,bottom:0,left:0,right:0},background,shade,portrait,artwork,fontFamily=START_SCREEN_MENU_FONT,profile,onProfile,onPlay,onFriends,onBack,busy=false,notice='',playDisabled=false,loadingProgress,reducedMotion=false,onLoadingComplete,introUiPhase='shown',transparentBackground=false}:Props){
  const [panel,setPanel]=useState<Panel>(null),[name,setName]=useState(profile.name),[role,setRole]=useState<SurvivorRoleId>(profile.role);
  const loading=loadingProgress!==undefined;
  const transition=useRef(new Animated.Value(loading?1:0)).current,sceneOpacity=useRef(new Animated.Value(1)).current;
@@ -61,7 +61,36 @@ export default function StartingScreen({width,height,safe={top:0,bottom:0,left:0
  const panelWidth=Math.min(menuWidth,maxMenuHeight*516/599);
  const panelHeight=panelWidth*599/516;
  const icon=(name:StartScreenIconName,size:number,style?:object)=><Image accessibilityIgnoresInvertColors source={artwork.icons[name]} resizeMode="contain" style={[{width:unit(size),height:unit(size)},style]}/>;
- const action=(label:string,fn:()=>void)=><Pressable accessibilityRole="button" onPress={fn} style={({pressed})=>[s.action,pressed&&s.pressed]}><Text style={s.actionText}>{label}</Text></Pressable>;
+ const action=(label:string,fn:()=>void,primary=false)=>(
+  <Pressable nativeID={primary?'start-panel-primary':undefined} accessibilityRole="button" onPress={fn} style={({pressed})=>[s.action,pressed&&s.pressed]}>
+   <Text style={s.actionText}>{label}</Text>
+  </Pressable>
+ );
+ const panelTitle=panel==='customise'?'Choose your survivor':panel==='upgrades'?'Camp upgrades':'Settings';
+ const panelContent=panel&&<ScrollView nativeID="start-panel-content" style={s.dialog} contentContainerStyle={s.dialogContent} keyboardShouldPersistTaps="handled">
+  <View nativeID="start-panel-header" style={s.panelHeader}>
+   <Text accessibilityRole="header" style={s.panelTitle}>{panelTitle}</Text>
+   <Pressable accessibilityRole="button" accessibilityLabel="Close panel" onPress={()=>setPanel(null)} style={s.close}><Text style={s.closeText}>×</Text></Pressable>
+  </View>
+  {panel==='customise'&&<>
+   <SurvivorSelector selected={role} onSelect={setRole} portrait={portrait}/>
+   <Text style={s.label}>SURVIVOR NAME</Text>
+   <TextInput accessibilityLabel="Survivor name" value={name} maxLength={20} onChangeText={setName} autoCapitalize="words" autoCorrect={false} returnKeyType="done" style={s.input}/>
+   {action('Save survivor',()=>{onProfile({...profile,name:name.trim()||'Survivor',role});setPanel(null)},true)}
+  </>}
+  {panel==='upgrades'&&<>
+   <View style={s.upgrade}><Text style={s.upgradeTitle}>01  MAKESHIFT CAMP</Text><Text style={s.muted}>Repair Headquarters to reach Camp Level 1 and restore camp facilities.</Text></View>
+   <View style={s.upgrade}><Text style={s.upgradeTitle}>02  WORKING CAMP</Text><Text style={s.muted}>Gather resources in camp storage, then open Camp Plans inside Headquarters to unlock buildings and tools.</Text></View>
+   {action('Enter camp',play,true)}
+  </>}
+  {panel==='settings'&&<>
+   <Text style={s.body}>Camp animation</Text>
+   <Text style={s.muted}>Wind, fire and survivor idle on the starting screen. Your device’s reduced motion setting also applies.</Text>
+   {action(profile.motion?'Animation: On':'Animation: Off',()=>onProfile({...profile,motion:!profile.motion}))}
+   <Text style={s.muted}>Survivor name and preferences are saved on this device. Each time you press Play, a fresh Survival run begins.</Text>
+   {onBack&&action('World editor',()=>{setPanel(null);onBack()})}
+  </>}
+ </ScrollView>;
  return <Animated.View accessibilityLabel="Humans Remain starting screen" style={[s.root,{opacity:sceneOpacity,backgroundColor:transparentBackground?'transparent':'#071b1d'}]}>
   {background}<Animated.View pointerEvents="none" style={[StyleSheet.absoluteFill,shadeEntrance]}>{shade}</Animated.View>
   <Image accessible={false} pointerEvents="none" source={artwork.expeditionLoading} style={{position:'absolute',width:1,height:1,opacity:0}}/>
@@ -96,12 +125,8 @@ export default function StartingScreen({width,height,safe={top:0,bottom:0,left:0
    {!!notice&&<Text accessibilityRole="alert" style={s.notice}>{notice}</Text>}
    {busy&&!loading&&<Text accessibilityLiveRegion="polite" style={s.detail}>Preparing your world…</Text>}
   </Animated.View>}
-  {panel&&<View accessibilityViewIsModal style={[s.modal,{paddingTop:safe.top+12,paddingBottom:safe.bottom+12,paddingLeft:safe.left+20,paddingRight:safe.right+20}]}>
-   <ScrollView style={s.dialog} contentContainerStyle={s.dialogContent} keyboardShouldPersistTaps="handled">
-    <View style={s.panelHeader}><Text accessibilityRole="header" style={s.panelTitle}>{panel==='customise'?'Choose your survivor':panel==='upgrades'?'Camp upgrades':'Settings'}</Text><Pressable accessibilityRole="button" accessibilityLabel="Close panel" onPress={()=>setPanel(null)} style={s.close}><Text style={s.closeText}>×</Text></Pressable></View>
-    {panel==='customise'?<><SurvivorSelector selected={role} onSelect={setRole} portrait={portrait}/><Text style={s.label}>SURVIVOR NAME</Text><TextInput accessibilityLabel="Survivor name" value={name} maxLength={20} onChangeText={setName} autoCapitalize="words" autoCorrect={false} returnKeyType="done" style={s.input}/>{action('Save survivor',()=>{onProfile({...profile,name:name.trim()||'Survivor',role});setPanel(null)})}</>:panel==='upgrades'?<><Text style={s.body}>Build a place worth defending.</Text><Text style={s.muted}>Repair Headquarters to reach Camp Level 1. Gather resources in camp storage, then use Camp Plans inside Headquarters to unlock the next level, buildings and tools.</Text><View style={s.upgrade}><Text style={s.upgradeTitle}>01  MAKESHIFT CAMP</Text><Text style={s.muted}>Repair the camp and restore its facilities.</Text></View><View style={s.upgrade}><Text style={s.upgradeTitle}>02  WORKING CAMP</Text><Text style={s.muted}>Expand your camp through Headquarters.</Text></View>{action('Enter camp',play)}</>:<><Text style={s.body}>Camp animation</Text><Text style={s.muted}>Wind, fire and survivor idle on the starting screen. Your device’s reduced motion setting also applies.</Text>{action(profile.motion?'Animation: On':'Animation: Off',()=>onProfile({...profile,motion:!profile.motion}))}<Text style={s.muted}>Survivor name and preferences are saved on this device. Each time you press Play, a fresh Survival run begins.</Text>{onBack&&action('World editor',()=>{setPanel(null);onBack()})}</>}
-   </ScrollView>
-  </View>}
+  {panel&&(renderPanel?renderPanel(panelTitle,()=>setPanel(null),panelContent):
+   <View accessibilityViewIsModal style={[s.modal,{paddingTop:safe.top+12,paddingBottom:safe.bottom+12,paddingLeft:safe.left+20,paddingRight:safe.right+20}]}>{panelContent}</View>)}
  </Animated.View>;
 }
 const s=StyleSheet.create({
