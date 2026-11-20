@@ -13,4 +13,3 @@ export const FOOD_NATIVE_ART={...PROVISION_NATIVE_ART,
  rabbitMeal:require('../public/survival/rabbit-food-v1/cooked-rabbit.webp'),
  venisonMeal:require('../public/survival/venison-food-v1/cooked-venison.webp'),
 };
-export const heldFoodArt=(id:string):number|undefined=>FOOD_NATIVE_ART[id as keyof typeof FOOD_NATIVE_ART];

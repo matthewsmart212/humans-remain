@@ -5,7 +5,6 @@ import {headquartersCutawayAmount,clipHeadquartersDoorway,drawHeadquartersExteri
 import {HQ_SOUTH_INTERIOR} from './headquarters-south-art';
 import {headquartersRoofBottom,withinRoofApproach,headquartersRaidVisible} from './headquarters-roof';
 import {campBuildingArt} from './camp-restoration';
-import {drawProgressionMarkers} from './progression-renderer';
 import {drawBomberGround,drawBomberEmissives} from './bomber-renderer';
 import {drawCampFurnace} from './furnace-renderer';
 import {drawRockGround} from './rock-ground';
@@ -230,7 +229,7 @@ export function drawWorldEditor(ctx:CanvasRenderingContext2D,atlas:Atlas,imgs:Re
  drawCombatFeedback(ctx,w,imgs);
  if(view.playing){drawAnimalHealth(ctx,w,{x:c.x,y:c.y,width:ctx.canvas.width/c.scale,height:ctx.canvas.height/c.scale,scale:pickupScale});drawAnimalHitFeedback(ctx,w,pickupScale)}
  if(view.playing)drawPickupGlints(ctx,pickupCues,pickupScale,timeOf(w),getFieldKitTarget(w),!!w.weather?.reducedMotion);
- if(view.playing){drawProgressionMarkers(ctx,w,pickupScale);drawBuildingCondition(ctx,w,pickupScale,{x:c.x,y:c.y,width:ctx.canvas.width/c.scale,height:ctx.canvas.height/c.scale})}
+ if(view.playing){drawBuildingCondition(ctx,w,pickupScale,{x:c.x,y:c.y,width:ctx.canvas.width/c.scale,height:ctx.canvas.height/c.scale})}
  if(view.playing)drawCampfireHud(ctx,imgs,w,pickupScale);
  if(view.playing)drawBowLock(ctx,w,{x:c.x,y:c.y,width:ctx.canvas.width/c.scale,height:ctx.canvas.height/c.scale,scale:pickupScale});
  if(view.playing)drawWorldWaypoint(ctx,w,{x:c.x,y:c.y,width:ctx.canvas.width/c.scale,height:ctx.canvas.height/c.scale,scale:pickupScale});

@@ -6,11 +6,37 @@ import {createRequire} from 'node:module';
 import {build} from 'esbuild';
 const temp=fs.mkdtempSync(path.join(os.tmpdir(),'interaction-focus-'));
 try{
- await build({stdin:{contents:`export * from './src/survival-engine';export * from './src/world-layout';export * from './src/field-kit';export * from './src/field-kit-target';export * from './src/foraging';export * from './src/forage-art';export * from './src/player-gear';export * from './src/expedition-inventory';export * from './src/rock-mining';export * from './src/tree-chopping';export * from './src/resource-focus';export * from './src/ironworks-data';`,resolveDir:process.cwd()},bundle:true,platform:'node',format:'cjs',outfile:path.join(temp,'model.cjs')});
+ await build({stdin:{contents:`export * from './src/survival-engine';export * from './src/world-layout';export * from './src/field-kit';export * from './src/field-kit-target';export * from './src/foraging';export * from './src/forage-art';export * from './src/player-gear';export * from './src/expedition-inventory';export * from './src/rock-mining';export * from './src/tree-chopping';export * from './src/resource-focus';export * from './src/ironworks-data';export * from './src/quick-items';export {isProvision} from './src/food-provisions-data';export {BAG_IMAGES} from './src/backpack';`,resolveDir:process.cwd()},bundle:true,platform:'node',format:'cjs',outfile:path.join(temp,'model.cjs')});
  const m=createRequire(import.meta.url)(path.join(temp,'model.cjs'));
  const make=(items=[])=>{const layout={...m.emptyLayout(),items,spawn:{x:1600,y:1690}},w=m.createWorld(layout);w.enemies=[];w.animals=[];w.loot=[];w.breakables=[];w.combatTest=true;w.editorPreview=true;w.survivalEnabled=true;w.player.direction='up';for(const k of Object.keys(w.gear.bag))w.gear.bag[k]=0;return{w,c:new m.FieldKitController()}};
  const plant=(id,x=1600,y=1600)=>({...m.newPlacement(m.FORAGE_ART[0].id,x,y),id});
  const rock=(id='rock',asset='art_rock_moss_capped_boulder')=>({...m.newPlacement(asset,1600,1600),id});
+ // The primary hex must show the actual carried item, including its material
+ // tier, even when a threat changes the verb to an attack.
+ const loadout=make();
+ loadout.w.cooked=1;
+ loadout.w.cookedRabbit=1;
+ loadout.w.cookedVenison=1;
+ for(const item of m.QUICK_ITEMS){
+  if(m.isGear(item.id))loadout.w.gear.bag[item.id]=1;
+  if(m.isProvision(item.id))m.setItemCount(loadout.w,item.id,1);
+ }
+ for(const inCombat of [false,true]){
+  if(inCombat)loadout.w.enemies.push({id:900,x:1700,y:1690,hp:100,maxHp:100,attackAt:0,path:[],repathAt:0,flashUntil:0});
+  for(const item of m.QUICK_ITEMS){
+   assert(m.selectQuickItem(loadout.w,item.id),'Can select '+item.label);
+   const {action}=loadout.c.sample(loadout.w);
+   assert.equal(action.image??m.fieldKitArt(action.icon),item.image,item.label+' action artwork, combat='+inCombat);
+   assert(fs.existsSync('public'+item.image),item.label+' has a bundled illustration');
+  }
+ }
+ const dropped=make(),dropItems={pallets:'logs',rawMeat:'raw',rawRabbit:'rabbitRaw',rawVenison:'venisonRaw',cookedMeat:'meal',cookedRabbit:'rabbitMeal',cookedVenison:'venisonMeal'};
+ for(const kind of m.INVENTORY_KINDS){
+  dropped.w.loot=[{kind,id:100,x:dropped.w.player.x,y:dropped.w.player.y,amount:1}];
+  const {action}=dropped.c.sample(dropped.w);
+  assert.equal(action.label,'COLLECT',kind);
+  assert.equal(action.image,m.BAG_IMAGES[dropItems[kind]??kind],kind+' pickup illustration');
+ }
  // Near-equal neighbours must not switch on sub-pixel movement or during cooldown.
  const pair=make([plant('left',1565),plant('right',1635)]),first=pair.c.sample(pair.w).action.target;
  for(const dx of [1,-1,.5,-.5,0]){pair.w.player.x=1600+dx;assert.equal(pair.c.sample(pair.w).action.target.id,first.id)}

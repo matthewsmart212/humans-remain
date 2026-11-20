@@ -36,6 +36,8 @@ assert(m.plantPotato(game,'carrot'));assert.equal(m.gardenBeds(game)[0].kind,'ca
 assert.equal(m.gardenBeds(game)[1],other,'Replant fills only the empty bed');
 const ripe=m.gardenBeds(game)[1];
 m.setItemCount(game,'pallets',99);
+assert.equal(m.potatoPatchAction(game).shortLabel,'PACK FULL');
+assert(m.potatoPatchAction(game).disabled);
 assert(!m.harvestPotatoes(game,1),'Full pack keeps the ripe crop');assert.equal(m.gardenBeds(game)[1],ripe);
 m.setItemCount(game,'pallets',0);
 assert(m.harvestPotatoes(game,1));

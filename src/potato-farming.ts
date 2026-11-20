@@ -65,10 +65,10 @@ export function potatoPatchAction(w:World){
  const beds=gardenBeds(w),readyIndex=beds.findIndex(c=>c&&potatoGrowth(w,c.plantedAt)>=1),growing=beds.filter(Boolean).length;
  if(readyIndex>=0){
   const crop=beds[readyIndex]!,fits=canCarryCount(w,crop.kind,4)>=4;
-  return {kind:'harvest' as const,crop:crop.kind,bed:readyIndex,label:`Harvest 4 ${plural(crop.kind)} from bed ${readyIndex+1}`,shortLabel:'HARVEST',detail:fits?`Bed ${readyIndex+1} ready · 4 ${plural(crop.kind)}`:`Backpack needs room for 4 ${plural(crop.kind)}`,disabled:!fits,perform:()=>harvestPotatoes(w,readyIndex,crop)};
+  return {kind:'harvest' as const,crop:crop.kind,bed:readyIndex,label:`Harvest 4 ${plural(crop.kind)} from bed ${readyIndex+1}`,shortLabel:fits?'HARVEST':'PACK FULL',detail:fits?`Bed ${readyIndex+1} ready · 4 ${plural(crop.kind)}`:`Backpack needs room for 4 ${plural(crop.kind)}`,disabled:!fits,perform:()=>harvestPotatoes(w,readyIndex,crop)};
  }
  const crop=plantingCrop(w);
  if(crop&&growing<4)return {kind:'plant' as const,crop,bed:beds.findIndex(c=>!c),label:`Plant 1 ${crop} to grow 4`,shortLabel:'PLANT',detail:`${growing}/4 beds planted · Select potato or carrot in quick bar`,disabled:false,perform:()=>plantPotato(w,crop)};
  const until=growing?Math.min(...beds.flatMap(c=>c?[Math.max(0,POTATO_GROW_SECONDS-(timeOf(w)-c.plantedAt))]:[])):0;
- return {kind:'inspect' as const,crop:undefined,bed:-1,label:growing?'Vegetables are growing':'Vegetable patch · Bring potatoes or carrots',shortLabel:growing?'GROWING':'PATCH',detail:growing?`${growing}/4 beds planted · ~${Math.ceil(until)}s to harvest`:'Pick wild potatoes or carrots, then plant one here',disabled:true,perform:()=>false};
+ return {kind:'inspect' as const,crop:undefined,bed:-1,label:growing?'Vegetables are growing':'Vegetable patch · Bring potatoes or carrots',shortLabel:growing?'GROWING':'INSPECT',detail:growing?`${growing}/4 beds planted · ~${Math.ceil(until)}s to harvest`:'Pick wild potatoes or carrots, then plant one here',disabled:true,perform:()=>false};
 }

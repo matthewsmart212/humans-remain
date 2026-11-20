@@ -7,8 +7,20 @@ import {build} from 'esbuild';
 const temp=fs.mkdtempSync(path.join(os.tmpdir(),'action-hex-'));
 globalThis.__hexReact={createElement:(type,props,...children)=>({type,props:{...props,children}}),useRef:current=>({current}),useEffect(){},useState:initial=>[initial,()=>{}]};
 try{
- await build({stdin:{contents:"export * from './src/action-hex';export {default as NativeHexActions} from './native/HexActions';",resolveDir:process.cwd()},bundle:true,platform:'node',format:'cjs',outfile:path.join(temp,'test.cjs'),plugins:[{name:'native-test',setup(b){b.onResolve({filter:/^(react(?:\/jsx-runtime)?|react-native|@shopify\/react-native-skia)$/},a=>({path:a.path,namespace:'stub'}));b.onLoad({filter:/.*/,namespace:'stub'},a=>({contents:a.path==='@shopify/react-native-skia'?"export const Canvas='canvas',Path='path';":a.path==='react'?'module.exports=globalThis.__hexReact;':a.path==='react/jsx-runtime'?"export const jsx=(type,props)=>({type,props});export const jsxs=jsx;":"export const View='view',Text='text',Image='image';export const AppState={addEventListener:()=>({remove(){}})};export const StyleSheet={create:x=>x,absoluteFill:{position:'absolute',inset:0}};",loader:'js'}));b.onLoad({filter:/\.png$/},a=>({contents:`module.exports=${JSON.stringify(a.path)}`,loader:'js'}));}}]});
+ await build({stdin:{contents:"export * from './src/action-hex';export {QUICK_ITEMS} from './src/quick-items';export {BAG_IMAGES} from './src/backpack';export {actionImageGlyph} from './native/FieldItemArt';export {default as NativeHexActions} from './native/HexActions';",resolveDir:process.cwd()},bundle:true,platform:'node',format:'cjs',outfile:path.join(temp,'test.cjs'),plugins:[{name:'native-test',setup(b){b.onResolve({filter:/^(react(?:\/jsx-runtime)?|react-native|@shopify\/react-native-skia)$/},a=>({path:a.path,namespace:'stub'}));b.onLoad({filter:/.*/,namespace:'stub'},a=>({contents:a.path==='@shopify/react-native-skia'?"export const Canvas='canvas',Path='path';":a.path==='react'?'module.exports=globalThis.__hexReact;':a.path==='react/jsx-runtime'?"export const jsx=(type,props)=>({type,props});export const jsxs=jsx;":"export const View='view',Text='text',Image='image';export const AppState={addEventListener:()=>({remove(){}})};export const StyleSheet={create:x=>x,absoluteFill:{position:'absolute',inset:0}};",loader:'js'}));b.onLoad({filter:/\.(png|webp)$/},a=>({contents:`module.exports=${JSON.stringify(a.path)}`,loader:'js'}));}}]});
  const m=createRequire(import.meta.url)(path.join(temp,'test.cjs')),layout=m.ACTION_HEX,cells=layout.cells;
+ // Resolve each rendered image through the native component so missing Metro
+ // modules or a mismatched inventory/weapon picture fail this check.
+ const imageSource=node=>{
+  if(!node)return undefined;
+  if(typeof node.type==='function')return imageSource(node.type(node.props));
+  if(node.type==='image')return node.props.source;
+  return [node.props?.children].flat(Infinity).map(imageSource).find(Boolean);
+ };
+ const paths=new Set([...m.QUICK_ITEMS.map(item=>item.image),...Object.values(m.BAG_IMAGES)]);
+ for(const url of paths){
+  assert.equal(imageSource(m.actionImageGlyph(url,40)),path.resolve('public'+url),'Native action must use '+url);
+ }
  const vertices=c=>Array.from({length:6},(_,i)=>{const a=(i*60-90)*Math.PI/180;return{x:c.left+c.width/2+c.height/2*Math.cos(a),y:c.top+c.height/2+c.height/2*Math.sin(a)}});
  const pointSegment=(p,a,b)=>{const dx=b.x-a.x,dy=b.y-a.y,t=Math.max(0,Math.min(1,((p.x-a.x)*dx+(p.y-a.y)*dy)/(dx*dx+dy*dy)));return Math.hypot(p.x-a.x-t*dx,p.y-a.y-t*dy)};
  const distance=(a,b)=>Math.min(...a.flatMap(p=>b.map((q,i)=>pointSegment(p,q,b[(i+1)%6]))),...b.flatMap(p=>a.map((q,i)=>pointSegment(p,q,a[(i+1)%6]))));

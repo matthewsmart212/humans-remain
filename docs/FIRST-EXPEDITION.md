@@ -4,9 +4,9 @@ The first Survival milestone connects the existing gathering, crafting, weather 
 
 ## Player path
 
-1. Start with a wooden axe, wooden spear, two tins of beans and four berry portions. Camp storage starts empty.
+1. Start with an empty backpack. Open the supply chest by the campfire to collect a repair hammer, wooden axe and wooden pickaxe.
 2. Visit the headquarters planning bench. Its blueprint overview shows Shelter, Metalworking and Reinforced camp, plus the current objective, costs and camp condition.
-3. Track the salvage cache outside camp and recover replacement furnace bellows. This quest part is stored in progression, so dropping inventory cannot lose it.
+3. Recover the bellows and smelting notes at the camp furnace. This quest part is stored in progression, so dropping inventory cannot lose it.
 4. Chop logs, craft a wooden pickaxe at the smithy, mine ordinary stone and collect loose scrap. Restore the furnace with the bellows, 4 logs, 3 stone and 4 scrap. No metal ingot is required to unlock smelting.
 5. Fuel the furnace and smelt ore or scrap. Craft a metal weapon at the smithy. Existing metal equipment and bow/arrow recipes remain locked until restoration.
 6. Defend headquarters through three nights. Repair between raids, or pay for stronger camp defences once a metal weapon has been crafted.
@@ -22,7 +22,7 @@ Camp defence is a shared reserve protecting headquarters. It is not individual d
 - Inventory, equipment, unlocks, time, active raid, camp health, furnace batches, kitchen state, gathered resources, enemies, dropped items and visited scene/return route are retained. Attack inputs and renderer caches are reset on load.
 - Time does not advance while the app is closed. Continue loads the same run snapshot; New Survival run explicitly replaces it after confirmation.
 - Unreadable or unsupported saves are kept and autosaving is blocked until the player explicitly starts a new run. Storage errors are shown rather than claiming success.
-- A run owns a copy of its starting world. Restoring a furnace, mining, chopping and the salvage cache never modify the authored editor draft. Starting a new run picks up the latest loaded authored layout.
+- A run owns a copy of its starting world. Restoring a furnace, mining and chopping never modify the authored editor draft. Starting a new run picks up the latest loaded authored layout.
 - Sandbox changes never overwrite a Survival save. Saves do not sync between the web browser and iPhone.
 
 ## Validation
@@ -38,7 +38,7 @@ The older `check-studio-combat.mjs` fails on its pre-existing `80` HP Walker exp
 ## Next priorities
 
 1. Play-balance the opening three nights on a physical phone: time to find materials, combat readability, repair costs, difficulty and save/resume behavior under app suspension.
-2. Give the salvage destination a dedicated location kit and a clear exploration reward; build one complete excursion before expanding the entire map.
+2. Build an exploration destination with its own artwork and reward before expanding the entire map.
 3. Add recipes with distinct uses: healing item, travel food, defensive consumable and a tool that opens a resource route. Connect each to a tier and material source.
 4. Expand headquarters progression into another building repair/unlock, then add longer raid escalation and rewards. Keep prerequisite paths free of circular locks.
 5. Add broader campaign persistence, migration/version support and optional cross-device saving before tackling co-op.

@@ -15,6 +15,19 @@ try{
  const save=w=>m.encodeRun(new m.SceneTravel(w,resources));
  const load=w=>m.decodeRun(save(w)).worlds[0][1];
  const checks=[];
+ const originalCache={id:'expedition-repair-cache',assetId:'art_hq_storage_chest',x:2551,y:2094,scale:.65,solid:false,role:'prop',locked:true,roof:'auto'};
+ const oldRun=make();
+ assert(!oldRun.layout.items.some(p=>p.id===originalCache.id),'New expeditions leave the warehouse clear');
+ oldRun.layout.items.push(originalCache,{...originalCache,id:'editor-supply-chest'});
+ const continued=load(oldRun);
+ assert(!continued.layout.items.some(p=>p.id===originalCache.id),'Retire the generated chest from old runs');
+ assert(continued.layout.items.some(p=>p.id==='editor-supply-chest'),'Keep separately placed furniture');
+ Object.assign(continued.player,{x:originalCache.x,y:originalCache.y});
+ assert(!m.recoverRepairPart(continued),'No invisible recovery action at the former chest');
+ const furnaceSite=m.campRepairSite(continued,'furnace');
+ Object.assign(continued.player,{x:furnaceSite.x,y:furnaceSite.y});
+ assert(m.recoverRepairPart(continued));assert(!m.recoverRepairPart(continued),'Recover the bellows once at the furnace');
+ checks.push('Warehouse chest retired from new and continued runs with furnace recovery preserved');
  let w=make();assert.equal(m.campAccessLevel(w),1);assert(m.recipeUnlocked(w,'woodenPickaxe'));assert(!m.recipeUnlocked(w,'metalPickaxe'));assert.equal(m.campExpansionStatus(w),'Need expansion materials');
  assert(Object.values(m.CAMP_EXPANSION_COST).every(n=>n>0));assert.deepEqual(Object.keys(m.CAMP_EXPANSION_COST).sort(),['pallets','stone']);
  assert.deepEqual(m.campFacilities(w),{workshop:true,warehouse:true});
@@ -33,7 +46,7 @@ try{
  assert.equal(JSON.stringify(w.gear),gear);assert.deepEqual(w.progression.blueprints,[]);assert(!w.progression.repairPart&&!w.progression.furnaceRestored&&!w.progression.metalCrafted);assert.equal(w.waypoint,undefined);
  fund(w);const paid=stock(w);assert(!m.expandCamp(w));assert.equal(stock(w),paid);assert.equal(load(w).progression.campLevel,2);
  checks.push('Mixed backpack/store expansion pays once, persists, and unlocks standard plans without granting buildings, gear or waypoints');
- w=make();Object.assign(w.player,w.progression.cache);w.stationPanel=undefined;assert(m.recoverRepairPart(w));Object.assign(w.player,m.headquartersDock(m.headquartersBench(w)));m.openHeadquarters(w);
+ w=make();const dock=m.campRepairSite(w,'furnace');Object.assign(w.player,{x:dock.x,y:dock.y});w.stationPanel=undefined;assert(m.recoverRepairPart(w));Object.assign(w.player,m.headquartersDock(m.headquartersBench(w)));m.openHeadquarters(w);
  assert.equal(m.campAccessLevel(w),1);assert(!m.learnBlueprint(w,'metalworking'));fund(w);assert(m.expandCamp(w));assert(m.blueprintLearned(w,'metalworking'));assert(!m.learnBlueprint(w,'metalworking'),'Camp level grants standard plans automatically');assert(!m.recipeUnlocked(w,'scrapKnife'),'A learned plan cannot replace a working furnace');
  checks.push('Bellows can be discovered before expansion; camp level grants knowledge while physical construction still costs materials');
  for(const flags of [{},{repairPart:true},{furnaceRestored:true},{blueprints:['metalworking']},{fortified:true},{metalCrafted:true}]){

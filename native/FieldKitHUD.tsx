@@ -1,9 +1,7 @@
 import CampThreatBanner from './CampThreatBanner';
 import FieldKitTargetCaption from './FieldKitTargetCaption';
 import WarehouseStockCaption from './WarehouseStockCaption';
-import {IRONWORKS_NATIVE_ART} from './ironworks-art';
-import {isPickaxe} from '../src/pickaxes';
-const miningToolArt={woodenPickaxe:require('../public/survival/equipment/wooden-pickaxe-v1.png'),metalPickaxe:require('../public/survival/equipment/metal-pickaxe-v1.png')};
+import {actionImageGlyph} from './FieldItemArt';
 import BowLockGlyph from './BowLockGlyph';
 import {toggleBowLock} from '../src/bow-lock';
 import type {MovementTrail} from '../src/movement-trail';
@@ -18,7 +16,6 @@ import React,{useCallback,useEffect,useRef,useState} from 'react';
 import {AppState,View,Text,Image,Pressable,StyleSheet,type GestureResponderEvent,type NativeTouchEvent} from 'react-native';
 import {useFonts} from 'expo-font';
 import {FIELD_KIT_NATIVE_ART as art} from './field-kit-art';
-import {heldFoodArt} from './food-art';
 import {FieldKitController,fieldKitBadge,fieldKitLayout,sameFieldKit,type FieldKitIcon,type FieldKitSnapshot} from '../src/field-kit';
 import {useBackpackItem,dropBackpackItem} from '../src/backpack';
 import NativeFieldKitBag from './FieldKitBag';
@@ -123,7 +120,8 @@ export default function NativeFieldKitHUD({world,controller,input,enabled,mapOpe
  const repair=()=>{const shown=latest.current.repairAction;if(!disabled&&!mapOpen&&world.current&&shown&&controller.pressRepair(world.current,shown)){onHeld(controller.holdingAttack);if(!shown.repair)onCheckpoint?.()}refresh()};
  const lock=()=>{if(disabled||mapOpen||!world.current)return;release();if(toggleBowLock(world.current))onLock?.();refresh()};
  const select=(item:QuickItem)=>{if(disabled||!world.current||latest.current.action.owner!==world.current)return;release();selectQuickItem(world.current,item);refresh()};
- const target=stats.repairAction?.target??stats.action.target,captionRight=stats.combat||stats.repairAction?ACTION_HEX.width+8:ACTION_HEX.width-ACTION_HEX.cells.primary.left+8;
+ const escaping=stats.action.key==='brute-escape',showCompanion=!escaping&&(stats.selected==='bow'||stats.combat);
+ const target=stats.repairAction?.target??stats.action.target,captionRight=showCompanion||stats.repairAction?ACTION_HEX.width+8:ACTION_HEX.width-ACTION_HEX.cells.primary.left+8;
  const captionWidth=Math.min(256,height>=width?width-layout.left-layout.right:width*.6-layout.right-captionRight-8),captionStyle=height>=width?{right:0,bottom:ACTION_HEX.height+8}:{right:captionRight,bottom:ACTION_HEX.height-(ACTION_HEX.cells.primary.top+ACTION_HEX.cells.primary.height/2)-21};
  return <View pointerEvents="box-none" style={[StyleSheet.absoluteFill,{opacity:mapOpen?0:1}]}>
   {(!disabled||mapOpen)&&<FieldKitMovement nativePinch={nativePinch} input={input} width={width} height={height} isPinching={isPinching} onMovementTouchStart={onMovementTouchStart}/>}
@@ -133,10 +131,10 @@ export default function NativeFieldKitHUD({world,controller,input,enabled,mapOpe
   {!!stats.notice&&<View pointerEvents="none" style={[s.notice,{left:layout.left,top:layout.top+sky.vitalsTopOffset+(vitalsExpanded?90:40)+7,maxWidth:Math.min(232,width-layout.left-layout.right)}]}><Text style={s.noticeText}>{stats.notice}</Text></View>}
   {!bagOpen&&!stats.stationPanel&&<View pointerEvents="box-none" style={{position:'absolute',right:layout.right,bottom:layout.controlsBottom,width:ACTION_HEX.width,height:ACTION_HEX.height}}>
    {!quickExpanded&&(stats.warehouseStock?<WarehouseStockCaption stock={stats.warehouseStock} width={captionWidth} style={captionStyle}/>:target?.revealed&&<FieldKitTargetCaption target={target} width={captionWidth} style={captionStyle}/>)}
-   <HexActions primary={{icon:stats.action.icon,image:stats.action.image==='/survival/equipment/repair-hammer-v1.webp'?require('../public/survival/equipment/repair-hammer-v1.webp'):stats.action.key.startsWith('smithy:')?art.axe:stats.action.key.startsWith('furnace:')?IRONWORKS_NATIVE_ART.ironIngot:stats.action.key.startsWith('mine:')?miningToolArt[isPickaxe(stats.selected)?stats.selected:'woodenPickaxe']:stats.action.image?.includes('/vegetable-crops-v1/')?heldFoodArt(stats.action.image.includes('carrot')?'carrot':'potato'):stats.action.key.startsWith('forage:')?heldFoodArt(stats.action.image?.includes('apple')?'apple':'berries'):stats.action.icon==='bow'?require('../public/survival/scrap-runner/bow-v1/bow-icon.webp'):stats.action.label==='EAT'?heldFoodArt(stats.selected):undefined,label:stats.action.label,holdToRepair:!!stats.action.repair&&stats.action.label==='REPAIR',ariaLabel:stats.action.disabled&&stats.action.target?'Inspect '+stats.action.target.label+'. '+stats.action.target.detail:stats.action.description,disabled:disabled||stats.action.disabled&&!stats.action.target,unavailable:stats.action.disabled,repairProgress:stats.action.target?.repairState?stats.action.target.progress:undefined,onDown:primary,onUp:()=>releaseAction('primary')}}
-    repair={stats.repairAction?{icon:stats.repairAction.icon,image:require('../public/survival/equipment/repair-hammer-v1.webp'),label:stats.repairAction.label,holdToRepair:!!stats.repairAction.repair&&stats.repairAction.label==='REPAIR',ariaLabel:stats.repairAction.description,disabled:disabled||mapOpen||stats.repairAction.disabled&&!stats.repairAction.target,unavailable:stats.repairAction.disabled,repairProgress:stats.repairAction.target?.repairState?stats.repairAction.target.progress:undefined,onDown:repair,onUp:()=>releaseAction('repair')}:undefined}
-    sprint={{icon:'sprint',label:sprinting?'WALK':'SPRINT',ariaLabel:sprinting?'Walk. Tap to stop sprinting':'Sprint. Tap to start sprinting',pressed:sprinting,disabled,onDown:onSprint}}
-    dodge={stats.selected==='bow'?{glyph:<BowLockGlyph locked={!!stats.bowTarget}/>,label:stats.bowTarget?'LOCKED':'LOCK',ariaLabel:stats.bowTarget?`Release lock on ${stats.bowTarget.label.toLowerCase()}`:'Lock onto a nearby target',pressed:!!stats.bowTarget,disabled:disabled||mapOpen,onDown:lock}:stats.combat?{icon:'dodge',label:stats.dodge>0?`${stats.dodge.toFixed(1)}s`:'DODGE',ariaLabel:stats.dodge>0?`Dodge ready in ${stats.dodge.toFixed(1)} seconds`:'Dodge',disabled:disabled||stats.dodge>0,onDown:()=>{onDodge();refresh()}}:undefined}/>
+   <HexActions primary={{icon:stats.action.icon,glyph:actionImageGlyph(stats.action.image,36),label:stats.action.label,holdToRepair:!!stats.action.repair&&stats.action.label==='REPAIR',ariaLabel:stats.action.disabled&&stats.action.target?'Inspect '+stats.action.target.label+'. '+stats.action.target.detail:stats.action.description,disabled:disabled||stats.action.disabled&&!stats.action.target,unavailable:stats.action.disabled,repairProgress:stats.action.target?.repairState?stats.action.target.progress:undefined,onDown:primary,onUp:()=>releaseAction('primary')}}
+    repair={stats.repairAction?{icon:stats.repairAction.icon,glyph:actionImageGlyph(stats.repairAction.image,stats.repairAction.repair?18:22),label:stats.repairAction.label,holdToRepair:!!stats.repairAction.repair&&stats.repairAction.label==='REPAIR',ariaLabel:stats.repairAction.description,disabled:disabled||mapOpen||stats.repairAction.disabled&&!stats.repairAction.target,unavailable:stats.repairAction.disabled,repairProgress:stats.repairAction.target?.repairState?stats.repairAction.target.progress:undefined,onDown:repair,onUp:()=>releaseAction('repair')}:undefined}
+    sprint={{icon:'sprint',label:'SPRINT',ariaLabel:sprinting?'Walk. Tap to stop sprinting':'Sprint. Tap to start sprinting',pressed:sprinting,disabled:disabled||escaping,onDown:onSprint}}
+    dodge={!showCompanion?undefined:stats.selected==='bow'?{glyph:<BowLockGlyph locked={!!stats.bowTarget}/>,label:stats.bowTarget?'UNLOCK':'LOCK',ariaLabel:stats.bowTarget?`Release lock on ${stats.bowTarget.label.toLowerCase()}`:'Lock onto a nearby target',pressed:!!stats.bowTarget,disabled:disabled||mapOpen,onDown:lock}:{icon:'dodge',label:'DODGE',detail:stats.dodge>0?`${stats.dodge.toFixed(1)}s`:undefined,ariaLabel:stats.dodge>0?`Dodge ready in ${stats.dodge.toFixed(1)} seconds`:'Dodge',disabled:disabled||stats.dodge>0,onDown:()=>{onDodge();refresh()}}}/>
 
   </View>}
   {!bagOpen&&!stats.stationPanel&&<View pointerEvents="box-none" style={{position:'absolute',left:layout.left,bottom:layout.bottom}}><NativeQuickBar maxWidth={layout.quickbarMaxWidth} torch={stats.torch} axes={stats.axes} selected={stats.selected} cooked={stats.cooked} cookedRabbit={stats.cookedRabbit} cookedVenison={stats.cookedVenison} provisions={stats.provisions} disabled={disabled} onSelect={select} onExpandedChange={setQuickExpanded}/></View>}

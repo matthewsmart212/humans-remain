@@ -7,12 +7,12 @@ import {stockFoodChest} from './food-chest-stock';
 import {stepWaypoint} from './waypoint';
 import {seedWildlife,stepWildlife} from './wildlife-population';
 import {startSurvivalCycle,stepSurvivalCycle} from './survival-cycle';
-import {canCarryCount} from './expedition-inventory';
+import {canCarryCount,ITEM_RULES} from './expedition-inventory';
 import {seedCampChickens,stepCampChickens} from './camp-chickens';
 import {seedCampDeer,stepCampDeer} from './camp-deer';
 import {seedCampPredators,stepCampPredators} from './camp-predators';
 import {seedCampRabbits,stepCampRabbits} from './camp-rabbits';
-import {isCookedFood,totalCooked,nextRawFood,foodName} from './food-items';
+import {isCookedFood,totalCooked,nextRawFood} from './food-items';
 import {stepGates} from './camp-gates';
 import {stepPuddles} from './puddle-motion';
 import {stepOnAnimations} from './step-on-animation';
@@ -85,7 +85,7 @@ export function stepCampPlaySession(world:World,input:{x:number;y:number},sprint
 
 export function campInteraction(world:World):{label:string;action:'pickup'|'cook'|'drink'|'deposit';disabled:boolean}|null{
  const pickup=pickupTarget(world);
- if(pickup){const fits=canCarryCount(world,pickup.kind,pickup.amount);return{label:fits?`Collect ${fits} ${foodName(pickup.kind)?.toLowerCase()|| (pickup.kind==='pallets'?'logs':pickup.kind)}`:'Backpack full · Drop or store supplies',action:'pickup',disabled:!fits}}
+ if(pickup){const fits=canCarryCount(world,pickup.kind,pickup.amount);return{label:fits?`Collect ${fits} ${ITEM_RULES[pickup.kind].name.toLowerCase()}`:'Backpack full · Drop or store supplies',action:'pickup',disabled:!fits}}
  const action=campAction(world);
  if(action==='cook')return{label:'Manage cooking and firewood',action,disabled:false};
  if(action==='deposit')return{label:'Open camp storage',action,disabled:false};

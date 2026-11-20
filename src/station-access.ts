@@ -1,6 +1,6 @@
 import {buildingRestored} from './camp-restoration';
 import {lootChestOpened,lootChestInMenuRange} from './loot-chest';
-import {nearbyHeadquarters,REPAIR_CACHE} from './run-progression';
+import {nearbyHeadquarters} from './run-progression';
 import {nearbyFurnace} from './camp-furnace';
 import {nearbySmithy} from './camp-smithy';
 import {nearbyWarehouse} from './warehouse';
@@ -10,7 +10,7 @@ import {campAction,lineClear,type World} from './survival-engine';
 export function nearbyChest(world:World){
  if(!buildingRestored(world,'headquarters'))return null;
  let nearest:string|null=null,distance=110;
- for(const p of layoutViews(world.layout).chests){if(p.id===REPAIR_CACHE)continue;const [x,y]=placementPoint(p,p.x,p.y+22*p.scale),d=Math.hypot(world.player.x-x,world.player.y-y);if(d<distance&&lineClear(world.player,{x,y},world)){distance=d;nearest=p.id}}
+ for(const p of layoutViews(world.layout).chests){const [x,y]=placementPoint(p,p.x,p.y+22*p.scale),d=Math.hypot(world.player.x-x,world.player.y-y);if(d<distance&&lineClear(world.player,{x,y},world)){distance=d;nearest=p.id}}
  return nearest;
 }
 export const atStorage=(w:World)=>buildingRestored(w,'warehouse')&&!!nearbyWarehouse(w)||!!nearbyChest(w)||campAction(w)==='deposit';

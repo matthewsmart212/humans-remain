@@ -1,24 +1,25 @@
+import {nearbyFurnace} from './camp-furnace';
 import {atCampRepairSite,campRepairSite} from './camp-repair-site';
 export {atCampRepairSite,campRepairSite};
 import {CAMP_BUILDING_IDS,CAMP_REPAIRS,campBuildingId,buildingRestored,buildingEstablished,buildingHp,buildingMaxHp,buildingNeedsRepair,type CampBuildingId} from './camp-restoration';
 import {blueprintFound,blueprintLearned,learnedBlueprints,type HQBlueprintId} from './headquarters-plans';
 import type {World,Vec} from './survival-engine';
 import {worldBlocked,lineClear,pathTo,timeOf,facing} from './survival-engine';
-import {placementBounds,placementPoint,newPlacement,type Placement,type WorldLayout} from './world-layout';
+import {placementBounds,placementPoint,type Placement,type WorldLayout} from './world-layout';
 import {GEAR,hasGear,type GearKind,type PlayerGear} from './player-gear';
 import {setItemCount,setStoredCount,INVENTORY_KINDS} from './expedition-inventory';
 import {canPayMaterials,payMaterials,materialTotal} from './camp-materials';
 import type {MaterialCost} from './forge-recipes';
 import {campAccessLevel,campFacilities,CAMP_EXPANSION_COST,type CampLevel} from './camp-levels';
 
-export const HQ_BENCH='art_camp_planning_board',REPAIR_CACHE='expedition-repair-cache';
+export const HQ_BENCH='art_camp_planning_board';
 export const RESTORE_FURNACE_COST:MaterialCost=CAMP_REPAIRS.furnace.cost;
 export const REPAIR_CAMP_COST:MaterialCost={pallets:2,stone:1};
 export const FORTIFY_COST:MaterialCost={pallets:5,stone:4,ironIngot:2};
 export type RunProgression={
  version:1;buildingHp?:Partial<Record<CampBuildingId,number>>;starterRepairHammer?:boolean;starterPickaxe?:boolean;restoredBuildings?:CampBuildingId[];campLevel?:CampLevel;blueprints?:HQBlueprintId[];briefed:boolean;repairPart:boolean;furnaceRestored:boolean;metalCrafted:boolean;fortified:boolean;
  trackedObjective?:'shelter'|'metalworking'|'defences';ingotsSmelted?:number;craftedMetalPickaxe?:boolean;
- camp:Vec;cache:Vec;hqHp:number;hqMax:number;defence:number;defenceMax:number;lastHit:number;
+ camp:Vec;hqHp:number;hqMax:number;defence:number;defenceMax:number;lastHit:number;
  siege:{night:number;spawned:number;nextAt:number;ended:number};completed:boolean;
 };
 const benches=new WeakMap<WorldLayout,Placement[]>();
@@ -38,16 +39,12 @@ export function startExpedition(w:World){
  for(const kind of INVENTORY_KINDS){setItemCount(w,kind,0);setStoredCount(w,kind,0)}
  const hq=w.layout?.items.find(p=>p.assetId==='base_shelter_t1'||p.assetId==='base_headquarters_t1'||p.id==='4d468bcc-83b9-4bb7-af01-da4b69a67d9a');
  const dock=hq?(()=>{const b=placementBounds(hq),[x,y]=placementPoint(hq,b.x+b.width*.5,b.y+b.height+80);return{x,y}})():{...w.layout!.spawn};
- const camp=openGround(w,dock,[0,80,160,240,320]),cache=openGround(w,w.layout!.spawn,[1800,1500,1200,900]);
- w.progression={version:1,starterRepairHammer:true,starterPickaxe:true,campLevel:0,restoredBuildings:[],trackedObjective:'shelter',blueprints:[],briefed:false,repairPart:false,furnaceRestored:false,metalCrafted:false,fortified:false,camp,cache,hqHp:240,hqMax:240,defence:120,defenceMax:120,lastHit:-100,siege:{night:0,spawned:0,nextAt:0,ended:0},completed:false};
- // The cache belongs to this run only; the authored editor layout is untouched.
- const p={...newPlacement('art_hq_storage_chest',cache.x,cache.y),id:REPAIR_CACHE,scale:.65,solid:false,role:'prop' as const,locked:true};
- w.layout={...w.layout!,items:[...w.layout!.items,p]};
+ const camp=openGround(w,dock,[0,80,160,240,320]);
+ w.progression={version:1,starterRepairHammer:true,starterPickaxe:true,campLevel:0,restoredBuildings:[],trackedObjective:'shelter',blueprints:[],briefed:false,repairPart:false,furnaceRestored:false,metalCrafted:false,fortified:false,camp,hqHp:240,hqMax:240,defence:120,defenceMax:120,lastHit:-100,siege:{night:0,spawned:0,nextAt:0,ended:0},completed:false};
  w.camp.hearth.fuel=0;w.fire={cookUntil:0,ready:false,queue:[],rack:[],updatedAt:w.tick/60};
  w.notice='';w.noticeUntil=0;
 }
-export function nearRepairCache(w:World){const p=w.progression;return !!p&&!w.scene&&Math.hypot(w.player.x-p.cache.x,w.player.y-p.cache.y)<145&&lineClear(w.player,p.cache,w)}
-export function recoverRepairPart(w:World){const p=w.progression;if(!p||p.repairPart||!nearRepairCache(w)||w.phase==='over'||w.player.hp<=0)return false;p.repairPart=true;w.notice='Furnace bellows and smelting notes recovered';w.noticeUntil=w.tick/60+5;return true}
+export function recoverRepairPart(w:World){const p=w.progression;if(!p||p.repairPart||!nearbyFurnace(w)||w.phase==='over'||w.player.hp<=0)return false;p.repairPart=true;w.notice='Furnace bellows and smelting notes recovered';w.noticeUntil=w.tick/60+5;return true}
 /** HQ construction uses the authored site; it never moves the survivor or layout. */
 export function furnaceBuildStatus(w:World,fromHeadquarters=false){
  if(!w.progression||w.progression.furnaceRestored)return 'Already built';

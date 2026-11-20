@@ -103,6 +103,9 @@ export function decodeRun(text:string):TravelSnapshot{
   for(const e of w.enemies){resetHound(w,e);e.path=[];e.repathAt=w.tick/60+.3;e.attackAt=w.tick/60+1;if(e.motion){e.motion.phase='recover';e.motion.since=w.tick/60;e.motion.resolved=true}if(e.brute){e.brute.phase='stalk';e.brute.since=w.tick/60;e.brute.hook=undefined;e.brute.jump=undefined;e.brute.recovery=undefined;e.brute.meleeAt=w.tick/60+1}}
   w.scene=id===CAMP_SCENE_ID?undefined:SCENES.get(id);
   if(id===CAMP_SCENE_ID){
+   // Older expeditions added a separate furniture chest for the furnace bellows.
+   const items=w.layout.items.filter(p=>p.id!=='expedition-repair-cache'||p.assetId!=='art_hq_storage_chest');
+   if(items.length!==w.layout.items.length)w.layout={...w.layout,items};
    migrateSavedCampPerimeter(w,data.route);
    const next=addNorthwestTestCrops(addWildCarrots(addWildPotatoes(addApprovedCampGarden(w.layout)))),garden=next.items.find(p=>p.id===GARDEN_PLACEMENT_ID);
    // A returning player standing on the new lot keeps their position. Add it on
@@ -113,7 +116,7 @@ export function decodeRun(text:string):TravelSnapshot{
  }
  if(!ids.has(CAMP_SCENE_ID)||!ids.has(data.currentId)||data.route.some((r:any)=>!ids.has(r?.sceneId)||!r.spawn||!Number.isFinite(r.spawn.x)||!Number.isFinite(r.spawn.y)))throw Error('The expedition return route is missing.');
  const active=data.worlds.find(([id]:[string])=>id===data.currentId)[1] as World,p=active.progression;
- if(!p||p.version!==1||!point(p.camp)||!point(p.cache)||!p.siege||![p.hqHp,p.hqMax,p.defence,p.defenceMax,p.siege.spawned,p.siege.nextAt,p.siege.night,p.siege.ended].every(n=>Number.isFinite(n)&&n>=0)||p.hqMax<=0||p.defenceMax<=0||p.hqHp>p.hqMax||p.defence>p.defenceMax||![p.briefed,p.repairPart,p.furnaceRestored,p.metalCrafted,p.fortified,p.completed].every(v=>typeof v==='boolean'))throw Error('The saved expedition progress is incomplete.');
+ if(!p||p.version!==1||!point(p.camp)||!p.siege||![p.hqHp,p.hqMax,p.defence,p.defenceMax,p.siege.spawned,p.siege.nextAt,p.siege.night,p.siege.ended].every(n=>Number.isFinite(n)&&n>=0)||p.hqMax<=0||p.defenceMax<=0||p.hqHp>p.hqMax||p.defence>p.defenceMax||![p.briefed,p.repairPart,p.furnaceRestored,p.metalCrafted,p.fortified,p.completed].every(v=>typeof v==='boolean'))throw Error('The saved expedition progress is incomplete.');
  return{currentId:data.currentId,worlds:data.worlds,route:data.route};
 }
 /** Async adapters serialize writes; an older autosave can never overtake a new run. */

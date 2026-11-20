@@ -1,6 +1,6 @@
 import React,{useEffect,useId,useRef,useState} from 'react';
 import {availableQuickItems,quickItemCount,quickBarWidth,quickBarSliceImage,QUICK_BAR_LAYOUT as layout,QUICK_BAR_SLICES,type QuickBarProps} from './quick-items';
-import {quickItemArt} from './quick-item-art';
+import QuickItemIcon from './QuickItemIcon';
 import {ACTION_HEX} from './action-hex';
 
 export default function QuickBar({selected,torch,cooked,cookedRabbit=0,cookedVenison=0,provisions,axes,disabled,onSelect,onExpandedChange}:QuickBarProps){
@@ -34,10 +34,10 @@ export default function QuickBar({selected,torch,cooked,cookedRabbit=0,cookedVen
   onKeyDown={e=>{if(e.key==='Escape'&&open){e.preventDefault();e.stopPropagation();close()}else if(e.key===' '||e.key==='Enter')e.stopPropagation()}} onKeyUp={e=>{if(e.key===' '||e.key==='Enter'||e.key==='Escape')e.stopPropagation()}}>
   <span className="kit-quick-skin" aria-hidden="true">{open?QUICK_BAR_SLICES.map(part=><span key={part.id} className="kit-quick-slice" style={{...('width' in part?{width:part.width}:{flex:1}),...('flip' in part?{transform:'scaleX(-1)'}:{})}}><img src="/survival/ui-field-kit-v1/vitals.png" style={quickBarSliceImage(part)} alt="" draggable={false}/></span>):<img className="kit-quick-hex" src="/survival/ui-action-hex-v1/primary.png" alt="" draggable={false}/>}</span>
   <div className="kit-quick-items" id={itemsId} role="group" aria-label={open?'Available tools and items':'Active tool or item'}>
-   {visible.map(item=>{const count=quickItemCount(item.id,cooked,cookedRabbit,cookedVenison,axes?.arrows??0,provisions),size=open?layout.iconSize:layout.closedIconSize,art=quickItemArt(item.id,size);return <button type="button" key={item.id} className="kit-quick-slot"
+   {visible.map(item=>{const count=quickItemCount(item.id,cooked,cookedRabbit,cookedVenison,axes?.arrows??0,provisions),size=open?layout.iconSize:layout.closedIconSize;return <button type="button" key={item.id} className="kit-quick-slot"
     aria-label={`${item.label}${count!==undefined?`, ${count} ${item.id==='bow'?'arrows':'portions'}`:''}${open?'':'. Active item. Open item selector'}`} title={open?`${item.label} · Select and close`:'Open item selector'} aria-pressed={active?.id===item.id} aria-expanded={open?undefined:false} disabled={disabled}
     {...tap(()=>{if(open){onSelect(item.id);close()}else setExpanded(true)})}>
-    <span className="kit-quick-icon" aria-hidden="true" style={{width:size,height:size}}><span className="kit-quick-art-crop" style={{...art.crop,left:(size-art.crop.width)/2,top:(size-art.crop.height)/2,transform:`rotate(${art.rotation}deg)`}}><img src={item.image} style={art.image} alt="" draggable={false}/></span></span><span className="kit-quick-label">{item.label}</span>{count!==undefined&&<b>{count}</b>}
+    <QuickItemIcon item={item} size={size}/><span className="kit-quick-label">{item.label}</span>{count!==undefined&&<b>{count}</b>}
    </button>})}
    {open&&empty&&<div role="status" style={{minWidth:135,alignSelf:'center',padding:'5px 8px',color:'#eadfba',fontSize:12,lineHeight:1.25,textAlign:'center'}}>No tools collected yet</div>}
   </div>

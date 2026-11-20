@@ -55,16 +55,20 @@
 .kit-utility>.kit-icon{width:21px;height:21px;filter:none}
 @container(max-width:159px){.kit-compact-cell{font-size:8.5px;gap:0}.kit-compact-cell .kit-icon{width:10px;height:10px}}
 .kit-action-cluster{position:absolute;right:var(--kit-right);bottom:var(--kit-bottom);pointer-events:none;z-index:2;filter:drop-shadow(0 2px 2px #091c1999)}
-.camp-studio .kit-action-cluster .kit-button{position:absolute;min-width:0;min-height:0;margin:0;padding:6px;gap:2px;border:0;border-radius:0;clip-path:polygon(50% 0%,100% 25%,100% 75%,50% 100%,0% 75%,0% 25%);background:transparent;box-shadow:none;transition:filter .1s}
+.camp-studio .kit-action-cluster .kit-button{position:absolute;min-width:0;min-height:0;margin:0;padding:4px;gap:1px;border:0;border-radius:0;clip-path:polygon(50% 0%,100% 25%,100% 75%,50% 100%,0% 75%,0% 25%);background:transparent;box-shadow:none;transition:filter .1s}
 .kit-action-cluster .kit-button-rim{opacity:1}
-.kit-action-cluster .kit-primary>.kit-icon{width:33.6px;height:33.6px}
-.kit-action-cluster .kit-secondary>.kit-icon{width:21px;height:21px}
-.kit-action-cluster .kit-primary .kit-button-label{font-size:12px;line-height:14.4px}
-.kit-action-cluster .kit-button-label small{display:block;font-size:7px;line-height:7px;font-weight:700;letter-spacing:.45px;color:#dfd8b9}
-.kit-action-cluster .kit-secondary .kit-button-label{font-size:8.5px;line-height:10px;letter-spacing:.1px}
-.kit-action-cluster .kit-secondary .kit-button-label small{font-size:6.5px;line-height:7px}
+.kit-action-cluster .kit-primary>.kit-icon{width:36px;height:36px}
+.kit-action-cluster .kit-secondary>.kit-icon{width:22px;height:22px}
+.kit-action-cluster .kit-primary .kit-button-label{font-size:13px;line-height:14.5px}
+.kit-action-cluster .kit-primary .kit-button-label[data-long=true]{font-size:11px;letter-spacing:.1px}
+.kit-action-cluster .kit-button-label small{display:block;font-size:9px;line-height:10px;font-weight:700;letter-spacing:.45px;color:#dfd8b9}
+.kit-action-cluster .kit-secondary .kit-button-label{font-size:9.5px;line-height:11px;letter-spacing:.1px}
+.kit-action-cluster .kit-secondary .kit-button-label small{font-size:8px;line-height:8.5px}
 .kit-action-cluster .kit-secondary[data-hold-repair=true]>.kit-icon{width:18px;height:18px}
-.kit-action-cluster .kit-button-label{max-width:100%;white-space:nowrap}
+.kit-action-cluster .kit-button-label{max-width:100%;white-space:normal;text-align:center;text-wrap:balance}
+.kit-action-cluster .kit-secondary[data-cooling=true]>.kit-icon{width:18px;height:18px}
+.kit-action-cluster .kit-button[data-cooling=true] small{font-variant-numeric:tabular-nums;color:var(--kit-ivory)}
+.camp-studio .kit-action-cluster .kit-button[data-cooling=true]{opacity:.75}
 .camp-studio .kit-action-cluster .kit-button:active{background:transparent;filter:brightness(1.2)}
 .camp-studio .kit-action-cluster .kit-button:focus-visible{outline-offset:-5px}
 .kit-action-cluster .kit-toggle-pip{right:4px;top:25%;width:7px;height:7px;border:1.5px solid #a49465;background:#314c3c;box-shadow:none}
