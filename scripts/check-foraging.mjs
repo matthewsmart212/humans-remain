@@ -24,7 +24,7 @@ try{
   const {w,p}=make(kind),a=m.FORAGE_ART[kind],controller=new m.FieldKitController();
   w.weather={...w.weather,reducedMotion:true};
   const fruit=m.FORAGE_FRUIT_ART[a.kind],calls=[],imgs=Object.fromEntries(Object.entries(m.requiredImages([a.id])).map(([key,url])=>[key,{url}]));
-  const ctx={save(){},restore(){},drawImage(image){calls.push(image.url)}};
+  const ctx={save(){},restore(){},translate(){},scale(){},fillRect(){},createRadialGradient(){return{addColorStop(){}}},drawImage(image){calls.push(image.url)}};
   const renderedFruit=(count)=>{
    calls.length=0;
    assert(m.drawForagePlant(ctx,imgs,w,p));

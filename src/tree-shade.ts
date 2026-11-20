@@ -1,5 +1,5 @@
 import frames from './tree-shade-frames.json';
-import {activeTreeChop,treeFallProgress,treeGrowthScale} from './tree-chopping';
+import {activeTreeChop,treeCrownScale,treeFallProgress,treeGrowthScale} from './tree-chopping';
 import type {World} from './survival-engine';
 import {placementBounds,placementPoint,type Placement} from './world-layout';
 
@@ -13,7 +13,7 @@ export function drawTreeShade(ctx:CanvasRenderingContext2D,sheet:HTMLImageElemen
  const chop=activeTreeChop(w,p.id),growth=treeGrowthScale(w,chop);
  if(chop?.hp===0)opacity*=Math.max(growth,1-treeFallProgress(w,chop));
  if(opacity<=0)return;
- const [x,y]=placementPoint(p,p.x,p.y),width=placementBounds(p).width*(growth||1);
+ const [x,y]=placementPoint(p,p.x,p.y),width=placementBounds(p).width*(treeCrownScale(growth)||1);
  ctx.save();
  ctx.globalAlpha*=opacity;
  ctx.drawImage(sheet,(frame%4)*224,Math.floor(frame/4)*112,224,112,

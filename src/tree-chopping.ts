@@ -4,15 +4,17 @@ import {placementBounds,placementPoint} from './world-layout';
 import {ASSET_BY_ID} from './world-assets';
 import type {Placement} from './world-layout';
 import type {World,Vec} from './survival-engine';
+import {drawTreeContact} from './tree-contact';
 import {getFieldKitTarget} from './field-kit-target';
 
 type TreeArt=(typeof treeArt)[number]&{damageRect?:number[]};
 export const TREE_ART=new Map<string,TreeArt>(treeArt.map(t=>[t.id,t]));
 export type TreeChopState={hp:number;hitAt:number;direction:number;felledAt?:number};
-const growthScales=[0,.19,.44,.73,1] as const;
-const stageSeconds=15;
+const saplingStart=10;
+const matureAt=60;
 const fallSeconds=.8;
-const stumpHeightScale=.76;
+const stumpHeightScale=.46;
+const stumpWidthScale=.76;
 
 const clampUnit=(value:number)=>Math.min(1,Math.max(0,value));
 function smoothTransition(start:number,end:number,age:number){
@@ -27,13 +29,13 @@ function timeSinceFelling(state:TreeChopState,tick:number){
 
 export function treeGrowthScale(w:World,state?:TreeChopState){
  if(state?.hp!==0)return 1;
- const age=timeSinceFelling(state,w.tick);
- const stage=Math.floor(Math.max(0,age)/stageSeconds);
- if(stage>=growthScales.length-1)return 1;
- const next=(stage+1)*stageSeconds;
- const blend=smoothTransition(next-6,next,age);
- return growthScales[stage]+(growthScales[stage+1]-growthScales[stage])*blend;
+ const progress=clampUnit((timeSinceFelling(state,w.tick)-saplingStart)/(matureAt-saplingStart));
+ // Emerge from zero at the root pin and ease into the final size.
+ return progress*(1+progress*(1-progress));
 }
+
+// Young crowns are narrower than their final silhouette.
+export const treeCrownScale=(growth:number)=>growth*(.70+.30*growth);
 
 export function activeTreeChop(w:World,id:string){
  const state=w.treeChops?.[id];
@@ -82,114 +84,45 @@ export function chopTree(w:World,angle:number,reach:number,halfArc:number,damage
  return true;
 }
 
-/** Keep the narrow trunk flare above the uneven soil line. The long root
- * fingers painted into the atlas extend below this silhouette. */
-function clipTreeBase(ctx:CanvasRenderingContext2D,x:number,y:number,k:number,stump:boolean){
- const shoulder=stump?92:74;
- const edge=stump?-34:-66;
- ctx.beginPath();
- ctx.moveTo(x-1600*k,y-1600*k);
- ctx.lineTo(x+1600*k,y-1600*k);
- ctx.lineTo(x+1600*k,y+(edge-35)*k);
- ctx.lineTo(x+shoulder*k,y+edge*k);
- ctx.lineTo(x+36*k,y-11*k);
- ctx.lineTo(x+9*k,y+2*k);
- ctx.lineTo(x-19*k,y-3*k);
- ctx.lineTo(x-41*k,y-15*k);
- ctx.lineTo(x-shoulder*k,y+(edge+4)*k);
- ctx.lineTo(x-1600*k,y+(edge-35)*k);
- ctx.closePath();
- ctx.clip();
-}
-
-function drawTreeContact(ctx:CanvasRenderingContext2D,x:number,y:number,k:number){
- ctx.save();
- ctx.translate(x,y-5*k);
- ctx.scale(67*k,23*k);
- const shade=ctx.createRadialGradient(0,0,0,0,0,1);
- shade.addColorStop(0,'rgba(24,17,10,.68)');
- shade.addColorStop(.55,'rgba(33,23,12,.35)');
- shade.addColorStop(1,'rgba(33,23,12,0)');
- ctx.fillStyle=shade;
- ctx.fillRect(-1,-1,2,2);
- ctx.restore();
-}
-
-/** A new shoot rises through the old stump before it takes on the species'
- * atlas silhouette. Its stem and first branches stay attached to the ground. */
-function drawTreeShoot(ctx:CanvasRenderingContext2D,p:Placement,k:number,height:number,conifer:boolean,bare:boolean){
- const tip=p.y-height;
- ctx.strokeStyle=bare?'#65543d':'#665738';
- ctx.lineWidth=Math.max(k*5,height*.035);
- ctx.lineCap='round';
- ctx.beginPath();
- ctx.moveTo(p.x,p.y);
- ctx.lineTo(p.x-k*6,tip+height*.48);
- ctx.lineTo(p.x+k*7,tip);
- ctx.moveTo(p.x-k*6,tip+height*.48);
- ctx.lineTo(p.x-height*.27,tip+height*.30);
- ctx.moveTo(p.x,tip+height*.36);
- ctx.lineTo(p.x+height*.26,tip+height*.19);
- ctx.stroke();
- if(bare)return;
- const leaves=[
-  [-.29,.30,-1,.17],[-.19,.35,1,.10],[.26,.19,1,.14],[.16,.23,-1,.11],[.03,.08,1,.11],
- ];
- for(const [x,y,side,size] of leaves){
-  const ox=p.x+x*height,oy=tip+y*height,r=size*height;
-  ctx.fillStyle=side>0?(conifer?'#4c6339':'#6b7f40'):(conifer?'#374f32':'#536533');
-  ctx.beginPath();
-  ctx.moveTo(ox,oy);
-  ctx.lineTo(ox+side*r*.45,oy-r*.72);
-  ctx.lineTo(ox+side*r*1.4,oy-r);
-  ctx.lineTo(ox+side*r*.95,oy-r*.16);
-  ctx.closePath();
-  ctx.fill();
- }
-}
-
 /** Three regions of a shared atlas; no per-hit loads, image copies, or idle animation. */
 export function drawTree(ctx:CanvasRenderingContext2D,im:HTMLImageElement,w:World,p:Placement,mode:'world'|'outline'|'preview'='world'){
  const art=TREE_ART.get(p.assetId);if(!art)return false;
  const state=mode==='preview'?undefined:activeTreeChop(w,p.id),t=w.tick/60,age=state?t-state.hitAt:Infinity;
- const baseScale=placementBounds(p).width/art.frames[0].crop[2];
- const draw=(stage:number,growth=1,settle=0)=>{
-  const k=baseScale*growth;
-  ctx.save();
-  clipTreeBase(ctx,p.x,p.y,k,stage===2);
+ const b=placementBounds(p),baseScale=b.width/art.frames[0].crop[2];
+ const draw=(stage:number,widthScale=1,heightScale=widthScale)=>{
+  const k=baseScale*widthScale;
   if(stage===1&&art.damageRect){
    const h=art.frames[0],[x,y,width,height]=art.damageRect;
    const piece=(sx:number,sy:number,sw:number,sh:number)=>{if(sw>0&&sh>0)ctx.drawImage(im,h.crop[0]+sx,h.crop[1]+sy,sw,sh,p.x+(sx-h.anchor[0])*k,p.y+(sy-h.anchor[1])*k,sw*k,sh*k)};
    // Replace the cut rectangle: transparent missing wood must not reveal intact bark.
    piece(0,0,h.crop[2],y);piece(0,y,x,height);piece(x+width,y,h.crop[2]-x-width,height);piece(0,y+height,h.crop[2],h.crop[3]-y-height);
   }
-  const f=art.frames[stage],vertical=stage===2?stumpHeightScale:1;
-  ctx.drawImage(im,...f.crop as [number,number,number,number],p.x-f.anchor[0]*k,p.y+(settle-f.anchor[1]*vertical)*k,f.crop[2]*k,f.crop[3]*k*vertical);
-  ctx.restore();
+  const f=art.frames[stage],ky=baseScale*heightScale;
+  ctx.drawImage(im,...f.crop as [number,number,number,number],p.x-f.anchor[0]*k,p.y-f.anchor[1]*ky,f.crop[2]*k,f.crop[3]*ky);
  };
  const reduced=w.weather?.reducedMotion;
  ctx.save();
  const growth=treeGrowthScale(w,state);
- if(mode==='world')drawTreeContact(ctx,p.x,p.y,baseScale*Math.max(.75,growth));
+ const alpha=ctx.globalAlpha;
+ // The player can already be behind a growing crown when it reaches maturity.
+ const crownWidth=treeCrownScale(growth);
+ const [px,py]=placementPoint(p,w.player.x,w.player.y,true);
+ const covered=mode==='world'&&p.allowTransparency!==false&&py<p.y&&py>p.y+(b.y-p.y)*growth&&Math.abs(px-p.x)<b.width*.3*crownWidth;
  if(state?.hp===0){
   const elapsed=timeSinceFelling(state,w.tick);
-  const stumpFade=smoothTransition(9,23,elapsed);
-  const shootFade=smoothTransition(3,11,elapsed);
-  const treeBlend=smoothTransition(17,25,elapsed);
-  const alpha=ctx.globalAlpha;
-  if(stumpFade<1){
-   ctx.globalAlpha=alpha*(1-stumpFade);
-   draw(2,1,36*stumpFade);
+  const stump=1-smoothTransition(4,saplingStart,elapsed);
+  if(stump>0){
+   const width=stumpWidthScale*(.62+.38*stump);
+   ctx.globalAlpha=alpha*stump;
+   if(mode==='world')drawTreeContact(ctx,p.x,p.y,baseScale*80*width);
+   draw(2,width,stumpHeightScale*stump);
   }
-  if(shootFade>0&&treeBlend<1){
-   ctx.globalAlpha=alpha*shootFade*(1-treeBlend);
-   const stemHeight=baseScale*(art.frames[0].anchor[1]*Math.max(.045,growth)
-    +art.cutHeight*stumpHeightScale*shootFade*(1-stumpFade));
-   drawTreeShoot(ctx,p,baseScale,stemHeight,art.id.includes('_pine'),art.id.includes('_deadwood'));
-  }
-  if(treeBlend>0){
-   ctx.globalAlpha=alpha*treeBlend;
-   draw(0,growth);
+  if(growth>0){
+   // The whole sapling uses this species' painting from its first visible
+   // frame. Young crowns fill out more slowly than the leader gains height.
+   if(mode==='world')drawTreeContact(ctx,p.x,p.y,baseScale*80*crownWidth);
+   if(covered)ctx.globalAlpha*=.6;
+   draw(0,crownWidth,growth);
   }
   const fall=treeFallProgress(w,state);
   if(fall<1){
@@ -205,8 +138,8 @@ export function drawTree(ctx:CanvasRenderingContext2D,im:HTMLImageElement,w:Worl
    ctx.drawImage(im,sx,sy,sw,aboveCut,-frame.anchor[0]*baseScale,-aboveCut*baseScale,sw*baseScale,aboveCut*baseScale);
   }
  }else{
-  const [px,py]=placementPoint(p,w.player.x,w.player.y,true),b=placementBounds(p);
-  if(mode==='world'&&p.allowTransparency!==false&&py<p.y&&py>b.y&&Math.abs(px-p.x)<b.width*.3)ctx.globalAlpha*=.6;
+  if(mode==='world')drawTreeContact(ctx,p.x,p.y,baseScale*80);
+  if(covered)ctx.globalAlpha*=.6;
   if(!reduced&&age<.24){ctx.translate(p.x,p.y);ctx.rotate(Math.sin(age/.24*Math.PI*3)*.025*(1-age/.24)*state!.direction);ctx.translate(-p.x,-p.y)}
   draw(state?1:0);
  }
