@@ -1,4 +1,5 @@
-import React,{useState} from 'react';
+import {useStationFeedback} from './use-station-feedback';
+import React from 'react';
 import type {World} from './survival-engine';
 import StationMenu from './StationMenu';
 import {packLoad} from './expedition-inventory';
@@ -9,12 +10,12 @@ import './loot-chest-panel.css';
 type Props={world:World;onClose:()=>void;onChange:()=>void};
 
 export default function LootChestPanel({world,onClose,onChange}:Props){
- const [message,setMessage]=useState('');
+ const [message,setMessage]=useStationFeedback();
  const contents=lootChestContents(world),remaining=lootChestRemaining(world),load=packLoad(world);
  const rewards=LOOT_CHEST_REWARDS.map(reward=>{
   const count=contents[reward.kind]??0;
   return {...reward,count,capacity:canCarryLootChestReward(world,reward.kind,count)};
- });
+ }).filter(reward=>reward.count>0);
  const take=(kind:LootChestRewardKind)=>{
   const gained=takeLootChestReward(world,kind);
   setMessage(gained?`Collected ${gained} ${gained===1?'item':'items'} into your backpack.`:'Not enough room in your backpack.');
@@ -26,21 +27,21 @@ export default function LootChestPanel({world,onClose,onChange}:Props){
   onChange();
  };
  const canTake=rewards.some(reward=>reward.count>0&&reward.capacity>0);
- return <StationMenu compact world={world} title="Loot chest" label="Open loot chest and its contents" onClose={onClose}
+ return <StationMenu compact fitContent world={world} title="Loot chest" label="Open loot chest and its contents" onClose={onClose}
   weight={load.weight} loadLabel={load.label} message={message} className="rare-cache-menu">
-  <div className="rare-cache-heading"><h3>Starter equipment</h3><span>{remaining} remaining</span></div>
+  {!remaining&&<p className="rare-cache-empty">Chest empty</p>}
   <div className="rare-cache-list" aria-label="Loot chest contents">
    {rewards.map(({kind,name,description,count,capacity})=><div className="rare-cache-reward" key={kind}>
     <img src={GEAR[kind].image} alt="" draggable={false}/>
     <div><strong>{name}</strong><small>{description}</small></div>
-    <span className="rare-cache-quantity">×{count}</span>
-    <button type="button" disabled={!count||!capacity} aria-label={`Take ${name}`} onClick={()=>take(kind)}>
-     {!count?'Taken':!capacity?'Pack full':'Take'}
+    {count>1&&<span className="rare-cache-quantity">×{count}</span>}
+    <button type="button" disabled={!capacity} aria-label={`Take ${name}`} onClick={()=>take(kind)}>
+     {!capacity?'Pack full':'Take'}
     </button>
    </div>)}
   </div>
-  <button className="supply-primary rare-cache-collect-all" disabled={!canTake} onClick={takeAll}>
-   {!remaining?'Chest empty':!canTake?'Backpack full':'Collect all that fits'}
-  </button>
+  {rewards.length>1&&<button className="supply-primary rare-cache-collect-all" disabled={!canTake} onClick={takeAll}>
+   {canTake?'Take all that fits':'Backpack full'}
+  </button>}
  </StationMenu>;
 }

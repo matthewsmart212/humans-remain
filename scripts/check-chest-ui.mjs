@@ -45,13 +45,11 @@ const selectedQuantity=tree=>{
  assert(output,'Selected quantity is accessible');return Number(text(output));
 };
 const assertNoSelection=(tree,packing)=>{
- const action=button(tree,`Select an item to ${packing?'take':'store'}`);
- assert(action?.props.disabled,'No item is selected and the transfer action is disabled');
- assert.equal(selectedQuantity(tree),0,'No transferable quantity without a selected item');
- assert(!transferButton(tree,packing),'The numeric transfer action cannot resolve to a mode button');
- for(const node of all(tree).filter(node=>isButton(node)&&/, \d+ in (chest|backpack)$/.test(label(node))))assert(!(node.props['aria-pressed']??node.props.accessibilityState?.selected),'No catalog tile is selected');
- assert(button(tree,'Decrease quantity').props.disabled);assert(button(tree,'Increase quantity').props.disabled);assert(button(tree,'Select maximum quantity').props.disabled);
+ assert(!transferButton(tree,packing),'No expanded item has a numeric transfer action');
+ assert(!button(tree,'Decrease quantity')&&!button(tree,'Increase quantity')&&!button(tree,'Select maximum quantity'),'Quantity controls stay inside an expanded stack');
  assert(!button(tree,'Close item information'),'Information is closed when selection clears');
+ for(const node of all(tree).filter(node=>isButton(node)&&/, \d+ in (chest|backpack)$/.test(label(node))))assert(!(node.props['aria-expanded']??node.props.accessibilityState?.expanded),'All item rows are collapsed');
+
 };
 const inventory=world=>JSON.stringify({bag:world.bag,stock:world.stock,gear:world.gear,cooked:world.cooked,cookedRabbit:world.cookedRabbit,cookedVenison:world.cookedVenison,kit:world.kit,equipped:world.player.equipped});
 
@@ -83,21 +81,31 @@ try{
  for(const platform of ['web','native']){
   // Every equipment item can make the complete chest -> bag -> chest trip.
   const world=make(),ui=mount(platform,world);let tree=ui.draw();
-  assertNoSelection(tree,true);assert(text(tree).includes('0.0 / 24'));assert(!text(tree).includes('Raw chicken'));
+  assertNoSelection(tree,true);assert(!text(tree).includes('Raw chicken'));
   for(const spec of Object.values(m.GEAR)){
    const tile=itemButton(tree,spec.name,1);assert(tile,`${platform}: ${spec.name} is listed`);assert(text(tile).includes('×1'),'Single items display their quantity');
   }
-  press(button(tree,'Materials'));tree=ui.draw();assert(text(tree).includes('No materials here'));assertNoSelection(tree,true);
+  press(button(tree,'Take one Wooden axe'));tree=ui.draw();
+  assert.equal(world.gear.bag.woodenAxe,1,'One press transfers directly from the list');
+  press(button(tree,'Store from backpack'));tree=ui.draw();
+  press(button(tree,'Store one Wooden axe'));tree=ui.draw();
+  assert.equal(world.gear.chest.woodenAxe,1,'Direct store returns the same item');
+  press(button(tree,'Take from chest'));tree=ui.draw();
+  assert(!button(tree,'Gear'),'One category needs no filter');
+  m.setStoredCount(world,'stone',1);tree=ui.draw();
+  press(button(tree,'Materials'));tree=ui.draw();
+  m.setStoredCount(world,'stone',0);tree=ui.draw();
+  assert(text(tree).includes('No materials here'));assertNoSelection(tree,true);
   press(button(tree,'Show all items'));tree=ui.draw();
   for(const [id,spec] of Object.entries(m.GEAR)){
    const beforeSelection=inventory(world);press(itemButton(tree,spec.name,1));tree=ui.draw();assert.equal(inventory(world),beforeSelection,'Selection does not transfer');
-   assert.equal(selectedQuantity(tree),1);assert(button(tree,'Increase quantity').props.disabled,'Single gear cannot be incremented');
+   assert(!button(tree,'Increase quantity'),'Single items do not need a quantity picker');
    const item=m.chestItems(world,'chest').find(item=>item.id===id);assert(!text(tree).includes(item.description),'Item description is optional');
    if(id==='woodenAxe'){
     press(button(tree,`About ${spec.name}`));tree=ui.draw();assert(text(tree).includes(item.description));assert(text(tree).includes('Damage'));assert(text(tree).includes('20 / 24'));
-    press(button(tree,'Close item information'));tree=ui.draw();assert(!text(tree).includes(item.description));assert.equal(selectedQuantity(tree),1);
+    press(button(tree,'Close item information'));tree=ui.draw();assert(!text(tree).includes(item.description));assert.equal(label(transferButton(tree,true)),`Take 1 ${spec.name}`);
    }
-   const action=transferButton(tree,true);assert.equal(text(action),'Take ×1');press(action);tree=ui.draw();
+   const action=transferButton(tree,true);assert.equal(text(action),'Take');press(action);tree=ui.draw();
    assert.equal(world.gear.bag[id],1);assert.equal(world.gear.chest[id],0);assert(!itemButton(tree,spec.name,1));assertNoSelection(tree,true);
    const after=inventory(world);invoke(action);tree=ui.draw();assert.equal(inventory(world),after,'A repeated stale last-unit action cannot take a neighbouring item');assertNoSelection(tree,true);
   }
@@ -130,7 +138,7 @@ try{
   press(button(tree,'Increase quantity'));tree=ui.draw();assert.equal(selectedQuantity(tree),2);press(transferButton(tree,true));tree=ui.draw();
   assert.equal(world.bag.pallets,2);assert.equal(world.stock.pallets,28);assert.equal(selectedQuantity(tree),1,'A completed partial transfer resets to one');
   press(button(tree,'Select maximum quantity'));tree=ui.draw();assert.equal(selectedQuantity(tree),17);press(transferButton(tree,true));tree=ui.draw();
-  assert.equal(world.bag.pallets,19);assert.equal(world.stock.pallets,11);assert(m.packWeight(world)<=24);assert(transferButton(tree,true).props.disabled);assert.equal(text(transferButton(tree,true)),'Backpack full');
+  assert.equal(world.bag.pallets,19);assert.equal(world.stock.pallets,11);assert(m.packWeight(world)<=24);assert(transferButton(tree,true).props.disabled);assert.equal(text(transferButton(tree,true)),'Pack full');
   press(button(tree,'Store from backpack'));tree=ui.draw();assertNoSelection(tree,false);press(itemButton(tree,'Logs',19,'pack'));tree=ui.draw();assert.equal(selectedQuantity(tree),1);
   press(button(tree,'Select maximum quantity'));tree=ui.draw();assert.equal(selectedQuantity(tree),19);press(transferButton(tree,false));tree=ui.draw();
   assert.equal(world.stock.pallets,30);assert.equal(world.bag.pallets,0);assertNoSelection(tree,false);
@@ -138,7 +146,7 @@ try{
 
   // Food effects stay behind the information button, and transfer never eats food.
   const food=make(0);m.setStoredCount(food,'cookedMeat',3);m.setStoredCount(food,'rawMeat',2);
-  const foodUI=mount(platform,food);tree=foodUI.draw();assertNoSelection(tree,true);press(button(tree,'Food'));tree=foodUI.draw();
+  const foodUI=mount(platform,food);tree=foodUI.draw();assertNoSelection(tree,true);assert(!button(tree,'Food'),'Food-only chest skips filters');
   press(itemButton(tree,'Cooked chicken',3));tree=foodUI.draw();assert(!text(tree).includes('+35 food'));assert(!text(tree).includes('+8 health'));
   press(button(tree,'About Cooked chicken'));tree=foodUI.draw();assert(text(tree).includes('+35 food'));assert(text(tree).includes('+8 health'));assert(text(tree).includes('0.45 kg'));assert(text(tree).includes('1.35 kg'));assert(!text(tree).includes('After cooking'));
   press(button(tree,'Close item information'));tree=foodUI.draw();assert(!text(tree).includes('+35 food'));

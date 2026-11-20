@@ -1,41 +1,38 @@
+import {useStationFeedback} from './use-station-feedback';
 import React,{useState} from 'react';
 import type {World} from './survival-engine';
 import {WAREHOUSE_ART,warehouseLevel,type WarehouseMaterial} from './warehouse';
 import {warehouseStockMask} from './warehouse-renderer';
-import {transferWarehouse,warehouseView} from './warehouse-storage';
-import {warehouseInventoryItems,warehouseMaterialForItem} from './warehouse-inventory';
+import {transferWarehouse} from './warehouse-storage';
+import {warehouseTransferRows} from './warehouse-inventory';
 import {packLoad,storedCount} from './expedition-inventory';
-import {InventoryGrid,InventoryDetail,InventorySources} from './InventoryUI';
+import {InventorySources} from './InventoryUI';
 import StationMenu from './StationMenu';
 import './warehouse.css';
 
 export function WarehousePicture({world}:{world:World}){return <div className="warehouse-picture" aria-hidden="true"><img src={WAREHOUSE_ART.empty} alt=""/>{(['pallets','stone','scrap'] as const).map(id=>{const level=warehouseLevel(storedCount(world,id),id);return level>0&&<img key={id} src={level===1?WAREHOUSE_ART.half:WAREHOUSE_ART.full} alt="" style={{clipPath:`polygon(${warehouseStockMask(id).map(([x,y])=>`${x*100}% ${y*100}%`).join(',')})`}}/>})}</div>}
 
 export default function WarehousePanel({world,onClose,onChange}:{world:World;onClose:()=>void;onChange:()=>void}){
- const [selected,setSelected]=useState<WarehouseMaterial>('pallets'),[taking,setTaking]=useState(true),[message,setMessage]=useState('');
- const load=packLoad(world),v=warehouseView(world,selected,taking,1),items=warehouseInventoryItems(world,taking);
- const item=items.find(i=>warehouseMaterialForItem(i.id)===selected)!;
- const verb=taking?'Take':'Store',destination=taking?'to backpack':'in warehouse';
- const stackLabel=taking&&v.limit>0&&v.limit<v.stored?`Take ${v.limit}`:`${verb} all`;
- const blockedReason=taking?(v.stored?'Backpack full':`No ${v.material.name.toLowerCase()} in warehouse`):`No ${v.material.name.toLowerCase()} in backpack`;
- const transfer=(quantity:1|'all')=>{
-  const n=transferWarehouse(world,selected,taking,quantity);
-  setMessage(n?`${taking?'Took':'Stored'} ${n} ${n===1?v.material.singular:v.material.unit} ${taking?'into your backpack':'in the warehouse'}.`:'Supplies or backpack space changed.');
+ const [taking,setTaking]=useState(true),[message,setMessage]=useStationFeedback();
+ const load=packLoad(world),verb=taking?'Take':'Store';
+ const rows=warehouseTransferRows(world,taking);
+ const transfer=(id:WarehouseMaterial,name:string,quantity:1|'all')=>{
+  const n=transferWarehouse(world,id,taking,quantity);
+  setMessage(n?`${taking?'Took':'Stored'} ${n} × ${name}.`:'Supplies or backpack space changed.');
   onChange();
  };
  return <StationMenu world={world} title="Warehouse" image={WAREHOUSE_ART.empty} label="Warehouse storage" onClose={onClose} weight={load.weight} loadLabel={load.label} message={message} className="warehouse-menu" compact fitContent>
   <InventorySources store="Warehouse" fromStore={taking} onChange={fromWarehouse=>{setTaking(fromWarehouse);setMessage('')}}/>
-  <div className="supply-body warehouse-inventory-body">
-   <div className="supply-inventory" role="group" aria-label={taking?'Warehouse resources':'Backpack resources'}>
-    <InventoryGrid items={items} selected={item.id} showCounts onSelect={id=>{const material=warehouseMaterialForItem(id);if(material){setSelected(material);setMessage('')}}}/>
-   </div>
-   <InventoryDetail item={item} showInfo={false}>
-    {!v.limit&&<p className="warehouse-empty-reason">{blockedReason}</p>}
-    <div className="supply-actions warehouse-transfer-actions">
-     <button className="supply-primary" disabled={!v.limit} aria-label={`${verb} 1 ${v.material.singular} ${destination}`} onClick={()=>transfer(1)}>{verb} 1</button>
-     <button disabled={v.limit<=1} aria-label={`${stackLabel} ${v.material.unit} ${destination}`} onClick={()=>transfer('all')}>{stackLabel}</button>
+  <div className="warehouse-list" aria-label={taking?'Warehouse resources':'Backpack resources'}>
+   {!rows.length&&<p className="warehouse-empty">{taking?'Warehouse empty':'No materials in your backpack'}</p>}
+   {rows.map(({material,stockLabel,limit,singleLabel,stackLabel})=><div key={material.id} className="warehouse-row">
+    <img src={material.image} alt=""/>
+    <div className="warehouse-stock"><strong>{material.name}</strong><span>{stockLabel}</span></div>
+    <div className="warehouse-actions">
+     <button disabled={!limit} aria-label={`${verb} 1 ${material.singular}`} onClick={()=>transfer(material.id,material.name,1)}>{singleLabel}</button>
+     {limit>1&&<button className="supply-primary" aria-label={`${verb} ${limit} ${material.unit}`} onClick={()=>transfer(material.id,material.name,'all')}>{stackLabel}</button>}
     </div>
-   </InventoryDetail>
+   </div>)}
   </div>
  </StationMenu>;
 }

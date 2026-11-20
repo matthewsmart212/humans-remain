@@ -3,7 +3,7 @@ import type {Resource} from './survival-engine';
 export type MaterialCost=Partial<Record<Resource,number>>;
 export type ForgeRecipe={id:GearKind;name:string;count:number;cost:MaterialCost};
 export type CraftCategory='tools'|'weapons'|'ranged';
-export const CRAFT_CATEGORIES=[{id:'tools',label:'Tools'},{id:'weapons',label:'Weapons'},{id:'ranged',label:'Bow & arrows'}] as const;
+export const CRAFT_CATEGORIES=[{id:'tools',label:'Tools'},{id:'weapons',label:'Weapons'},{id:'ranged',label:'Archery'}] as const;
 export const craftCategory=(id:GearKind):CraftCategory=>id==='bow'||id==='arrows'?'ranged':['repairHammer','woodenAxe','axe','woodenPickaxe','metalPickaxe'].includes(id)?'tools':'weapons';
 export const FORGE_RECIPES:readonly ForgeRecipe[]=[
  {id:'woodenPickaxe',name:'Wooden pickaxe',count:1,cost:{pallets:3}},

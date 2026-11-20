@@ -10,7 +10,6 @@ import {BUNDLED_ART} from './bundled-art';
 import {BACKPACK_NATIVE_ART} from './backpack-art';
 import {WORLD_URL} from './config';
 import StationMenu from './StationMenu';
-import {packWeight} from '../src/expedition-inventory';
 type Props={world:World;width:number;height:number;safe:{top:number;bottom:number;left:number;right:number};onClose:()=>void;onChange:()=>void};
 const furnaceArt=IRONWORKS_NATIVE_ART.campFurnaceRuined;
 const textures:Record<string,number>={
@@ -31,7 +30,7 @@ export default function HeadquartersPanel({world,width,height,safe,onClose,onCha
  return <View style={[StyleSheet.absoluteFill,{paddingTop:safe.top+8,paddingBottom:safe.bottom+8,paddingLeft:safe.left+8,paddingRight:safe.right+8,backgroundColor:'#0a0d0bd9'}]}><HeadquartersContent world={world} {...available} navigation={navigation} source={source} onClose={onClose} onChange={onChange}/></View>;
 }
 export function FurnaceRepairPanel(props:Props){
- return <StationMenu {...props} compact title="Damaged furnace" image={furnaceArt} weight={packWeight(props.world)}>
-  <FurnaceRepairContent world={props.world} source={source} onClose={props.onClose}/>
+ return <StationMenu {...props} compact fitContent title="Damaged furnace" image={furnaceArt}>
+  <FurnaceRepairContent world={props.world} source={source} onClose={props.onClose} onChange={props.onChange}/>
  </StationMenu>;
 }

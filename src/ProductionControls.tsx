@@ -1,19 +1,6 @@
-import React, {useLayoutEffect, useRef} from 'react';
+import React, {useEffect, useLayoutEffect, useRef, useState} from 'react';
 import {BAG_IMAGES} from './backpack';
 import './production-menu.css';
-
-type RecipeProps = {
- name: string; image: string; detail: string; stock: string;
- label?: string; selected: boolean; onSelect: () => void;
-};
-
-export function RecipeChoice({name, image, detail, stock, label, selected, onSelect}: RecipeProps) {
- return <button type="button" className="production-choice" aria-pressed={selected} aria-label={label} onClick={onSelect}>
-  <span className="production-art"><img src={image} alt="" /></span>
-  <span className="production-choice-copy"><strong>{name}</strong><small>{detail}</small><span>{stock}</span></span>
-  {selected && <span className="production-check" aria-hidden="true">✓</span>}
- </button>;
-}
 
 type FuelProps = {
  label: string; seconds: number; capacity: number; logs: number; disabled: boolean;
@@ -49,29 +36,35 @@ export function ProductionJob({name, image, status, progress, cancelLabel, canCa
  </li>;
 }
 
-type BatchProps = {
- name: string; detail: string; blocked?: boolean; infoLabel?: string; onInfo?: () => void;
- amount: number; limit: number; action: string; actionLabel: string;
- onQuantity: (n: number) => void; onSubmit: () => void;
+type ProductionRecipeProps = {
+ name: string; image: string; detail: string; blocked: string; limit: number;
+ action: string; actionLabel: (count: number) => string;
+ onDetails: () => void; onSubmit: (count: number) => void;
 };
 
-export function BatchAction({name, detail, blocked, infoLabel, onInfo, amount, limit, action, actionLabel, onQuantity, onSubmit}: BatchProps) {
- return <section className="production-batch" aria-label="Selected batch">
-  <div className="production-batch-summary">
-   <strong>{name}</strong>
-   {onInfo && <button type="button" className="production-icon" aria-label={infoLabel} aria-haspopup="dialog" onClick={onInfo}><span className="production-info-mark" aria-hidden="true">i</span></button>}
-   <span data-blocked={blocked || undefined}>{detail}</span>
-  </div>
-  <div className="production-actions">
-   <div className="production-stepper" role="group" aria-label="Batch quantity">
-    <button type="button" disabled={amount <= 1} aria-label="Decrease quantity" onClick={() => onQuantity(amount - 1)}><span aria-hidden="true">−</span></button>
-    <output aria-label="Selected quantity" aria-live="polite">{amount}</output>
-    <button type="button" disabled={!limit || amount >= limit} aria-label="Increase quantity" onClick={() => onQuantity(amount + 1)}><span aria-hidden="true">+</span></button>
-   </div>
-   <button type="button" className="production-secondary" aria-label="Select maximum quantity" disabled={!limit} onClick={() => onQuantity(limit)}>Max</button>
-   <button type="button" className="production-primary" disabled={!limit} aria-label={actionLabel} onClick={onSubmit}>{action}</button>
-  </div>
- </section>;
+export function ProductionRecipe({name, image, detail, blocked, limit, action, actionLabel, onDetails, onSubmit}: ProductionRecipeProps) {
+ const [quantity, setQuantity] = useState(1);
+ const amount = Math.max(1, Math.min(quantity, limit));
+ useEffect(() => {
+  if (quantity !== amount) setQuantity(amount);
+ }, [quantity, amount]);
+ const submit = () => {
+  if (limit < 1) return;
+  onSubmit(amount);
+  setQuantity(1);
+ };
+ return <li className="production-recipe">
+  <button type="button" className="production-recipe-info" aria-label={`About ${name.toLowerCase()}`} aria-haspopup="dialog" onClick={onDetails}>
+   <img src={image} alt="" />
+   <span><strong>{name}</strong><small>{detail}</small>
+    {blocked && <small data-blocked="true">{blocked}</small>}
+   </span>
+  </button>
+  {limit > 1 && <select className="production-quantity" aria-label={`Quantity for ${name.toLowerCase()}`} value={amount} onChange={event => setQuantity(Number(event.currentTarget.value))}>
+   {Array.from({length:limit}, (_, i) => <option key={i + 1} value={i + 1}>×{i + 1}</option>)}
+  </select>}
+  <button type="button" className="production-primary" disabled={limit < 1} aria-label={actionLabel(amount)} onClick={submit}>{action}</button>
+ </li>;
 }
 
 export function ProductionDialog({title, closeLabel = 'Close details', onClose, children}: {title: string; closeLabel?: string; onClose: () => void; children: React.ReactNode}) {

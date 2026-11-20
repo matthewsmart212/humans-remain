@@ -1,54 +1,56 @@
-import React,{useEffect,useRef,useState} from 'react';
+import React from 'react';
 import StationMenu from './StationMenu';
 import type {World} from './survival-engine';
-import type {BagItem,BagItemId,BagFilter} from './backpack';
-import {chestItemCount,chestItems,chestTransferLimit,moveChestItem,type ChestSide} from './chest-inventory';
+import {chestItemCount,chestTransferLimit} from './chest-inventory';
 import {packLoad} from './expedition-inventory';
 import {atHeadquartersChest} from './player-gear';
-import {InventoryEmpty,InventoryGrid,InventorySources} from './InventoryUI';
-import {CHEST_FILTERS,filterChestItems,chestItemEffects} from './station-menu-model';
+import {InventoryEmpty,InventorySources} from './InventoryUI';
+import {chestItemEffects} from './station-menu-model';
+import {useChestTransfer} from './use-chest-transfer';
 import './chest-catalog.css';
 
 type Props={world:World;onClose:()=>void;onChange:()=>void};
 export default function ChestPanel({world,onClose,onChange}:Props){
- const [side,setSide]=useState<ChestSide>('chest'),[filter,setFilter]=useState<BagFilter>('All');
- const [selected,setSelected]=useState<BagItemId|null>(null),[quantity,setQuantity]=useState(1);
- const [message,setMessage]=useState(''),[showInfo,setShowInfo]=useState(false);
- const infoButton=useRef<HTMLButtonElement>(null),infoClose=useRef<HTMLButtonElement>(null);
- const all=chestItems(world,side),items=filterChestItems(all,filter),item=items.find(i=>i.id===selected);
- const packing=side==='chest',verb=packing?'Take':'Store',load=packLoad(world);
- const limit=item?chestTransferLimit(world,item.id,side):0,amount=Math.min(Math.max(1,quantity),limit);
- useEffect(()=>{if(showInfo)infoClose.current?.focus({preventScroll:true})},[showInfo]);
- useEffect(()=>{if(selected&&!item){setSelected(null);setQuantity(1);setShowInfo(false)}},[selected,item?.id]);
- const reset=()=>{setSelected(null);setQuantity(1);setMessage('');setShowInfo(false)};
- const changeSide=(next:ChestSide)=>{setSide(next);reset()};
- const changeFilter=(next:BagFilter)=>{setFilter(next);reset()};
- const select=(id:BagItemId)=>{setSelected(id);setQuantity(1);setMessage('');setShowInfo(false)};
- const closeInfo=()=>{setShowInfo(false);infoButton.current?.focus({preventScroll:true})};
- const move=()=>{
-  if(!item||!amount)return;
-  const n=moveChestItem(world,item.id,side,amount);
-  setMessage(n?`${item.name}${n>1?` ×${n}`:''} ${packing?'packed':'stored'}.`:'No room or supplies available.');
-  setQuantity(1);setShowInfo(false);
-  if(chestItemCount(world,item.id,side)===0)setSelected(null);
-  onChange();
- };
- const action=!item?verb:!limit?packing?'Backpack full':'Cannot store here':`${verb} ×${amount}`;
- return <StationMenu compact world={world} title="Supply chest" label={atHeadquartersChest(world)?'Headquarters chest':'Camp chest'} onClose={onClose} weight={load.weight} loadLabel={load.label} message={message} className="chest-menu">
-  <InventorySources store="Chest" fromStore={packing} onChange={fromChest=>changeSide(fromChest?'chest':'pack')}/>
-  <div className="chest-categories" role="group" aria-label="Filter items">{CHEST_FILTERS.map(f=><button key={f} aria-pressed={filter===f} onClick={()=>changeFilter(f)}>{f}</button>)}</div>
-  <div className="chest-browser">
-   {items.length?<InventoryGrid items={items} selected={selected??undefined} source={packing?'chest':'backpack'} showCounts onSelect={select}/>:<div className="chest-empty-state"><InventoryEmpty kind={packing?'chest':'backpack'} title={all.length?`No ${filter.toLowerCase()} here`:packing?'Nothing stored yet':'Your pack is empty'}><p>{all.length?'Try another category.':packing?'Store supplies from your backpack.':'Take supplies from the chest.'}</p><button onClick={()=>all.length?changeFilter('All'):changeSide(packing?'pack':'chest')}>{all.length?'Show all items':packing?'Store supplies':'Browse chest'}</button></InventoryEmpty></div>}
+ const c=useChestTransfer(world,onChange),load=packLoad(world);
+ const source=c.packing?'chest':'backpack',destination=c.packing?'backpack':'chest';
+ return <StationMenu compact fitContent world={world} title="Supply chest" label={atHeadquartersChest(world)?'Headquarters chest':'Camp chest'} onClose={onClose} weight={load.weight} loadLabel={load.label} message={c.message} className="chest-menu">
+  <InventorySources store="Chest" fromStore={c.packing} onChange={fromChest=>c.changeSide(fromChest?'chest':'pack')}/>
+  {c.filters.length>0&&<div className="chest-categories" role="group" aria-label="Filter items">{c.filters.map(f=><button key={f} aria-pressed={c.filter===f} onClick={()=>c.changeFilter(f)}>{f}</button>)}</div>}
+  <div className="chest-browser" aria-label={`Items in ${source}`} onKeyDown={e=>{
+   if(e.key==='Escape'&&c.showInfo){e.stopPropagation();c.setShowInfo(false)}
+  }}>
+   {!c.items.length&&<InventoryEmpty kind={source} title={c.emptyTitle}><button onClick={c.browse}>{c.emptyAction}</button></InventoryEmpty>}
+   {c.items.map(item=>{
+    const open=c.selected===item.id,limit=chestTransferLimit(world,item.id,c.side);
+    const amount=Math.min(open?c.quantity:1,limit),blocked=c.packing?'Pack full':'Cannot store';
+    const info=open&&c.showInfo,effects=info?chestItemEffects(item):[];
+    return <div className="chest-item" key={item.id} data-expanded={open}>
+     <div className="chest-item-row">
+      <button className="chest-item-toggle" aria-expanded={open} aria-label={`${item.name}, ${item.count} in ${source}`} onClick={()=>c.select(item.id)}>
+       <img src={item.image} alt=""/><strong>{item.name}</strong><span>×{item.count}</span><i aria-hidden="true"/>
+      </button>
+      <button className="supply-primary chest-move" aria-label={`${c.verb} ${open?amount:'one'} ${item.name}`} disabled={!limit} onClick={()=>c.move(item.id,item.name,amount)}>
+       {limit?(amount>1?`${c.verb} ${amount}`:c.verb):blocked}
+      </button>
+     </div>
+     {open&&<div className="chest-expanded">
+      <div className="chest-options">
+       {item.count>1&&<div className="chest-stepper" role="group" aria-label="Transfer quantity">
+        <button aria-label="Decrease quantity" disabled={amount<=1} onClick={()=>c.setQuantity(amount-1)}>−</button>
+        <output aria-label="Selected quantity" aria-live="polite">{amount}</output>
+        <button aria-label="Increase quantity" disabled={amount>=limit} onClick={()=>c.setQuantity(amount+1)}>+</button>
+        <button aria-label="Select maximum quantity" disabled={amount>=limit} onClick={()=>c.setQuantity(limit)}>Max</button>
+       </div>}
+       <button className="chest-info-button" aria-expanded={info} aria-label={info?'Close item information':`About ${item.name}`} onClick={()=>c.setShowInfo(!info)}>{info?'Hide details':'Item details'}</button>
+      </div>
+      {info&&<div className="chest-item-info">
+       <p>{item.description}</p>{effects.length>0&&<p>{item.raw?'After cooking · ':''}{effects.join(' · ')}</p>}
+       <dl><div><dt>In {destination}</dt><dd>{chestItemCount(world,item.id,c.packing?'pack':'chest')}</dd></div>{item.facts.map(([label,value])=><div key={label}><dt>{label}</dt><dd>{value}</dd></div>)}</dl>
+       <p>{item.hint}</p>
+      </div>}
+     </div>}
+    </div>;
+   })}
   </div>
-  <div className="chest-selection" aria-label="Transfer selected item">
-   <div className="chest-selection-heading">{item?<><img src={item.image} alt=""/><strong>{item.name}</strong><button ref={infoButton} className="chest-info-button" aria-label={`About ${item.name}`} aria-expanded={showInfo} onClick={()=>setShowInfo(!showInfo)}>i</button><span className="chest-stock">Chest <b>{chestItemCount(world,item.id,'chest')}</b><span> · </span>Backpack <b>{chestItemCount(world,item.id,'pack')}</b></span></>:<span className="chest-selection-prompt">Select an item to {verb.toLowerCase()}</span>}</div>
-   <div className="chest-transfer-controls"><div className="chest-stepper" role="group" aria-label="Transfer quantity"><button aria-label="Decrease quantity" disabled={amount<=1} onClick={()=>setQuantity(amount-1)}>−</button><output aria-live="polite" aria-label="Selected quantity">{amount}</output><button aria-label="Increase quantity" disabled={amount>=limit} onClick={()=>setQuantity(amount+1)}>+</button><button disabled={!limit} onClick={()=>setQuantity(limit)} aria-label="Select maximum quantity">Max</button></div><button className="supply-primary chest-transfer-button" disabled={!item||!limit} onClick={move} aria-label={item?`${verb} ${amount} ${item.name}`:`Select an item to ${verb.toLowerCase()}`}>{action}</button></div>
-  </div>
-  {showInfo&&item&&<section className="chest-item-info" aria-label={`${item.name} information`} onKeyDown={e=>{if(e.key==='Escape'){e.stopPropagation();closeInfo()}}}><header><h3>{item.name}</h3><button ref={infoClose} onClick={closeInfo} aria-label="Close item information">×</button></header><ItemInformation item={item}/></section>}
  </StationMenu>;
-}
-
-function ItemInformation({item}:{item:BagItem}){
- const effects=chestItemEffects(item);
- return <><p>{item.description}</p>{effects.length>0&&<p className="chest-item-effects">{item.raw&&<small>After cooking · </small>}{effects.join(' · ')}</p>}<dl>{item.facts.map(([label,value])=><div key={label}><dt>{label}</dt><dd>{value}</dd></div>)}</dl><p className="chest-info-hint">{item.hint}</p></>;
 }

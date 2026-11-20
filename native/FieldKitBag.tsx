@@ -1,3 +1,4 @@
+import {useStationFeedback} from '../src/use-station-feedback';
 import StationMenu,{stationMenuLayout} from './StationMenu';
 import React,{useState} from 'react';
 import {View,Text,ScrollView,useWindowDimensions} from 'react-native';
@@ -7,7 +8,7 @@ import {InventoryGrid,InventoryDetail,InventoryEmpty,InventoryAction,s} from './
 export {ItemArt,s as BAG_STYLES} from './InventoryUI';
 type Props={stats:FieldKitSnapshot;width:number;safe:{top:number;bottom:number;left:number;right:number};onClose:()=>void;onUse:(id:BagItemId)=>boolean;onDrop:(id:BagItemId,quantity:1|'all')=>BagResult};
 export default function NativeFieldKitBag({stats,width,safe,onClose,onUse,onDrop}:Props){
- const {height}=useWindowDimensions(),[selected,setSelected]=useState<BagItemId>(stats.raw?'raw':'axe'),[message,setMessage]=useState('');
+ const {height}=useWindowDimensions(),[selected,setSelected]=useState<BagItemId>(stats.raw?'raw':'axe'),[message,setMessage]=useStationFeedback();
  const items=backpackItems(stats),item=items.find(i=>i.id===selected)??items.find(i=>i.category==='Food')??items[0],wide=stationMenuLayout(width,height,safe).panel.width>=460;
  const panelHeight=stationMenuLayout(width,height,safe).panel.height;
  const use=()=>setMessage(onUse(item!.id)?item?.food?'Meal eaten.':`${item!.name} ${stats.selected===item!.id?'stowed':'equipped'}.`:'Cannot use right now.');

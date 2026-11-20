@@ -75,7 +75,7 @@ for(const e of entries.filter(e=>e.image&&!e.canonicalArt&&!e.id.startsWith('map
  if(role==='storage')a.body=[{x:0,y:-26,hw:46,hh:26}];
  if(role==='lamp')a.body=[{x:0,y:0,hw:10,hh:9}];
  // Keep the open-front workshop's blockers on the ground, below the roof overhang.
- if(e.id===workshopArt.id){a.anchor=[workshopArt.anchor[0]*crop[2],workshopArt.anchor[1]*crop[3]];a.collision=workshopArt.collision as AssetCollision;a.body=[];a.note='Camp smithy · craft tools, weapons, bows and arrows using logs and smelted iron.';}
+ if(e.id===workshopArt.id){a.anchor=[workshopArt.anchor[0]*crop[2],workshopArt.anchor[1]*crop[3]];a.collision=workshopArt.collision as AssetCollision;a.body=[];a.note='Workshop · craft tools, weapons, bows and arrows using logs and smelted iron.';}
  if(e.id===treatmentArt.id){a.anchor=[treatmentArt.anchor[0]*crop[2],treatmentArt.anchor[1]*crop[3]];a.collision=treatmentArt.collision as AssetCollision;a.body=[];a.note='Treatment centre with beds, supplies and a washbasin · open central approach; treatment gameplay is not connected yet.';}
  const furniture=hqFurniture.find(f=>f.id===e.id);
  if(furniture){a.anchor=[furniture.anchor[0]*crop[2],furniture.anchor[1]*crop[3]];a.collision=furniture.collision as AssetCollision;a.body=[];a.note=a.openFrames?.length?'Storage station · open or close the chest in Edit or nearby in Walk. Inventory is not connected yet.':'Headquarters furniture · artwork ready; exploration menus are not implemented.';}

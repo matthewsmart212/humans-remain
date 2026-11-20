@@ -27,7 +27,7 @@ export function openSmithy(w:World,id:string){
 }
 export const smithyAccess=(w:World)=>w.stationPanel==='smithy'&&!!w.smithyId&&canUse(w)&&nearbySmithy(w)?.placement.id===w.smithyId;
 export function smithyCraftStatus(w:World,id:GearKind){
- const recipe=FORGE_RECIPES.find(r=>r.id===id);if(!recipe||!smithyAccess(w))return'Approach the camp smithy';
+ const recipe=FORGE_RECIPES.find(r=>r.id===id);if(!recipe||!smithyAccess(w))return'Approach the workshop';
  if(!recipeUnlocked(w,id))return campAccessLevel(w)<2?'Expand to Camp level 2':'Restore the camp furnace';
  if(!canPayMaterials(w,recipe.cost))return'Need materials';
  const freed=materialEntries(recipe.cost).reduce((n,[kind,count])=>n+Math.min(count,itemCount(w,kind))*ITEM_RULES[kind].weight,0);

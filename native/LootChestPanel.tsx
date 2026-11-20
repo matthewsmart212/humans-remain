@@ -1,8 +1,9 @@
-import React, {useState} from 'react';
+import {useStationFeedback} from '../src/use-station-feedback';
+import React from 'react';
 import {View, Text, ScrollView, StyleSheet} from 'react-native';
 import StationMenu from './StationMenu';
 import {ItemArt} from './InventoryUI';
-import {SectionHeading, StationButton} from './StationControls';
+import {StationButton} from './StationControls';
 import {stationPalette as palette} from '../src/station-palette';
 import type {World} from '../src/survival-engine';
 import type {MenuInsets} from '../src/station-menu-layout';
@@ -12,34 +13,34 @@ import {LOOT_CHEST_REWARDS, lootChestContents, lootChestRemaining, canCarryLootC
 type Props = {world: World; width: number; height: number; safe: MenuInsets; onClose: () => void; onChange: () => void};
 
 export default function LootChestPanel({world, width, height, safe, onClose, onChange}: Props) {
- const [message, setMessage] = useState('');
+ const [message, setMessage] = useStationFeedback();
  const contents = lootChestContents(world);
  const remaining = lootChestRemaining(world);
  const load = packLoad(world);
  const rewards = LOOT_CHEST_REWARDS.map(reward => {
   const count = contents[reward.kind] ?? 0;
   return {...reward, count, capacity: canCarryLootChestReward(world, reward.kind, count)};
- });
+ }).filter(reward=>reward.count>0);
  const canTake = rewards.some(reward => reward.count > 0 && reward.capacity > 0);
  const collect = (gained: number) => {
   setMessage(gained ? `Collected ${gained} ${gained === 1 ? 'item' : 'items'}.` : 'Backpack full. Make room before collecting.');
   onChange();
  };
- return <StationMenu compact world={world} title="Loot chest" label="Loot chest supplies" onClose={onClose} width={width} height={height} safe={safe} weight={load.weight} loadLabel={load.label} message={message}>
-  <SectionHeading title="Starter equipment" info={`${remaining} remaining`} />
+ return <StationMenu compact fitContent world={world} title="Loot chest" label="Loot chest supplies" onClose={onClose} width={width} height={height} safe={safe} weight={load.weight} loadLabel={load.label} message={message}>
+  {!remaining&&<Text style={s.name}>Chest empty</Text>}
   <ScrollView style={s.list} contentContainerStyle={s.content} accessibilityLabel="Loot chest contents">
    {rewards.map(({kind, artId, name, description, count, capacity}) => <View key={kind} style={s.reward}>
     <ItemArt id={artId} size={38}/>
     <View style={s.details}><Text style={s.name}>{name}</Text><Text style={s.note}>{description}</Text></View>
-    <Text style={s.amount}>×{count}</Text>
-    <StationButton label={!count ? 'Taken' : !capacity ? 'Pack full' : 'Take'} accessibilityLabel={`Take ${name}`} disabled={!count || !capacity} onPress={() => collect(takeLootChestReward(world, kind))} />
+    {count>1&&<Text style={s.amount}>×{count}</Text>}
+    <StationButton label={!capacity ? 'Pack full' : 'Take'} accessibilityLabel={`Take ${name}`} disabled={!capacity} onPress={() => collect(takeLootChestReward(world, kind))} />
    </View>)}
   </ScrollView>
-  <StationButton primary label={!remaining ? 'Chest empty' : !canTake ? 'Backpack full' : 'Collect all that fits'} accessibilityLabel="Collect all rewards that fit in backpack" disabled={!canTake} onPress={() => collect(takeAllLootChestRewards(world))} />
+  {rewards.length>1&&<StationButton primary label={canTake ? 'Take all that fits' : 'Backpack full'} accessibilityLabel="Collect all rewards that fit in backpack" disabled={!canTake} onPress={() => collect(takeAllLootChestRewards(world))} />}
  </StationMenu>;
 }
 const s = StyleSheet.create({
- list: {flex: 1, minHeight: 0}, content: {gap: 6, paddingBottom: 4},
+ list: {flexGrow: 0, flexShrink: 1, flexBasis: 'auto', minHeight: 0}, content: {gap: 6, paddingBottom: 4},
  reward: {flexDirection: 'row', alignItems: 'center', gap: 8, padding: 7, backgroundColor: palette.surface, borderRadius: 6},
  details: {flex: 1, minWidth: 0}, name: {fontSize: 15, fontWeight: '700', color: palette.text},
  note: {fontSize: 12, lineHeight: 16, color: palette.muted}, amount: {fontSize: 15, fontWeight: '600', color: palette.text},

@@ -72,7 +72,7 @@ try{
  assert(!hunting.sample(make()).healthCombat,'A new run cannot inherit the previous run combat health deadline');
  w.player.downedUntil=999;assert(controller.sample(w).action.disabled);assert(!controller.press(w,controller.sample(w).action));w.player.downedUntil=0;
  // Each camp action is executed against the same actual simulation as gameplay.
- for(const id of ['well','hearth']){Object.assign(w.player,m.stationFront(w.camp,id));w.loot=[];controller.reset();const action=controller.sample(w).action;assert.equal(action.label,id==='well'?'DRINK':'FIRE');if(!action.disabled)assert(controller.press(w,action));controller.release()}
+ for(const id of ['well','hearth']){Object.assign(w.player,m.stationFront(w.camp,id));w.loot=[];controller.reset();const action=controller.sample(w).action;assert.equal(action.label,id==='well'?'DRINK':'COOK');if(!action.disabled)assert(controller.press(w,action));controller.release()}
  w.stationPanel=undefined;w.loot=[{id:501,x:w.player.x,y:w.player.y,kind:'pallets',appearance:'logs',amount:1}];controller.reset();const collect=controller.sample(w).action;assert.equal(collect.label,'COLLECT');assert(controller.press(w,collect));controller.release();assert(!w.loot.find(l=>l.id===501));
  // Real pointer handlers: secondary touch can act while the stick retains its finger.
  const input={current:{x:0,y:0}},stick=m.EditorJoystick({input,onStart:()=>{}}),captures=[];

@@ -1,75 +1,11 @@
 .station-menu.smithy-menu .station-menu-content { gap: 8px; }
-.smithy-catalog {
- flex: 1;
+.smithy-menu .smithy-catalog {
+ flex: 0 1 auto;
  min-height: 0;
  overflow: auto;
  align-content: start;
- padding: 3px;
+ padding: 2px;
  overscroll-behavior: contain;
  scrollbar-width: thin;
  scrollbar-color: var(--station-line) transparent;
-}
-.smithy-craft-row {
- display: flex;
- align-items: stretch;
- gap: 8px;
-}
-.smithy-costs {
- display: flex;
- flex: 1;
- gap: 6px;
- min-width: 0;
-}
-.smithy-cost {
- display: flex;
- flex: 1;
- align-items: center;
- gap: 6px;
- min-width: 0;
- padding: 4px 7px;
- border: 1px solid var(--station-line);
- border-radius: 5px;
- background: var(--station-inset);
- color: var(--station-text);
-}
-.smithy-cost img { width: 24px; height: 26px; object-fit: contain; }
-.smithy-cost span { font: 500 13px/1.1 Barlow,sans-serif; }
-.smithy-cost b { display: block; margin-top: 2px; font-weight: 700; }
-.smithy-craft-row > button { min-width: 90px; flex: 0 1 30%; }
-@container (max-width: 380px) {
- .smithy-craft-row { gap: 4px; }
- .smithy-cost { gap: 3px; padding-inline: 4px; }
- .smithy-cost img { width: 18px; }
-}
-
-/* Short screens give the scrollable recipe list and fixed crafting controls
-   their own columns, leaving a full recipe visible as the player browses. */
-@media (max-height: 440px) and (orientation: landscape) {
- .station-menu.smithy-menu .station-menu-content {
-  display: grid;
-  grid-template: auto minmax(0,1fr) / minmax(0,1.12fr) minmax(0,1fr);
-  gap: 6px 8px;
- }
- .smithy-category-tabs { grid-column: 1/-1; }
- .smithy-catalog { grid-template-columns: 1fr; }
- .camp-studio .field-kit .smithy-menu .smithy-catalog .production-choice {
-  grid-template-columns: 32px minmax(0,1fr);
-  justify-items: stretch;
-  min-height: 68px;
-  gap: 5px;
-  padding: 5px 8px;
- }
- .smithy-catalog .production-art { width: 32px; height: 42px; }
- .smithy-catalog .production-choice-copy strong { font-size: 17px; }
- .smithy-catalog .production-choice-copy small,
- .smithy-catalog .production-choice-copy span { font-size: 12px; }
- .smithy-menu .production-batch { display: flex; flex-direction: column; overflow: auto; border: 0; }
- .smithy-menu .production-batch-summary { flex-wrap: wrap; }
- .smithy-menu .production-batch-summary > span { width: 100%; text-align: left; }
- .smithy-craft-row { flex-direction: column; justify-content: end; flex: 1; gap: 4px; }
- .smithy-costs { flex: none; gap: 3px; }
- .smithy-cost { gap: 3px; padding: 4px; }
- .smithy-cost img { width: 17px; }
- .smithy-cost span { font-size: 12px; }
- .smithy-craft-row > button { flex: none; }
 }

@@ -66,7 +66,7 @@ try{
  stockWorld.stationPanel='warehouse';assert.equal(stockKit.sample(stockWorld).warehouseStock,undefined,'Opening the warehouse hides the world caption');stockWorld.stationPanel=undefined;stockWorld.player.y+=500;assert.equal(stockKit.sample(stockWorld).warehouseStock,undefined,'Leaving interaction range hides the stock caption');
  // Usable buildings keep their station action even with the repair hammer held.
  const damagedStation=id=>{const test=roundTrip(w);visit(test,id);fund(test,id);test.player.equipped='repairHammer';test.player.hurtUntil=0;test.enemies=[];test.loot=[];test.thirst=70;assert(m.damageBuilding(test,id,Math.floor(m.buildingMaxHp(test,id)/2)));return test};
- for(const [id,label,panel]of [['fire','FIRE','fire'],['well','DRINK',undefined],['warehouse','STORE','warehouse'],['furnace','FURNACE','furnace'],['workshop','CRAFT','smithy']]){
+ for(const [id,label,panel]of [['fire','COOK','fire'],['well','DRINK',undefined],['warehouse','STORE','warehouse'],['furnace','SMELT','furnace'],['workshop','CRAFT','smithy']]){
   const test=damagedStation(id),kit=new m.FieldKitController(),shown=kit.sample(test),before=JSON.stringify([test.bag,test.stock]);
   assert.equal(shown.action.label,label,id+' retains its normal primary action with a hammer');
   assert(shown.repairAction&&!shown.repairAction.disabled,id+' exposes a separate affordable repair');
@@ -81,7 +81,7 @@ try{
  // The hammer keeps station access during a nearby threat, but actual danger interrupts menus.
  for(const interruption of ['hit','downed','range']){
   const test=damagedStation('fire'),kit=new m.FieldKitController();assert(m.spawnCombatEnemyAt(test,'scrap-walker',{x:test.player.x+120,y:test.player.y}));
-  const shown=kit.sample(test);assert(shown.combat);assert.equal(shown.action.label,'FIRE');assert(shown.repairAction,'A nearby robot does not hide the repair companion');
+  const shown=kit.sample(test);assert(shown.combat);assert.equal(shown.action.label,'COOK');assert(shown.repairAction,'A nearby robot does not hide the repair companion');
   assert(kit.press(test,shown.action));kit.release('primary');assert.equal(kit.sample(test).stationPanel,'fire','A nearby robot alone does not immediately close the hammer user’s station');
   if(interruption==='hit')m.damagePlayer(test,1);if(interruption==='downed')test.player.downedUntil=m.timeOf(test)+10;if(interruption==='range')test.player.y+=400;
   assert.equal(kit.sample(test).stationPanel,undefined,interruption+' closes the station');
@@ -91,10 +91,10 @@ try{
  const fireBefore=Object.fromEntries(Object.keys(fireCost).map(id=>[id,m.materialTotal(fire,id)]));
  assert(fireKit.pressRepair(fire,repairStart.repairAction));assert(fireKit.holdingRepair);assert(!fireKit.pressRepair(fire,repairStart.repairAction),'Repeated press cannot start or pay twice');
  assert(!fireKit.press(fire,repairStart.action),'A second contact cannot open a menu during the held repair');fireKit.release('primary');assert(fireKit.holdingRepair,'The rejected primary contact cannot release the repairing finger');
- const holding=fireKit.sample(fire);assert.equal(holding.action.label,'FIRE');assert.equal(holding.repairAction.target.repairState,'holding');
+ const holding=fireKit.sample(fire);assert.equal(holding.action.label,'COOK');assert.equal(holding.repairAction.target.repairState,'holding');
  advance(fire,60);const progressed=fireKit.sample(fire);assert.equal(progressed.action.key,holding.action.key);assert(progressed.repairAction.target.progress>holding.repairAction.target.progress);assert(!m.sameFieldKit(holding,progressed),'Secondary progress refreshes an otherwise unchanged station HUD');
  assert.deepEqual(Object.fromEntries(Object.keys(fireCost).map(id=>[id,m.materialTotal(fire,id)])),fireBefore,'Partial secondary repair uses no materials');
- fireKit.release('repair');advance(fire,30);const falling=fireKit.sample(fire);assert.equal(falling.action.label,'FIRE');assert.equal(falling.repairAction.target.repairState,'falling');assert(falling.repairAction.target.progress<progressed.repairAction.target.progress);
+ fireKit.release('repair');advance(fire,30);const falling=fireKit.sample(fire);assert.equal(falling.action.label,'COOK');assert.equal(falling.repairAction.target.repairState,'falling');assert(falling.repairAction.target.progress<progressed.repairAction.target.progress);
  assert(fireKit.pressRepair(fire,falling.repairAction));advance(fire,241);fireKit.release('repair');
  assert.equal(m.buildingHp(fire,'fire'),m.buildingMaxHp(fire,'fire'));assert(!fire.buildingRepair);assert.equal(fireKit.sample(fire).repairAction,undefined,'The repair button disappears on completion');
  for(const [id,n]of Object.entries(fireCost))assert.equal(m.materialTotal(fire,id),fireBefore[id]-n,'Completed secondary repair charges exactly once');

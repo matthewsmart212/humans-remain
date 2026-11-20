@@ -1,5 +1,6 @@
 import React, {useEffect, useRef, useState} from 'react';
 import {BackHandler, Image, Pressable, StyleSheet, Text, View, type ImageSourcePropType} from 'react-native';
+import {menuPackReadout} from '../src/station-menu-model';
 import {FIELD_KIT_NATIVE_ART as art} from './field-kit-art';
 import {stationMenuLayout, presentStationMenu, type MenuInsets} from '../src/station-menu-layout';
 import {stationPalette as palette} from '../src/station-palette';
@@ -16,7 +17,7 @@ type Props = {
  closeLabel?: string;
  onClose: () => void;
  onBack?: () => void;
- weight: number;
+ weight?: number;
  loadLabel?: string;
  message?: string;
  hint?: string;
@@ -35,22 +36,13 @@ export default function StationMenu({
  onClose, onBack = onClose, weight, loadLabel, message, hint, kind, compact = false, fitContent = false,
  footerAction, width, height, safe, children,
 }: Props) {
- const [feedback, setFeedback] = useState(message);
  const [closeFocused, setCloseFocused] = useState(false);
  const back = useRef(onBack);
  back.current = onBack;
  const layout = stationMenuLayout(width, height, safe);
  const panel = layout.panel;
  const tight = compact && layout.compact;
- const heavy = weight > 18;
- const loadStatus = heavy ? 'Heavy pack' : loadLabel === 'Comfortable' ? '' : loadLabel;
-
- useEffect(() => {
-  setFeedback(message);
-  if (!message) return;
-  const timer = setTimeout(() => setFeedback(''), 3200);
-  return () => clearTimeout(timer);
- }, [message]);
+ const pack = menuPackReadout(weight, loadLabel, kind === 'backpack');
 
  useEffect(() => {
   const subscription = BackHandler.addEventListener('hardwareBackPress', () => {
@@ -79,7 +71,8 @@ export default function StationMenu({
      </View>
      <View style={styles.heading}>
       <Text accessibilityRole="header" style={styles.title}>{title}</Text>
-      {!!subtitle && <Text style={styles.secondary}>{subtitle}</Text>}
+      {message ? <Text accessibilityLiveRegion="polite" style={styles.feedback}>{message}</Text> :
+       !!subtitle && <Text style={styles.secondary}>{subtitle}</Text>}
      </View>
      <Pressable accessibilityRole="button" accessibilityLabel={closeLabel} onPress={onClose}
       onFocus={() => setCloseFocused(true)} onBlur={() => setCloseFocused(false)}
@@ -90,21 +83,17 @@ export default function StationMenu({
 
     <View style={[styles.content, tight && styles.tightContent, fitContent && styles.fitContent]}>{children}</View>
 
-    <View style={styles.footer}>
+    {(!!pack || !!hint || !!footerAction) && <View style={styles.footer}>
      {!!hint && <Text style={styles.secondary}>{hint}</Text>}
      <View style={styles.load}>
-      {feedback ? <Text accessibilityLiveRegion="polite" style={styles.feedback}>{feedback}</Text> : <>
-      <Image accessible={false} source={art.backpack} resizeMode="contain" style={styles.packIcon} />
-      <Text style={styles.weight}>Pack {weight.toFixed(1)} / 24 kg</Text>
-      <View accessibilityRole="progressbar" accessibilityLabel="Backpack weight. Movement slows above 18 kilograms."
-       accessibilityValue={{min: 0, max: 24, now: Math.min(weight, 24)}} style={styles.meter}>
-       <View style={[styles.fill, {width: `${Math.min(100, weight / 24 * 100)}%`, backgroundColor: heavy ? palette.danger : palette.brass}]} />
-      </View>
-      {!!loadStatus && <Text style={heavy ? styles.heavy : styles.secondary}>{loadStatus}</Text>}
+      {pack&&<>
+       <Image accessible={false} source={art.backpack} resizeMode="contain" style={styles.packIcon}/>
+       <Text accessibilityLabel={`Backpack weight, ${pack.amount}`} style={styles.weight}>{pack.amount}</Text>
+       {!!pack.status&&<Text style={styles.secondary}>{pack.status}</Text>}
       </>}
       {footerAction}
      </View>
-    </View>
+    </View>}
    </View>
   </View>
  );
@@ -131,7 +120,5 @@ const styles = StyleSheet.create({
  footer: {paddingTop: 5, gap: 4, borderTopWidth: 1, borderColor: palette.line, flexShrink: 0},
  load: {flexDirection: 'row', alignItems: 'center', gap: 6},
  packIcon: {width: 18, height: 18}, weight: {fontSize: 12, fontWeight: '600', color: palette.text},
- meter: {height: 4, flex: 1, backgroundColor: palette.line, borderRadius: 2, overflow: 'hidden'}, fill: {height: '100%'},
- heavy: {fontSize: 11, color: palette.danger},
- feedback: {flex: 1, minHeight: 18, borderLeftWidth: 2, borderLeftColor: palette.brass, paddingLeft: 8, color: palette.text, fontSize: 13, lineHeight: 18},
+ feedback: {color: palette.brass, fontSize: 13, lineHeight: 17},
 });

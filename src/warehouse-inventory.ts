@@ -1,27 +1,19 @@
-import type {BagItem,BagItemId} from './backpack';
-import {itemCount,storedCount} from './expedition-inventory';
 import type {World} from './survival-engine';
-import {WAREHOUSE_MATERIALS,type WarehouseMaterial} from './warehouse';
+import {WAREHOUSE_MATERIALS} from './warehouse';
+import {warehouseView} from './warehouse-storage';
 
-/** The warehouse uses the same item slots as the backpack, including empty stacks. */
-export function warehouseInventoryItems(world:World,taking:boolean):BagItem[]{
+export function warehouseTransferRows(world:World,taking:boolean){
+ const verb=taking?'Take':'Store';
  return WAREHOUSE_MATERIALS.map(material=>{
-  const bag=itemCount(world,material.id),stored=storedCount(world,material.id);
+  const {bag,stored,limit}=warehouseView(world,material.id,taking,1);
+  const available=taking?stored:bag;
+  const blocked=limit?'':!taking&&world.creativeMode?'Creative stock':available?'Pack full':'Empty';
   return {
-   id:material.id==='pallets'?'logs':material.id,
-   name:material.name,
-   category:'Materials',
-   count:taking?stored:bag,
-   image:material.image,
-   facts:[['Backpack',String(bag)],['Warehouse',String(stored)]],
-   description:'Camp materials for crafting, repairs, and upgrades.',
-   hint:'',
-   useDisabled:true,
-   droppable:false,
+   material,available,limit,
+   stockLabel:taking?`${stored} stored${bag?` · ${bag} in pack`:''}`:`${bag} in pack${stored?` · ${stored} stored`:''}`,
+   itemId:material.id==='pallets'?'logs' as const:material.id,
+   singleLabel:blocked||(limit>1?`${verb} 1`:verb),
+   stackLabel:limit===available?`${verb} all`:`${verb} ${limit}`,
   };
- });
-}
-
-export function warehouseMaterialForItem(id:BagItemId):WarehouseMaterial|null{
- return id==='logs'?'pallets':id==='stone'||id==='scrap'?id:null;
+ }).filter(row=>row.available>0);
 }

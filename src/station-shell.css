@@ -69,14 +69,6 @@
   font-variant-numeric: tabular-nums;
 }
 .station-menu-layer .station-menu-load > img { width: 20px; height: 20px; }
-.station-menu-layer .station-menu .station-menu-load > div[role=progressbar] {
-  flex: 1 1 28px;
-  max-width: 100px;
-  order: 0;
-  background: var(--station-inset);
-}
-.station-menu-layer .station-menu-load i { background: var(--station-muted); }
-.station-menu-layer .station-menu-load [data-heavy=true] i { background: var(--station-danger); }
 .station-menu-layer .station-menu-load .station-load-status { color: var(--station-danger); margin: 0; }
 .station-menu-layer .station-menu .station-menu-footer-action { margin-left: auto; }
 .camp-studio .field-kit .station-menu .station-menu-footer-action button {
@@ -98,14 +90,10 @@
   outline: 2px solid #fff2c7;
   outline-offset: -3px;
 }
-.station-menu-layer .station-menu .station-menu-feedback {
-  flex: 1 1 12ch;
-  min-height: 20px;
+.station-menu-layer .station-menu-header .station-menu-feedback {
   margin: 0;
-  padding-left: 8px;
-  border-left: 2px solid var(--station-brass);
-  color: var(--station-text);
-  font: 500 13px/20px Barlow, sans-serif;
+  color: var(--station-brass);
+  font: 500 13px/1.25 Barlow, sans-serif;
 }
 .camp-studio .field-kit .station-menu-layer .station-menu[data-short=true] { padding: 6px 10px; gap: 5px; }
 .station-menu-layer .station-menu[data-short=true] .station-menu-header { min-height: 44px; padding-bottom: 2px; gap: 8px; }

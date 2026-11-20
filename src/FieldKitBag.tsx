@@ -1,3 +1,4 @@
+import {useStationFeedback} from './use-station-feedback';
 import StationMenu from './StationMenu';
 import React,{useEffect,useState} from 'react';
 import {backpackItems,type BagItemId,type BagResult} from './backpack';
@@ -5,7 +6,7 @@ import type {FieldKitSnapshot} from './field-kit';
 import {InventoryGrid,InventoryDetail,InventoryEmpty} from './InventoryUI';
 type Props={open:boolean;stats:FieldKitSnapshot;onClose:()=>void;onUse:(id:BagItemId)=>boolean;onDrop:(id:BagItemId,quantity:1|'all')=>BagResult};
 export default function FieldKitBag({open,stats,onClose,onUse,onDrop}:Props){
- const [selected,setSelected]=useState<BagItemId>('raw'),[message,setMessage]=useState('');
+ const [selected,setSelected]=useState<BagItemId>('raw'),[message,setMessage]=useStationFeedback();
  const items=backpackItems(stats),item=items.find(i=>i.id===selected)??items.find(i=>i.category==='Food')??items[0];
  useEffect(()=>{if(open)setMessage('')},[open]);
  const use=()=>{const ok=onUse(item!.id);setMessage(ok?item?.food?'Meal eaten.':`${item!.name} ${stats.selected===item!.id?'stowed':'equipped'}.`:'Cannot use right now.')};

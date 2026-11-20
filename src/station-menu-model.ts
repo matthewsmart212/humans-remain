@@ -1,3 +1,4 @@
+import {PACK_CAPACITY, PACK_COMFORT} from './expedition-inventory';
 import type {BagFilter, BagItem} from './backpack';
 import type {smithyView} from './smithy-view';
 
@@ -12,9 +13,21 @@ export function chestItemEffects(item:BagItem){
 export function smithyAction(recipe:NonNullable<ReturnType<typeof smithyView>>['recipes'][number]){
  if(recipe.canCraft)return `Craft ${recipe.name}`;
  if(recipe.status!=='Need materials')return recipe.status;
- const missing=recipe.ingredients.filter(m=>!m.enough);
- if(missing.length!==1)return 'Missing materials';
- const amount=missing[0].needed-missing[0].available,name=missing[0].name.toLowerCase();
- const singular:Record<string,string>={logs:'log','iron ingots':'iron ingot',ingots:'ingot'};
- return `Need ${amount} ${amount===1?(singular[name]??name):name}`;
+ const missing=recipe.ingredients.filter(material=>!material.enough).map(material=>{
+  const amount=material.needed-material.available;
+  const name=material.id==='pallets'?'log':material.name.toLowerCase();
+  return `${amount} ${name}${amount===1?'':'s'}`;
+ });
+ return `Need ${missing.join(' and ')}`;
+}
+
+/** Outside the backpack, capacity only matters when running low on space. */
+export function menuPackReadout(weight: number | undefined, loadLabel: string | undefined, backpack: boolean) {
+ if (weight === undefined) return;
+ const creative = loadLabel === 'Creative';
+ const heavy = !creative && weight > PACK_COMFORT;
+ if (!backpack && !heavy) return;
+ const amount = creative ? `${weight.toFixed(1)} kg` : `${weight.toFixed(1)} / ${PACK_CAPACITY} kg`;
+ const status = creative ? 'Creative' : weight >= PACK_CAPACITY ? 'Pack full' : heavy ? 'Heavy pack' : '';
+ return {amount, status};
 }

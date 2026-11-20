@@ -5,7 +5,6 @@ import HeadquartersContent,{FurnaceRepairContent,type HeadquartersNavigation} fr
 import {headquartersMenuImage,headquartersMenuSource} from './headquarters-image-sources';
 import StationMenu from './StationMenu';
 import {presentStationMenu} from './station-menu-layout';
-import {packWeight} from './expedition-inventory';
 import {FURNACE_BROKEN_IMAGE} from './furnace-animation-art';
 import './headquarters.css';
 type Props={world:World;onClose:()=>void;onChange:()=>void};
@@ -46,8 +45,8 @@ export default function HeadquartersPanel({world,onClose,onChange}:Props){
   </div>
  </div>,document.body);
 }
-export function FurnaceRepairPanel({world,onClose}:Props){
- return <StationMenu compact world={world} title="Damaged furnace" image={headquartersMenuImage(FURNACE_BROKEN_IMAGE)} weight={packWeight(world)} onClose={onClose} className="headquarters-menu">
-  <FurnaceRepairContent world={world} source={source} onClose={onClose}/>
+export function FurnaceRepairPanel({world,onClose,onChange}:Props){
+ return <StationMenu compact fitContent world={world} title="Damaged furnace" image={headquartersMenuImage(FURNACE_BROKEN_IMAGE)} onClose={onClose} className="headquarters-menu">
+  <FurnaceRepairContent world={world} source={source} onClose={onClose} onChange={onChange}/>
  </StationMenu>;
 }

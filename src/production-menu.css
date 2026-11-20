@@ -1,4 +1,4 @@
-/* Fuel, recipes, jobs and batch controls use the same hierarchy at both stations. */
+/* Shared recipe rows and station controls. */
 .production-menu {
  --work-text: var(--station-text, #f4eedf);
  --work-muted: var(--station-muted, #b9b8a9);
@@ -26,11 +26,6 @@
 }
 .station-menu--fit .production-scroll { flex: 0 1 auto; }
 .production-scroll > * { flex: none; }
-.production-utilities, .production-recipes {
- display: grid;
- grid-template-columns: repeat(2, minmax(0, 1fr));
- gap: 8px;
-}
 .production-utility {
  display: flex;
  align-items: center;
@@ -75,39 +70,64 @@
  color: var(--work-text);
  font: 700 22px/1.1 'Barlow Condensed', sans-serif;
 }
-.camp-studio .field-kit .production-menu .production-choice {
- position: relative;
+.production-list {
  display: grid;
- grid-template-columns: minmax(54px, .7fr) minmax(0, 1.3fr);
- gap: 10px;
+ gap: 6px;
+ margin: 0;
+ padding: 0;
+ list-style: none;
+}
+.production-recipe {
+ display: flex;
  align-items: center;
- min-height: 108px;
- padding: 8px 16px 8px 8px;
- text-align: left;
- background: var(--work-card);
- color: var(--work-text);
+ gap: 6px;
+ padding: 7px 10px 7px 4px;
  border: 1px solid var(--work-line);
  border-radius: 6px;
+ background: var(--work-card);
+}
+.camp-studio .field-kit .production-menu button.production-recipe-info {
+ flex: 1;
+ display: flex;
+ align-items: center;
+ justify-content: start;
+ gap: 10px;
+ min-width: 0;
+ min-height: 44px;
+ padding: 4px 5px;
+ border: 1px solid transparent;
+ border-radius: 4px;
+ text-align: left;
+ background: transparent;
+ color: var(--work-text);
  box-shadow: none;
 }
-.camp-studio .field-kit .production-menu .production-choice[aria-pressed=true] {
- border-color: var(--work-brass);
- background: linear-gradient(110deg, color-mix(in srgb, var(--work-brass) 12%, var(--work-card)), var(--work-card));
- box-shadow: inset 3px 0 var(--work-brass);
+.production-recipe-info > img { flex: none; width: 49px; height: 49px; object-fit: contain; }
+.production-recipe-info > span { display: grid; gap: 3px; }
+.production-recipe-info strong { font: 700 22px/1.05 'Barlow Condensed', sans-serif; }
+.production-recipe-info small { color: var(--work-muted); font: 500 13px/1.25 Barlow, sans-serif; }
+.camp-studio .field-kit .production-menu select.production-quantity {
+ width: 52px;
+ min-height: 44px;
+ padding: 0 4px;
+ border: 1px solid var(--work-line);
+ border-radius: 5px;
+ background: var(--work-inset);
+ color: var(--work-text);
+ font: 600 14px/1 Barlow, sans-serif;
 }
-.production-art {
- display: grid;
- place-items: center;
- aspect-ratio: 1;
- max-height: 112px;
- background: radial-gradient(ellipse, #d9c59118, transparent 68%);
+.camp-studio .field-kit .production-menu :is(.production-recipe, .production-ready) button.production-primary {
+ flex: none;
+ min-width: 70px;
 }
-.production-art img { width: 84%; height: 84%; object-fit: contain; filter: drop-shadow(0 4px 3px #0006); }
-.production-choice-copy { display: grid; gap: 4px; }
-.production-choice-copy strong { font: 700 22px/1.05 'Barlow Condensed', sans-serif; }
-.production-choice-copy small, .production-choice-copy > span { font: 500 13px/1.25 Barlow, sans-serif; }
-.production-choice-copy > span { color: var(--work-muted); }
-.production-check { position: absolute; top: 5px; right: 5px; color: var(--work-brass); }
+@container (max-width: 400px) {
+ .production-recipe { padding: 5px; gap: 4px; }
+ .camp-studio .field-kit .production-menu button.production-recipe-info { padding: 3px 0; gap: 5px; }
+ .production-recipe-info > img { width: 32px; height: 36px; }
+ .production-recipe-info strong { font-size: 18px; }
+ .camp-studio .field-kit .production-menu select.production-quantity { width: 45px; }
+ .camp-studio .field-kit .production-menu .production-recipe button.production-primary { min-width: 54px; padding-inline: 7px; }
+}
 .production-jobs, .production-costs { list-style: none; margin: 0; padding: 0; }
 .production-job, .production-costs li {
  display: flex;
@@ -127,20 +147,8 @@
 .production-empty { display: flex; align-items: center; gap: 18px; padding: 11px 4px; }
 .production-empty img { width: clamp(60px, 20%, 108px); height: 82px; object-fit: contain; }
 .production-empty p { margin-top: 5px; }
-.production-batch {
- flex: none;
- padding: 4px 2px 2px;
- border-top: 1px solid var(--work-line);
- color: var(--work-text);
-}
-.production-batch-summary { display: flex; min-height: 38px; gap: 5px; align-items: center; }
-.production-batch-summary strong { font: 700 20px/1.1 'Barlow Condensed', sans-serif; }
-.production-batch-summary > span { margin-left: auto; text-align: right; font: 500 13px/1.2 Barlow, sans-serif; color: var(--work-muted); }
 .production-menu [data-blocked=true] { color: var(--work-warning); }
-.production-actions, .production-stepper { display: flex; align-items: stretch; gap: 6px; min-width: 0; }
-.production-stepper { align-items: center; border: 1px solid var(--work-line); border-radius: 5px; background: var(--work-inset); gap: 0; }
-.production-stepper output { min-width: 20px; color: var(--work-text); text-align: center; font: 700 19px/1 'Barlow Condensed', sans-serif; }
-.camp-studio .field-kit .production-menu :is(.production-secondary, .production-primary, .production-stepper > button, .production-icon) {
+.camp-studio .field-kit .production-menu :is(.production-secondary, .production-primary, .production-icon) {
  display: inline-flex;
  justify-content: center;
  align-items: center;
@@ -161,7 +169,7 @@
  background: var(--work-brass);
  font: 700 20px/1.1 'Barlow Condensed', sans-serif;
 }
-.camp-studio .field-kit .production-menu :is(.production-stepper > button, .production-icon) {
+.camp-studio .field-kit .production-menu button.production-icon {
  padding: 0;
  width: 40px;
  border-color: transparent;
@@ -169,7 +177,7 @@
  background: transparent;
 }
 .camp-studio .field-kit .production-menu button.production-icon { width: 36px; min-height: 36px; }
-.camp-studio .field-kit .production-menu :is(.production-primary, .production-secondary, .production-stepper > button, .production-icon):disabled {
+.camp-studio .field-kit .production-menu :is(.production-primary, .production-secondary, .production-icon):disabled {
  opacity: 1;
  background: var(--work-inset);
  border-color: var(--work-line);
@@ -177,13 +185,12 @@
  box-shadow: none;
  cursor: default;
 }
-.camp-studio .field-kit .production-menu .production-stepper > button:disabled { border-color: transparent; opacity: .65; }
 @media (hover: hover) {
  .camp-studio .field-kit .production-menu button.production-primary:enabled:hover {
   background: var(--work-brass) !important;
   color: var(--work-ink);
  }
- .camp-studio .field-kit .production-menu :is(.production-choice, .production-primary, .production-secondary, .production-icon, .production-stepper > button):enabled:hover {
+ .camp-studio .field-kit .production-menu :is(.production-recipe-info, .production-primary, .production-secondary, .production-icon):enabled:hover {
   border-color: var(--work-brass);
   filter: brightness(1.12);
  }
@@ -220,54 +227,20 @@
 .production-dialog .production-primary { width: 100%; }
 
 @container (max-width: 520px) {
- .production-utilities { grid-template-columns: 1fr; gap: 5px; }
  .production-utility { padding: 5px 8px; gap: 8px; }
  .production-utility-copy { grid-template-columns: auto 1fr; align-items: center; column-gap: 8px; }
  .production-utility-copy progress { max-width: 60px; }
  .production-utility-copy small { grid-column: 1/-1; }
- .camp-studio .field-kit .production-menu .production-choice { grid-template-columns: 1fr; gap: 4px; justify-items: start; min-height: 90px; padding: 8px 10px; }
- .production-art { width: 44px; height: 40px; }
 }
 @container (max-width: 355px) {
- .production-actions { gap: 4px; }
- .camp-studio .field-kit .production-menu .production-stepper > button { width: 32px; }
  .production-empty { gap: 8px; }
  .production-empty img { width: 48px; height: 54px; }
 }
 .production-menu[data-short=true] .production-scroll { gap: 10px; }
-.production-menu[data-short=true] .production-batch-summary { min-height: 32px; }
-@container (min-width: 521px) {
- .production-menu[data-short=true] .production-choice { min-height: 72px; }
- .production-menu[data-short=true] .production-art { max-height: 54px; }
-}
-.production-check { font: 700 17px/1 Barlow, sans-serif; }
-.production-stepper button span, .production-icon > span { font: 500 20px/1 Barlow, sans-serif; }
-.production-icon > .production-info-mark {
- display: grid;
- place-items: center;
- width: 18px;
- height: 18px;
- border: 1px solid currentColor;
- border-radius: 50%;
- font: bold 14px/1 Georgia, serif;
-}
-
-/* Leave room to choose a recipe above the pinned action on small landscapes. */
+.production-icon > span { font: 500 20px/1 Barlow, sans-serif; }
 @media (max-height: 460px) and (min-aspect-ratio: 6/5) {
- .production-menu[data-short=true] .production-scroll { gap: 9px; padding-top: 2px; }
+ .production-menu[data-short=true] .production-scroll { gap: 8px; padding-block: 2px; }
+ .production-menu[data-short=true] .production-recipe { padding-block: 3px; }
  .production-menu[data-short=true] .production-section { gap: 5px; }
  .production-menu[data-short=true] .production-section h3 { font-size: 18px; }
- .camp-studio .field-kit .production-menu[data-short=true] button.production-choice {
-  min-height: 61px;
-  padding: 5px 11px 5px 6px;
-  gap: 5px;
-  grid-template-columns: 34px minmax(0, 1fr);
-  justify-items: start;
- }
- .production-menu[data-short=true] .production-art { width: 34px; height: 36px; }
- .production-menu[data-short=true] .production-choice-copy { gap: 1px; }
- .production-menu[data-short=true] .production-choice-copy strong { font-size: 17px; }
- .production-menu[data-short=true] .production-choice-copy small,
- .production-menu[data-short=true] .production-choice-copy > span { font-size: 12px; }
- .production-menu[data-short=true] .production-check { top: 2px; right: 3px; font-size: 13px; }
 }

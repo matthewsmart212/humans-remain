@@ -1,14 +1,6 @@
-.rare-cache-heading {
- display: flex;
- align-items: baseline;
- justify-content: space-between;
- gap: 12px;
- padding-block: 4px;
-}
-.rare-cache-heading h3 { margin: 0; font: 700 23px/1.15 'Barlow Condensed',sans-serif; color: var(--station-text); }
-.rare-cache-heading span { color: var(--station-muted); font: 500 13px Barlow,sans-serif; }
+.rare-cache-empty { margin: 6px 0; color: var(--station-text); font: 700 22px/1.2 'Barlow Condensed',sans-serif; }
 .rare-cache-list {
- flex: 1;
+ flex: 0 1 auto;
  min-height: 0;
  display: grid;
  align-content: start;
@@ -36,3 +28,5 @@
  .rare-cache-reward small { font-size: 13px; }
  .camp-studio .field-kit .rare-cache-reward button { min-width: 52px; padding: 6px; }
 }
+
+.rare-cache-reward > button { grid-column: 4; }

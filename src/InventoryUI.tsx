@@ -14,9 +14,9 @@ export function InventorySources({store,fromStore,onChange}:{store:'Chest'|'Ware
  return <div className="inventory-sources" role="group" aria-label="Choose inventory">
   {[true,false].map(stored=>{
    const name=stored?store:'Backpack';
-   const label=store==='Chest'?(stored?'Take from chest':'Store from backpack'):`View ${name.toLowerCase()} resources`;
+   const label=stored?`Take from ${store.toLowerCase()}`:'Store from backpack';
    return <button key={name} type="button" aria-label={label} aria-pressed={stored===fromStore} onClick={()=>onChange(stored)}>
-    <img src={fieldKitArt(stored?'chest':'backpack')} alt=""/>{name}
+    <img src={fieldKitArt(stored?'chest':'backpack')} alt=""/>{stored?'Take':'Store'}
    </button>;
   })}
  </div>;
