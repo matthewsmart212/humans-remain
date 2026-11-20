@@ -3,7 +3,7 @@ import type {ArtworkRecord} from './artwork-model';
 import type {WorldAsset} from './world-assets';
 import workshopArt from './workshop-art.json';
 import treatmentArt from './treatment-art.json';
-import {WAREHOUSE_ARTWORK,isDefaultWarehouseCollision} from './camp-worksites-art';
+import {PREVIOUS_FURNACE_COLLISION,WAREHOUSE_ARTWORK,isDefaultWarehouseCollision} from './camp-worksites-art';
 import {FURNACE_COLD_IMAGE} from './furnace-animation-art';
 import {HQ_SOUTH_INTERIOR,isOriginalHeadquartersOutline} from './headquarters-south-art';
 
@@ -29,6 +29,7 @@ const previousTreatment:CollisionPoint[][]=[
  [[.58,.58],[.66,.58],[.92,.70],[.93,.84],[.80,.89],[.56,.73],[.56,.65]],
  [[.41,.47],[.61,.53],[.72,.59]],
 ];
+const previousCot:CollisionPoint[]=[[0.044,0.674],[0.185,0.55],[0.52,0.47],[0.79,0.535],[0.945,0.645],[0.931,0.697],[0.838,0.754],[0.761,0.798],[0.755,0.835],[0.721,0.834],[0.715,0.814],[0.665,0.862],[0.62,0.87],[0.525,0.843],[0.525,0.779],[0.508,0.774],[0.511,0.705],[0.565,0.677],[0.558,0.589],[0.499,0.648],[0.488,0.731],[0.456,0.731],[0.449,0.718],[0.345,0.688],[0.338,0.71],[0.309,0.71],[0.291,0.699],[0.219,0.735],[0.203,0.755],[0.154,0.762],[0.125,0.752],[0.12,0.727],[0.078,0.722],[0.078,0.691]];
 const oldPlacedBunker:CollisionPoint[]=[[.2852,.6823],[.5263,.4929],[.761,.592],[.4891,.8717],[.577,.9451],[.9368,.5216],[.9133,.3421],[.5616,.1537],[.2816,.4096],[.2825,.5107],[.1828,.6109]];
 const oldBunker:CollisionPoint[]=[[.1797,.6055],[.2726,.4023],[.5218,.1462],[.897,.3276],[.9103,.563],[.6023,.9445],[.5085,.9062],[.7407,.619],[.5227,.4883],[.2821,.7071]];
 const oldHearth:CollisionPoint[]=[[.1161,.5268],[.8839,.5268],[.8839,.9375],[.1161,.9375]];
@@ -48,7 +49,8 @@ function updatedWorkstationOutline(image:string,c:AssetCollision|undefined):Asse
  if(image==='/survival/camp-workshop-v2/idle-00.webp'&&(matches(c,oldWorkshop,.008)||matches(c,previousWorkshop,.008)))return workshopArt.collision as AssetCollision;
  if(image==='/survival/camp-treatment-v2/idle-00.webp'){
   const previous=c?.lineWidth===.008&&c.paths.length===previousTreatment.length&&c.paths.every((p,i)=>p.closed===(i!==2)&&samePoints(p.points,previousTreatment[i]));
-  if(previous||matches(c,oldTreatment))return treatmentArt.collision as AssetCollision;
+  const cot=c?.lineWidth===.008&&c.paths.length===treatmentArt.collision.paths.length&&c.paths.every((path,i)=>path.closed&&samePoints(path.points,i===0?previousCot:treatmentArt.collision.paths[i].points as CollisionPoint[]));
+  if(cot||previous||matches(c,oldTreatment))return treatmentArt.collision as AssetCollision;
  }
 }
 // The editor's older eight-piece palisade set shares canvases across tiers.
@@ -85,7 +87,7 @@ export function placedCollision(asset:WorldAsset,override?:AssetCollision):Asset
  if(!override)return asset.collision;
  if(asset.image===WAREHOUSE_ARTWORK.full&&isDefaultWarehouseCollision(override))return asset.collision;
  if(asset.image===WELL_IMAGE&&matches(override,oldPlacedWell,.008))return asset.collision;
- if(asset.image===FURNACE_COLD_IMAGE&&matches(override,oldFurnace,.008))return asset.collision;
+ if(asset.image===FURNACE_COLD_IMAGE&&(matches(override,oldFurnace,.008)||JSON.stringify(override)===JSON.stringify(PREVIOUS_FURNACE_COLLISION)))return asset.collision;
  if(asset.image==='/survival/camp-hearth-v4/flame-0.webp'&&matches(override,oldHearthFoot))return asset.collision;
  if(asset.image===HQ_SOUTH_INTERIOR&&isOriginalHeadquartersOutline(override))return asset.collision;
  if(asset.image===BUNKER_IMAGE&&matches(override,oldPlacedBunker))return BUNKER_FOOT;

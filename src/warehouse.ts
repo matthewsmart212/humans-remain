@@ -1,4 +1,4 @@
-import {placementUseFace} from './placement-contact';
+import {placementUseFace,stationEdge} from './placement-contact';
 import {WAREHOUSE_ASSET_ID,WAREHOUSE_ARTWORK} from './camp-worksites-art';
 import {withinActionReach,type Vec,type World} from './survival-engine';
 import {type Placement,type WorldLayout} from './world-layout';
@@ -11,8 +11,8 @@ export const warehouseLevel=(count:number,kind:WarehouseMaterial)=>{const full=W
 export const warehouseStage=(count:number,kind:WarehouseMaterial)=>['Empty','Lightly stocked','Well stocked','Full'][warehouseLevel(count,kind)];
 const cache=new WeakMap<WorldLayout,Placement[]>();
 export function warehouses(layout?:WorldLayout){if(!layout)return[];let items=cache.get(layout);if(!items){items=layout.items.filter(p=>p.assetId===WAREHOUSE_ID);cache.set(layout,items)}return items}
-/** Approach the open front, never interact through the roof or rear wall. */
-export function warehouseDock(p:Placement,from?:Vec){return placementUseFace(p,[.295,.795],[.415,.795],from)}
+/** Map markers stay at the porch. Players use the nearest reachable edge. */
+export function warehouseDock(p:Placement,from?:Vec){const front=placementUseFace(p,[.295,.795],[.415,.795],from);return from?stationEdge(p,from,front):front}
 export function nearbyWarehouse(w:World){
  if(w.scene)return null;let result:{placement:Placement;x:number;y:number}|null=null,best=Infinity;
  for(const p of warehouses(w.layout)){const dock=warehouseDock(p,w.player),d=Math.hypot(w.player.x-dock.x,w.player.y-dock.y);if(d<best&&withinActionReach(w,dock)){best=d;result={placement:p,...dock}}}return result;

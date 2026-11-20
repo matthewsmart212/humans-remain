@@ -575,7 +575,7 @@ export function finishRun(w:World):SurvivalRun{const p=readProgress(),best=Math.
 
 // Interactions use clear approach points, so walls cannot grant access to water or cooking.
 export const WELL_FRONT={x:WELL_POINT.x,y:WELL_POINT.y+65},FIRE_FRONT={x:FIRE_POINT.x,y:FIRE_POINT.y+65};
-export function campAction(w:World):'drink'|'cook'|'deposit'|null{const options=[{kind:'drink' as const,p:stationFront(w.camp,'well',w.layout)},{kind:'cook' as const,p:stationFront(w.camp,'hearth',w.layout)},{kind:'deposit' as const,p:stationFront(w.camp,'storage',w.layout)}];return options.filter(o=>buildingRestored(w,o.kind==='drink'?'well':o.kind==='cook'?'fire':'headquarters')&&withinActionReach(w,o.p)).sort((a,b)=>distance(w.player,a.p)-distance(w.player,b.p))[0]?.kind||null}
+export function campAction(w:World):'drink'|'cook'|'deposit'|null{const options=[{kind:'drink' as const,p:stationFront(w.camp,'well',w.layout,w.player)},{kind:'cook' as const,p:stationFront(w.camp,'hearth',w.layout,w.player)},{kind:'deposit' as const,p:stationFront(w.camp,'storage',w.layout,w.player)}];return options.filter(o=>buildingRestored(w,o.kind==='drink'?'well':o.kind==='cook'?'fire':'headquarters')&&withinActionReach(w,o.p)).sort((a,b)=>distance(w.player,a.p)-distance(w.player,b.p))[0]?.kind||null}
 export function fireLabel(w:World){return w.camp.hearth.fuel<=0?'FIRE OUT · ADD WOOD':w.fire.ready?'MEALS READY':w.fire.cookUntil>0?'COOKING '+Math.ceil(w.fire.cookUntil-timeOf(w))+'s':'COOKING FIRE'}
 export function stepBonfireCooking(w:World){stepKitchen(w);stepFurnaces(w)}
 

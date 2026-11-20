@@ -1,3 +1,5 @@
+import {stationEdge} from './placement-contact';
+import type {Vec} from './survival-engine';
 import {placementPoint,type Placement,type WorldLayout} from './world-layout';
 import {GROUND_SCALE} from './camp-buildings';
 
@@ -20,7 +22,7 @@ export function createCamp():CampState {
  return {hearth:{...at(609,724),fuel:180},well:at(446,735),storage:{...at(530,670),openedUntil:0}};
 }
 const stationPlacements=new WeakMap<WorldLayout,Partial<Record<StationId,Placement>>>();
-export function stationFront(camp:CampState,id:StationId,layout?:WorldLayout){
+export function stationFront(camp:CampState,id:StationId,layout?:WorldLayout,from?:Vec){
  if(layout){
   let placed=stationPlacements.get(layout);
   if(!placed){
@@ -31,6 +33,11 @@ export function stationFront(camp:CampState,id:StationId,layout?:WorldLayout){
   const p=placed[id];
   if(p){
    const [x,y]=placementPoint(p,p.x,p.y+STATION_DEFS[id].useOffset);
+   if(from){
+    const dx=camp[id].x-p.x,dy=camp[id].y-p.y;
+    const edge=stationEdge(p,{x:from.x-dx,y:from.y-dy},{x,y});
+    return {x:edge.x+dx,y:edge.y+dy};
+   }
    return {x:camp[id].x+(x-p.x),y:camp[id].y+(y-p.y)};
   }
  }

@@ -105,9 +105,20 @@ export function playInteraction(world:World):PlayInteraction|null{
  const smithy=nearbySmithy(world);if(smithy&&buildingRestored(world,'workshop'))add({key:`smithy:${smithy.placement.id}`,label:'Use camp smithy · Craft tools and weapons',shortLabel:'CRAFT',icon:'chest',image:stationArt.workshop,disabled:false,target:{id:`smithy:${smithy.placement.id}`,buildingId:'workshop',x:smithy.x,y:smithy.y,label:'Camp smithy',detail:'Tools & weapons'},perform:()=>openSmithy(world,smithy.placement.id)});
  const warehouse=nearbyWarehouse(world);if(warehouse&&buildingRestored(world,'warehouse'))add({key:`warehouse:${warehouse.placement.id}`,label:'Open warehouse',shortLabel:'STORE',icon:'chest',image:stationArt.warehouse,disabled:false,target:{id:`warehouse:${warehouse.placement.id}`,buildingId:'warehouse',x:warehouse.x,y:warehouse.y,label:'Warehouse',detail:'Wood, stone & scrap storage'},perform:()=>{if(nearbyWarehouse(world)?.placement.id!==warehouse.placement.id)return false;world.stationPanel='warehouse';return true}});
  const chest=nearbyChest(world);if(chest){const open=chestIsOpen(world,chest),p=layoutViews(world.layout).chests.find(p=>p.id===chest)!;add({key:`chest:${chest}:${open}`,label:'Open camp storage',shortLabel:'STORAGE',icon:'chest',disabled:false,target:{id:`chest:${chest}`,...chestDock(p),label:'Supply chest',detail:'Equipment & supplies'},perform:()=>{if(nearbyChest(world)!==chest||chestIsOpen(world,chest)!==open)return false;if(!open)toggleChest(world,chest);world.stationPanel='storage';return true}})}
+ const medic=buildingRestored(world,'treatment')?repairAnchor(world,'treatment'):undefined;
+ if(medic&&withinActionReach(world,medic)){
+  const detail='Shelter restored · Medical treatment is coming later';
+  add({key:'treatment',label:'Inspect treatment centre',shortLabel:'INSPECT',icon:'chest',disabled:false,
+   target:{id:'treatment',buildingId:'treatment',x:medic.x,y:medic.y,label:'Treatment centre',detail},
+   perform:()=>{
+    const current=repairAnchor(world,'treatment');
+    if(!current||!buildingRestored(world,'treatment')||!withinActionReach(world,current))return false;
+    world.notice=detail;world.noticeUntil=timeOf(world)+3;return true;
+   }});
+ }
  const action=campInteraction(world),pickup=action?.action==='pickup'?pickupTarget(world):null;
  if(action){
-  const station=stationFront(world.camp,action.action==='drink'?'well':action.action==='deposit'?'storage':'hearth',world.layout);
+  const station=stationFront(world.camp,action.action==='drink'?'well':action.action==='deposit'?'storage':'hearth',world.layout,world.player);
   const name=pickup?(pickup.appearance==='logs'||pickup.kind==='pallets'?'Fallen logs':ITEM_RULES[pickup.kind].name):action.action==='drink'?'Camp well':action.action==='deposit'?'Supply chest':'Campfire';
   const detail=pickup?(action.disabled?'Backpack full':`×${pickup.amount}`):action.action==='drink'?(world.thirst>99?'Fully hydrated':action.disabled?'Drink again shortly':'Restore water'):action.action==='deposit'?'Equipment & supplies':world.camp.hearth.fuel<=0?'Add wood':world.fire.rack?.length?`${world.fire.rack.length} meals ready`:`Fuel ${Math.floor(world.camp.hearth.fuel/60)}:${String(Math.floor(world.camp.hearth.fuel)%60).padStart(2,'0')}`;
   add({...action,image:pickup?pickupImage(pickup.kind):undefined,key:pickup?`pickup:${pickup.id}`:`camp:${action.action}`,shortLabel:action.action==='pickup'?(action.disabled?'PACK FULL':'COLLECT'):action.action==='drink'?'DRINK':action.action==='deposit'?'STORAGE':'FIRE',icon:action.action==='pickup'?'collect':action.action==='drink'?'water':action.action==='deposit'?'chest':'cook',target:{id:pickup?`pickup:${pickup.id}`:`camp:${action.action}`,buildingId:action.action==='drink'?'well':action.action==='cook'?'fire':undefined,x:pickup?.x??station.x,y:pickup?.y??station.y,label:name,detail,blocked:action.disabled,...(pickup?{pickupId:pickup.id}:{})},perform:()=>{if(pickup?pickupTarget(world)?.id!==pickup.id:campAction(world)!==action.action)return false;return performCampInteraction(world)}});

@@ -43,7 +43,7 @@ const solid = (points:CollisionPoint[]) => ({closed:true,points});
 // Ground-contact outlines traced on the registered v4 interiors. The front
 // foundations include the side plinths down to the lowest tread. The open
 // space between them is the stairway, continuous with the interior floor.
-export const HQ_SOUTH_COLLISION:AssetCollision = {lineWidth:.009,paths:[
+const previousInterior:AssetCollision = {lineWidth:.009,paths:[
  // Rear wall, bookcases and the side wall foundations.
  solid([[.296,.25],[.73,.25],[.745,.306],[.618,.309],[.611,.296],[.43,.296],[.42,.307],[.3,.307]]),
  solid([[.3,.25],[.315,.29],[.207,.391],[.148,.534],[.15,.714],[.104,.739],[.105,.599],[.079,.515],[.143,.347]]),
@@ -63,12 +63,17 @@ export const HQ_SOUTH_COLLISION:AssetCollision = {lineWidth:.009,paths:[
  solid([[.852,.463],[.883,.444],[.895,.485],[.878,.552],[.852,.554]]),
 ]};
 
+export const HQ_SOUTH_COLLISION:AssetCollision={...previousInterior,paths:[...previousInterior.paths,
+ // The bench and chimney back directly onto the west wall and bookcase.
+ solid([[.14,.432],[.177,.334],[.255,.275],[.306,.272],[.311,.315],[.246,.378],[.21,.437],[.161,.521],[.136,.523]]),
+]};
+
 export const HQ_SOUTH_RUIN_DEBRIS:AssetCollision = {lineWidth:.009,paths:[
  solid([[.622,.451],[.644,.415],[.683,.377],[.749,.318],[.789,.289],[.764,.336],[.71,.399],[.654,.452]]),
 ]};
 
 export function isOriginalHeadquartersOutline(c:AssetCollision){
- return [HQ_SOUTH_OLD_COLLISION,HQ_SOUTH_TABLE_COLLISION].some(old=>
+ return [HQ_SOUTH_OLD_COLLISION,HQ_SOUTH_TABLE_COLLISION,previousInterior].some(old=>
   c.lineWidth===old.lineWidth && c.paths.length===old.paths.length && c.paths.every((path,i)=>{
    const saved=old.paths[i];
    return path.closed===saved.closed && path.points.length===saved.points.length &&

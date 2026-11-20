@@ -28,11 +28,15 @@ const warehouseLogs=[
 ];
 export function warehouseLogCollision(level:number):AssetCollision|undefined{return warehouseLogs[level]}
 
-export const FURNACE_COLLISION:AssetCollision={lineWidth:.008,paths:[
+export const PREVIOUS_FURNACE_COLLISION:AssetCollision={lineWidth:.008,paths:[
  {closed:true,points:[[.12,.60],[.29,.51],[.65,.43],[.85,.55],[.85,.64],[.68,.70],[.57,.75],[.38,.77],[.14,.73],[.12,.70]]},
  {closed:true,points:[[.227,.738],[.328,.707],[.382,.748],[.383,.787],[.457,.76],[.561,.798],[.560,.872],[.474,.929],[.438,.929],[.310,.865],[.310,.835],[.227,.818]]},
  {closed:true,points:[[.65,.777],[.695,.757],[.773,.763],[.795,.791],[.804,.832],[.765,.853],[.689,.858],[.65,.84]]},
  {closed:true,points:[[.854,.665],[.890,.660],[.890,.700],[.857,.702]]},
+]};
+export const FURNACE_COLLISION:AssetCollision={...PREVIOUS_FURNACE_COLLISION,paths:[...PREVIOUS_FURNACE_COLLISION.paths,
+ // Workbench, canopy post and the upper half of the anvil stump.
+ {closed:true,points:[[.60,.61],[.86,.58],[.89,.69],[.77,.72],[.78,.77],[.81,.83],[.66,.86],[.64,.80],[.65,.73],[.60,.73]]},
 ]};
 export const FURNACE_FIREBOX={light:[.482,.609] as const};
 // The front of the new workbench stays clear of the bellows and crucible.

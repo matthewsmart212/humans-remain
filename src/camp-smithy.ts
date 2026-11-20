@@ -1,4 +1,4 @@
-import {placementUseFace} from './placement-contact';
+import {placementUseFace,stationEdge} from './placement-contact';
 import {WORKSHOP_IDLE_FRAMES} from './workshop-animation-art';
 import {buildingRestored} from './camp-restoration';
 import {recipeUnlocked} from './run-progression';
@@ -15,7 +15,7 @@ export const SMITHY_IMAGE=WORKSHOP_IDLE_FRAMES[0];
 const cache=new WeakMap<WorldLayout,Placement[]>();
 export function smithies(layout?:WorldLayout){if(!layout)return[];let list=cache.get(layout);if(!list){list=layout.items.filter(p=>p.assetId===SMITHY_ID);cache.set(layout,list)}return list}
 /** The clear ground just in front of the open-front workbench, including editor transforms. */
-export function smithyDock(p:Placement,from?:Vec){return placementUseFace(p,[.58,.91],[.78,.855],from)}
+export function smithyDock(p:Placement,from?:Vec){const front=placementUseFace(p,[.58,.91],[.78,.855],from);return from?stationEdge(p,from,front):front}
 export function nearbySmithy(w:World){
  if(w.scene)return null;let nearest:{placement:Placement;x:number;y:number}|null=null,best=Infinity;
  for(const p of smithies(w.layout)){const dock=smithyDock(p,w.player),d=Math.hypot(w.player.x-dock.x,w.player.y-dock.y);if(d<best&&withinActionReach(w,dock)){best=d;nearest={placement:p,...dock}}}return nearest;

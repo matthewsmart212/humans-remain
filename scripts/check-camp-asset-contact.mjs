@@ -9,7 +9,7 @@ const require=createRequire(import.meta.url);
 const temp=fs.mkdtempSync(path.join(os.tmpdir(),'camp-asset-contact-'));
 try{
  const modules=['authored-world','imported-art','world-assets','world-layout','survival-engine',
-  'studio-play','scene-travel','run-save','camp-repair-site','camp-restoration','placed-world-renderer','skia-adapter','warehouse'];
+  'studio-play','play-interaction','scene-travel','run-save','camp-repair-site','camp-restoration','placed-world-renderer','skia-adapter','warehouse'];
  const outfile=path.join(temp,'camp.cjs');
  await build({stdin:{contents:modules.map(name=>`export * from './src/${name}';`).join('\n')+
   "export {JsiSkApi} from '@shopify/react-native-skia/lib/module/skia/web/JsiSkia';",resolveDir:process.cwd()},
@@ -33,9 +33,10 @@ try{
  }
 
  const checks=[
-  {site:'headquarters',solid:[[.17,.51],[.35,.92],[.645,.92],[.205,.81],[.755,.81],[.5,.57],[.51,.44],[.82,.48]],walk:[.5,.70]},
+  {site:'headquarters',solid:[[.165,.40],[.25,.32],[.17,.51],[.35,.92],[.645,.92],[.205,.81],[.755,.81],[.5,.57],[.51,.44],[.82,.48]],walk:[.5,.70]},
+  {site:'furnace',solid:[[.72,.74],[.81,.68]],walk:[.57,.985]},
   {site:'warehouse',solid:[[.11,.78],[.66,.89]],walk:[.38,.755]},
-  {site:'treatment',solid:[[.615,.813],[.175,.735],[.19,.66]],walk:[.40,.78]},
+  {site:'treatment',solid:[[.51,.69],[.615,.813],[.175,.735],[.19,.66]],walk:[.40,.78]},
  ];
  for(const {site,solid,walk} of checks){
   const p=sites.get(site);
@@ -49,6 +50,29 @@ try{
   m.moveBody(world,world.player,goal.x-start.x,goal.y-start.y);
   assert(Math.hypot(world.player.x-goal.x,world.player.y-goal.y)<.01,`${site} entrance to floor`);
  }
+
+ // Approach the well from eight directions in the authored camp. Stop just
+ // outside its solid base, then exercise both the HUD action and its handler.
+ const well=sites.get('well'),centre=m.placementArtPoint(well,.43,.75);
+ const oldProgress=world.progression;
+ world.progression=undefined;
+ for(let i=0;i<8;i++){
+  const angle=i*Math.PI/4;
+  let step=0;
+  do{
+   world.player.x=centre.x+Math.cos(angle)*step;
+   world.player.y=centre.y+Math.sin(angle)*step++;
+  }while(step<400&&m.worldBlocked(world,world.player.x,world.player.y));
+  world.thirst=50;world.drinkReady=0;
+  const action=m.playInteraction(world);
+  assert.equal(action?.shortLabel,'DRINK','Well approach '+i);
+  assert(action.perform());
+ }
+ Object.assign(world.player,m.placementArtPoint(sites.get('treatment'),.40,.80));
+ const inspect=m.playInteraction(world);
+ assert.equal(inspect?.key,'treatment');
+ assert(inspect.perform());
+ world.progression=oldProgress;
 
  // Open a save whose previous collision allowed the player on the barrel and
  // a return landing on the stair plinth. Both should recover to nearby ground.

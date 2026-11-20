@@ -1,4 +1,4 @@
-import {placementUseFace} from './placement-contact';
+import {placementUseFace,stationEdge} from './placement-contact';
 import {buildingRestored} from './camp-restoration';
 import {hasMetalworking} from './run-progression';
 import {FURNACE_ID,FURNACE_RULES,FURNACE_LOG_SECONDS,SMELT_RECIPES,type SmeltRecipe} from './ironworks-data';
@@ -14,7 +14,7 @@ export type FurnaceState={level:1|2;fuel:number;queue:SmeltingJob[];ready:number
 export type IronworksState={stations:Record<string,FurnaceState>};
 const cache=new WeakMap<WorldLayout,Placement[]>();
 export function furnaces(layout?:WorldLayout){if(!layout)return[];let list=cache.get(layout);if(!list){list=layout.items.filter(p=>p.assetId===FURNACE_ID);cache.set(layout,list)}return list}
-export function furnaceDock(p:Placement,from?:Vec){return placementUseFace(p,[.51,.945],[.73,.898],from)}
+export function furnaceDock(p:Placement,from?:Vec){const front=placementUseFace(p,[.51,.945],[.73,.898],from);return from?stationEdge(p,from,front):front}
 export function nearbyFurnace(w:World){
  if(w.scene)return null;let nearest:{placement:Placement;x:number;y:number}|null=null,best=Infinity;
  for(const p of furnaces(w.layout)){const dock=furnaceDock(p,w.player),d=Math.hypot(w.player.x-dock.x,w.player.y-dock.y);if(d<best&&withinActionReach(w,dock)){best=d;nearest={placement:p,...dock}}}return nearest;

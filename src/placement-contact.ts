@@ -15,6 +15,16 @@ export function placementUseFace(p:Placement,start:readonly [number,number],end:
  return from?closestOnSegment(a,b,from):{x:(a.x+b.x)/2,y:(a.y+b.y)/2};
 }
 
+/** Aim just outside the nearest solid edge so the line-of-sight probe
+ * can reach it without grazing the station itself. */
+export function stationEdge(p:Placement,from:Vec,front?:Vec){
+ const contact=placementContact(p,from);
+ const dx=from.x-contact.x,dy=from.y-contact.y;
+ if(front&&Math.hypot(from.x-front.x,from.y-front.y)<Math.hypot(dx,dy))return front;
+ const fraction=Math.min(1,4/(Math.hypot(dx,dy)||1));
+ return {x:contact.x+dx*fraction,y:contact.y+dy*fraction};
+}
+
 function facingPoint(center:Vec,radius:number,origin:Vec):Vec{
  const dx=origin.x-center.x,dy=origin.y-center.y,length=Math.hypot(dx,dy)||1;
  return {x:center.x+dx*radius/length,y:center.y+dy*radius/length};
