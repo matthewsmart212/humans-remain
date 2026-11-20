@@ -1,16 +1,14 @@
 import {campRepairSite} from './camp-repair-site';
-import {buildingRestored,buildingNeedsRepair,buildingHp,buildingMaxHp,campBuildingArt} from './camp-restoration';
+import {buildingRestored,buildingHp,buildingMaxHp,campBuildingArt} from './camp-restoration';
 import type {World} from './survival-engine';
 import {ASSET_BY_ID} from './world-assets';
 import {GARDEN_ART,GARDEN_IDS} from './camp-garden-art';
 import {FURNACE_ID,IRONWORKS_IMAGES} from './ironworks-data';
 import {FORGE_RECIPES,craftCategory,FURNACE_UPGRADE_COST,type MaterialCost} from './forge-recipes';
 import {GEAR,gear,type GearKind} from './player-gear';
-import {recipeUnlocked,headquartersBench,headquartersDock,RESTORE_FURNACE_COST,FORTIFY_COST} from './run-progression';
+import {recipeUnlocked,RESTORE_FURNACE_COST,FORTIFY_COST} from './run-progression';
 import {blueprintFound,blueprintLearned,type HQBlueprintId} from './headquarters-plans';
-import {furnaceDock} from './camp-furnace';
-import {smithyDock} from './camp-smithy';
-import {warehouseDock,WAREHOUSE_ID,WAREHOUSE_ART} from './warehouse';
+import {WAREHOUSE_ID,WAREHOUSE_ART} from './warehouse';
 import {campAccessLevel} from './camp-levels';
 
 export const HQ_MAP='/survival/headquarters-menu-v1/camp-plan.webp';
@@ -64,9 +62,8 @@ export function buildingStatus(w:World,b:HQBuilding){
  return b.id==='bunker'?'Accessible':'Working';
 }
 export function markBuilding(w:World,id:HQBuildingId){
- const b=buildingFor(id),p=buildingPlacement(w,b);if(!p||w.scene)return false;
- const point=id!=='headquarters'&&buildingNeedsRepair(w,id)?campRepairSite(w,id)??{x:p.x,y:p.y}:id==='headquarters'?(()=>{const bench=headquartersBench(w);return bench?headquartersDock(bench):{x:p.x,y:p.y}})():id==='furnace'?furnaceDock(p):id==='workshop'?smithyDock(p):id==='warehouse'?warehouseDock(p):{x:p.x,y:p.y};
- w.waypoint={x:point.x,y:point.y,sceneId:'camp'};return true;
+ const site=campRepairSite(w,id);if(!site)return false;
+ w.waypoint={x:site.x,y:site.y,sceneId:'camp'};return true;
 }
 export type HQPlan={id:string;title:string;name:string;category:HQCategory;building:HQBuildingId;tier:number;art:HQArt;description:string;benefit:string;hint:string;preview?:boolean;learn?:HQBlueprintId;gearId?:GearKind;cost?:MaterialCost};
 export function headquartersPlans(w:World):HQPlan[]{
