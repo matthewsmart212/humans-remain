@@ -33,7 +33,7 @@ const views={
  'down-left':{count:20,source:'down-right.png',mirror:true}
 };
 const runFrames=16,runColumns=4;
-const runDir='/survival/hunter-v1/run-v2/';
+const runDir='/survival/hunter-v1/run-v3/';
 const atlasDir='public/survival/hunter-v1/walk-v2/';
 const pngSignature=Buffer.from([137,80,78,71,13,10,26,10]);
 let checked=0;
@@ -91,12 +91,14 @@ for(const [direction,view] of Object.entries(views)){
   const [width,height]=running?[343,480]:[283,436];
   const url=running?runDir+view.source.replace('.png','.webp'):'/survival/hunter-v1/walk-v2/'+view.source;
   for(let index=0;index<count;index++){
+   // A mirrored view begins on the opposite painted limb to keep anatomical foot phase.
+   const paintedIndex=running&&mirror?(index+runFrames/2)%runFrames:index;
    const distance=(index+.25)*112/count;
    const cycle=hunterCycle(direction,distance,running);
    assert.equal(cycle.mirror,mirror,direction+' direction mirror');
-   assert.equal(cycle.frame,Math.floor((index+.25)*4/count),direction+' equipment grip phase');
+   assert.equal(cycle.frame,Math.floor((paintedIndex+.25)*4/count),direction+' equipment grip phase');
    assert.deepEqual(cycle.sprite.crop,[
-    (index%columns)*width,Math.floor(index/columns)*height,width,height
+    (paintedIndex%columns)*width,Math.floor(paintedIndex/columns)*height,width,height
    ],direction+' crop '+index);
    assert.deepEqual(cycle.sprite.anchor,[width/2,height-4],direction+' foot pivot');
    assert.equal(cycle.sprite.scale,112/410);
@@ -116,6 +118,36 @@ for(const [direction,view] of Object.entries(views)){
  }
 }
 
+// Measure the bottom of the visible boot from the decoded artwork. Sampling the leather just
+// above its sole distinguishes the lit, foreground boot from the shaded, far boot in profile.
+function bootContact(pixels,mask,width,axial){
+ const soleY=Math.floor(mask.lastIndexOf(1)/width);
+ assert(soleY>=34,'The run frame has a visible boot');
+ let xSum=0,area=0;
+ for(let i=(soleY-7)*width;i<(soleY+1)*width;i++){
+  if(mask[i]){xSum+=i%width;area++}
+ }
+ const soleX=Math.round(xSum/area);
+ // Ignore the centre seam where the two axial boot outlines can overlap.
+ if(axial){
+  const floorIn=(left,right)=>{
+   for(let y=soleY;y>=0;y--){
+    if(mask.subarray(y*width+left,y*width+right).includes(1))return y;
+   }
+   return -1;
+  };
+  return {x:soleX,depthDifference:floorIn(0,151)-floorIn(192,width)};
+ }
+ let light=0,samples=0;
+ for(let y=soleY-33;y<soleY-7;y++){
+  for(let x=Math.max(0,soleX-24);x<=Math.min(width-1,soleX+24);x++){
+   const i=y*width+x;
+   if(mask[i]){light+=pixels[i*4]+pixels[i*4+1]+pixels[i*4+2];samples++}
+  }
+ }
+ return {x:soleX,light:light/(samples*3)};
+}
+
 // Verify that each registered sheet contains the expected grid and real image bytes.
 const unique={};
 for(const view of Object.values(views))unique[view.source]=view.count;
@@ -132,7 +164,10 @@ for(const [filename,count] of Object.entries(unique)){
  // Inspect the silhouettes so an empty, repeated or held drawing cannot stand in for a new pose.
  const info={...run.getImageInfo(),width:343,height:480,colorType:skia.ColorType.RGBA_8888,colorSpace:skia.ColorSpace.SRGB};
  const poses=new Set();
- const sprites=HUNTER_ART[filename.slice(0,-4)].run;
+ const contacts=[];
+ const facing=filename.slice(0,-4);
+ const axial=facing==='up'||facing==='down';
+ const sprites=HUNTER_ART[facing].run;
  for(let index=0;index<runFrames;index++){
   const pixels=run.readPixels(index%runColumns*343,Math.floor(index/runColumns)*480,info);
   assert.ok(pixels,filename+' decoded sprint frame '+index);
@@ -141,9 +176,26 @@ for(const [filename,count] of Object.entries(unique)){
   const {hand,anchor,scale}=sprites[index];
   const palmX=Math.round(anchor[0]+hand[0]/scale),palmY=Math.round(anchor[1]+hand[1]/scale);
   assert.equal(silhouette[palmY*343+palmX],1,filename+' grip lands on the painted sprite in frame '+index);
+  contacts.push(bootContact(pixels,silhouette,info.width,axial));
   poses.add(createHash('sha256').update(silhouette).digest('hex'));
  }
  assert.equal(poses.size,runFrames,filename+' has 16 distinct sprint silhouettes');
+ if(axial){
+  const [first,second]=[contacts[0],contacts[8]];
+  assert((first.x-171.5)*(second.x-171.5)<0&&Math.abs(first.x-second.x)>35,
+   facing+' contacts the ground on opposite sides of the body a half-cycle apart');
+  const leadSign=facing==='down'?1:-1;
+  for(let i=0;i<=4;i++){
+   assert(contacts[i].depthDifference*leadSign>20&&contacts[i+8].depthDifference*leadSign< -20,
+    facing+' keeps one boot lifted as the other takes weight through pose '+i);
+  }
+ }else{
+  for(const start of [0,8]){
+   assert(contacts[start].x-contacts[start+4].x>35,facing+' planted boot pushes backward on step '+start);
+  }
+  const shadeDifference=contacts.slice(0,5).reduce((sum,c,i)=>sum+c.light-contacts[i+8].light,0)/5;
+  assert(shadeDifference>3,facing+' alternates the lit near boot and the shaded far boot');
+ }
  run.delete();
 }
 

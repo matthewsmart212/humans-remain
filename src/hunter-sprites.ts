@@ -14,7 +14,7 @@ const VIEWS:Record<Direction,keyof typeof SHEETS>={
 export const HUNTER_IMAGE_SOURCES:Record<string,string>={...HUNTER_WALK_V2_SOURCES};
 for(const [direction,sheet] of Object.entries(SHEETS)){
  HUNTER_IMAGE_SOURCES[sheet]=`/survival/hunter-v1/${direction}.webp`;
- HUNTER_IMAGE_SOURCES[sheet+'Run']=`/survival/hunter-v1/run-v2/${direction}.webp`;
+ HUNTER_IMAGE_SOURCES[sheet+'Run']=`/survival/hunter-v1/run-v3/${direction}.webp`;
 }
 
 const WIDTH=206,HEIGHT=236,SCALE=112/222;
@@ -67,9 +67,11 @@ export function hunterCycle(direction:Direction,distance:number,running:boolean,
  const art=HUNTER_ART[direction];
  if(running&&(!images||images[art.run[0].sheet])){
   const phase=((distance%112)+112)%112/112;
-  const index=Math.floor(phase*RUN_FRAMES);
-  // The run cells already include the rise and fall of the airborne poses.
-  return {sprite:art.run[index],mirror:VIEWS[direction]!==direction,frame:Math.floor(phase*4),bob:0};
+  const mirror=VIEWS[direction]!==direction;
+  // Mirroring also swaps the painted legs. Advance half a stride so a turn
+  // through north or south keeps the same anatomical foot in contact.
+  const index=(Math.floor(phase*RUN_FRAMES)+(mirror?RUN_FRAMES/2:0))%RUN_FRAMES;
+  return {sprite:art.run[index],mirror,frame:Math.floor(index*4/RUN_FRAMES),bob:0};
  }
  if(images&&!images[art.idle.sheet])return hunterLegacyCycle(direction,distance,running);
  return hunterWalkV2Cycle(direction,distance,running);
