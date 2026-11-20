@@ -1,4 +1,5 @@
 import {COOP_PROTOCOL_VERSION,COOP_ROOM_CODE,validCoopPose,type CoopPeer,type CoopPose,type CoopServerPacket} from '../src/coop-protocol';
+import {interpolateWalkDistance} from '../src/player-presentation';
 import type {World} from '../src/survival-engine';
 import type {SurvivorRoleId} from '../src/survivor-roles';
 
@@ -108,7 +109,8 @@ export class CoopClient {
    if(!s){result.push(peer);continue}
    // Smooth each incoming 10 Hz sample over the next 100 ms without advancing early.
    const alpha=Math.max(0,Math.min(1,(now-s.receivedAt)/100));
-   result.push({...peer,x:s.from.x+(s.to.x-s.from.x)*alpha,y:s.from.y+(s.to.y-s.from.y)*alpha,walkDistance:s.from.walkDistance+(s.to.walkDistance-s.from.walkDistance)*alpha});
+   result.push({...peer,x:s.from.x+(s.to.x-s.from.x)*alpha,y:s.from.y+(s.to.y-s.from.y)*alpha,
+    walkDistance:interpolateWalkDistance(s.from.walkDistance,s.to.walkDistance,alpha)});
   }
   return result;
  }

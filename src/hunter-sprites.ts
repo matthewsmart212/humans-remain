@@ -14,7 +14,7 @@ const VIEWS:Record<Direction,keyof typeof SHEETS>={
 export const HUNTER_IMAGE_SOURCES:Record<string,string>={...HUNTER_WALK_V2_SOURCES};
 for(const [direction,sheet] of Object.entries(SHEETS)){
  HUNTER_IMAGE_SOURCES[sheet]=`/survival/hunter-v1/${direction}.webp`;
- HUNTER_IMAGE_SOURCES[sheet+'Run']=`/survival/hunter-v1/run-v1/${direction}.webp`;
+ HUNTER_IMAGE_SOURCES[sheet+'Run']=`/survival/hunter-v1/run-v2/${direction}.webp`;
 }
 
 const WIDTH=206,HEIGHT=236,SCALE=112/222;
@@ -41,7 +41,7 @@ const IDLE_FRAME:Record<Direction,number>={
  down:0,'down-right':8,right:7,'up-right':7,up:7,
  'up-left':7,left:7,'down-left':8
 };
-const RUN_WIDTH=343,RUN_HEIGHT=480,RUN_FRAMES=8;
+const RUN_WIDTH=343,RUN_HEIGHT=480,RUN_COLS=4,RUN_FRAMES=16;
 const RUN_ANCHOR:readonly [number,number]=[RUN_WIDTH/2,RUN_HEIGHT-4];
 type HunterPoses=Poses&{run:readonly RunnerSprite[]};
 export const HUNTER_ART:Record<Direction,HunterPoses>=Object.fromEntries(
@@ -52,7 +52,7 @@ export const HUNTER_ART:Record<Direction,HunterPoses>=Object.fromEntries(
    walk:HUNTER_WALK_V2[direction],
    run:Array.from({length:RUN_FRAMES},(_,index):RunnerSprite=>({
     sheet:SHEETS[VIEWS[direction]]+'Run',
-    crop:[index%5*RUN_WIDTH,Math.floor(index/5)*RUN_HEIGHT,RUN_WIDTH,RUN_HEIGHT],
+    crop:[index%RUN_COLS*RUN_WIDTH,Math.floor(index/RUN_COLS)*RUN_HEIGHT,RUN_WIDTH,RUN_HEIGHT],
     anchor:RUN_ANCHOR,scale:112/410,
     hand:HUNTER_RUN_GRIPS[VIEWS[direction]][index]
    }))
@@ -69,7 +69,7 @@ export function hunterCycle(direction:Direction,distance:number,running:boolean,
   const phase=((distance%112)+112)%112/112;
   const index=Math.floor(phase*RUN_FRAMES);
   // The run cells already include the rise and fall of the airborne poses.
-  return {sprite:art.run[index],mirror:VIEWS[direction]!==direction,frame:Math.floor(index/2),bob:0};
+  return {sprite:art.run[index],mirror:VIEWS[direction]!==direction,frame:Math.floor(phase*4),bob:0};
  }
  if(images&&!images[art.idle.sheet])return hunterLegacyCycle(direction,distance,running);
  return hunterWalkV2Cycle(direction,distance,running);

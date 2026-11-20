@@ -1,4 +1,5 @@
 import assert from 'node:assert/strict';
+import {mock} from 'node:test';
 import {build} from 'esbuild';
 
 const code=await build({entryPoints:['server/coop.ts'],bundle:true,platform:'neutral',format:'esm',target:'es2022',write:false});
@@ -75,4 +76,22 @@ assert.equal((await (await call('/rooms/'+roomCode)).json()).players,3);
 rooms.get(roomCode).values.set('createdAt',Date.now()-25*60*60*1000);
 assert.equal((await call('/rooms/'+roomCode)).status,404,'expired rooms cannot be joined');
 assert.equal((await call('/rooms/INVALID')).status,404);
-console.log('Co-op room contract: create/join, 4 player cap, validated relays, host start, expiry and hibernation passed.');
+
+// Feed pose packets through the native client and sample its 100 ms render window.
+const native=await build({entryPoints:['native/coop-client.ts'],bundle:true,platform:'node',format:'esm',write:false});
+const {CoopClient}=await import('data:text/javascript;base64,'+Buffer.from(native.outputFiles[0].text).toString('base64'));
+const socket=new FakeSocket();
+const transport=mock.method(globalThis,'WebSocket',function(){return socket});
+const clock=mock.method(Date,'now',()=>1000);
+const client=new CoopClient(roomCode,'Engineer','engineer','https://coop.test');
+try{
+ client.connect();
+ for(const walkDistance of [108,4]){
+  socket.onmessage({data:JSON.stringify({type:'pose',peer:{...relay.peer,sprinting:true,walkDistance}})});
+ }
+ const phases=[0,25,50,75,100,150].map(ms=>client.remotePoses(1000+ms)[0].walkDistance);
+ assert.deepEqual(phases,[108,110,0,2,4,4],'Remote Hunter crosses the stride boundary going forward, then holds the last pose');
+}finally{
+ client.dispose();clock.mock.restore();transport.mock.restore();
+}
+console.log('Co-op room contract and native interpolation across a stride boundary passed.');

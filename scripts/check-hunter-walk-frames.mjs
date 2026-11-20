@@ -1,5 +1,6 @@
 import assert from 'node:assert/strict';
 import {readFileSync} from 'node:fs';
+import {createHash} from 'node:crypto';
 import {build} from 'esbuild';
 import CanvasKitInit from 'canvaskit-wasm';
 
@@ -31,6 +32,8 @@ const views={
  left:{count:18,source:'right.png',mirror:true},
  'down-left':{count:20,source:'down-right.png',mirror:true}
 };
+const runFrames=16,runColumns=4;
+const runDir='/survival/hunter-v1/run-v2/';
 const atlasDir='public/survival/hunter-v1/walk-v2/';
 const pngSignature=Buffer.from([137,80,78,71,13,10,26,10]);
 let checked=0;
@@ -43,10 +46,13 @@ function measureStride(role,running){
  w.survivorRole=role;
  const p=w.player,startX=p.x;
  p.runBlend=running?1:0;
- const poses=new Set();
+ const poses=[];
  for(let step=1;step<=120;step++){
   const previous=p.walkDistance;
-  if(role==='hunter'&&running)poses.add(hunterCycle('right',previous,true).sprite);
+  if(role==='hunter'&&running){
+   const sprite=hunterCycle('right',previous,true).sprite;
+   if(sprite!==poses.at(-1))poses.push(sprite);
+  }
   movePlayer(w,{x:1,y:0},running);
   assert(p.moving,'Open ground permits movement');
   if(p.walkDistance>=previous)continue;
@@ -55,15 +61,15 @@ function measureStride(role,running){
   const stoppedPhase=p.walkDistance;
   movePlayer(w,{x:0,y:0},false);
   assert.equal(p.walkDistance,stoppedPhase,'Stopping holds the gait phase');
-  return {distance,seconds,poses:[...poses],speed:distance/seconds};
+  return {distance,seconds,poses,speed:distance/seconds};
  }
  assert.fail(role+' gait never wrapped');
 }
 const survivorRun=measureStride('survivor',true);
 const hunterRun=measureStride('hunter',true);
-assert.deepEqual(hunterRun.poses,HUNTER_ART.right.run,'All eight run poses appear in order before wrapping');
+assert.deepEqual(hunterRun.poses,HUNTER_ART.right.run,'All 16 run poses appear in order before wrapping');
 assert(Math.abs(hunterRun.speed-survivorRun.speed)<1e-8,'Hunter and Survivor cover the same ground per second');
-assert(hunterRun.seconds>=.64&&hunterRun.seconds<.64+STEP,'Hunter matches the 640 ms source loop within one simulation step');
+assert(hunterRun.seconds>=.88&&hunterRun.seconds<.88+STEP,'Hunter completes the 880 ms sprint loop within one simulation step');
 for(const role of ['survivor','medic','engineer']){
  const gait=role==='survivor'?survivorRun:measureStride(role,true);
  assert(gait.distance>=200&&gait.distance<200+gait.speed*STEP,role+' completes a sprint stride in 200 world units');
@@ -74,21 +80,23 @@ assert(hunterWalk.distance>=160&&hunterWalk.distance<160+hunterWalk.speed*STEP,'
 for(const [direction,view] of Object.entries(views)){
  const mirror=!!view.mirror;
  assert.equal(hunterFacing(direction).mirror,mirror,direction+' mirror');
- assert.equal(HUNTER_ART[direction].walk.length,view.count,direction+' frame count');
+ assert.equal(HUNTER_ART[direction].walk.length,view.count,direction+' walk frame count');
+ assert.equal(HUNTER_ART[direction].run.length,runFrames,direction+' run frame count');
  assert.equal(HUNTER_LEGACY_ART[direction].walk.length,36,direction+' original fallback');
  assert.equal(HUNTER_ART[direction].punch.sheet.startsWith('hunterWalkV2'),false,direction+' legacy punch');
 
  for(const running of [false,true]){
-  const count=running?8:view.count;
+  const count=running?runFrames:view.count;
+  const columns=running?runColumns:5;
   const [width,height]=running?[343,480]:[283,436];
-  const url=running?'/survival/hunter-v1/run-v1/'+view.source.replace('.png','.webp'):'/survival/hunter-v1/walk-v2/'+view.source;
+  const url=running?runDir+view.source.replace('.png','.webp'):'/survival/hunter-v1/walk-v2/'+view.source;
   for(let index=0;index<count;index++){
    const distance=(index+.25)*112/count;
    const cycle=hunterCycle(direction,distance,running);
    assert.equal(cycle.mirror,mirror,direction+' direction mirror');
    assert.equal(cycle.frame,Math.floor((index+.25)*4/count),direction+' equipment grip phase');
    assert.deepEqual(cycle.sprite.crop,[
-    (index%5)*width,Math.floor(index/5)*height,width,height
+    (index%columns)*width,Math.floor(index/columns)*height,width,height
    ],direction+' crop '+index);
    assert.deepEqual(cycle.sprite.anchor,[width/2,height-4],direction+' foot pivot');
    assert.equal(cycle.sprite.scale,112/410);
@@ -116,11 +124,26 @@ for(const [filename,count] of Object.entries(unique)){
  assert.ok(bytes.subarray(0,8).equals(pngSignature),filename+' must be a PNG');
  assert.equal(bytes.readUInt32BE(16),5*283,filename+' width');
  assert.equal(bytes.readUInt32BE(20),Math.ceil(count/5)*436,filename+' height');
- const runPath='public/survival/hunter-v1/run-v1/'+filename.replace('.png','.webp');
+ const runPath='public'+runDir+filename.replace('.png','.webp');
  const run=skia.MakeImageFromEncoded(readFileSync(runPath));
  assert.ok(run,runPath+' must decode in the engine');
- assert.equal(run.width(),5*343);
- assert.equal(run.height(),2*480);
+ assert.equal(run.width(),runColumns*343);
+ assert.equal(run.height(),Math.ceil(runFrames/runColumns)*480);
+ // Inspect the silhouettes so an empty, repeated or held drawing cannot stand in for a new pose.
+ const info={...run.getImageInfo(),width:343,height:480,colorType:skia.ColorType.RGBA_8888,colorSpace:skia.ColorSpace.SRGB};
+ const poses=new Set();
+ const sprites=HUNTER_ART[filename.slice(0,-4)].run;
+ for(let index=0;index<runFrames;index++){
+  const pixels=run.readPixels(index%runColumns*343,Math.floor(index/runColumns)*480,info);
+  assert.ok(pixels,filename+' decoded sprint frame '+index);
+  const silhouette=Buffer.alloc(343*480);
+  for(let i=0;i<silhouette.length;i++)silhouette[i]=pixels[i*4+3]>=128?1:0;
+  const {hand,anchor,scale}=sprites[index];
+  const palmX=Math.round(anchor[0]+hand[0]/scale),palmY=Math.round(anchor[1]+hand[1]/scale);
+  assert.equal(silhouette[palmY*343+palmX],1,filename+' grip lands on the painted sprite in frame '+index);
+  poses.add(createHash('sha256').update(silhouette).digest('hex'));
+ }
+ assert.equal(poses.size,runFrames,filename+' has 16 distinct sprint silhouettes');
  run.delete();
 }
 
@@ -160,8 +183,8 @@ checkDraw(images,HUNTER_ART.left.idle,'At rest the Hunter uses the planted idle 
 Object.assign(world.player,{moving:true,sprinting:true,runBlend:1});
 const equippedImages={...images,campAxe:'campAxe'};
 for(const direction of Object.keys(views)){
- for(let index=0;index<8;index++){
-  const distance=(index+.25)*112/8;
+ for(let index=0;index<runFrames;index++){
+  const distance=(index+.25)*112/runFrames;
   Object.assign(world.player,{direction,walkDistance:distance,equipped:'axe'});
   const {hand}=hunterCycle(direction,distance,true).sprite;
   assert.ok(hand?.length===2&&hand.every(Number.isFinite),direction+' measured sprint palm '+index);
@@ -186,4 +209,4 @@ for(const frame of [-2,4,5,11,NaN,Infinity]){
  const a=axeAttachment({tick:80,player:{runBlend:0}},'right','walk',{frame,mirror:false});
  assert.ok(a.hand.every(Number.isFinite),'out-of-range grip '+String(frame));
 }
-console.log('Hunter: 88 authored walking frames, 40 authored sprint frames, 8 directions, '+checked+' gait and grip states, live transitions and loading fallbacks passed.');
+console.log('Hunter: 88 authored walking frames, 80 sprint frames, 8 directions, '+checked+' gait and grip states, live transitions and loading fallbacks passed.');

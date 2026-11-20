@@ -91,8 +91,8 @@ export function moveBody(w:World,p:Vec,dx:number,dy:number,r=19){
 }
 export const SPRINT_SPEED=1.55;
 const WALK_SPEED=285;
-// Hunter's source GIF holds each of its eight poses for 80 ms at full sprint.
-const HUNTER_SPRINT_STRIDE=WALK_SPEED*SPRINT_SPEED*(8*.080);
+// The Hunter takes 880 ms per stride at full speed. Slower travel stretches the cycle.
+const HUNTER_SPRINT_STRIDE=WALK_SPEED*SPRINT_SPEED*.880;
 
 function advancePlayerGait(w:World,travelled:number){
  const p=w.player;
