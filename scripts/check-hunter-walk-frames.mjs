@@ -32,12 +32,14 @@ const views={
  left:{count:18,source:'right.png',mirror:true},
  'down-left':{count:20,source:'down-right.png',mirror:true}
 };
-const runFrames=16,runColumns=4;
-const runDir='/survival/hunter-v1/run-v3/';
+const runFrames=24,runColumns=6,runWidth=288,runHeight=400;
+const halfStride=runFrames/2;
+const runDir='/survival/hunter-v1/run-v4/';
 const atlasDir='public/survival/hunter-v1/walk-v2/';
 const pngSignature=Buffer.from([137,80,78,71,13,10,26,10]);
 let checked=0;
 const hunterPreload=playerMovementImagesForRole('hunter');
+const sideContactDrift=[];
 const survivorPreload=playerMovementImagesForRole('survivor');
 
 // Measure a stride from actual movement at full speed on open ground.
@@ -47,11 +49,13 @@ function measureStride(role,running){
  const p=w.player,startX=p.x;
  p.runBlend=running?1:0;
  const poses=[];
+ const samples=[];
  for(let step=1;step<=120;step++){
   const previous=p.walkDistance;
   if(role==='hunter'&&running){
    const sprite=hunterCycle('right',previous,true).sprite;
    if(sprite!==poses.at(-1))poses.push(sprite);
+   samples.push({sprite,x:p.x-startX});
   }
   movePlayer(w,{x:1,y:0},running);
   assert(p.moving,'Open ground permits movement');
@@ -61,13 +65,13 @@ function measureStride(role,running){
   const stoppedPhase=p.walkDistance;
   movePlayer(w,{x:0,y:0},false);
   assert.equal(p.walkDistance,stoppedPhase,'Stopping holds the gait phase');
-  return {distance,seconds,poses,speed:distance/seconds};
+  return {distance,seconds,poses,samples,speed:distance/seconds};
  }
  assert.fail(role+' gait never wrapped');
 }
 const survivorRun=measureStride('survivor',true);
 const hunterRun=measureStride('hunter',true);
-assert.deepEqual(hunterRun.poses,HUNTER_ART.right.run,'All 16 run poses appear in order before wrapping');
+assert.deepEqual(hunterRun.poses,HUNTER_ART.right.run,'All 24 run poses appear in order before wrapping');
 assert(Math.abs(hunterRun.speed-survivorRun.speed)<1e-8,'Hunter and Survivor cover the same ground per second');
 assert(hunterRun.seconds>=.88&&hunterRun.seconds<.88+STEP,'Hunter completes the 880 ms sprint loop within one simulation step');
 for(const role of ['survivor','medic','engineer']){
@@ -88,11 +92,11 @@ for(const [direction,view] of Object.entries(views)){
  for(const running of [false,true]){
   const count=running?runFrames:view.count;
   const columns=running?runColumns:5;
-  const [width,height]=running?[343,480]:[283,436];
+  const [width,height]=running?[runWidth,runHeight]:[283,436];
   const url=running?runDir+view.source.replace('.png','.webp'):'/survival/hunter-v1/walk-v2/'+view.source;
   for(let index=0;index<count;index++){
    // A mirrored view begins on the opposite painted limb to keep anatomical foot phase.
-   const paintedIndex=running&&mirror?(index+runFrames/2)%runFrames:index;
+   const paintedIndex=running&&mirror?(index+halfStride)%runFrames:index;
    const distance=(index+.25)*112/count;
    const cycle=hunterCycle(direction,distance,running);
    assert.equal(cycle.mirror,mirror,direction+' direction mirror');
@@ -101,7 +105,7 @@ for(const [direction,view] of Object.entries(views)){
     (paintedIndex%columns)*width,Math.floor(paintedIndex/columns)*height,width,height
    ],direction+' crop '+index);
    assert.deepEqual(cycle.sprite.anchor,[width/2,height-4],direction+' foot pivot');
-   assert.equal(cycle.sprite.scale,112/410);
+   assert.equal(cycle.sprite.scale,running?1/3:112/410);
    assert.equal(HUNTER_IMAGE_SOURCES[cycle.sprite.sheet],url,direction+' image URL');
    assert.equal(hunterPreload[cycle.sprite.sheet],url,direction+' movement preload');
    assert.equal(survivorPreload[cycle.sprite.sheet],undefined,direction+' Hunter art is role specific');
@@ -120,12 +124,15 @@ for(const [direction,view] of Object.entries(views)){
 
 // Measure the bottom of the visible boot from the decoded artwork. Sampling the leather just
 // above its sole distinguishes the lit, foreground boot from the shaded, far boot in profile.
-function bootContact(pixels,mask,width,axial){
- const soleY=Math.floor(mask.lastIndexOf(1)/width);
+function bootContact(pixels,mask,width,axial,minX=0){
+ // Looking north-east, the lifted trailing boot extends lower on screen at
+ // heel strike. Measure the forward boot in that pose.
+ let soleY=Math.floor(mask.lastIndexOf(1)/width);
+ while(soleY>=0&&!mask.subarray(soleY*width+minX,(soleY+1)*width).includes(1))soleY--;
  assert(soleY>=34,'The run frame has a visible boot');
  let xSum=0,area=0;
  for(let i=(soleY-7)*width;i<(soleY+1)*width;i++){
-  if(mask[i]){xSum+=i%width;area++}
+  if(mask[i]&&i%width>=minX){xSum+=i%width;area++}
  }
  const soleX=Math.round(xSum/area);
  // Ignore the centre seam where the two axial boot outlines can overlap.
@@ -136,7 +143,7 @@ function bootContact(pixels,mask,width,axial){
    }
    return -1;
   };
-  return {x:soleX,depthDifference:floorIn(0,151)-floorIn(192,width)};
+  return {leftY:floorIn(0,Math.floor(width*.44)),rightY:floorIn(Math.ceil(width*.56),width)};
  }
  let light=0,samples=0;
  for(let y=soleY-33;y<soleY-7;y++){
@@ -145,7 +152,7 @@ function bootContact(pixels,mask,width,axial){
    if(mask[i]){light+=pixels[i*4]+pixels[i*4+1]+pixels[i*4+2];samples++}
   }
  }
- return {x:soleX,light:light/(samples*3)};
+ return {x:soleX,y:soleY,light:light/(samples*3)};
 }
 
 // Verify that each registered sheet contains the expected grid and real image bytes.
@@ -159,41 +166,76 @@ for(const [filename,count] of Object.entries(unique)){
  const runPath='public'+runDir+filename.replace('.png','.webp');
  const run=skia.MakeImageFromEncoded(readFileSync(runPath));
  assert.ok(run,runPath+' must decode in the engine');
- assert.equal(run.width(),runColumns*343);
- assert.equal(run.height(),Math.ceil(runFrames/runColumns)*480);
+ assert.equal(run.width(),runColumns*runWidth);
+ assert.equal(run.height(),Math.ceil(runFrames/runColumns)*runHeight);
  // Inspect the silhouettes so an empty, repeated or held drawing cannot stand in for a new pose.
- const info={...run.getImageInfo(),width:343,height:480,colorType:skia.ColorType.RGBA_8888,colorSpace:skia.ColorSpace.SRGB};
+ const info={...run.getImageInfo(),width:runWidth,height:runHeight,colorType:skia.ColorType.RGBA_8888,colorSpace:skia.ColorSpace.SRGB};
  const poses=new Set();
  const contacts=[];
  const facing=filename.slice(0,-4);
  const axial=facing==='up'||facing==='down';
  const sprites=HUNTER_ART[facing].run;
  for(let index=0;index<runFrames;index++){
-  const pixels=run.readPixels(index%runColumns*343,Math.floor(index/runColumns)*480,info);
+  const pixels=run.readPixels(index%runColumns*runWidth,Math.floor(index/runColumns)*runHeight,info);
   assert.ok(pixels,filename+' decoded sprint frame '+index);
-  const silhouette=Buffer.alloc(343*480);
+  const silhouette=Buffer.alloc(runWidth*runHeight);
   for(let i=0;i<silhouette.length;i++)silhouette[i]=pixels[i*4+3]>=128?1:0;
   const {hand,anchor,scale}=sprites[index];
   const palmX=Math.round(anchor[0]+hand[0]/scale),palmY=Math.round(anchor[1]+hand[1]/scale);
-  assert.equal(silhouette[palmY*343+palmX],1,filename+' grip lands on the painted sprite in frame '+index);
-  contacts.push(bootContact(pixels,silhouette,info.width,axial));
+  assert.equal(silhouette[palmY*runWidth+palmX],1,filename+' grip lands on the painted sprite in frame '+index);
+  const forwardStrike=facing==='up-right'&&index%halfStride===0;
+  contacts.push(bootContact(pixels,silhouette,info.width,axial,forwardStrike?Math.floor(info.width*.56):0));
   poses.add(createHash('sha256').update(silhouette).digest('hex'));
  }
- assert.equal(poses.size,runFrames,filename+' has 16 distinct sprint silhouettes');
+ assert.equal(poses.size,runFrames,filename+' has 24 distinct sprint silhouettes');
  if(axial){
-  const [first,second]=[contacts[0],contacts[8]];
-  assert((first.x-171.5)*(second.x-171.5)<0&&Math.abs(first.x-second.x)>35,
-   facing+' contacts the ground on opposite sides of the body a half-cycle apart');
-  const leadSign=facing==='down'?1:-1;
-  for(let i=0;i<=4;i++){
-   assert(contacts[i].depthDifference*leadSign>20&&contacts[i+8].depthDifference*leadSign< -20,
-    facing+' keeps one boot lifted as the other takes weight through pose '+i);
+  // Use each boot's screen lane. In the rear view a landing boot starts farther
+  // up-screen than a recovering boot and passes it as the body advances.
+  const forward=facing==='down'?1:-1;
+  for(const start of [0,halfStride]){
+   const lead=(start===0)===(facing==='down')?'leftY':'rightY';
+   const other=lead==='leftY'?'rightY':'leftY';
+   for(let i=start+1;i<=start+3;i++){
+    const scale=sprites[i].scale;
+    const backward=(contacts[i-1][lead]-contacts[i][lead])*forward*scale;
+    assert(backward>3,facing+' planted '+lead+' sole retreats relative to the torso at pose '+i);
+    assert((contacts[i][other]-contacts[i-1][other])*forward>0,
+     facing+' recovery boot swings forward in pose '+i);
+   }
   }
  }else{
-  for(const start of [0,8]){
-   assert(contacts[start].x-contacts[start+4].x>35,facing+' planted boot pushes backward on step '+start);
+  if(facing==='right'){
+   // Average the body's real simulated positions during each held drawing. This removes the
+   // unavoidable one-pose quantization while preserving a foot that slides between drawings.
+   for(const start of [0,halfStride]){
+    const groundX=contacts.slice(start,start+4).map((boot,i)=>{
+     const sprite=sprites[start+i];
+     const samples=hunterRun.samples.filter(s=>s.sprite===sprite);
+     assert(samples.length>0,'Full-speed movement shows every contact pose');
+     const bodyX=samples.reduce((sum,s)=>sum+s.x,0)/samples.length;
+     return bodyX+(boot.x-sprite.anchor[0])*sprite.scale;
+    });
+    const drift=Math.max(...groundX)-Math.min(...groundX);
+    sideContactDrift.push(drift);
+    const floor=contacts.slice(start,start+4).map(c=>c.y*sprites[start].scale);
+    assert(Math.max(...floor)-Math.min(...floor)<2,'Side sole stays at ground height while planted');
+    assert((contacts[start].y-contacts[start+6].y)*sprites[start].scale>3,'Side boots lift clear of the ground after push-off');
+    assert(drift<8,'Planted heel slips '+drift.toFixed(1)+' world units across contact poses '+start+'–'+(start+3));
+   }
   }
-  const shadeDifference=contacts.slice(0,5).reduce((sum,c,i)=>sum+c.light-contacts[i+8].light,0)/5;
+  if(facing==='down-right'||facing==='up-right'){
+   // Follow the boot while its sole is exposed in this three-quarter projection.
+   const forwardY=facing==='down-right'?1:-1;
+   for(const half of [0,halfStride]){
+    const first=half,last=half+2;
+    const dx=contacts[first].x-contacts[last].x,dy=contacts[first].y-contacts[last].y;
+    assert(dx>0&&dy*forwardY>0&&(dx+dy*forwardY)*sprites[first].scale*Math.SQRT1_2>12,
+     facing+' boot pushes back along the travel direction on step '+half);
+   }
+  }
+  // Compare the leather when the supporting boots are fully exposed in each view.
+  const painted=facing==='up-right'?[2,3]:facing==='down-right'?[0,1]:[0,1,2,3];
+  const shadeDifference=painted.reduce((sum,i)=>sum+contacts[i].light-contacts[i+halfStride].light,0)/painted.length;
   assert(shadeDifference>3,facing+' alternates the lit near boot and the shaded far boot');
  }
  run.delete();
@@ -261,4 +303,5 @@ for(const frame of [-2,4,5,11,NaN,Infinity]){
  const a=axeAttachment({tick:80,player:{runBlend:0}},'right','walk',{frame,mirror:false});
  assert.ok(a.hand.every(Number.isFinite),'out-of-range grip '+String(frame));
 }
-console.log('Hunter: 88 authored walking frames, 80 sprint frames, 8 directions, '+checked+' gait and grip states, live transitions and loading fallbacks passed.');
+console.log('Hunter: 88 walking frames, 120 sprint frames, 8 directions, '+checked+' gait and grip states, live transitions and loading fallbacks passed.');
+console.log('Right sprint stance drift (near and far boot, world units): '+sideContactDrift.map(d=>d.toFixed(1)).join(', '));

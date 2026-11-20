@@ -14,7 +14,7 @@ const VIEWS:Record<Direction,keyof typeof SHEETS>={
 export const HUNTER_IMAGE_SOURCES:Record<string,string>={...HUNTER_WALK_V2_SOURCES};
 for(const [direction,sheet] of Object.entries(SHEETS)){
  HUNTER_IMAGE_SOURCES[sheet]=`/survival/hunter-v1/${direction}.webp`;
- HUNTER_IMAGE_SOURCES[sheet+'Run']=`/survival/hunter-v1/run-v3/${direction}.webp`;
+ HUNTER_IMAGE_SOURCES[sheet+'Run']=`/survival/hunter-v1/run-v4/${direction}.webp`;
 }
 
 const WIDTH=206,HEIGHT=236,SCALE=112/222;
@@ -41,7 +41,8 @@ const IDLE_FRAME:Record<Direction,number>={
  down:0,'down-right':8,right:7,'up-right':7,up:7,
  'up-left':7,left:7,'down-left':8
 };
-const RUN_WIDTH=343,RUN_HEIGHT=480,RUN_COLS=4,RUN_FRAMES=16;
+// Three atlas pixels per world unit keep all 24 poses on a single mobile texture.
+const RUN_WIDTH=288,RUN_HEIGHT=400,RUN_COLS=6,RUN_FRAMES=24;
 const RUN_ANCHOR:readonly [number,number]=[RUN_WIDTH/2,RUN_HEIGHT-4];
 type HunterPoses=Poses&{run:readonly RunnerSprite[]};
 export const HUNTER_ART:Record<Direction,HunterPoses>=Object.fromEntries(
@@ -53,7 +54,7 @@ export const HUNTER_ART:Record<Direction,HunterPoses>=Object.fromEntries(
    run:Array.from({length:RUN_FRAMES},(_,index):RunnerSprite=>({
     sheet:SHEETS[VIEWS[direction]]+'Run',
     crop:[index%RUN_COLS*RUN_WIDTH,Math.floor(index/RUN_COLS)*RUN_HEIGHT,RUN_WIDTH,RUN_HEIGHT],
-    anchor:RUN_ANCHOR,scale:112/410,
+    anchor:RUN_ANCHOR,scale:1/3,
     hand:HUNTER_RUN_GRIPS[VIEWS[direction]][index]
    }))
   }
