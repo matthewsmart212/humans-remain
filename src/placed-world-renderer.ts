@@ -1,7 +1,7 @@
 import {drawBurningHearth,hasPaintedHearthAnimation} from './hearth-animation-art';
 import {drawBuildingCondition} from './building-condition-renderer';
 import {lootChestDrawables,drawLootChestGround} from './loot-chest-renderer';
-import {SURVEY_CACHE_ID,placedLootChestVisible} from './loot-chest';
+import {placedLootChestVisible} from './loot-chest';
 import {headquartersCutawayAmount,clipHeadquartersDoorway,drawHeadquartersExterior} from './headquarters-cutaway';
 import {HQ_SOUTH_INTERIOR} from './headquarters-south-art';
 import {headquartersRoofBottom,withinRoofApproach,headquartersRaidVisible} from './headquarters-roof';
@@ -48,7 +48,7 @@ import {stationMenuPan,menuClock} from './station-menu-layout';
 import {ABANDONED_CAMP_ID,ABANDONED_CAMP_SIZE,CAMP_SCENERY,CAMP_CHEST_RECT} from './abandoned-camp-art';
 import {WOODEN_LOOT_ID,WOODEN_LOOT_SHEET,WOODEN_LOOT_ANCHOR} from './wooden-loot-art';
 import {drawWoodenLootChest} from './wooden-loot-renderer';
-import {chestFrame,placedLootChestId} from './chest-animation';
+import {chestFrame} from './chest-animation';
 import {ASSET_BY_ID,assetImageKey,type WorldAsset} from './world-assets';
 import {placedAnimationFrame} from './step-on-animation';
 import {compareWorldDrawables,placementGeometryAsset,placementBounds,placementPoint,placementBodies,type Placement,type WorldLayout} from './world-layout';
@@ -176,14 +176,6 @@ export function placedDrawables(ctx:CanvasRenderingContext2D,imgs:Record<string,
     ctx.drawImage(sheet&&scenery?scenery:im,b.x,b.y,b.width,b.height);
     return;
    }
-   if(a.id===WOODEN_LOOT_ID&&placedLootChestId(p.id)===SURVEY_CACHE_ID&&imgs.surveyLockbox){
-    const frame=chestFrame(w,p.id,10);
-    // Each 440 × 390 cell has a shared ground line at row 326.
-    const scale=b.width/385;
-    ctx.drawImage(imgs.surveyLockbox,(frame%5)*440,Math.floor(frame/5)*390,440,390,
-     p.x-220*scale,p.y-326*scale,440*scale,390*scale);
-    return;
-   }
    if(a.id===WOODEN_LOOT_ID&&sheet){
     drawWoodenLootChest(ctx,sheet,w,p.id,b);
     return;
@@ -263,7 +255,7 @@ export function editorCamera(width:number,height:number,w:World,view:EditorView,
 export function drawWorldEditor(ctx:CanvasRenderingContext2D,atlas:Atlas,imgs:Record<string,HTMLImageElement>,w:World,view:EditorView,fade=0,peers:readonly import('./coop-protocol').CoopPeer[]=[]){
  const c=editorCamera(ctx.canvas.width,ctx.canvas.height,w,view,Math.min(2,(ctx as CanvasRenderingContext2D&{pixelRatio?:number}).pixelRatio||globalThis.devicePixelRatio||1));
  const viewport={x:c.x,y:c.y,width:ctx.canvas.width/c.scale,height:ctx.canvas.height/c.scale,scale:c.scale};
- clearTerrainViewport(ctx);if(w.scene){ctx.fillStyle=w.scene.background;ctx.fillRect(0,0,ctx.canvas.width,ctx.canvas.height)}ctx.save();ctx.scale(c.scale,c.scale);ctx.translate(-c.x,-c.y);if(w.combatTest&&!w.weather?.reducedMotion){const t=timeOf(w),amount=Math.min(1,Math.max(0,(w.shakeUntil-t)/.12));if(amount)ctx.translate(Math.sin(t*139)*2*amount/c.scale,Math.cos(t*113)*1.5*amount/c.scale)}if(w.scene)drawSceneTerrain(ctx,imgs,w.scene);else drawHomeTerrain(ctx,imgs,w.layout?.terrainImage,w.layout?.terrainBorder,viewport);
+ clearTerrainViewport(ctx);if(w.scene){ctx.fillStyle=w.scene.background;ctx.fillRect(0,0,ctx.canvas.width,ctx.canvas.height)}ctx.save();ctx.scale(c.scale,c.scale);ctx.translate(-c.x,-c.y);if(w.combatTest&&!w.weather?.reducedMotion){const t=timeOf(w),amount=Math.min(1,Math.max(0,(w.shakeUntil-t)/.12));if(amount)ctx.translate(Math.sin(t*139)*2*amount/c.scale,Math.cos(t*113)*1.5*amount/c.scale)}if(w.scene)drawSceneTerrain(ctx,imgs,w.scene,viewport);else drawHomeTerrain(ctx,imgs,w.layout?.terrainImage,w.layout?.terrainBorder,viewport);
  drawPlacedGround(ctx,imgs,w.layout,view.hideFoliage,viewport);
  const campContacts=w.scene?undefined:[] as CampGroundContact[];
  const outline=(view.playing||view.follow)&&!brutePlayerCarried(w)?playerOutlinePass(ctx,imgs,w,c.scale):undefined;
@@ -296,7 +288,7 @@ export function drawWorldEditor(ctx:CanvasRenderingContext2D,atlas:Atlas,imgs:Re
   for(const polygon of scene.foreground){
    const face={roof:true,layer:Infinity,y:0,draw:()=>{
     ctx.save();ctx.beginPath();polygon.forEach(([x,y],i)=>i?ctx.lineTo(x,y):ctx.moveTo(x,y));
-    ctx.closePath();ctx.clip();drawSceneTerrain(ctx,imgs,scene);ctx.restore();
+    ctx.closePath();ctx.clip();drawSceneTerrain(ctx,imgs,scene,viewport);ctx.restore();
    }};
    draws.push(face);
    if(outline&&!polygon.every(([x])=>x<outline.bounds.x)&&!polygon.every(([x])=>x>outline.bounds.x+outline.bounds.width)&&

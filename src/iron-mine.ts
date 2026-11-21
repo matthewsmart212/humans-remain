@@ -30,9 +30,18 @@ const items:Placement[] = [
 export const IRON_MINE_SCENE:SceneDefinition = {
   id:'iron-mine', name:'Northwest Iron Mine', width:floor.width, height:floor.height,
   lighting:'baked', weather:'sheltered', background:'#000000',
-  terrain:{key:'scene:iron-mine:workings:v3',url:'/survival/iron-mine-v1/workings-v3.webp'},
+  terrain:{
+    key:'scene:iron-mine:overview:v4',url:'/survival/iron-mine-v3/overview.webp',useOverviewOnMap:true,
+    tiles:Array.from({length:6},(_,index)=>{
+      const row=Math.floor(index/3),column=index%3;
+      return {
+        key:`scene:iron-mine:detail:v3:${row}:${column}`,
+        url:`/survival/iron-mine-v3/workings-${row}-${column}.webp`,
+        x:column*1200,y:row*1360,width:1200,height:1360,
+      };
+    }),
+  },
   images:{
-    surveyLockbox:'/survival/loot-chest-v4/orange-opening-atlas.webp',
     [MINE_CHAMBER_MASK]:'/survival/iron-mine-v1/chamber-masks.png',
   },
   walkable:floor.walkable as CollisionPoint[], blockers:[...floor.blockers, ...floor.fixtures] as CollisionPoint[][],

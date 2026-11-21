@@ -7,7 +7,7 @@ import {build} from 'esbuild';
 
 const temp=fs.mkdtempSync(path.join(os.tmpdir(),'iron-mine-'));
 try {
- const modules=['world-scenes','survival-engine','studio-play','authored-world','imported-art','scene-travel',
+ const modules=['world-scenes','survival-engine','studio-play','authored-world','imported-art','scene-travel','scene-terrain',
   'player-map','player-map-labels','rock-mining','world-layout','camp-gates','loot-chest','run-save','expedition-inventory','play-interaction','outdoor-terrain','world-master-plan','river-collision','east-approach'];
  const outfile=path.join(temp,'game.cjs');
  await build({stdin:{contents:modules.map(name=>`export * from './src/${name}'`).join('\n'),resolveDir:process.cwd()},
@@ -67,6 +67,20 @@ try {
  enter(travel,entrance);
  const mine=travel.current,entry=mine.scene.spawns.entrance;
  assert.equal(mine.scene.id,'iron-mine');
+ const tiles=mine.scene.terrain.tiles,images=game.sceneImages(mine.scene);
+ assert.equal(tiles.length,6);
+ const atlas=game.playerMapScene(mine);
+ assert.equal(atlas.images.length,1,'The mine atlas loads one overview texture');
+ assert.equal(atlas.images[0].url,mine.scene.terrain.url);
+ assert.equal(fs.readFileSync('public'+atlas.images[0].url).toString('ascii',8,12),'WEBP','The compact mine overview is packaged');
+ for(const [index,tile] of tiles.entries()){
+  const row=Math.floor(index/3),column=index%3;
+  const width=mine.scene.width/3,height=mine.scene.height/2,x=column*width,y=row*height;
+  const draws=[];
+  game.drawSceneTerrain({drawImage:(...args)=>draws.push(args)},images,mine.scene,{x:x+100,y:y+100,width:200,height:200});
+  assert.deepEqual(draws,[[tile.url,x,y,width,height]],'The visible detail tile is loaded at its registered position');
+  assert.equal(fs.readFileSync('public'+tile.url).toString('ascii',8,12),'WEBP','Tile is packaged as WebP');
+ }
  assert(!game.worldBlocked(mine,mine.player.x,mine.player.y));
  for(let i=0;i<30;i++){
   game.stepCampPlaySession(mine,{x:0,y:1},false,false);

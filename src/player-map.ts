@@ -38,7 +38,10 @@ export function playerMapScene(world:World):PlayerMapScene{
  const bounds=worldBounds(world);
  if(world.scene){
   const scene=world.scene;
-  const images=scene.terrain.tiles?.length?scene.terrain.tiles.map(t=>({id:t.key,url:t.url,x:t.x,y:t.y,width:t.width,height:t.height})):[{id:scene.terrain.key,url:scene.terrain.url,x:0,y:0,width:scene.width,height:scene.height}];
+  const terrain=scene.terrain;
+  const images=terrain.tiles?.length&&!terrain.useOverviewOnMap
+   ?terrain.tiles.map(t=>({id:t.key,url:t.url,x:t.x,y:t.y,width:t.width,height:t.height}))
+   :[{id:terrain.key,url:terrain.url,x:0,y:0,width:scene.width,height:scene.height}];
   // Retain the complete interior artwork, including walls and furnishings.
   // Walkability describes movement, not which parts belong on its map.
   return{id:scene.id,name:scene.name,bounds,images,footprint:[rectangle(bounds.left,bounds.top,bounds.width,bounds.height)]};
