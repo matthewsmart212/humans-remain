@@ -1,3 +1,4 @@
+import {IRON_MINE_DOOR_ID} from './iron-mine-door';
 import {beginBuildingRepair,holdBuildingRepair,repairProgress,repairAnchor} from './building-repair';
 import {selectQuickItem} from './quick-items';
 import {hasGear} from './player-gear';
@@ -100,7 +101,14 @@ export function playInteraction(world:World):PlayInteraction|null{
  }
  const furnace=nearbyFurnace(world);
  const rareCache=nearbyLootChest(world);if(rareCache){const opened=lootChestOpened(world,rareCache.id),remaining=lootChestRemaining(world,rareCache.id);add({key:'rare-chest:'+rareCache.id,label:opened?'View loot':'Open loot chest',shortLabel:opened?'LOOT':'OPEN',icon:'chest',disabled:false,target:{id:'rare-chest:'+rareCache.id,x:rareCache.x,y:rareCache.y,label:lootChestName(rareCache.id),detail:opened?(remaining?remaining+' supplies':'Empty'):undefined},perform:()=>openLootChest(world,rareCache.id)});}
-  const gatePoint=nearbyGateAction(world);if(gatePoint){const gate=gatePoint.placement;const label=gateActionLabel(world,gate.id);add({key:`gate:${gate.id}:${label}`,label,shortLabel:gateButtonLabels[label],icon:'gate',disabled:false,target:{id:`gate:${gate.id}`,x:gatePoint.x,y:gatePoint.y,label:'Camp gate'},perform:()=>nearbyGate(world)?.id===gate.id&&gateActionLabel(world,gate.id)===label&&toggleGate(world,gate.id)})}
+ const gatePoint=nearbyGateAction(world);
+ if(gatePoint){
+  const gate=gatePoint.placement,action=gateActionLabel(world,gate.id),mine=gate.assetId===IRON_MINE_DOOR_ID;
+  add({key:`gate:${gate.id}:${action}`,label:mine?action.replace('gate','mine doors'):action,
+   shortLabel:gateButtonLabels[action],icon:'gate',disabled:false,
+   target:{id:`gate:${gate.id}`,x:gatePoint.x,y:gatePoint.y,label:mine?'Mine doors':'Camp gate'},
+   perform:()=>nearbyGate(world)?.id===gate.id&&gateActionLabel(world,gate.id)===action&&toggleGate(world,gate.id)});
+ }
  if(furnace&&hasMetalworking(world)){const f=world.ironworks?.stations[furnace.placement.id];add({key:`furnace:${furnace.placement.id}`,label:'Open furnace to smelt iron',shortLabel:'SMELT',icon:'cook',image:stationArt.furnace,disabled:false,target:{id:`furnace:${furnace.placement.id}`,buildingId:'furnace',x:furnace.x,y:furnace.y,label:'Camp furnace',detail:f?.ready?`${f.ready} ingots ready`:furnaceWorking(f)?'Smelting':f?.queue.length&&!f.fuel?'Add wood':'Iron ingots'},perform:()=>openFurnace(world,furnace.placement.id)})}
  const smithy=nearbySmithy(world);if(smithy&&buildingRestored(world,'workshop'))add({key:`smithy:${smithy.placement.id}`,label:'Craft tools and weapons',shortLabel:'CRAFT',icon:'chest',image:stationArt.workshop,disabled:false,target:{id:`smithy:${smithy.placement.id}`,buildingId:'workshop',x:smithy.x,y:smithy.y,label:'Workshop',detail:'Tools & weapons'},perform:()=>openSmithy(world,smithy.placement.id)});
  const warehouse=nearbyWarehouse(world);if(warehouse&&buildingRestored(world,'warehouse'))add({key:`warehouse:${warehouse.placement.id}`,label:'Open warehouse',shortLabel:'STORE',icon:'chest',image:stationArt.warehouse,disabled:false,target:{id:`warehouse:${warehouse.placement.id}`,buildingId:'warehouse',x:warehouse.x,y:warehouse.y,label:'Warehouse',detail:'Wood, stone & scrap'},perform:()=>{if(nearbyWarehouse(world)?.placement.id!==warehouse.placement.id)return false;world.stationPanel='warehouse';return true}});

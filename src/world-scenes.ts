@@ -1,3 +1,5 @@
+import {IRON_MINE_SCENE} from './iron-mine';
+import {IRON_MINE_ENTRANCE_ID,IRON_MINE_DOOR_AREA,IRON_MINE_RETURN_POINT} from './iron-mine-entrance';
 import {BUNKER_DOOR_AREA,BUNKER_IMAGE} from './camp-fixture-collision';
 import {ASSET_BY_ID} from './world-assets';
 import {buildingRestored} from './camp-restoration';
@@ -25,11 +27,15 @@ export const BUNKER_SCENE:SceneDefinition={
  spawns:{stairs:{x:936,y:649,direction:'down-left'}},
  portals:[{id:'stairs-out',area:[[950,469],[997,486],[981,524],[930,504]],destination:{return:true},returnSpawn:{x:936,y:649,direction:'down-left'}}],
 };
-export const SCENES:ReadonlyMap<string,SceneDefinition>=new Map([[BUNKER_SCENE.id,BUNKER_SCENE]]);
+export const SCENES:ReadonlyMap<string,SceneDefinition>=new Map([BUNKER_SCENE,IRON_MINE_SCENE].map(scene=>[scene.id,scene]));
 
 /** Asset connections follow the exact same transforms as their visible artwork. */
 type AssetConnection={destination:{sceneId:string;spawnId:string};area:CollisionPoint[];returnPoint:CollisionPoint;exitVector:CollisionPoint;waitForAnimation:boolean};
 export const ASSET_CONNECTIONS:Readonly<Record<string,AssetConnection>>={
+ [IRON_MINE_ENTRANCE_ID]:{
+  destination:{sceneId:IRON_MINE_SCENE.id,spawnId:'entrance'},
+  area:IRON_MINE_DOOR_AREA,returnPoint:IRON_MINE_RETURN_POINT,exitVector:[-.1,.1],waitForAnimation:false,
+ },
  'misc_2dd09bb8-883b-42e3-b765-c2a1c735b016':{
   destination:{sceneId:'bunker',spawnId:'stairs'},
   area:[[.53,.555],[.67,.605],[.64,.66],[.50,.615]],
@@ -37,22 +43,23 @@ export const ASSET_CONNECTIONS:Readonly<Record<string,AssetConnection>>={
  },
 };
 function imagePoint(p:Placement,[u,v]:CollisionPoint):CollisionPoint{const b=placementBounds(p);return placementPoint(p,b.x+u*b.width,b.y+v*b.height)}
-const portalCache=new WeakMap<object,ScenePortal[]>();
+const portalCache=new WeakMap<object,{bunkerOpen:boolean;portals:ScenePortal[]}>();
 export function scenePortals(world:World):ScenePortal[]{
  if(world.scene)return world.scene.portals;
- if(!world.layout||!buildingRestored(world,'bunker'))return[];
+ if(!world.layout)return[];
+ const bunkerOpen=buildingRestored(world,'bunker');
  // Cache only placement geometry, not animation or occupancy. Draft edits replace the layout.
- const cached=portalCache.get(world.layout);if(cached)return cached;
+ const cached=portalCache.get(world.layout);if(cached?.bunkerOpen===bunkerOpen)return cached.portals;
  const portals:ScenePortal[]=[];
  for(const p of world.layout.items){
-  const original=ASSET_CONNECTIONS[p.assetId];if(!original)continue;
+  const original=ASSET_CONNECTIONS[p.assetId];if(!original||original.destination.sceneId==='bunker'&&!bunkerOpen)continue;
   const connection:AssetConnection=ASSET_BY_ID.get(p.assetId)?.image===BUNKER_IMAGE
    ?{...original,area:BUNKER_DOOR_AREA,returnPoint:[.405,1.03],exitVector:[0,.1]}:original;
   const [x,y]=imagePoint(p,connection.returnPoint),[ex,ey]=imagePoint(p,[connection.returnPoint[0]+connection.exitVector[0],connection.returnPoint[1]+connection.exitVector[1]]);
   const returnSpawn:SceneSpawn={x,y,direction:facing(ex-x,ey-y)};
   portals.push({id:'asset:'+p.id,area:connection.area.map(v=>imagePoint(p,v)),destination:connection.destination,returnSpawn,...(connection.waitForAnimation?{animationPlacementId:p.id}:{})});
  }
- portalCache.set(world.layout,portals);return portals;
+ portalCache.set(world.layout,{bunkerOpen,portals});return portals;
 }
 export function invalidateScenePortals(world:World){if(world.layout)portalCache.delete(world.layout)}
 export const sceneId=(world:World)=>world.scene?.id||CAMP_SCENE_ID;

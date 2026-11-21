@@ -37,7 +37,7 @@ try{
  checks.push('HQ validates proximity, life, site and full cost; pays once; unlocks Level 1 without moving the player or layout');
  const smithy=m.smithies(w.layout)[0];w.stationPanel=undefined;Object.assign(w.player,m.smithyDock(smithy));assert(!m.openSmithy(w,smithy.id));assert(!m.craftSmithyGear(w,'woodenPickaxe'));
  Object.assign(w.player,m.warehouseDock(m.warehouses(w.layout)[0]));w.stationPanel='warehouse';assert.equal(m.transferWarehouse(w,'pallets',false,1),0);
- w.thirst=10;Object.assign(w.player,m.stationFront(w.camp,'well'));assert(!m.doAction(w,'drink'));Object.assign(w.player,m.stationFront(w.camp,'hearth'));assert(!m.feedFire(w));assert(!m.queueFood(w,'chicken'));assert.deepEqual(m.scenePortals(w),[]);
+ w.thirst=10;Object.assign(w.player,m.stationFront(w.camp,'well'));assert(!m.doAction(w,'drink'));Object.assign(w.player,m.stationFront(w.camp,'hearth'));assert(!m.feedFire(w));assert(!m.queueFood(w,'chicken'));assert(!m.scenePortals(w).some(p=>p.destination.sceneId==='bunker'));
  reachCampLevel(m,w,3);repair(w,'workshop');w.stationPanel=undefined;Object.assign(w.player,m.smithyDock(smithy));assert(m.openSmithy(w,smithy.id));fund(w,{pallets:3});assert(m.craftSmithyGear(w,'woodenPickaxe'));assert(w.gear.bag.woodenPickaxe>0);assert(!m.recipeUnlocked(w,'metalPickaxe'));
  checks.push('Broken workshop, warehouse, water, fire and bunker cannot be used; level 3 workshop allows crafting a replacement pickaxe');
  repair(w,'furnace');reachCampLevel(m,w,4);

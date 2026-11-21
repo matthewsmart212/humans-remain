@@ -1,10 +1,11 @@
-import {withinActionReach,type World} from './survival-engine';
+import {lineClear,withinActionReach,type World} from './survival-engine';
+import mineFloor from './iron-mine-floor.json';
 import {hitCollider,type Collider} from './camp-collision';
 import {WOODEN_LOOT_LATCH,WOODEN_LOOT_OPEN_TICKS} from './wooden-loot-art';
 import {ABANDONED_CAMP_ID,ABANDONED_CAMP_LATCH} from './abandoned-camp-art';
 import {placedLootChestId} from './chest-animation';
 import {layoutViews} from './layout-views';
-import {placementArtPoint} from './world-layout';
+import {placementArtPoint,type Placement} from './world-layout';
 import {PROVISIONS,isProvision} from './food-provisions-data';
 import {PACK_CAPACITY,packWeight,canCarryCount,addInventory} from './expedition-inventory';
 import {GEAR,gear} from './player-gear';
@@ -77,6 +78,12 @@ export function lootChestBlocked(w:ChestWorld,x:number,y:number,r:number){
  return hitCollider(caseFoot,dx,dy,r);
 }
 type ChestLatch={id:string;x:number;y:number};
+/** The survey cache and its glow become visible when the survivor rounds the rock face. */
+export function placedLootChestVisible(w:World,p:Placement){
+ if(!w.scene||p.id!==mineFloor.cacheId||lootChestOpened(w,placedLootChestId(p.id)))return true;
+ const latch=placementArtPoint(p,...WOODEN_LOOT_LATCH);
+ return Math.hypot(w.player.x-latch.x,w.player.y-latch.y)<=300&&lineClear(w.player,latch,w);
+}
 function accessibleLootChest(w:World,id?:string):ChestLatch|null{
  const camp=campLootChest(w);
  const latches=layoutViews(w.layout).lootCamps.map(p=>{

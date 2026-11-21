@@ -21,7 +21,7 @@ export function bonusIronOre(w:World,id:string){
 }
 export const canMineRock=(w:World,target:MiningTarget)=>isPickaxe(w.player.equipped)&&hasGear(w,w.player.equipped)&&(!target.metalOnly||w.player.equipped==='metalPickaxe');
 export function nearbyMineableRock(w:World,angle?:number,reach=76):MiningTarget|null{
- if(!w.layout||w.scene)return null;
+ if(!w.layout)return null;
  const candidates:MiningTarget[]=[];
  for(const p of visiblePlacements(w.layout,{x:w.player.x-reach-450,y:w.player.y-reach-450,width:2*(reach+450),height:2*(reach+450)})){
   const spec=MINEABLE_ROCKS.get(p.assetId);if(!spec||p.solid===false||w.rockMining?.[p.id]?.hp===0)continue;

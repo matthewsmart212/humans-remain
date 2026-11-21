@@ -35,7 +35,10 @@ export function nearbyResourceOutlines(w:World,v:ResourceOutlineView,hideFoliage
  if(w.phase==='over'||w.player.hp<=0||w.player.downedUntil||w.stationPanel)return [];
  const bucket=Math.floor(w.tick/6),axe=isAxe(w.player.equipped),target=getFieldKitTarget(w);let cache=caches.get(w.camp);
  if(!cache||cache.bucket!==bucket||cache.layout!==w.layout||cache.axe!==axe){
-  cache={bucket,layout:w.layout,axe,placements:w.layout&&!w.scene?visiblePlacements(w.layout,{x:w.player.x-320,y:w.player.y-320,width:640,height:640}).filter(p=>FORAGE_BY_ID.has(p.assetId)||MINEABLE_ROCKS.has(p.assetId)||axe&&TREE_ART.has(p.assetId)):[],clear:new Map()};caches.set(w.camp,cache);
+  const placements=w.layout?visiblePlacements(w.layout,{x:w.player.x-320,y:w.player.y-320,width:640,height:640}).filter(p=>
+   MINEABLE_ROCKS.has(p.assetId)||!w.scene&&(FORAGE_BY_ID.has(p.assetId)||axe&&TREE_ART.has(p.assetId))
+  ):[];
+  cache={bucket,layout:w.layout,axe,placements,clear:new Map()};caches.set(w.camp,cache);
  }
  const cues:ResourceOutlineCue[]=[];
  for(const p of cache.placements){

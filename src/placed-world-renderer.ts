@@ -1,6 +1,7 @@
 import {drawBurningHearth,hasPaintedHearthAnimation} from './hearth-animation-art';
 import {drawBuildingCondition} from './building-condition-renderer';
 import {lootChestDrawables,drawLootChestGround} from './loot-chest-renderer';
+import {placedLootChestVisible} from './loot-chest';
 import {headquartersCutawayAmount,clipHeadquartersDoorway,drawHeadquartersExterior} from './headquarters-cutaway';
 import {HQ_SOUTH_INTERIOR} from './headquarters-south-art';
 import {headquartersRoofBottom,withinRoofApproach,headquartersRaidVisible} from './headquarters-roof';
@@ -94,6 +95,7 @@ export function placedDrawables(ctx:CanvasRenderingContext2D,imgs:Record<string,
  const circular:CircularWallDraw[]=[];
  for(const p of visiblePlacements(w.layout,viewport)){const a=ASSET_BY_ID.get(p.assetId);if(!a)continue;if(!editor&&['animal','enemySpawn'].includes(p.role))continue;if(!editor&&['scrap','fuel','pallets'].includes(p.role)&&!w.loot.some(l=>l.placementId===p.id))continue;if(!editor&&p.role==='crate'&&!w.breakables.some(b=>b.placementId===p.id&&b.hp>0))continue;
   if(hideFoliage&&isFoliageAsset(a)||a.foliage&&!foliageVisible(p,viewport))continue;
+  if(a.id===WOODEN_LOOT_ID&&!placedLootChestVisible(w,p))continue;
   const add=(d:typeof out[number],ground=false)=>{
    out.push(d);
    if(!ground&&outline?.placements.has(p)){

@@ -42,7 +42,10 @@ export class SceneTravel{
  private prefetch(){
   const currentId=sceneId(this.current),back=this.route.at(-1)?.sceneId;
   this.resources.pin([currentId,...(back?[back]:[])]);
-  const next=scenePortals(this.current).find(p=>'sceneId' in p.destination&&this.scenes.has(p.destination.sceneId));
+  // A distant entrance should not load an entire underground map at camp spawn.
+  const player=this.current.player;
+  const next=scenePortals(this.current).find(p=>'sceneId' in p.destination&&this.scenes.has(p.destination.sceneId)
+   &&Math.hypot(p.returnSpawn.x-player.x,p.returnSpawn.y-player.y)<1650);
   if(next&&'sceneId' in next.destination)void this.resources.prepare(next.destination.sceneId).catch(()=>{});
  }
  private destination(portal:ScenePortal):Trip{

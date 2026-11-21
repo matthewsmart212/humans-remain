@@ -1,3 +1,4 @@
+import {IRON_MINE_ENTRANCE_ID,IRON_MINE_ENTRANCE_IMAGE,IRON_MINE_ENTRANCE_SIZE,IRON_MINE_ENTRANCE_ANCHOR,IRON_MINE_ENTRANCE_COLLISION} from './iron-mine-entrance';
 import {WOODEN_LOOT_ID,WOODEN_LOOT_ANCHOR,WOODEN_LOOT_POSTER,WOODEN_LOOT_SHEET,WOODEN_LOOT_SPRITE} from './wooden-loot-art';
 import {ABANDONED_CAMP_ID,CAMP_POSTER,CAMP_SCENERY,ABANDONED_CAMP_SIZE,ABANDONED_CAMP_COLLISION} from './abandoned-camp-art';
 import {IRON_ROCK_FOOT,HEARTH_FOOT,WELL_IMAGE,WELL_FOOT} from './camp-fixture-collision';
@@ -12,6 +13,7 @@ import {POTATO_PATCH_IMAGES} from './potato-patch-art';
 import {MINEABLE_ROCKS} from './mining-rocks';
 import {FORAGE_ART,FORAGE_BY_ID,FORAGE_FRUIT_ART} from './forage-art';
 import {TREE_SHADE_IMAGE,treeShadeFrames} from './tree-shade';
+import {ironMineDoor} from './iron-mine-door';
 import perimeterArt from './camp-perimeter-art.json';
 import circularWallArt from './camp-circular-wall-art.json';
 import type {AnimationMode,AnimationArea} from './asset-animation';
@@ -48,6 +50,7 @@ export type WorldAsset={perimeterCurve?:number[][];perimeterDrawOrder?:number;pe
 export const imageDimensions=metadata as Record<string,number[]>;
 const sizes=imageDimensions;
 for(const f of [...foliageArt,...puddleArt,...treeArt,...sceneryArt,...FORAGE_ART,...IRONWORKS_WORLD_ART,...GARDEN_ART])sizes[f.image]=f.size;
+sizes[IRON_MINE_ENTRANCE_IMAGE]=[...IRON_MINE_ENTRANCE_SIZE];
 sizes[CAMP_POSTER]=sizes[CAMP_SCENERY]=[...ABANDONED_CAMP_SIZE];
 sizes[WOODEN_LOOT_POSTER]=[WOODEN_LOOT_SPRITE.width,WOODEN_LOOT_SPRITE.height];
 const assets:WorldAsset[]=[];
@@ -67,6 +70,11 @@ for(const e of entries.filter(e=>e.image&&!e.canonicalArt&&!e.id.startsWith('map
  if(role==='generator')anchor=[crop[2]/2,crop[3]*.75];
  const height=width*crop[3]/crop[2],solid=!['effect','interface asset'].includes(e.recordType)&&!['scrap','fuel','pallets'].includes(role);
  const a:WorldAsset={id:e.id,name:e.name,group:e.family||e.category,image,crop,anchor,width,height,solid,role,body:solid?body(width,height):[],openFrames:e.artPreview?.openFrames,frames:e.artPreview?.frames,fps:e.artPreview?.fps,unlit:e.artPreview?.unlit,unlitSize:e.id.startsWith('base_hearth')?[HEARTH_FRAME_SIZE,HEARTH_FRAME_SIZE]:undefined,unlitAnchor:e.id.startsWith('base_hearth')?[...HEARTH_ART[e.tier as 1|2|3].unlitAnchor]:undefined,roof:e.artPreview?.roof,roofRect:e.artPreview?.roofRect,catalogueId:e.id,note:e.implemented?'Existing prototype interaction':role==='prop'?'Visual prop · gameplay not implemented':'Uses the existing starter interaction'};
+ if(e.id===IRON_MINE_ENTRANCE_ID){
+  a.anchor=IRON_MINE_ENTRANCE_ANCHOR.map((fraction,i)=>crop[i+2]*fraction);
+  a.body=[];a.collision=IRON_MINE_ENTRANCE_COLLISION;
+  a.note='Walk along the rails and into the timber doorway to enter the iron mine.';
+ }
  if(e.id===ABANDONED_CAMP_ID){
   a.anchor=[crop[2]/2,crop[3]/2];
   a.body=[];a.collision=ABANDONED_CAMP_COLLISION;
@@ -131,6 +139,8 @@ const catalogueIds=new Set(entries.map(e=>e.id));
 // Saved custom placements can still use the prior NE shapes, although the
 // editor catalogue offers only the corrected sixteen pieces.
 export const WORLD_ASSETS=assets.filter(a=>catalogueIds.has(a.id)||circularWallArt.some(piece=>piece.id===a.id)).map(addCampGround);
+WORLD_ASSETS.push(ironMineDoor);
+imageDimensions[ironMineDoor.image]=ironMineDoor.crop.slice(2);
 for(const a of WORLD_ASSETS)if(a.ground)imageDimensions[a.ground.image]=a.ground.size;
 export const ASSET_BY_ID=new Map(WORLD_ASSETS.map(a=>[a.id,a]));
 // Keep old world snapshots readable without presenting a Tier 2 choice in the editor.
