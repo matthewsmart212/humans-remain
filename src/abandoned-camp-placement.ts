@@ -3,8 +3,9 @@ import {MAX_LAYOUT_ITEMS} from './layout-limits';
 import {usesPaintedHomeTerrain} from './terrain-art';
 import type {Placement,WorldLayout} from './world-layout';
 
+export const NORTHWEST_ABANDONED_CAMP='northwest-abandoned-woodland-camp';
 const northwestCamp:Placement={
- id:'northwest-abandoned-woodland-camp',assetId:ABANDONED_CAMP_ID,
+ id:NORTHWEST_ABANDONED_CAMP,assetId:ABANDONED_CAMP_ID,
  x:-115,y:710,scale:1,solid:true,role:'prop',roof:'auto',
 };
 

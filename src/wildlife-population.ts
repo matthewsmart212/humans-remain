@@ -3,6 +3,9 @@ import {usesPaintedHomeTerrain} from './terrain-art';
 import {DEER_HEALTH} from './camp-deer';
 import {PREDATOR_RULES} from './camp-predators';
 import {clearSight} from './predator-navigation';
+import {ABANDONED_CAMP_ID} from './abandoned-camp-art';
+import {NORTHWEST_ABANDONED_CAMP} from './abandoned-camp-placement';
+import {placementArtPoint} from './world-layout';
 
 type Species='chicken'|'rabbit'|'doe'|'stag'|'boar'|'wolf';
 type Habitat={id:string;name:string;at:Vec;members:Species[]};
@@ -35,6 +38,7 @@ export const WILDLIFE_HABITATS:Habitat[]=[
  ...[[5000,4300],[-2500,6500],[9000,-3000]].map(([x,y],i)=>habitat(`wolf-${i}`,'Lone wolf territory',x,y,['wolf'])),
 ];
 export const WILDLIFE_RETURN_SECONDS={chicken:600,rabbit:720,doe:1200,stag:1200,boar:1500,wolf:1800} as const;
+export const WOODLAND_CHEST_WOLF_PACK='woodland-chest-wolves';
 function clearHome(w:World,at:Vec,seed:number,occupied:Vec[]){
  // Collision geometry is authoritative; texture streaming must not decide
  // whether a distant habitat exists.
@@ -45,7 +49,9 @@ function clearHome(w:World,at:Vec,seed:number,occupied:Vec[]){
  }
 }
 function spawn(w:World,slot:WildlifeSlot,index:number){
- const home=clearHome(w,slot.home,index,w.animals.filter(a=>a.hp>0)),t=timeOf(w);if(!home)return false;
+ const occupied:Vec[]=w.animals.filter(a=>a.hp>0);
+ if(slot.group===WOODLAND_CHEST_WOLF_PACK)occupied.push(w.player);
+ const home=clearHome(w,slot.home,index,occupied),t=timeOf(w);if(!home)return false;
  const species=slot.species,hp=species==='boar'||species==='wolf'?PREDATOR_RULES[species].health:species==='doe'||species==='stag'?DEER_HEALTH[species]:32;
  const a:Animal={...home,id:w.serial++,home:index,hp,maxHp:hp,moving:false,right:false,flashUntil:0,wildlife:{slot:slot.id,group:slot.group}};
  const motion={home:{...home},target:{...home},direction:index%2?'down-left' as const:'down-right' as const,distance:0,state:'idle' as const,since:t,until:t+.5+(index%7)*.23,thinkAt:t,seed:1103+index,cycle:0};
@@ -55,6 +61,22 @@ function spawn(w:World,slot:WildlifeSlot,index:number){
  else a.predator={...motion,kind:species,readyAt:t+1.2,engaged:false,angle:0};
  w.animals.push(a);slot.entityId=a.id;slot.missingAt=undefined;return true;
 }
+
+/** Keep the pack's territory attached to the authored woodland camp, even if it moves in Build. */
+export function seedWoodlandChestWolves(w:World){
+ if(w.scene)return;
+ const camp=w.layout?.items.find(p=>p.id===NORTHWEST_ABANDONED_CAMP&&p.assetId===ABANDONED_CAMP_ID);
+ if(!camp)return;
+ const ecology=w.ecology??={slots:[],nextCheck:0};
+ const homes=[[.08,1.04],[.48,.93],[.65,1.02]];
+ for(const [i,[x,y]] of homes.entries()){
+  const id=`${WOODLAND_CHEST_WOLF_PACK}:${i}`;
+  if(ecology.slots.some(slot=>slot.id===id))continue;
+  const slot:WildlifeSlot={id,group:WOODLAND_CHEST_WOLF_PACK,species:'wolf',home:placementArtPoint(camp,x,y)};
+  ecology.slots.push(slot);
+  spawn(w,slot,ecology.slots.length-1);
+ }
+}
 export function seedWildlife(w:World){
  if(w.scene||!usesPaintedHomeTerrain(w.layout?.terrainImage)||w.ecology)return false;
  const slots:WildlifeSlot[]=[];
@@ -62,7 +84,7 @@ export function seedWildlife(w:World){
   const angle=i*2.399963,r=h.members.length>1?95:0;
   slots.push({id:`${h.id}:${i}`,group:h.id,species,home:{x:h.at.x+Math.cos(angle)*r,y:h.at.y+Math.sin(angle)*r}});
  });
- w.ecology={slots,nextCheck:0};slots.forEach((slot,i)=>spawn(w,slot,i));return true;
+ w.ecology={slots,nextCheck:0};slots.forEach((slot,i)=>spawn(w,slot,i));seedWoodlandChestWolves(w);return true;
 }
 export function stepWildlife(w:World){
  const ecology=w.ecology,t=timeOf(w);if(!ecology||t<ecology.nextCheck)return;ecology.nextCheck=t+.25;

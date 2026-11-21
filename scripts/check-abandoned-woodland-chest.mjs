@@ -7,7 +7,7 @@ import {build} from 'esbuild';
 
 const dir=mkdtempSync(join(tmpdir(),'woodland-chest-'));
 try{
- const modules=['outdoor-terrain','wooden-loot-art','imported-art','authored-world','abandoned-camp-art','world-layout','world-assets','survival-engine','studio-play','play-interaction','station-access','expedition-inventory','chest-animation','loot-chest','run-save','scene-travel'];
+ const modules=['outdoor-terrain','wooden-loot-art','imported-art','authored-world','abandoned-camp-art','world-layout','world-assets','survival-engine','studio-play','play-interaction','station-access','expedition-inventory','chest-animation','loot-chest','run-save','scene-travel','wildlife-population','camp-predators'];
  const file=join(dir,'model.mjs');
  await build({stdin:{contents:modules.map(name=>"export * from './src/"+name+"';").join('\n'),resolveDir:process.cwd()},bundle:true,platform:'node',format:'esm',outfile:file,logLevel:'error'});
  const m=await import(pathToFileURL(file));
@@ -17,6 +17,15 @@ try{
  const campsite=snapshot.layout.items.find(p=>p.assetId===m.ABANDONED_CAMP_ID);
  assert(campsite,'The published camp must include its northwest woodland camp');
  currentWorld.outdoorReady=new Set(m.OUTDOOR_TILES.map(tile=>tile.key));
+ const guards=world=>world.animals.filter(a=>a.wildlife?.group===m.WOODLAND_CHEST_WOLF_PACK);
+ const pack=guards(currentWorld);
+ const chest=m.placementArtPoint(campsite,...m.ABANDONED_CAMP_LATCH);
+ assert.equal(pack.length,3);
+ for(const wolf of pack){
+  assert.equal(wolf.predator.kind,'wolf');
+  assert(Math.hypot(wolf.x-chest.x,wolf.y-chest.y)<350,'Pack starts near the chest');
+  assert(!m.worldBlocked(currentWorld,wolf.x,wolf.y,30),'Each wolf starts on clear ground');
+ }
  // Follow the campsite's aisle even if the owner moves the camp.
  const approach=[.96,.78,.63].map(v=>{
   const point=m.placementArtPoint(campsite,m.ABANDONED_CAMP_LATCH[0],v);
@@ -33,11 +42,32 @@ try{
  }
  assert.equal(m.nearbyLootChest(currentWorld)?.id,m.placedLootChestId(campsite.id));
  assert.equal(m.playInteraction(currentWorld)?.target?.label,'Wooden chest');
+ let sawAttack=false;
+ for(let tick=0;tick<150;tick++){
+  currentWorld.tick++;
+  m.stepWildlife(currentWorld);
+  m.stepCampPredators(currentWorld,m.STEP);
+  assert(pack.filter(wolf=>['warn','attack'].includes(wolf.predator.state)).length<=1);
+  sawAttack||=pack.some(wolf=>wolf.predator.state==='attack');
+ }
+ assert(pack.every(wolf=>wolf.predator.engaged),'The whole pack reacts to the approach');
+ assert(sawAttack,'A guard attacks an approaching survivor');
+ const resources={pin(){},prepare:async()=>{},ready:()=>true};
+ const oldRun=JSON.parse(m.encodeRun(new m.SceneTravel(currentWorld,resources)));
+ const oldWorld=oldRun.worlds.find(([scene])=>scene===oldRun.currentId)[1];
+ oldWorld.animals=oldWorld.animals.filter(a=>a.wildlife?.group!==m.WOODLAND_CHEST_WOLF_PACK);
+ oldWorld.ecology.slots=oldWorld.ecology.slots.filter(slot=>slot.group!==m.WOODLAND_CHEST_WOLF_PACK);
+ const upgraded=m.decodeRun(JSON.stringify(oldRun)).worlds.find(([scene])=>scene===oldRun.currentId)[1];
+ assert.equal(guards(upgraded).length,3,'Existing expeditions gain one pack');
+ const defeated=guards(upgraded)[0];
+ m.hitAnimal(upgraded,defeated,999);
+ const reloaded=m.decodeRun(m.encodeRun(new m.SceneTravel(upgraded,resources))).worlds.find(([scene])=>scene===oldRun.currentId)[1];
+ assert.equal(guards(reloaded).length,3,'Continuing does not duplicate the pack');
+ assert.equal(guards(reloaded).find(wolf=>wolf.id===defeated.id).hp,0,'Continuing preserves defeated wolves');
  const first=m.newPlacement(m.ABANDONED_CAMP_ID,1400,1400);
  const second={...m.newPlacement(m.WOODEN_LOOT_ID,2500,1500),rotation:20,flipX:true,scale:1.15};
  const layout={...m.emptyLayout(),items:[first,second]};
  const w=m.createCampPlaySession(layout,undefined,'survival');
- const resources={pin(){},prepare:async()=>{},ready:()=>true};
  const latchFor=p=>m.placementArtPoint(p,...(p.assetId===m.WOODEN_LOOT_ID?m.WOODEN_LOOT_LATCH:m.ABANDONED_CAMP_LATCH));
  const open=(world,p)=>{
   const latch=latchFor(p);
@@ -95,5 +125,5 @@ try{
  open(restored,first);
  assert.equal(m.lootChestRemaining(restored,id),0);
  assert.equal(m.takeAllLootChestRewards(restored),0);
- console.log('PASS: wooden chest opens from clear ground, survives a saved run, obeys pack weight and keeps independent loot for transformed camp copies.');
+ console.log('PASS: three guards react and take turns attacking, pack state survives a save, and the wooden chests keep independent loot.');
 }finally{rmSync(dir,{recursive:true,force:true})}
