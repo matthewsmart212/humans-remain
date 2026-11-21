@@ -20,6 +20,31 @@ function amberGlow(ctx:CanvasRenderingContext2D,x:number,y:number,radius:number,
  ctx.fillRect(x-radius,y-radius,radius*2,radius*2);
 }
 
+function drawExteriorSparkles(ctx:CanvasRenderingContext2D,time:number,power:number){
+ ctx.fillStyle='#ffe2a3';
+ for(let i=0;i<8;i++){
+  const side=i%2===0?-1:1;
+  const phase=(time*(.34+seeds[i]*.21)+seeds[i+12])%1;
+  const x=150+side*(119+seeds[i+4]*55+Math.sin(time*1.7+i)*9);
+  const y=296-phase*(168+seeds[i+8]*82);
+  const envelope=Math.sin(phase*Math.PI)**2;
+  const radius=(5+seeds[i]*6)*envelope;
+  ctx.globalAlpha=power*envelope*(.54+seeds[i+2]*.43);
+  ctx.beginPath();
+  ctx.moveTo(x,y-radius);
+  ctx.lineTo(x+radius*.16,y-radius*.16);
+  ctx.lineTo(x+radius*.58,y);
+  ctx.lineTo(x+radius*.16,y+radius*.16);
+  ctx.lineTo(x,y+radius);
+  ctx.lineTo(x-radius*.16,y+radius*.16);
+  ctx.lineTo(x-radius*.58,y);
+  ctx.lineTo(x-radius*.16,y-radius*.16);
+  ctx.closePath();
+  ctx.fill();
+ }
+ ctx.globalAlpha=1;
+}
+
 /** The chest shares its animation and effects between the campsite and editor placements. */
 export function drawWoodenLootChest(ctx:CanvasRenderingContext2D,sheet:HTMLImageElement,w:World,placementId:string,bounds:Bounds){
  const {width,height,columns,frames}=WOODEN_LOOT_SPRITE;
@@ -51,6 +76,14 @@ export function drawWoodenLootChest(ctx:CanvasRenderingContext2D,sheet:HTMLImage
  amberGlow(ctx,0,0,145,power*(pulse*.27+burst*.25));
  ctx.restore();
 
+ // Put the halo behind the sprite so the orange falloff stays around the wood.
+ ctx.save();
+ ctx.globalCompositeOperation='screen';
+ ctx.translate(150,206-gap*23);
+ ctx.scale(1,.76);
+ amberGlow(ctx,0,0,208,power*(pulse*.74+burst*.20));
+ ctx.restore();
+
  ctx.drawImage(sheet,(frame%columns)*width,Math.floor(frame/columns)*height,width,height,0,0,width,height);
  ctx.globalCompositeOperation='screen';
  const seal=power*(pulse*.61+charge*.39)*(1-gap*.86);
@@ -65,6 +98,7 @@ export function drawWoodenLootChest(ctx:CanvasRenderingContext2D,sheet:HTMLImage
  }
 
  if(!reduced){
+  drawExteriorSparkles(ctx,time,power);
   const count=empty?3:gap>.4?15:9;
   ctx.fillStyle='#ffbf59';
   for(let i=0;i<count;i++){
