@@ -244,10 +244,10 @@ class SkiaContext{
   }
  }
  // Blend terrain contacts directly on the scene surface.
- drawTerrainTile(image:SkImage,t:TerrainView&{fadeTop:number;fadeBottom:number;fadeRight:number;fadeLeft:number;paintTop:number;paintLeft?:number;paintWidth:number;paintHeight:number;texturePhase?:readonly [number,number];maskBounds?:TerrainView;groundMaterials?:{brown:SkImage;clear:SkImage;scale:number}}){
+ drawTerrainTile(image:SkImage,t:TerrainView&{fadeTop?:number;fadeBottom?:number;fadeRight?:number;fadeLeft?:number;paintTop?:number;paintLeft?:number;paintWidth?:number;paintHeight?:number;texturePhase?:readonly [number,number];maskBounds?:TerrainView;groundMaterials?:{brown:SkImage;clear:SkImage;scale:number}}){
   const dependencies=t.groundMaterials?[image,t.groundMaterials.brown,t.groundMaterials.clear]:[image];
   const {groundMaterials,...geometry}=t;
-  const bounds={x:t.x+(t.paintLeft||0),y:t.y+t.paintTop,width:t.paintWidth,height:t.paintHeight};
+  const bounds={x:t.x+(t.paintLeft||0),y:t.y+(t.paintTop||0),width:t.paintWidth??t.width,height:t.paintHeight??t.height};
   const draw=(rect:TerrainView,source:TerrainView,mode=TileMode.Clamp)=>{
    const paint=cachedPaint('ground',dependencies,[geometry,groundMaterials?.scale,source,mode],keep=>{
     const sample=(im:SkImage)=>{
