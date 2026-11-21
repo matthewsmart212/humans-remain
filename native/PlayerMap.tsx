@@ -29,13 +29,13 @@ const atlasFont='FieldKitBarlow';
 const compassRose='M0 -24L4 -4L24 0L4 4L0 24L-4 4L-24 0L-4 -4Z';
 const landmarkSymbols:Record<PlayerMapLandmark['kind'],string>={
  camp:'M-11 9L0 -10L11 9ZM-3 9L0 1L3 9M0 -10V-15L7 -12L0 -10',
+ mine:'M-9 9L3 -3M-5 -10Q4 -10 10 5Q3 -3 -5 -10Z',
  bunker:'M-12 9H12M-10 9V0Q-10 -9 0 -9Q10 -9 10 0V9M-4 9V0Q-4 -4 0 -4Q4 -4 4 0V9M-8 -3H-5M5 -3H8',
  headquarters:'M-12 -1L0 -11L12 -1M-9 -3V10H9V-3M-3 10V2H3V10M-7 1H-5M5 1H7',
  storage:'M-10 -4Q0 -11 10 -4V9H-10ZM-10 0H10M-2 -1H2V4H-2Z',
  well:'M-10 -4L0 -12L10 -4M-7 -4V6M7 -4V6M-9 6H9V10H-9ZM0 -4V4',
  building:'M-10 10V-7H-5V-11H-1V-7H3V-11H7V-7H10V10ZM-3 10V3H3V10',
 };
-const landmarkPriority:Record<PlayerMapLandmark['kind'],number>={camp:0,bunker:1,headquarters:2,well:3,storage:4,building:5};
 type Camera={zoom:number;focus:Vec};
 type Props={world:React.RefObject<World|null>;width:number;height:number;safe:{top:number;right:number;bottom:number;left:number};onClose:()=>void;diagnostics?:GamePerformanceRecorder;onReady?:(ready:boolean)=>void;active?:boolean;fullZoom?:boolean;
  /** Blends the gameplay camera into the atlas at a pinch amount. The amount

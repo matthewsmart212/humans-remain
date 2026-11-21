@@ -37,6 +37,7 @@
 .player-map-landmark{position:absolute;z-index:2;pointer-events:none;transform:translate(-50%,-50%);display:flex;flex-direction:column;align-items:center;color:#193d36}
 .player-map-landmark>span{display:grid;place-items:center;box-sizing:border-box;width:24px;height:24px;color:var(--map-ink,#374722);filter:drop-shadow(0 1px 2px var(--map-caption-shadow,transparent))}
 .player-map-landmark.is-illustrated{width:24px;height:24px}
+.player-map-landmark-mine>span{color:#f7e9bd;background:#30453a;border:1px solid #e2bf75;border-radius:50%}
 .player-map-landmark-camp>span{width:27px;height:27px;color:var(--map-ink,#5c4927)}
 .player-map-landmark.is-near-player>span{opacity:.55}
 .player-map-landmark>b{position:absolute;top:26px;padding:1px 3px;color:#193d36;font:900 13px/1.1 'Barlow Condensed',Barlow,sans-serif;letter-spacing:.35px;text-transform:uppercase;white-space:nowrap}

@@ -44,6 +44,13 @@ try{
  }
  const mark={id:'hq',kind:'headquarters',label:'Headquarters',x:1700,y:1550},illustration={...mark,kind:'headquarters',width:400,height:300,rotation:.2,flipX:false,flipY:false,source:{x:0,y:0,width:400,height:300}},features={landmarks:[mark],illustrations:[illustration],paths:[]};
  for(const zoom of [1,2,4,8,12]){const view=m.playerMapView(bounds,844,390,zoom,{x:1700,y:1550}),old=m.playerMapLabels(features,view,844,390,zoom,{x:200,y:200},true)[0],next=m.nativeMapLabel({...mark,illustration},view,844,390,m.CAMP_MAP_WALL.radius*2);if(!old){assert.equal(next.labelOpacity,0);continue}near(next.anchor.x,old.anchor.x);near(next.anchor.y,old.anchor.y);if(old.box){near(next.left,old.box.left);near(next.top,old.box.top);near(next.labelOpacity,old.opacity)}else assert.equal(next.labelOpacity,0)}
+ const mine={kind:'mine',label:'Iron mine',x:1700,y:1550};
+ for(const [width,height] of [[390,844],[844,390]]){
+  const overview=m.playerMapView(bounds,width,height,1);
+  const marker=m.nativeMapLabel(mine,overview,width,height,m.CAMP_MAP_WALL.radius*2);
+  assert.equal(marker.opacity,1,'The mine symbol is visible at full map extent');
+  assert.equal(marker.labelOpacity,1,'The mine name is visible at full map extent');
+ }
  // Surface/parent handlers have independent native IDs and can deliver down/up
  // in either order. Only native-surface grants participate; action IDs never do.
  const native=(id,x,y)=>({id,absoluteX:x,absoluteY:y}),state=m.nativePinchState();

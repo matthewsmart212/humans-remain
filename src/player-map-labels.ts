@@ -15,7 +15,8 @@ export function playerMapLabels(features:PlayerMapFeatures,view:PlayerMapView,wi
  const art=new Map(features.illustrations.filter(a=>a.kind!=='palisade').map(a=>[a.id,a]));
  const span=CAMP_MAP_WALL.radius*2*view.scale,detail=Math.max(0,Math.min(1,(span-CAMP_DETAIL_SPAN.hidden)/(CAMP_DETAIL_SPAN.full-CAMP_DETAIL_SPAN.hidden)));
  return features.landmarks.flatMap(mark=>{
-  if(mark.kind!=='camp'&&detail===0)return[];
+  const overview=mark.kind==='camp'||mark.kind==='mine';
+  if(!overview&&detail===0)return[];
   const illustration=art.get(mark.id),anchor=projectMapPoint(illustration??mark,view);
   if(anchor.x<-120||anchor.y<-120||anchor.x>width+120||anchor.y>height+120)return[];
   const factor=illustration?mapArtDisplayFactor(illustration,view.scale):1;
@@ -26,6 +27,6 @@ export function playerMapLabels(features:PlayerMapFeatures,view:PlayerMapView,wi
   const fixed={left:anchor.x-labelWidth/2,top,width:labelWidth,height:labelHeight};
   const inside=fixed.left>=8&&fixed.top>=8&&fixed.left+fixed.width<=width-8&&fixed.top+fixed.height<=height-8;
   const controls={left:width-76,top:0,width:76,height:184};
-  return[{mark,anchor,illustrated:artReady&&!!illustration,opacity:mark.kind==='camp'?1:detail,box:inside&&!overlaps(fixed,controls)?fixed:undefined}];
+  return[{mark,anchor,illustrated:artReady&&!!illustration,opacity:overview?1:detail,box:inside&&!overlaps(fixed,controls)?fixed:undefined}];
  });
 }

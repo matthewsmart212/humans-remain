@@ -42,7 +42,7 @@ export const ASSET_CONNECTIONS:Readonly<Record<string,AssetConnection>>={
   returnPoint:[.42,.75],exitVector:[-.1,.1],waitForAnimation:true,
  },
 };
-function imagePoint(p:Placement,[u,v]:CollisionPoint):CollisionPoint{const b=placementBounds(p);return placementPoint(p,b.x+u*b.width,b.y+v*b.height)}
+export function imagePoint(p:Placement,[u,v]:CollisionPoint):CollisionPoint{const b=placementBounds(p);return placementPoint(p,b.x+u*b.width,b.y+v*b.height)}
 const portalCache=new WeakMap<object,{bunkerOpen:boolean;portals:ScenePortal[]}>();
 export function scenePortals(world:World):ScenePortal[]{
  if(world.scene)return world.scene.portals;

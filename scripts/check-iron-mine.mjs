@@ -8,7 +8,7 @@ import {build} from 'esbuild';
 const temp=fs.mkdtempSync(path.join(os.tmpdir(),'iron-mine-'));
 try {
  const modules=['world-scenes','survival-engine','studio-play','authored-world','imported-art','scene-travel',
-  'rock-mining','world-layout','camp-gates','loot-chest','run-save','expedition-inventory','play-interaction','outdoor-terrain','world-master-plan','river-collision','east-approach'];
+  'player-map','player-map-labels','rock-mining','world-layout','camp-gates','loot-chest','run-save','expedition-inventory','play-interaction','outdoor-terrain','world-master-plan','river-collision','east-approach'];
  const outfile=path.join(temp,'game.cjs');
  await build({stdin:{contents:modules.map(name=>`export * from './src/${name}'`).join('\n'),resolveDir:process.cwd()},
   outfile,bundle:true,platform:'node',format:'cjs'});
@@ -21,6 +21,18 @@ try {
  const entrance=game.scenePortals(camp).find(p=>p.destination.sceneId==='iron-mine');
  assert(entrance,'The northwest entrance is available in a new expedition');
  assert(entrance.returnSpawn.x<layout.spawn.x && entrance.returnSpawn.y<layout.spawn.y);
+ const features=game.playerMapFeatures(camp.layout),scene=game.playerMapScene(camp);
+ const minePin=features.landmarks.find(mark=>mark.kind==='mine');
+ assert(minePin,'The authored world has a mapped iron mine entrance');
+ assert.equal(minePin.x,entrance.returnSpawn.x,'Mine marker sits on the walkable entrance approach x');
+ assert.equal(minePin.y,entrance.returnSpawn.y,'Mine marker sits on the walkable entrance approach y');
+ for(const [width,height] of [[390,844],[844,390],[320,568]]){
+  const view=game.playerMapView(scene.bounds,width,height,1);
+  for(const artReady of [true,false]){
+   const label=game.playerMapLabels(features,view,width,height,1,camp.player,artReady).find(label=>label.mark.id===minePin.id);
+   assert(label?.box&&label.opacity===1&&!label.illustrated,'The overview shows a named mine pin with or without atlas art');
+  }
+ }
  const dist=(a,b)=>Math.hypot(a.x-b.x,a.y-b.y);
  const centroid=points=>({x:points.reduce((s,p)=>s+p[0],0)/points.length,y:points.reduce((s,p)=>s+p[1],0)/points.length});
  const advance=(travel,n)=>{for(let i=0;i<n;i++)travel.tick(game.STEP)};
