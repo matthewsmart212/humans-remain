@@ -1,3 +1,5 @@
+import {CAMP_CHEST_OPEN_TICKS} from './abandoned-camp-art';
+
 /** Per-instance presentation state, separate from saved placement and inventory. */
 export type ChestMotion={from:number;target:0|1;started:number};
 export const placedLootChestId=(placementId:string)=>'placed-cache:'+placementId;
@@ -15,6 +17,10 @@ export function toggleChest(world:ChestWorld,id:string){
  (world.chestMotions??={})[id]={from,target,started:world.tick};
 }
 export function chestFrame(world:ChestWorld,id:string,count:number){
- if(world.lootChests?.[placedLootChestId(id)])return Math.max(0,count-1);
+ const opened=world.lootChests?.[placedLootChestId(id)];
+ if(opened){
+  const progress=opened.menuShown?1:Math.min(1,Math.max(0,(world.tick-opened.openedAt)/CAMP_CHEST_OPEN_TICKS));
+  return Math.floor(progress*Math.max(0,count-1));
+ }
  return Math.round(chestAmount(world,id)*Math.max(0,count-1));
 }

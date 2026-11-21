@@ -223,4 +223,5 @@ public/survival/expedition-menu-v2/loading-panel.webp -filter -diff -merge
 /public/maps/world-terrain.webp -filter -diff -merge -text
 /public/planning/built-river-features-v4.webp -filter -diff -merge -text
 
+/public/survival/abandoned-woodland-camp-v2/*.webp -filter -diff -merge -text
 /public/survival/abandoned-woodland-camp-v1/*.webp -filter -diff -merge -text

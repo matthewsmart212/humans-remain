@@ -5,8 +5,12 @@ export const ABANDONED_CAMP_ID='art_abandoned_woodland_camp';
 export const ABANDONED_CAMP_LATCH=[.338,.57] as const;
 export const ABANDONED_CAMP_SIZE=[1020,680] as const;
 export const ABANDONED_CAMP_WIDTH=500;
-const directory='/survival/abandoned-woodland-camp-v1';
-export const ABANDONED_CAMP_FRAMES=[directory+'/closed.webp',directory+'/open.webp'];
+const directory='/survival/abandoned-woodland-camp-v2';
+export const CAMP_POSTER=directory+'/closed.webp';
+export const CAMP_SCENERY=directory+'/scenery.webp';
+export const CAMP_CHEST_SHEET=directory+'/chest-opening.webp';
+export const CAMP_CHEST_SPRITE={x:263,y:173,width:160,height:180,frames:9} as const;
+export const CAMP_CHEST_OPEN_TICKS=48;
 
 // Ground contacts only. The bones and dropped provisions can be stepped over.
 export const ABANDONED_CAMP_COLLISION:AssetCollision={
@@ -17,7 +21,7 @@ export const ABANDONED_CAMP_COLLISION:AssetCollision={
   {closed:true,points:[[.546,.278],[.588,.32],[.98,.592],[.979,.535],[.62,.266]]},
   {closed:true,points:[[.5,.59],[.56,.626],[.602,.563],[.6,.512],[.528,.527]]},
   {closed:true,points:[[.57,.767],[.60,.811],[.685,.78],[.862,.866],[.932,.808],[.679,.637]]},
-  {closed:true,points:[[.218,.695],[.28,.659],[.365,.657],[.423,.705],[.425,.766],[.37,.819],[.264,.814],[.209,.77]]},
+  {closed:true,points:[[.037,.774],[.099,.738],[.184,.736],[.242,.784],[.244,.845],[.189,.898],[.083,.893],[.028,.849]]},
   {closed:true,points:[[.275,.488],[.402,.481],[.408,.505],[.281,.517]]},
  ],
 };
@@ -29,8 +33,8 @@ export const abandonedCampEntry:CatalogueEntry={
  purpose:'Search the wooden chest beneath the larger shelter.',improvement:'',
  appearance:'Two torn shelters, a cold hearth, scattered bones, supplies and a broken stake fence.',
  states:'Closed or opened wooden chest. Each camp keeps its own remaining loot.',
- image:ABANDONED_CAMP_FRAMES[0],crop:[0,0,...ABANDONED_CAMP_SIZE],artPreview:{worldWidth:ABANDONED_CAMP_WIDTH,openFrames:ABANDONED_CAMP_FRAMES},
- artworkExports:ABANDONED_CAMP_FRAMES,artLinks:[],implementationDependencies:[],blockers:[],playerUnlock:'Approach the chest',
+ image:CAMP_POSTER,crop:[0,0,...ABANDONED_CAMP_SIZE],artPreview:{worldWidth:ABANDONED_CAMP_WIDTH},
+ artworkExports:[CAMP_POSTER,CAMP_SCENERY,CAMP_CHEST_SHEET],artLinks:[],implementationDependencies:[],blockers:[],playerUnlock:'Approach the chest',
  resourceCost:'None',inputs:'',outputs:'Salvaged supplies',capacity:'One loot chest per camp',buildMenuVisibility:'World editor',
  availability:'Current world asset',testScope:'Placement, chest interaction and loot persistence.',
 };

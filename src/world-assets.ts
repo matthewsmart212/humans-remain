@@ -1,4 +1,4 @@
-import {ABANDONED_CAMP_ID,ABANDONED_CAMP_FRAMES,ABANDONED_CAMP_SIZE,ABANDONED_CAMP_COLLISION} from './abandoned-camp-art';
+import {ABANDONED_CAMP_ID,CAMP_POSTER,CAMP_SCENERY,CAMP_CHEST_SHEET,ABANDONED_CAMP_SIZE,ABANDONED_CAMP_COLLISION} from './abandoned-camp-art';
 import {IRON_ROCK_FOOT,HEARTH_FOOT,WELL_IMAGE,WELL_FOOT} from './camp-fixture-collision';
 import {FURNACE_COLLISION,WAREHOUSE_ARTWORK,WAREHOUSE_ASSET_ID} from './camp-worksites-art';
 import {restorationImages} from './camp-restoration';
@@ -43,7 +43,7 @@ export type WorldAsset={perimeterCurve?:number[][];perimeterDrawOrder?:number;pe
 export const imageDimensions=metadata as Record<string,number[]>;
 const sizes=imageDimensions;
 for(const f of [...foliageArt,...puddleArt,...treeArt,...sceneryArt,...FORAGE_ART,...IRONWORKS_WORLD_ART,...GARDEN_ART])sizes[f.image]=f.size;
-for(const frame of ABANDONED_CAMP_FRAMES)sizes[frame]=[...ABANDONED_CAMP_SIZE];
+sizes[CAMP_POSTER]=sizes[CAMP_SCENERY]=[...ABANDONED_CAMP_SIZE];
 const assets:WorldAsset[]=[];
 const sourceKey=(image:string,crop:number[])=>image+':'+crop.join(',');
 const seen=new Map<string,WorldAsset>();
@@ -135,7 +135,7 @@ export function requiredImages(assetIds:string[],terrain?:{url:string},options:{
   // cropped motion sheets and charcoal base are needed once optional animation warms.
   const frames=options.animationFrames===false||hearth?[a.frames?.[0],a.openFrames?.[0]]:[...(a.frames||[]),...(a.openFrames||[])];
   for(const url of [...restorationImages(id),a.image,a.roof,a.unlit,a.ground?.image,...(a.image===HQ_SOUTH_INTERIOR?HQ_FOUNDATION_DRESSING.map(d=>d.image):[]),a.gate?.leaf,a.gate?.post,a.gate?.states?.closed,a.gate?.states?.open,...frames])if(url)out[assetImageKey(url)]=url;
-  if(id===ABANDONED_CAMP_ID)for(const url of ABANDONED_CAMP_FRAMES)out[assetImageKey(url)]=url;
+  if(id===ABANDONED_CAMP_ID)for(const url of [CAMP_SCENERY,CAMP_CHEST_SHEET])out[assetImageKey(url)]=url;
   if(hearth&&options.animationFrames!==false)Object.assign(out,HEARTH_ANIMATION_IMAGES);
   if(treeShadeFrames.has(a.image))out.treeCanopyShade=TREE_SHADE_IMAGE;
   if(treeArt.some(t=>t.id===id))out[assetImageKey(TREE_LOG_IMAGE)]=TREE_LOG_IMAGE;

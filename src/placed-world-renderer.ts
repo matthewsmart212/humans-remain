@@ -44,6 +44,7 @@ import type {WeatherView} from './weather-skia';
 import {drawCampLighting,placedFireLit,nightStrength} from './camp-lighting';
 import {bonfireFoodDrawables,drawCampfireHud} from './bonfire-food-renderer';
 import {stationMenuPan,menuClock} from './station-menu-layout';
+import {ABANDONED_CAMP_ID,ABANDONED_CAMP_SIZE,CAMP_SCENERY,CAMP_CHEST_SHEET,CAMP_CHEST_SPRITE} from './abandoned-camp-art';
 import {chestFrame} from './chest-animation';
 import {ASSET_BY_ID,assetImageKey,type WorldAsset} from './world-assets';
 import {placedAnimationFrame} from './step-on-animation';
@@ -163,7 +164,17 @@ export function placedDrawables(ctx:CanvasRenderingContext2D,imgs:Record<string,
   // Only contacted/recovering plants need deformed geometry. All idle plants
   // retain their original pixels through the ordinary image path.
   const animatePlant=!!a.foliage&&(viewport?.scale??1)>=.42&&!!w.foliageMotions?.[p.id];
-  const drawBase=()=>{if(southHQ){
+  const drawBase=()=>{
+   if(a.id===ABANDONED_CAMP_ID){
+    const scenery=imgs[assetImageKey(CAMP_SCENERY)],sheet=imgs[assetImageKey(CAMP_CHEST_SHEET)];
+    if(!scenery||!sheet){ctx.drawImage(im,b.x,b.y,b.width,b.height);return}
+    const sprite=CAMP_CHEST_SPRITE,pose=chestFrame(w,p.id,sprite.frames);
+    const sx=b.width/ABANDONED_CAMP_SIZE[0],sy=b.height/ABANDONED_CAMP_SIZE[1];
+    ctx.drawImage(scenery,b.x,b.y,b.width,b.height);
+    ctx.drawImage(sheet,pose*sprite.width,0,sprite.width,sprite.height,b.x+sprite.x*sx,b.y+sprite.y*sy,sprite.width*sx,sprite.height*sy);
+    return;
+   }
+   if(southHQ){
    // All four HQ sprites use the same canvas, footprint, table and stairs.
    // Draw one complete interior below actors; never splice mismatched upper/lower
    // image regions (the former hard seam left a square cut out of the façade).

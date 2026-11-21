@@ -17,17 +17,16 @@ try{
  const campsite=snapshot.layout.items.find(p=>p.assetId===m.ABANDONED_CAMP_ID);
  assert(campsite,'The published camp must include its northwest woodland camp');
  // Follow the northwest road into the clearing and between the lean-to and cold hearth.
- const approach=[[440,180],[599,368],[155,524],[143,764],[107,848],[-49,860],[-133,776],[-145,752],[-150,736],[-196,733]];
- for(let i=1;i<approach.length;i++){
-  const [ax,ay]=approach[i-1],[bx,by]=approach[i];
-  const steps=Math.ceil(Math.hypot(bx-ax,by-ay)/2);
-  for(let j=0;j<=steps;j++){
-   const x=ax+(bx-ax)*j/steps,y=ay+(by-ay)*j/steps;
-   assert(!m.worldBlocked(currentWorld,x,y,19),`Northwest chest approach must stay clear at ${x}, ${y}`);
+ const approach=[[440,180],[599,368],[155,524],[143,764],[107,848],[-49,860],[-196,860],[-196,733]];
+ Object.assign(currentWorld.player,{x:approach[0][0],y:approach[0][1]});
+ for(const [x,y] of approach.slice(1)){
+  const player=currentWorld.player;
+  for(let tick=0;tick<600&&Math.hypot(x-player.x,y-player.y)>2;tick++){
+   const dx=x-player.x,dy=y-player.y,d=Math.hypot(dx,dy);
+   m.movePlayer(currentWorld,{x:dx/Math.max(d,5),y:dy/Math.max(d,5)});
   }
+  assert(Math.hypot(x-player.x,y-player.y)<=2,`Walking to ${x},${y} stopped at ${player.x},${player.y}`);
  }
- const [x,y]=approach.at(-1);
- Object.assign(currentWorld.player,{x,y});
  assert.equal(m.nearbyLootChest(currentWorld)?.id,m.placedLootChestId(campsite.id));
  assert.equal(m.playInteraction(currentWorld)?.target?.label,'Wooden chest');
  const first=m.newPlacement(m.ABANDONED_CAMP_ID,1400,1400);
@@ -46,8 +45,17 @@ try{
   const action=m.playInteraction(world);
   assert.equal(action?.target?.label,'Wooden chest');
   assert.equal(action.perform(),true);
+  if(world.rareCacheMenuAt!==undefined){
+   const start=world.tick,count=m.CAMP_CHEST_SPRITE.frames,seen=new Set();
+   for(let age=0;age<=m.CAMP_CHEST_OPEN_TICKS;age++){
+    world.tick=start+age;m.stepLootChest(world);
+    assert.equal(world.stationPanel,undefined);
+    seen.add(m.chestFrame(world,p.id,count));
+   }
+   assert.deepEqual([...seen],Array.from({length:count},(_,i)=>i));
+   world.tick=world.rareCacheMenuAt;m.stepLootChest(world);
+  }
   assert.equal(m.chestFrame(world,p.id,2),1);
-  if(world.rareCacheMenuAt!==undefined){world.tick=world.rareCacheMenuAt;m.stepLootChest(world)}
   assert.equal(world.stationPanel,'rare-cache');
   assert(m.atStation(world));
  };

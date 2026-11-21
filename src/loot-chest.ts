@@ -1,6 +1,6 @@
 import {withinActionReach,type World} from './survival-engine';
 import {hitCollider,type Collider} from './camp-collision';
-import {ABANDONED_CAMP_LATCH} from './abandoned-camp-art';
+import {ABANDONED_CAMP_LATCH,CAMP_CHEST_OPEN_TICKS} from './abandoned-camp-art';
 import {placedLootChestId} from './chest-animation';
 import {layoutViews} from './layout-views';
 import {placementArtPoint} from './world-layout';
@@ -92,7 +92,7 @@ function accessibleLootChest(w:World,id?:string):ChestLatch|null{
 }
 export const lootChestInMenuRange=(w:World,id=w.lootChestId??LOOT_CHEST_ID)=>!!accessibleLootChest(w,id);
 export const nearbyLootChest=(w:World)=>w.rareCacheMenuAt===undefined?accessibleLootChest(w):null;
-const revealTicks=(id:string)=>id===LOOT_CHEST_ID?LOOT_CHEST_OPEN_TICKS+LOOT_CHEST_REVEAL_HOLD_TICKS:18;
+const revealTicks=(id:string)=>id===LOOT_CHEST_ID?LOOT_CHEST_OPEN_TICKS+LOOT_CHEST_REVEAL_HOLD_TICKS:CAMP_CHEST_OPEN_TICKS+12;
 function showChestContents(w:World,id:string){
  w.lootChests![id].menuShown=true;
  w.lootChestId=id;
