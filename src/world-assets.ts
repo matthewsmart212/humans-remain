@@ -32,6 +32,10 @@ import rockCollisions from './rock-collisions.json';
 import puddleArt from './puddle-art.json';
 import treeArt from './tree-art.json';
 const sceneryArt=[...worldSceneryArt,...rockArt];
+export const sceneryLockedByDefault=new Set([
+ 'prop_tree', ...treeArt.map(a=>a.id), ...campFoliageArt.map(a=>a.id),
+ ...sceneryArt.map(a=>a.id), ...FORAGE_ART.map(a=>a.id), ...MINEABLE_ROCKS.keys(),
+]);
 const sceneryBlockers={...sceneryCollisions,...rockCollisions} as unknown as Record<string,AssetCollision>;
 const foliageArt=[...campFoliageArt,...sceneryArt.filter(s=>s.kind==='foliage')];
 
