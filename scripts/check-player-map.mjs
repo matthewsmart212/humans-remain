@@ -96,8 +96,8 @@ try{
  for(const span of [120,260,280,300,600]){
   const scale=span/(m.CAMP_MAP_WALL.radius*2),width=1200,height=1000,view={x:camp.x-width/scale/2,y:camp.y-height/scale/2,width:width/scale,height:height/scale,scale};
   const labels=m.playerMapLabels(features,view,width,height,999,{x:0,y:0},true);
-  if(span<=260)assert(labels.every(l=>l.mark.kind==='camp'),'Only CAMP remains at wide zoom');
-  else {assert.equal(labels.length,features.landmarks.length,'All building names share one detail threshold');assert(labels.filter(l=>l.mark.kind!=='camp').every(l=>l.opacity===(span>=300?1:.5)))}
+  if(span<=260)assert(labels.every(l=>l.mark.kind==='camp'||l.mark.kind==='mine'),'Only overview landmarks remain at wide zoom');
+  else {assert.equal(labels.filter(l=>l.mark.kind!=='mine').length,features.landmarks.filter(mark=>mark.kind!=='mine').length,'All camp building names share one detail threshold');assert(labels.filter(l=>l.mark.kind!=='camp'&&l.mark.kind!=='mine').every(l=>l.opacity===(span>=300?1:.5)))}
   const fire=features.illustrations.find(a=>a.kind==='camp');assert(fire.width*scale*m.mapArtDisplayFactor(fire,scale)>=28-1e-7,'Camp overview symbol stays readable');
  }
  const atlas=JSON.parse(fs.readFileSync('src/player-map-art.json','utf8'));

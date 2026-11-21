@@ -29,7 +29,7 @@ export function nativeMapLabel(data:NativeMapLabelData,view:PlayerMapView,width:
  const factor=art?.kind==='camp'?Math.max(1,28/(art.width*view.scale)):1,artHeight=art?(Math.abs(Math.sin(art.rotation))*art.width+Math.abs(Math.cos(art.rotation))*art.height)*view.scale*factor:24;
  const w=data.label.length*7+8,h=15,top=data.kind==='headquarters'?anchor.y-artHeight/2-h-5:anchor.y+(data.kind==='camp'?Math.max(28,artHeight/2+4):artHeight/2+4),left=anchor.x-w/2;
  const inView=anchor.x>=-120&&anchor.y>=-120&&anchor.x<=width+120&&anchor.y<=height+120,inside=left>=8&&top>=8&&left+w<=width-8&&top+h<=height-8,controls=left<width&&left+w>width-76&&top<184&&top+h>0;
- const opacity=data.kind==='camp'?1:detail;
+ const opacity=data.kind==='camp'||data.kind==='mine'?1:detail;
  return{anchor,left,top,width:w,opacity:inView?opacity:0,labelOpacity:inView&&inside&&!controls?opacity:0};
 }
 /** Mirrors the tile request coverage, not the per-pixel camera transform. */
