@@ -1,3 +1,4 @@
+import {ABANDONED_CAMP_ID} from './abandoned-camp-art';
 import {MAP_WIDTH,MAP_HEIGHT} from './factory-map';
 import {usesPaintedHomeTerrain} from './terrain-art';
 import {OUTDOOR_FOOTPRINT} from './outdoor-terrain';
@@ -89,6 +90,7 @@ function ellipse(p:Placement,cx:number,cy:number,rx:number,ry:number){
 function landmark(p:Placement,a:WorldAsset):PlayerMapLandmark|undefined{
  const b=placementBounds(p),centre=()=>{const [x,y]=placementPoint(p,b.x+b.width/2,b.y+b.height*.58);return{x,y}};
  const contact=()=>{const [x,y]=placementPoint(p,p.x,p.y);return{x,y}};
+ if(p.assetId===ABANDONED_CAMP_ID)return{id:p.id,kind:'building',label:'Abandoned camp',...centre()};
  if(p.role==='hearth')return{id:p.id,kind:'camp',label:'Camp',...contact()};
  if(p.role==='well')return{id:p.id,kind:'well',label:'Well',...contact()};
  if(ASSET_CONNECTIONS[p.assetId]?.destination.sceneId==='bunker')return{id:p.id,kind:'bunker',label:'Bunker',...centre()};

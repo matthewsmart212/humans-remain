@@ -1,3 +1,4 @@
+import {ABANDONED_CAMP_FRAMES} from './abandoned-camp-art';
 import {WORKSITE_ROOT,WAREHOUSE_ARTWORK} from './camp-worksites-art';
 import {HQ_SOUTH_INTERIOR,HQ_SOUTH_RUIN_INTERIOR} from './headquarters-south-art';
 import {FURNACE_BROKEN_IMAGE,FURNACE_COLD_IMAGE} from './furnace-animation-art';
@@ -73,7 +74,23 @@ const ruinedHq:BuildingPainting={...hq,panels:[...hq.panels,
 const well:BuildingPainting={base:[43,75],panels:[]};
 const hearth:BuildingPainting={base:[50,74],panels:[]};
 
+// The campsite is one editor placement. Its tent, fence and hearth have
+// different ground depths, so a survivor can walk between the painted props.
+const abandonedCamp:BuildingPainting={base:[50,28],panels:[
+ // Large shelter and chest, then its nearer left wing and bucket.
+ panel([34,51],[0,39],[7,32],[15,9],[35,0],[41,0],[49,26],[54,46],[49,53],[27,53],[24,62],[5,64],[0,57]),
+ panel([20,60],[7,31],[25,28],[24,60],[20,63],[5,64],[7,55],[1,54],[0,39]),
+ // Broken fence, barrel and loose planks at the back.
+ panel([78,46],[54,23],[60,5],[69,12],[78,26],[88,33],[100,45],[100,61],[92,59],[80,48],[70,50],[65,41],[57,32]),
+ panel([55,62],[49,51],[55,46],[61,49],[60,59],[56,64],[49,61]),
+ // The stone fire ring, low lean-to and spilled supplies at the front.
+ panel([32,79],[19,68],[25,62],[35,60],[42,64],[46,72],[43,80],[34,85],[23,84],[19,79]),
+ panel([73,83],[45,77],[54,63],[60,53],[61,43],[67,43],[68,51],[81,57],[88,58],[96,80],[93,85],[83,89],[70,85],[60,87],[45,82]),
+ panel([66,96],[53,88],[62,85],[70,80],[78,84],[78,95],[68,99],[52,100]),
+]};
+
 const paintings=new Map<string,BuildingPainting>([
+ [ABANDONED_CAMP_FRAMES[0],abandonedCamp],
  [HQ_SOUTH_INTERIOR,hq],[HQ_SOUTH_RUIN_INTERIOR,ruinedHq],
  [WAREHOUSE_ARTWORK.full,warehouse],[WORKSITE_ROOT+'/warehouse-broken.webp',warehouse],
  [TREATMENT_IDLE_FRAMES[0],treatment],[TREATMENT_BROKEN_IMAGE,treatmentBroken],

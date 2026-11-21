@@ -3,7 +3,8 @@ import bundledWorld from '../native/assets/world-snapshot.json';
 import type {ArtworkRecord} from '../src/artwork-model';
 import {readArtwork} from './artwork';
 import {assetMapWithImports} from '../src/imported-art';
-import {validateLayout} from '../src/world-layout';
+import {validateLayout,type WorldLayout} from '../src/world-layout';
+import {placeNorthwestAbandonedCamp} from '../src/abandoned-camp-placement';
 import {validTerrainBorder} from '../src/terrain-limits';
 import {publishBundledWorld,explainWorldSyncFailure} from './world-bundle';
 type Statement={bind:(...values:unknown[])=>Statement;all:()=>Promise<{results:any[]}>;run:()=>Promise<any>};
@@ -12,6 +13,15 @@ async function worldRecords(DB:{prepare:(sql:string)=>Statement}){
  const current=await readArtwork(DB,true),ids=new Set(current.map(r=>r.id));
  const baseline=bundledWorld.records as unknown as ArtworkRecord[];
  return [...baseline.filter(r=>!ids.has(r.id)),...current];
+}
+
+/** Apply shipped scenery to the winning published layout while retaining the
+ * owner's publication timestamp, custom placements and intentional removals. */
+function publishedLayout(appliedJson?:string){
+ const stored:WorldLayout|null=appliedJson?JSON.parse(appliedJson):null;
+ const useDatabase=!!stored&&typeof stored.updatedAt==='string'&&stored.updatedAt>=bundledWorld.layout.updatedAt;
+ const source=useDatabase?stored:bundledWorld.layout as WorldLayout;
+ return {useDatabase,layout:placeNorthwestAbandonedCamp(source)};
 }
 
 /** Public, read-only copy of the last explicitly published authored world.
@@ -25,11 +35,7 @@ export async function handlePublishedWorld(request:Request,DB:{prepare:(sql:stri
   const row=(await DB.prepare("SELECT applied_json FROM world_layout WHERE id='main'").all()).results[0];
   // The packaged world is the initial public release until the owner
   // publishes a D1 version. Do not write to D1 on a read request.
-  const databaseLayout=row?.applied_json?JSON.parse(row.applied_json):null;
-  // Publishing from the owner's private Site may commit a newer bundled
-  // snapshot to GitHub; a Cloudflare deploy must not serve stale D1 artwork.
-  const useDatabase=!!databaseLayout&&typeof databaseLayout.updatedAt==='string'&&databaseLayout.updatedAt>=bundledWorld.layout.updatedAt;
-  const layout=useDatabase?databaseLayout:bundledWorld.layout;
+  const {layout,useDatabase}=publishedLayout(row?.applied_json);
   const records=useDatabase?await worldRecords(DB):bundledWorld.records;
   return new Response(request.method==='HEAD'?null:JSON.stringify({schemaVersion:1,layout,records,updatedAt:layout.updatedAt}),{headers:{...headers,'Content-Type':'application/json;charset=utf-8'}});
  }catch(error){console.error('Published world read failed',error);return Response.json({error:'Published world unavailable'},{status:503,headers:{...headers,'Cache-Control':'no-store'}})}
@@ -37,7 +43,7 @@ export async function handlePublishedWorld(request:Request,DB:{prepare:(sql:stri
 export async function handleWorldLayout(request:Request,DB:{prepare:(sql:string)=>Statement},canEdit:boolean,githubToken?:string){
  const json=(v:unknown,status=200)=>Response.json(v,{status,headers:{'Cache-Control':'no-store'}});
  try{
-  if(request.method==='GET'){const row=(await DB.prepare("SELECT draft_json,applied_json,revision,updated_at FROM world_layout WHERE id='main'").all()).results[0];return json({draft:canEdit&&row?.draft_json?JSON.parse(row.draft_json):null,applied:row?.applied_json&&JSON.parse(row.applied_json).updatedAt>=bundledWorld.layout.updatedAt?JSON.parse(row.applied_json):bundledWorld.layout,revision:row?.revision||0,updatedAt:row?.updated_at||null,canEdit})}
+  if(request.method==='GET'){const row=(await DB.prepare("SELECT draft_json,applied_json,revision,updated_at FROM world_layout WHERE id='main'").all()).results[0];return json({draft:canEdit&&row?.draft_json?JSON.parse(row.draft_json):null,applied:publishedLayout(row?.applied_json).layout,revision:row?.revision||0,updatedAt:row?.updated_at||null,canEdit})}
   if(request.method!=='PUT')return json({error:'Method not allowed'},405);
   if(!canEdit)return json({error:'Only the owner can save or publish the shared world. Sign in to publish; your local draft is kept.'},403);
   if(request.headers.get('Origin')!==new URL(request.url).origin)return json({error:'Origin not allowed'},403);

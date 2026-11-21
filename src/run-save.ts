@@ -1,3 +1,4 @@
+import {placeNorthwestAbandonedCamp} from './abandoned-camp-placement';
 import {placeCampWorksites} from './camp-worksites-placement';
 import {expandHeadquartersSpace} from './headquarters-space';
 import {refineCampVegetation} from './camp-vegetation';
@@ -30,7 +31,7 @@ export async function prepareSavedCampArtwork(snapshot:TravelSnapshot,load:(sour
  if(camp?.layout)await load(requiredImages(camp.layout.items.map(p=>p.assetId),camp.layout.terrainImage));
 }
 const MAX_SAVE_BYTES=12_000_000;
-const OMIT=new Set(['scene','outdoorReady','foliageMotions','puddleMotion','stepOnMotions','effects','combatStats','stationPanel','rareCacheMenuAt','repairHammerUntil','buildingRepair','buildingHits','fieldKitTarget','fieldKitBuildingFocus','repairCheckpoint','furnaceId','smithyId','attackQueuedUntil','axeSwing','spearThrust','swordThrust','bowShot','bowLock','bruteGrab','dodge']);
+const OMIT=new Set(['scene','outdoorReady','foliageMotions','puddleMotion','stepOnMotions','effects','combatStats','stationPanel','lootChestId','rareCacheMenuAt','repairHammerUntil','buildingRepair','buildingHits','fieldKitTarget','fieldKitBuildingFocus','repairCheckpoint','furnaceId','smithyId','attackQueuedUntil','axeSwing','spearThrust','swordThrust','bowShot','bowLock','bruteGrab','dodge']);
 /** Shared with the native compact store so both formats retain identical state. */
 export function runSaveValue(key:string,value:unknown):unknown{return OMIT.has(key)?undefined:value instanceof Set?{$set:[...value]}:value}
 export function encodeRun(travel:SceneTravel):string|null{
@@ -46,7 +47,8 @@ type SavedPoint={x:number;y:number};
  * perimeter, retaining all run state and safe camp return points. */
 export function migrateSavedCampPerimeter(w:World,route:{sceneId:string;spawn:SavedPoint}[]){
  if(!w.layout)return false;
- const next=placeCampWorksites(expandHeadquartersSpace(fitHeadquartersInterior(placeSouthFacingHeadquarters(addApprovedCampPerimeter(w.layout)))));if(next===w.layout)return false;
+ const structures=placeCampWorksites(expandHeadquartersSpace(fitHeadquartersInterior(placeSouthFacingHeadquarters(addApprovedCampPerimeter(w.layout)))));
+ const next=placeNorthwestAbandonedCamp(structures);if(next===w.layout)return false;
  const previous=new Map(w.layout.items.map(p=>[p.id,p]));
  const added=next.items.filter(p=>{
   const old=previous.get(p.id);

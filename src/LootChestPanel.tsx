@@ -3,16 +3,17 @@ import React from 'react';
 import type {World} from './survival-engine';
 import StationMenu from './StationMenu';
 import {packLoad} from './expedition-inventory';
+import {PROVISIONS,isProvision} from './food-provisions-data';
 import {GEAR} from './player-gear';
-import {LOOT_CHEST_REWARDS,lootChestContents,lootChestRemaining,canCarryLootChestReward,takeLootChestReward,takeAllLootChestRewards,type LootChestRewardKind} from './loot-chest';
+import {lootChestName,lootChestRewards,lootChestContents,lootChestRemaining,canCarryLootChestReward,takeLootChestReward,takeAllLootChestRewards,type LootChestRewardKind} from './loot-chest';
 import './loot-chest-panel.css';
 
 type Props={world:World;onClose:()=>void;onChange:()=>void};
 
 export default function LootChestPanel({world,onClose,onChange}:Props){
  const [message,setMessage]=useStationFeedback();
- const contents=lootChestContents(world),remaining=lootChestRemaining(world),load=packLoad(world);
- const rewards=LOOT_CHEST_REWARDS.map(reward=>{
+ const contents=lootChestContents(world,world.lootChestId),remaining=lootChestRemaining(world,world.lootChestId),load=packLoad(world);
+ const rewards=lootChestRewards(world.lootChestId).map(reward=>{
   const count=contents[reward.kind]??0;
   return {...reward,count,capacity:canCarryLootChestReward(world,reward.kind,count)};
  }).filter(reward=>reward.count>0);
@@ -23,16 +24,16 @@ export default function LootChestPanel({world,onClose,onChange}:Props){
  };
  const takeAll=()=>{
   const gained=takeAllLootChestRewards(world);
-  setMessage(gained?`Collected ${gained} ${gained===1?'item':'items'}. ${lootChestRemaining(world)?'The rest stays in the chest.':'The chest is empty.'}`:'No room in your backpack.');
+  setMessage(gained?`Collected ${gained} ${gained===1?'item':'items'}. ${lootChestRemaining(world,world.lootChestId)?'The rest stays in the chest.':'The chest is empty.'}`:'No room in your backpack.');
   onChange();
  };
  const canTake=rewards.some(reward=>reward.capacity>0);
- return <StationMenu compact fitContent world={world} title="Loot chest" label="Open loot chest and its contents" onClose={onClose}
+ return <StationMenu compact fitContent world={world} title={lootChestName(world.lootChestId)} label="Open loot chest and its contents" onClose={onClose}
   weight={load.weight} loadLabel={load.label} message={message} className="rare-cache-menu">
   {(!remaining||!canTake)&&<p className="rare-cache-empty">{remaining?'Backpack full':'Chest empty'}</p>}
   <div className="rare-cache-list" aria-label="Loot chest contents">
    {rewards.map(({kind,name,description,count,capacity})=><div className="rare-cache-reward" key={kind}>
-    <img src={GEAR[kind].image} alt="" draggable={false}/>
+    <img src={isProvision(kind)?PROVISIONS[kind].image:GEAR[kind].image} alt="" draggable={false}/>
     <div><strong>{name}</strong><small>{description}</small></div>
     {count>1&&<span className="rare-cache-quantity">×{count}</span>}
     <button type="button" disabled={!capacity} aria-label={`Take ${name}`} onClick={()=>take(kind)}>

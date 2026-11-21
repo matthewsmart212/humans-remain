@@ -1,3 +1,4 @@
+import {ABANDONED_CAMP_ID,ABANDONED_CAMP_FRAMES,ABANDONED_CAMP_SIZE,ABANDONED_CAMP_COLLISION} from './abandoned-camp-art';
 import {IRON_ROCK_FOOT,HEARTH_FOOT,WELL_IMAGE,WELL_FOOT} from './camp-fixture-collision';
 import {FURNACE_COLLISION,WAREHOUSE_ARTWORK,WAREHOUSE_ASSET_ID} from './camp-worksites-art';
 import {restorationImages} from './camp-restoration';
@@ -42,6 +43,7 @@ export type WorldAsset={perimeterCurve?:number[][];perimeterDrawOrder?:number;pe
 export const imageDimensions=metadata as Record<string,number[]>;
 const sizes=imageDimensions;
 for(const f of [...foliageArt,...puddleArt,...treeArt,...sceneryArt,...FORAGE_ART,...IRONWORKS_WORLD_ART,...GARDEN_ART])sizes[f.image]=f.size;
+for(const frame of ABANDONED_CAMP_FRAMES)sizes[frame]=[...ABANDONED_CAMP_SIZE];
 const assets:WorldAsset[]=[];
 const sourceKey=(image:string,crop:number[])=>image+':'+crop.join(',');
 const seen=new Map<string,WorldAsset>();
@@ -59,6 +61,11 @@ for(const e of entries.filter(e=>e.image&&!e.canonicalArt&&!e.id.startsWith('map
  if(role==='generator')anchor=[crop[2]/2,crop[3]*.75];
  const height=width*crop[3]/crop[2],solid=!['effect','interface asset'].includes(e.recordType)&&!['scrap','fuel','pallets'].includes(role);
  const a:WorldAsset={id:e.id,name:e.name,group:e.family||e.category,image,crop,anchor,width,height,solid,role,body:solid?body(width,height):[],openFrames:e.artPreview?.openFrames,frames:e.artPreview?.frames,fps:e.artPreview?.fps,unlit:e.artPreview?.unlit,unlitSize:e.id.startsWith('base_hearth')?[HEARTH_FRAME_SIZE,HEARTH_FRAME_SIZE]:undefined,unlitAnchor:e.id.startsWith('base_hearth')?[...HEARTH_ART[e.tier as 1|2|3].unlitAnchor]:undefined,roof:e.artPreview?.roof,roofRect:e.artPreview?.roofRect,catalogueId:e.id,note:e.implemented?'Existing prototype interaction':role==='prop'?'Visual prop · gameplay not implemented':'Uses the existing starter interaction'};
+ if(e.id===ABANDONED_CAMP_ID){
+  a.anchor=[crop[2]/2,crop[3]/2];
+  a.body=[];a.collision=ABANDONED_CAMP_COLLISION;
+  a.note='Approach the wooden chest beneath the larger shelter to open it and take supplies.';
+ }
  if(e.id.startsWith('base_shelter')){
   // Ground-contact wall traces use the source floor line, not the elevated wall top.
   const traces=e.tier===1?[[195,305,1210,305],[195,305,100,968],[1210,305,1300,968],[100,968,488,968],[925,968,1300,968]]:e.tier===2?[[175,270,1090,270],[175,270,65,1050],[1090,270,1188,1050],[65,1050,480,1050],[778,1050,1188,1050]]:[[175,325,1090,325],[175,325,67,1057],[1090,325,1187,1057],[67,1057,479,1057],[779,1057,1187,1057]];
@@ -128,6 +135,7 @@ export function requiredImages(assetIds:string[],terrain?:{url:string},options:{
   // cropped motion sheets and charcoal base are needed once optional animation warms.
   const frames=options.animationFrames===false||hearth?[a.frames?.[0],a.openFrames?.[0]]:[...(a.frames||[]),...(a.openFrames||[])];
   for(const url of [...restorationImages(id),a.image,a.roof,a.unlit,a.ground?.image,...(a.image===HQ_SOUTH_INTERIOR?HQ_FOUNDATION_DRESSING.map(d=>d.image):[]),a.gate?.leaf,a.gate?.post,a.gate?.states?.closed,a.gate?.states?.open,...frames])if(url)out[assetImageKey(url)]=url;
+  if(id===ABANDONED_CAMP_ID)for(const url of ABANDONED_CAMP_FRAMES)out[assetImageKey(url)]=url;
   if(hearth&&options.animationFrames!==false)Object.assign(out,HEARTH_ANIMATION_IMAGES);
   if(treeShadeFrames.has(a.image))out.treeCanopyShade=TREE_SHADE_IMAGE;
   if(treeArt.some(t=>t.id===id))out[assetImageKey(TREE_LOG_IMAGE)]=TREE_LOG_IMAGE;

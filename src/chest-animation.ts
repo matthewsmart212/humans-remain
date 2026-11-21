@@ -1,6 +1,7 @@
 /** Per-instance presentation state, separate from saved placement and inventory. */
 export type ChestMotion={from:number;target:0|1;started:number};
-type ChestWorld={tick:number;chestMotions?:Record<string,ChestMotion>};
+export const placedLootChestId=(placementId:string)=>'placed-cache:'+placementId;
+type ChestWorld={tick:number;lootChests?:import('./loot-chest').LootChestState;chestMotions?:Record<string,ChestMotion>};
 export const CHEST_OPEN_TICKS=24;
 export function chestAmount(world:ChestWorld,id:string){
  const motion=world.chestMotions?.[id];if(!motion)return 0;
@@ -13,4 +14,7 @@ export function toggleChest(world:ChestWorld,id:string){
  const from=chestAmount(world,id),target=chestIsOpen(world,id)?0:1;
  (world.chestMotions??={})[id]={from,target,started:world.tick};
 }
-export function chestFrame(world:ChestWorld,id:string,count:number){return Math.round(chestAmount(world,id)*Math.max(0,count-1))}
+export function chestFrame(world:ChestWorld,id:string,count:number){
+ if(world.lootChests?.[placedLootChestId(id)])return Math.max(0,count-1);
+ return Math.round(chestAmount(world,id)*Math.max(0,count-1));
+}

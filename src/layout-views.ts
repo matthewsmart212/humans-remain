@@ -1,17 +1,19 @@
+import {ABANDONED_CAMP_ID} from './abandoned-camp-art';
 import {ASSET_BY_ID} from './world-assets';
 import {placementBounds,placementPoint,type Placement,type WorldLayout} from './world-layout';
 import type {FoliageViewport} from './foliage-renderer';
 type Bound={p:Placement;r:number;order:number;foliage:boolean};
 type Query={x:number;y:number;width:number;height:number;placements:Placement[];ground:Placement[]};
-type Index={plain:Placement[];ground:Placement[];shelters:Placement[];stepOn:Placement[];chests:Placement[];gates:Placement[];cells:Map<string,Bound[]>;queries:Query[]};
+type Index={plain:Placement[];ground:Placement[];shelters:Placement[];stepOn:Placement[];chests:Placement[];lootCamps:Placement[];gates:Placement[];cells:Map<string,Bound[]>;queries:Query[]};
 let cache=new WeakMap<WorldLayout,Index>();
 export function invalidateLayoutViews(){cache=new WeakMap()}
 export function layoutViews(layout?:WorldLayout):Index{
- if(!layout)return{plain:[],ground:[],shelters:[],stepOn:[],chests:[],gates:[],cells:new Map(),queries:[]};
+ if(!layout)return{plain:[],ground:[],shelters:[],stepOn:[],chests:[],lootCamps:[],gates:[],cells:new Map(),queries:[]};
  let index=cache.get(layout);if(index)return index;
- index={plain:[],ground:[],shelters:[],stepOn:[],chests:[],gates:[],cells:new Map(),queries:[]};
+ index={plain:[],ground:[],shelters:[],stepOn:[],chests:[],lootCamps:[],gates:[],cells:new Map(),queries:[]};
  for(const [order,p] of layout.items.entries()){const a=ASSET_BY_ID.get(p.assetId);if(!a)continue;
-  if(a.gate)index.gates.push(p);if(a.ground)index.ground.push(p);if(a.interior)index.shelters.push(p);if(a.animationMode==='step-on'&&a.frames?.length)index.stepOn.push(p);if(a.openFrames?.length)index.chests.push(p);
+  if(a.gate)index.gates.push(p);if(a.ground)index.ground.push(p);if(a.interior)index.shelters.push(p);if(a.animationMode==='step-on'&&a.frames?.length)index.stepOn.push(p);
+  if(a.id===ABANDONED_CAMP_ID)index.lootCamps.push(p);else if(a.openFrames?.length)index.chests.push(p);
   if(!a.foliage)index.plain.push(p);
   const b=placementBounds(p),rects=[b];
   if(a.ground){const [x,y,w,h]=a.ground.rect;rects.push({x:b.x+x*b.width,y:b.y+y*b.height,width:w*b.width,height:h*b.height})}
