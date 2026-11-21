@@ -1,7 +1,7 @@
 import {drawBurningHearth,hasPaintedHearthAnimation} from './hearth-animation-art';
 import {drawBuildingCondition} from './building-condition-renderer';
 import {lootChestDrawables,drawLootChestGround} from './loot-chest-renderer';
-import {placedLootChestVisible} from './loot-chest';
+import {SURVEY_CACHE_ID,placedLootChestVisible} from './loot-chest';
 import {headquartersCutawayAmount,clipHeadquartersDoorway,drawHeadquartersExterior} from './headquarters-cutaway';
 import {HQ_SOUTH_INTERIOR} from './headquarters-south-art';
 import {headquartersRoofBottom,withinRoofApproach,headquartersRaidVisible} from './headquarters-roof';
@@ -48,7 +48,7 @@ import {stationMenuPan,menuClock} from './station-menu-layout';
 import {ABANDONED_CAMP_ID,ABANDONED_CAMP_SIZE,CAMP_SCENERY,CAMP_CHEST_RECT} from './abandoned-camp-art';
 import {WOODEN_LOOT_ID,WOODEN_LOOT_SHEET,WOODEN_LOOT_ANCHOR} from './wooden-loot-art';
 import {drawWoodenLootChest} from './wooden-loot-renderer';
-import {chestFrame} from './chest-animation';
+import {chestFrame,placedLootChestId} from './chest-animation';
 import {ASSET_BY_ID,assetImageKey,type WorldAsset} from './world-assets';
 import {placedAnimationFrame} from './step-on-animation';
 import {compareWorldDrawables,placementGeometryAsset,placementBounds,placementPoint,placementBodies,type Placement,type WorldLayout} from './world-layout';
@@ -62,6 +62,7 @@ import {isFoliageAsset} from './foliage-display';
 import type {Atlas} from './packaging-renderer';
 import {clearTerrainViewport,drawHomeTerrain} from './terrain-renderer';
 import {drawFoliage,foliageVisible,type FoliageViewport} from './foliage-renderer';
+import {drawMineSightlines,MINE_CHAMBER_MASK} from './iron-mine-sightlines';
 import {drawSceneTerrain} from './scene-terrain';
 import {circularWallDepth,circularWallGroup,orderCircularWallDraws,type CircularWallDraw} from './circular-wall-depth';
 
@@ -173,6 +174,14 @@ export function placedDrawables(ctx:CanvasRenderingContext2D,imgs:Record<string,
   const drawBase=()=>{
    if(a.id===ABANDONED_CAMP_ID){
     ctx.drawImage(sheet&&scenery?scenery:im,b.x,b.y,b.width,b.height);
+    return;
+   }
+   if(a.id===WOODEN_LOOT_ID&&placedLootChestId(p.id)===SURVEY_CACHE_ID&&imgs.surveyLockbox){
+    const frame=chestFrame(w,p.id,10);
+    // Each 440 × 390 cell has a shared ground line at row 326.
+    const scale=b.width/385;
+    ctx.drawImage(imgs.surveyLockbox,(frame%5)*440,Math.floor(frame/5)*390,440,390,
+     p.x-220*scale,p.y-326*scale,440*scale,390*scale);
     return;
    }
    if(a.id===WOODEN_LOOT_ID&&sheet){
@@ -316,6 +325,10 @@ export function drawWorldEditor(ctx:CanvasRenderingContext2D,atlas:Atlas,imgs:Re
  if(view.playing)drawCampfireHud(ctx,imgs,w,pickupScale);
  if(view.playing)drawBowLock(ctx,w,{x:c.x,y:c.y,width:ctx.canvas.width/c.scale,height:ctx.canvas.height/c.scale,scale:pickupScale});
  if(view.playing)drawWorldWaypoint(ctx,w,{x:c.x,y:c.y,width:ctx.canvas.width/c.scale,height:ctx.canvas.height/c.scale,scale:pickupScale});
+ if(view.playing && w.scene?.id==='iron-mine'){
+  const mask=imgs[MINE_CHAMBER_MASK];
+  if(mask)drawMineSightlines(ctx,mask,w.player,w.scene.width,w.scene.height);
+ }
  if(view.grid&&!view.playing&&!w.scene){ctx.strokeStyle=nightStrength(w)>.5?'#a4c6c344':'#153d4430';ctx.lineWidth=1/c.scale;ctx.beginPath();const bounds=worldBounds(w);for(let x=Math.ceil(bounds.left/80)*80;x<bounds.right;x+=80){ctx.moveTo(x,bounds.top);ctx.lineTo(x,bounds.bottom)}for(let y=Math.ceil(bounds.top/80)*80;y<bounds.bottom;y+=80){ctx.moveTo(bounds.left,y);ctx.lineTo(bounds.right,y)}ctx.stroke()}
  if(view.collision&&!view.playing)for(const p of w.layout?.items||[])for(const b of placementBodies(p)){ctx.fillStyle='#ff6c4130';ctx.strokeStyle='#ff805d';ctx.lineWidth=2/c.scale;if(b.shape==='rect'){ctx.fillRect(b.x-b.hw,b.y-b.hh,b.hw*2,b.hh*2);ctx.strokeRect(b.x-b.hw,b.y-b.hh,b.hw*2,b.hh*2)}else if(b.shape==='polygon'){ctx.beginPath();b.points.forEach(([x,y],i)=>i?ctx.lineTo(x,y):ctx.moveTo(x,y));ctx.closePath();ctx.fill();ctx.stroke()}else if(b.shape==='segment'){ctx.lineWidth=b.r*2;ctx.globalAlpha=.5;ctx.beginPath();ctx.moveTo(b.x,b.y);ctx.lineTo(b.ex,b.ey);ctx.stroke();ctx.globalAlpha=1}}
  const selection=w.layout?.items.find(p=>p.id===view.selected);if(selection&&!view.playing&&!w.scene&&!(view.hideFoliage&&isFoliageAsset(ASSET_BY_ID.get(selection.assetId)))){const b=placementBounds(selection);ctx.save();rotatePlacement(ctx,selection);ctx.strokeStyle=selection.locked?'#a2ecdf':'#ffe3a3';ctx.lineWidth=2.5/c.scale;ctx.setLineDash([8/c.scale,5/c.scale]);ctx.strokeRect(b.x,b.y,b.width,b.height);ctx.restore();ctx.setLineDash([]);ctx.fillStyle='#ffcf62';ctx.beginPath();ctx.arc(selection.x,selection.y,7/c.scale,0,Math.PI*2);ctx.fill();if(['generator','hearth','well','storage'].includes(selection.role)){ctx.strokeStyle='#8ae0d0';ctx.beginPath();ctx.arc(selection.x,selection.y+(selection.role==='generator'?85:65),19,0,Math.PI*2);ctx.stroke()}}

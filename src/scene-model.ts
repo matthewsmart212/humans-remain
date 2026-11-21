@@ -15,6 +15,7 @@ export type SceneDefinition={
  lighting?:'outdoor'|'baked';
  weather?:'outdoor'|'sheltered';
  terrain:{key:string;url:string;tiles?:SceneTerrainTile[]};
+ images?:Record<string,string>;
  walkable:CollisionPoint[];blockers:CollisionPoint[][];
  foreground:CollisionPoint[][];
  spawns:Record<string,SceneSpawn>;portals:ScenePortal[];

@@ -2,9 +2,8 @@ import {useStationFeedback} from './use-station-feedback';
 import React from 'react';
 import type {World} from './survival-engine';
 import StationMenu from './StationMenu';
-import {packLoad} from './expedition-inventory';
-import {PROVISIONS,isProvision} from './food-provisions-data';
-import {GEAR} from './player-gear';
+import {packLoad,ITEM_RULES} from './expedition-inventory';
+import {GEAR,isGear} from './player-gear';
 import {lootChestName,lootChestRewards,lootChestContents,lootChestRemaining,canCarryLootChestReward,takeLootChestReward,takeAllLootChestRewards,type LootChestRewardKind} from './loot-chest';
 import './loot-chest-panel.css';
 
@@ -33,7 +32,7 @@ export default function LootChestPanel({world,onClose,onChange}:Props){
   {(!remaining||!canTake)&&<p className="rare-cache-empty">{remaining?'Backpack full':'Chest empty'}</p>}
   <div className="rare-cache-list" aria-label="Loot chest contents">
    {rewards.map(({kind,name,description,count,capacity})=><div className="rare-cache-reward" key={kind}>
-    <img src={isProvision(kind)?PROVISIONS[kind].image:GEAR[kind].image} alt="" draggable={false}/>
+    <img src={isGear(kind)?GEAR[kind].image:ITEM_RULES[kind].image} alt="" draggable={false}/>
     <div><strong>{name}</strong><small>{description}</small></div>
     {count>1&&<span className="rare-cache-quantity">×{count}</span>}
     <button type="button" disabled={!capacity} aria-label={`Take ${name}`} onClick={()=>take(kind)}>

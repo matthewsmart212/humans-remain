@@ -6,9 +6,10 @@ import {ABANDONED_CAMP_ID,ABANDONED_CAMP_LATCH} from './abandoned-camp-art';
 import {placedLootChestId} from './chest-animation';
 import {layoutViews} from './layout-views';
 import {placementArtPoint,type Placement} from './world-layout';
-import {PROVISIONS,isProvision} from './food-provisions-data';
+import {PROVISIONS} from './food-provisions-data';
+import {IRONWORKS_MATERIALS} from './ironworks-data';
 import {PACK_CAPACITY,packWeight,canCarryCount,addInventory} from './expedition-inventory';
-import {GEAR,gear} from './player-gear';
+import {GEAR,gear,isGear} from './player-gear';
 
 /** A test cache above the campfire. Rewards remain INSIDE, never spawn as ground loot. */
 export const LOOT_CHEST_ID='campfire-cache-01';
@@ -32,8 +33,19 @@ const ABANDONED_CAMP_REWARDS=[
  {kind:'beans',amount:2,...PROVISIONS.beans},
  {kind:'energyBar',amount:1,...PROVISIONS.energyBar},
 ] as const;
-export const lootChestRewards=(id=LOOT_CHEST_ID)=>id===LOOT_CHEST_ID?LOOT_CHEST_REWARDS:ABANDONED_CAMP_REWARDS;
-export const lootChestName=(id=LOOT_CHEST_ID)=>id===LOOT_CHEST_ID?'Loot chest':'Wooden chest';
+export const SURVEY_CACHE_ID=placedLootChestId(mineFloor.cacheId);
+const SURVEY_CACHE_REWARDS=[
+ {kind:'ironIngot',amount:2,...IRONWORKS_MATERIALS.ironIngot,description:'Refined iron, ready for the camp smithy.'},
+ ...ABANDONED_CAMP_REWARDS,
+] as const;
+export function lootChestRewards(id=LOOT_CHEST_ID){
+ if(id===SURVEY_CACHE_ID)return SURVEY_CACHE_REWARDS;
+ return id===LOOT_CHEST_ID?LOOT_CHEST_REWARDS:ABANDONED_CAMP_REWARDS;
+}
+export function lootChestName(id=LOOT_CHEST_ID){
+ if(id===SURVEY_CACHE_ID)return 'Surveyor’s lockbox';
+ return id===LOOT_CHEST_ID?'Loot chest':'Wooden chest';
+}
 export type LootChestRewardKind=ReturnType<typeof lootChestRewards>[number]['kind'];
 export type LootChestContents=Partial<Record<LootChestRewardKind,number>>;
 export type LootChestState=Record<string,{openedAt:number;contents?:LootChestContents;menuShown?:boolean;rewardVersion?:2}>;
@@ -49,7 +61,7 @@ export function lootChestContents(w:ChestWorld,id=LOOT_CHEST_ID):LootChestConten
  if(state.rewardVersion===2)return state.contents??{};
  const old=state.contents as Record<string,number>|undefined;
  const legacy=['scrap','ironIngot','pallets','energyBar'];
- if(old&&legacy.some(key=>key in old)){
+ if(id===LOOT_CHEST_ID&&old&&legacy.some(key=>key in old)){
   const unclaimed=legacy.some(key=>(old[key]??0)>0);
   state.contents=Object.fromEntries(LOOT_CHEST_REWARDS.map(reward=>[reward.kind,unclaimed?1:0])) as LootChestContents;
  }else if(!old)state.contents={};
@@ -142,7 +154,7 @@ export function canCarryLootChestReward(w:World,kind:LootChestRewardKind,request
  const remaining=lootChestContents(w,w.lootChestId)[kind]??0;
  if(!Number.isFinite(requested)||requested<=0||remaining<=0)return 0;
  const count=Math.min(remaining,Math.floor(requested));
- if(isProvision(kind))return canCarryCount(w,kind,count);
+ if(!isGear(kind))return canCarryCount(w,kind,count);
  return Math.max(0,w.creativeMode?count:Math.min(count,Math.floor((PACK_CAPACITY-packWeight(w)+1e-7)/GEAR[kind].weight)));
 }
 export function takeLootChestReward(w:World,kind:LootChestRewardKind,requested=Number.MAX_SAFE_INTEGER){
@@ -150,7 +162,7 @@ export function takeLootChestReward(w:World,kind:LootChestRewardKind,requested=N
  if(!state||w.stationPanel!=='rare-cache'||w.phase==='over'||w.player.hp<=0||w.player.downedUntil||!lootChestInMenuRange(w))return 0;
  const count=canCarryLootChestReward(w,kind,requested);
  if(!count)return 0;
- if(isProvision(kind))addInventory(w,kind,count);
+ if(!isGear(kind))addInventory(w,kind,count);
  else{
   const bag=gear(w).bag;bag[kind]=(bag[kind]??0)+count;
  }

@@ -65,4 +65,6 @@ export function invalidateScenePortals(world:World){if(world.layout)portalCache.
 export const sceneId=(world:World)=>world.scene?.id||CAMP_SCENE_ID;
 export const sceneName=(world:World)=>world.scene?.name||'Camp';
 export const sceneSize=worldBounds;
-export const sceneImages=(scene:SceneDefinition):Record<string,string>=>Object.fromEntries((scene.terrain.tiles?.length?scene.terrain.tiles:[scene.terrain]).map(t=>[t.key,t.url]));
+export const sceneImages=(scene:SceneDefinition):Record<string,string>=>({...scene.images,
+ ...Object.fromEntries((scene.terrain.tiles?.length?scene.terrain.tiles:[scene.terrain]).map(t=>[t.key,t.url])),
+});

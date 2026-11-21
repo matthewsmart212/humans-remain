@@ -1,3 +1,4 @@
+import {MINE_CHAMBER_MASK} from './iron-mine-sightlines';
 import type {CollisionPoint} from './asset-collision';
 import {IRON_MINE_DOOR_ID} from './iron-mine-door';
 import floor from './iron-mine-floor.json';
@@ -28,8 +29,12 @@ const items:Placement[] = [
 
 export const IRON_MINE_SCENE:SceneDefinition = {
   id:'iron-mine', name:'Northwest Iron Mine', width:floor.width, height:floor.height,
-  lighting:'baked', weather:'sheltered', background:'#17130f',
-  terrain:{key:'scene:iron-mine:workings:v2',url:'/survival/iron-mine-v1/workings-v2.webp'},
+  lighting:'baked', weather:'sheltered', background:'#000000',
+  terrain:{key:'scene:iron-mine:workings:v3',url:'/survival/iron-mine-v1/workings-v3.webp'},
+  images:{
+    surveyLockbox:'/survival/loot-chest-v4/orange-opening-atlas.webp',
+    [MINE_CHAMBER_MASK]:'/survival/iron-mine-v1/chamber-masks.png',
+  },
   walkable:floor.walkable as CollisionPoint[], blockers:[...floor.blockers, ...floor.fixtures] as CollisionPoint[][],
   foreground:[], spawns:{entrance},
   portals:[{id:'mine-adit-out',area:floor.exitArea as CollisionPoint[],destination:{return:true},returnSpawn:entrance}],

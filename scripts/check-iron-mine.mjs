@@ -143,7 +143,13 @@ try {
  assert(chestAction.perform());
  mine.tick+=90;game.stepLootChest(mine);
  assert.equal(mine.stationPanel,'rare-cache');
- assert(game.takeAllLootChestRewards(mine)>0);
+ assert.equal(game.lootChestName(latch.id),'Surveyor’s lockbox');
+ assert.deepEqual(game.lootChestContents(mine,latch.id),{ironIngot:2,beans:2,energyBar:1});
+ const ingotsBefore=game.itemCount(mine,'ironIngot');
+ assert.equal(game.takeLootChestReward(mine,'ironIngot',1),1);
+ assert.equal(game.itemCount(mine,'ironIngot'),ingotsBefore+1);
+ const oldCache={lootChests:{[latch.id]:{openedAt:0,contents:{beans:0,energyBar:1}}}};
+ assert.equal(game.lootChestRemaining(oldCache,latch.id),1,'An older, opened cache keeps its original supplies');
  const remaining={...game.lootChestContents(mine,latch.id)};
  mine.stationPanel=undefined;
  Object.assign(mine.player,entry);
