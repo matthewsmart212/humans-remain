@@ -4,18 +4,18 @@ import type {World} from './survival-engine';
 import {ASSET_BY_ID} from './world-assets';
 import {GARDEN_ART,GARDEN_IDS} from './camp-garden-art';
 import {FURNACE_ID} from './ironworks-data';
-import {FORGE_RECIPES,craftCategory,type MaterialCost} from './forge-recipes';
-import {GEAR,gear,type GearKind} from './player-gear';
-import {recipeUnlocked,RESTORE_FURNACE_COST,FORTIFY_COST} from './run-progression';
+import type {MaterialCost} from './forge-recipes';
+import {GEAR} from './player-gear';
+import {RESTORE_FURNACE_COST,FORTIFY_COST} from './run-progression';
 import {type HQBlueprintId} from './headquarters-plans';
 import {WAREHOUSE_ID,WAREHOUSE_ART} from './warehouse';
 import {campAccessLevel,type CampLevel} from './camp-levels';
 
-export const HQ_MAP='/survival/headquarters-menu-v1/camp-plan.webp';
+export const HQ_MAP='/hq-art/camp-table.webp';
 export const HQ_PAPER='/survival/headquarters-menu-v1/parchment.webp';
 export const HQ_BENCH_ART='/survival/hq-furniture-v2/exploration-bench.webp';
 export type HQTab='camp'|'buildings'|'crafting';
-export type HQCategory='buildings'|'tools'|'weapons'|'food'|'defences';
+export type HQCategory='buildings'|'food'|'defences';
 export type HQBuildingId='headquarters'|'treatment'|'garden'|'workshop'|'furnace'|'bunker'|'warehouse'|'well'|'fire';
 export type HQArt={image:string;clip?:[number,number,number,number];overlay?:string};
 export type HQBuilding={id:HQBuildingId;name:string;short:string;group:string;assetId:string;purpose:string;hint:string;preview?:boolean;position:[number,number,number,number]};
@@ -32,8 +32,6 @@ export const HQ_BUILDINGS:readonly HQBuilding[]=[
 ];
 export const HQ_CATEGORIES:readonly {id:HQCategory;label:string;image:string}[]=[
  {id:'buildings',label:'Buildings',image:HQ_BENCH_ART},
- {id:'tools',label:'Tools',image:GEAR.axe.image},
- {id:'weapons',label:'Weapons',image:GEAR.metalSpear.image},
  {id:'food',label:'Survival',image:'/survival/chicken-food-v1/cooked-chicken.webp'},
  {id:'defences',label:'Defences',image:'/survival/ui-backpack-v1/scrap.png'},
 ];
@@ -62,10 +60,10 @@ export function markBuilding(w:World,id:HQBuildingId){
  const site=campRepairSite(w,id);if(!site)return false;
  w.waypoint={x:site.x,y:site.y,sceneId:'camp'};return true;
 }
-export type HQPlan={id:string;title:string;name:string;category:HQCategory;building:HQBuildingId;tier:number;art:HQArt;description:string;benefit:string;hint:string;preview?:boolean;learn?:HQBlueprintId;gearId?:GearKind;cost?:MaterialCost};
+export type HQPlan={id:string;title:string;name:string;category:HQCategory;building:HQBuildingId;tier:number;art:HQArt;description:string;benefit:string;hint:string;preview?:boolean;learn?:HQBlueprintId;cost?:MaterialCost};
 export function headquartersPlans(w:World):HQPlan[]{
  const art=(id:HQBuildingId)=>buildingArt(w,buildingFor(id));
- const buildings:HQPlan[]=[
+ return [
   {id:'gardening-1',title:'Vegetable patch',name:'Vegetable patch',category:'buildings',building:'garden',tier:1,art:art('garden'),description:'Grow potatoes and carrots in the reclaimed beds.',benefit:'Grow food in four camp beds.',hint:'Plant a potato or carrot in an empty bed.'},
   {id:'metalworking',title:'Furnace',name:'Furnace',category:'buildings',building:'furnace',tier:1,art:art('furnace'),description:'Smelt ore and recycle scrap into iron ingots.',benefit:'Repair the existing furnace with your hammer to enable metal equipment.',hint:'Repair on site with your hammer.',learn:'metalworking',cost:RESTORE_FURNACE_COST},
   {id:'shelter',title:'Headquarters',name:'Headquarters',category:'buildings',building:'headquarters',tier:1,art:art('headquarters'),description:'Upgrade your camp and unlock new plans.',benefit:'Camp progression, buildings and crafting.',hint:'Upgrade at headquarters using resources.'},
@@ -77,14 +75,9 @@ export function headquartersPlans(w:World):HQPlan[]{
   {id:'cooking',title:'Campfire',name:'Campfire',category:'food',building:'fire',tier:1,art:art('fire'),description:'Cook chicken, rabbit and venison.',benefit:'Log fuel, a cooking queue and meals to collect.',hint:'Cooking is managed beside the fire.'},
   {id:'reinforced-camp',title:'Camp defences',name:'Reinforced defences',category:'defences',building:'headquarters',tier:2,art:art('headquarters'),description:'Stronger protection against night attacks.',benefit:'Increases camp defence from 120 to 220.',hint:'Unlocked at Camp level 2.',learn:'reinforced-camp',cost:FORTIFY_COST},
  ];
- return [...buildings,...FORGE_RECIPES.map(r=>({id:`equipment-${r.id}`,title:r.name,name:r.name,category:(craftCategory(r.id)==='tools'?'tools':'weapons') as HQCategory,building:'workshop' as const,tier:r.id.startsWith('wooden')?1:2,art:{image:GEAR[r.id].image},description:r.id==='arrows'?'A bundle of ten steel-tipped arrows.':`${GEAR[r.id].damage} ${r.id.includes('Pickaxe')?'rock damage':'damage'} · ${GEAR[r.id].weight} kg`,benefit:r.id==='metalPickaxe'?'Mines iron-veined deposits.':r.id==='bow'?'Ranged hunting. Each shot uses one arrow.':'Craft at the camp workshop.',hint:recipeUnlocked(w,r.id)?'Recipe available at the workshop.':'Requires a restored furnace.',gearId:r.id,cost:r.cost}))];
 }
 export function planStatus(w:World,p:HQPlan){
  if(!w.creativeMode&&campAccessLevel(w)<planCampLevel(p))return 'Requires Camp level '+planCampLevel(p);
- if(p.gearId){
-  if(!buildingRestored(w,'workshop'))return 'Repair workshop first';
-  return recipeUnlocked(w,p.gearId)?'Available at workshop':'Repair furnace first';
- }
  if(p.id==='reinforced-camp')return w.progression?.fortified?'Reinforced':'Upgrade available';
  return buildingStatus(w,buildingFor(p.building));
 }
@@ -94,8 +87,7 @@ export function orderedCataloguePlans(w:World){
  return cataloguePlans(w).sort((a,b)=>planCampLevel(a)-planCampLevel(b)||a.title.localeCompare(b.title));
 }
 export function planForBuilding(w:World,id:HQBuildingId){return headquartersPlans(w).find(p=>p.building===id)!.id}
-export function plansForBuilding(w:World,id:HQBuildingId){return headquartersPlans(w).filter(p=>p.building===id&&!p.gearId)}
-export function equipmentInventory(w:World,id:GearKind){const g=gear(w);return{pack:g.bag[id]??0,stored:g.chest[id]??0}}
+export function plansForBuilding(w:World,id:HQBuildingId){return headquartersPlans(w).filter(p=>p.building===id)}
 export function discoveries(w:World){
  const p=w.progression,entries:{id:string;title:string;body:string;image:string}[]=[];
  if(!p||p.briefed)entries.push({id:'camp',title:'The old camp',body:'A central planning table, useful workstations and unfinished places to restore.',image:HQ_BENCH_ART});
