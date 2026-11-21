@@ -102,7 +102,7 @@ for(const url of historicalPublishExports){
  fs.mkdirSync(path.dirname(destination),{recursive:true});fs.renameSync(source,destination);
  assert(!fs.existsSync(source),'Historical source export remained in publish bundle: '+url);
 }
-for(const active of ['/art/grain.svg','/maps/world-illustrated.webp','/survival/scrap-walker-v3/atlas.json'])assert(fs.existsSync('dist/client'+active),'Active artwork must remain published: '+active);
+for(const active of ['/hq-art/camp-overlook.webp','/hq-art/camp-table.webp','/hq-art/fire-kitchen.webp','/art/grain.svg','/maps/world-illustrated.webp','/survival/scrap-walker-v3/atlas.json'])assert(fs.existsSync('dist/client'+active),'Active artwork must remain published: '+active);
 // An asset binding can omit Content-Length on a streamed body. The browser
 // and Worker use the same three files, with byte counts from this exact build.
 const openingMedia=JSON.parse(fs.readFileSync('src/opening-media-paths.json','utf8'));

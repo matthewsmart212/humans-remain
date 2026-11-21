@@ -45,6 +45,10 @@ docs/qa/circular-wall-ne-v3/**/*.jpeg -filter -diff -merge -text
 /public/survival/camp-circular-wall-nw-v1/** -filter -diff -merge -text
 
 # Compact new headquarters assets are shared through the connected GitHub API.
+/public/hq-art/camp-overlook.webp -filter -diff -merge -text
+/public/hq-art/fire-kitchen.webp -filter -diff -merge -text
+/public/hq-art/camp-table.webp -filter -diff -merge -text
+/docs/qa/headquarters-menu-v5/menus.webp -filter -diff -merge -text
 /public/survival/headquarters-south-v1/** -filter -diff -merge -text
 # Ship HQ v2 as real WebP blobs for browser/CDN and Expo, not LFS pointers.
 /public/survival/headquarters-v2/*.webp -filter -diff -merge -text

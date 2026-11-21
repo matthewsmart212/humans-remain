@@ -23,8 +23,23 @@
  margin:auto;
  width:100%;
  height:100%;
- border-radius:10px;
+ border-radius:5px;
  color:#f4efdf;
+ background:#182019;
+ box-shadow:0 16px 65px #050a04ab,0 0 0 1px #41372b,0 0 0 2px #0b100d;
+}
+/* Two rows of inset brass studs across the metal header. */
+.headquarters-full-menu [data-testid="hq-header"]::after {
+ content:"";
+ position:absolute;
+ inset:0;
+ pointer-events:none;
+ --stud:radial-gradient(circle,#7e6849 1px,#b59865 1.5px,#322c20 2.5px,transparent 3.3px);
+ background-size:12px 12px;
+ background-position:top left,top right,bottom left,bottom right;
+ background-repeat:no-repeat;
+ background-image:var(--stud),var(--stud),var(--stud),var(--stud);
+ box-shadow:inset 0 1px #dad1ab30,inset 0 -1px #080c08;
 }
 .headquarters-full-menu * {
  box-sizing:border-box;

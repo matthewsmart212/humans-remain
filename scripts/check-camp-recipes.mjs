@@ -2,7 +2,7 @@ import assert from 'node:assert/strict';
 import fs from 'node:fs';
 import {build} from 'esbuild';
 
-const modules = ['camp-recipes', 'forge-recipes', 'studio-play', 'imported-art', 'authored-world', 'expedition-inventory'];
+const modules = ['camp-recipes', 'studio-play', 'imported-art', 'authored-world', 'expedition-inventory'];
 const bundle = await build({
  stdin: {contents: modules.map(id => `export * from './src/${id}';`).join('\n'), resolveDir: process.cwd()},
  platform: 'node', bundle: true, format: 'esm', write: false
@@ -15,9 +15,11 @@ const groups = () => game.campRecipes(w);
 const recipes = () => groups().flatMap(station => station.recipes);
 const recipe = id => recipes().find(row => row.id === id);
 
-assert.equal(recipes().length, game.FORGE_RECIPES.length + 8);
+assert.deepEqual(groups().map(station => station.id), ['fire', 'garden', 'furnace']);
+assert.equal(recipes().length, 8);
 assert(recipes().every(row => !row.ready));
-assert.match(recipe('woodenAxe').status, /level 3/);
+assert.equal(recipe('woodenAxe'), undefined);
+assert.match(recipe('smelt-ore').status, /Camp 3/);
 
 w.progression.restoredBuildings.push('headquarters', 'well', 'fire');
 w.progression.campLevel = 1;
@@ -43,20 +45,19 @@ w.potatoPatch.beds.fill({kind: 'potato', plantedAt: 0});
 assert.match(recipe('potato').status, /All beds planted/);
 
 w.progression.campLevel = 3;
-w.progression.restoredBuildings.push('workshop');
-game.setStoredCount(w, 'pallets', 4);
-game.setStoredCount(w, 'ironIngot', 2);
-assert.equal(recipe('woodenAxe').ready, true, 'Workshop can use stores');
-assert.match(recipe('metalPickaxe').status, /furnace/);
 assert.equal(recipe('smelt-ore').ready, false);
 w.progression.restoredBuildings.push('furnace');
 w.progression.furnaceRestored = true;
 game.setItemCount(w, 'ironOre', 1);
 game.setStoredCount(w, 'ironOre', 1);
-assert.deepEqual(recipe('smelt-ore').ingredients, [{name: 'Iron ore', have: 2, need: 2}]);
+const [ore] = recipe('smelt-ore').ingredients;
+assert.equal(ore.have, 2);
+assert.equal(ore.need, 2);
+assert.equal(ore.name, 'Iron ore');
 assert.equal(recipe('smelt-ore').ready, true);
-assert.equal(recipe('metalPickaxe').ready, true);
-game.setItemCount(w, 'stone', 32);
-assert.match(recipe('metalPickaxe').status, /Backpack full/);
+assert.match(groups()[2].condition, /Cold furnace/);
+w.camp.hearth.fuel = 15;
+assert.equal(groups()[0].condition, 'Fire lit');
+assert.match(groups()[1].condition, /0 \/ 4 beds free/);
 
-console.log('Camp recipe catalogue passed across station gates, recipe dependencies, pack and store sources, queue, beds and carry capacity.');
+console.log('HQ recipe catalogue passed for station access, carried and stored ingredients, spit capacity, garden beds and heat.');
