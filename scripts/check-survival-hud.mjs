@@ -10,7 +10,7 @@ try{
  await build({stdin:{contents:modules.map(m=>`export * from './src/${m}';`).join('\n'),resolveDir:process.cwd()},bundle:true,platform:'node',format:'cjs',outfile:path.join(dir,'model.cjs'),logLevel:'error'});
  const m=createRequire(import.meta.url)(path.join(dir,'model.cjs')),snapshot=JSON.parse(fs.readFileSync('native/assets/world-snapshot.json'));
  m.installImportedArt(snapshot.records);const layout=m.prepareAuthoredWorld(snapshot.layout);
- const make=()=>{const w=m.createCampPlaySession(layout,undefined,'survival');w.tick=600;w.enemies=[];w.loot=[];w.animals=[];w.notice='';w.noticeUntil=0;w.progression.campLevel=1;w.progression.restoredBuildings=['headquarters'];w.player.equipped='repairHammer';w.player.hurtUntil=0;Object.assign(w.player,m.campRepairSite(w,'warehouse'));return w};
+ const make=()=>{const w=m.createCampPlaySession(layout,undefined,'survival');w.tick=600;w.enemies=[];w.loot=[];w.animals=[];w.notice='';w.noticeUntil=0;w.progression.campLevel=2;w.progression.restoredBuildings=['headquarters','well','fire'];w.gear.bag.repairHammer=1;w.player.equipped='repairHammer';w.player.hurtUntil=0;Object.assign(w.player,m.campRepairSite(w,'warehouse'));return w};
  const w=make(),c=new m.FieldKitController();m.setItemCount(w,'pallets',0);m.setStoredCount(w,'pallets',0);
  let a=c.sample(w).action;assert(a.disabled);assert(a.target.revealed,'Nearby repair requirements appear before pressing');assert(!m.buildingHudState(w,'warehouse'),'Idle ruins have no billboard');
  assert.equal(c.press(w,a),false,'An unavailable repair cannot spend or start work');a=c.sample(w).action;assert(a.target.revealed,'An attempted blocked action reveals its requirements');assert(a.target.blocked);assert(!m.buildingHudState(w,'warehouse'),'Inspecting an untouched ruin does not add a duplicate empty health card');assert(!w.buildingRepair);assert(!w.waypoint);
@@ -27,7 +27,7 @@ try{
  const next=make();next.phase='night';next.enemies=[{hp:30,siegeNight:1}];const approaching=new m.CampThreatTracker();assert.equal(approaching.sample(next).title,'Robots approaching');
  const inside=make();inside.scene={id:'bunker'};inside.enemies=[];m.setCampThreatSource(inside,next);assert.equal(new m.CampThreatTracker().sample(inside).title,'Robots approaching','Camp raids remain visible from an interior');
  next.progression.restoredBuildings.push('warehouse');m.damageBuilding(next,'warehouse',210);assert(new m.CampThreatTracker().sample(inside).critical,'Interior alerts use actual outdoor building health');
- assert.equal(approaching.sample(next).title,'Warehouse critical','One critical site is named directly');next.progression.restoredBuildings.push('well');m.damageBuilding(next,'well',10);assert.equal(approaching.sample(next).title,'Camp under attack','Multiple attacked buildings share one camp warning');
+ assert.equal(approaching.sample(next).title,'Warehouse critical','One critical site is named directly');m.damageBuilding(next,'well',10);assert.equal(approaching.sample(next).title,'Camp under attack','Multiple attacked buildings share one camp warning');
 
  const finished=make();finished.progression.restoredBuildings.push('warehouse');finished.notice='';finished.noticeUntil=0;
  const fc=new m.FieldKitController();m.setFieldKitTarget(finished,{buildingId:'warehouse',revealed:true,x:0,y:0,label:'Warehouse'});assert(!m.buildingHudState(finished,'warehouse'),'Healthy buildings stay quiet after repair');

@@ -6,8 +6,7 @@ not repair those buildings remotely.
 
 At a broken building, the action offers to equip the starter repair hammer.
 Hold REPAIR for six seconds to restore a ruin, or four seconds to repair raid damage.
-Headquarters' first repair and later upkeep also close the menu and use this
-visible hammer action. A circular percentage indicator, repeated hammer swings,
+Confirm the initial HQ repair immediately at the planning bench. Later HQ upkeep also has a direct repair action. A circular percentage indicator, repeated hammer swings,
 sparks, and a HUD progress bar show the simulation-time work. Releasing drains
 progress at the same rate; holding again resumes from the remaining amount.
 The hammer animation stops on release. Touch, mouse, Space and E support holds,
@@ -16,7 +15,7 @@ Moving, switching tools, taking a hit, dodging, travel, opening a station or
 losing access cancels the job without spending resources. Resources are charged
 only on successful completion and use
 the cost shown when the job starts. Loading a save cancels unfinished work.
-The furnace still requires Camp Level 2. Web and native simulation loops save
+The furnace and workshop open for repair at Camp Level 3. Web and native simulation loops save
 successful completion immediately, including repairs started with keyboard.
 
 Night-raid Walkers, Hounds and Bombers target reachable restored camp buildings
@@ -38,7 +37,7 @@ damage is proportional to missing health, rounded up per material; a fully
 broken structure uses its original restoration cost. HQ upkeep uses two logs
 and one stone and restores HQ health and perimeter defence.
 
-New runs start with one wooden axe, one wooden pickaxe and one repair hammer.
+The starter cache in a new run holds one wooden axe, one wooden pickaxe and one repair hammer.
 Existing expeditions receive a missing pickaxe once when loaded, preserving
 existing weapons and respecting any wooden/metal pickaxe in the bag or chest.
 The hammer migration is also one-time. Persisted starter-kit markers

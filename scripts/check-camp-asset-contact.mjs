@@ -69,9 +69,11 @@ try{
   assert(action.perform());
  }
  Object.assign(world.player,m.placementArtPoint(sites.get('treatment'),.40,.80));
- const inspect=m.playInteraction(world);
- assert.equal(inspect?.key,'treatment');
- assert(inspect.perform());
+ world.player.hp=75;
+ const treat=m.playInteraction(world);
+ assert.equal(treat?.key,'treatment');
+ assert(treat.perform());
+ assert(world.survival.mealRecovery,'The treatment bed starts recovery');
  world.progression=oldProgress;
 
  // Open a save whose previous collision allowed the player on the barrel and
@@ -130,7 +132,7 @@ try{
   }
   for(const repaired of [false,true]){
    world.progression.restoredBuildings=repaired?[...m.CAMP_BUILDING_IDS]:[];
-   world.progression.campLevel=repaired?2:0;
+   world.progression.campLevel=repaired?4:0;
    world.progression.furnaceRestored=repaired;
    const state=repaired?'repaired':'broken';
    world.layout=camp;

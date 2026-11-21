@@ -1026,7 +1026,7 @@
     "name": "Treatment centre",
     "appearance": "Open-front olive and tan canvas recovery shelter with timber posts, low beds, blankets, bandage chest, washbasin and a lantern. Clear central approach between the beds.",
     "purpose": "The camp treatment shelter, with beds and supplies. Healing gameplay is not connected yet.",
-    "states": "Broken treatment centre until repaired; repaired centre has a gentle eight-step lantern shimmer from five aligned frames. Healing gameplay is not yet connected.",
+    "states": "Broken treatment centre until repaired; repaired centre has a gentle eight-step lantern shimmer from five aligned frames. The beds gradually restore health after treatment.",
     "batch": "B3",
     "footprint": "208 × 160 world units (proposed)",
     "lot": "480x416",

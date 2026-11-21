@@ -5,7 +5,7 @@ import {grantStarterPickaxe} from './player-gear';
 import {grantStarterRepairHammer} from './repair-hammer';
 import {validRestorationSave} from './camp-restoration';
 import {validBlueprintSave} from './headquarters-plans';
-import {campAccessLevel,validCampLevelSave} from './camp-levels';
+import {migrateCampLevel,validCampLevelSave} from './camp-levels';
 import {validJournalSave} from './headquarters-journal';
 import {worldBlocked,type World} from './survival-engine';
 import {nearbyClearGround} from './nearby-clear-ground';
@@ -83,7 +83,13 @@ export function decodeRun(text:string):TravelSnapshot{
   if(w.progression&&!validRestorationSave(w.progression))throw Error('The saved building repairs are incomplete.');
   if(w.progression&&!validBlueprintSave(w.progression.blueprints))throw Error('The saved blueprints are incomplete.');
   if(w.progression&&!validJournalSave(w.progression))throw Error('The saved journal is incomplete.');
-  if(w.progression){if(!validCampLevelSave(w.progression.campLevel))throw Error('The saved camp level is unsupported.');w.progression.campLevel=campAccessLevel(w);grantStarterRepairHammer(w);grantStarterPickaxe(w);}
+  if(w.progression){
+   const p=w.progression;
+   if(p.version!==1&&p.version!==2)throw Error('The saved expedition progress is incomplete.');
+   if(!validCampLevelSave(p.campLevel)||p.version===2&&p.campLevel===undefined)throw Error('The saved camp level is unsupported.');
+   migrateCampLevel(w);
+   grantStarterRepairHammer(w);grantStarterPickaxe(w);
+  }
   ids.add(id);const set=(w.minedRockColliders as unknown as {$set?:unknown})?.$set;
   if(![w.player.stamina,w.player.hurtUntil,w.hunger,w.thirst,w.phaseLeft,w.round,w.survived,w.serial].every(Number.isFinite)||!w.cycle||!Number.isInteger(w.cycle.pattern)||w.cycle.pattern<0||w.cycle.pattern>5||!counters(w.bag)||!counters(w.stock)||!counters(w.gear?.bag)||!counters(w.gear?.chest)||!w.camp.hearth||!Number.isFinite(w.camp.hearth.fuel)||w.fire.queue!==undefined&&!Array.isArray(w.fire.queue)||w.fire.rack!==undefined&&!Array.isArray(w.fire.rack)||w.enemies.some(e=>!point(e)||!Number.isFinite(e.hp)||!Array.isArray(e.path))||w.loot.some(l=>!point(l)||!Number.isFinite(l.amount)))throw Error('The saved expedition contains incomplete game data.');
   w.minedRockColliders=new Set(Array.isArray(set)?set.filter((v):v is string=>typeof v==='string'):[]);
@@ -117,7 +123,7 @@ export function decodeRun(text:string):TravelSnapshot{
  }
  if(!ids.has(CAMP_SCENE_ID)||!ids.has(data.currentId)||data.route.some((r:any)=>!ids.has(r?.sceneId)||!r.spawn||!Number.isFinite(r.spawn.x)||!Number.isFinite(r.spawn.y)))throw Error('The expedition return route is missing.');
  const active=data.worlds.find(([id]:[string])=>id===data.currentId)[1] as World,p=active.progression;
- if(!p||p.version!==1||!point(p.camp)||!p.siege||![p.hqHp,p.hqMax,p.defence,p.defenceMax,p.siege.spawned,p.siege.nextAt,p.siege.night,p.siege.ended].every(n=>Number.isFinite(n)&&n>=0)||p.hqMax<=0||p.defenceMax<=0||p.hqHp>p.hqMax||p.defence>p.defenceMax||![p.briefed,p.repairPart,p.furnaceRestored,p.metalCrafted,p.fortified,p.completed].every(v=>typeof v==='boolean'))throw Error('The saved expedition progress is incomplete.');
+ if(!p||p.version!==2||!point(p.camp)||!p.siege||![p.hqHp,p.hqMax,p.defence,p.defenceMax,p.siege.spawned,p.siege.nextAt,p.siege.night,p.siege.ended].every(n=>Number.isFinite(n)&&n>=0)||p.hqMax<=0||p.defenceMax<=0||p.hqHp>p.hqMax||p.defence>p.defenceMax||(p.repairPart!==undefined&&typeof p.repairPart!=='boolean')||![p.briefed,p.furnaceRestored,p.metalCrafted,p.fortified,p.completed].every(v=>typeof v==='boolean'))throw Error('The saved expedition progress is incomplete.');
  return{currentId:data.currentId,worlds:data.worlds,route:data.route};
 }
 /** Async adapters serialize writes; an older autosave can never overtake a new run. */

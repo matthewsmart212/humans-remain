@@ -1,7 +1,7 @@
 import {useStationFeedback} from './use-station-feedback';
 import React, {useState} from 'react';
 import {furnaceView} from './furnace-view';
-import {IRONWORKS_IMAGES, FURNACE_LOG_SECONDS, FURNACE_RULES, type SmeltRecipe} from './ironworks-data';
+import {IRONWORKS_IMAGES, FURNACE_LOG_SECONDS, type SmeltRecipe} from './ironworks-data';
 import {furnaceBatchSelection, queueFurnaceBatches, smeltMaterialName, smeltCostLabel, furnaceCollectCount, furnaceFuelTime, furnaceJobLabel} from './furnace-menu';
 import {FuelControl, ProductionBatch, ProductionDialog, ProductionJob, ProductionRecipe} from './ProductionControls';
 import StationMenu from './StationMenu';
@@ -11,12 +11,11 @@ type Props = {world: World; onClose: () => void; onChange: () => void};
 
 export default function FurnacePanel({world, onClose, onChange}: Props) {
  const [message, setMessage] = useStationFeedback();
- const [details, setDetails] = useState<SmeltRecipe | 'upgrade' | null>(null);
+ const [details, setDetails] = useState<SmeltRecipe | null>(null);
  const v = furnaceView(world);
  if (!v) return null;
  const recipe = v.recipes.find(r => r.id === details);
  const batch = recipe && furnaceBatchSelection(v, recipe.id, 1);
- const upgrade = FURNACE_RULES[2];
  const collectCount = furnaceCollectCount(world, v);
  const act = (run: () => number | boolean, success: string) => {
   setMessage(run() ? success : 'Supplies or backpack space changed.');
@@ -43,8 +42,7 @@ export default function FurnacePanel({world, onClose, onChange}: Props) {
    </section>;
 
  return <StationMenu compact fitContent={!details} world={world} title="Camp furnace" image={v.image} closeLabel="Leave furnace"
-  className="furnace-menu production-menu" onClose={onClose} message={message}
-  footerAction={!v.upgrade.complete && <button type="button" aria-haspopup="dialog" onClick={() => setDetails('upgrade')}>Bellows upgrade</button>}>
+  className="furnace-menu production-menu" onClose={onClose} message={message}>
   <div className="production-scroll">
    {v.ready > 0 && <section className="production-utility production-ready" aria-label="Furnace output">
     <img src={IRONWORKS_IMAGES.ironIngot} alt="" />
@@ -69,24 +67,12 @@ export default function FurnacePanel({world, onClose, onChange}: Props) {
    {!needsFuel && fuel}
    {!full && queueList}
   </div>
-  {details && <ProductionDialog title={recipe ? smeltMaterialName(recipe.id) : 'Bellows upgrade'} onClose={() => setDetails(null)}>
-   {recipe && batch ? <>
+  {recipe && batch && <ProductionDialog title={smeltMaterialName(recipe.id)} onClose={() => setDetails(null)}>
     <div className="production-output"><img src={IRONWORKS_IMAGES.ironIngot} alt="" /><strong>{smeltCostLabel(recipe.id)} · {Math.ceil(recipe.seconds)}s</strong></div>
     <p>{recipe.available} available in backpack and camp stores.</p>
     <ProductionBatch name={smeltMaterialName(recipe.id)} action="Smelt" limit={batch.limit} blocked={batch.blocked}
      actionLabel={n => `Smelt ${n} ${n === 1 ? 'ingot' : 'ingots'} from ${smeltMaterialName(recipe.id).toLowerCase()}`}
      onSubmit={n => {queue(recipe.id, n); setDetails(null);}} />
-   </> : <>
-    <p>Smelt faster. Hold {upgrade.queue} queued ingots, {upgrade.rack} finished ingots and {upgrade.fuel}s of heat.</p>
-     <ul className="production-costs">{v.upgrade.ingredients.map(m =>
-      <li key={m.id}><img src={m.image} alt="" /><span>{m.name}</span><b data-blocked={!m.enough}>{m.enough ? `${m.available} / ${m.needed}` : `Need ${m.needed - m.available} more`}</b></li>
-     )}</ul>
-     <button type="button" className="production-primary" disabled={!v.upgrade.canUpgrade} onClick={() => {
-      if (v.upgrade.run()) {setDetails(null); setMessage('Bellows reinforced.');}
-      else setMessage('Supplies changed.');
-      onChange();
-     }}>Upgrade bellows</button>
-   </>}
   </ProductionDialog>}
  </StationMenu>;
 }

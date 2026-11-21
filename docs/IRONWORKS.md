@@ -21,11 +21,11 @@ The ordinary ore roll is fixed per boulder per run, independent of hit count, se
 
 One furnace is placed on clear camp ground near the workshop, with ten additional iron deposits around the wider world. Additions run once on web and native, remain editable, fit the placement limit, preserve existing objects and respect later owner removals.
 
-Approach the furnace and use its action prompt. Smelting uses backpack materials first, then shared camp stores. Equipment crafting is at the smithy in the open-front workshop next door. One log provides 60 seconds of active smelting heat. Heat is banked while idle or when the output tray is full. Four batches can queue; eight ingots fit in the tray. Finished ingots stay there until collected, including when the backpack is full. Cancelling a batch returns its ingredients to camp stores without refunding spent heat.
+At Camp 3, repair the furnace on site with the repair hammer. Approach the restored furnace and use its action prompt. Smelting uses backpack materials first, then shared camp stores. Equipment crafting is at the smithy in the open-front workshop next door. One log provides 60 seconds of active smelting heat. Heat is banked while idle or when the output tray is full. Four batches can queue; eight ingots fit in the tray. Finished ingots stay there until collected, including when the backpack is full. Cancelling a batch returns its ingredients to camp stores without refunding spent heat.
 
 The shared game clock continues smelting while exploring or travelling through an interior. Pausing gameplay does not advance the clock. Multiple placed furnaces maintain independent queues and output trays.
 
-The bellows upgrade costs **8 stone + 2 iron ingots + 2 logs**. It reduces batch duration by 20%, increases the queue to six, the output tray to twelve, and heat capacity from 180 to 240 seconds.
+Previously upgraded furnaces in existing saves keep their shorter batch times, six queue slots, twelve-ingot tray and 240-second heat capacity.
 
 ## Smithy and equipment recipes
 
@@ -63,13 +63,13 @@ Exact prompts and references: [prompts.json](../art-source/equipment/ironworks-v
 
 - Root TypeScript and production build passed.
 - The production bundle excludes the unused predator artwork download ZIP; all individually loaded sprites remain available. This keeps the expanded build below the host's 256 MiB limit.
-- `check-ironworks.mjs`: passed. Includes 10,000 ore samples (2,531 bonuses), fixed per-node rolls, tool gates, both recipes, fuel, full and cold pauses, long frames, cancellation, output capacity, upgrades, access locks, storage, interior clock, map preservation and reachable stations/deposits.
+- `check-ironworks.mjs`: passed. Includes 10,000 ore samples (2,531 bonuses), fixed per-node rolls, tool gates, both recipes, fuel, full and cold pauses, long frames, cancellation, output capacity, legacy furnace settings, access locks, storage, interior clock, map preservation and reachable stations/deposits.
 - `check-smithy.mjs`: passed. Covers all twelve recipes, exact pack-first/shared-store payments, no losses on missing materials or full backpacks, net weight, combat/range/interior/transform access, real authored-camp docking, contextual action, and smelt → collect → craft → equip.
 - `check-resource-outlines.mjs`: passed, including nearby and selected buildings/stations never receiving a resource glow.
 - `check-ironworks-renderer.mjs`: passed using the actual CanvasKit/shared rendering adapter. Covers cold/burning/ready furnace states, moving and reduced-motion embers, light, cracked deposits and rubble.
 - Existing mining, foraging and web/native quick-selector checks passed.
 - Native furnace, HUD and inventory modules bundle with all local image/font references resolved. A full Expo build and physical iPhone run remain unverified because Expo dependencies are unavailable here.
-- Browser exercise completed ore and scrap smelting, ingot collection, metal pickaxe crafting and the bellows upgrade. Iron deposits show a disabled action with the wooden pickaxe.
+- Browser exercise completed ore and scrap smelting, ingot collection, and metal pickaxe crafting. Iron deposits show a disabled action with the wooden pickaxe.
 
 Local development exercises: `/scripts/ironworks-preview.html` and `/scripts/ironworks-device.html`. Normal production builds exclude these test pages and their fixture supplies.
 

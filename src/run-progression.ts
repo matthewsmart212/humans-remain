@@ -1,5 +1,4 @@
 import {placementUseFace} from './placement-contact';
-import {nearbyFurnace} from './camp-furnace';
 import {atCampRepairSite,campRepairSite} from './camp-repair-site';
 export {atCampRepairSite,campRepairSite};
 import {CAMP_BUILDING_IDS,CAMP_REPAIRS,campBuildingId,buildingRestored,buildingEstablished,buildingHp,buildingMaxHp,buildingNeedsRepair,type CampBuildingId} from './camp-restoration';
@@ -11,14 +10,14 @@ import {GEAR,hasGear,type GearKind,type PlayerGear} from './player-gear';
 import {setItemCount,setStoredCount,INVENTORY_KINDS} from './expedition-inventory';
 import {canPayMaterials,payMaterials,materialTotal} from './camp-materials';
 import type {MaterialCost} from './forge-recipes';
-import {campAccessLevel,campFacilities,CAMP_EXPANSION_COST,type CampLevel} from './camp-levels';
+import {campAccessLevel,campRequirementMet,CAMP_MILESTONES,nextCampLevel,type CampLevel} from './camp-levels';
 
 export const HQ_BENCH='art_camp_planning_board';
 export const RESTORE_FURNACE_COST:MaterialCost=CAMP_REPAIRS.furnace.cost;
 export const REPAIR_CAMP_COST:MaterialCost={pallets:2,stone:1};
 export const FORTIFY_COST:MaterialCost={pallets:5,stone:4,ironIngot:2};
 export type RunProgression={
- version:1;buildingHp?:Partial<Record<CampBuildingId,number>>;starterRepairHammer?:boolean;starterPickaxe?:boolean;restoredBuildings?:CampBuildingId[];campLevel?:CampLevel;blueprints?:HQBlueprintId[];briefed:boolean;repairPart:boolean;furnaceRestored:boolean;metalCrafted:boolean;fortified:boolean;
+ version:1|2;buildingHp?:Partial<Record<CampBuildingId,number>>;starterRepairHammer?:boolean;starterPickaxe?:boolean;restoredBuildings?:CampBuildingId[];campLevel?:CampLevel;blueprints?:HQBlueprintId[];briefed:boolean;repairPart?:boolean;furnaceRestored:boolean;metalCrafted:boolean;fortified:boolean;
  trackedObjective?:'shelter'|'metalworking'|'defences';ingotsSmelted?:number;craftedMetalPickaxe?:boolean;
  camp:Vec;hqHp:number;hqMax:number;defence:number;defenceMax:number;lastHit:number;
  siege:{night:number;spawned:number;nextAt:number;ended:number};completed:boolean;
@@ -32,7 +31,7 @@ export function headquartersDock(p:Placement,from?:Vec){
 }
 export function nearbyHeadquarters(w:World){const p=headquartersBench(w);if(!p)return null;const dock=headquartersDock(p,w.player);return withinActionReach(w,dock)?{placement:p,...dock}:null}
 export function openHeadquarters(w:World){if(!nearbyHeadquarters(w)||w.phase==='over'||w.player.hp<=0||w.player.downedUntil)return false;if(w.progression)w.progression.briefed=true;w.stationPanel='headquarters';return true}
-export const hasMetalworking=(w:World)=>!w.progression||campAccessLevel(w)>=2&&buildingRestored(w,'furnace');
+export const hasMetalworking=(w:World)=>buildingRestored(w,'furnace');
 export const recipeUnlocked=(w:World,id:GearKind)=>buildingRestored(w,'headquarters')&&buildingRestored(w,'workshop')&&(hasMetalworking(w)||['woodenAxe','woodenPickaxe','woodenKnife','woodenSpear','woodenSword'].includes(id));
 export function starterGear():PlayerGear{const empty=()=>Object.fromEntries(Object.keys(GEAR).map(id=>[id,0])) as PlayerGear['bag'];return{bag:empty(),chest:empty()}}
 function openGround(w:World,origin:Vec,radii:number[],prefer=Math.PI/3){
@@ -45,11 +44,10 @@ export function startExpedition(w:World){
  const hq=w.layout?.items.find(p=>p.assetId==='base_shelter_t1'||p.assetId==='base_headquarters_t1'||p.id==='4d468bcc-83b9-4bb7-af01-da4b69a67d9a');
  const dock=hq?(()=>{const b=placementBounds(hq),[x,y]=placementPoint(hq,b.x+b.width*.5,b.y+b.height+80);return{x,y}})():{...w.layout!.spawn};
  const camp=openGround(w,dock,[0,80,160,240,320]);
- w.progression={version:1,starterRepairHammer:true,starterPickaxe:true,campLevel:0,restoredBuildings:[],trackedObjective:'shelter',blueprints:[],briefed:false,repairPart:false,furnaceRestored:false,metalCrafted:false,fortified:false,camp,hqHp:240,hqMax:240,defence:120,defenceMax:120,lastHit:-100,siege:{night:0,spawned:0,nextAt:0,ended:0},completed:false};
+ w.progression={version:2,starterRepairHammer:true,starterPickaxe:true,campLevel:0,restoredBuildings:[],blueprints:[],briefed:false,furnaceRestored:false,metalCrafted:false,fortified:false,camp,hqHp:240,hqMax:240,defence:120,defenceMax:120,lastHit:-100,siege:{night:0,spawned:0,nextAt:0,ended:0},completed:false};
  w.camp.hearth.fuel=0;w.fire={cookUntil:0,ready:false,queue:[],rack:[],updatedAt:w.tick/60};
  w.notice='';w.noticeUntil=0;
 }
-export function recoverRepairPart(w:World){const p=w.progression;if(!p||p.repairPart||!nearbyFurnace(w)||w.phase==='over'||w.player.hp<=0)return false;p.repairPart=true;w.notice='Furnace bellows and smelting notes recovered';w.noticeUntil=w.tick/60+5;return true}
 /** HQ construction uses the authored site; it never moves the survivor or layout. */
 export function furnaceBuildStatus(w:World,fromHeadquarters=false){
  if(!w.progression||w.progression.furnaceRestored)return 'Already built';
@@ -60,20 +58,24 @@ export function restoreFurnace(w:World,fromHeadquarters=false){
  return !fromHeadquarters&&restoreCampBuilding(w,'furnace');
 }
 export function campExpansionStatus(w:World){
- if(campAccessLevel(w)>=2)return 'Camp level 2 unlocked';
- if(campAccessLevel(w)===0)return 'Repair headquarters first';
+ const target=nextCampLevel(campAccessLevel(w));
+ if(!target)return 'Camp level 4 reached';
+ if(target===1)return 'Repair headquarters first';
  if(!w.progression||w.stationPanel!=='headquarters'||!nearbyHeadquarters(w)||w.phase==='over'||w.player.hp<=0||w.player.downedUntil)return 'Visit headquarters';
  if(w.creativeMode)return 'Ready';
  if(w.phase==='night')return 'Expand at dawn';
- const ready=campFacilities(w);
- if(!ready.workshop)return buildingRestored(w,'workshop')?'Workshop not in camp':'Repair the workshop first';
- if(!ready.warehouse)return buildingRestored(w,'warehouse')?'Warehouse not in camp':'Repair the warehouse first';
- return canPayMaterials(w,CAMP_EXPANSION_COST)?'Ready':'Need expansion materials';
+ const milestone=CAMP_MILESTONES[target];
+ for(const id of milestone.requires){
+  if(!campRequirementMet(w,id))return 'Restore the '+CAMP_REPAIRS[id].name.toLowerCase()+' first';
+ }
+ return canPayMaterials(w,milestone.cost)?'Ready':'Need expansion materials';
 }
 export function expandCamp(w:World){
- if(campExpansionStatus(w)!=='Ready'||!payMaterials(w,CAMP_EXPANSION_COST))return false;
- w.progression!.campLevel=2;
- w.notice='Camp level 2 · New building and equipment plans unlocked';w.noticeUntil=w.tick/60+4;
+ const target=nextCampLevel(campAccessLevel(w));
+ if(!target||campExpansionStatus(w)!=='Ready'||!payMaterials(w,CAMP_MILESTONES[target].cost))return false;
+ w.progression!.campLevel=target;
+ w.repairCheckpoint=true;
+ w.notice='Camp level '+target+' · New repair sites available';w.noticeUntil=w.tick/60+4;
  return true;
 }
 export function campWorkStatus(w:World,fortify=false){if(campAccessLevel(w)===0)return 'Repair headquarters first';const p=w.progression;if(!p||w.stationPanel!=='headquarters'||!nearbyHeadquarters(w)||w.phase==='over'||w.player.hp<=0||w.player.downedUntil)return 'Visit headquarters';if(w.creativeMode)return fortify&&p.fortified?'Already reinforced':!fortify&&p.hqHp>=p.hqMax&&p.defence>=p.defenceMax?'Camp is fully repaired':'Ready';if(w.phase==='night')return 'Available at dawn';if(fortify&&p.fortified)return 'Already reinforced';if(fortify&&!blueprintLearned(w,'reinforced-camp'))return 'Requires Camp level 2';if(!fortify&&p.hqHp>=p.hqMax&&p.defence>=p.defenceMax)return 'Camp is fully repaired';return canPayMaterials(w,fortify?FORTIFY_COST:REPAIR_CAMP_COST)?'Ready':'Gather materials'}

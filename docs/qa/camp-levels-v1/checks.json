@@ -1,16 +1,54 @@
 {
   "passed": true,
   "checks": [
-    "Fresh camp uses real starter supplies and has no metalworking dependency cycle",
-    "Remote, closed, unavailable, dead/downed, night, missing-facility and insufficient-supply actions are atomic",
-    "Mixed backpack/store expansion pays once, persists, and unlocks standard plans without granting buildings, gear or waypoints",
-    "Bellows can be discovered before expansion; camp level grants knowledge while physical construction still costs materials",
-    "Legacy discovered/learned/restored access migrates; malformed levels reject; sandbox remains unlocked",
-    "Read-only family catalogue groups named upgrades and separates non-payable previews from live camp access"
+    "Each camp level permits its repair pair and blocks all later sites",
+    "HQ expansion requires both intact prerequisite sites and the full escalating materials",
+    "Rejected actions preserve inventory; successful upgrades consume backpack and stored materials exactly once",
+    "All four levels and purchased facilities survive reloads, including migration of earlier camps"
   ],
   "camp2Cost": {
     "pallets": 8,
     "stone": 4
+  },
+  "milestones": {
+    "1": {
+      "requires": [],
+      "cost": {
+        "pallets": 4
+      }
+    },
+    "2": {
+      "requires": [
+        "well",
+        "fire"
+      ],
+      "cost": {
+        "pallets": 8,
+        "stone": 4
+      }
+    },
+    "3": {
+      "requires": [
+        "warehouse",
+        "garden"
+      ],
+      "cost": {
+        "pallets": 12,
+        "stone": 6,
+        "scrap": 2
+      }
+    },
+    "4": {
+      "requires": [
+        "workshop",
+        "furnace"
+      ],
+      "cost": {
+        "pallets": 16,
+        "stone": 8,
+        "scrap": 4
+      }
+    }
   },
   "browserTested": false,
   "physicalIPhoneTested": false

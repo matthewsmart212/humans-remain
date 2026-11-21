@@ -1,4 +1,6 @@
+import {CROP_NATIVE_ART} from './crop-art';
 import {CAMP_RESTORATION_ART} from './camp-restoration-art';
+import {WORKSHOP_NATIVE_ART} from './workshop-animation-art';
 import {FURNACE_NATIVE_ART} from './furnace-animation-art';
 import {IRONWORKS_NATIVE_ART} from './ironworks-art';
 import React,{useEffect,useRef} from 'react';
@@ -18,12 +20,11 @@ const textures:Record<string,number>={
  '/survival/headquarters-menu-v1/camp-plan.webp':require('../public/survival/headquarters-menu-v1/camp-plan.webp'),
  '/survival/headquarters-menu-v1/parchment.webp':require('../public/survival/headquarters-menu-v1/parchment.webp'),
  '/survival/hq-furniture-v2/exploration-bench.webp':require('../public/survival/hq-furniture-v2/exploration-bench.webp'),
- '/survival/camp-workshop-v2/idle-00.webp':require('../public/survival/camp-workshop-v2/idle-00.webp'),
  '/survival/ui-field-kit-v1/axe.png':require('../public/survival/ui-field-kit-v1/axe.png'),
  '/survival/scrap-runner/bow-v1/bow-icon.webp':require('../public/survival/scrap-runner/bow-v1/bow-icon.webp'),
  '/survival/scrap-runner/bow-v1/arrows-icon.webp':require('../public/survival/scrap-runner/bow-v1/arrows-icon.webp'),
 };
-const source=(path:string):ImageSourcePropType=>FURNACE_NATIVE_ART[path]??CAMP_RESTORATION_ART[path]??textures[path]??BUNDLED_ART[path]??BACKPACK_NATIVE_ART[path]??{uri:path.startsWith('/')?WORLD_URL+path:path};
+const source=(path:string):ImageSourcePropType=>WORKSHOP_NATIVE_ART[path]??FURNACE_NATIVE_ART[path]??CAMP_RESTORATION_ART[path]??textures[path]??CROP_NATIVE_ART[path]??BUNDLED_ART[path]??BACKPACK_NATIVE_ART[path]??{uri:path.startsWith('/')?WORLD_URL+path:path};
 export default function HeadquartersPanel({world,width,height,safe,onClose,onChange}:Props){
  const navigation=useRef<HeadquartersNavigation>(null);
  const available={width:Math.max(1,width-safe.left-safe.right-16),height:Math.max(1,height-safe.top-safe.bottom-16)};

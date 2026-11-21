@@ -41,9 +41,9 @@ try{
  assert(render().includes(m.FURNACE_COLD_IMAGE),'Finished batches stop fire and smoke');
  assert(render().includes(m.IRONWORKS_IMAGES.ironIngot),'Finished ingots remain visible');
  m.startExpedition(world);
- world.progression.campLevel=2;
+ world.progression.campLevel=3;
  world.progression.furnaceRestored=false;
- world.progression.restoredBuildings=m.CAMP_BUILDING_IDS.filter(id=>id!=='furnace');
+ world.progression.restoredBuildings=m.CAMP_BUILDING_IDS.filter(id=>m.CAMP_REPAIRS[id].level<=3&&id!=='furnace');
  assert(render().includes(m.FURNACE_BROKEN_IMAGE),'Broken furnace uses the approved ruin');
  m.gear(world).bag.repairHammer=1;
  world.player.equipped='repairHammer';world.stationPanel=undefined;

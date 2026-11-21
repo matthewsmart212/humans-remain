@@ -48,7 +48,7 @@ try{
   for(let dy=0;dy<=120;dy+=20)assert(!m.layoutBlocked(layout,dock.x,dock.y+dy,19),p.assetId+' approach clear');
  }
  const world=m.createCampPlaySession(layout);world.enemies=[];world.animals=[];world.loot=[];world.weather=undefined;m.startExpedition(world);
- world.progression.campLevel=2;world.progression.restoredBuildings=['headquarters','furnace','warehouse','workshop','well','fire','bunker','garden','treatment'];world.progression.furnaceRestored=true;
+ world.progression.campLevel=4;world.progression.restoredBuildings=['headquarters','furnace','warehouse','workshop','well','fire','bunker','garden','treatment'];world.progression.furnaceRestored=true;
  Object.assign(world.player,m.furnaceDock(furnace));assert.equal(m.nearbyFurnace(world)?.placement.id,furnace.id);
  Object.assign(world.player,m.warehouseDock(warehouse));assert.equal(m.nearbyWarehouse(world)?.placement.id,warehouse.id);
  const width=1536,height=1024,view={...m.PLAY_VIEW,follow:false,x:1750,y:1000,zoom:.7};

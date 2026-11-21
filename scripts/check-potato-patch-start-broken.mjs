@@ -19,7 +19,8 @@ assert(!m.buildingRestored(game,'garden'),'The patch is not repaired at the star
 assert.equal(m.potatoPatchImageForWorld(game,garden.assetId),m.POTATO_PATCH_BROKEN,'Day 1 shows broken garden even when the layout selected repaired art');
 
 // A normal repair is the ONLY event switching the art to the repaired state.
-game.progression.restoredBuildings.push('garden');
+game.progression.restoredBuildings.push('headquarters','well','fire','garden');
+game.progression.campLevel=2;
 assert(m.buildingRestored(game,'garden'),'Garden repair registered');
 assert.equal(m.potatoPatchImageForWorld(game,garden.assetId),m.potatoStageUrl(1,0),'Repaired plot uses four-bed asset');
 game.progression.buildingHp={garden:0};

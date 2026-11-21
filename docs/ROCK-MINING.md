@@ -8,7 +8,7 @@ Selected existing woodland and river boulders now break into stone, exclusively 
 - Boulders contain 80–120 strength and drop 3–5 stone. The common 100-strength boulder takes five wooden strikes or three metal strikes.
 - Nearby nodes display Mine, Move closer, or Pickaxe required. Damage adds cracks and stone chips; depletion leaves small rubble.
 - Stone weighs 0.75 kg each. Collect, drop, store and withdraw it through the current systems; a full pack leaves the remainder on the ground.
-- Stone now also supports the camp furnace bellows upgrade. Mining includes bonus ore and marked iron deposits; see [IRONWORKS.md](IRONWORKS.md) for the current smelting and crafting loop.
+- Camp repairs and expansion use stone. Mining includes bonus ore and marked iron deposits; see [IRONWORKS.md](IRONWORKS.md) for the current smelting and crafting loop.
 
 ## Artwork
 

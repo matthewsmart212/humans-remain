@@ -17,7 +17,7 @@ export async function headquartersArtwork(){
   const images=new Set([m.HQ_PAPER,m.HQ_BENCH_ART,...Object.values(m.BROKEN_CAMP_ART),'/survival/ui-field-kit-v1/logs.png','/survival/world-rocks-v1/river-stone-trio.webp','/survival/ui-backpack-v1/scrap.png','/survival/ironworks-v1/iron-ingot.png']);
   for(const w of worlds){
    for(const art of [...m.headquartersPlans(w).map(p=>p.art),...m.HQ_BUILDINGS.map(b=>m.buildingArt(w,b))]){images.add(art.image);if(art.overlay)images.add(art.overlay)}
-   Object.assign(w.progression??(w.progression={}),{campLevel:2,briefed:true,repairPart:true,furnaceRestored:true,metalCrafted:true,fortified:true});
+   Object.assign(w.progression??(w.progression={}),{campLevel:4,briefed:true,furnaceRestored:true,metalCrafted:true,fortified:true});
    for(const entry of m.discoveries(w))images.add(entry.image);
   }
   return [...images].sort();

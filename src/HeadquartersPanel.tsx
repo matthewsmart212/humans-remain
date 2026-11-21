@@ -27,7 +27,7 @@ export default function HeadquartersPanel({world,onClose,onChange}:Props){
   if(event.key==='Escape'){event.preventDefault();navigation.current?.back();return}
   const active=document.activeElement;
   if(active?.getAttribute('role')==='tab'&&['ArrowRight','ArrowLeft','Home','End'].includes(event.key)){
-   const tabs=Array.from(layer.current?.querySelectorAll<HTMLElement>('[role="tab"]')??[]);
+   const tabs=Array.from(active.closest('[role="tablist"]')?.querySelectorAll<HTMLElement>('[role="tab"]')??[]);
    const index=tabs.indexOf(active as HTMLElement);
    const next=event.key==='Home'?0:event.key==='End'?tabs.length-1:(index+(event.key==='ArrowRight'?1:-1)+tabs.length)%tabs.length;
    event.preventDefault();tabs[next]?.focus();tabs[next]?.click();return;

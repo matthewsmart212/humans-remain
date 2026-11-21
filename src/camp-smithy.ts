@@ -5,7 +5,7 @@ import {recipeUnlocked} from './run-progression';
 import {campAccessLevel} from './camp-levels';
 import {type Placement,type WorldLayout} from './world-layout';
 import {withinActionReach,timeOf,type Vec,type World} from './survival-engine';
-import {FORGE_RECIPES} from './forge-recipes';
+import {FORGE_RECIPES,type ForgeRecipe} from './forge-recipes';
 import {GEAR,gear,type GearKind} from './player-gear';
 import {ITEM_RULES,itemCount,packWeight,PACK_CAPACITY} from './expedition-inventory';
 import {materialEntries,canPayMaterials,payMaterials} from './camp-materials';
@@ -28,10 +28,13 @@ export function openSmithy(w:World,id:string){
 export const smithyAccess=(w:World)=>w.stationPanel==='smithy'&&!!w.smithyId&&canUse(w)&&nearbySmithy(w)?.placement.id===w.smithyId;
 export function smithyCraftStatus(w:World,id:GearKind){
  const recipe=FORGE_RECIPES.find(r=>r.id===id);if(!recipe||!smithyAccess(w))return'Approach the workshop';
- if(!recipeUnlocked(w,id))return campAccessLevel(w)<2?'Expand to Camp level 2':'Restore the camp furnace';
+ if(!recipeUnlocked(w,id))return campAccessLevel(w)<3?'Expand to Camp level 3':'Restore the camp furnace';
+ return smithySupplyStatus(w,recipe);
+}
+export function smithySupplyStatus(w:World,recipe:ForgeRecipe){
  if(!canPayMaterials(w,recipe.cost))return'Need materials';
  const freed=materialEntries(recipe.cost).reduce((n,[kind,count])=>n+Math.min(count,itemCount(w,kind))*ITEM_RULES[kind].weight,0);
- return !w.creativeMode&&packWeight(w)-freed+GEAR[id].weight*recipe.count>PACK_CAPACITY+1e-7?'Backpack full':'Ready to craft';
+ return !w.creativeMode&&packWeight(w)-freed+GEAR[recipe.id].weight*recipe.count>PACK_CAPACITY+1e-7?'Backpack full':'Ready to craft';
 }
 export function craftSmithyGear(w:World,id:GearKind){
  const recipe=FORGE_RECIPES.find(r=>r.id===id);if(!recipe||smithyCraftStatus(w,id)!=='Ready to craft'||!payMaterials(w,recipe.cost))return false;

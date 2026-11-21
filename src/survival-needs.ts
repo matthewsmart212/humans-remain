@@ -10,8 +10,8 @@ export type SurvivalCondition={lastStaminaUse:number;healthRecoveryAt:number;exh
 type Vitals={phase?:string;hunger:number;thirst:number;survival?:SurvivalCondition;player:{hp:number;stamina:number;sprinting:boolean;downedUntil:number;hurtUntil:number}};
 const clamp=(n:number)=>Math.max(0,Math.min(100,n));
 function condition(w:Vitals):SurvivalCondition{return w.survival??=( {lastStaminaUse:-1e9,healthRecoveryAt:0,exhausted:false} )}
-/** Prepared meals recover health using gameplay time, never an animation timer. */
-export function startMealRecovery(w:Vitals,amount:number,seconds:number){
+/** Meals and treatment beds restore health using gameplay time, never an animation timer. */
+export function startHealthRecovery(w:Vitals,amount:number,seconds:number){
  if(amount<=0||seconds<=0||w.phase==='over'||w.player.hp<=0||w.player.downedUntil)return;
  const state=condition(w),remaining=Math.min(100-w.player.hp,(state.mealRecovery?.remaining??0)+amount);
  if(remaining>0)state.mealRecovery={remaining,rate:amount/seconds};

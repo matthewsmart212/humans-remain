@@ -27,7 +27,7 @@ try{
  const ctx=new Proxy({drawImage:(...args)=>calls.push(args)},{get:(target,key)=>key in target?target[key]:()=>{}});
  function draw(textures=images){calls.length=0;game.placedDrawables(ctx,textures,world).forEach(o=>o.draw());return calls.map(([im])=>im.src)}
  assert.deepEqual(draw(),[game.BROKEN_CAMP_ART.fire]);
- world.progression.restoredBuildings=['headquarters','fire'];
+ world.progression.campLevel=1;world.progression.restoredBuildings=['headquarters','fire'];
  world.camp.hearth.fuel=0;assert.deepEqual(draw(),[asset.unlit]);
  world.camp.hearth.fuel=2;
  const rear=new Set(),front=new Map();

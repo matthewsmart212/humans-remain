@@ -3,6 +3,7 @@ import {View,Text,Pressable,TextInput,Image,ScrollView,StyleSheet,Platform,Anima
 import type {StartProfile} from './start-profile';
 import {START_SCREEN_MENU_FONT,type StartScreenArtwork} from './start-screen-art';
 import type {StartScreenIconName} from './start-screen-icons';
+import {CAMP_LEVEL_NAMES} from './camp-levels';
 import ExpeditionMenu from './ExpeditionMenu';
 import ExpeditionLoading from './ExpeditionLoading';
 import SurvivorSelector from './SurvivorSelector';
@@ -79,8 +80,14 @@ export default function StartingScreen({renderPanel,width,height,safe={top:0,bot
    {action('Save survivor',()=>{onProfile({...profile,name:name.trim()||'Survivor',role});setPanel(null)},true)}
   </>}
   {panel==='upgrades'&&<>
-   <View style={s.upgrade}><Text style={s.upgradeTitle}>01  MAKESHIFT CAMP</Text><Text style={s.muted}>Repair Headquarters to reach Camp Level 1 and restore camp facilities.</Text></View>
-   <View style={s.upgrade}><Text style={s.upgradeTitle}>02  WORKING CAMP</Text><Text style={s.muted}>Gather resources in camp storage, then open Camp Plans inside Headquarters to unlock buildings and tools.</Text></View>
+   {([
+    [1,'Bring 4 logs to Headquarters. Once the camp is established, take your repair hammer to the well and campfire.'],
+    [2,'Restore the well and campfire, then pay the upgrade cost at Headquarters. The warehouse and vegetable patch open for repair.'],
+    [3,'Restore the warehouse and vegetable patch, then upgrade at Headquarters to open the workshop and furnace for repair.'],
+    [4,'Restore the workshop and furnace, then make the final upgrade. You can now repair the bunker and treatment centre.'],
+   ] as const).map(([level,description])=><View key={level} style={s.upgrade}>
+    <Text style={s.upgradeTitle}>LEVEL {level} · {CAMP_LEVEL_NAMES[level].toUpperCase()}</Text><Text style={s.muted}>{description}</Text>
+   </View>)}
    {action('Enter camp',play,true)}
   </>}
   {panel==='settings'&&<>

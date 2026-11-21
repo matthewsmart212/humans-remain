@@ -16,7 +16,7 @@ const visitBed=index=>Object.assign(game.player,m.gardenBedPoint(site.placement,
 visitBed(0);
 m.addInventory(game,'potato',3);m.addInventory(game,'carrot',3);
 assert.equal(m.plantPotato(game,'carrot'),false,'Broken patch cannot be planted');
-game.progression.restoredBuildings.push('headquarters','garden');game.progression.campLevel=1;
+game.progression.restoredBuildings.push('headquarters','well','fire','garden');game.progression.campLevel=2;
 for(const [index,kind] of ['potato','carrot','potato','carrot'].entries()){
  visitBed(index);
  game.player.equipped=kind;

@@ -1,3 +1,4 @@
+import {collectStarterTools, reachCampLevel} from './fixtures/camp-progression.mjs';
 import assert from 'node:assert/strict';
 import fs from 'node:fs';
 import os from 'node:os';
@@ -6,7 +7,7 @@ import {createRequire} from 'node:module';
 import {build} from 'esbuild';
 const temp=fs.mkdtempSync(path.join(os.tmpdir(),'on-site-repairs-'));
 try{
- const modules=['building-attack-site','building-repair','building-damage','building-condition-renderer','camp-siege','studio-combat','play-interaction','scrap-bomber','survival-engine','studio-play','run-progression','camp-restoration','camp-levels','camp-materials','expedition-inventory','player-gear','quick-items','field-kit','backpack','run-save','scene-travel','imported-art','authored-world','world-layout','world-assets','headquarters-roof','placed-world-renderer'];
+ const modules=['loot-chest','building-attack-site','walker-sprites','building-repair','building-damage','building-condition-renderer','camp-siege','studio-combat','play-interaction','scrap-bomber','survival-engine','studio-play','run-progression','camp-restoration','camp-levels','camp-materials','expedition-inventory','player-gear','quick-items','field-kit','backpack','run-save','scene-travel','imported-art','authored-world','world-layout','world-assets','headquarters-roof','placed-world-renderer'];
  await build({stdin:{contents:modules.map(id=>`export * from './src/${id}';`).join(''),resolveDir:process.cwd()},bundle:true,platform:'node',format:'cjs',outfile:path.join(temp,'model.cjs'),logLevel:'error'});
  const m=createRequire(import.meta.url)(path.join(temp,'model.cjs')),snapshot=JSON.parse(fs.readFileSync('native/assets/world-snapshot.json'));
  m.installImportedArt(snapshot.records);const layout=m.prepareAuthoredWorld(snapshot.layout),make=()=>m.createCampPlaySession(layout,undefined,'survival');
@@ -16,7 +17,7 @@ try{
  const resources={pin(){},prepare:async()=>{},ready:()=>true},roundTrip=w=>m.decodeRun(m.encodeRun(new m.SceneTravel(w,resources))).worlds[0][1];
  const advance=(w,ticks)=>{for(let tick=0;tick<ticks;tick++){w.tick++;m.stepBuildingRepair(w,{x:0,y:0})}};
  const work=(w,ticks)=>{m.holdBuildingRepair(w,true);advance(w,ticks)};
- let w=make();assert.equal(w.gear.bag.repairHammer,1);assert.equal(w.gear.bag.woodenPickaxe,1);assert.equal(w.gear.bag.woodenAxe,1);assert.equal(w.gear.bag.woodenSpear,0);assert(m.availableQuickItems({axes:w.gear.bag,cooked:0}).some(i=>i.id==='repairHammer'));
+ let w=make();collectStarterTools(m,w);assert.equal(w.gear.bag.repairHammer,1);assert.equal(w.gear.bag.woodenPickaxe,1);assert.equal(w.gear.bag.woodenAxe,1);assert.equal(w.gear.bag.woodenSpear,0);assert(m.availableQuickItems({axes:w.gear.bag,cooked:0}).some(i=>i.id==='repairHammer'));
  assert(m.selectQuickItem(w,'repairHammer'));hq(w);w.stationPanel=undefined;assert.equal(m.playInteraction(w)?.key,'headquarters','Equipped hammer must not hide first HQ repair');assert.equal(m.selectedQuickItem(w),'repairHammer');assert(!m.requestAttack(w),'Repair hammer is not a punch or weapon');
  const bag=m.backpackItems({...new m.FieldKitController().sample(w)});assert(bag.some(i=>i.id==='repairHammer'&&!i.droppable));
  for(const id of m.CAMP_BUILDING_IDS.filter(id=>id!=='headquarters')){visit(w,id);fund(w,id);assert(!m.restoreCampBuilding(w,id),id+' is gated by HQ');}
@@ -34,7 +35,8 @@ try{
  assert(m.restoreCampBuilding(w,'headquarters'));assert.equal(w.progression.hqHp,w.progression.hqMax);assert.equal(w.progression.defence,w.progression.defenceMax);assert(!w.buildingRepair);
  w.gear.bag.repairHammer=1;
 
- for(const id of m.CAMP_BUILDING_IDS.filter(id=>id!=='headquarters'&&id!=='furnace')){
+ for(const id of ['well','fire','warehouse','garden','workshop','bunker','treatment']){
+  reachCampLevel(m,w,m.CAMP_REPAIRS[id].level);
   hq(w);fund(w,id);const before=JSON.stringify([w.bag,w.stock]);assert(!m.restoreCampBuilding(w,id),'HQ cannot repair '+id);assert.equal(JSON.stringify([w.bag,w.stock]),before);
   const site=visit(w,id),position=[w.player.x,w.player.y];w.player.equipped='woodenAxe';assert.equal(m.buildingRepairStatus(w,id),'Equip repair hammer');
   const controller=new m.FieldKitController();let action=controller.sample(w).action;assert.equal(controller.sample(w).repairAction,undefined,'Ruins do not duplicate the primary repair in a second button');assert(action.key.startsWith('broken:'),id+' is the visible interaction');assert.equal(action.label,'EQUIP');assert(action.target.revealed,'Proximity shows the repair card without a hammer');assert(action.target.repairInfo.materials.length);assert(controller.press(w,action));controller.release();
@@ -42,17 +44,19 @@ try{
   assert(controller.press(w,action));assert(controller.holdingRepair);assert(!m.buildingRestored(w,id),'No instant repair');assert(w.buildingRepair);advance(w,120);assert(Math.abs(m.repairProgress(w)-1/3)<.001);controller.release();assert(!controller.holdingRepair);advance(w,60);assert(Math.abs(m.repairProgress(w)-1/6)<.001,'Release drains progress');assert.equal(m.materialTotal(w,'pallets'),m.CAMP_REPAIRS[id].cost.pallets??0,'Partial work never charges');action=controller.sample(w).action;assert(controller.press(w,action));advance(w,299);assert(w.buildingRepair,'Still not fully repaired');assert(!m.buildingRestored(w,id));advance(w,2);controller.release();assert(m.buildingRestored(w,id));assert.deepEqual([w.player.x,w.player.y],position);
   assert(m.costRows(w,m.CAMP_REPAIRS[id].cost).every(row=>row.have===0),id+' charges once');assert(!m.restoreCampBuilding(w,id));assert(m.buildingRestored(roundTrip(w),id));
  }
- visit(w,'furnace');fund(w,'furnace');w.player.equipped='repairHammer';assert.equal(m.buildingRepairStatus(w,'furnace'),'Requires Camp level 2');
- hq(w);for(const [kind,n]of Object.entries(m.CAMP_EXPANSION_COST))m.setItemCount(w,kind,n);assert(m.expandCamp(w));
+ // Exercise furnace-specific failure paths on a level-three camp with a broken furnace.
+ const furnaceWorld=make();
+ collectStarterTools(m,furnaceWorld);
+ reachCampLevel(m,furnaceWorld,3);
  for(const failure of ['far','no-hammer','wrong-tool','menu','dead','downed','scene','materials']){
-  const test=roundTrip(w);visit(test,'furnace');fund(test,'furnace');test.player.equipped='repairHammer';
+  const test=roundTrip(furnaceWorld);visit(test,'furnace');fund(test,'furnace');test.player.equipped='repairHammer';
   if(failure==='far')test.player.y+=200;if(failure==='no-hammer')test.gear.bag.repairHammer=0;if(failure==='wrong-tool')test.player.equipped='woodenAxe';if(failure==='menu')test.stationPanel='headquarters';if(failure==='dead')test.player.hp=0;if(failure==='downed')test.player.downedUntil=10;if(failure==='scene')test.scene={id:'bunker'};if(failure==='materials')m.setStoredCount(test,'scrap',0);
   const before=JSON.stringify([test.bag,test.stock]);assert(!m.restoreCampBuilding(test,'furnace'),failure);assert.equal(JSON.stringify([test.bag,test.stock]),before);
  }
- const blocked=roundTrip(w),socket=visit(blocked,'furnace');fund(blocked,'furnace');blocked.player.equipped='repairHammer';blocked.player.y+=80;
+ const blocked=roundTrip(furnaceWorld),socket=visit(blocked,'furnace');fund(blocked,'furnace');blocked.player.equipped='repairHammer';blocked.player.y+=80;
  blocked.layout={...blocked.layout,items:[...blocked.layout.items,{id:'repair-line-of-sight-wall',assetId:'base_well_t1',x:socket.x,y:socket.y+40,scale:1,solid:true,role:'prop',roof:'hidden',frame:{sourceAssetId:'base_well_t1',width:80,height:8,anchor:[.5,.5]},collision:{lineWidth:.01,paths:[{closed:true,points:[[0,0],[1,0],[1,1],[0,1]]}]}}]};
  assert(!m.atCampRepairSite(blocked,'furnace'),'Repairs cannot reach through a wall');assert(!m.restoreCampBuilding(blocked,'furnace'));
- visit(w,'furnace');fund(w,'furnace');w.player.equipped='repairHammer';assert(m.restoreCampBuilding(w,'furnace'));assert(roundTrip(w).progression.furnaceRestored);
+ visit(furnaceWorld,'furnace');fund(furnaceWorld,'furnace');furnaceWorld.player.equipped='repairHammer';assert(m.restoreCampBuilding(furnaceWorld,'furnace'));assert(roundTrip(furnaceWorld).progression.furnaceRestored);
  // Warehouse proximity shows shared stock immediately, without mixing it
  // with backpack amounts or replacing the more important repair information.
  const stockWorld=roundTrip(w),stockKit=new m.FieldKitController();visit(stockWorld,'warehouse');stockWorld.enemies=[];stockWorld.loot=[];stockWorld.player.hurtUntil=0;stockWorld.player.equipped='repairHammer';
@@ -144,7 +148,7 @@ try{
  assert(m.beginBuildingRepair(w,'workshop'));w.player.hp-=1;w.tick++;m.stepBuildingRepair(w,{x:0,y:0});assert(!w.buildingRepair);assert.equal(counts(),before);
  assert(m.beginBuildingRepair(w,'workshop'));w.player.equipped='woodenAxe';w.tick++;m.stepBuildingRepair(w,{x:0,y:0});assert(!w.buildingRepair);assert.equal(counts(),before);
  w.player.equipped='repairHammer';assert(m.beginBuildingRepair(w,'workshop'));work(w,241);assert.equal(m.buildingHp(w,'workshop'),180);assert.equal(m.materialTotal(w,'pallets'),1);assert(w.repairCheckpoint);
- assert(m.damageBuilding(w,'workshop',999));assert(!m.buildingRestored(w,'workshop'));assert(m.buildingEstablished(w,'workshop'));assert.equal(m.campAccessLevel(w),2);assert.equal(m.campBuildingArt(w,'base_workshop_t1').image,m.BROKEN_CAMP_ART.workshop);assert(!m.recipeUnlocked(w,'woodenAxe'));
+ assert(m.damageBuilding(w,'workshop',999));assert(!m.buildingRestored(w,'workshop'));assert(m.buildingEstablished(w,'workshop'));assert.equal(m.campAccessLevel(w),4);assert.equal(m.campBuildingArt(w,'base_workshop_t1').image,m.BROKEN_CAMP_ART.workshop);assert(!m.recipeUnlocked(w,'woodenAxe'));
  assert.equal(m.buildingHp(roundTrip(w),'workshop'),0);fund(w,'workshop');assert(m.beginBuildingRepair(w,'workshop'));work(w,241);assert(m.buildingRestored(w,'workshop'));assert(m.recipeUnlocked(w,'woodenAxe'));assert.equal(w.progression.restoredBuildings.filter(id=>id==='workshop').length,1);
  // Each night-raid species attacks a real authored building, with player aggro and line-of-sight.
  for(const kind of ['scrap-walker','scrap-hound','scrap-bomber']){
@@ -181,7 +185,7 @@ try{
   for(let tick=0;tick<1800&&raid.progression.hqHp===hp;tick++){raid.tick++;m.stepSiegeWalker(raid,e,true)}
   assert(raid.progression.hqHp<hp,kind+' reaches and attacks the table');assert(m.distance(e,site)<site.reach,kind+' gets close to the table');
   if(kind!=='scrap-bomber')assert(m.headquartersRaidVisible(roof,raid),'Raid reveals the HQ interior from outside');
-  if(kind==='scrap-walker'){const impact=raid.effects.find(f=>f.type==='enemy-strike');assert(impact&&m.distance(impact,site.impact)<100,'Punch impacts land at table height');assert.equal(e.motion.direction,m.facing(site.impact.x-e.x,site.impact.y-e.y),'Walker faces the resized planning table')}
+  if(kind==='scrap-walker'){const impact=raid.effects.find(f=>f.type==='enemy-strike');const fist=m.walkerFistOffset(e.motion.direction,5);assert.deepEqual([impact?.x,impact?.y],[e.x+fist.x,e.y+fist.y],'Punch impact follows the painted striking hand at the planning table');assert.equal(e.motion.direction,m.facing(site.impact.x-e.x,site.impact.y-e.y),'Walker faces the resized planning table')}
  }
  // The south-facing facade disappears on the stairs, including rotated halls.
  const hqPlacement=layout.items.find(p=>p.assetId==='base_shelter_t1');

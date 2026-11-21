@@ -19,4 +19,3 @@ export const FORGE_RECIPES:readonly ForgeRecipe[]=[
  {id:'bow',name:'Makeshift bow',count:1,cost:{pallets:4}},
  {id:'arrows',name:'10 arrows',count:10,cost:{ironIngot:1,pallets:1}},
 ];
-export const FURNACE_UPGRADE_COST:MaterialCost={stone:8,ironIngot:2,pallets:2};

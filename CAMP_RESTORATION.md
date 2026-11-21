@@ -1,24 +1,17 @@
 # Day-one camp restoration
 
-Current repair workflow: [on-site hammer repairs and HQ stairs](docs/on-site-building-repairs.md). Existing ruins are now repaired at their camp sites after HQ Level 1; the earlier HQ-only repair flow below describes the original release.
+New Survival runs begin at Camp Level 0 with nine ruined sites. Bring four logs to the planning bench inside the ruined HQ to establish Level 1. The HQ shows the repairs and resources needed for each later level. Use the repair hammer at each building's site.
 
-New Survival runs start at Camp Level 0 with nine broken sites. The HQ planning bench remains reachable inside the ruined HQ. Its menu contains only the initial repair and exit until the player pays four logs. This establishes Camp Level 1 and immediately shows its unlocks. Other facilities must be restored individually from their HQ plans. The furnace retains its existing Camp Level 2 requirement.
+| Camp level reached | Requirement at HQ | Sites opened for repair |
+| --- | --- | --- |
+| 1 | 4 logs | Well and campfire |
+| 2 | Working well and campfire, 8 logs, 4 stone | Warehouse and vegetable patch |
+| 3 | Working warehouse and vegetable patch, 12 logs, 6 stone, 2 scrap | Workshop and furnace |
+| 4 | Working workshop and furnace, 16 logs, 8 stone, 4 scrap | Bunker and treatment centre |
 
-| Site | Initial repair |
-| --- | --- |
-| Headquarters | 4 logs |
-| Workshop | 3 logs |
-| Warehouse | 4 logs |
-| Well | 2 logs, 1 stone |
-| Bonfire | 1 log, 2 stone |
-| Bunker | 3 logs, 2 stone, 3 scrap |
-| Treatment centre | 3 logs, 2 scrap |
-| Garden | 3 logs |
-| Furnace | 4 logs, 3 stone, 4 scrap; Camp Level 2 |
+Each building has its own repair cost. Materials are paid from the backpack first, then shared camp stores. The starter cache holds the axe, pickaxe and repair hammer. Once restored, the furnace smelts iron ore with wood fuel, the workshop crafts equipment, the bunker opens for exploration and the treatment beds restore health over time.
 
-The starter axe can obtain HQ and workshop materials. A wooden pickaxe then costs three logs, opening the stone-dependent repairs. Materials are paid atomically from backpack first, then camp stores. No additional tools or resources are granted by repairing HQ. Garden and treatment restoration repairs their structures; farming and medical treatment remain future features and are labelled accordingly in their plans.
-
-`restoredBuildings` is run state, shared across interiors and saved with the expedition. An absent field identifies an existing expedition and preserves its established facilities. Editor layouts, placement transforms, foundations and collision geometry are never mutated. Sandbox access remains available for testing.
+Building condition and camp level persist across travel and saves. Damage can interrupt a service. Earlier expeditions retain access to buildings they already established. [On-site repair controls](docs/on-site-building-repairs.md)
 
 The nine approved mockups live in `public/survival/camp-ruins-v1/`. The shared renderer maps each complete transparent sprite to the original placement's exact bounds, including rotation and flips, without recropping. HQ retains its fadeable roof and a separate damaged interior. Both web and native loaders include the assets.
 

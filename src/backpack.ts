@@ -72,8 +72,8 @@ export function backpackItems(s:BackpackContents):BagItem[]{
  for(const [id,kind,count,description,hint] of [
   ['logs','pallets',s.logs,'Timber chopped from trees. Each log keeps the cooking fire burning for 90 seconds.','Use at the fire or store heavy stacks in a camp chest.'],
   ['ironOre','ironOre',s.ironOre??0,'Raw iron-bearing rock. Find bonus ore in ordinary boulders or mine visible iron deposits with a metal pickaxe.','At the camp furnace, smelt 2 ore into 1 iron ingot using log fuel.'],
-  ['ironIngot','ironIngot',s.ironIngot??0,'Refined iron, ready for metal tools, weapons and furnace upgrades.','Craft equipment at the workshop beside the furnace. Store spare ingots in any camp chest.'],
-  ['stone','stone',s.stone??0,'Stone mined from weathered boulders. Use with ingots and logs to reinforce the camp furnace.','Store stone in a camp chest to free carrying weight.'],
+  ['ironIngot','ironIngot',s.ironIngot??0,'Refined iron for workshop equipment and camp defences.','Craft equipment at the workshop beside the furnace. Store spare ingots in any camp chest.'],
+  ['stone','stone',s.stone??0,'Stone mined from weathered boulders. Use it to repair buildings and expand headquarters.','Store stone in a camp chest to free carrying weight.'],
   ['scrap','scrap',s.scrap,'Recovered metal pieces. Recycle 3 scrap into 1 iron ingot at the camp furnace.','Unload at a camp chest to free carrying weight.'],
   ['fuel','fuel',s.fuel,'Recovered fuel for camp equipment.','Campfire cooking uses logs. Store fuel at camp.'],
  ] as const){const weight=ITEM_RULES[kind].weight;items.push({id,name:ITEM_RULES[kind].name,category:'Materials',count,image:BAG_IMAGES[id],description,facts:[['Each',`${weight} kg`],['Stack',s.creativeMode?'∞ Creative supplies':`${(count*weight).toFixed(2)} kg`]],hint:s.creativeMode?'Creative Mode · Unlimited supplies. Turn it off to see original quantities.':hint,useDisabled:true,droppable:!s.creativeMode})}

@@ -20,6 +20,10 @@ jobs:
           cache: npm
       - run: npm ci
       - run: npm run typecheck
+      - name: Verify camp milestones and HQ recipe availability
+        run: |
+          node scripts/check-camp-levels.mjs
+          node scripts/check-camp-recipes.mjs
       - name: Check campfire menu and ground food collection
         run: |
           node scripts/check-campfire-menu.mjs

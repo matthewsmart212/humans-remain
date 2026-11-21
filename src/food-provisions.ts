@@ -1,6 +1,6 @@
 import {PROVISIONS,isProvision,type ProvisionId} from './food-provisions-data';
 import {expeditionKit,itemCount,takeInventory,setItemCount,packWeight,PACK_CAPACITY,ITEM_RULES} from './expedition-inventory';
-import {SURVIVAL_BALANCE,startMealRecovery} from './survival-needs';
+import {SURVIVAL_BALANCE,startHealthRecovery} from './survival-needs';
 import {campAction,timeOf,type World} from './survival-engine';
 export {PROVISION_IDS,PROVISIONS,isProvision,type ProvisionId,type ProvisionCounts,type ProvisionDefinition} from './food-provisions-data';
 export {provisionCounts} from './expedition-inventory';
@@ -21,7 +21,7 @@ export function consumeProvision(w:World,id:ProvisionId){
  const food=PROVISIONS[id],t=timeOf(w),p=w.player;
  w.hunger=Math.min(100,w.hunger+food.food);w.thirst=Math.min(100,w.thirst+food.water);p.stamina=Math.min(100,p.stamina+food.stamina);
  if(p.stamina>=SURVIVAL_BALANCE.exhaustionRelease&&w.survival)w.survival.exhausted=false;
- if(food.healOverTime)startMealRecovery(w,food.healOverTime,food.duration);
+ if(food.healOverTime)startHealthRecovery(w,food.healOverTime,food.duration);
  expeditionKit(w).mealReadyAt=t+food.cooldown;
  w.notice=`Ate ${food.name.toLowerCase()}`;w.noticeUntil=t+2;
  return true;

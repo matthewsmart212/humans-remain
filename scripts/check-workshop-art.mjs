@@ -35,6 +35,8 @@ try{
  assert(m.openHeadquarters(world));
  m.setItemCount(world,'pallets',4);
  assert(m.restoreCampBuilding(world,'headquarters'));
+ world.progression.campLevel=3;
+ world.progression.restoredBuildings.push('well','fire','warehouse','garden');
  world.stationPanel=undefined;
  world.gear.bag.repairHammer=1;
  world.player.equipped='repairHammer';

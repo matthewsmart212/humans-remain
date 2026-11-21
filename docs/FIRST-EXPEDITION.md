@@ -5,11 +5,11 @@ The first Survival milestone connects the existing gathering, crafting, weather 
 ## Player path
 
 1. Start with an empty backpack. Open the supply chest by the campfire to collect a repair hammer, wooden axe and wooden pickaxe.
-2. Visit the headquarters planning bench. Its blueprint overview shows Shelter, Metalworking and Reinforced camp, plus the current objective, costs and camp condition.
-3. Recover the bellows and smelting notes at the camp furnace. This quest part is stored in progression, so dropping inventory cannot lose it.
-4. Chop logs, craft a wooden pickaxe at the smithy, mine ordinary stone and collect loose scrap. Restore the furnace with the bellows, 4 logs, 3 stone and 4 scrap. No metal ingot is required to unlock smelting.
-5. Fuel the furnace and smelt ore or scrap. Craft a metal weapon at the smithy. Existing metal equipment and bow/arrow recipes remain locked until restoration.
-6. Defend headquarters through three nights. Repair between raids, or pay for stronger camp defences once a metal weapon has been crafted.
+2. Gather four logs and rebuild headquarters at its planning bench to reach Camp 1. Use the bench to see the material cost and required repairs for the next camp level.
+3. Equip the hammer and repair the well and campfire on site. Bring the expansion materials to HQ for Camp 2, which opens repairs at the warehouse and vegetable patch.
+4. Repair the warehouse and vegetable patch, then pay for Camp 3. The workshop and furnace can now be repaired. Use the workshop to craft equipment and feed logs into the furnace to smelt ore or scrap into iron ingots.
+5. Restore both the workshop and furnace and pay for Camp 4 to open the remaining repair sites.
+6. Defend headquarters through the night raids. Repair damaged buildings and use the reinforcement plan at HQ to strengthen camp defences.
 
 Daylight lasts 120 seconds and night lasts 60 seconds, using the existing dusk, dawn, sky clock and weather system. The first three raids contain 3, 4 and 5 robots. Walkers attack headquarters when the player is distant and engage the player nearby; Hounds and Bombers add pressure in the later raids. Initial raid robots have less health than sandbox robots. Spawns use reachable ground and obey the shared enemy cap. Dawn clears remaining raid enemies. Day four marks the first milestone complete once metalworking equipment has been earned. Subsequent nights repeat the third wave; a broader campaign is not implemented yet.
 
@@ -31,7 +31,7 @@ Passed: root and native TypeScript checks; production web build; Expo iOS export
 
 The expedition integration check exercises the actual authored map, accessible objectives, primitive crafting, atomic repair, real mined/felled nodes, mid-smelt and mid-raid saves, three complete day/night cycles, camp defeat, bunker persistence and attacks, corrupt saves and ordered asynchronous writes.
 
-Browser checks use the development-only expedition fixture with real production components/rendering and bundled authored artwork. Verified HQ blueprint selection, quest recovery, disabled repair requirements, successful restoration into the normal furnace panel, and phone landscape/portrait layout. The full local editor preview cannot access its hosted D1/R2 artwork API. Test fixtures are not production routes. No physical iPhone performance/play test, IPA signing or TestFlight publication was performed.
+Browser checks use the development-only expedition fixture with real production components/rendering and bundled authored artwork. Verified HQ blueprint selection, disabled repair requirements, successful restoration into the normal furnace panel, and phone landscape/portrait layout. The full local editor preview cannot access its hosted D1/R2 artwork API. Test fixtures are not production routes. No physical iPhone performance/play test, IPA signing or TestFlight publication was performed.
 
 The older `check-studio-combat.mjs` fails on its pre-existing `80` HP Walker expectation: both the original source commit and this change use the current `160` HP sandbox Walker. Current Walker balance and spawn checks pass. That unrelated legacy test is unchanged.
 

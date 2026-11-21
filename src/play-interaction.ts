@@ -4,7 +4,7 @@ import {hasGear} from './player-gear';
 import {REPAIR_HAMMER_IMAGE} from './repair-hammer';
 import {buildingRepairStatus,buildingRepairCost,costRows,restoreCampBuilding} from './run-progression';
 import {buildingRestored,buildingEstablished,buildingNeedsRepair,buildingHp,buildingMaxHp,CAMP_REPAIRS,campBuildingPlacements,type CampBuildingId} from './camp-restoration';
-import {nearbyHeadquarters,openHeadquarters,recoverRepairPart,hasMetalworking} from './run-progression';
+import {nearbyHeadquarters,openHeadquarters,hasMetalworking} from './run-progression';
 import {nearbyFurnace,openFurnace,furnaceWorking} from './camp-furnace';
 import {nearbySmithy,openSmithy} from './camp-smithy';
 import {BAG_IMAGES} from './backpack';
@@ -28,6 +28,7 @@ import {nearbyGate,nearbyGateAction,toggleGate,gateActionLabel} from './camp-gat
 import {chestIsOpen,toggleChest} from './chest-animation';
 import {nearbyLootChest,openLootChest,lootChestOpened,lootChestRemaining} from './loot-chest';
 import {campInteraction,performCampInteraction} from './studio-play';
+import {startHealthRecovery} from './survival-needs';
 import {nearPotatoPatch,potatoPatchAction} from './potato-farming';
 
 export type PlayInteraction={repairAction?:PlayInteraction;repair?:boolean;image?:string;key:string;label:string;shortLabel:string;icon:'gate'|'chest'|'collect'|'cook'|'water';disabled:boolean;available?:boolean;target?:FieldKitTarget;perform:()=>unknown};
@@ -71,7 +72,7 @@ function repairInteraction(world:World,id:CampBuildingId,placementId:string):Pla
  const needsHQ=!world.creativeMode&&id!=='headquarters'&&!buildingRestored(world,'headquarters'),equip=status==='Equip repair hammer',instant=id==='headquarters'||!!world.creativeMode;
  const rows=costRows(world,buildingRepairCost(world,id));
  const materials=rows.length===1?`Needs ${rows[0].needed} ${materialName(rows[0])} · Have ${rows[0].have}`:rows.map(row=>`${row.have}/${row.needed} ${row.name.toLowerCase()}`).join(' · ');
- const detail=needsHQ?'Requires Camp level 1':status==='Requires Camp level 2'?status:materials+(status==='Repair hammer needed'?' · Hammer needed':'');
+ const detail=needsHQ?'Requires Camp level 1':status.startsWith('Requires Camp level ')?status:materials+(status==='Repair hammer needed'?' · Hammer needed':'');
  const blocked=needsHQ||!equip&&status!=='Ready';
  const verb=blocked?'Inspect':equip?'Equip hammer to repair':instant?'Tap to repair':'Hold to repair';
  return {key:'broken:'+placementId+':'+status,repair:!instant&&!blocked&&!equip,
@@ -98,22 +99,23 @@ export function playInteraction(world:World):PlayInteraction|null{
    target:{id:'headquarters',buildingId:'headquarters',x:headquarters.x,y:headquarters.y,label:'Headquarters',detail:restored?'Camp upgrades':'Repair to establish camp'},perform:()=>openHeadquarters(world)});
  }
  const furnace=nearbyFurnace(world);
- if(furnace&&world.progression&&!world.progression.repairPart){add({key:'furnace-bellows',label:'Recover furnace bellows',shortLabel:'RECOVER',icon:'collect',image:stationArt.furnace,disabled:false,target:{id:'furnace-bellows',x:furnace.x,y:furnace.y,label:'Camp furnace',detail:'Furnace bellows'},perform:()=>nearbyFurnace(world)?.placement.id===furnace.placement.id&&recoverRepairPart(world)})}
  const rareCache=nearbyLootChest(world);if(rareCache){const opened=lootChestOpened(world,rareCache.id),remaining=lootChestRemaining(world,rareCache.id);add({key:'rare-chest:'+rareCache.id,label:opened?'View loot':'Open loot chest',shortLabel:opened?'LOOT':'OPEN',icon:'chest',disabled:false,target:{id:'rare-chest:'+rareCache.id,x:rareCache.x,y:rareCache.y,label:'Loot chest',detail:opened?(remaining?remaining+' supplies':'Empty'):undefined},perform:()=>openLootChest(world,rareCache.id)});}
   const gatePoint=nearbyGateAction(world);if(gatePoint){const gate=gatePoint.placement;const label=gateActionLabel(world,gate.id);add({key:`gate:${gate.id}:${label}`,label,shortLabel:gateButtonLabels[label],icon:'gate',disabled:false,target:{id:`gate:${gate.id}`,x:gatePoint.x,y:gatePoint.y,label:'Camp gate'},perform:()=>nearbyGate(world)?.id===gate.id&&gateActionLabel(world,gate.id)===label&&toggleGate(world,gate.id)})}
- if(furnace&&buildingRestored(world,'furnace')){const f=world.ironworks?.stations[furnace.placement.id];add({key:`furnace:${furnace.placement.id}`,label:hasMetalworking(world)?'Open furnace to smelt iron':'Inspect damaged furnace',shortLabel:hasMetalworking(world)?'SMELT':'INSPECT',icon:'cook',image:stationArt.furnace,disabled:false,target:{id:`furnace:${furnace.placement.id}`,buildingId:'furnace',x:furnace.x,y:furnace.y,label:hasMetalworking(world)?'Camp furnace':'Damaged furnace',detail:!hasMetalworking(world)?'Restore metalworking':f?.ready?`${f.ready} ingots ready`:furnaceWorking(f)?'Smelting':f?.queue.length&&!f.fuel?'Add wood':'Iron ingots'},perform:()=>openFurnace(world,furnace.placement.id)})}
+ if(furnace&&hasMetalworking(world)){const f=world.ironworks?.stations[furnace.placement.id];add({key:`furnace:${furnace.placement.id}`,label:'Open furnace to smelt iron',shortLabel:'SMELT',icon:'cook',image:stationArt.furnace,disabled:false,target:{id:`furnace:${furnace.placement.id}`,buildingId:'furnace',x:furnace.x,y:furnace.y,label:'Camp furnace',detail:f?.ready?`${f.ready} ingots ready`:furnaceWorking(f)?'Smelting':f?.queue.length&&!f.fuel?'Add wood':'Iron ingots'},perform:()=>openFurnace(world,furnace.placement.id)})}
  const smithy=nearbySmithy(world);if(smithy&&buildingRestored(world,'workshop'))add({key:`smithy:${smithy.placement.id}`,label:'Craft tools and weapons',shortLabel:'CRAFT',icon:'chest',image:stationArt.workshop,disabled:false,target:{id:`smithy:${smithy.placement.id}`,buildingId:'workshop',x:smithy.x,y:smithy.y,label:'Workshop',detail:'Tools & weapons'},perform:()=>openSmithy(world,smithy.placement.id)});
  const warehouse=nearbyWarehouse(world);if(warehouse&&buildingRestored(world,'warehouse'))add({key:`warehouse:${warehouse.placement.id}`,label:'Open warehouse',shortLabel:'STORE',icon:'chest',image:stationArt.warehouse,disabled:false,target:{id:`warehouse:${warehouse.placement.id}`,buildingId:'warehouse',x:warehouse.x,y:warehouse.y,label:'Warehouse',detail:'Wood, stone & scrap'},perform:()=>{if(nearbyWarehouse(world)?.placement.id!==warehouse.placement.id)return false;world.stationPanel='warehouse';return true}});
  const chest=nearbyChest(world);if(chest){const open=chestIsOpen(world,chest),p=layoutViews(world.layout).chests.find(p=>p.id===chest)!;add({key:`chest:${chest}:${open}`,label:'Open camp storage',shortLabel:'STORAGE',icon:'chest',disabled:false,target:{id:`chest:${chest}`,...chestDock(p),label:'Supply chest',detail:'Equipment & supplies'},perform:()=>{if(nearbyChest(world)!==chest||chestIsOpen(world,chest)!==open)return false;if(!open)toggleChest(world,chest);world.stationPanel='storage';return true}})}
  const medic=buildingRestored(world,'treatment')?repairAnchor(world,'treatment'):undefined;
  if(medic&&withinActionReach(world,medic)){
-  const detail='Shelter restored · Medical treatment is coming later';
-  add({key:'treatment',label:'Inspect treatment centre',shortLabel:'INSPECT',icon:'chest',disabled:false,
-   target:{id:'treatment',buildingId:'treatment',x:medic.x,y:medic.y,label:'Treatment centre',detail},
+  const canTreat=()=>world.player.hp>0&&world.player.hp<100&&!world.player.downedUntil&&!world.survival?.mealRecovery&&world.phase!=='over';
+  const detail=world.player.hp>=100?'Full health':world.survival?.mealRecovery?'Recovery in progress':'Recover up to 20 health over 20 seconds';
+  add({key:'treatment',label:'Use treatment bed',shortLabel:'TREAT',icon:'chest',disabled:!canTreat(),
+   target:{id:'treatment',buildingId:'treatment',x:medic.x,y:medic.y,label:'Treatment centre',detail,blocked:!canTreat()},
    perform:()=>{
     const current=repairAnchor(world,'treatment');
-    if(!current||!buildingRestored(world,'treatment')||!withinActionReach(world,current))return false;
-    world.notice=detail;world.noticeUntil=timeOf(world)+3;return true;
+    if(!canTreat()||!current||!buildingRestored(world,'treatment')||!withinActionReach(world,current))return false;
+    startHealthRecovery(world,20,20);
+    world.notice='Treatment started · Recovering health';world.noticeUntil=timeOf(world)+3;return true;
    }});
  }
  const action=campInteraction(world),pickup=action?.action==='pickup'?pickupTarget(world):null;

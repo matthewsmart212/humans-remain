@@ -2,7 +2,7 @@ import {useStationFeedback} from '../src/use-station-feedback';
 import React, {useState} from 'react';
 import {View, Text, ScrollView, StyleSheet} from 'react-native';
 import {furnaceView} from '../src/furnace-view';
-import {FURNACE_LOG_SECONDS, FURNACE_RULES, type SmeltRecipe} from '../src/ironworks-data';
+import {FURNACE_LOG_SECONDS, type SmeltRecipe} from '../src/ironworks-data';
 import {furnaceBatchSelection, queueFurnaceBatches, smeltMaterialName, smeltCostLabel, furnaceCollectCount, furnaceFuelTime, furnaceJobLabel} from '../src/furnace-menu';
 import {stationPalette as palette} from '../src/station-palette';
 import {ItemArt} from './FieldItemArt';
@@ -16,13 +16,12 @@ type Props = {world: World; width: number; height: number; onClose: () => void; 
 
 export default function FurnacePanel({world, width, height, onClose, onChange, safe}: Props) {
  const [message, setMessage] = useStationFeedback();
- const [details, setDetails] = useState<SmeltRecipe | 'upgrade' | null>(null);
+ const [details, setDetails] = useState<SmeltRecipe | null>(null);
  const v = furnaceView(world);
  if (!v) return null;
  const recipe = v.recipes.find(r => r.id === details);
  const batch = recipe && furnaceBatchSelection(v, recipe.id, 1);
  const collectCount = furnaceCollectCount(world, v);
- const upgrade = FURNACE_RULES[2];
  const closeDetails = () => setDetails(null);
  const back = details ? closeDetails : onClose;
  const act = (run: () => boolean | number, success: string) => {
@@ -51,8 +50,7 @@ export default function FurnacePanel({world, width, height, onClose, onChange, s
    </>;
 
  return <StationMenu compact fitContent={!details} world={world} title="Camp furnace" image={art.campFurnace} closeLabel="Leave furnace"
-  onClose={onClose} onBack={back} message={message} width={width} height={height} safe={safe}
-  footerAction={!v.upgrade.complete ? <StationButton label="Bellows upgrade" onPress={() => setDetails('upgrade')}/> : undefined}>
+  onClose={onClose} onBack={back} message={message} width={width} height={height} safe={safe}>
   <ScrollView nestedScrollEnabled style={s.scroll} contentContainerStyle={s.body} accessibilityElementsHidden={!!details} importantForAccessibility={details ? 'no-hide-descendants' : 'auto'}>
    {v.ready > 0 && <View style={s.row}><ItemArt id="ironIngot" size={30} /><Text style={s.growText}>{v.ready} {v.ready === 1 ? 'ingot' : 'ingots'} ready</Text>
     <StationButton primary label={collectCount ? 'Collect' : 'Backpack full'} accessibilityLabel={`Collect ${collectCount} ready ingots`}
@@ -76,22 +74,11 @@ export default function FurnacePanel({world, width, height, onClose, onChange, s
     actionLabel={n => `Smelt ${n} ${n === 1 ? 'ingot' : 'ingots'} from ${smeltMaterialName(recipe.id).toLowerCase()}`}
     onSubmit={n => {smelt(recipe.id, n); closeDetails();}} />
   </StationDetails>}
-  {details === 'upgrade' && <StationDetails title="Bellows upgrade" onClose={closeDetails}>
-   <Text style={s.bodyText}>Faster smelting · {upgrade.queue} queue slots · {upgrade.rack} output slots · {upgrade.fuel}s fuel</Text>
-   {v.upgrade.ingredients.map(m => <View key={m.id} style={s.row}>
-    <ItemArt id={m.id === 'pallets' ? 'logs' : m.id as 'stone' | 'ironIngot'} size={24}/><Text style={s.growText}>{m.name}</Text>
-    <Text style={m.enough ? s.note : s.warning}>{m.enough ? `${m.available} / ${m.needed}` : `Need ${m.needed - m.available} more`}</Text>
-   </View>)}
-   <StationButton primary disabled={!v.upgrade.canUpgrade} label="Upgrade bellows" onPress={() => {
-    if (v.upgrade.run()) {closeDetails(); setMessage('Bellows reinforced.');} else setMessage('Supplies changed.');
-    onChange();
-   }} />
-  </StationDetails>}
  </StationMenu>;
 }
 const s = StyleSheet.create({
  scroll: {minHeight: 0, flexShrink: 1, flexGrow: 0}, body: {gap: 6, padding: 1},
  row: {flexDirection: 'row', alignItems: 'center', gap: 8, paddingVertical: 2}, grow: {flex: 1},
  growText: {flex: 1, fontSize: 15, color: palette.text}, bodyText: {fontSize: 15, color: palette.text},
- note: {fontSize: 12, color: palette.muted}, warning: {fontSize: 12, color: palette.danger},
+ note: {fontSize: 12, color: palette.muted},
 });
