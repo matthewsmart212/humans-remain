@@ -3,6 +3,7 @@ import {drawBuildingCondition} from './building-condition-renderer';
 import {lootChestDrawables,drawLootChestGround} from './loot-chest-renderer';
 import {SURVEY_CACHE_ID,placedLootChestVisible} from './loot-chest';
 import {headquartersCutawayAmount,clipHeadquartersDoorway,drawHeadquartersExterior} from './headquarters-cutaway';
+import {SMALLHOLDING_COTTAGE_ID} from './smallholding-cottage';
 import {HQ_SOUTH_INTERIOR} from './headquarters-south-art';
 import {headquartersRoofBottom,withinRoofApproach,headquartersRaidVisible} from './headquarters-roof';
 import {campBuildingArt} from './camp-restoration';
@@ -138,6 +139,17 @@ export function placedDrawables(ctx:CanvasRenderingContext2D,imgs:Record<string,
   const playerInFrontOfHQ=southHQ&&p.roof==='auto'&&playerLocalY>=b.y+b.height*.79;
   const revealRoof=!!(restoration?.roof||a.roof)&&(p.allowTransparency??placementGeometryAsset(p)?.allowTransparency)!==false&&p.roof==='auto'&&(withinRoofApproach(p,w.player.x,w.player.y)||headquartersRaidVisible(p,w));
   const roofImage=(restoration?.roof||a.roof)&&imgs[assetImageKey(restoration?.roof||a.roof!)];
+  if(a.id===SMALLHOLDING_COTTAGE_ID){
+   // Both paintings include their complete facade. Draw only the exposed
+   // plate so the roof disappears indoors and the room stays hidden outside.
+   const outside=roofImage&&p.roof!=='hidden'&&!revealRoof;
+   add({layer:p.layer??0,y:outside?p.y:-10000,draw:()=>{
+    ctx.save();rotatePlacement(ctx,p);
+    ctx.drawImage(outside?roofImage:im,b.x,b.y,b.width,b.height);
+    ctx.restore();
+   }});
+   continue;
+  }
   const segment=a.perimeter==='wall'?a.segments?.[0]:undefined;
   const curve=a.perimeterCurve??(segment?[[segment.x,segment.y],[segment.ex,segment.ey]]:undefined);
   if(curve?.length){

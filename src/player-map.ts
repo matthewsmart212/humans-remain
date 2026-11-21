@@ -1,3 +1,4 @@
+import {SMALLHOLDING_COTTAGE_ID} from './smallholding-cottage';
 import {IRON_MINE_ENTRANCE_ID} from './iron-mine-entrance';
 import {ABANDONED_CAMP_ID} from './abandoned-camp-art';
 import {MAP_WIDTH,MAP_HEIGHT} from './factory-map';
@@ -95,6 +96,7 @@ function landmark(p:Placement,a:WorldAsset):PlayerMapLandmark|undefined{
   const [x,y]=imagePoint(p,ASSET_CONNECTIONS[p.assetId].returnPoint);
   return{id:p.id,kind:'mine',label:'Iron mine',x,y};
  }
+ if(p.assetId===SMALLHOLDING_COTTAGE_ID)return{id:p.id,kind:'building',label:'Overgrown smallholding',...centre()};
  if(p.assetId===ABANDONED_CAMP_ID)return{id:p.id,kind:'building',label:'Abandoned camp',...centre()};
  if(p.role==='hearth')return{id:p.id,kind:'camp',label:'Camp',...contact()};
  if(p.role==='well')return{id:p.id,kind:'well',label:'Well',...contact()};

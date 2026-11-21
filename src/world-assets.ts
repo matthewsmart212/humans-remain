@@ -1,4 +1,6 @@
+import {FENCE_SHEET,FENCE_SHEET_SIZE,SMALLHOLDING_FENCE_ASSETS} from './smallholding-fences';
 import {IRON_MINE_ENTRANCE_ID,IRON_MINE_ENTRANCE_IMAGE,IRON_MINE_ENTRANCE_SIZE,IRON_MINE_ENTRANCE_ANCHOR,IRON_MINE_ENTRANCE_COLLISION} from './iron-mine-entrance';
+import {configureSmallholdingCottage,SMALLHOLDING_COTTAGE_ID,COTTAGE_SIZE,COTTAGE_EXTERIOR,COTTAGE_INTERIOR} from './smallholding-cottage';
 import {WOODEN_LOOT_ID,WOODEN_LOOT_ANCHOR,WOODEN_LOOT_POSTER,WOODEN_LOOT_SHEET,WOODEN_LOOT_SPRITE} from './wooden-loot-art';
 import {ABANDONED_CAMP_ID,CAMP_POSTER,CAMP_SCENERY,ABANDONED_CAMP_SIZE,ABANDONED_CAMP_COLLISION} from './abandoned-camp-art';
 import {IRON_ROCK_FOOT,HEARTH_FOOT,WELL_IMAGE,WELL_FOOT} from './camp-fixture-collision';
@@ -9,6 +11,8 @@ import {withSouthHeadquartersGeometry,HQ_SOUTH_INTERIOR,HQ_FOUNDATION_DRESSING} 
 import {IRONWORKS_WORLD_ART,FURNACE_ID} from './ironworks-data';
 import {GARDEN_ART,GARDEN_ANCHOR,GARDEN_COLLISION} from './camp-garden-art';
 import {CROP_IMAGES,cropPickedUrl} from './crop-art';
+import {smallholdingPath} from './smallholding-path';
+import {smallholdingBed} from './smallholding-crops';
 import {POTATO_PATCH_IMAGES} from './potato-patch-art';
 import {MINEABLE_ROCKS} from './mining-rocks';
 import {FORAGE_ART,FORAGE_BY_ID,FORAGE_FRUIT_ART} from './forage-art';
@@ -46,11 +50,12 @@ export type WorldRole='prop'|'generator'|'hearth'|'well'|'storage'|'lamp'|'scrap
 export type LocalRect={x:number;y:number;hw:number;hh:number};
 /** Ground artwork is normalized to the original sprite canvas, independently of selection/collision bounds. */
 export type GroundArtwork={image:string;rect:[number,number,number,number];size:[number,number]};
-export type WorldAsset={perimeterCurve?:number[][];perimeterDrawOrder?:number;perimeterRise?:number;gate?:import('./camp-gates').GateArt;perimeter?:'wall'|'post'|'gate';id:string;name:string;group:string;image:string;crop:number[];anchor:number[];width:number;height:number;solid:boolean;allowTransparency?:boolean;foliage?:boolean;groundDetail?:boolean;puddle?:{water:number[][]};role:WorldRole;body:LocalRect[];collision?:AssetCollision;segments?:{x:number;y:number;ex:number;ey:number;r:number}[];interior?:{x:number;y:number;width:number;height:number};roof?:string;roofRect?:number[];foreground?:number[][];ground?:GroundArtwork;openFrames?:string[];frames?:string[];animationMode?:AnimationMode;animationArea?:AnimationArea;fps?:number;unlitSize?:number[];unlit?:string;unlitAnchor?:number[];catalogueId?:string;note?:string};
+export type WorldAsset={perimeterCurve?:number[][];perimeterDrawOrder?:number;perimeterRise?:number;gate?:import('./camp-gates').GateArt;perimeter?:'wall'|'post'|'gate';id:string;name:string;group:string;image:string;crop:number[];anchor:number[];width:number;height:number;solid:boolean;allowTransparency?:boolean;foliage?:boolean;groundDetail?:boolean;puddle?:{water:number[][]};role:WorldRole;body:LocalRect[];collision?:AssetCollision;segments?:{x:number;y:number;ex:number;ey:number;r:number}[];interior?:{x:number;y:number;width:number;height:number;outline?:[number,number][]};roof?:string;roofRect?:number[];foreground?:number[][];ground?:GroundArtwork;openFrames?:string[];frames?:string[];animationMode?:AnimationMode;animationArea?:AnimationArea;fps?:number;unlitSize?:number[];unlit?:string;unlitAnchor?:number[];catalogueId?:string;note?:string};
 export const imageDimensions=metadata as Record<string,number[]>;
 const sizes=imageDimensions;
 for(const f of [...foliageArt,...puddleArt,...treeArt,...sceneryArt,...FORAGE_ART,...IRONWORKS_WORLD_ART,...GARDEN_ART])sizes[f.image]=f.size;
 sizes[IRON_MINE_ENTRANCE_IMAGE]=[...IRON_MINE_ENTRANCE_SIZE];
+sizes[COTTAGE_EXTERIOR]=sizes[COTTAGE_INTERIOR]=[...COTTAGE_SIZE];
 sizes[CAMP_POSTER]=sizes[CAMP_SCENERY]=[...ABANDONED_CAMP_SIZE];
 sizes[WOODEN_LOOT_POSTER]=[WOODEN_LOOT_SPRITE.width,WOODEN_LOOT_SPRITE.height];
 const assets:WorldAsset[]=[];
@@ -75,6 +80,7 @@ for(const e of entries.filter(e=>e.image&&!e.canonicalArt&&!e.id.startsWith('map
   a.body=[];a.collision=IRON_MINE_ENTRANCE_COLLISION;
   a.note='Walk along the rails and into the timber doorway to enter the iron mine.';
  }
+ if(e.id===SMALLHOLDING_COTTAGE_ID)configureSmallholdingCottage(a);
  if(e.id===ABANDONED_CAMP_ID){
   a.anchor=[crop[2]/2,crop[3]/2];
   a.body=[];a.collision=ABANDONED_CAMP_COLLISION;
@@ -142,6 +148,11 @@ export const WORLD_ASSETS=assets.filter(a=>catalogueIds.has(a.id)||circularWallA
 WORLD_ASSETS.push(ironMineDoor);
 imageDimensions[ironMineDoor.image]=ironMineDoor.crop.slice(2);
 for(const a of WORLD_ASSETS)if(a.ground)imageDimensions[a.ground.image]=a.ground.size;
+WORLD_ASSETS.push(smallholdingBed,smallholdingPath);
+imageDimensions[smallholdingPath.image]=smallholdingPath.crop.slice(2);
+imageDimensions[smallholdingBed.image]=smallholdingBed.crop.slice(2);
+WORLD_ASSETS.push(...SMALLHOLDING_FENCE_ASSETS);
+imageDimensions[FENCE_SHEET]=FENCE_SHEET_SIZE;
 export const ASSET_BY_ID=new Map(WORLD_ASSETS.map(a=>[a.id,a]));
 // Keep old world snapshots readable without presenting a Tier 2 choice in the editor.
 const legacyGarden=ASSET_BY_ID.get('art_camp_garden_t1');
