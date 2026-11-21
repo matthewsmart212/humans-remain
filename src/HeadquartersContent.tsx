@@ -1,7 +1,7 @@
 import React,{useEffect,useImperativeHandle,useRef,useState} from 'react';
 import {View,Text,Image,ImageBackground,Pressable,ScrollView,StyleSheet,Platform,type ImageSourcePropType,type StyleProp,type ViewStyle} from 'react-native';
 import type {World} from './survival-engine';
-import {stationPalette as colors} from './station-palette';
+import {hq, hqType, hqPrimary, hqPrimaryLabel} from './headquarters-theme';
 import HeadquartersOverview from './HeadquartersOverview';
 import HeadquartersCrafting from './HeadquartersCrafting';
 import HeadquartersBuildings from './HeadquartersBuildings';
@@ -15,13 +15,11 @@ import type {MaterialCost} from './forge-recipes';
 
 export type HeadquartersNavigation={back:()=>void};
 type Props={navigation?:React.Ref<HeadquartersNavigation>;focusControl?:(id:string)=>void;world:World;width:number;height:number;source:(path:string)=>ImageSourcePropType;onClose:()=>void;onChange:()=>void};
-const font=Platform.OS==='web'?'Barlow Condensed':'FieldKitBarlow';
+const font=hqType.label;
 const tabs:{id:HQTab;label:string}[]=[
  {id:'camp',label:'Progression'},{id:'buildings',label:'Buildings'},{id:'crafting',label:'Crafting'}
 ];
 const webSurface=(backgroundImage:string):ViewStyle=>Platform.OS==='web'?{backgroundImage}:{};
-const stationSurface='linear-gradient(115deg,#2a302d,#202523 55%,#1d211f)';
-const goldSurface='linear-gradient(175deg,#c47223,#9b4716)';
 const materialArt:Record<string,string>={pallets:'/survival/ui-field-kit-v1/logs.png',stone:'/survival/world-rocks-v1/river-stone-trio.webp',scrap:'/survival/ui-backpack-v1/scrap.png',ironIngot:'/survival/ironworks-v1/iron-ingot.png'};
 function Art({art,source,style,locked=false}:{art:HQArt;source:Props['source'];style?:StyleProp<ViewStyle>;locked?:boolean}){
  const [box,setBox]=useState({width:1,height:1}),c=art.clip,k=c?Math.min(box.width/c[2],box.height/c[3]):1;
@@ -41,7 +39,7 @@ function Materials({world,cost,source}:{world:World;cost:MaterialCost;source:Pro
   <View key={m.id} accessibilityLabel={m.name+', '+m.have+' available, '+m.needed+' required'} style={s.repairRow}>
    <Art art={{image:materialArt[m.id]??materialArt.scrap}} source={source} style={{width:27,height:27}}/>
    <Text style={[s.copy,{flex:1}]}>{m.needed} {m.name.toLowerCase()}</Text>
-   <Text style={[s.repairCount,m.have<m.needed&&{color:colors.danger}]}>{m.have<m.needed?(m.needed-m.have)+' short':'✓'}</Text>
+   <Text style={[s.repairCount,m.have<m.needed&&{color:hq.danger}]}>{m.have<m.needed?(m.needed-m.have)+' short':'✓'}</Text>
   </View>)}</View>;
 }
 export function FurnaceRepairContent({world,source,onClose,onChange}:Pick<Props,'world'|'source'|'onClose'|'onChange'>){
@@ -113,18 +111,20 @@ export default function HeadquartersContent({world:w,width,height,source,onClose
  };
  const sectionTabs=<View accessibilityRole="tablist" style={s.tabs}>{tabs.map(t=>
   <Pressable key={t.id} testID={'hq-tab-'+t.id} accessibilityRole="tab" aria-selected={tab===t.id} accessibilityState={{selected:tab===t.id}}
-   onPress={()=>chooseTab(t.id)} style={[s.tab,tab===t.id&&s.tabSelected]}>
-   <Text style={[s.tabText,(compact||narrow)&&{fontSize:18},tab===t.id&&{color:colors.brass}]}>{t.label}</Text>
+   onPress={()=>chooseTab(t.id)} style={({pressed})=>[s.tab,tab===t.id&&s.tabSelected,pressed&&s.pressed]}>
+   <Text style={[s.tabText,(compact||narrow)&&{fontSize:16},tab===t.id&&{color:hq.ink}]}>{t.label}</Text>
   </Pressable>)}</View>;
  const header=<>
   <View testID="hq-header" style={[s.header,(compact||narrow)&&{gap:8,paddingHorizontal:9,paddingVertical:3}]}>
    <View style={[s.brand,narrow&&{flex:1}]}>
     <View style={s.emblem}><Art art={{image:HQ_BENCH_ART}} source={source} style={{width:narrow?37:48,height:narrow?35:43}}/></View>
-    <Text accessibilityRole="header" style={[s.brandTitle,{fontSize:compact||narrow?22:Math.min(34,width*.033)}]}>Headquarters</Text>
+    <Text accessibilityRole="header" style={[s.brandTitle,{fontSize:compact||narrow?19:Math.min(27,width*.027)}]}>Headquarters</Text>
    </View>
    {!narrow&&sectionTabs}
    <View style={s.levelBadge}><Text style={s.levelBadgeText}>Camp {level}</Text></View>
-   <Pressable accessibilityRole="button" accessibilityLabel="Leave headquarters" onPress={onClose} style={s.close}><Text style={s.closeText}>×</Text></Pressable>
+   <Pressable accessibilityRole="button" accessibilityLabel="Leave headquarters" onPress={onClose} style={({pressed})=>[s.close,pressed&&s.pressed]}>
+    <Image accessible={false} source={source('/survival/ui-field-kit-v1/utility-panel.png')} resizeMode="stretch" style={StyleSheet.absoluteFill}/>
+    <Image accessible={false} source={source('/survival/ui-field-kit-v1/close.png')} resizeMode="contain" style={s.closeIcon}/></Pressable>
   </View>
   {narrow&&<View style={s.tabRow}>{sectionTabs}</View>}
  </>;
@@ -186,51 +186,51 @@ export default function HeadquartersContent({world:w,width,height,source,onClose
 const s=StyleSheet.create({
  overviewFrame:{width:'100%',height:'100%',alignSelf:'center',margin:'auto',padding:0},
  overviewScroll:{flexGrow:0,flexShrink:1,minHeight:0},
- disclosure:{minHeight:44,flexDirection:'row',alignItems:'center',justifyContent:'space-between',borderBottomWidth:1,borderBottomColor:colors.line},
+ disclosure:{minHeight:44,flexDirection:'row',alignItems:'center',justifyContent:'space-between',borderBottomWidth:1,borderBottomColor:hq.line},
  furnaceRepair:{flexGrow:1,padding:8,gap:12},
- repairLedger:{borderWidth:1,borderColor:colors.line,borderRadius:5,overflow:'hidden',backgroundColor:colors.inset},
+ repairLedger:{borderWidth:1,borderColor:hq.line,borderRadius:5,overflow:'hidden',backgroundColor:hq.inset},
  repairRow:{flexDirection:'row',minHeight:42,alignItems:'center',gap:8,paddingHorizontal:10},
- repairCount:{fontSize:16,fontWeight:'700',color:colors.text},
- frame:{flex:1,minWidth:0,minHeight:0,borderWidth:1,borderColor:'#8b7555',borderRadius:5,backgroundColor:colors.panel,overflow:'hidden',...webSurface(stationSurface)},
- header:{flexDirection:'row',alignItems:'center',gap:14,paddingHorizontal:18,paddingVertical:5,borderBottomWidth:2,borderBottomColor:'#80663e',backgroundColor:'#20261e',...webSurface('linear-gradient(176deg,#33392d,#1b221c 50%,#20251d)')},
+ repairCount:{fontSize:16,fontWeight:'700',color:hq.text},
+ frame:{flex:1,minWidth:0,minHeight:0,borderWidth:1,borderColor:hq.edge,borderRadius:12,backgroundColor:hq.panel,overflow:'hidden'},
+ header:{flexDirection:'row',alignItems:'center',gap:14,paddingHorizontal:18,paddingVertical:5,borderBottomWidth:2,borderBottomColor:hq.edge,backgroundColor:hq.surface,...webSurface('linear-gradient(178deg,#23494a,#102e2f)')},
  emblem:{alignItems:'center',justifyContent:'center'},
- brand:{flexDirection:'row',alignItems:'center',gap:8,paddingRight:12,borderRightWidth:1,borderRightColor:'#7b7456'},
- brandTitle:{fontFamily:font,fontWeight:'800',color:'#fbebcd',textTransform:'uppercase',letterSpacing:.4},
- tabs:{flex:1,minWidth:0,flexDirection:'row',alignItems:'stretch'},
- tabRow:{paddingHorizontal:6,borderBottomWidth:1,borderBottomColor:'#786542',backgroundColor:'#1a211a'},
- tab:{flex:1,minHeight:44,alignItems:'center',justifyContent:'center',borderBottomWidth:3,borderBottomColor:'transparent'},
- tabSelected:{borderBottomColor:'#eda843',backgroundColor:'#433d2b',...webSurface('linear-gradient(0deg,#4e4128,#302e21 65%,#292b22)')},
- tabText:{fontFamily:font,fontWeight:'800',fontSize:23,color:'#d0c8b5'},
- levelBadge:{paddingHorizontal:10,paddingVertical:4,borderWidth:1,borderColor:'#847456',borderRadius:2,backgroundColor:'#181e17'},
- levelBadgeText:{fontFamily:font,fontWeight:'800',fontSize:17,color:'#e8dbbd',letterSpacing:1,textTransform:'uppercase'},
- close:{width:44,height:44,borderWidth:1,borderColor:'#75674f',borderRadius:3,alignItems:'center',justifyContent:'center',backgroundColor:'#1b201a'},
- closeText:{fontSize:28,lineHeight:32,fontWeight:'400',color:colors.text},
+ brand:{flexDirection:'row',alignItems:'center',gap:8,paddingRight:12,borderRightWidth:1,borderRightColor:hq.line},
+ brandTitle:{fontFamily:hqType.display,color:hq.text,textTransform:'uppercase',letterSpacing:.4},
+ tabs:{flex:1,minWidth:0,flexDirection:'row',alignItems:'stretch',gap:3,paddingVertical:2},
+ tabRow:{paddingHorizontal:6,borderBottomWidth:1,borderBottomColor:hq.line,backgroundColor:hq.inset},
+ tab:{flex:1,minHeight:44,alignItems:'center',justifyContent:'center',borderWidth:1,borderColor:'transparent',borderRadius:6},
+ tabSelected:hqPrimary,
+ tabText:{fontFamily:font,fontWeight:'800',fontSize:20,color:hq.text},
+ levelBadge:{paddingHorizontal:10,paddingVertical:4,borderWidth:1,borderColor:hq.edge,borderRadius:6,backgroundColor:hq.inset},
+ levelBadgeText:{fontFamily:font,fontWeight:'800',fontSize:17,color:hq.brass,letterSpacing:1,textTransform:'uppercase'},
+ close:{width:44,height:44,alignItems:'center',justifyContent:'center'},
+ closeIcon:{width:23,height:23},
  body:{flex:1,minHeight:0,padding:10},
  page:{flex:1,minHeight:0,gap:8},
  art:{position:'relative',overflow:'hidden',minWidth:0},
  lockedArt:{opacity:.8,...(Platform.OS==='web'?{filter:'saturate(0.6)'}:{})},
  scroll:{flex:1,minHeight:0},
- paper:{overflow:'hidden',borderWidth:1,borderColor:colors.line,borderRadius:6,padding:18,gap:8,backgroundColor:'#36372e'},
- sectionTitle:{fontFamily:font,fontWeight:'800',fontSize:25,lineHeight:29,color:colors.text,letterSpacing:.5},
- copy:{fontSize:15,lineHeight:21,color:colors.text},
- muted:{fontSize:12,lineHeight:16,color:colors.muted},
- textLink:{fontFamily:font,fontWeight:'700',fontSize:15,color:'#e4c478'},
- button:{minHeight:44,minWidth:44,paddingVertical:6,paddingHorizontal:13,alignItems:'center',justifyContent:'center',borderWidth:1,borderColor:colors.line,borderRadius:5,backgroundColor:colors.surface},
- buttonText:{fontFamily:font,fontWeight:'800',fontSize:20,color:colors.text,textAlign:'center'},
- primary:{backgroundColor:'#aa561c',borderColor:'#e49b4e',...webSurface(goldSurface)},
- primaryText:{fontSize:24,color:'#fff0d5',textTransform:'uppercase'},
+ paper:{overflow:'hidden',borderWidth:1,borderColor:hq.line,borderRadius:6,padding:18,gap:8,backgroundColor:hq.surface},
+ sectionTitle:{fontFamily:font,fontWeight:'800',fontSize:25,lineHeight:29,color:hq.text,letterSpacing:.5},
+ copy:{fontFamily:hqType.body,fontSize:16,lineHeight:21,color:hq.text},
+ muted:{fontFamily:hqType.body,fontSize:14,lineHeight:19,color:hq.muted},
+ textLink:{fontFamily:font,fontWeight:'700',fontSize:15,color:hq.brass},
+ button:{minHeight:44,minWidth:44,paddingVertical:6,paddingHorizontal:13,alignItems:'center',justifyContent:'center',borderWidth:1,borderColor:hq.line,borderRadius:5,backgroundColor:hq.surface},
+ buttonText:{fontFamily:font,fontWeight:'800',fontSize:20,color:hq.text,textAlign:'center'},
+ primary:hqPrimary,
+ primaryText:{...hqPrimaryLabel,fontSize:21},
  disabled:{opacity:.62},
  pressed:{opacity:.75},
  backRow:{minHeight:44,flexShrink:0,alignItems:'flex-start'},
  backButton:{borderWidth:0,backgroundColor:'transparent',paddingHorizontal:7},
  planCopy:{flex:1,minWidth:0,gap:12,paddingBottom:5},
- detailTitle:{fontFamily:font,fontWeight:'800',fontSize:51,lineHeight:55,color:colors.text},
- levelState:{fontSize:13,color:colors.brass},
+ detailTitle:{fontFamily:hqType.display,fontSize:40,lineHeight:46,color:hq.text},
+ levelState:{fontSize:13,color:hq.brass},
  detailBody:{paddingBottom:12,gap:14},
  detailAcross:{flexDirection:'row',alignItems:'flex-start'},
  wideArt:{flex:1,minWidth:0,height:260},
  portraitArt:{height:120},
- madeHere:{gap:8,paddingTop:12,borderTopWidth:1,borderTopColor:'#937b4659'},
- feedback:{paddingHorizontal:10,paddingVertical:5,borderTopWidth:1,borderTopColor:'#9b86524d',backgroundColor:'#293f2a'},
- feedbackText:{fontSize:12,lineHeight:16,color:'#f3d899'},
+ madeHere:{gap:8,paddingTop:12,borderTopWidth:1,borderTopColor:hq.line},
+ feedback:{paddingHorizontal:10,paddingVertical:5,borderTopWidth:1,borderTopColor:hq.edge,backgroundColor:hq.surface},
+ feedbackText:{fontSize:12,lineHeight:16,color:hq.text},
 });

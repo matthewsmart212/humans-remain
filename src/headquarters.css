@@ -1,3 +1,5 @@
+@import './camp-menu-font.css';
+
 .expedition-status{position:absolute;left:var(--kit-left,12px);top:calc(var(--kit-top,12px) + 48px);width:232px;max-width:48vw;padding:7px 9px;display:flex;flex-direction:column;align-items:flex-start;gap:3px;border:1px solid #8d8059;border-radius:7px;background:#15372fe8;color:#f1e0b8;text-align:left;pointer-events:auto;font-family:inherit;cursor:pointer;z-index:2}.expedition-status strong{font-size:11px;font-weight:600;line-height:1.2}.expedition-status small{font-size:9px;color:#b9cbaa}.expedition-status[data-night=true]{border-color:#c67e60}.field-kit:has(.kit-vitals-toggle[data-expanded=true]) .expedition-status{display:none}
 
 @media(orientation:portrait) and (max-width:355px){.field-kit[data-waypoint=true] .expedition-status{top:calc(var(--kit-top) + 152px)}}
@@ -9,7 +11,7 @@
  display:flex;
  padding:max(8px,env(safe-area-inset-top)) max(8px,env(safe-area-inset-right)) max(8px,env(safe-area-inset-bottom)) max(8px,env(safe-area-inset-left));
  box-sizing:border-box;
- background:#0a0d0bd9;
+ background:#031315c9;
  backdrop-filter:blur(5px);
  pointer-events:auto;
 }
@@ -23,10 +25,10 @@
  margin:auto;
  width:100%;
  height:100%;
- border-radius:5px;
- color:#f4efdf;
- background:#182019;
- box-shadow:0 16px 65px #050a04ab,0 0 0 1px #41372b,0 0 0 2px #0b100d;
+ border-radius:12px;
+ color:#f4e6c7;
+ background:#102e2f;
+ box-shadow:0 12px 48px #031315ab,0 0 0 1px #071b1d;
 }
 /* Two rows of inset brass studs across the metal header. */
 .headquarters-full-menu [data-testid="hq-header"]::after {
@@ -44,15 +46,15 @@
 .headquarters-full-menu * {
  box-sizing:border-box;
  scrollbar-width:thin;
- scrollbar-color:#8a8a78 #202523;
+ scrollbar-color:#82978a #102e2f;
 }
 .headquarters-full-menu :is(button,[role=button],[role=tab]):focus-visible {
- outline:2px solid #fff2ce;
- outline-offset:-3px;
+ outline:3px solid #eabe74;
+ outline-offset:-4px;
 }
 @media(hover:hover) {
  .headquarters-full-menu :is(button,[role=button],[role=tab]):not([aria-disabled=true]):not(:disabled):hover {
-  box-shadow:inset 0 0 0 1px #e4c17b99;
+  filter:brightness(1.12);
  }
 }
 

@@ -7,6 +7,7 @@ import {CAMP_BUILDING_IDS, CAMP_REPAIRS, buildingRestored, campBuildingPlacement
 import {CAMP_LEVEL_NAMES, CAMP_MILESTONES, campAccessLevel, campRequirementMet, nextCampLevel, type BuiltCampLevel, type CampLevel} from './camp-levels';
 import {buildingRepairStatus, campExpansionStatus, costRows} from './run-progression';
 import {buildingFor, buildingPlacement} from './headquarters-model';
+import {hq, hqType, hqPrimary, hqPrimaryLabel} from './headquarters-theme';
 import {ASSET_BY_ID} from './world-assets';
 import {GARDEN_ART} from './camp-garden-art';
 import {WAREHOUSE_ART} from './warehouse';
@@ -33,14 +34,6 @@ const supplies: Record<string, string> = {
  stone:'/survival/world-rocks-v1/river-stone-trio.webp',
  scrap:'/survival/ui-backpack-v1/scrap.png',
 };
-const heading = Platform.OS === 'web' ? 'Barlow Condensed' : 'FieldKitBarlow';
-const bodyFont = Platform.OS === 'web' ? 'Barlow' : undefined;
-const serif = Platform.OS === 'web' ? 'Georgia, serif' : Platform.OS === 'ios' ? 'Georgia' : 'serif';
-const amber = '#ffb65c';
-const bone = '#f9ecd1';
-const sage = '#b4cc87';
-const accent = '#c89655';
-const muted = '#c4bca6';
 const tiers = [1,2,3,4] as const;
 
 function Lock({color}: {color: string}) {
@@ -105,7 +98,7 @@ export default function HeadquartersOverview({world, level, width, height, sourc
   Animated.timing(reveal,{toValue:1,duration:1050,easing:Easing.out(Easing.cubic),useNativeDriver:Platform.OS!=='web'}).start();
  };
 
- const heroTitleSize = stacked ? Math.min(44,width*.107) : compact ? Math.min(48,width*.055) : Math.min(76,width*.054);
+ const heroTitleSize = stacked ? Math.min(40,width*.09) : compact ? Math.min(40,width*.047) : Math.min(62,width*.046);
  const hero = <View style={[s.hero,stacked && {minHeight:Math.min(300,Math.max(218,height*.36)),flexGrow:0,flexShrink:0,flexBasis:'auto'}]} testID="hq-camp-illustration">
   <Animated.View pointerEvents="none" style={[StyleSheet.absoluteFill,{transform:[{scale:reveal.interpolate({inputRange:[0,1],outputRange:[1.14,1]})}]}]}>
    <Image accessible={false} accessibilityIgnoresInvertColors source={source(campArt)} resizeMode="cover" style={s.cover}/>
@@ -117,7 +110,7 @@ export default function HeadquartersOverview({world, level, width, height, sourc
    {!!world.progression && <><View style={s.conditionRule}/><Text style={s.conditionText}>{Math.ceil(world.progression.defence)}/{world.progression.defenceMax} defence</Text></>}
   </View>
   <View style={[s.heroFoot,compact && s.heroFootCompact]}>
-   <View style={s.eyebrowRow}><View style={s.amberDash}/><Text style={s.eyebrow}>
+   <View style={s.eyebrowRow}><View style={s.brassDash}/><Text style={s.eyebrow}>
     {celebrating?'Milestone reached':reached?'Established milestone':active?'Next milestone':'Future milestone'}  /  Level {selected}
    </Text></View>
    <Text accessibilityRole="header" style={[s.heroTitle,{fontSize:heroTitleSize,lineHeight:Math.ceil(heroTitleSize*1.1)}]}>{CAMP_LEVEL_NAMES[selected]}</Text>
@@ -126,10 +119,10 @@ export default function HeadquartersOverview({world, level, width, height, sourc
     {tiers.map(tier=>{
      const earned=tier<=level;
      return <Pressable key={tier} accessibilityRole="button" accessibilityLabel={'View camp level '+tier} accessibilityState={{selected:selected===tier}}
-      onPress={()=>choose(tier)} style={s.nodeButton}>
+      onPress={()=>choose(tier)} style={({pressed})=>[s.nodeButton,pressed && s.pressed]}>
       <View style={[s.node,earned && s.earnedNode,selected===tier && s.selectedNode]}>
-       {earned ? <Text style={[s.nodeValue,{color:selected===tier?amber:sage}]}>✓</Text> :
-        tier===next ? <Text style={[s.nodeValue,{color:amber}]}>{tier}</Text> : <Lock color={selected===tier?amber:'#b2b2a2'}/>}
+       {earned ? <Text style={[s.nodeValue,{color:selected===tier?hq.ink:hq.success}]}>✓</Text> :
+        tier===next ? <Text style={[s.nodeValue,{color:selected===tier?hq.ink:hq.brass}]}>{tier}</Text> : <Lock color={selected===tier?hq.ink:hq.muted}/>}
       </View>
       <Text style={[s.nodeCaption,selected===tier && s.currentCaption]}>{tier}</Text>
      </Pressable>
@@ -170,7 +163,7 @@ export default function HeadquartersOverview({world, level, width, height, sourc
    <RuleHeading>Bring to headquarters</RuleHeading>
    <View style={s.supplies}>{rows.map(row=>{
     const enough=row.have>=row.needed;
-    const count=<Text style={[s.count,{color:enough?sage:amber}]}>{row.have}<Text style={s.total}>/{row.needed}</Text></Text>;
+    const count=<Text style={[s.count,{color:enough?hq.success:hq.danger}]}>{row.have}<Text style={s.total}>/{row.needed}</Text></Text>;
     return <View key={row.id} accessible accessibilityLabel={`${row.name}, ${row.have} available, ${row.needed} required`} style={s.material}>
      <View style={s.materialRow}>
       {!!supplies[row.id] && <Image accessible={false} resizeMode="contain" source={source(supplies[row.id])} style={[s.resourceArt,wideMaterials && s.largeResourceArt]}/>}
@@ -178,7 +171,7 @@ export default function HeadquartersOverview({world, level, width, height, sourc
       {wideMaterials && count}
      </View>
      {!wideMaterials && count}
-     <View style={s.capacity}><View style={[s.capacityFill,{width:`${Math.min(row.have/row.needed,1)*100}%`,backgroundColor:enough?sage:accent}]}/></View>
+     <View style={s.capacity}><View style={[s.capacityFill,{width:`${Math.min(row.have/row.needed,1)*100}%`,backgroundColor:enough?hq.success:hq.brass}]}/></View>
     </View>;
    })}</View>
   </View>}
@@ -191,7 +184,7 @@ export default function HeadquartersOverview({world, level, width, height, sourc
      onPress={()=>onBuilding(id)} style={({pressed})=>[s.reward,pressed && s.pressed]}>
      {preview && <Image accessible={false} source={source(preview)} resizeMode="contain" style={[s.rewardArt,compact && s.compactRewardArt]}/>}
      <Text style={s.rewardName}>{CAMP_REPAIRS[id].name}</Text>
-     {!world.creativeMode && !reached && <View style={[s.seal,s.lockedSeal]}><Lock color="#c9c5af"/></View>}
+     {!world.creativeMode && !reached && <View style={[s.seal,s.lockedSeal]}><Lock color={hq.muted}/></View>}
      {celebrating && <View style={[s.seal,s.unlockedSeal]}><Image accessible={false} source={source(hammer)} style={s.sealArt}/></View>}
     </Pressable>;
    })}</View>
@@ -200,12 +193,12 @@ export default function HeadquartersOverview({world, level, width, height, sourc
   {active ? <Pressable testID="hq-camp-action" accessibilityRole="button" disabled={blocked} accessibilityState={{disabled:blocked}}
     onPress={build} style={({pressed})=>[s.action,blocked && s.blocked,pressed && s.pressed]}>
     <Text style={[s.actionText,blocked && s.blockedText]}>{selected===1?'Establish camp':'Upgrade to level '+selected}</Text>
-    {blocked?<Lock color="#aaa991"/>:<Text style={s.actionText}>›</Text>}
-   </Pressable> : reached ? <Pressable testID="hq-camp-action" accessibilityRole="button" onPress={()=>celebrating && next ? choose(next) : onBrowse()} style={s.action}>
+    {blocked?<Lock color={hq.muted}/>:<Text style={s.actionText}>›</Text>}
+   </Pressable> : reached ? <Pressable testID="hq-camp-action" accessibilityRole="button" onPress={()=>celebrating && next ? choose(next) : onBrowse()} style={({pressed})=>[s.action,pressed && s.pressed]}>
     <Text style={s.actionText}>{celebrating && next?'Next milestone':'View buildings'}</Text><Text style={s.actionText}>›</Text>
    </Pressable> : <Text style={s.note}>Reach camp level {selected-1} to begin this upgrade.</Text>}
   {level>0 && world.progression && (world.progression.hqHp<world.progression.hqMax || world.progression.defence<world.progression.defenceMax) &&
-   <Pressable testID="hq-goal-headquarters" accessibilityRole="button" onPress={()=>onBuilding('headquarters')} style={s.damage}>
+   <Pressable testID="hq-goal-headquarters" accessibilityRole="button" onPress={()=>onBuilding('headquarters')} style={({pressed})=>[s.damage,pressed && s.pressed]}>
     <Text style={s.markText}>Repair camp damage  ›</Text>
    </Pressable>}
  </View>;
@@ -215,88 +208,88 @@ export default function HeadquartersOverview({world, level, width, height, sourc
 }
 
 const s=StyleSheet.create({
- split:{flex:1,minHeight:0,flexDirection:'row',backgroundColor:'#171e19'},
- scroll:{flex:1,minHeight:0,backgroundColor:'#171e19'},
+ split:{flex:1,minHeight:0,flexDirection:'row',backgroundColor:hq.panel},
+ scroll:{flex:1,minHeight:0,backgroundColor:hq.panel},
  vertical:{flexGrow:1},
- ledger:{flex:1,minHeight:0,minWidth:0,borderLeftColor:'#6f6449',borderLeftWidth:1},
+ ledger:{flex:1,minHeight:0,minWidth:0,borderLeftColor:hq.line,borderLeftWidth:1},
  ledgerContent:{flexGrow:1},
- hero:{flex:1.13,minWidth:0,overflow:'hidden',position:'relative',backgroundColor:'#2e3328',justifyContent:'flex-end'},
+ hero:{flex:1.13,minWidth:0,overflow:'hidden',position:'relative',backgroundColor:hq.inset,justifyContent:'flex-end'},
  cover:{width:'100%',height:'100%'},
  night:{backgroundColor:'#172e4b60'},
- heroShade:{...(Platform.OS==='web'?{backgroundImage:'linear-gradient(180deg,rgba(9,17,16,.32) 0%,transparent 20%,transparent 42%,rgba(12,20,17,.44) 62%,#101910 102%)'}:{})},
- condition:{position:'absolute',top:18,left:20,alignItems:'center',flexDirection:'row',gap:8,paddingHorizontal:10,paddingVertical:5,borderWidth:1,borderColor:'#b195635c',backgroundColor:'#121c16df',borderRadius:2},
+ heroShade:{...(Platform.OS==='web'?{backgroundImage:`linear-gradient(180deg,#05191b33,transparent 22%,transparent 40%,#05191b82 65%,${hq.inset} 100%)`}:{})},
+ condition:{position:'absolute',top:18,left:20,alignItems:'center',flexDirection:'row',gap:8,paddingHorizontal:11,paddingVertical:5,borderWidth:1,borderColor:hq.edge,backgroundColor:hq.inset,borderRadius:7},
  conditionCompact:{top:10,left:12},
- conditionText:{color:'#e2d8be',fontFamily:heading,fontWeight:'700',fontSize:12,letterSpacing:.65,textTransform:'uppercase'},
- conditionRule:{width:1,height:11,backgroundColor:'#9b8d6d'},
- dot:{width:6,height:6,borderRadius:3,backgroundColor:sage},
- heroFoot:{gap:7,paddingHorizontal:30,paddingTop:14,paddingBottom:22,...(Platform.OS==='web'?{}:{backgroundColor:'#101a15db'})},
+ conditionText:{color:hq.text,fontFamily:hqType.label,fontWeight:'700',fontSize:12,letterSpacing:.65,textTransform:'uppercase'},
+ conditionRule:{width:1,height:11,backgroundColor:hq.line},
+ dot:{width:6,height:6,borderRadius:3,backgroundColor:hq.success},
+ heroFoot:{gap:7,paddingHorizontal:30,paddingTop:14,paddingBottom:22,...(Platform.OS==='web'?{}:{backgroundColor:'#071b1de6'})},
  heroFootCompact:{paddingHorizontal:18,paddingBottom:12,gap:4},
  eyebrowRow:{alignItems:'center',flexDirection:'row',gap:9},
- amberDash:{height:2,width:24,backgroundColor:amber},
- eyebrow:{fontFamily:heading,fontWeight:'800',fontSize:13,lineHeight:18,letterSpacing:1.7,color:'#f8d99b',textTransform:'uppercase'},
- heroTitle:{color:bone,fontFamily:serif,letterSpacing:-1.5,fontWeight:'400',textShadowColor:'#06100dd9',textShadowOffset:{width:0,height:2},textShadowRadius:6},
+ brassDash:{height:2,width:24,backgroundColor:hq.brass},
+ eyebrow:{fontFamily:hqType.label,fontWeight:'800',fontSize:13,lineHeight:18,letterSpacing:1.7,color:hq.brass,textTransform:'uppercase'},
+ heroTitle:{color:hq.text,fontFamily:hqType.display,letterSpacing:.4,textShadowColor:'#031719',textShadowOffset:{width:0,height:2},textShadowRadius:4},
  track:{marginTop:6,height:58,flexDirection:'row',alignItems:'flex-start',justifyContent:'space-between',paddingHorizontal:1},
- trackLine:{position:'absolute',height:3,left:25,right:25,top:19,backgroundColor:'#817d65'},
- earnedLine:{height:3,backgroundColor:'#bfd194'},
+ trackLine:{position:'absolute',height:3,left:25,right:25,top:19,backgroundColor:hq.line},
+ earnedLine:{height:3,backgroundColor:hq.success},
  nodeButton:{minWidth:46,minHeight:54,alignItems:'center',justifyContent:'flex-start',gap:2},
- node:{width:37,height:37,borderRadius:20,borderWidth:2,borderColor:'#8e8e7d',backgroundColor:'#1b241dea',alignItems:'center',justifyContent:'center'},
- earnedNode:{borderColor:sage,backgroundColor:'#344031'},
- selectedNode:{borderColor:amber,backgroundColor:'#422f1e',...(Platform.OS==='web'?{boxShadow:'0 0 12px #f99e3a85'}:{})},
- nodeValue:{fontFamily:heading,fontWeight:'800',fontSize:23,lineHeight:27},
- nodeCaption:{fontFamily:heading,fontWeight:'800',fontSize:14,color:'#d9d5bd'},
- currentCaption:{color:amber},
+ node:{width:37,height:37,borderRadius:20,borderWidth:2,borderColor:hq.line,backgroundColor:hq.inset,alignItems:'center',justifyContent:'center'},
+ earnedNode:{borderColor:hq.success,backgroundColor:hq.panel},
+ selectedNode:{borderColor:hq.brass,backgroundColor:hq.parchment},
+ nodeValue:{fontFamily:hqType.label,fontWeight:'800',fontSize:23,lineHeight:27},
+ nodeCaption:{fontFamily:hqType.label,fontWeight:'800',fontSize:14,color:hq.text},
+ currentCaption:{color:hq.brass},
  lock:{width:13,height:16,justifyContent:'flex-end',alignItems:'center'},
  shackle:{position:'absolute',top:1,width:9,height:10,borderWidth:1.7,borderRadius:5},
  lockBody:{width:13,height:9,borderRadius:2,alignItems:'center',justifyContent:'center'},
- keyhole:{width:2,height:4,borderRadius:1,backgroundColor:'#2c302a'},
- order:{flexGrow:1,padding:25,gap:16,justifyContent:'center',backgroundColor:'#1a221c',
-  ...(Platform.OS==='web'?{backgroundImage:'radial-gradient(ellipse at 100% 4%, #303729 0%, transparent 67%), linear-gradient(120deg,#222b21,#151c18)'}:{})},
+ keyhole:{width:2,height:4,borderRadius:1,backgroundColor:hq.line},
+ order:{flexGrow:1,padding:25,gap:16,justifyContent:'center',backgroundColor:hq.panel,
+  ...(Platform.OS==='web'?{backgroundImage:`radial-gradient(ellipse at 100% 4%,${hq.surface},transparent 68%)`}:{})},
  compactOrder:{padding:14,gap:10},
  headlineRow:{flexDirection:'row',alignItems:'center',gap:13},
- headline:{fontFamily:heading,fontSize:35,lineHeight:39,fontWeight:'800',letterSpacing:.45,color:bone,textTransform:'uppercase',flexShrink:1},
- smallHeadline:{fontSize:28,lineHeight:30},
- rule:{height:1,flexGrow:1,backgroundColor:'#947d4b8c'},
+ headline:{fontFamily:hqType.display,fontSize:29,lineHeight:36,letterSpacing:.4,color:hq.text,flexShrink:1},
+ smallHeadline:{fontSize:24,lineHeight:30},
+ rule:{height:1,flexGrow:1,backgroundColor:hq.line},
  group:{gap:7},
  sectionHeading:{flexDirection:'row',alignItems:'center',gap:11},
- sectionName:{fontFamily:heading,fontWeight:'800',fontSize:22,lineHeight:26,letterSpacing:.85,color:bone,textTransform:'uppercase'},
- requirement:{minHeight:49,flexDirection:'row',gap:8,alignItems:'center',paddingHorizontal:9,paddingVertical:4,borderWidth:1,borderColor:'#967645',borderRadius:3,backgroundColor:'#303428'},
- done:{borderColor:'#69765586',backgroundColor:'#263026'},
+ sectionName:{fontFamily:hqType.label,fontWeight:'800',fontSize:20,lineHeight:24,letterSpacing:.85,color:hq.text,textTransform:'uppercase',flexShrink:1},
+ requirement:{minHeight:49,flexDirection:'row',gap:8,alignItems:'center',paddingHorizontal:9,paddingVertical:4,borderWidth:1,borderColor:hq.edge,borderRadius:7,backgroundColor:hq.surface},
+ done:{borderColor:hq.line,backgroundColor:hq.inset},
  tool:{width:30,height:31},
- doneMark:{width:30,textAlign:'center',fontSize:24,fontWeight:'800',color:sage},
- taskName:{flex:1,minWidth:0,fontFamily:heading,fontWeight:'800',fontSize:22,lineHeight:24,color:bone,textTransform:'uppercase',letterSpacing:.2},
- metText:{color:'#b7c5a6'},
- founding:{gap:10,flexDirection:'row',alignItems:'center',borderLeftWidth:2,borderLeftColor:accent,paddingVertical:6,paddingHorizontal:10,backgroundColor:'#2a3026'},
- foundingCopy:{flex:1,fontFamily:bodyFont,fontSize:16,lineHeight:21,color:bone},
- mark:{borderWidth:1,borderColor:'#dc9047',borderRadius:3,paddingHorizontal:9,paddingVertical:6,backgroundColor:'#9a471c',...(Platform.OS==='web'?{backgroundImage:'linear-gradient(#a95c28,#833918)'}:{})},
- markText:{fontFamily:heading,fontWeight:'800',color:bone,fontSize:16,lineHeight:19,letterSpacing:.55,textTransform:'uppercase'},
- chevron:{fontSize:21,color:'#b4b999'},
+ doneMark:{width:30,textAlign:'center',fontSize:24,fontWeight:'800',color:hq.success},
+ taskName:{flex:1,minWidth:0,fontFamily:hqType.label,fontWeight:'800',fontSize:20,lineHeight:23,color:hq.text,letterSpacing:.2},
+ metText:{color:hq.success},
+ founding:{gap:10,flexDirection:'row',alignItems:'center',borderLeftWidth:2,borderLeftColor:hq.brass,paddingVertical:6,paddingHorizontal:10,backgroundColor:hq.surface},
+ foundingCopy:{flex:1,fontFamily:hqType.body,fontSize:16,lineHeight:21,color:hq.text},
+ mark:{borderWidth:1,borderColor:hq.edge,borderRadius:5,paddingHorizontal:9,paddingVertical:6,backgroundColor:hq.inset},
+ markText:{fontFamily:hqType.label,fontWeight:'800',color:hq.brass,fontSize:15,lineHeight:19,letterSpacing:.55,textTransform:'uppercase'},
+ chevron:{fontSize:21,color:hq.brass},
  supplies:{flexDirection:'row',flexWrap:'wrap',gap:6},
- material:{minWidth:76,flex:1,gap:3,borderWidth:1,borderColor:'#70704e',borderRadius:3,paddingHorizontal:9,paddingVertical:6,backgroundColor:'#263024',overflow:'hidden'},
+ material:{minWidth:76,flex:1,gap:3,borderWidth:1,borderColor:hq.line,borderRadius:7,paddingHorizontal:9,paddingVertical:6,backgroundColor:hq.inset,overflow:'hidden'},
  materialRow:{flexDirection:'row',alignItems:'center',gap:7},
  resourceArt:{width:29,height:25},
  largeResourceArt:{width:42,height:38},
- wideMaterialName:{flex:1,fontSize:22,lineHeight:24},
- materialName:{flexShrink:1,fontFamily:heading,fontSize:17,lineHeight:19,fontWeight:'800',letterSpacing:.5,color:bone,textTransform:'uppercase'},
- count:{fontFamily:heading,fontWeight:'800',fontSize:27,lineHeight:30},
- total:{fontFamily:heading,color:'#ccc9ad',fontSize:20},
- capacity:{height:2,backgroundColor:'#575943'},
- capacityFill:{height:2},
- rewardGroup:{borderWidth:1,borderColor:'#8c7445',backgroundColor:'#2b3023',paddingHorizontal:11,paddingVertical:8,borderRadius:3},
+ wideMaterialName:{flex:1,fontSize:20,lineHeight:24},
+ materialName:{flexShrink:1,fontFamily:hqType.label,fontSize:17,lineHeight:19,fontWeight:'800',letterSpacing:.5,color:hq.text,textTransform:'uppercase'},
+ count:{fontFamily:hqType.label,fontWeight:'800',fontSize:27,lineHeight:30,fontVariant:['tabular-nums']},
+ total:{fontFamily:hqType.label,color:hq.muted,fontSize:20},
+ capacity:{height:3,backgroundColor:hq.line,borderRadius:2,overflow:'hidden'},
+ capacityFill:{height:3},
+ rewardGroup:{borderWidth:1,borderColor:hq.edge,backgroundColor:hq.surface,paddingHorizontal:12,paddingVertical:9,borderRadius:8},
  rewardLabel:{fontSize:14,letterSpacing:1.5},
  rewards:{flexDirection:'row',gap:9},
  reward:{flex:1,minWidth:0,minHeight:59,flexDirection:'row',alignItems:'center',gap:5},
  rewardArt:{width:'42%',maxWidth:88,height:70},
  compactRewardArt:{height:48},
- rewardName:{flex:1,fontFamily:heading,fontSize:20,lineHeight:22,fontWeight:'800',color:bone,textTransform:'uppercase'},
+ rewardName:{flex:1,fontFamily:hqType.label,fontSize:20,lineHeight:22,fontWeight:'800',color:hq.text},
  seal:{position:'absolute',left:0,bottom:2,width:21,height:21,borderRadius:11,borderWidth:1,alignItems:'center',justifyContent:'center'},
- lockedSeal:{borderColor:'#888876',backgroundColor:'#262c23'},
- unlockedSeal:{borderColor:amber,backgroundColor:'#5e3b1c'},
+ lockedSeal:{borderColor:hq.line,backgroundColor:hq.inset},
+ unlockedSeal:{borderColor:hq.brass,backgroundColor:hq.selected},
  sealArt:{width:15,height:15},
- action:{minHeight:44,borderWidth:1,borderColor:'#dc9a56',borderRadius:3,paddingHorizontal:14,paddingVertical:6,alignItems:'center',justifyContent:'space-between',flexDirection:'row',backgroundColor:'#a45121',...(Platform.OS==='web'?{backgroundImage:'linear-gradient(100deg,#ad5623,#93411b)'}:{})},
- actionText:{fontFamily:heading,fontWeight:'800',fontSize:19,lineHeight:22,letterSpacing:.8,color:bone,textTransform:'uppercase'},
- blocked:{backgroundColor:'#242b23',borderColor:'#666951',...(Platform.OS==='web'?{backgroundImage:'none'}:{})},
- blockedText:{color:'#b4b5a0'},
- note:{fontFamily:bodyFont,fontSize:14,lineHeight:18,color:muted},
- damage:{minHeight:44,justifyContent:'center',alignItems:'center',borderBottomWidth:1,borderBottomColor:'#6e6240'},
+ action:{...hqPrimary,minHeight:44,paddingHorizontal:14,paddingVertical:6,alignItems:'center',justifyContent:'space-between',flexDirection:'row'},
+ actionText:{...hqPrimaryLabel,fontSize:19,lineHeight:24,flexShrink:1},
+ blocked:{backgroundColor:hq.inset,borderColor:hq.line,...(Platform.OS==='web'?{backgroundImage:'none'}:{})},
+ blockedText:{color:hq.muted},
+ note:{fontFamily:hqType.body,fontSize:14,lineHeight:19,color:hq.muted},
+ damage:{minHeight:44,justifyContent:'center',alignItems:'center',borderBottomWidth:1,borderBottomColor:hq.line},
  pressed:{opacity:.82},
 });

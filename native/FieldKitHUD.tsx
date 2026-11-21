@@ -15,6 +15,7 @@ import CampStationPanel from './CampStationPanel';
 import React,{useCallback,useEffect,useRef,useState} from 'react';
 import {AppState,View,Text,Image,Pressable,StyleSheet,type GestureResponderEvent,type NativeTouchEvent} from 'react-native';
 import {useFonts} from 'expo-font';
+import {START_SCREEN_MENU_FONT} from '../src/start-screen-art';
 import {FIELD_KIT_NATIVE_ART as art} from './field-kit-art';
 import {FieldKitController,fieldKitBadge,fieldKitLayout,sameFieldKit,type FieldKitIcon,type FieldKitSnapshot} from '../src/field-kit';
 import {useBackpackItem,dropBackpackItem} from '../src/backpack';
@@ -106,7 +107,10 @@ export default function NativeFieldKitHUD({world,controller,input,enabled,mapOpe
  const [foreground,setForeground]=useState(AppState.currentState==='active'),hudVisible=!mapOpen&&foreground;
  useEffect(()=>{const subscription=AppState.addEventListener('change',state=>setForeground(state==='active'));return()=>subscription.remove()},[]);
  const navigation=useWaypointNavigation(world,false,hudVisible),hasWaypoint=!!navigation.target,[dayExpanded,setDayExpanded]=useState(false);
- useFonts({[font]:require('../public/fonts/barlow-condensed-black.ttf')});
+ useFonts({
+  [font]:require('../public/fonts/barlow-condensed-black.ttf'),
+  [START_SCREEN_MENU_FONT]:require('../public/fonts/camp-menu-semibold.ttf'),
+ });
  const [stats,setStats]=useState(()=>controller.sample(world.current!)),[vitalsExpanded,setVitalsExpanded]=useState(false),[quickExpanded,setQuickExpanded]=useState(false),latest=useRef(stats);latest.current=stats;
  const available=useRef(false);available.current=enabled&&!bagOpen&&!stats.stationPanel;
  const release=()=>{controller.release();onHeld(false)};
