@@ -77,11 +77,14 @@ export class SceneTravel{
   this.worlds.set(id,world);return world;
  }
  private safeArrival(world:World,desired:SceneSpawn):SceneSpawn{
-  if(!worldBlocked(world,desired.x,desired.y,19))return desired;
+  // The exterior stream can be empty while indoors. Check the physical
+  // landing now; normal movement still waits for the outdoor tiles to load.
+  const destination=world.outdoorReady&&!world.scene?{...world,outdoorReady:undefined}:world;
+  if(!worldBlocked(destination,desired.x,desired.y,19))return desired;
   // An owner may have moved a prop over an entrance while a map was inactive.
   for(let radius=24;radius<=120;radius+=24)for(let i=0;i<16;i++){
    const point={...desired,x:desired.x+Math.cos(i*Math.PI/8)*radius,y:desired.y+Math.sin(i*Math.PI/8)*radius};
-   if(!worldBlocked(world,point.x,point.y,19))return point;
+   if(!worldBlocked(destination,point.x,point.y,19))return point;
   }
   throw Error('The destination entrance is blocked. Clear the landing before travelling.');
  }

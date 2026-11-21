@@ -113,6 +113,7 @@ export default function WorldEditor({externalStart=false,onExternalStartState,on
  const [weatherOptions,setWeatherOptions]=useState(readWeather),weatherOptionsRef=useRef(weatherOptions);
  const [timeOfDay,setTimeOfDay]=useState<TimeOfDay>(readTimeOfDay),timeOfDayRef=useRef(timeOfDay);
  const [activeLocation,setActiveLocation]=useState('Camp'),[travelStatus,setTravelStatus]=useState('');
+ const [travelling,setTravelling]=useState(false);
  const [monitorOpen,setMonitorOpen]=useState(!mobile),[playToolTab,setPlayToolTab]=useState<PlayToolTab>('monitor'),frameMeter=useRef(new RenderFrameMeter());
  const [toolsOpen,setToolsOpen]=useState(false),[toolsTab,setToolsTab]=useState<StudioToolTab>('mode'),toolsToggle=useRef<HTMLButtonElement>(null);
  useEffect(()=>{if(mobile){setToolsOpen(false);setLibraryOpen(false);setInspectorOpen(false);setMonitorOpen(false)}},[mobile]);
@@ -414,6 +415,7 @@ export default function WorldEditor({externalStart=false,onExternalStartState,on
    bindTravel(world.current);
    r.setActive(!document.hidden);
    let lastWorld=world.current,lastTerrainUpdate=-Infinity,lastGameplayUpdate=-Infinity,backgroundStarted=false;
+   let lastTravelBusy:boolean|undefined;
    const frame=(now:number)=>{if(!alive)return;
     if(document.hidden){last=0;acc=0;raf=requestAnimationFrame(frame);return}
     if(now-lastGameplayUpdate>250){r.updateGameplay(world.current,modeRef.current!=='edit');lastGameplayUpdate=now}
@@ -441,6 +443,10 @@ export default function WorldEditor({externalStart=false,onExternalStartState,on
      travel.current?.tick(STEP,modeRef.current!=='edit');acc-=STEP;
      if(world.current!==w){previous=undefined;acc=0;lastWorld=world.current;frameMeter.current.reset();break}
     }
+    // The fade can finish without another React render. Restore touch controls
+    // as soon as travel unlocks, even when the player has no further input.
+    const busy=travel.current?.busy??false;
+    if(busy!==lastTravelBusy){lastTravelBusy=busy;setTravelling(busy)}
     combatAudio.current?.update(world.current,modeRef.current==='play'&&!blocked&&!travel.current?.busy);
     const drawStarted=performance.now();
     try{r.draw(presentPlayer(world.current,previous,blocked?1:acc/STEP))}catch(e){r.dispose();gamePerformance.stop(performance.now(),'Renderer error');setError('The workspace could not draw the world. Your draft is safe; retry loading.');console.error(e);return}
@@ -662,7 +668,7 @@ if(k==='e'){e.preventDefault();if(!e.repeat){const gate=nearbyGate(world.current
     {error&&<div role="alert"><span>{error}</span><button onClick={retryLoading}>Retry loading</button></div>}
    </div>}
    {mode!=='play'&&<div className="we-world-label">{timeOfDay==='night'?<Moon size={15}/>:<Sun size={15}/>}<b>{mode==='walk'?'WALK PREVIEW':'SCENE VIEW'}</b><span>{activeLocation==='Camp'?`${layout.items.length} placed`:activeLocation}</span></div>}
-   {mode==='play'&&ready&&!error&&<FieldKitHUD world={world} controller={fieldKit} enabled={controlsAvailable&&!mapOpen&&!travel.current?.busy&&!travelStatus} mobile={mobile} input={touchInput} sprinting={sprint.active} onSprint={sprint.toggle} onHeld={held=>attackHeld.current=held} onDodge={dodge} onTool={equipAxe} onMove={()=>{viewRef.current={...viewRef.current,follow:true}}} isPinching={()=>playZoomInput.current?.blocksMovement()??false} onPause={pauseGame} onCheckpoint={()=>saveRunRef.current()} bagOpen={bagOpen} onBag={changeBag} mapOpen={mapOpen} onMap={changeMap}/>}
+   {mode==='play'&&ready&&!error&&<FieldKitHUD world={world} controller={fieldKit} enabled={controlsAvailable&&!mapOpen&&!travelling} mobile={mobile} input={touchInput} sprinting={sprint.active} onSprint={sprint.toggle} onHeld={held=>attackHeld.current=held} onDodge={dodge} onTool={equipAxe} onMove={()=>{viewRef.current={...viewRef.current,follow:true}}} isPinching={()=>playZoomInput.current?.blocksMovement()??false} onPause={pauseGame} onCheckpoint={()=>saveRunRef.current()} bagOpen={bagOpen} onBag={changeBag} mapOpen={mapOpen} onMap={changeMap}/>}
    {mode==='play'&&<PlayerMap world={world} open={mapOpen} continuous={continuousMapCamera(world.current,viewRef.current,canvas.current?.clientWidth||1,canvas.current?.clientHeight||1,atlasAmount)} onClose={()=>changeMap(false)}/>}
    {!layout.items.length&&ready&&mode==='edit'&&!placing&&!view.placingSpawn&&<div className="we-empty"><Layers size={24}/><h2>Your world starts here</h2><p>Choose an asset, place it in your world, then press Play to explore.</p><button className="we-primary" onClick={()=>openPanel('assets')}>Choose an asset</button></div>}
    {selectedItem&&selectedAsset&&mode==='edit'&&!(mobile&&libraryOpen)&&!inspectorOpen&&<div className="studio-selection"><button onClick={()=>{setToolsOpen(false);setInspectorOpen(true)}}><SlidersHorizontal size={18}/><span>{selectedAsset.name}<small>Object settings</small></span></button><button title="Lock or unlock" aria-label={selectedItem.locked?'Unlock object':'Lock object'} onClick={toggleLock}>{selectedItem.locked?<Lock size={18}/>:<Unlock size={18}/>}</button><button aria-label="Deselect object" onClick={()=>select(null)}><X size={18}/></button></div>}

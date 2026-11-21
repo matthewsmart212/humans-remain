@@ -162,6 +162,7 @@ function Game({role,onHome,entryVisible,onBootProgress,onBootError,coop}:{role:S
  useEffect(()=>{clear()},[width,height]);
  useEffect(()=>{
   let live=true,appActive=AppState.currentState==='active',raf=0,last=0,acc=0,lastTerrain=0,previous:PlayerSample|undefined,activeWorld:World|null=null;
+  let lastTravelBusy=false;
   let drawnRevision=-1,drawnMenuRevision=-1,drawnSize='',drawnWorld:World|null=null;
   let renderer:Runtime['renderer']|undefined,local:Runtime|undefined;
   playView.current.zoom=1;pinch.cancel();change('loading');setError('');setStatus('Opening game…');
@@ -181,7 +182,9 @@ function Game({role,onHome,entryVisible,onBootProgress,onBootError,coop}:{role:S
      if(world.current!==current){previous=undefined;acc=0;break}
     }
     if(playing&&world.current)coop?.sendPose(world.current,Date.now());
-    // Scene travel changes busy state outside React; keep native recognition current.
+    // The HUD disables movement during travel. Refresh it on both edges,
+    // including when the arrival fade finishes on the same world.
+    if(lastTravelBusy!==r.travel.busy){lastTravelBusy=r.travel.busy;refresh(n=>n+1)}
     pinch.syncConfig();
     const simulationEnded=tracked?performance.now():0;
     const current=world.current!,worldCovered=mapVisible.current&&nativeMapCoversWorld(continuousZoom.current,mapReady.current);

@@ -29,7 +29,7 @@ const items:Placement[] = [
 export const IRON_MINE_SCENE:SceneDefinition = {
   id:'iron-mine', name:'Northwest Iron Mine', width:floor.width, height:floor.height,
   lighting:'baked', weather:'sheltered', background:'#17130f',
-  terrain:{key:'scene:iron-mine:workings:v1',url:'/survival/iron-mine-v1/workings.webp'},
+  terrain:{key:'scene:iron-mine:workings:v2',url:'/survival/iron-mine-v1/workings-v2.webp'},
   walkable:floor.walkable as CollisionPoint[], blockers:[...floor.blockers, ...floor.fixtures] as CollisionPoint[][],
   foreground:[], spawns:{entrance},
   portals:[{id:'mine-adit-out',area:floor.exitArea as CollisionPoint[],destination:{return:true},returnSpawn:entrance}],
