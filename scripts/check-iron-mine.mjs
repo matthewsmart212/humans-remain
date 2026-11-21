@@ -41,7 +41,7 @@ try {
   for(let i=0;i<250 && travel.current===from;i++){
    if(!travel.busy){
     const dx=goal.x-from.player.x,dy=goal.y-from.player.y,d=Math.hypot(dx,dy);
-    if(d>1)game.movePlayer(from,{x:dx/d,y:dy/d});
+    if(d>1)game.stepCampPlaySession(from,{x:dx/d,y:dy/d},false,false);
    }
    travel.tick(game.STEP);
   }
@@ -68,6 +68,12 @@ try {
  const mine=travel.current,entry=mine.scene.spawns.entrance;
  assert.equal(mine.scene.id,'iron-mine');
  assert(!game.worldBlocked(mine,mine.player.x,mine.player.y));
+ for(let i=0;i<30;i++){
+  game.stepCampPlaySession(mine,{x:0,y:1},false,false);
+  travel.tick(game.STEP);
+ }
+ assert.equal(travel.current,mine);
+ assert(mine.player.y>entry.y+100,'Holding down walks from the entrance into the mine');
  const doors=mine.layout.items.filter(p=>p.id.startsWith('mine-door-'));
  const deposits=mine.layout.items.filter(p=>game.MINEABLE_ROCKS.has(p.assetId));
  const chest=mine.layout.items.find(p=>p.id==='mine-survey-cache');
@@ -140,22 +146,28 @@ try {
  assert(game.takeAllLootChestRewards(mine)>0);
  const remaining={...game.lootChestContents(mine,latch.id)};
  mine.stationPanel=undefined;
+ Object.assign(mine.player,entry);
  const saved=game.encodeRun(travel);
  assert(saved);
  const resume=new game.SceneTravel(camp,resources);
- await resume.restore(game.decodeRun(saved));
+ const snapshotToResume=game.decodeRun(saved);
+ const savedCamp=snapshotToResume.worlds.find(([id])=>id==='camp')[1];
+ savedCamp.outdoorReady=new Set(); // The outdoor stream releases these tiles underground.
+ await resume.restore(snapshotToResume);
  const restored=resume.current;
  assert.equal(restored.scene.id,'iron-mine');
  for(const door of doors)assert(game.gateIsOpen(restored,door.id));
  assert.equal(restored.rockMining[rock.id].hp,0);
  assert.deepEqual(game.lootChestContents(restored,latch.id),remaining);
- Object.assign(restored.player,entry);
+ assert(dist(restored.player,mine.player)<1,'Continue keeps the player at the saved mine position');
  advance(resume,80);
  enter(resume,restored.scene.portals.find(p=>'return' in p.destination));
  assert.equal(game.sceneId(resume.current),'camp');
  assert(dist(resume.current.player,entrance.returnSpawn)<1);
  assert.equal(game.itemCount(resume.current,'ironOre'),game.itemCount(restored,'ironOre'));
  assert(!resume.current.rockMining?.[rock.id],'Underground depletion is local');
+ assert(game.worldBlocked(resume.current,resume.current.player.x,resume.current.player.y),'Outdoor movement still waits for streamed ground');
+ savedCamp.outdoorReady=new Set(game.OUTDOOR_TILES.map(tile=>tile.key));
  enter(resume,entrance);
  assert.equal(resume.current,restored,'Re-entry preserves the visited mine');
  travel.dispose();resume.dispose();

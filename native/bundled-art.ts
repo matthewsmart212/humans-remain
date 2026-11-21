@@ -184,7 +184,7 @@ export const BUNDLED_ART:Record<string,number>={
  "/survival/iron-mine-v1/door-closed.webp":require("./../public/survival/iron-mine-v1/door-closed.webp"),
  "/survival/iron-mine-v1/door-open.webp":require("./../public/survival/iron-mine-v1/door-open.webp"),
  "/survival/iron-mine-v1/entrance.webp":require("./../public/survival/iron-mine-v1/entrance.webp"),
- "/survival/iron-mine-v1/workings.webp":require("./../public/survival/iron-mine-v1/workings.webp"),
+ "/survival/iron-mine-v1/workings-v2.webp":require("./../public/survival/iron-mine-v1/workings-v2.webp"),
  "/survival/ironworks-v1/iron-boulder.png":require("./../public/survival/ironworks-v1/iron-boulder-lossless-v1.webp"),
  "/survival/ironworks-v1/iron-ingot.png":require("./../public/survival/ironworks-v1/iron-ingot-lossless-v1.webp"),
  "/survival/ironworks-v1/iron-ore.png":require("./../public/survival/ironworks-v1/iron-ore-lossless-v1.webp"),
