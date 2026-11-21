@@ -1,3 +1,4 @@
+import {WOODEN_LOOT_SHEET} from './wooden-loot-art';
 import type {AssetCollision} from './asset-collision';
 import type {CatalogueEntry} from './catalogue-model';
 
@@ -5,12 +6,9 @@ export const ABANDONED_CAMP_ID='art_abandoned_woodland_camp';
 export const ABANDONED_CAMP_LATCH=[.338,.57] as const;
 export const ABANDONED_CAMP_SIZE=[1020,680] as const;
 export const ABANDONED_CAMP_WIDTH=500;
-const directory='/survival/abandoned-woodland-camp-v2';
-export const CAMP_POSTER=directory+'/closed.webp';
-export const CAMP_SCENERY=directory+'/scenery.webp';
-export const CAMP_CHEST_SHEET=directory+'/chest-opening.webp';
-export const CAMP_CHEST_SPRITE={x:263,y:173,width:160,height:180,frames:9} as const;
-export const CAMP_CHEST_OPEN_TICKS=48;
+export const CAMP_POSTER='/survival/wooden-loot-chest-v1/woodland-preview.webp';
+export const CAMP_SCENERY='/survival/abandoned-woodland-camp-v2/scenery.webp';
+export const CAMP_CHEST_RECT={x:255,y:164,width:177,height:189} as const;
 
 // Ground contacts only. The bones and dropped provisions can be stepped over.
 export const ABANDONED_CAMP_COLLISION:AssetCollision={
@@ -34,7 +32,7 @@ export const abandonedCampEntry:CatalogueEntry={
  appearance:'Two torn shelters, a cold hearth, scattered bones, supplies and a broken stake fence.',
  states:'Closed or opened wooden chest. Each camp keeps its own remaining loot.',
  image:CAMP_POSTER,crop:[0,0,...ABANDONED_CAMP_SIZE],artPreview:{worldWidth:ABANDONED_CAMP_WIDTH},
- artworkExports:[CAMP_POSTER,CAMP_SCENERY,CAMP_CHEST_SHEET],artLinks:[],implementationDependencies:[],blockers:[],playerUnlock:'Approach the chest',
+ artworkExports:[CAMP_POSTER,CAMP_SCENERY,WOODEN_LOOT_SHEET],artLinks:[],implementationDependencies:[],blockers:[],playerUnlock:'Approach the chest',
  resourceCost:'None',inputs:'',outputs:'Salvaged supplies',capacity:'One loot chest per camp',buildMenuVisibility:'World editor',
  availability:'Current world asset',testScope:'Placement, chest interaction and loot persistence.',
 };

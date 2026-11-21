@@ -1,4 +1,5 @@
-import {ABANDONED_CAMP_ID,CAMP_POSTER,CAMP_SCENERY,CAMP_CHEST_SHEET,ABANDONED_CAMP_SIZE,ABANDONED_CAMP_COLLISION} from './abandoned-camp-art';
+import {WOODEN_LOOT_ID,WOODEN_LOOT_ANCHOR,WOODEN_LOOT_POSTER,WOODEN_LOOT_SHEET,WOODEN_LOOT_SPRITE} from './wooden-loot-art';
+import {ABANDONED_CAMP_ID,CAMP_POSTER,CAMP_SCENERY,ABANDONED_CAMP_SIZE,ABANDONED_CAMP_COLLISION} from './abandoned-camp-art';
 import {IRON_ROCK_FOOT,HEARTH_FOOT,WELL_IMAGE,WELL_FOOT} from './camp-fixture-collision';
 import {FURNACE_COLLISION,WAREHOUSE_ARTWORK,WAREHOUSE_ASSET_ID} from './camp-worksites-art';
 import {restorationImages} from './camp-restoration';
@@ -48,6 +49,7 @@ export const imageDimensions=metadata as Record<string,number[]>;
 const sizes=imageDimensions;
 for(const f of [...foliageArt,...puddleArt,...treeArt,...sceneryArt,...FORAGE_ART,...IRONWORKS_WORLD_ART,...GARDEN_ART])sizes[f.image]=f.size;
 sizes[CAMP_POSTER]=sizes[CAMP_SCENERY]=[...ABANDONED_CAMP_SIZE];
+sizes[WOODEN_LOOT_POSTER]=[WOODEN_LOOT_SPRITE.width,WOODEN_LOOT_SPRITE.height];
 const assets:WorldAsset[]=[];
 const sourceKey=(image:string,crop:number[])=>image+':'+crop.join(',');
 const seen=new Map<string,WorldAsset>();
@@ -69,6 +71,12 @@ for(const e of entries.filter(e=>e.image&&!e.canonicalArt&&!e.id.startsWith('map
   a.anchor=[crop[2]/2,crop[3]/2];
   a.body=[];a.collision=ABANDONED_CAMP_COLLISION;
   a.note='Approach the wooden chest beneath the larger shelter to open it and take supplies.';
+ }
+ if(e.id===WOODEN_LOOT_ID){
+  a.anchor=[crop[2]*WOODEN_LOOT_ANCHOR[0],crop[3]*WOODEN_LOOT_ANCHOR[1]];
+  a.body=[];
+  a.collision={lineWidth:.012,paths:[{closed:true,points:[[.035,.824],[.24,.755],[.96,.832],[.83,.978],[.56,.98]]}]};
+  a.note='An independent loot chest. Approach the latch to open it.';
  }
  if(e.id.startsWith('base_shelter')){
   // Ground-contact wall traces use the source floor line, not the elevated wall top.
@@ -139,7 +147,8 @@ export function requiredImages(assetIds:string[],terrain?:{url:string},options:{
   // cropped motion sheets and charcoal base are needed once optional animation warms.
   const frames=options.animationFrames===false||hearth?[a.frames?.[0],a.openFrames?.[0]]:[...(a.frames||[]),...(a.openFrames||[])];
   for(const url of [...restorationImages(id),a.image,a.roof,a.unlit,a.ground?.image,...(a.image===HQ_SOUTH_INTERIOR?HQ_FOUNDATION_DRESSING.map(d=>d.image):[]),a.gate?.leaf,a.gate?.post,a.gate?.states?.closed,a.gate?.states?.open,...frames])if(url)out[assetImageKey(url)]=url;
-  if(id===ABANDONED_CAMP_ID)for(const url of [CAMP_SCENERY,CAMP_CHEST_SHEET])out[assetImageKey(url)]=url;
+  if(id===ABANDONED_CAMP_ID)out[assetImageKey(CAMP_SCENERY)]=CAMP_SCENERY;
+  if(id===ABANDONED_CAMP_ID||id===WOODEN_LOOT_ID)out[assetImageKey(WOODEN_LOOT_SHEET)]=WOODEN_LOOT_SHEET;
   if(hearth&&options.animationFrames!==false)Object.assign(out,HEARTH_ANIMATION_IMAGES);
   if(treeShadeFrames.has(a.image))out.treeCanopyShade=TREE_SHADE_IMAGE;
   if(treeArt.some(t=>t.id===id))out[assetImageKey(TREE_LOG_IMAGE)]=TREE_LOG_IMAGE;

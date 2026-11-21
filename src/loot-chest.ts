@@ -1,6 +1,7 @@
 import {withinActionReach,type World} from './survival-engine';
 import {hitCollider,type Collider} from './camp-collision';
-import {ABANDONED_CAMP_LATCH,CAMP_CHEST_OPEN_TICKS} from './abandoned-camp-art';
+import {WOODEN_LOOT_LATCH,WOODEN_LOOT_OPEN_TICKS} from './wooden-loot-art';
+import {ABANDONED_CAMP_ID,ABANDONED_CAMP_LATCH} from './abandoned-camp-art';
 import {placedLootChestId} from './chest-animation';
 import {layoutViews} from './layout-views';
 import {placementArtPoint} from './world-layout';
@@ -78,9 +79,10 @@ export function lootChestBlocked(w:ChestWorld,x:number,y:number,r:number){
 type ChestLatch={id:string;x:number;y:number};
 function accessibleLootChest(w:World,id?:string):ChestLatch|null{
  const camp=campLootChest(w);
- const latches=layoutViews(w.layout).lootCamps.map(p=>({
-  id:placedLootChestId(p.id),...placementArtPoint(p,...ABANDONED_CAMP_LATCH),
- }));
+ const latches=layoutViews(w.layout).lootCamps.map(p=>{
+  const [x,y]=p.assetId===ABANDONED_CAMP_ID?ABANDONED_CAMP_LATCH:WOODEN_LOOT_LATCH;
+  return {id:placedLootChestId(p.id),...placementArtPoint(p,x,y)};
+ });
  if(camp)latches.push({...camp,y:camp.y+28});
  let nearest:ChestLatch|null=null,bestDistance=Infinity;
  for(const latch of latches){
@@ -92,7 +94,7 @@ function accessibleLootChest(w:World,id?:string):ChestLatch|null{
 }
 export const lootChestInMenuRange=(w:World,id=w.lootChestId??LOOT_CHEST_ID)=>!!accessibleLootChest(w,id);
 export const nearbyLootChest=(w:World)=>w.rareCacheMenuAt===undefined?accessibleLootChest(w):null;
-const revealTicks=(id:string)=>id===LOOT_CHEST_ID?LOOT_CHEST_OPEN_TICKS+LOOT_CHEST_REVEAL_HOLD_TICKS:CAMP_CHEST_OPEN_TICKS+12;
+const revealTicks=(id:string)=>id===LOOT_CHEST_ID?LOOT_CHEST_OPEN_TICKS+LOOT_CHEST_REVEAL_HOLD_TICKS:WOODEN_LOOT_OPEN_TICKS+12;
 function showChestContents(w:World,id:string){
  w.lootChests![id].menuShown=true;
  w.lootChestId=id;

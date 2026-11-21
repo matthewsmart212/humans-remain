@@ -1,3 +1,4 @@
+import {WOODEN_LOOT_ID} from '../src/wooden-loot-art';
 import {ABANDONED_CAMP_ID} from '../src/abandoned-camp-art';
 import {GARDEN_ART} from '../src/camp-garden-art';
 import {LOOT_CHEST_IMAGES} from '../src/loot-chest';
@@ -36,7 +37,7 @@ const savedFoliageIds=WORLD_ASSETS.filter(a=>a.foliage).map(a=>a.id);
 const sources={...LOOT_CHEST_IMAGES,...Object.fromEntries(SPAWNABLES.map(v=>['spawn-thumb-'+v.id,v.image])),...EDITOR_IMAGE_SOURCES,...editorTerrainDetail(layout.terrainImage),
  ...Object.fromEntries(OUTDOOR_TILES.map(t=>[t.key,t.image])),...CAMP_CHUNK_IMAGES,...RIVER_DETAIL_IMAGES,
  ...Object.assign({},...[...SCENES.values()].map(sceneImages)),
- ...WALKER_IMAGE_SOURCES,...BOMBER_IMAGE_SOURCES,...requiredImages([ABANDONED_CAMP_ID,...layout.items.map(p=>p.assetId),...GARDEN_ART.map(a=>a.id),...savedWallIds,...savedPuddleIds,...savedFoliageIds,...circularWallArt.map(a=>a.id)],layout.terrainImage),
+ ...WALKER_IMAGE_SOURCES,...BOMBER_IMAGE_SOURCES,...requiredImages([ABANDONED_CAMP_ID,WOODEN_LOOT_ID,...layout.items.map(p=>p.assetId),...GARDEN_ART.map(a=>a.id),...savedWallIds,...savedPuddleIds,...savedFoliageIds,...circularWallArt.map(a=>a.id)],layout.terrainImage),
  ...Object.assign({},...[...SCENES.values()].map(s=>requiredImages(s.layout?.items.map(p=>p.assetId)||[])))};
 const redirects=Object.assign({},...['lossless-artwork','retired-road','calm-river','river-features','river-quality'].map(n=>JSON.parse(fs.readFileSync(`server/${n}-redirects.json`,'utf8'))));
 const canonical=(url:string)=>{const seen=new Set();while(redirects[url]){if(seen.has(url))throw Error('Redirect cycle');seen.add(url);url=redirects[url]}return url};

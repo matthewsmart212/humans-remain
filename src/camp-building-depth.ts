@@ -78,7 +78,7 @@ const hearth:BuildingPainting={base:[50,74],panels:[]};
 // different ground depths, so a survivor can walk between the painted props.
 const abandonedCamp:BuildingPainting={base:[50,28],panels:[
  // Large shelter and chest, then its nearer left wing and bucket.
- panel([34,51],[0,39],[7,32],[15,9],[35,0],[41,0],[49,26],[54,46],[49,53],[27,53],[24,62],[5,64],[0,57]),
+ panel([34,50],[0,39],[7,32],[15,9],[35,0],[41,0],[49,26],[54,46],[49,53],[27,53],[24,62],[5,64],[0,57]),
  panel([20,60],[7,31],[25,28],[24,60],[20,63],[5,64],[7,55],[1,54],[0,39]),
  // Broken fence, barrel and loose planks at the back.
  panel([78,46],[54,23],[60,5],[69,12],[78,26],[88,33],[100,45],[100,61],[92,59],[80,48],[70,50],[65,41],[57,32]),

@@ -44,7 +44,9 @@ import type {WeatherView} from './weather-skia';
 import {drawCampLighting,placedFireLit,nightStrength} from './camp-lighting';
 import {bonfireFoodDrawables,drawCampfireHud} from './bonfire-food-renderer';
 import {stationMenuPan,menuClock} from './station-menu-layout';
-import {ABANDONED_CAMP_ID,ABANDONED_CAMP_SIZE,CAMP_SCENERY,CAMP_CHEST_SHEET,CAMP_CHEST_SPRITE} from './abandoned-camp-art';
+import {ABANDONED_CAMP_ID,ABANDONED_CAMP_SIZE,CAMP_SCENERY,CAMP_CHEST_RECT} from './abandoned-camp-art';
+import {WOODEN_LOOT_ID,WOODEN_LOOT_SHEET,WOODEN_LOOT_ANCHOR} from './wooden-loot-art';
+import {drawWoodenLootChest} from './wooden-loot-renderer';
 import {chestFrame} from './chest-animation';
 import {ASSET_BY_ID,assetImageKey,type WorldAsset} from './world-assets';
 import {placedAnimationFrame} from './step-on-animation';
@@ -164,14 +166,15 @@ export function placedDrawables(ctx:CanvasRenderingContext2D,imgs:Record<string,
   // Only contacted/recovering plants need deformed geometry. All idle plants
   // retain their original pixels through the ordinary image path.
   const animatePlant=!!a.foliage&&(viewport?.scale??1)>=.42&&!!w.foliageMotions?.[p.id];
+  const sheet=imgs[assetImageKey(WOODEN_LOOT_SHEET)];
+  const scenery=imgs[assetImageKey(CAMP_SCENERY)];
   const drawBase=()=>{
    if(a.id===ABANDONED_CAMP_ID){
-    const scenery=imgs[assetImageKey(CAMP_SCENERY)],sheet=imgs[assetImageKey(CAMP_CHEST_SHEET)];
-    if(!scenery||!sheet){ctx.drawImage(im,b.x,b.y,b.width,b.height);return}
-    const sprite=CAMP_CHEST_SPRITE,pose=chestFrame(w,p.id,sprite.frames);
-    const sx=b.width/ABANDONED_CAMP_SIZE[0],sy=b.height/ABANDONED_CAMP_SIZE[1];
-    ctx.drawImage(scenery,b.x,b.y,b.width,b.height);
-    ctx.drawImage(sheet,pose*sprite.width,0,sprite.width,sprite.height,b.x+sprite.x*sx,b.y+sprite.y*sy,sprite.width*sx,sprite.height*sy);
+    ctx.drawImage(sheet&&scenery?scenery:im,b.x,b.y,b.width,b.height);
+    return;
+   }
+   if(a.id===WOODEN_LOOT_ID&&sheet){
+    drawWoodenLootChest(ctx,sheet,w,p.id,b);
     return;
    }
    if(southHQ){
@@ -194,6 +197,13 @@ export function placedDrawables(ctx:CanvasRenderingContext2D,imgs:Record<string,
    for(const part of painting)add({...part,layer:southHQ||originalBunker?0:p.layer});
   }else{
    add({y:a.interior?-10000:a.id==='art_hq_woven_rug'?-9999:placementPoint(p,p.x,p.y)[1],draw:drawBase});
+  }
+  if(a.id===ABANDONED_CAMP_ID&&sheet&&scenery){
+   const sx=b.width/ABANDONED_CAMP_SIZE[0],sy=b.height/ABANDONED_CAMP_SIZE[1];
+   const rect=CAMP_CHEST_RECT;
+   const chest={x:b.x+rect.x*sx,y:b.y+rect.y*sy,width:rect.width*sx,height:rect.height*sy};
+   const [,depth]=placementPoint(p,chest.x+WOODEN_LOOT_ANCHOR[0]*chest.width,chest.y+WOODEN_LOOT_ANCHOR[1]*chest.height);
+   add({y:depth,draw:()=>drawWoodenLootChest(ctx,sheet,w,p.id,chest)});
   }
   for(const f of southHQ||restoration?[]:a.foreground||[])add({y:placementPoint(p,b.x+(f[0]+f[2]/2)/a.crop[2]*b.width,b.y+(f[1]+f[3])/a.crop[3]*b.height)[1],draw:()=>ctx.drawImage(im,a.crop[0]+f[0],a.crop[1]+f[1],f[2],f[3],b.x+f[0]/a.crop[2]*b.width,b.y+f[1]/a.crop[3]*b.height,f[2]/a.crop[2]*b.width,f[3]/a.crop[3]*b.height)});
   // The fixed foundation remains below actors; roof and front panels fade
