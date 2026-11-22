@@ -1,0 +1,211 @@
+{
+  "result": "pass",
+  "behavior": {
+    "result": "pass",
+    "pierWidth": 740,
+    "navigationBodyRadius": 21,
+    "playerBodyRadius": 19,
+    "wetStandingSamples": 116,
+    "blockedWetEdges": 7,
+    "outboundWaypoints": 6,
+    "returnWaypoints": 7,
+    "fish": 5,
+    "checks": [
+      "Full-body support within the actual deck",
+      "Moving or deleting the pier restores water collision",
+      "Mirrored, rotated and framed placement geometry matches artwork",
+      "All existing river bridges retain their walking surface",
+      "Bounded pier routes join ordinary outdoor navigation",
+      "Actual movePlayer traverses the gangway and platform in both directions",
+      "No fishing controls or inventory actions",
+      "Deterministic fish and ripples stay within real water",
+      "Offscreen culling and reduced motion",
+      "Software Skia painting and foreground occlusion",
+      "Active artwork replacement and cached owner metadata",
+      "Evacuation van loot regression",
+      "Web TypeScript check",
+      "Git whitespace check"
+    ],
+    "commands": [
+      "node scripts/check-fishing-site-behavior.mjs",
+      "node scripts/check-fishing-site.mjs",
+      "node scripts/check-evacuation-loot.mjs",
+      "npm run typecheck -- --pretty false",
+      "git diff --check"
+    ],
+    "previewDirectory": ".qa/fishing-site-behavior",
+    "physicalIPhoneTested": false
+  },
+  "productionRenderer": {
+    "renderer": "Production native Skia renderer with platform adapters",
+    "frames": [
+      {
+        "name": "lake-jetty-overview",
+        "file": "lake-jetty-overview.webp",
+        "bytes": 293222,
+        "player": {
+          "x": -1390,
+          "y": 6460
+        },
+        "playerBlocked": false,
+        "action": null,
+        "zoom": 0.92,
+        "collision": false,
+        "camera": {
+          "scale": 1.5701333333333336,
+          "x": -2678.260869565217,
+          "y": 6137.80910326087
+        },
+        "textureStats": {
+          "graphics": {
+            "backend": "native-skia",
+            "shaderFieldBytes": 21577728
+          },
+          "camp": {
+            "prefetchMargin": 1000,
+            "lookaheadMs": 3200,
+            "leadWorldUnits": 0,
+            "retainMargin": 2800,
+            "residencyMs": 4000,
+            "bytes": 0,
+            "missing": 0,
+            "residentBytes": 0,
+            "pendingBytes": 0,
+            "budgetBytes": 67108864,
+            "resident": 0,
+            "pending": 0,
+            "wanted": 0,
+            "visible": 0,
+            "requested": 0,
+            "completed": 0,
+            "failures": 0,
+            "evictions": 0,
+            "rapidEvictions": 0,
+            "recentReloads": 0,
+            "missingDetails": [],
+            "missingDetailsOmitted": 0
+          },
+          "rivers": {
+            "prefetchMargin": 1000,
+            "lookaheadMs": 3200,
+            "leadWorldUnits": 0,
+            "retainMargin": 2800,
+            "residencyMs": 4000,
+            "bytes": 14239872,
+            "missing": 0,
+            "residentBytes": 14239872,
+            "pendingBytes": 0,
+            "budgetBytes": 29360128,
+            "resident": 16,
+            "pending": 0,
+            "wanted": 16,
+            "visible": 6,
+            "requested": 16,
+            "completed": 16,
+            "failures": 0,
+            "evictions": 0,
+            "rapidEvictions": 0,
+            "recentReloads": 0,
+            "missingDetails": [],
+            "missingDetailsOmitted": 0
+          },
+          "artwork": {
+            "active": 0,
+            "queued": 0,
+            "queuedForeground": 0,
+            "cachedImages": 135,
+            "warming": 0,
+            "warmQueue": []
+          }
+        }
+      },
+      {
+        "name": "lake-jetty-platform",
+        "file": "lake-jetty-platform.webp",
+        "bytes": 279556,
+        "player": {
+          "x": -1812.4907063197027,
+          "y": 6683.395291201983
+        },
+        "playerBlocked": false,
+        "action": null,
+        "zoom": 1.12,
+        "collision": false,
+        "camera": {
+          "scale": 1.7066666666666668,
+          "x": -2600,
+          "y": 6173.984375
+        },
+        "textureStats": {
+          "graphics": {
+            "backend": "native-skia",
+            "shaderFieldBytes": 21577728
+          },
+          "camp": {
+            "prefetchMargin": 1000,
+            "lookaheadMs": 3200,
+            "leadWorldUnits": 0,
+            "retainMargin": 2800,
+            "residencyMs": 4000,
+            "bytes": 0,
+            "missing": 0,
+            "residentBytes": 0,
+            "pendingBytes": 0,
+            "budgetBytes": 67108864,
+            "resident": 0,
+            "pending": 0,
+            "wanted": 0,
+            "visible": 0,
+            "requested": 0,
+            "completed": 0,
+            "failures": 0,
+            "evictions": 0,
+            "rapidEvictions": 0,
+            "recentReloads": 0,
+            "missingDetails": [],
+            "missingDetailsOmitted": 0
+          },
+          "rivers": {
+            "prefetchMargin": 1000,
+            "lookaheadMs": 3200,
+            "leadWorldUnits": 0,
+            "retainMargin": 2800,
+            "residencyMs": 4000,
+            "bytes": 14239872,
+            "missing": 0,
+            "residentBytes": 14239872,
+            "pendingBytes": 0,
+            "budgetBytes": 29360128,
+            "resident": 16,
+            "pending": 0,
+            "wanted": 16,
+            "visible": 6,
+            "requested": 16,
+            "completed": 16,
+            "failures": 0,
+            "evictions": 0,
+            "rapidEvictions": 0,
+            "recentReloads": 0,
+            "missingDetails": [],
+            "missingDetailsOmitted": 0
+          },
+          "artwork": {
+            "active": 0,
+            "queued": 0,
+            "queuedForeground": 0,
+            "cachedImages": 135,
+            "warming": 0,
+            "warmQueue": []
+          }
+        }
+      }
+    ],
+    "physicalIPhoneTested": false
+  },
+  "additionalChecks": [
+    "Web production build",
+    "Native TypeScript",
+    "Native map retained rendering"
+  ],
+  "physicalIPhoneTested": false
+}

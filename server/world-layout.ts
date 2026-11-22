@@ -1,3 +1,4 @@
+import {placeStillwaterFishingSite} from '../src/fishing-site-placement';
 import {placeEvacuationVan} from '../src/evacuation-van-placement';
 import {placeSoutheastSmallholding} from '../src/smallholding-placement';
 import {MAX_LAYOUT_BYTES} from '../src/layout-limits';
@@ -23,7 +24,7 @@ function publishedLayout(appliedJson?:string){
  const stored:WorldLayout|null=appliedJson?JSON.parse(appliedJson):null;
  const useDatabase=!!stored&&typeof stored.updatedAt==='string'&&stored.updatedAt>=bundledWorld.layout.updatedAt;
  const source=useDatabase?stored:bundledWorld.layout as WorldLayout;
- return {useDatabase,layout:placeEvacuationVan(placeSoutheastSmallholding(placeNorthwestAbandonedCamp(source)))};
+ return {useDatabase,layout:placeStillwaterFishingSite(placeEvacuationVan(placeSoutheastSmallholding(placeNorthwestAbandonedCamp(source))))};
 }
 
 /** Public, read-only copy of the last explicitly published authored world.

@@ -5,6 +5,8 @@ import bridges from './river-bridges.json';
 import sideMasks from './river-side-water-masks.json';
 import {EAST_TERRAIN_SCALE} from './east-approach';
 import {RIVER_BATCHES} from './river-layout';
+import {fishingDeckSupports} from './fishing-site-geometry';
+import type {WorldLayout} from './world-layout';
 
 // Ownership switches where the continuation becomes opaque, so the old closed
 // pool does not leave invisible water collision beneath its new outlet banks.
@@ -23,7 +25,7 @@ function onBridge(x:number,y:number,r:number){
 }
 
 /** Only the installed water is solid. Future river guides remain walkable. */
-export function riverWaterBlocked(x:number,y:number,r:number){
+function rawRiverWaterBlocked(x:number,y:number,r:number){
  const s=EAST_TERRAIN_SCALE,sx=x/s+600,sy=y/s+600,radius=r/s;
  if(onBridge(sx,sy,radius))return false;
  // Branches can leave dry land between two water channels on the same row.
@@ -48,4 +50,20 @@ export function riverWaterBlocked(x:number,y:number,r:number){
   }
  }
  return false;
+}
+
+/** Placed decks support feet only inside their actual transformed outline. */
+export function riverWaterBlocked(x:number,y:number,r:number,layout?:WorldLayout){
+ return rawRiverWaterBlocked(x,y,r)&&!fishingDeckSupports(layout,x,y,r);
+}
+
+/** Ambient life needs water under its whole silhouette, independent of walkable decks. */
+export function riverWaterContains(x:number,y:number,r=0){
+ if(!rawRiverWaterBlocked(x,y,0))return false;
+ if(r<=0)return true;
+ for(let i=0;i<8;i++){
+  const angle=i*Math.PI/4;
+  if(!rawRiverWaterBlocked(x+Math.cos(angle)*r,y+Math.sin(angle)*r,0))return false;
+ }
+ return true;
 }

@@ -15,7 +15,7 @@ export function playerMapLabels(features:PlayerMapFeatures,view:PlayerMapView,wi
  const art=new Map(features.illustrations.filter(a=>a.kind!=='palisade').map(a=>[a.id,a]));
  const span=CAMP_MAP_WALL.radius*2*view.scale,detail=Math.max(0,Math.min(1,(span-CAMP_DETAIL_SPAN.hidden)/(CAMP_DETAIL_SPAN.full-CAMP_DETAIL_SPAN.hidden)));
  return features.landmarks.flatMap(mark=>{
-  const overview=mark.kind==='camp'||mark.kind==='mine'||mark.kind==='vehicle';
+  const overview=mark.kind==='camp'||mark.kind==='mine'||mark.kind==='vehicle'||mark.kind==='fishing';
   if(!overview&&detail===0)return[];
   const illustration=art.get(mark.id),anchor=projectMapPoint(illustration??mark,view);
   if(anchor.x<-120||anchor.y<-120||anchor.x>width+120||anchor.y>height+120)return[];

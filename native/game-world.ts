@@ -45,8 +45,9 @@ export async function loadPublishedGameWorld():Promise<SavedWorld>{
    const raw=await AsyncStorage.getItem(CLOUD_WORLD_KEY);
    if(raw){
     const cached=validateSavedWorld(JSON.parse(raw),'Cached published world');
-    const bundled=loadGameWorld();
-    if(cached.layout.updatedAt>=bundled.layout.updatedAt)return cached;
+    // Comparing timestamps must not replace the cached world's active artwork
+    // registry with bundled metadata before returning that cached layout.
+    if(cached.layout.updatedAt>=snapshot.layout.updatedAt)return cached;
    }
   }catch{/* An invalid cache must never block gameplay. */}
   return loadGameWorld();

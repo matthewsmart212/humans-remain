@@ -23,6 +23,7 @@ export const RIVER_MOTION_IMAGES={riverSurfaceRipples:RIVER_SURFACE_FLOW.image,.
 const bridgeDeckMasks=bridges.map(({from,to,width})=>
  `deck=max(deck,bridgeMask(source,float2(${from}),float2(${to}),${width}));`
 ).join('\n');
+const stillwaterSource=RIVER_BATCHES[RIVER_SIDE_FEATURES.find(feature=>feature.id==='lower-lake')!.batch].source;
 
 // Each batch is cropped from one continuous painting. A common source origin and
 // clock preserve the approved animation across both tile and batch joins.
@@ -89,6 +90,8 @@ half4 main(float2 p){
  if(outer<=0.)return half4(0.);
  half4 base=artwork.eval(p);
  float water=waterAmount(base);
+ float lakeBatch=abs(master.x-(${stillwaterSource.x}.))<.5&&abs(master.y-(${stillwaterSource.y}.))<.5?1.:0.;
+ float calmLake=lakeBatch*smoothstep(.01,.60,side);
  float dryBank=(1.-water)*(1.-onPaintedBridge(source));
  half3 surfaceColour=riverbankColour(p,base,dryBank);
  if(water>0.){
@@ -97,6 +100,10 @@ half4 main(float2 p){
   float depth=1.-smoothstep(.25,.65,float(base.g));
   half3 tint=half3(base.g*.13,base.b*.12+base.g*.03,base.g*.16);
   half3 waterColour=mix(base.rgb,base.rgb*half3(.83,.88,.73)+tint,.58+.32*depth);
+  // Stillwater's sheltered fishing shore has subdued woodland-green water.
+  // Keep painted shallows visible while softening the broad baked highlights.
+  half3 lakeColour=half3(.07,.18,.17)+waterColour*half3(.35,.30,.22);
+  waterColour=mix(waterColour,lakeColour,calmLake*.92);
   surfaceColour=mix(surfaceColour,waterColour,water);
   if(hasSurface>0.){
    float2 velocity=float2(flow.rg)*2.-1.;
@@ -112,7 +119,7 @@ half4 main(float2 p){
    float2 broadUv=q*float2(.46,.57)+float2(71.,137.);
    float swell=rippleAt(broadUv,velocity*float2(62.,77.),fract(phase+.29));
    float sheen=sqrt(crest)*(.15+.19*speed)+sqrt(swell)*.10;
-   surfaceColour+=water*(half3(.47,.70,.65)*sheen+half3(.32,.30,.21)*smoothstep(.28,.72,crest)*(.18+.22*swell));
+   surfaceColour+=water*(half3(.47,.70,.65)*sheen+half3(.32,.30,.21)*smoothstep(.28,.72,crest)*(.18+.22*swell))*mix(1.,.23,calmLake);
   }
  }
  // The old river paintings carry saturated ochre gravel into their margins.

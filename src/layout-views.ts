@@ -1,6 +1,7 @@
 import {WOODEN_LOOT_ID} from './wooden-loot-art';
 import {ABANDONED_CAMP_ID} from './abandoned-camp-art';
 import {EVACUATION_VAN_ID,EVACUATION_BACKPACK_ID} from './evacuation-van-art';
+import {invalidateFishingSiteGeometry} from './fishing-site-geometry';
 import {ASSET_BY_ID} from './world-assets';
 import {placementBounds,placementPoint,type Placement,type WorldLayout} from './world-layout';
 import type {FoliageViewport} from './foliage-renderer';
@@ -8,7 +9,7 @@ type Bound={p:Placement;r:number;order:number;foliage:boolean};
 type Query={x:number;y:number;width:number;height:number;placements:Placement[];ground:Placement[]};
 type Index={plain:Placement[];ground:Placement[];shelters:Placement[];stepOn:Placement[];chests:Placement[];lootCamps:Placement[];gates:Placement[];cells:Map<string,Bound[]>;queries:Query[]};
 let cache=new WeakMap<WorldLayout,Index>();
-export function invalidateLayoutViews(){cache=new WeakMap()}
+export function invalidateLayoutViews(){cache=new WeakMap();invalidateFishingSiteGeometry()}
 export function layoutViews(layout?:WorldLayout):Index{
  if(!layout)return{plain:[],ground:[],shelters:[],stepOn:[],chests:[],lootCamps:[],gates:[],cells:new Map(),queries:[]};
  let index=cache.get(layout);if(index)return index;

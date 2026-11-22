@@ -1,4 +1,6 @@
 import {drawBurningHearth,hasPaintedHearthAnimation} from './hearth-animation-art';
+import {FISHING_PIER_ID} from './fishing-site-art';
+import {drawFishingSiteGround,fishingPierForegroundDrawables} from './fishing-site-renderer';
 import {drawBuildingCondition} from './building-condition-renderer';
 import {lootChestDrawables,drawLootChestGround} from './loot-chest-renderer';
 import {SURVEY_CACHE_ID,placedLootChestVisible} from './loot-chest';
@@ -134,6 +136,10 @@ export function placedDrawables(ctx:CanvasRenderingContext2D,imgs:Record<string,
   const frame=animationReady?(a.openFrames?.length?chestFrame(w,p.id,frames!.length):placedAnimationFrame(w,p,a)):0;
   const requestedSource=restoration?.image||frames?.[frame]||a.image,requestedImage=imgs[assetImageKey(requestedSource)];
   const b=placementBounds(p),im=requestedImage||imgs[assetImageKey(a.image)];if(!im)continue;
+  if(a.id===FISHING_PIER_ID){
+   for(const part of fishingPierForegroundDrawables(ctx,im,p))add(part);
+   continue;
+  }
   const rock=rockMaterials.get(a.id);
   if(contacts){
    const canopy=treeShadeFrames.get(a.image);
@@ -296,6 +302,7 @@ export function drawWorldEditor(ctx:CanvasRenderingContext2D,atlas:Atlas,imgs:Re
  const c=editorCamera(ctx.canvas.width,ctx.canvas.height,w,view,Math.min(2,(ctx as CanvasRenderingContext2D&{pixelRatio?:number}).pixelRatio||globalThis.devicePixelRatio||1));
  const viewport={x:c.x,y:c.y,width:ctx.canvas.width/c.scale,height:ctx.canvas.height/c.scale,scale:c.scale};
  clearTerrainViewport(ctx);if(w.scene){ctx.fillStyle=w.scene.background;ctx.fillRect(0,0,ctx.canvas.width,ctx.canvas.height)}ctx.save();ctx.scale(c.scale,c.scale);ctx.translate(-c.x,-c.y);if(w.combatTest&&!w.weather?.reducedMotion){const t=timeOf(w),amount=Math.min(1,Math.max(0,(w.shakeUntil-t)/.12));if(amount)ctx.translate(Math.sin(t*139)*2*amount/c.scale,Math.cos(t*113)*1.5*amount/c.scale)}if(w.scene)drawSceneTerrain(ctx,imgs,w.scene);else drawHomeTerrain(ctx,imgs,w.layout?.terrainImage,w.layout?.terrainBorder,viewport);
+ drawFishingSiteGround(ctx,imgs,w,viewport);
  drawPlacedGround(ctx,imgs,w.layout,view.hideFoliage,viewport);
  const campContacts=w.scene?undefined:[] as CampGroundContact[];
  const outline=(view.playing||view.follow)&&!brutePlayerCarried(w)?playerOutlinePass(ctx,imgs,w,c.scale):undefined;

@@ -236,3 +236,7 @@ public/survival/expedition-menu-v2/loading-panel.webp -filter -diff -merge
 # Compact transparent evacuation-site artwork is available offline on iOS and web.
 /public/survival/evacuation-van-v1/*.webp -filter -diff -merge -text
 /docs/qa/evacuation-van-v1/*.webp -filter -diff -merge -text
+
+# Transparent Stillwater jetty and shoreline scenery are available offline.
+/public/survival/stillwater-fishing-v1/*.webp -filter -diff -merge -text
+/docs/qa/stillwater-fishing-v1/*.webp -filter -diff -merge -text

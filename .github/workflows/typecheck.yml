@@ -55,6 +55,10 @@ jobs:
         run: |
           node scripts/check-evacuation-van.mjs
           node scripts/check-evacuation-loot.mjs
+      - name: Check Stillwater jetty placement, walking and visible fish
+        run: |
+          node scripts/check-fishing-site.mjs
+          node scripts/check-fishing-site-behavior.mjs
       - name: Test co-op room protocol and hibernation
         run: node scripts/check-coop-room.mjs
       - name: Test all Hunter walking frames and carried tools

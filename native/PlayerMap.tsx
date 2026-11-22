@@ -31,6 +31,7 @@ const landmarkSymbols:Record<PlayerMapLandmark['kind'],string>={
  camp:'M-11 9L0 -10L11 9ZM-3 9L0 1L3 9M0 -10V-15L7 -12L0 -10',
  mine:'M-9 9L3 -3M-5 -10Q4 -10 10 5Q3 -3 -5 -10Z',
  vehicle:'M-11 5V-7H4L10 0V5H7M-6 5H3M4 -7V0H10M-10 7A3 3 0 1 0 -4 7A3 3 0 1 0 -10 7M2 7A3 3 0 1 0 8 7A3 3 0 1 0 2 7',
+ fishing:'M-7 0Q0 -10 10 0Q0 10 -7 0ZM-7 0L-12 -6V6ZM4 -1V1',
  bunker:'M-12 9H12M-10 9V0Q-10 -9 0 -9Q10 -9 10 0V9M-4 9V0Q-4 -4 0 -4Q4 -4 4 0V9M-8 -3H-5M5 -3H8',
  headquarters:'M-12 -1L0 -11L12 -1M-9 -3V10H9V-3M-3 10V2H3V10M-7 1H-5M5 1H7',
  storage:'M-10 -4Q0 -11 10 -4V9H-10ZM-10 0H10M-2 -1H2V4H-2Z',

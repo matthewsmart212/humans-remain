@@ -1,3 +1,4 @@
+import {placeStillwaterFishingSite} from './fishing-site-placement';
 import {placeEvacuationVan} from './evacuation-van-placement';
 import {placeSoutheastSmallholding,smallholdingReturnPoint} from './smallholding-placement';
 import {placeNorthwestIronMine} from './iron-mine-placement';
@@ -52,7 +53,7 @@ type SavedPoint={x:number;y:number};
 export function migrateSavedCampPerimeter(w:World,route:{sceneId:string;spawn:SavedPoint}[]){
  if(!w.layout)return false;
  const structures=placeCampWorksites(expandHeadquartersSpace(fitHeadquartersInterior(placeSouthFacingHeadquarters(addApprovedCampPerimeter(w.layout)))));
- const next=placeEvacuationVan(placeSoutheastSmallholding(placeNorthwestIronMine(placeNorthwestAbandonedCamp(structures))));if(next===w.layout)return false;
+ const next=placeStillwaterFishingSite(placeEvacuationVan(placeSoutheastSmallholding(placeNorthwestIronMine(placeNorthwestAbandonedCamp(structures)))));if(next===w.layout)return false;
  const previous=new Map(w.layout.items.map(p=>[p.id,p]));
  const added=next.items.filter(p=>{
   const old=previous.get(p.id);
@@ -86,6 +87,7 @@ export function decodeRun(text:string):TravelSnapshot{
   if(!Array.isArray(pair)||pair.length!==2)throw Error('The saved world is incomplete.');
   const [id,w]=pair as [string,World];
   if(typeof id!=='string'||ids.has(id)||id!==CAMP_SCENE_ID&&!SCENES.has(id)||!w?.layout||!Array.isArray(w.layout.items)||!w.player||!Number.isFinite(w.player.x)||!Number.isFinite(w.player.y)||!Number.isFinite(w.player.hp)||!Number.isSafeInteger(w.tick)||w.tick<0||!Array.isArray(w.enemies)||!Array.isArray(w.animals)||!Array.isArray(w.loot)||!w.bag||!w.stock||!w.camp||!w.fire||!['day','night','over'].includes(w.phase))throw Error('The saved world is incomplete.');
+  if(w.layout.fishingSiteVersion!==undefined&&w.layout.fishingSiteVersion!==1)throw Error('The saved fishing site version is unsupported.');
   if(w.progression&&!validRestorationSave(w.progression))throw Error('The saved building repairs are incomplete.');
   if(w.progression&&!validBlueprintSave(w.progression.blueprints))throw Error('The saved blueprints are incomplete.');
   if(w.progression&&!validJournalSave(w.progression))throw Error('The saved journal is incomplete.');
