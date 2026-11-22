@@ -8,10 +8,17 @@ import {chooseInteractionFocus} from './interaction-focus';
 
 export type ForageState={remaining:number;regrowRound?:number;pickedAt:number;picked:number;to:{x:number;y:number}};
 export const FORAGE_PICK_COOLDOWN=.42;
+function regrowthDays(p:Placement,wildDays:number){
+ return /^smallholding-(potato|carrot)-\d+$/.test(p.id)?1:wildDays;
+}
 /** Only picked plants allocate state. Regrowth uses run days and needs no per-frame map scan. */
 export function forageRemaining(w:World,p:Placement){
  const art=FORAGE_BY_ID.get(p.assetId);if(!art)return 0;
- const s=w.forage?.[p.id];return !s||art.regrowDays>0&&s.regrowRound!==undefined&&w.round>=s.regrowRound?art.capacity:s.remaining;
+ const s=w.forage?.[p.id];
+ if(!s)return art.capacity;
+ // Crops harvested in older gardens have no scheduled return.
+ if(!s.remaining&&regrowthDays(p,art.regrowDays)>0&&w.round>=(s.regrowRound??0))return art.capacity;
+ return s.remaining;
 }
 export const forageRoot=(p:Placement)=>{const [x,y]=placementPoint(p,p.x,p.y);return{x,y}};
 export function canForage(w:World){const t=timeOf(w);return w.phase!=='over'&&w.player.hp>0&&!w.player.downedUntil&&!w.stationPanel&&!w.axeSwing&&!w.spearThrust&&!w.swordThrust&&!w.bowShot&&!w.dodge&&w.attackUntil<=t&&w.player.hurtUntil<=t}
@@ -48,8 +55,8 @@ export function pickForage(w:World,id:string){
  if(!canForage(w)||timeOf(w)<(w.forageReadyAt??0))return false;
  const target=nearbyForageTargets(w).find(p=>p.placement.id===id);if(!target||!target.remaining||!target.fits)return false;
  const art=FORAGE_BY_ID.get(target.placement.assetId)!,count=addInventory(w,art.kind,1);if(!count)return false;
- const remaining=target.remaining-count,t=timeOf(w);
- (w.forage??={})[id]={remaining,...(!remaining&&art.regrowDays>0?{regrowRound:w.round+art.regrowDays}:{}),pickedAt:t,picked:count,to:{x:w.player.x,y:w.player.y-40}};
+ const remaining=target.remaining-count,t=timeOf(w),days=regrowthDays(target.placement,art.regrowDays);
+ (w.forage??={})[id]={remaining,...(!remaining&&days>0?{regrowRound:w.round+days}:{}),pickedAt:t,picked:count,to:{x:w.player.x,y:w.player.y-40}};
  w.forageReadyAt=t+FORAGE_PICK_COOLDOWN;
  w.notice=`+${count} ${art.kind==='berries'?'berry portion':art.kind} · Added to backpack`;w.noticeUntil=t+2.5;
  return true;

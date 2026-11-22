@@ -5,6 +5,8 @@ import {PREDATOR_RULES} from './camp-predators';
 import {clearSight} from './predator-navigation';
 import {ABANDONED_CAMP_ID} from './abandoned-camp-art';
 import {NORTHWEST_ABANDONED_CAMP} from './abandoned-camp-placement';
+import {SOUTHEAST_SMALLHOLDING} from './smallholding-cottage';
+import {yardPoint} from './smallholding-yard';
 import {placementArtPoint} from './world-layout';
 
 type Species='chicken'|'rabbit'|'doe'|'stag'|'boar'|'wolf';
@@ -77,6 +79,19 @@ export function seedWoodlandChestWolves(w:World){
   spawn(w,slot,ecology.slots.length-1);
  }
 }
+export function seedSmallholdingRabbits(w:World){
+ const cottage=w.layout?.items.find(p=>p.id===SOUTHEAST_SMALLHOLDING);
+ if(w.scene||!cottage)return;
+ const ecology=w.ecology??={slots:[],nextCheck:0};
+ const group='smallholding-rabbits';
+ for(const [i,[u,v]] of [[370,680],[850,790],[1320,540]].entries()){
+  const id=group+':'+i;
+  if(ecology.slots.some(slot=>slot.id===id))continue;
+  const slot:WildlifeSlot={id,group,species:'rabbit',home:yardPoint(cottage,u,v)};
+  ecology.slots.push(slot);
+  spawn(w,slot,ecology.slots.length-1);
+ }
+}
 export function seedWildlife(w:World){
  if(w.scene||!usesPaintedHomeTerrain(w.layout?.terrainImage)||w.ecology)return false;
  const slots:WildlifeSlot[]=[];
@@ -84,7 +99,7 @@ export function seedWildlife(w:World){
   const angle=i*2.399963,r=h.members.length>1?95:0;
   slots.push({id:`${h.id}:${i}`,group:h.id,species,home:{x:h.at.x+Math.cos(angle)*r,y:h.at.y+Math.sin(angle)*r}});
  });
- w.ecology={slots,nextCheck:0};slots.forEach((slot,i)=>spawn(w,slot,i));seedWoodlandChestWolves(w);return true;
+ w.ecology={slots,nextCheck:0};slots.forEach((slot,i)=>spawn(w,slot,i));seedWoodlandChestWolves(w);seedSmallholdingRabbits(w);return true;
 }
 export function stepWildlife(w:World){
  const ecology=w.ecology,t=timeOf(w);if(!ecology||t<ecology.nextCheck)return;ecology.nextCheck=t+.25;

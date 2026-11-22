@@ -43,6 +43,18 @@ try {
   const beds = layout.items.filter(p => p.id.startsWith('smallholding-') && game.FORAGE_BY_ID.has(p.assetId));
   assert.deepEqual(new Set(beds.map(p => game.FORAGE_BY_ID.get(p.assetId).kind)), new Set(['carrot', 'potato']));
 
+  const missingIds = new Set([...beds.map(p => p.id), chest.id]);
+  const partial = {...layout, items:layout.items.filter(p => !missingIds.has(p.id))};
+  const repaired = game.placeSoutheastSmallholding(partial);
+  assert.deepEqual(repaired.items.filter(p => missingIds.has(p.id)), [...beds, chest]);
+  assert.equal(game.placeSoutheastSmallholding(repaired), repaired);
+  const gardenRabbits = w => w.animals.filter(a => a.rabbit && a.wildlife?.group === 'smallholding-rabbits');
+  assert.equal(gardenRabbits(world).length, 3);
+  for (const rabbit of gardenRabbits(world)) {
+    assert(Math.hypot(rabbit.x-cottage.x, rabbit.y-cottage.y) < 1100);
+    assert(!game.worldBlocked(world, rabbit.x, rabbit.y, 20));
+  }
+
   const distance = (a, b) => Math.hypot(a.x - b.x, a.y - b.y);
   function walk(point) {
     for (let i = 0; i < 600 && distance(world.player, point) > 1; i++) {
@@ -142,7 +154,11 @@ try {
   oldCamp.layout.items = oldCamp.layout.items.filter(p => !siteIds.has(p.id));
   delete oldCamp.layout.smallholdingVersion;
   Object.assign(oldCamp.player, oldCamp.layout.spawn);
+  oldCamp.animals = oldCamp.animals.filter(a => a.wildlife?.group !== 'smallholding-rabbits');
+  oldCamp.ecology.slots = oldCamp.ecology.slots.filter(slot => slot.group !== 'smallholding-rabbits');
   const upgraded = game.decodeRun(JSON.stringify(oldSave)).worlds.find(([scene]) => scene === 'camp')[1];
+  assert.equal(gardenRabbits(upgraded).length, 3);
+  assert.equal(gardenRabbits(restored).length, 3);
   assert.deepEqual(upgraded.layout.items.filter(p => siteIds.has(p.id)).map(p => p.id).sort(), [...siteIds].sort(),
     'A continued expedition receives the same smallholding as a new run');
   assert(game.buildingInteriorExposed(cottage, restored.player), 'Continue preserves the indoor player position');
@@ -189,6 +205,9 @@ try {
   assert(!game.worldBlocked(continued, continued.player.x, continued.player.y));
   assert.equal(game.lootChestRemaining(continued, id), remaining);
   for (const bed of beds) assert.equal(game.forageRemaining(continued, bed), 0);
+
+  restored.round++;
+  for (const bed of beds) assert.equal(game.forageRemaining(restored, bed), 1, 'Garden crops return the next day');
 
   walk(doorway);
   walk(yard);

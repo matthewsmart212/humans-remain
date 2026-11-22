@@ -24,7 +24,7 @@ import {fitHeadquartersInterior,headquartersRefitReturnPoint} from './headquarte
 import {hitCollider} from './camp-collision';
 import {addApprovedCampPerimeter} from './camp-perimeter';
 import {requiredImages} from './world-assets';
-import {seedWoodlandChestWolves} from './wildlife-population';
+import {seedSmallholdingRabbits,seedWoodlandChestWolves} from './wildlife-population';
 
 export const RUN_SAVE_KEY='safety-last-expedition-v1';
 /** Saved camps may retain older or owner-edited assets. Prepare their own
@@ -125,6 +125,7 @@ export function decodeRun(text:string):TravelSnapshot{
     if(clear&&clear!==target)Object.assign(target,clear);
    }
    seedWoodlandChestWolves(w);
+   seedSmallholdingRabbits(w);
   }
  }
  if(!ids.has(CAMP_SCENE_ID)||!ids.has(data.currentId)||data.route.some((r:any)=>!ids.has(r?.sceneId)||!r.spawn||!Number.isFinite(r.spawn.x)||!Number.isFinite(r.spawn.y)))throw Error('The expedition return route is missing.');

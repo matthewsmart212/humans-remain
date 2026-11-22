@@ -20,13 +20,33 @@ function smallholdingItems({x,y}:Point):Placement[]{
  const site={x,y};
  const cottage:Placement={id:SOUTHEAST_SMALLHOLDING,assetId:SMALLHOLDING_COTTAGE_ID,
   ...site,scale:1.48,solid:true,locked:true,role:'prop',roof:'auto'};
- const chest:Placement={id:cottage.id+'-chest',assetId:WOODEN_LOOT_ID,
-  ...placementArtPoint(cottage,.606,.60),scale:1,solid:true,locked:true,role:'prop',roof:'auto'};
+ const chest=cottageChest(cottage);
  return [...smallholdingYard(site),...smallholdingCrops(site),cottage,chest];
+}
+function cottageChest(cottage:Placement):Placement{
+ return {id:cottage.id+'-chest',assetId:WOODEN_LOOT_ID,
+  ...placementArtPoint(cottage,.606,.60),scale:1,solid:true,locked:true,role:'prop',roof:'auto'};
+}
+
+function repairGarden(layout:WorldLayout):WorldLayout{
+ const cottage=layout.items.find(p=>p.id===SOUTHEAST_SMALLHOLDING);
+ if(!cottage)return layout;
+ const required=[...smallholdingCrops(cottage),cottageChest(cottage)];
+ const byId=new Map(layout.items.map(p=>[p.id,p]));
+ const missing=required.filter(p=>!byId.has(p.id));
+ if(layout.items.length+missing.length>MAX_LAYOUT_ITEMS)return layout;
+ // Correct stale positions from the previous site while keeping stable forage and loot IDs.
+ const corrections=new Map(required.filter(p=>{
+  const old=byId.get(p.id);
+  return old&&Math.hypot(old.x-p.x,old.y-p.y)>900;
+ }).map(p=>[p.id,p]));
+ if(!missing.length&&!corrections.size)return layout;
+ return {...layout,items:[...layout.items.map(p=>corrections.get(p.id)??p),...missing]};
 }
 
 export function placeSoutheastSmallholding(layout:WorldLayout):WorldLayout{
- if(layout.smallholdingVersion===3||!usesPaintedHomeTerrain(layout.terrainImage))return layout;
+ if(layout.smallholdingVersion===3)return repairGarden(layout);
+ if(!usesPaintedHomeTerrain(layout.terrainImage))return layout;
  if(!layout.items.some(p=>p.id==='camp-circular-wall-v1-14'))return layout;
  const old=layout.items.find(p=>p.id===SOUTHEAST_SMALLHOLDING);
  if(layout.smallholdingVersion&&!old)return {...layout,smallholdingVersion:3};
@@ -53,7 +73,7 @@ export function placeSoutheastSmallholding(layout:WorldLayout):WorldLayout{
  if(items.length+additions.length>MAX_LAYOUT_ITEMS)return layout;
  const ids=new Set(items.map(p=>p.id));
  if(additions.some(p=>ids.has(p.id)))return layout;
- return {...layout,smallholdingVersion:3,items:[...items,...additions]};
+ return repairGarden({...layout,smallholdingVersion:3,items:[...items,...additions]});
 }
 
 export function smallholdingReturnPoint(before:WorldLayout,after:WorldLayout,point:Point){
