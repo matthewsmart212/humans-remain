@@ -1,3 +1,4 @@
+import {EVACUATION_VAN_ID} from './evacuation-van-art';
 import {SMALLHOLDING_COTTAGE_ID} from './smallholding-cottage';
 import {IRON_MINE_ENTRANCE_ID} from './iron-mine-entrance';
 import {ABANDONED_CAMP_ID} from './abandoned-camp-art';
@@ -22,7 +23,7 @@ export type PlayerMapScene={id:string;name:string;bounds:WorldBounds;images:Play
 /** `parts` joined is `path`; `bounds` holds [left,top,right,bottom] for each
  * part so a region can be drawn from only the subpaths that reach it. */
 export type PlayerMapPath={id:string;path:string;fill:string;stroke?:string;strokeWidth?:number;parts?:readonly string[];bounds?:readonly number[]};
-export type PlayerMapLandmark={id:string;kind:'camp'|'well'|'bunker'|'mine'|'headquarters'|'storage'|'building';label:string;x:number;y:number;caption?:Vec};
+export type PlayerMapLandmark={id:string;kind:'camp'|'well'|'bunker'|'mine'|'vehicle'|'headquarters'|'storage'|'building';label:string;x:number;y:number;caption?:Vec};
 export type PlayerMapFeatures={paths:PlayerMapPath[];landmarks:PlayerMapLandmark[];illustrations:MapIllustration[]};
 export type PlayerMapView={x:number;y:number;width:number;height:number;scale:number};
 
@@ -96,6 +97,7 @@ function landmark(p:Placement,a:WorldAsset):PlayerMapLandmark|undefined{
   const [x,y]=imagePoint(p,ASSET_CONNECTIONS[p.assetId].returnPoint);
   return{id:p.id,kind:'mine',label:'Iron mine',x,y};
  }
+ if(p.assetId===EVACUATION_VAN_ID)return{id:p.id,kind:'vehicle',label:'Evacuation van',...centre()};
  if(p.assetId===SMALLHOLDING_COTTAGE_ID)return{id:p.id,kind:'building',label:'Overgrown smallholding',...centre()};
  if(p.assetId===ABANDONED_CAMP_ID)return{id:p.id,kind:'building',label:'Abandoned camp',...centre()};
  if(p.role==='hearth')return{id:p.id,kind:'camp',label:'Camp',...contact()};
@@ -152,7 +154,7 @@ export function playerMapFeatures(layout?:WorldLayout):PlayerMapFeatures{
    addShape(batches.rocks,transformed(p,[{x:x-w,y},{x:x-w*.7,y:y-h*.7},{x:x-w*.14,y:y-h},{x:x+w*.55,y:y-h*.77},{x:x+w,y:y-h*.1},{x:x+w*.45,y:y+h*.2},{x:x-w*.5,y:y+h*.15}]));
    addShape(batches.rockInk,transformed(p,[{x:x-w*.14,y:y-h},{x:x+w*.13,y:y-h*.33},{x:x+w*.45,y:y+h*.2},{x:x+w,y:y-h*.1},{x:x+w*.55,y:y-h*.77}]));continue;}
   if(wall){walls.push({p,a});continue;}
-  if(!pin||pin.kind==='mine')continue;
+  if(!pin||pin.kind==='mine'||pin.kind==='vehicle')continue;
   const kind:MapArtKind=pin.kind==='building'?(/workshop/i.test(a.name)?'workshop':/treatment/i.test(a.name)?'medical-tent':'warehouse'):pin.kind;
   const art=mapBuildingArt(p,kind);
   buildings.push(art);

@@ -8,12 +8,13 @@ import {stationPalette as palette} from '../src/station-palette';
 import type {World} from '../src/survival-engine';
 import type {MenuInsets} from '../src/station-menu-layout';
 import {packLoad} from '../src/expedition-inventory';
-import {lootChestName,lootChestRewards, lootChestContents, lootChestRemaining, canCarryLootChestReward, takeLootChestReward, takeAllLootChestRewards} from '../src/loot-chest';
+import {lootChestName,lootChestEmptyMessage,lootChestRewards, lootChestContents, lootChestRemaining, canCarryLootChestReward, takeLootChestReward, takeAllLootChestRewards} from '../src/loot-chest';
 
 type Props = {world: World; width: number; height: number; safe: MenuInsets; onClose: () => void; onChange: () => void};
 
 export default function LootChestPanel({world, width, height, safe, onClose, onChange}: Props) {
  const [message, setMessage] = useStationFeedback();
+ const name = lootChestName(world.lootChestId);
  const contents = lootChestContents(world,world.lootChestId);
  const remaining = lootChestRemaining(world,world.lootChestId);
  const load = packLoad(world);
@@ -26,9 +27,9 @@ export default function LootChestPanel({world, width, height, safe, onClose, onC
   setMessage(gained ? `Collected ${gained} ${gained === 1 ? 'item' : 'items'}.` : 'Backpack full. Make room before collecting.');
   onChange();
  };
- return <StationMenu compact fitContent world={world} title={lootChestName(world.lootChestId)} label="Loot chest supplies" onClose={onClose} width={width} height={height} safe={safe} weight={load.weight} loadLabel={load.label} message={message}>
-  {(!remaining||!canTake)&&<Text style={s.name}>{remaining?'Backpack full':'Chest empty'}</Text>}
-  <ScrollView style={s.list} contentContainerStyle={s.content} accessibilityLabel="Loot chest contents">
+ return <StationMenu compact fitContent world={world} title={name} label={`${name} supplies`} onClose={onClose} width={width} height={height} safe={safe} weight={load.weight} loadLabel={load.label} message={message}>
+  {(!remaining||!canTake)&&<Text style={s.name}>{remaining?'Backpack full':lootChestEmptyMessage(world.lootChestId)}</Text>}
+  <ScrollView style={s.list} contentContainerStyle={s.content} accessibilityLabel={`${name} contents`}>
    {rewards.map(({kind, name, description, count, capacity}) => <View key={kind} style={s.reward}>
     <ItemArt id={kind} size={38}/>
     <View style={s.details}><Text style={s.name}>{name}</Text><Text style={s.note}>{description}</Text></View>

@@ -232,3 +232,7 @@ public/survival/expedition-menu-v2/loading-panel.webp -filter -diff -merge
 /public/survival/smallholding-v1/*.webp -filter -diff -merge -text
 /public/survival/smallholding-v2/*.webp -filter -diff -merge -text
 /docs/qa/smallholding-v[23]/*.webp -filter -diff -merge -text
+
+# Compact transparent evacuation-site artwork is available offline on iOS and web.
+/public/survival/evacuation-van-v1/*.webp -filter -diff -merge -text
+/docs/qa/evacuation-van-v1/*.webp -filter -diff -merge -text

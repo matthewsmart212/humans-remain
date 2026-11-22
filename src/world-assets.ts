@@ -1,4 +1,5 @@
 import {SMALLHOLDING_YARD_ASSETS,YARD_IMAGE,YARD_IMAGE_SIZE} from './smallholding-yard';
+import {EVACUATION_VAN_ID,EVACUATION_BACKPACK_ID,EVACUATION_VAN_IMAGE,EVACUATION_BACKPACK_IMAGE,EVACUATION_VAN_SIZE,EVACUATION_BACKPACK_SIZE,EVACUATION_VAN_ANCHOR,EVACUATION_BACKPACK_ANCHOR,EVACUATION_VAN_COLLISION,EVACUATION_BACKPACK_COLLISION} from './evacuation-van-art';
 import {FENCE_SHEET,FENCE_SHEET_SIZE,SMALLHOLDING_FENCE_ASSETS} from './smallholding-fences';
 import {IRON_MINE_ENTRANCE_ID,IRON_MINE_ENTRANCE_IMAGE,IRON_MINE_ENTRANCE_SIZE,IRON_MINE_ENTRANCE_ANCHOR,IRON_MINE_ENTRANCE_COLLISION} from './iron-mine-entrance';
 import {configureSmallholdingCottage,SMALLHOLDING_COTTAGE_ID,COTTAGE_SIZE,COTTAGE_EXTERIOR,COTTAGE_INTERIOR} from './smallholding-cottage';
@@ -56,6 +57,8 @@ export const imageDimensions=metadata as Record<string,number[]>;
 const sizes=imageDimensions;
 for(const f of [...foliageArt,...puddleArt,...treeArt,...sceneryArt,...FORAGE_ART,...IRONWORKS_WORLD_ART,...GARDEN_ART])sizes[f.image]=f.size;
 sizes[IRON_MINE_ENTRANCE_IMAGE]=[...IRON_MINE_ENTRANCE_SIZE];
+sizes[EVACUATION_VAN_IMAGE]=[...EVACUATION_VAN_SIZE];
+sizes[EVACUATION_BACKPACK_IMAGE]=[...EVACUATION_BACKPACK_SIZE];
 sizes[COTTAGE_EXTERIOR]=sizes[COTTAGE_INTERIOR]=[...COTTAGE_SIZE];
 sizes[CAMP_POSTER]=sizes[CAMP_SCENERY]=[...ABANDONED_CAMP_SIZE];
 sizes[WOODEN_LOOT_POSTER]=[WOODEN_LOOT_SPRITE.width,WOODEN_LOOT_SPRITE.height];
@@ -82,6 +85,16 @@ for(const e of entries.filter(e=>e.image&&!e.canonicalArt&&!e.id.startsWith('map
   a.note='Walk along the rails and into the timber doorway to enter the iron mine.';
  }
  if(e.id===SMALLHOLDING_COTTAGE_ID)configureSmallholdingCottage(a);
+ if(e.id===EVACUATION_VAN_ID){
+  a.anchor=EVACUATION_VAN_ANCHOR.map((fraction,i)=>crop[i+2]*fraction);
+  a.body=[];a.collision=EVACUATION_VAN_COLLISION;a.allowTransparency=true;
+  a.note='Search the open rear cargo for food, basic tools and scrap. Supplies stay taken in this run.';
+ }
+ if(e.id===EVACUATION_BACKPACK_ID){
+  a.anchor=EVACUATION_BACKPACK_ANCHOR.map((fraction,i)=>crop[i+2]*fraction);
+  a.body=[];a.collision=EVACUATION_BACKPACK_COLLISION;a.solid=false;a.allowTransparency=false;
+  a.note='A dropped, walkable backpack with its own saved supply cache.';
+ }
  if(e.id===ABANDONED_CAMP_ID){
   a.anchor=[crop[2]/2,crop[3]/2];
   a.body=[];a.collision=ABANDONED_CAMP_COLLISION;

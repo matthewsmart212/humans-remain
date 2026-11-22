@@ -1,3 +1,4 @@
+import {placeEvacuationVan} from './evacuation-van-placement';
 import {placeSoutheastSmallholding,smallholdingReturnPoint} from './smallholding-placement';
 import {placeNorthwestIronMine} from './iron-mine-placement';
 import {placeNorthwestAbandonedCamp} from './abandoned-camp-placement';
@@ -51,7 +52,7 @@ type SavedPoint={x:number;y:number};
 export function migrateSavedCampPerimeter(w:World,route:{sceneId:string;spawn:SavedPoint}[]){
  if(!w.layout)return false;
  const structures=placeCampWorksites(expandHeadquartersSpace(fitHeadquartersInterior(placeSouthFacingHeadquarters(addApprovedCampPerimeter(w.layout)))));
- const next=placeSoutheastSmallholding(placeNorthwestIronMine(placeNorthwestAbandonedCamp(structures)));if(next===w.layout)return false;
+ const next=placeEvacuationVan(placeSoutheastSmallholding(placeNorthwestIronMine(placeNorthwestAbandonedCamp(structures))));if(next===w.layout)return false;
  const previous=new Map(w.layout.items.map(p=>[p.id,p]));
  const added=next.items.filter(p=>{
   const old=previous.get(p.id);

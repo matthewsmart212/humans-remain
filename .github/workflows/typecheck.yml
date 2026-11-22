@@ -51,6 +51,10 @@ jobs:
         run: |
           node scripts/check-smallholding.mjs
           node scripts/check-smallholding-render.mjs
+      - name: Check evacuation van placement and saved salvage
+        run: |
+          node scripts/check-evacuation-van.mjs
+          node scripts/check-evacuation-loot.mjs
       - name: Test co-op room protocol and hibernation
         run: node scripts/check-coop-room.mjs
       - name: Test all Hunter walking frames and carried tools

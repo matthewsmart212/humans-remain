@@ -3,6 +3,7 @@ import mineFloor from './iron-mine-floor.json';
 import {hitCollider,type Collider} from './camp-collision';
 import {WOODEN_LOOT_LATCH,WOODEN_LOOT_OPEN_TICKS} from './wooden-loot-art';
 import {ABANDONED_CAMP_ID,ABANDONED_CAMP_LATCH} from './abandoned-camp-art';
+import {EVACUATION_VAN_ID,EVACUATION_BACKPACK_ID,EVACUATION_VAN_LATCH,EVACUATION_BACKPACK_LATCH,EVACUATION_VAN_PLACEMENT_ID,EVACUATION_BACKPACK_PLACEMENT_ID} from './evacuation-van-art';
 import {placedLootChestId} from './chest-animation';
 import {layoutViews} from './layout-views';
 import {placementArtPoint,type Placement} from './world-layout';
@@ -38,13 +39,47 @@ const SURVEY_CACHE_REWARDS=[
  {kind:'ironIngot',amount:2,...IRONWORKS_MATERIALS.ironIngot,description:'Refined iron, ready for the camp smithy.'},
  ...ABANDONED_CAMP_REWARDS,
 ] as const;
+export const EVACUATION_VAN_CACHE_ID=placedLootChestId(EVACUATION_VAN_PLACEMENT_ID);
+export const EVACUATION_BACKPACK_CACHE_ID=placedLootChestId(EVACUATION_BACKPACK_PLACEMENT_ID);
+const VAN_CACHE_PREFIX='placed-van-cargo:',BACKPACK_CACHE_PREFIX='placed-abandoned-backpack:';
+const vanCargo=(id:string)=>id===EVACUATION_VAN_CACHE_ID||id.startsWith(VAN_CACHE_PREFIX);
+const abandonedBackpack=(id:string)=>id===EVACUATION_BACKPACK_CACHE_ID||id.startsWith(BACKPACK_CACHE_PREFIX);
+const staticSupplies=(id:string)=>vanCargo(id)||abandonedBackpack(id);
+/** Keep authored cache IDs stable, and give editor copies their own typed inventory. */
+export function placedLootContainerId(p:Pick<Placement,'id'|'assetId'>){
+ if(p.assetId===EVACUATION_VAN_ID)return p.id===EVACUATION_VAN_PLACEMENT_ID?EVACUATION_VAN_CACHE_ID:VAN_CACHE_PREFIX+p.id;
+ if(p.assetId===EVACUATION_BACKPACK_ID)return p.id===EVACUATION_BACKPACK_PLACEMENT_ID?EVACUATION_BACKPACK_CACHE_ID:BACKPACK_CACHE_PREFIX+p.id;
+ return placedLootChestId(p.id);
+}
+const EVACUATION_VAN_REWARDS=[
+ {kind:'beans',amount:2,...PROVISIONS.beans},
+ {kind:'energyBar',amount:2,...PROVISIONS.energyBar},
+ LOOT_CHEST_REWARDS[0],LOOT_CHEST_REWARDS[1],
+ {kind:'scrap',amount:5,name:'Metal scrap',description:'Salvaged metal for camp repairs and crafting.'},
+] as const;
+const EVACUATION_BACKPACK_REWARDS=[
+ {kind:'beans',amount:1,...PROVISIONS.beans},
+ {kind:'energyBar',amount:1,...PROVISIONS.energyBar},
+ {kind:'scrap',amount:2,name:'Metal scrap',description:'A few useful pieces saved by the backpack’s owner.'},
+] as const;
 export function lootChestRewards(id=LOOT_CHEST_ID){
+ if(vanCargo(id))return EVACUATION_VAN_REWARDS;
+ if(abandonedBackpack(id))return EVACUATION_BACKPACK_REWARDS;
  if(id===SURVEY_CACHE_ID)return SURVEY_CACHE_REWARDS;
  return id===LOOT_CHEST_ID?LOOT_CHEST_REWARDS:ABANDONED_CAMP_REWARDS;
 }
 export function lootChestName(id=LOOT_CHEST_ID){
+ if(vanCargo(id))return 'Evacuation van';
+ if(abandonedBackpack(id))return 'Abandoned backpack';
  if(id===SURVEY_CACHE_ID)return 'Surveyor’s lockbox';
  return id===LOOT_CHEST_ID?'Loot chest':'Wooden chest';
+}
+export function lootChestAction(id:string,opened:boolean){
+ if(staticSupplies(id))return {label:opened?'View supplies':vanCargo(id)?'Search van':'Search backpack',shortLabel:opened?'LOOT':'SEARCH'};
+ return {label:opened?'View loot':'Open loot chest',shortLabel:opened?'LOOT':'OPEN'};
+}
+export function lootChestEmptyMessage(id=LOOT_CHEST_ID){
+ return vanCargo(id)?'Cargo empty':abandonedBackpack(id)?'Backpack empty':'Chest empty';
 }
 export type LootChestRewardKind=ReturnType<typeof lootChestRewards>[number]['kind'];
 export type LootChestContents=Partial<Record<LootChestRewardKind,number>>;
@@ -99,8 +134,8 @@ export function placedLootChestVisible(w:World,p:Placement){
 function accessibleLootChest(w:World,id?:string):ChestLatch|null{
  const camp=campLootChest(w);
  const latches=layoutViews(w.layout).lootCamps.map(p=>{
-  const [x,y]=p.assetId===ABANDONED_CAMP_ID?ABANDONED_CAMP_LATCH:WOODEN_LOOT_LATCH;
-  return {id:placedLootChestId(p.id),...placementArtPoint(p,x,y)};
+  const [x,y]=p.assetId===EVACUATION_VAN_ID?EVACUATION_VAN_LATCH:p.assetId===EVACUATION_BACKPACK_ID?EVACUATION_BACKPACK_LATCH:p.assetId===ABANDONED_CAMP_ID?ABANDONED_CAMP_LATCH:WOODEN_LOOT_LATCH;
+  return {id:placedLootContainerId(p),...placementArtPoint(p,x,y)};
  });
  if(camp)latches.push({...camp,y:camp.y+28});
  let nearest:ChestLatch|null=null,bestDistance=Infinity;
@@ -113,14 +148,14 @@ function accessibleLootChest(w:World,id?:string):ChestLatch|null{
 }
 export const lootChestInMenuRange=(w:World,id=w.lootChestId??LOOT_CHEST_ID)=>!!accessibleLootChest(w,id);
 export const nearbyLootChest=(w:World)=>w.rareCacheMenuAt===undefined?accessibleLootChest(w):null;
-const revealTicks=(id:string)=>id===LOOT_CHEST_ID?LOOT_CHEST_OPEN_TICKS+LOOT_CHEST_REVEAL_HOLD_TICKS:WOODEN_LOOT_OPEN_TICKS+12;
+const revealTicks=(id:string)=>staticSupplies(id)?0:id===LOOT_CHEST_ID?LOOT_CHEST_OPEN_TICKS+LOOT_CHEST_REVEAL_HOLD_TICKS:WOODEN_LOOT_OPEN_TICKS+12;
 function showChestContents(w:World,id:string){
  w.lootChests![id].menuShown=true;
  w.lootChestId=id;
  w.rareCacheMenuAt=undefined;
  w.stationPanel='rare-cache';
 }
-/** The wooden lid opens directly. Let the player see it before presenting loot. */
+/** Animated lids finish before loot appears; already-open cargo is searchable immediately. */
 export function openLootChest(w:World,id=LOOT_CHEST_ID){
  const p=nearbyLootChest(w);
  if(!p||p.id!==id||w.phase==='over'||w.player.hp<=0||w.player.downedUntil||w.stationPanel)return false;

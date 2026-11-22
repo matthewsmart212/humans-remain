@@ -27,7 +27,7 @@ import {nearbyChest,chestDock} from './station-access';
 export {nearbyChest} from './station-access';
 import {nearbyGate,nearbyGateAction,toggleGate,gateActionLabel} from './camp-gates';
 import {chestIsOpen,toggleChest} from './chest-animation';
-import {nearbyLootChest,openLootChest,lootChestName,lootChestOpened,lootChestRemaining} from './loot-chest';
+import {nearbyLootChest,openLootChest,lootChestName,lootChestAction,lootChestOpened,lootChestRemaining} from './loot-chest';
 import {campInteraction,performCampInteraction} from './studio-play';
 import {startHealthRecovery} from './survival-needs';
 import {nearPotatoPatch,potatoPatchAction} from './potato-farming';
@@ -100,7 +100,7 @@ export function playInteraction(world:World):PlayInteraction|null{
    target:{id:'headquarters',buildingId:'headquarters',x:headquarters.x,y:headquarters.y,label:'Headquarters',detail:restored?'Camp upgrades':'Repair to establish camp'},perform:()=>openHeadquarters(world)});
  }
  const furnace=nearbyFurnace(world);
- const rareCache=nearbyLootChest(world);if(rareCache){const opened=lootChestOpened(world,rareCache.id),remaining=lootChestRemaining(world,rareCache.id);add({key:'rare-chest:'+rareCache.id,label:opened?'View loot':'Open loot chest',shortLabel:opened?'LOOT':'OPEN',icon:'chest',disabled:false,target:{id:'rare-chest:'+rareCache.id,x:rareCache.x,y:rareCache.y,label:lootChestName(rareCache.id),detail:opened?(remaining?remaining+' supplies':'Empty'):undefined},perform:()=>openLootChest(world,rareCache.id)});}
+ const rareCache=nearbyLootChest(world);if(rareCache){const opened=lootChestOpened(world,rareCache.id),remaining=lootChestRemaining(world,rareCache.id);add({key:'rare-chest:'+rareCache.id,...lootChestAction(rareCache.id,opened),icon:'chest',disabled:false,target:{id:'rare-chest:'+rareCache.id,x:rareCache.x,y:rareCache.y,label:lootChestName(rareCache.id),detail:opened?(remaining?remaining+' supplies':'Empty'):undefined},perform:()=>openLootChest(world,rareCache.id)});}
  const gatePoint=nearbyGateAction(world);
  if(gatePoint){
   const gate=gatePoint.placement,action=gateActionLabel(world,gate.id),mine=gate.assetId===IRON_MINE_DOOR_ID;
