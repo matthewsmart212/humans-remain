@@ -1,5 +1,4 @@
 import type {WorldAsset} from './world-assets';
-import type {Placement} from './world-layout';
 
 export const FENCE_SHEET='/survival/smallholding-v1/fence.webp';
 export const FENCE_SHEET_SIZE=[1506,530];
@@ -33,32 +32,3 @@ function fenceAssets():WorldAsset[]{
 }
 
 export const SMALLHOLDING_FENCE_ASSETS=fenceAssets();
-
-export function smallholdingFences(origin:{x:number;y:number}):Placement[]{
-  const items:Placement[]=[];
-  function place(panel:Panel,id:string,x:number,y:number,dx:number,dy:number){
-    items.push({
-      assetId:assetId(panel),id:'smallholding-fence-'+id,
-      x:origin.x+x+dx/2,y:origin.y+y+dy/2,flipX:dx*dy<0,
-      scale:1,solid:true,locked:true,roof:'auto',role:'prop',
-    });
-  }
-
-  // Follow the weathered boundary from each gatepost around to the back rail.
-  for(const side of [-1,1]){
-    let x=side*95,y=510;
-    const run=['front','corner','side','shoulder','front'] as const;
-    run.forEach((panel,i)=>{
-      const [width,rise]=spans[panel];
-      const dx=side*(i<2?width:-width),dy=-rise;
-      for(let bay=0;bay<2;bay++){
-        place(panel,(side<0?'west':'east')+'-'+i+'-'+bay,x,y,dx,dy);
-        x+=dx;
-        y+=dy;
-      }
-    });
-  }
-  place('back','back',-95,-572,190,0);
-  place('gate','gate',-95,510,-35,-116);
-  return items;
-}

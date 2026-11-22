@@ -11,7 +11,7 @@ try {
     'authored-world', 'imported-art', 'world-layout', 'outdoor-terrain', 'studio-play',
     'survival-engine', 'play-interaction', 'expedition-inventory', 'foraging', 'forage-art',
     'loot-chest', 'wooden-loot-art', 'chest-animation', 'scene-travel', 'run-save',
-    'smallholding-placement', 'player-map',
+    'smallholding-placement', 'smallholding-yard', 'placed-world-renderer', 'player-map',
   ];
   const outfile = join(temp, 'game.cjs');
   await build({
@@ -58,7 +58,15 @@ try {
   const yard = game.placementArtPoint(cottage, .337, 1.1);
   const openGate = layout.items.find(p => p.id === 'smallholding-fence-gate');
   assert(openGate, 'The ruined fence has a standing open gate');
-  const gate = {x: openGate.x + 112.5, y: openGate.y + 58};
+  const gate = game.yardPoint(cottage, 400, 630);
+  const rail = game.placementBodies(openGate)[0];
+  assert(game.worldBlocked(world, (rail.x + rail.ex) / 2, (rail.y + rail.ey) / 2), 'The gate leaf blocks its painted rail');
+  assert(!game.worldBlocked(world, gate.x, gate.y), 'The path between gateposts is open');
+  const view = {playing:true, follow:true, zoom:1};
+  const camera = game.editorCamera(393, 710, {...world, player:gate}, view, 1);
+  for (const p of layout.items.filter(p => p.assetId.startsWith('smallholding-yard-rail-'))) {
+    assert(p.x > camera.x && p.x < camera.x + 393 / camera.scale, 'The enclosure fits in portrait at the gate');
+  }
   // Cross the southeast opening in the camp stockade before following the outer road.
   followPath({x: 2870, y: 2700});
   followPath({x: gate.x, y: gate.y + 100});
@@ -117,6 +125,23 @@ try {
     'A continued expedition receives the same smallholding as a new run');
   assert(game.buildingInteriorExposed(cottage, restored.player), 'Continue preserves the indoor player position');
   for (const bed of beds) assert.equal(game.forageRemaining(restored, bed), 0, 'Picked plants stay picked on Continue');
+
+  // A v1 expedition may be saved inside the smaller cottage after gathering food.
+  const oldRun = JSON.parse(save);
+  const camp = oldRun.worlds.find(([scene]) => scene === 'camp')[1];
+  const oldCottage = {...cottage, scale:1};
+  camp.layout.items = camp.layout.items.filter(p => !siteIds.has(p.id));
+  camp.layout.items.push(oldCottage, {...chest, ...game.placementArtPoint(oldCottage, .606, .60)},
+    {...openGate, assetId:'smallholding-fence-gate'}, {...beds[0], x:cottage.x - 295});
+  camp.layout.smallholdingVersion = 1;
+  Object.assign(camp.player, game.placementArtPoint(oldCottage, .337, .69));
+  const continued = game.decodeRun(JSON.stringify(oldRun)).worlds.find(([scene]) => scene === 'camp')[1];
+  assert.equal(continued.layout.smallholdingVersion, 2);
+  assert.deepEqual(continued.layout.items.filter(p => siteIds.has(p.id)).map(p => p.id).sort(), [...siteIds].sort());
+  assert(game.insideBuilding(cottage, continued.player.x, continued.player.y));
+  assert(!game.worldBlocked(continued, continued.player.x, continued.player.y));
+  assert.equal(game.lootChestRemaining(continued, id), remaining);
+  for (const bed of beds) assert.equal(game.forageRemaining(continued, bed), 0);
 
   walk(doorway);
   walk(yard);

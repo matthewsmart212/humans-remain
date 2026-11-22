@@ -1,3 +1,4 @@
+import {yardPoint} from './smallholding-yard';
 import type {WorldAsset} from './world-assets';
 import type {Placement} from './world-layout';
 
@@ -7,23 +8,15 @@ export const smallholdingBed:WorldAsset={
  width:318,height:212,solid:false,allowTransparency:false,groundDetail:true,role:'prop',body:[],
 };
 
-/** Stable plant IDs keep individual harvests in the run's existing forage state. */
-export function smallholdingCrops(origin:{x:number;y:number}):Placement[]{
- const beds=[
-  {kind:'potato',x:-295,plants:[[-82,-55,.86],[46,-48,.76],[-18,7,.93],[64,64,.82]]},
-  {kind:'carrot',x:290,plants:[[-51,-53,.85],[79,-50,.90],[9,9,.82],[-77,65,.90],[62,62,.78]]},
- ] as const;
- const placements:Placement[]=[];
- for(const bed of beds){
-  const x=origin.x+bed.x,y=origin.y+223,id='smallholding-'+bed.kind;
-  placements.push({
-   id:id+'-bed',assetId:smallholdingBed.id,x,y,scale:1,layer:-6,flipX:bed.kind==='carrot',
-   locked:true,solid:false,roof:'auto',role:'prop',
-  });
-  bed.plants.forEach(([dx,dy,scale],i)=>placements.push({
-   id:id+'-'+(i+1),assetId:'art_forage_wild_'+bed.kind,x:x+dx,y:y+dy,scale,
-   flipX:i%2===1,locked:true,solid:false,roof:'auto',role:'prop',
-  }));
- }
- return placements;
+/** Keep the original harvest IDs so a picked vegetable stays picked on Continue. */
+export function smallholdingCrops(cottage:{x:number;y:number}):Placement[]{
+ const beds={
+  potato:[[600,440,1.04],[631,469,1.11],[550,484,1.12],[576,511,1.04]],
+  carrot:[[825,504,.98],[925,510,1.03],[866,535,.98],[816,553,1.03],[953,553,1.07],
+   [898,568,.93],[984,535,.92],[752,632,.74],[832,644,.65]],
+ };
+ return Object.entries(beds).flatMap(([kind,sockets])=>sockets.map(([u,v,scale],i):Placement=>({
+  id:'smallholding-'+kind+'-'+(i+1),assetId:'art_forage_wild_'+kind,...yardPoint(cottage,u,v),scale,
+  flipX:i%2===1,locked:true,solid:false,roof:'auto',role:'prop',
+ })));
 }

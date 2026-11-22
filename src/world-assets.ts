@@ -1,3 +1,4 @@
+import {SMALLHOLDING_YARD_ASSETS,YARD_IMAGE,YARD_IMAGE_SIZE} from './smallholding-yard';
 import {FENCE_SHEET,FENCE_SHEET_SIZE,SMALLHOLDING_FENCE_ASSETS} from './smallholding-fences';
 import {IRON_MINE_ENTRANCE_ID,IRON_MINE_ENTRANCE_IMAGE,IRON_MINE_ENTRANCE_SIZE,IRON_MINE_ENTRANCE_ANCHOR,IRON_MINE_ENTRANCE_COLLISION} from './iron-mine-entrance';
 import {configureSmallholdingCottage,SMALLHOLDING_COTTAGE_ID,COTTAGE_SIZE,COTTAGE_EXTERIOR,COTTAGE_INTERIOR} from './smallholding-cottage';
@@ -148,7 +149,8 @@ export const WORLD_ASSETS=assets.filter(a=>catalogueIds.has(a.id)||circularWallA
 WORLD_ASSETS.push(ironMineDoor);
 imageDimensions[ironMineDoor.image]=ironMineDoor.crop.slice(2);
 for(const a of WORLD_ASSETS)if(a.ground)imageDimensions[a.ground.image]=a.ground.size;
-WORLD_ASSETS.push(smallholdingBed,smallholdingPath);
+WORLD_ASSETS.push(smallholdingBed,smallholdingPath,...SMALLHOLDING_YARD_ASSETS);
+imageDimensions[YARD_IMAGE]=YARD_IMAGE_SIZE;
 imageDimensions[smallholdingPath.image]=smallholdingPath.crop.slice(2);
 imageDimensions[smallholdingBed.image]=smallholdingBed.crop.slice(2);
 WORLD_ASSETS.push(...SMALLHOLDING_FENCE_ASSETS);

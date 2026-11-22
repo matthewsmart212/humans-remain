@@ -1,4 +1,4 @@
-import {placeSoutheastSmallholding} from './smallholding-placement';
+import {placeSoutheastSmallholding,smallholdingReturnPoint} from './smallholding-placement';
 import {placeNorthwestIronMine} from './iron-mine-placement';
 import {placeNorthwestAbandonedCamp} from './abandoned-camp-placement';
 import {placeCampWorksites} from './camp-worksites-placement';
@@ -61,7 +61,7 @@ export function migrateSavedCampPerimeter(w:World,route:{sceneId:string;spawn:Sa
  const points=[w.player,next.spawn,...route.filter(r=>r?.sceneId===CAMP_SCENE_ID&&point(r.spawn)).map(r=>r.spawn)];
  const moves:{target:SavedPoint;position:SavedPoint}[]=[];
  for(const target of points){
-  const refit=headquartersRefitReturnPoint(w.layout,next,target);
+  const refit=headquartersRefitReturnPoint(w.layout,next,target)??smallholdingReturnPoint(w.layout,next,target);
   if(!refit&&!occupied(target))continue;
   const position=nearbyClearGround(refit||target,(x,y)=>layoutBlocked(next,x,y,19));
   // An unusually obstructed custom landing keeps the old snapshot until a
