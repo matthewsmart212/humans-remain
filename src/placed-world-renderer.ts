@@ -4,7 +4,7 @@ import {lootChestDrawables,drawLootChestGround} from './loot-chest-renderer';
 import {SURVEY_CACHE_ID,placedLootChestVisible} from './loot-chest';
 import {headquartersCutawayAmount,clipHeadquartersDoorway,drawHeadquartersExterior} from './headquarters-cutaway';
 import {portraitYardCamera} from './smallholding-yard';
-import {SMALLHOLDING_COTTAGE_ID} from './smallholding-cottage';
+import {SOUTHEAST_SMALLHOLDING,SMALLHOLDING_COTTAGE_ID} from './smallholding-cottage';
 import {HQ_SOUTH_INTERIOR} from './headquarters-south-art';
 import {headquartersRoofBottom,withinRoofApproach,headquartersRaidVisible} from './headquarters-roof';
 import {campBuildingArt} from './camp-restoration';
@@ -53,7 +53,7 @@ import {drawWoodenLootChest} from './wooden-loot-renderer';
 import {chestFrame,placedLootChestId} from './chest-animation';
 import {ASSET_BY_ID,assetImageKey,type WorldAsset} from './world-assets';
 import {placedAnimationFrame} from './step-on-animation';
-import {compareWorldDrawables,placementGeometryAsset,placementBounds,placementPoint,placementBodies,type Placement,type WorldLayout} from './world-layout';
+import {buildingInteriorExposed,compareWorldDrawables,placementGeometryAsset,placementBounds,placementPoint,placementBodies,type Placement,type WorldLayout} from './world-layout';
 import {timeOf,type World} from './survival-engine';
 import {MAP_WIDTH,MAP_HEIGHT} from './factory-map';
 import {drawWorker} from './worker-renderer';
@@ -96,10 +96,17 @@ type WorldDraw={roof?:boolean;layer?:number;y:number;draw:()=>void;paintingBase?
 export function placedDrawables(ctx:CanvasRenderingContext2D,imgs:Record<string,HTMLImageElement>,w:World,editor=false,viewport?:FoliageViewport,hideFoliage=false,contacts?:CampGroundContact[],outline?:ReturnType<typeof playerOutlinePass>){
  const out:WorldDraw[]=[];if(!w.layout)return out;
  const circular:CircularWallDraw[]=[];
- for(const p of visiblePlacements(w.layout,viewport)){const a=ASSET_BY_ID.get(p.assetId);if(!a)continue;if(!editor&&['animal','enemySpawn'].includes(p.role))continue;if(!editor&&['scrap','fuel','pallets'].includes(p.role)&&!w.loot.some(l=>l.placementId===p.id))continue;if(!editor&&p.role==='crate'&&!w.breakables.some(b=>b.placementId===p.id&&b.hp>0))continue;
+ const placements=visiblePlacements(w.layout,viewport);
+ const openCottage=placements.find(p=>p.id===SOUTHEAST_SMALLHOLDING&&buildingInteriorExposed(p,w.player));
+ for(const p of placements){const a=ASSET_BY_ID.get(p.assetId);if(!a)continue;if(!editor&&['animal','enemySpawn'].includes(p.role))continue;if(!editor&&['scrap','fuel','pallets'].includes(p.role)&&!w.loot.some(l=>l.placementId===p.id))continue;if(!editor&&p.role==='crate'&&!w.breakables.some(b=>b.placementId===p.id&&b.hp>0))continue;
   if(hideFoliage&&isFoliageAsset(a)||a.foliage&&!foliageVisible(p,viewport))continue;
   if(a.id===WOODEN_LOOT_ID&&!placedLootChestVisible(w,p))continue;
+  // Keep the rear boundary on the far side of the cutaway. The floor still
+  // sorts below the survivor and furnishings, and front rails keep their depth.
+  const behindRoom=openCottage&&p.y<openCottage.y&&
+   (p.assetId.startsWith('smallholding-yard-rail-')||p.id==='smallholding-rear-birch');
   const add=(d:typeof out[number],ground=false)=>{
+   if(behindRoom)d.layer=Math.min(d.layer??p.layer??0,(openCottage.layer??0)-1);
    out.push(d);
    if(!ground&&outline?.placements.has(p)){
     outline.covers.push(d);if(a.foliage)outline.leaves.add(d);

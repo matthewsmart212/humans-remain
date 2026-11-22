@@ -2,6 +2,7 @@ import type {AssetCollision,CollisionPoint} from './asset-collision';
 import type {CatalogueEntry} from './catalogue-model';
 import type {WorldAsset} from './world-assets';
 
+export const SOUTHEAST_SMALLHOLDING='southeast-smallholding-cottage';
 export const SMALLHOLDING_COTTAGE_ID='art_smallholding_cottage';
 const directory='/survival/smallholding-v1';
 export const COTTAGE_EXTERIOR=directory+'/cottage.webp';
