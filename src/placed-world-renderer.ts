@@ -165,11 +165,19 @@ export function placedDrawables(ctx:CanvasRenderingContext2D,imgs:Record<string,
    if(viewport&&!transformed&&(b.x+b.width<viewport.x||b.x>viewport.x+viewport.width||b.y+b.height<viewport.y||b.y>viewport.y+viewport.height))continue;
    // Sort the complete painted bay at its ground line in the survivor's column.
    // Rotated and mirrored wall placements use the same world-space comparison.
-   const ground=transformed?curve.map(([x,y])=>{
+   // A resized garden carries framed foreground rails. Their collision feet
+   // follow the painted frame, which can differ from the asset's native size.
+   const framedRail=p.frame&&a.id.startsWith('smallholding-yard-rail-')
+    ?placementBodies(p).find(body=>body.shape==='segment'):undefined;
+   const ground=framedRail?.shape==='segment'?[
+    [(framedRail.x-p.x)/p.scale,(framedRail.y-p.y)/p.scale],
+    [(framedRail.ex-p.x)/p.scale,(framedRail.ey-p.y)/p.scale],
+   ]:transformed?curve.map(([x,y])=>{
     const [wx,wy]=placementPoint(p,p.x+x*p.scale,p.y+y*p.scale);
     return [(wx-p.x)/p.scale,(wy-p.y)/p.scale];
    }):curve;
-   const depth=circularWallDepth(ground,{x:(w.player.x-p.x)/p.scale,y:(w.player.y-p.y)/p.scale},a.perimeterRise??(a.perimeterCurve?180:235));
+   const rise=(a.perimeterRise??(a.perimeterCurve?180:235))*(framedRail?p.frame!.height/a.height:1);
+   const depth=circularWallDepth(ground,{x:(w.player.x-p.x)/p.scale,y:(w.player.y-p.y)/p.scale},rise);
    const distant=a.perimeterCurve?0:(ground[0][1]+ground[1][1])*.5;
    // These two stockade bays were sent to the background to clear the old HQ.
    // The hall now sorts at its back wall, so their original feet can sort with

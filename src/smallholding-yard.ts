@@ -41,9 +41,44 @@ const props=art.props.map(({id,crop,anchor,foot:[u,v]})=>{
 });
 export const SMALLHOLDING_YARD_ASSETS=[yard,...rails.map(rail=>rail.asset),...props.map(prop=>prop.asset)];
 
+/** Register the foreground and its blockers to the painting, including editor
+ * transforms. Each sprite mirrors around its own centre, not its foot anchor. */
+export function smallholdingFencePlacements(ground:Placement):Placement[]{
+ // Keep this transform independent of world-layout's runtime imports: this
+ // module builds the assets that world-layout itself uses during startup.
+ const frame=ground.frame??{width:yard.width,height:yard.height,anchor:[cottageAnchor[0]/art.ground[2],cottageAnchor[1]/art.ground[3]]};
+ const sx=frame.width/yard.width,sy=frame.height/yard.height;
+ const resized=Math.abs(sx-1)>1e-9||Math.abs(sy-1)>1e-9;
+ const rotation=(ground.rotation||0)%360,angle=rotation*Math.PI/180,c=Math.cos(angle),s=Math.sin(angle);
+ return rails.map(({asset},i)=>{
+  const {crop,offset,feet}=art.panels[i];
+  const width=asset.width*sx,height=asset.height*sy;
+  const anchor:[number,number]=[asset.anchor[0]/crop[2],asset.anchor[1]/crop[3]];
+  const u=(offset[0]+crop[2]/2)/art.ground[2],v=(offset[1]+crop[3]/2)/art.ground[3];
+  const gx=((ground.flipX?1-u:u)-frame.anchor[0])*frame.width*ground.scale;
+  const gy=((ground.flipY?1-v:v)-frame.anchor[1])*frame.height*ground.scale;
+  const centre={x:ground.x+c*gx-s*gy,y:ground.y+s*gx+c*gy};
+  const dx=(.5-anchor[0])*width*ground.scale,dy=(.5-anchor[1])*height*ground.scale;
+  return {
+   id:i===0?'smallholding-fence-gate':asset.id,assetId:asset.id,
+   x:centre.x-c*dx+s*dy,y:centre.y-s*dx-c*dy,scale:ground.scale,
+   solid:true,role:'prop',locked:true,roof:'auto',
+   ...(rotation?{rotation}:{}),...(ground.flipX?{flipX:true}:{}),...(ground.flipY?{flipY:true}:{}),
+   ...(resized?{
+    frame:{sourceAssetId:asset.id,width,height,anchor},
+    // Normalized feet follow nonuniform frames; the asset's unscaled segments
+    // cannot. Keep the narrowest panels within the editor's line-width limit.
+    collision:{lineWidth:Math.max(.002,Math.min(.1,14*Math.min(sx,sy)/width)),paths:[{
+     closed:false,points:feet.map(([x,y]):[number,number]=>[(x-offset[0])/crop[2],(y-offset[1])/crop[3]]),
+    }]},
+   }:{}),
+  };
+ });
+}
+
 export function smallholdingYard(cottage:Point):Placement[]{
  const place=(id:string,assetId:string,position:Point,solid:boolean,scale=1):Placement=>({
-  id,assetId,...position,solid,scale,role:'prop',locked:true,roof:'auto',
+  id,assetId,x:position.x,y:position.y,solid,scale,role:'prop',locked:true,roof:'auto',
  });
  return [
   {...place(yard.id,yard.id,cottage,false),layer:-7},

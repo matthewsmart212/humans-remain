@@ -2,7 +2,7 @@ import {foliageEnvelope} from './foliage-composition';
 import {MAX_LAYOUT_ITEMS} from './layout-limits';
 import {SMALLHOLDING_COTTAGE_ID,SOUTHEAST_SMALLHOLDING} from './smallholding-cottage';
 import {smallholdingCrops} from './smallholding-crops';
-import {smallholdingYard,yardPoint} from './smallholding-yard';
+import {smallholdingFencePlacements,smallholdingYard,yardPoint} from './smallholding-yard';
 import {usesPaintedHomeTerrain} from './terrain-art';
 import {WOODEN_LOOT_ID} from './wooden-loot-art';
 import {boundCampPoint} from './world-bounds';
@@ -33,26 +33,36 @@ function repairGarden(layout:WorldLayout):WorldLayout{
  if(!cottage)return layout;
  const yard=smallholdingYard({x:cottage.x,y:cottage.y});
  const fence=(p:Placement)=>p.assetId.startsWith('smallholding-yard-rail-');
+ const byId=new Map(layout.items.map(p=>[p.id,p]));
+ const savedGround=byId.get('smallholding-yard');
+ // Preserve the visible garden's local placement. The rails are foreground
+ // copies of pixels already in that painting, so they must share its exact
+ // transform rather than independently following the cottage's anchor.
+ const ground=savedGround&&Math.hypot(savedGround.x-cottage.x,savedGround.y-cottage.y)<=900
+  ?savedGround:yard[0];
  // The ground painting includes the fence, but only the separate foreground
  // rails have collision. Repair the enclosure even in already-upgraded saves.
- const required=[...yard.filter(p=>p.id==='smallholding-yard'||fence(p)),
+ const required=[ground,...smallholdingFencePlacements(ground),
   ...smallholdingCrops(cottage),cottageChest(cottage)];
  const requiredIds=new Set(required.map(p=>p.id));
- const byId=new Map(layout.items.map(p=>[p.id,p]));
  const retired=new Set(layout.items.filter(p=>oldSitePart.test(p.id)&&!requiredIds.has(p.id)).map(p=>p.id));
  const missing=required.filter(p=>!byId.has(p.id));
  if(layout.items.length-retired.size+missing.length>MAX_LAYOUT_ITEMS)return layout;
  // Bring detached dressing along too, without recreating optional props or
- // trees removed in the editor. Nearby edits and stable forage/loot IDs stay.
+ // trees removed in the editor. Their nearby edits and forage/loot IDs stay.
  const existingDressing=yard.filter(p=>!requiredIds.has(p.id)&&byId.has(p.id));
  const corrections=new Map<string,Placement>();
  for(const p of [...required,...existingDressing]){
   const old=byId.get(p.id);
   if(!old)continue;
-  if(Math.hypot(old.x-p.x,old.y-p.y)>900||fence(p)&&old.assetId!==p.assetId){
+  if(fence(p)){
+   const aligned=old.assetId===p.assetId&&Math.hypot(old.x-p.x,old.y-p.y)<1e-6&&Math.abs(old.scale-p.scale)<1e-9&&
+    (old.rotation||0)===(p.rotation||0)&&!!old.flipX===!!p.flipX&&!!old.flipY===!!p.flipY&&
+    old.solid&&old.role===p.role&&!old.footprint&&JSON.stringify(old.frame)===JSON.stringify(p.frame)&&
+    JSON.stringify(old.collision)===JSON.stringify(p.collision);
+   if(!aligned)corrections.set(p.id,{...p,locked:old.locked??p.locked,...(old.layer!==undefined?{layer:old.layer}:{})});
+  }else if(Math.hypot(old.x-p.x,old.y-p.y)>900){
    corrections.set(p.id,p);
-  }else if(fence(p)&&(!old.solid||old.collision?.paths.length===0)){
-   corrections.set(p.id,{...old,solid:true,...(old.collision?.paths.length===0?{collision:undefined}:{})});
   }
  }
  if(!missing.length&&!corrections.size&&!retired.size)return layout;

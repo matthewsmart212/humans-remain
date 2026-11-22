@@ -111,7 +111,9 @@ try {
   }
   const nearbyEdit = {...rails[4], x:rails[4].x+12, y:rails[4].y-8, locked:false};
   const edited = {...layout, items:layout.items.map(p => p.id === nearbyEdit.id ? nearbyEdit : p)};
-  assert.equal(game.placeSoutheastSmallholding(edited), edited, 'Nearby intentional rail adjustments are retained');
+  const registered = game.placeSoutheastSmallholding(edited);
+  checkFences(registered, 'Nearby misaligned rail');
+  assert.equal(registered.items.find(p => p.id === nearbyEdit.id).locked, false, 'Keep editor lock state while aligning the painted fence');
 
   const missingRail = rails[3], disabledRail = rails[8], emptyRail = rails[12];
   const incomplete = {...joined, items:joined.items.filter(p => p.id !== missingRail.id && p.id !== 'smallholding-yard').map(p =>
