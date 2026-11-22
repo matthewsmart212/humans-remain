@@ -15,8 +15,14 @@ try {
   ];
   const outfile = join(temp, 'game.cjs');
   await build({
-    stdin: {contents: modules.map(name => `export * from './src/${name}'`).join('\n'), resolveDir: process.cwd()},
+    stdin: {contents: modules.map(name => `export * from './src/${name}'`).join('\n') +
+      "\nexport {validateSavedWorld} from './native/game-world';\nexport {handlePublishedWorld} from './server/world-layout';", resolveDir: process.cwd()},
     outfile, bundle: true, format: 'cjs', platform: 'node',
+    plugins: [{name:'smallholding-native-storage', setup(builder) {
+      builder.onResolve({filter:/^@react-native-async-storage\/async-storage$/}, args => ({path:args.path, namespace:'storage-stub'}));
+      builder.onLoad({filter:/.*/, namespace:'storage-stub'}, () => ({contents:
+        "export default {getItem(){throw Error('Unexpected storage read')},setItem(){throw Error('Unexpected storage write')}};", loader:'js'}));
+    }}],
   });
   const game = createRequire(import.meta.url)(outfile);
   const snapshot = JSON.parse(readFileSync('native/assets/world-snapshot.json', 'utf8'));
@@ -48,6 +54,101 @@ try {
   const repaired = game.placeSoutheastSmallholding(partial);
   assert.deepEqual(repaired.items.filter(p => missingIds.has(p.id)), [...beds, chest]);
   assert.equal(game.placeSoutheastSmallholding(repaired), repaired);
+
+  const distance = (a, b) => Math.hypot(a.x - b.x, a.y - b.y);
+  const toOldSite = p => ({...p, x:previousSite.x+(p.x-cottage.x), y:previousSite.y+(p.y-cottage.y)});
+  const rails = layout.items.filter(p => p.assetId.startsWith('smallholding-yard-rail-'));
+  assert.equal(rails.length, 18, 'All painted fence panels have a physical placement');
+  const railIds = new Set(rails.map(p => p.id));
+  const gatePoint = game.yardPoint(cottage, 400, 630);
+  const railSamples = p => {
+    const [body] = game.placementBodies(p);
+    assert.equal(body?.shape, 'segment', 'Fence collision follows its painted post feet: ' + p.id);
+    return [0, .25, .5, .75, 1].map(t => ({x:body.x+(body.ex-body.x)*t, y:body.y+(body.ey-body.y)*t}));
+  };
+  function checkFences(fixed, label) {
+    const fencedWorld = {...world, layout:fixed};
+    for (const expected of rails) {
+      const actual = fixed.items.find(p => p.id === expected.id);
+      assert(actual && distance(actual, expected) < 1e-6, label + ': attached ' + expected.id);
+      assert.equal(actual.solid, true, label + ': solid ' + expected.id);
+      for (const point of railSamples(expected)) {
+        const hits = game.layoutColliderHits(fixed, point.x, point.y, 19);
+        assert(Array.isArray(hits) && hits.some(hit => hit.id.startsWith(expected.id + ':')),
+          label + ': the actual rail blocks its post/quarter/midpoint');
+        assert(game.worldBlocked(fencedWorld, point.x, point.y), label + ': gameplay blocks ' + expected.id);
+      }
+      const old = toOldSite(expected);
+      const oldHits = game.layoutColliderHits(fixed, old.x, old.y, 19);
+      assert(Array.isArray(oldHits) && oldHits.every(hit => !railIds.has(hit.id.split(':')[0])),
+        label + ': no abandoned collision ring near camp');
+    }
+    assert(!game.worldBlocked(fencedWorld, gatePoint.x, gatePoint.y), label + ': entrance remains open');
+    assert.equal(game.placeSoutheastSmallholding(fixed), fixed, label + ': repair is idempotent');
+  }
+  checkFences(layout, 'Bundled world');
+
+  // Reproduce the broken v3 save: its ground painting moved southeast, but the
+  // transparent fence copies and their colliders stayed near the original camp.
+  const removedOptional = new Set(['smallholding-watering-can', 'smallholding-gate-birch']);
+  const detachedIds = new Set([...railIds, 'smallholding-kindling', 'smallholding-rear-birch']);
+  const customFence = {...toOldSite(rails[4]), id:'owner-custom-fence', locked:false};
+  const detached = {...layout, items:[...layout.items.filter(p => !removedOptional.has(p.id))
+    .map(p => detachedIds.has(p.id) ? toOldSite(p) : p), customFence]};
+  const detachedBefore = JSON.stringify(detached);
+  // Prime the old collision cache before migration, as an already-open layout can.
+  const oldRail = toOldSite(rails[0]);
+  assert(game.layoutColliderHits(detached, oldRail.x, oldRail.y, 19).some(hit => hit.id.startsWith(rails[0].id + ':')));
+  const joined = game.placeSoutheastSmallholding(detached);
+  checkFences(joined, 'Detached v3 world');
+  assert.equal(JSON.stringify(detached), detachedBefore, 'Repair leaves the input snapshot unchanged');
+  for (const id of removedOptional) assert(!joined.items.some(p => p.id === id), 'Do not recreate deliberately removed ' + id);
+  for (const id of ['smallholding-kindling', 'smallholding-rear-birch']) {
+    assert.deepEqual(joined.items.find(p => p.id === id), layout.items.find(p => p.id === id), 'Reattach existing ' + id);
+  }
+  for (const p of detached.items.filter(p => !detachedIds.has(p.id))) {
+    assert.equal(joined.items.find(item => item.id === p.id), p, 'Preserve unrelated/editor placement ' + p.id);
+  }
+  const nearbyEdit = {...rails[4], x:rails[4].x+12, y:rails[4].y-8, locked:false};
+  const edited = {...layout, items:layout.items.map(p => p.id === nearbyEdit.id ? nearbyEdit : p)};
+  assert.equal(game.placeSoutheastSmallholding(edited), edited, 'Nearby intentional rail adjustments are retained');
+
+  const missingRail = rails[3], disabledRail = rails[8], emptyRail = rails[12];
+  const incomplete = {...joined, items:joined.items.filter(p => p.id !== missingRail.id && p.id !== 'smallholding-yard').map(p =>
+    p.id === disabledRail.id ? {...p, solid:false} : p.id === emptyRail.id ? {...p, collision:{paths:[], lineWidth:.012}} : p)};
+  const completed = game.placeSoutheastSmallholding(incomplete);
+  checkFences(completed, 'Missing/disabled v3 rails');
+  assert.equal(completed.items.filter(p => railIds.has(p.id)).length, 18, 'Missing rails return exactly once');
+  assert.deepEqual(completed.items.find(p => p.id === 'smallholding-yard'), layout.items.find(p => p.id === 'smallholding-yard'),
+    'A missing ground painting returns with the enclosure');
+  const legacyFence = {...toOldSite(rails[4]), id:'smallholding-fence-west-0-0', assetId:'smallholding-fence-front'};
+  const legacyPath = {...legacyFence, id:'smallholding-footpath', assetId:'smallholding-footpath', solid:false};
+  const withLegacy = {...completed, items:[...completed.items, legacyFence, legacyPath]};
+  const retired = game.placeSoutheastSmallholding(withLegacy);
+  assert(!retired.items.some(p => p.id === legacyFence.id || p.id === legacyPath.id), 'Retire seeded v1 fence/path leftovers');
+  assert.equal(retired.items.find(p => p.id === customFence.id), customFence, 'Retirement preserves owner-created fences');
+  checkFences(retired, 'Retired legacy enclosure');
+
+  const native = game.validateSavedWorld({...snapshot, layout:detached}, 'Stale cached published world');
+  checkFences(native.layout, 'Native cached world');
+  assert.equal(native.source, 'Stale cached published world');
+  // Exercise the public Worker read path with a newer, detached D1 layout. No
+  // database writes, live requests or owner editor actions are involved.
+  const publishedSource = {...detached, updatedAt:new Date(Date.parse(snapshot.layout.updatedAt)+1000).toISOString()};
+  const databaseReads = [];
+  const readOnlyDB = {prepare(sql) {
+    assert.match(sql, /^SELECT /, 'Published-world repair must remain read-only');
+    databaseReads.push(sql);
+    return {all:async () => ({results:sql.includes('FROM world_layout') ? [{applied_json:JSON.stringify(publishedSource)}] : []}),
+      run() {assert.fail('A published-world read must not write to D1');}};
+  }};
+  const response = await game.handlePublishedWorld(new Request('https://game.example/api/published-world'), readOnlyDB);
+  assert.equal(response.status, 200);
+  const published = await response.json();
+  checkFences(published.layout, 'Published D1 world');
+  assert.equal(published.updatedAt, publishedSource.updatedAt, 'Repair preserves the owner publication timestamp');
+  assert(databaseReads.some(sql => sql.includes('FROM world_layout')), 'The published D1 layout was exercised');
+  assert.deepEqual(published.layout.items.find(p => p.id === customFence.id), customFence);
   const gardenRabbits = w => w.animals.filter(a => a.rabbit && a.wildlife?.group === 'smallholding-rabbits');
   assert.equal(gardenRabbits(world).length, 3);
   for (const rabbit of gardenRabbits(world)) {
@@ -55,7 +156,6 @@ try {
     assert(!game.worldBlocked(world, rabbit.x, rabbit.y, 20));
   }
 
-  const distance = (a, b) => Math.hypot(a.x - b.x, a.y - b.y);
   function walk(point) {
     for (let i = 0; i < 600 && distance(world.player, point) > 1; i++) {
       const dx = point.x - world.player.x, dy = point.y - world.player.y;
@@ -148,6 +248,32 @@ try {
   const save = game.encodeRun(new game.SceneTravel(world, resources));
   const restored = game.decodeRun(save).worlds.find(([scene]) => scene === 'camp')[1];
   assert.equal(game.lootChestRemaining(restored, id), remaining);
+  // Continue an already harvested/looted expedition whose fence copies were
+  // detached or absent. A survivor and a mine return point on restored rails
+  // must move to nearby clear ground, without resetting the run's inventory.
+  for (const [label, brokenLayout] of [['Detached', detached], ['Missing/disabled', incomplete]]) {
+    const brokenSave = JSON.parse(save);
+    const savedCamp = brokenSave.worlds.find(([scene]) => scene === 'camp')[1];
+    savedCamp.layout = brokenLayout;
+    const occupied = railSamples(missingRail)[2], returnPoint = railSamples(disabledRail)[2];
+    Object.assign(savedCamp.player, occupied);
+    brokenSave.route = [{sceneId:'camp', spawn:{...returnPoint, direction:'up'}}];
+    const repairedSave = game.decodeRun(JSON.stringify(brokenSave));
+    const continuedCamp = repairedSave.worlds.find(([scene]) => scene === 'camp')[1];
+    checkFences(continuedCamp.layout, label + ' Continue');
+    assert(!game.worldBlocked(continuedCamp, continuedCamp.player.x, continuedCamp.player.y), label + ': survivor remains on clear ground');
+    assert(distance(continuedCamp.player, occupied) > 19 && distance(continuedCamp.player, occupied) < 100,
+      label + ': move the survivor just clear of the restored fence');
+    const safeReturn = repairedSave.route[0].spawn;
+    assert(!game.worldBlocked(continuedCamp, safeReturn.x, safeReturn.y), label + ': return point remains clear');
+    assert(distance(safeReturn, returnPoint) > 19 && distance(safeReturn, returnPoint) < 100,
+      label + ': move the return point just clear of the restored fence');
+    assert.deepEqual(continuedCamp.bag, restored.bag, label + ': keep the backpack');
+    assert.deepEqual(continuedCamp.gear, restored.gear, label + ': keep carried tools');
+    assert.equal(game.lootChestRemaining(continuedCamp, id), remaining, label + ': keep chest loot state');
+    for (const bed of beds) assert.equal(game.forageRemaining(continuedCamp, bed), 0, label + ': picked crops stay picked');
+    for (const removed of removedOptional) assert(!continuedCamp.layout.items.some(p => p.id === removed), label + ': optional removal survives');
+  }
   const oldSave = JSON.parse(save);
   const oldCamp = oldSave.worlds.find(([scene]) => scene === 'camp')[1];
   const siteIds = new Set(layout.items.filter(p => p.id.includes('smallholding')).map(p => p.id));
@@ -168,7 +294,6 @@ try {
   // crops and a watering can removed in the editor.
   const v2Run = JSON.parse(save);
   const v2Camp = v2Run.worlds.find(([scene]) => scene === 'camp')[1];
-  const toOldSite = p => ({...p, x:previousSite.x+(p.x-cottage.x), y:previousSite.y+(p.y-cottage.y)});
   v2Camp.layout.smallholdingVersion = 2;
   v2Camp.layout.items = v2Camp.layout.items.filter(p => p.id !== 'smallholding-watering-can').map(p => {
     if (!siteIds.has(p.id)) return p;
@@ -212,7 +337,7 @@ try {
   walk(doorway);
   walk(yard);
   assert(!game.buildingInteriorExposed(cottage, world.player), 'Walking out restores the roof');
-  console.log(`PASS: walked from camp to the southeast cottage, picked ${beds.length} vegetables, entered and exited, collected chest loot and continued with saved state.`);
+  console.log(`PASS: restored all 18 smallholding rails in detached, missing and disabled layouts across web, native, published reads and Continue; checked fence samples, open entrance, safe landings and retained edits/loot. Walked from camp, picked ${beds.length} vegetables, entered/exited and continued with saved state.`);
 } finally {
   rmSync(temp, {recursive: true, force: true});
 }

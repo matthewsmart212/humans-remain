@@ -47,6 +47,8 @@ jobs:
         run: node scripts/check-interior-selection.mjs
       - name: Test server-side bundled world publication
         run: node scripts/check-world-bundle-publishing.mjs
+      - name: Check smallholding fences and saved-world repairs
+        run: node scripts/check-smallholding.mjs
       - name: Test co-op room protocol and hibernation
         run: node scripts/check-coop-room.mjs
       - name: Test all Hunter walking frames and carried tools

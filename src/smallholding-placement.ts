@@ -31,17 +31,34 @@ function cottageChest(cottage:Placement):Placement{
 function repairGarden(layout:WorldLayout):WorldLayout{
  const cottage=layout.items.find(p=>p.id===SOUTHEAST_SMALLHOLDING);
  if(!cottage)return layout;
- const required=[...smallholdingCrops(cottage),cottageChest(cottage)];
+ const yard=smallholdingYard({x:cottage.x,y:cottage.y});
+ const fence=(p:Placement)=>p.assetId.startsWith('smallholding-yard-rail-');
+ // The ground painting includes the fence, but only the separate foreground
+ // rails have collision. Repair the enclosure even in already-upgraded saves.
+ const required=[...yard.filter(p=>p.id==='smallholding-yard'||fence(p)),
+  ...smallholdingCrops(cottage),cottageChest(cottage)];
+ const requiredIds=new Set(required.map(p=>p.id));
  const byId=new Map(layout.items.map(p=>[p.id,p]));
+ const retired=new Set(layout.items.filter(p=>oldSitePart.test(p.id)&&!requiredIds.has(p.id)).map(p=>p.id));
  const missing=required.filter(p=>!byId.has(p.id));
- if(layout.items.length+missing.length>MAX_LAYOUT_ITEMS)return layout;
- // Correct stale positions from the previous site while keeping stable forage and loot IDs.
- const corrections=new Map(required.filter(p=>{
+ if(layout.items.length-retired.size+missing.length>MAX_LAYOUT_ITEMS)return layout;
+ // Bring detached dressing along too, without recreating optional props or
+ // trees removed in the editor. Nearby edits and stable forage/loot IDs stay.
+ const existingDressing=yard.filter(p=>!requiredIds.has(p.id)&&byId.has(p.id));
+ const corrections=new Map<string,Placement>();
+ for(const p of [...required,...existingDressing]){
   const old=byId.get(p.id);
-  return old&&Math.hypot(old.x-p.x,old.y-p.y)>900;
- }).map(p=>[p.id,p]));
- if(!missing.length&&!corrections.size)return layout;
- return {...layout,items:[...layout.items.map(p=>corrections.get(p.id)??p),...missing]};
+  if(!old)continue;
+  if(Math.hypot(old.x-p.x,old.y-p.y)>900||fence(p)&&old.assetId!==p.assetId){
+   corrections.set(p.id,p);
+  }else if(fence(p)&&(!old.solid||old.collision?.paths.length===0)){
+   corrections.set(p.id,{...old,solid:true,...(old.collision?.paths.length===0?{collision:undefined}:{})});
+  }
+ }
+ if(!missing.length&&!corrections.size&&!retired.size)return layout;
+ // A fresh layout also rebuilds the collision/navigation caches: the old
+ // empty ring must not leave invisible blockers behind nearer the camp.
+ return {...layout,items:[...layout.items.filter(p=>!retired.has(p.id)).map(p=>corrections.get(p.id)??p),...missing]};
 }
 
 export function placeSoutheastSmallholding(layout:WorldLayout):WorldLayout{
