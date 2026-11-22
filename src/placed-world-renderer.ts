@@ -3,6 +3,7 @@ import {drawBuildingCondition} from './building-condition-renderer';
 import {lootChestDrawables,drawLootChestGround} from './loot-chest-renderer';
 import {SURVEY_CACHE_ID,placedLootChestVisible} from './loot-chest';
 import {headquartersCutawayAmount,clipHeadquartersDoorway,drawHeadquartersExterior} from './headquarters-cutaway';
+import {portraitYardCamera} from './smallholding-yard';
 import {SMALLHOLDING_COTTAGE_ID} from './smallholding-cottage';
 import {HQ_SOUTH_INTERIOR} from './headquarters-south-art';
 import {headquartersRoofBottom,withinRoofApproach,headquartersRaidVisible} from './headquarters-roof';
@@ -264,9 +265,13 @@ function rotatePlacement(ctx:CanvasRenderingContext2D,p:Placement){ctx.translate
 export type EditorView={x:number;y:number;zoom:number;follow:boolean;grid:boolean;collision:boolean;selected:string|null;ghost:Placement|null;placingSpawn:boolean;playing?:boolean;fullZoom?:boolean;hideFoliage?:boolean};
 export function editorCamera(width:number,height:number,w:World,view:EditorView,pixelRatio=Math.min(2,globalThis.devicePixelRatio||1),now=menuClock()){
  const lw=width/pixelRatio,lh=height/pixelRatio;
- const scale=Math.max(width/1800,height/900)*(view.playing?clampPlayZoom(view.zoom,view.fullZoom?FULL_PLAY_ZOOM:MIN_PLAY_ZOOM):view.zoom);
+ const zoom=view.playing?clampPlayZoom(view.zoom,view.fullZoom?FULL_PLAY_ZOOM:MIN_PLAY_ZOOM):view.zoom;
+ const baseScale=Math.max(width/1800,height/900)*zoom;
+ const yard=width<height&&view.playing&&view.follow&&!w.scene&&w.layout
+  ?portraitYardCamera(w.layout,w.player,width,baseScale,zoom):undefined;
+ const scale=yard?.scale??baseScale;
  const vw=width/scale,vh=height/scale;
- let x=view.follow?w.player.x-vw/2:view.x-vw/2,y=view.follow?w.player.y-vh*.53:view.y-vh/2;
+ let x=view.follow?(yard?.focusX??w.player.x)-vw/2:view.x-vw/2,y=view.follow?w.player.y-vh*.53:view.y-vh/2;
  // Clamp the ordinary camera first. Menu framing may reveal the map's faded
  // edge behind the panel so the player is still visible at world boundaries.
  if(view.follow){const b=worldBounds(w);x=vw>b.width?b.left+(b.width-vw)/2:Math.max(b.left,Math.min(b.right-vw,x));y=vh>b.height?b.top+(b.height-vh)/2:Math.max(b.top,Math.min(b.bottom-vh,y))}

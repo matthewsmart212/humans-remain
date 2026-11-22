@@ -230,3 +230,5 @@ public/survival/expedition-menu-v2/loading-panel.webp -filter -diff -merge
 /public/survival/iron-mine-v1/*.webp -filter -diff -merge -text
 /public/survival/iron-mine-v1/chamber-masks.png -filter -diff -merge -text
 /public/survival/smallholding-v1/*.webp -filter -diff -merge -text
+/public/survival/smallholding-v2/*.webp -filter -diff -merge -text
+/docs/qa/smallholding-v2/*.webp -filter -diff -merge -text

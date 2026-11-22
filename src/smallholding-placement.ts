@@ -2,60 +2,54 @@ import {foliageEnvelope} from './foliage-composition';
 import {MAX_LAYOUT_ITEMS} from './layout-limits';
 import {SMALLHOLDING_COTTAGE_ID} from './smallholding-cottage';
 import {smallholdingCrops} from './smallholding-crops';
-import {smallholdingFences} from './smallholding-fences';
-import {smallholdingPath} from './smallholding-path';
+import {smallholdingYard,yardPoint} from './smallholding-yard';
 import {usesPaintedHomeTerrain} from './terrain-art';
 import {WOODEN_LOOT_ID} from './wooden-loot-art';
 import {ASSET_BY_ID} from './world-assets';
-import {placementArtPoint,type Placement,type WorldLayout} from './world-layout';
+import {insideBuilding,placementArtPoint,type Placement,type WorldLayout} from './world-layout';
 
 export const SOUTHEAST_SMALLHOLDING='southeast-smallholding-cottage';
-
-// Dry meadow clearings beyond the southeast road. The alternate sites are for
-// owner-edited camps where something already occupies the first clearing.
-const sites=[{x:3040,y:4980},{x:3760,y:5375},{x:4195,y:5255}];
-
-function smallholdingItems(origin:{x:number;y:number}):Placement[]{
- const {x,y}=origin;
- // The painted front door sits left of the cottage centre, aligned with the path.
+type Point={x:number;y:number};
+// Cottage anchors in the original southeast clearing and the two alternate sites.
+const sites=[{x:3138,y:4820},{x:3858,y:5215},{x:4293,y:5095}];
+const oldSitePart=/^smallholding-(footpath|fence-(gate|back|(west|east)-[0-4]-[01])|verge-[1-7]|(potato|carrot)-(bed|[1-5]))$/;
+const meadowPlant=(p:Placement)=>p.assetId.startsWith('art_foliage_')&&!p.solid&&!p.frame&&!p.collision&&/^(camp-fringe-v1-|world-plant-v1-|scenery-cluster-v1-)/.test(p.id);
+function smallholdingItems(site:Point):Placement[]{
  const cottage:Placement={id:SOUTHEAST_SMALLHOLDING,assetId:SMALLHOLDING_COTTAGE_ID,
-  x:x+98,y:y-160,scale:1,solid:true,locked:true,role:'prop',roof:'auto'};
+  ...site,scale:1.48,solid:true,locked:true,role:'prop',roof:'auto'};
  const chest:Placement={id:cottage.id+'-chest',assetId:WOODEN_LOOT_ID,
-  ...placementArtPoint(cottage,.606,.60),scale:.75,solid:true,locked:true,role:'prop',roof:'auto'};
- const path:Placement={id:'smallholding-footpath',assetId:smallholdingPath.id,
-  x,y:y+229,scale:1,layer:-7,solid:false,locked:true,role:'prop',roof:'auto'};
- const verge=[
-  ['forest_ivy',-470,288,.77],['copper_leaf',371,375,.89],['ochre_meadow_grass',-140,449,.7],
-  ['white_woodland_flowers',-462,-61,.74],['fern',474,-217,.78],['forest_ivy',463,48,.91],
-  ['ochre_meadow_grass',152,-38,.75],
- ] as const;
- const weeds=verge.map(([name,dx,dy,scale],index):Placement=>({
-  id:'smallholding-verge-'+(index+1),assetId:'art_foliage_'+name,x:x+dx,y:y+dy,scale,
-  solid:false,locked:true,role:'prop',roof:'auto',
- }));
- return [path,...smallholdingFences(origin),...smallholdingCrops(origin),...weeds,cottage,chest];
+  ...placementArtPoint(cottage,.606,.60),scale:.85,solid:true,locked:true,role:'prop',roof:'auto'};
+ return [...smallholdingYard(site),...smallholdingCrops(site),cottage,chest];
 }
 
 export function placeSoutheastSmallholding(layout:WorldLayout):WorldLayout{
- if(layout.smallholdingVersion===1||!usesPaintedHomeTerrain(layout.terrainImage))return layout;
+ if(layout.smallholdingVersion===2||!usesPaintedHomeTerrain(layout.terrainImage))return layout;
  if(!layout.items.some(p=>p.id==='camp-circular-wall-v1-14'))return layout;
- if(layout.items.some(p=>p.id===SOUTHEAST_SMALLHOLDING))return {...layout,smallholdingVersion:1};
- const occupied=layout.items.map(p=>{
-  // Published worlds can contain owner-uploaded sprites whose artwork has
-  // not loaded yet. Reserve their location even if no frame data is available.
-  const bounds=p.frame||ASSET_BY_ID.has(p.assetId)?foliageEnvelope(p):{x:p.x-128,y:p.y-128,width:256,height:256};
-  return {bounds,foliage:!p.solid&&p.assetId.startsWith('art_foliage_')};
- });
- const site=sites.find(({x,y})=>occupied.every(({bounds:b,foliage})=>{
-  // Meadows can grow around the enclosure. Keep the full cottage painting
-  // clear, including the interior plate that sorts behind its furnishings.
-  if(foliage)return b.x+b.width<x-202||b.x>x+398||b.y+b.height<y-483||b.y>y-83;
-  return b.x+b.width<x-610||b.x>x+610||b.y+b.height<y-590||b.y>y+550;
- }));
+ const old=layout.items.find(p=>p.id===SOUTHEAST_SMALLHOLDING);
+ if(layout.smallholdingVersion===1&&!old)return {...layout,smallholdingVersion:2};
+ const keep=old?layout.items.filter(p=>p!==old&&p.id!==old.id+'-chest'&&!oldSitePart.test(p.id)):layout.items;
+ const occupied=keep.filter(p=>!meadowPlant(p)).map(p=>p.frame||ASSET_BY_ID.has(p.assetId)
+  ?foliageEnvelope(p):{x:p.x-128,y:p.y-128,width:256,height:256});
+ const candidates=old?[old,...sites]:sites;
+ const site=candidates.find(s=>occupied.every(b=>
+  b.x+b.width<s.x-910||b.x>s.x+715||b.y+b.height<s.y-560||b.y>s.y+780));
  if(!site)return layout;
- const additions=smallholdingItems(site);
- if(layout.items.length+additions.length>MAX_LAYOUT_ITEMS)return layout;
- const ids=new Set(layout.items.map(p=>p.id));
+ const additions=smallholdingItems({x:site.x,y:site.y});
+ // Retire seeded meadow clumps in the painted plot, including the cottage floor.
+ // Other editor placements and existing inventory/forage state keep their identities.
+ const nw=yardPoint(site,90,-40),se=yardPoint(site,1320,741);
+ const items=keep.filter(p=>!meadowPlant(p)||p.x<nw.x||p.x>se.x||p.y<nw.y||p.y>se.y);
+ if(items.length+additions.length>MAX_LAYOUT_ITEMS)return layout;
+ const ids=new Set(items.map(p=>p.id));
  if(additions.some(p=>ids.has(p.id)))return layout;
- return {...layout,smallholdingVersion:1,items:[...layout.items,...additions]};
+ return {...layout,smallholdingVersion:2,items:[...items,...additions]};
+}
+
+export function smallholdingReturnPoint(before:WorldLayout,after:WorldLayout,point:Point){
+ if(before.smallholdingVersion!==1||after.smallholdingVersion!==2)return;
+ const old=before.items.find(p=>p.id===SOUTHEAST_SMALLHOLDING);
+ const cottage=after.items.find(p=>p.id===SOUTHEAST_SMALLHOLDING);
+ if(!old||!cottage||!insideBuilding(old,point.x,point.y))return;
+ const ratio=cottage.scale/old.scale;
+ return {x:cottage.x+(point.x-old.x)*ratio,y:cottage.y+(point.y-old.y)*ratio};
 }
