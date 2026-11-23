@@ -1,5 +1,6 @@
-import {FISHING_PIER_WATER_FEET} from './fishing-site-art';
+import {FISHING_PIER_IMAGE,FISHING_PIER_SIZE,FISHING_PIER_WATER_FEET} from './fishing-site-art';
 import {fishingPierMetadata} from './fishing-site-metadata';
+import {fishingPierWaterline,type FishingPierSurfaceContext} from './fishing-site-surface';
 import {fishingPiers,fishingPierGeometry,fishingPierDeckContains,type FishingPierGeometry} from './fishing-site-geometry';
 import {riverWaterContains} from './river-collision';
 import {usesPaintedHomeTerrain} from './terrain-art';
@@ -10,6 +11,7 @@ import type {FoliageViewport} from './foliage-renderer';
 export type FishingFishOrbit={x:number;y:number;rx:number;ry:number;phase:number;speed:number;size:number;period:number;rippleOffset:number};
 const schools=new WeakMap<Placement,{geometry:FishingPierGeometry;fish:readonly FishingFishOrbit[]}>();
 const waterContacts=new WeakMap<FishingPierGeometry,readonly {x:number;y:number;size:number}[]>();
+const wetSurfaces=new WeakMap<FishingPierGeometry,readonly [number,number]>();
 const TAU=Math.PI*2;
 const intersects=(a:{x:number;y:number;width:number;height:number},b:FoliageViewport,pad=0)=>a.x+a.width+pad>=b.x&&a.x-pad<=b.x+b.width&&a.y+a.height+pad>=b.y&&a.y-pad<=b.y+b.height;
 function hash(text:string){let n=2166136261;for(let i=0;i<text.length;i++)n=Math.imul(n^text.charCodeAt(i),16777619);return n>>>0}
@@ -42,11 +44,13 @@ function drawFish(ctx:CanvasRenderingContext2D,fish:FishingFishOrbit,time:number
  const phase=fish.phase+time*fish.speed,c=Math.cos(phase),s=Math.sin(phase);
  const x=fish.x+c*fish.rx,y=fish.y+s*fish.ry,angle=Math.atan2(c*fish.ry*fish.speed,-s*fish.rx*fish.speed);
  ctx.save();ctx.translate(x,y);ctx.rotate(angle);ctx.scale(fish.size,fish.size);
- ctx.globalAlpha*=.6+.07*Math.sin(phase*.7+fish.phase);ctx.fillStyle='#153c38';
+ ctx.globalAlpha*=.72+.06*Math.sin(phase*.7+fish.phase);ctx.fillStyle='#0b2926';
  ctx.beginPath();ctx.ellipse(0,0,12.5,4.5,0,0,TAU);ctx.fill();
  const tail=reduced?0:Math.sin(time*3.4+fish.phase)*1.6;
  ctx.beginPath();ctx.moveTo(-10,0);ctx.lineTo(-18.75,-5+tail);ctx.lineTo(-16.25,tail);ctx.lineTo(-18.75,5+tail);ctx.closePath();ctx.fill();
  ctx.globalAlpha*=.5;ctx.beginPath();ctx.moveTo(-1.25,-2.5);ctx.lineTo(-6.25,-7.5);ctx.lineTo(5,-2.5);ctx.closePath();ctx.fill();
+ // A faint interior back catches the water's light without outlining the fish.
+ ctx.globalAlpha*=.4;ctx.fillStyle='#82927b';ctx.beginPath();ctx.ellipse(1,-1.1,7.5,.65,0,0,TAU);ctx.fill();
  ctx.restore();
  if(reduced)return;
  const age=(time+fish.rippleOffset)%fish.period,duration=1.7;
@@ -66,20 +70,55 @@ function placementTransform(ctx:CanvasRenderingContext2D,p:Placement,g:FishingPi
 function painting(ctx:CanvasRenderingContext2D,image:HTMLImageElement,g:FishingPierGeometry){
  const b=g.bounds,c=fishingPierMetadata().crop;ctx.drawImage(image,c[0],c[1],c[2],c[3],b.x,b.y,b.width,b.height);
 }
-function drawWaterContacts(ctx:CanvasRenderingContext2D,g:FishingPierGeometry){
+function wetSurface(g:FishingPierGeometry):readonly [number,number]{
+ let wet=wetSurfaces.get(g);
+ if(!wet){
+  const u=1225/FISHING_PIER_SIZE[0],v=fishingPierWaterline(1225)/FISHING_PIER_SIZE[1];
+  wet=[riverWaterContains(g.waterEnd.x,g.waterEnd.y,18)?1:0,
+   riverWaterContains(g.originX+u*g.uX+v*g.vX,g.originY+u*g.uY+v*g.vY)?1:0];
+  wetSurfaces.set(g,wet);
+ }
+ return wet;
+}
+function drawPierShadow(ctx:FishingPierSurfaceContext,g:FishingPierGeometry){
+ const scale=g.bounds.width/740;
+ ctx.save();ctx.fillStyle='#102b26';ctx.strokeStyle='#102b26';ctx.beginPath();
+ for(let i=0;i<g.deck.length;i++){
+  const [x,y]=g.deck[i],sx=x+8*scale,sy=y+22*scale;
+  i?ctx.lineTo(sx,sy):ctx.moveTo(sx,sy);
+ }
+ ctx.closePath();ctx.globalAlpha*=.16;ctx.fill();
+ // A few soft edge bands follow the deck's actual silhouette. No broad oval
+ // shadow, full-screen layer or per-frame image allocation is needed.
+ for(const [width,opacity]of [[30,.13],[18,.18],[8,.22]]){
+  ctx.lineWidth=width*scale;ctx.save();ctx.globalAlpha*=opacity;
+  ctx.strokeRounded?ctx.strokeRounded():ctx.stroke();ctx.restore();
+ }
+ ctx.restore();
+}
+function drawWaterContacts(ctx:CanvasRenderingContext2D,g:FishingPierGeometry,time:number){
  let contacts=waterContacts.get(g);
  if(!contacts){
-  contacts=FISHING_PIER_WATER_FEET.map(([u,v],i)=>({
-   x:g.originX+u*g.uX+v*g.vX,y:g.originY+u*g.uY+v*g.vY,
-   size:g.bounds.width/660*(i===1||i===3?.72:1),
-  })).filter(p=>riverWaterContains(p.x,p.y,25*p.size));
+  contacts=FISHING_PIER_WATER_FEET.map(([u],i)=>{
+   const v=fishingPierWaterline(u*FISHING_PIER_SIZE[0])/FISHING_PIER_SIZE[1];
+   return{x:g.originX+u*g.uX+v*g.vX,y:g.originY+u*g.uY+v*g.vY,
+    size:g.bounds.width/740*(i===1||i===3?.72:1)};
+  }).filter(p=>riverWaterContains(p.x,p.y,26*p.size));
   waterContacts.set(g,contacts);
  }
- for(const {x,y,size}of contacts){
-  ctx.save();ctx.globalAlpha*=.35;ctx.fillStyle='#174f4b';
-  ctx.beginPath();ctx.ellipse(x,y,19*size,4*size,0,0,TAU);ctx.fill();
-  ctx.globalAlpha*=.55;ctx.strokeStyle='#b6cec0';ctx.lineWidth=.8;
-  ctx.beginPath();ctx.ellipse(x,y,24*size,5*size,0,0,TAU);ctx.stroke();ctx.restore();
+ for(let i=0;i<contacts.length;i++){
+  const {x,y,size}=contacts[i],swell=1+Math.sin(time*.7+i*1.8)*.06;
+  ctx.save();ctx.globalAlpha*=.16;ctx.strokeStyle='#a7beb0';ctx.lineWidth=.8;
+  for(const [start,end,radius]of [[.1,.76,24],[1.12,1.65,21]]){
+   ctx.beginPath();
+   for(let step=0;step<=8;step++){
+    const angle=(start+(end-start)*step/8)*Math.PI;
+    const px=x+Math.cos(angle)*radius*size*swell,py=y+Math.sin(angle)*4.5*size*swell;
+    step?ctx.lineTo(px,py):ctx.moveTo(px,py);
+   }
+   ctx.stroke();
+  }
+  ctx.restore();
  }
 }
 
@@ -87,7 +126,11 @@ function drawWaterContacts(ctx:CanvasRenderingContext2D,g:FishingPierGeometry){
 export function drawFishingSiteGround(ctx:CanvasRenderingContext2D,imgs:Record<string,HTMLImageElement>,w:World,view:FoliageViewport){
  const piers=fishingPiers(w.layout);if(!piers.length)return;
  const image=imgs['placed:'+fishingPierMetadata().image];if(!image)return;
- const life=!w.scene&&usesPaintedHomeTerrain(w.layout?.terrainImage)&&(view.scale??1)>=.25,reduced=!!w.weather?.reducedMotion,time=reduced?0:w.tick/60;
+ const home=!w.scene&&usesPaintedHomeTerrain(w.layout?.terrainImage),life=home&&(view.scale??1)>=.25;
+ const approved=fishingPierMetadata().image===FISHING_PIER_IMAGE,reduced=!!w.weather?.reducedMotion,time=reduced?0:w.tick/60;
+ if(home&&approved)for(const p of piers){
+  const g=fishingPierGeometry(p);if(intersects(g.worldBounds,view,40)&&wetSurface(g)[0])drawPierShadow(ctx,g);
+ }
  if(life)for(const p of piers){
   const g=fishingPierGeometry(p);if(!intersects(g.worldBounds,view,450))continue;
   for(const fish of fishingFishSchool(p)){
@@ -97,8 +140,12 @@ export function drawFishingSiteGround(ctx:CanvasRenderingContext2D,imgs:Record<s
  }
  for(const p of piers){
   const g=fishingPierGeometry(p);if(!intersects(g.worldBounds,view))continue;
-  ctx.save();placementTransform(ctx,p,g);painting(ctx,image,g);ctx.restore();
-  if(life)drawWaterContacts(ctx,g);
+  const surface=ctx as FishingPierSurfaceContext,wet=home&&approved?wetSurface(g):undefined;
+  ctx.save();placementTransform(ctx,p,g);
+  if(wet?.some(Boolean)&&surface.drawFishingPierSurface)surface.drawFishingPierSurface(image,fishingPierMetadata().crop,g.bounds,wet);
+  else painting(ctx,image,g);
+  ctx.restore();
+  if(life&&approved)drawWaterContacts(ctx,g,time);
  }
 }
 

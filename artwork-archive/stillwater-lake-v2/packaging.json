@@ -1,0 +1,210 @@
+{
+  "result": "pass",
+  "sourceInput": "artwork-archive/stillwater-lake-v2/lake-repaint.png",
+  "inputSha256": "e6550d30e548f41966f615bdc7c0532512ee257d08a6839ddf3a1228a93cc288",
+  "masterSize": [
+    2660,
+    2364
+  ],
+  "crop": [
+    1080,
+    480,
+    1580,
+    1400
+  ],
+  "exactSourceCores": 30,
+  "losslessSamplesVerified": true,
+  "changedPixels": 1748182,
+  "protectedPixels": 4499973,
+  "protectedChanged": 0,
+  "maximumBankSampleShift": 43.607180008965074,
+  "chunkGutters": 8,
+  "collisionMasksChanged": false,
+  "layoutChanged": false,
+  "preservedGeometry": {
+    "src/river-water-mask.json": "238bc9102ba008d62adc6bea351fb1e7a4a566aa35c037b2cdc53de10e7a4145",
+    "src/river-logging-water-mask.json": "f1be4a3666a03e0e9b10f62cfcef09fd4458f9bb397c9972ae21e8dc1de92a44",
+    "src/river-extension-water-masks.json": "57fe3f5150216515a72493cf464d9b7cdc078bce468d89f45a18238a6eb12a15",
+    "src/river-side-water-masks.json": "d88d6499cfecc03f2f5891beabd7aa413ccb8f5ea0d925a3b4e52ffcef2a47f6",
+    "src/river-layout.ts": "3aa0a94fa888c261dd46ed57fccdf4aeccbdcaf8ec75e114041187aba4c750b0",
+    "src/river-extension-layout.json": "80cfee8e3c36feaedd5111e0fb66fc778c030aa744646e0cbec3ed5a9fc836e6",
+    "src/river-bridges.json": "4a9e689fd68b5accd56f365ce26196098fda98c099f6b4dff851c15eb6792987"
+  },
+  "exports": [
+    {
+      "key": "riverHD4_1536_0",
+      "image": "/survival/stillwater-lake-v2/riverHD4_1536_0.webp",
+      "kind": "detail",
+      "width": 528,
+      "height": 520
+    },
+    {
+      "key": "riverHD4_2048_0",
+      "image": "/survival/stillwater-lake-v2/riverHD4_2048_0.webp",
+      "kind": "detail",
+      "width": 528,
+      "height": 520
+    },
+    {
+      "key": "riverHD4_2560_0",
+      "image": "/survival/stillwater-lake-v2/riverHD4_2560_0.webp",
+      "kind": "detail",
+      "width": 108,
+      "height": 520
+    },
+    {
+      "key": "riverHD4_1024_512",
+      "image": "/survival/stillwater-lake-v2/riverHD4_1024_512.webp",
+      "kind": "detail",
+      "width": 528,
+      "height": 528
+    },
+    {
+      "key": "riverHD4_1536_512",
+      "image": "/survival/stillwater-lake-v2/riverHD4_1536_512.webp",
+      "kind": "detail",
+      "width": 528,
+      "height": 528
+    },
+    {
+      "key": "riverHD4_2048_512",
+      "image": "/survival/stillwater-lake-v2/riverHD4_2048_512.webp",
+      "kind": "detail",
+      "width": 528,
+      "height": 528
+    },
+    {
+      "key": "riverHD4_2560_512",
+      "image": "/survival/stillwater-lake-v2/riverHD4_2560_512.webp",
+      "kind": "detail",
+      "width": 108,
+      "height": 528
+    },
+    {
+      "key": "riverHD4_1024_1024",
+      "image": "/survival/stillwater-lake-v2/riverHD4_1024_1024.webp",
+      "kind": "detail",
+      "width": 528,
+      "height": 528
+    },
+    {
+      "key": "riverHD4_1536_1024",
+      "image": "/survival/stillwater-lake-v2/riverHD4_1536_1024.webp",
+      "kind": "detail",
+      "width": 528,
+      "height": 528
+    },
+    {
+      "key": "riverHD4_2048_1024",
+      "image": "/survival/stillwater-lake-v2/riverHD4_2048_1024.webp",
+      "kind": "detail",
+      "width": 528,
+      "height": 528
+    },
+    {
+      "key": "riverHD4_2560_1024",
+      "image": "/survival/stillwater-lake-v2/riverHD4_2560_1024.webp",
+      "kind": "detail",
+      "width": 108,
+      "height": 528
+    },
+    {
+      "key": "riverHD4_1024_1536",
+      "image": "/survival/stillwater-lake-v2/riverHD4_1024_1536.webp",
+      "kind": "detail",
+      "width": 528,
+      "height": 528
+    },
+    {
+      "key": "riverHD4_1536_1536",
+      "image": "/survival/stillwater-lake-v2/riverHD4_1536_1536.webp",
+      "kind": "detail",
+      "width": 528,
+      "height": 528
+    },
+    {
+      "key": "riverHD4_2048_1536",
+      "image": "/survival/stillwater-lake-v2/riverHD4_2048_1536.webp",
+      "kind": "detail",
+      "width": 528,
+      "height": 528
+    },
+    {
+      "key": "riverHD4_2560_1536",
+      "image": "/survival/stillwater-lake-v2/riverHD4_2560_1536.webp",
+      "kind": "detail",
+      "width": 108,
+      "height": 528
+    },
+    {
+      "key": "riverExtension2_0",
+      "image": "/survival/stillwater-lake-v2/river-lower-pools-v1-reach-1-medium.webp",
+      "kind": "medium",
+      "width": 1330,
+      "height": 266
+    },
+    {
+      "key": "riverExtension2_0Preview",
+      "image": "/survival/stillwater-lake-v2/river-lower-pools-v1-reach-1-preview.webp",
+      "kind": "preview",
+      "width": 512,
+      "height": 102
+    },
+    {
+      "key": "riverExtension2_1",
+      "image": "/survival/stillwater-lake-v2/river-lower-pools-v1-reach-2-medium.webp",
+      "kind": "medium",
+      "width": 1330,
+      "height": 266
+    },
+    {
+      "key": "riverExtension2_1Preview",
+      "image": "/survival/stillwater-lake-v2/river-lower-pools-v1-reach-2-preview.webp",
+      "kind": "preview",
+      "width": 512,
+      "height": 102
+    },
+    {
+      "key": "riverExtension2_2",
+      "image": "/survival/stillwater-lake-v2/river-lower-pools-v1-reach-3-medium.webp",
+      "kind": "medium",
+      "width": 1330,
+      "height": 266
+    },
+    {
+      "key": "riverExtension2_2Preview",
+      "image": "/survival/stillwater-lake-v2/river-lower-pools-v1-reach-3-preview.webp",
+      "kind": "preview",
+      "width": 512,
+      "height": 102
+    },
+    {
+      "key": "riverExtension2_3",
+      "image": "/survival/stillwater-lake-v2/river-lower-pools-v1-reach-4-medium.webp",
+      "kind": "medium",
+      "width": 1330,
+      "height": 266
+    },
+    {
+      "key": "riverExtension2_3Preview",
+      "image": "/survival/stillwater-lake-v2/river-lower-pools-v1-reach-4-preview.webp",
+      "kind": "preview",
+      "width": 512,
+      "height": 102
+    },
+    {
+      "key": "riverExtension2_4",
+      "image": "/survival/stillwater-lake-v2/river-lower-pools-v1-reach-5-medium.webp",
+      "kind": "medium",
+      "width": 1330,
+      "height": 266
+    },
+    {
+      "key": "riverExtension2_4Preview",
+      "image": "/survival/stillwater-lake-v2/river-lower-pools-v1-reach-5-preview.webp",
+      "kind": "preview",
+      "width": 512,
+      "height": 102
+    }
+  ]
+}

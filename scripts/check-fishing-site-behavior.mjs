@@ -113,6 +113,22 @@ try{
 
  // Probe real clipped texture pixels with an actor behind/in front of the same upright.
  const source={data:image.readPixels(),width:image.width(),height:image.height()};assert(source.data,'Software Skia decodes source pixels');
+ // The lake should conceal the ends of its supports without erasing the
+ // walkable planks. Check the real shader against the approved source art.
+ const waterSurface=skia.Surface.Make(source.width,source.height),waterContext=new adapter.SkiaContext(waterSurface.getCanvas(),source.width,source.height,font);
+ waterContext.drawFishingPierSurface(image,[0,0,source.width,source.height],{x:0,y:0,width:source.width,height:source.height},[1,1]);
+ waterSurface.flush();const wetShot=waterSurface.makeImageSnapshot(),wetPixels=wetShot.readPixels();assert(wetPixels);
+ const pixel=(data,x,y)=>[...data.subarray((y*source.width+x)*4,(y*source.width+x)*4+4)];
+ for(const [x,y]of [[200,530],[400,470],[680,530],[900,350],[1100,250]]){
+  const dry=pixel(source.data,x,y),submerged=pixel(wetPixels,x,y);assert(dry[3]>245,'Reference planks are opaque');
+  assert(dry.every((channel,i)=>Math.abs(channel-submerged[i])<=2),'Water treatment preserves the visible planks');
+ }
+ for(const [x,y]of [[97,738],[509,917],[914,709]]){
+  assert(pixel(source.data,x,y)[3]>200,'Reference support has a solid lower end');
+  assert(pixel(wetPixels,x,y)[3]<10,'Lower support disappears beneath the water instead of ending as a cutout');
+ }
+ const immersed=pixel(wetPixels,509,840);assert(immersed[3]>50&&immersed[3]<210,'The submerged transition remains softly transparent');
+ wetShot.dispose();waterContext.dispose();waterSurface.dispose();
  const inside=(polygon,x,y)=>{let yes=false;for(let i=0,j=polygon.length-1;i<polygon.length;j=i++){const [ax,ay]=polygon[j],[bx,by]=polygon[i];if((ay>y)!==(by>y)&&x<(bx-ax)*(y-ay)/(by-ay)+ax)yes=!yes}return yes};
  let sample;
  for(const part of m.FISHING_PIER_FOREGROUND){
@@ -137,5 +153,5 @@ try{
   assert.notDeepEqual(await probe(false),[255,0,102],'The same upright covers an actor behind it');
  }
  image.dispose();font.dispose();adapter.disposeLighting();
- console.log(JSON.stringify({result:'pass',wetStandingSamples:wet.length,wetEdges,routeCells:route.length,returnRouteCells:returnRoute.length,fish:fish.length,checks:['full-body deck support','removal/move restores water','exact mirror/rotation/frame transforms','unchanged bridges','bounded pier routes join ordinary outdoor navigation','real movement to deck and back to land','no fishing controls','water-only deterministic fish','offscreen culling','reduced motion','software Skia painting and foreground occlusion'],physicalIPhoneTested:false,previewDirectory:output}));
+ console.log(JSON.stringify({result:'pass',wetStandingSamples:wet.length,wetEdges,routeCells:route.length,returnRouteCells:returnRoute.length,fish:fish.length,checks:['full-body deck support','removal/move restores water','exact mirror/rotation/frame transforms','unchanged bridges','bounded pier routes join ordinary outdoor navigation','real movement to deck and back to land','no fishing controls','water-only deterministic fish','offscreen culling','reduced motion','preserved planks and submerged support ends','software Skia painting and foreground occlusion'],physicalIPhoneTested:false,previewDirectory:output}));
 }finally{fs.rmSync(temp,{recursive:true,force:true})}

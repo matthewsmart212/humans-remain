@@ -1,0 +1,315 @@
+{
+  "batch": 4,
+  "masterSize": [
+    2660,
+    2364
+  ],
+  "crop": [
+    1080,
+    480,
+    1580,
+    1400
+  ],
+  "originals": [
+    {
+      "key": "riverHD4_0_0",
+      "image": "/survival/river-detail-v5/riverHD4_0_0.webp",
+      "sample": {
+        "x": -5120,
+        "y": 5600,
+        "width": 900.812030075188,
+        "height": 900.9813874788493
+      }
+    },
+    {
+      "key": "riverHD4_512_0",
+      "image": "/survival/river-detail-v5/riverHD4_512_0.webp",
+      "sample": {
+        "x": -4246.905263157894,
+        "y": 5600,
+        "width": 914.6706766917293,
+        "height": 900.9813874788493
+      }
+    },
+    {
+      "key": "riverHD4_1024_0",
+      "image": "/survival/river-detail-v5/riverHD4_1024_0.webp",
+      "sample": {
+        "x": -3359.951879699248,
+        "y": 5600,
+        "width": 914.6706766917293,
+        "height": 900.9813874788493
+      }
+    },
+    {
+      "key": "riverHD4_1536_0",
+      "image": "/survival/river-detail-v5/riverHD4_1536_0.webp",
+      "sample": {
+        "x": -2472.9984962406015,
+        "y": 5600,
+        "width": 914.6706766917293,
+        "height": 900.9813874788493
+      }
+    },
+    {
+      "key": "riverHD4_2048_0",
+      "image": "/survival/river-detail-v5/riverHD4_2048_0.webp",
+      "sample": {
+        "x": -1586.0451127819547,
+        "y": 5600,
+        "width": 914.6706766917293,
+        "height": 900.9813874788493
+      }
+    },
+    {
+      "key": "riverHD4_2560_0",
+      "image": "/survival/river-detail-v5/riverHD4_2560_0.webp",
+      "sample": {
+        "x": -699.0917293233078,
+        "y": 5600,
+        "width": 187.09172932330827,
+        "height": 900.9813874788493
+      }
+    },
+    {
+      "key": "riverHD4_0_512",
+      "image": "/survival/river-detail-v5/riverHD4_0_512.webp",
+      "sample": {
+        "x": -5120,
+        "y": 6473.258883248731,
+        "width": 900.812030075188,
+        "height": 914.8426395939086
+      }
+    },
+    {
+      "key": "riverHD4_512_512",
+      "image": "/survival/river-detail-v5/riverHD4_512_512.webp",
+      "sample": {
+        "x": -4246.905263157894,
+        "y": 6473.258883248731,
+        "width": 914.6706766917293,
+        "height": 914.8426395939086
+      }
+    },
+    {
+      "key": "riverHD4_1024_512",
+      "image": "/survival/river-detail-v5/riverHD4_1024_512.webp",
+      "sample": {
+        "x": -3359.951879699248,
+        "y": 6473.258883248731,
+        "width": 914.6706766917293,
+        "height": 914.8426395939086
+      }
+    },
+    {
+      "key": "riverHD4_1536_512",
+      "image": "/survival/river-detail-v5/riverHD4_1536_512.webp",
+      "sample": {
+        "x": -2472.9984962406015,
+        "y": 6473.258883248731,
+        "width": 914.6706766917293,
+        "height": 914.8426395939086
+      }
+    },
+    {
+      "key": "riverHD4_2048_512",
+      "image": "/survival/river-detail-v5/riverHD4_2048_512.webp",
+      "sample": {
+        "x": -1586.0451127819547,
+        "y": 6473.258883248731,
+        "width": 914.6706766917293,
+        "height": 914.8426395939086
+      }
+    },
+    {
+      "key": "riverHD4_2560_512",
+      "image": "/survival/river-detail-v5/riverHD4_2560_512.webp",
+      "sample": {
+        "x": -699.0917293233078,
+        "y": 6473.258883248731,
+        "width": 187.09172932330827,
+        "height": 914.8426395939086
+      }
+    },
+    {
+      "key": "riverHD4_0_1024",
+      "image": "/survival/river-detail-v5/riverHD4_0_1024.webp",
+      "sample": {
+        "x": -5120,
+        "y": 7360.379018612521,
+        "width": 900.812030075188,
+        "height": 914.8426395939086
+      }
+    },
+    {
+      "key": "riverHD4_512_1024",
+      "image": "/survival/river-detail-v5/riverHD4_512_1024.webp",
+      "sample": {
+        "x": -4246.905263157894,
+        "y": 7360.379018612521,
+        "width": 914.6706766917293,
+        "height": 914.8426395939086
+      }
+    },
+    {
+      "key": "riverHD4_1024_1024",
+      "image": "/survival/river-detail-v5/riverHD4_1024_1024.webp",
+      "sample": {
+        "x": -3359.951879699248,
+        "y": 7360.379018612521,
+        "width": 914.6706766917293,
+        "height": 914.8426395939086
+      }
+    },
+    {
+      "key": "riverHD4_1536_1024",
+      "image": "/survival/river-detail-v5/riverHD4_1536_1024.webp",
+      "sample": {
+        "x": -2472.9984962406015,
+        "y": 7360.379018612521,
+        "width": 914.6706766917293,
+        "height": 914.8426395939086
+      }
+    },
+    {
+      "key": "riverHD4_2048_1024",
+      "image": "/survival/river-detail-v5/riverHD4_2048_1024.webp",
+      "sample": {
+        "x": -1586.0451127819547,
+        "y": 7360.379018612521,
+        "width": 914.6706766917293,
+        "height": 914.8426395939086
+      }
+    },
+    {
+      "key": "riverHD4_2560_1024",
+      "image": "/survival/river-detail-v5/riverHD4_2560_1024.webp",
+      "sample": {
+        "x": -699.0917293233078,
+        "y": 7360.379018612521,
+        "width": 187.09172932330827,
+        "height": 914.8426395939086
+      }
+    },
+    {
+      "key": "riverHD4_0_1536",
+      "image": "/survival/river-detail-v5/riverHD4_0_1536.webp",
+      "sample": {
+        "x": -5120,
+        "y": 8247.49915397631,
+        "width": 900.812030075188,
+        "height": 914.8426395939086
+      }
+    },
+    {
+      "key": "riverHD4_512_1536",
+      "image": "/survival/river-detail-v5/riverHD4_512_1536.webp",
+      "sample": {
+        "x": -4246.905263157894,
+        "y": 8247.49915397631,
+        "width": 914.6706766917293,
+        "height": 914.8426395939086
+      }
+    },
+    {
+      "key": "riverHD4_1024_1536",
+      "image": "/survival/river-detail-v5/riverHD4_1024_1536.webp",
+      "sample": {
+        "x": -3359.951879699248,
+        "y": 8247.49915397631,
+        "width": 914.6706766917293,
+        "height": 914.8426395939086
+      }
+    },
+    {
+      "key": "riverHD4_1536_1536",
+      "image": "/survival/river-detail-v5/riverHD4_1536_1536.webp",
+      "sample": {
+        "x": -2472.9984962406015,
+        "y": 8247.49915397631,
+        "width": 914.6706766917293,
+        "height": 914.8426395939086
+      }
+    },
+    {
+      "key": "riverHD4_2048_1536",
+      "image": "/survival/river-detail-v5/riverHD4_2048_1536.webp",
+      "sample": {
+        "x": -1586.0451127819547,
+        "y": 8247.49915397631,
+        "width": 914.6706766917293,
+        "height": 914.8426395939086
+      }
+    },
+    {
+      "key": "riverHD4_2560_1536",
+      "image": "/survival/river-detail-v5/riverHD4_2560_1536.webp",
+      "sample": {
+        "x": -699.0917293233078,
+        "y": 8247.49915397631,
+        "width": 187.09172932330827,
+        "height": 914.8426395939086
+      }
+    },
+    {
+      "key": "riverHD4_0_2048",
+      "image": "/survival/river-detail-v5/riverHD4_0_2048.webp",
+      "sample": {
+        "x": -5120,
+        "y": 9134.619289340102,
+        "width": 900.812030075188,
+        "height": 561.3807106598985
+      }
+    },
+    {
+      "key": "riverHD4_512_2048",
+      "image": "/survival/river-detail-v5/riverHD4_512_2048.webp",
+      "sample": {
+        "x": -4246.905263157894,
+        "y": 9134.619289340102,
+        "width": 914.6706766917293,
+        "height": 561.3807106598985
+      }
+    },
+    {
+      "key": "riverHD4_1024_2048",
+      "image": "/survival/river-detail-v5/riverHD4_1024_2048.webp",
+      "sample": {
+        "x": -3359.951879699248,
+        "y": 9134.619289340102,
+        "width": 914.6706766917293,
+        "height": 561.3807106598985
+      }
+    },
+    {
+      "key": "riverHD4_1536_2048",
+      "image": "/survival/river-detail-v5/riverHD4_1536_2048.webp",
+      "sample": {
+        "x": -2472.9984962406015,
+        "y": 9134.619289340102,
+        "width": 914.6706766917293,
+        "height": 561.3807106598985
+      }
+    },
+    {
+      "key": "riverHD4_2048_2048",
+      "image": "/survival/river-detail-v5/riverHD4_2048_2048.webp",
+      "sample": {
+        "x": -1586.0451127819547,
+        "y": 9134.619289340102,
+        "width": 914.6706766917293,
+        "height": 561.3807106598985
+      }
+    },
+    {
+      "key": "riverHD4_2560_2048",
+      "image": "/survival/river-detail-v5/riverHD4_2560_2048.webp",
+      "sample": {
+        "x": -699.0917293233078,
+        "y": 9134.619289340102,
+        "width": 187.09172932330827,
+        "height": 561.3807106598985
+      }
+    }
+  ]
+}

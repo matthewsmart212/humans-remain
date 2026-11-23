@@ -11,6 +11,7 @@ import {WATERFALL_IMAGES,WATERFALL_PILOT} from './waterfall-pilot';
 import {WATERFALL_SECTIONS,WATERFALL_SECTION_IMAGES,type WaterfallSampling} from './waterfalls';
 import {RIVER_DETAIL_PATCHES,RIVER_DETAIL_BY_BATCH,RIVER_DETAIL_CHUNK_IMAGES,RIVER_MEDIUM_IMAGES,RIVER_HIGH_PREVIEW_IMAGES} from './river-detail';
 import {RIVER_SURFACE_FLOW} from './river-surface-flow';
+import {STILLWATER_LAKE_PAINT_SKSL} from './stillwater-lake-art';
 export {RIVER_SURFACE_FLOW} from './river-surface-flow';
 
 export const RIVER_SECTIONS=[...sections.map(p=>({...p,batch:0})),...(loggingSections as typeof sections).map(p=>({...p,batch:1})),...(extensionSections as (typeof sections[number]&{batch:number})[])];
@@ -76,6 +77,7 @@ float rippleAt(float2 uv,float2 velocity,float phase){
  float b=surfaceRipples.eval(uv-velocity*next).a;
  return mix(a,b,abs(phase*2.-1.));
 }
+${STILLWATER_LAKE_PAINT_SKSL}
 half4 main(float2 p){
  float2 source=p/scale+float2(600.);
  float2 q=source-float2(-6256.,-6200.);
@@ -92,6 +94,7 @@ half4 main(float2 p){
  float water=waterAmount(base);
  float lakeBatch=abs(master.x-(${stillwaterSource.x}.))<.5&&abs(master.y-(${stillwaterSource.y}.))<.5?1.:0.;
  float calmLake=lakeBatch*smoothstep(.01,.60,side);
+ float repaintedLake=lakeBatch*stillwaterPaintAmount(source);
  float dryBank=(1.-water)*(1.-onPaintedBridge(source));
  half3 surfaceColour=riverbankColour(p,base,dryBank);
  if(water>0.){
@@ -104,6 +107,9 @@ half4 main(float2 p){
   // Keep painted shallows visible while softening the broad baked highlights.
   half3 lakeColour=half3(.07,.18,.17)+waterColour*half3(.35,.30,.22);
   waterColour=mix(waterColour,lakeColour,calmLake*.92);
+  // The registered repaint already supplies its emerald depth and sandy
+  // shallows. Preserve that material instead of tinting it as old blue water.
+  waterColour=mix(waterColour,base.rgb,repaintedLake);
   surfaceColour=mix(surfaceColour,waterColour,water);
   if(hasSurface>0.){
    float2 velocity=float2(flow.rg)*2.-1.;
@@ -112,14 +118,15 @@ half4 main(float2 p){
     velocity=mix(velocity,float2(branch.rg)*2.-1.,side*float(branch.b));
    }
    float speed=length(velocity);
+   velocity*=mix(1.,.32,repaintedLake);
    float phase=fract(clock*.12);
-   float crest=rippleAt(q*float2(.86,1.16),velocity*float2(181.,244.),phase);
+   float crest=rippleAt(q*mix(float2(.86,1.16),float2(.24,.31),repaintedLake),velocity*float2(181.,244.),phase);
    // A wider swell moves beneath the short crests. Vary their strength
    // together so the glints gather in short runs instead of a uniform shimmer.
    float2 broadUv=q*float2(.46,.57)+float2(71.,137.);
    float swell=rippleAt(broadUv,velocity*float2(62.,77.),fract(phase+.29));
    float sheen=sqrt(crest)*(.15+.19*speed)+sqrt(swell)*.10;
-   surfaceColour+=water*(half3(.47,.70,.65)*sheen+half3(.32,.30,.21)*smoothstep(.28,.72,crest)*(.18+.22*swell))*mix(1.,.23,calmLake);
+   surfaceColour+=water*(half3(.47,.70,.65)*sheen+half3(.32,.30,.21)*smoothstep(.28,.72,crest)*(.18+.22*swell))*mix(mix(1.,.23,calmLake),.045,repaintedLake);
   }
  }
  // The old river paintings carry saturated ochre gravel into their margins.

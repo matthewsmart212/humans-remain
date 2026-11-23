@@ -17,6 +17,7 @@ import type {WorldRoad} from './world-roads';
 import {ROAD_PILOT_SHADER} from './world-road-pilot';
 import {ROCK_SURFACE_SHADER,rockGrades,type RockMaterial,type RockBounds} from './rock-surface';
 import {RIVER_SHADER} from './river-art';
+import {FISHING_PIER_SURFACE_SHADER} from './fishing-site-surface';
 import {RIVER_BATCHES,RIVER_SIDE_FEATURES,type RiverBatch} from './river-layout';
 import {EAST_TERRAIN_SCALE} from './east-approach';
 import {riverFlowPixels} from './river-flow-field';
@@ -35,6 +36,7 @@ const roadSection=(()=>{const effect=Skia.RuntimeEffect.Make(WORLD_ROAD_SECTION_
 const roadPilot=(()=>{const effect=Skia.RuntimeEffect.Make(ROAD_PILOT_SHADER);if(!effect)throw Error('The road pilot shader could not compile.');return effect})();
 const rockEffect=open('Rock material',()=>{const effect=Skia.RuntimeEffect.Make(ROCK_SURFACE_SHADER);if(!effect)throw Error('The rock surface shader could not compile.');return effect});
 const riverEffect=(()=>{const effect=Skia.RuntimeEffect.Make(RIVER_SHADER);if(!effect)throw Error('The river shader could not compile.');return effect})();
+const fishingPierEffect=open('Fishing pier surface',()=>{const effect=Skia.RuntimeEffect.Make(FISHING_PIER_SURFACE_SHADER);if(!effect)throw Error('The fishing pier surface shader could not compile.');return effect});
 const waterfallEffect=(()=>{const effect=Skia.RuntimeEffect.Make(WATERFALL_SHADER);if(!effect)throw Error('The waterfall shader could not compile.');return effect})();
 const waterfallSectionEffect=(()=>{const effect=Skia.RuntimeEffect.Make(WATERFALL_SECTION_SHADER);if(!effect)throw Error('The waterfall section shader could not compile.');return effect})();
 const fieldSize=TERRAIN_COLOUR_FIELD_SIZE;
@@ -180,6 +182,16 @@ class SkiaContext{
    paint.setShader(keep(image.makeShaderOptions(TileMode.Clamp,TileMode.Clamp,FilterMode.Linear,MipmapMode.None)));return paint;
   });paint.setAlphaf(this.globalAlpha);
   this.c.drawVertices(verts,BlendMode.SrcOver,paint);
+ }
+ drawFishingPierSurface(image:SkImage,crop:readonly number[],b:RockBounds,wet:readonly [number,number]){
+  const paint=cachedPaint('fishing-pier',[image],[crop,wet],keep=>{
+   const artwork=keep(image.makeShaderOptions(TileMode.Clamp,TileMode.Clamp,FilterMode.Linear,MipmapMode.None));
+   const shader=keep(fishingPierEffect.makeShaderWithChildren([...crop,...wet],[artwork]));
+   const paint=keep(Skia.Paint());paint.setShader(shader);paint.setAntiAlias(true);return paint;
+  });
+  paint.setAlphaf(this.globalAlpha);
+  this.c.save();this.c.translate(b.x,b.y);this.c.scale(b.width,b.height);
+  this.c.drawRect({x:0,y:0,width:1,height:1},paint);this.c.restore();
  }
  drawRockSurface(image:SkImage,crop:readonly number[],b:RockBounds,material:RockMaterial,loose:boolean){
   const paint=cachedPaint('rock',[image],[material,crop,loose],keep=>{
@@ -354,5 +366,5 @@ class SkiaContext{
   if(sw>1000&&sh>1000&&dw>sw*1.4)this.c.drawImageRectCubic(im,src,dst,1/3,1/3,p);else this.c.drawImageRectOptions(im,src,dst,FilterMode.Linear,MipmapMode.None,p);if(layer)im.dispose()}
 }
 
-return {SkiaContext,NativeLayer,releaseImage,shaderFieldBytes:()=>fieldSize*fieldSize*4+[...flowFields.values()].reduce((sum,f)=>sum+f.bytes,0),warmLighting:lighting.warm,disposeLighting:()=>{waterPaint?.dispose();waterPaint=undefined;for(const key of waterfallSamplerCache.keys())dropWaterfallSampler(key);for(const key of riverSamplerCache.keys())dropRiverSampler(key);for(const key of terrainCache.keys())drop(key);for(const entry of flowFields.values())for(const resource of [...entry.resources].reverse())resource.dispose();flowFields.clear();waterfallEffect.dispose();waterfallSectionEffect.dispose();lighting.dispose();weather.dispose();lightning.dispose();chestLight.dispose();for(const shader of colourSamplers.values())shader.dispose();colourSamplers.clear();colourImage.dispose();groundColour.dispose();rockEffect.dispose();roadSection.dispose();roadPilot.dispose();riverEffect.dispose();for(const meshes of roadMeshes.values())for(const mesh of meshes)mesh?.dispose();roadMeshes.clear();for(const {paint,dash}of solidPaints.values()){paint.dispose();dash?.dispose()}solidPaints.clear();for(const paint of spritePaints.splice(0))paint?.dispose();for(const resource of spriteResources.splice(0))resource.dispose();clearPaint?.dispose();clearPaint=undefined}};
+return {SkiaContext,NativeLayer,releaseImage,shaderFieldBytes:()=>fieldSize*fieldSize*4+[...flowFields.values()].reduce((sum,f)=>sum+f.bytes,0),warmLighting:lighting.warm,disposeLighting:()=>{waterPaint?.dispose();waterPaint=undefined;for(const key of waterfallSamplerCache.keys())dropWaterfallSampler(key);for(const key of riverSamplerCache.keys())dropRiverSampler(key);for(const key of terrainCache.keys())drop(key);for(const entry of flowFields.values())for(const resource of [...entry.resources].reverse())resource.dispose();flowFields.clear();waterfallEffect.dispose();waterfallSectionEffect.dispose();lighting.dispose();weather.dispose();lightning.dispose();chestLight.dispose();for(const shader of colourSamplers.values())shader.dispose();colourSamplers.clear();colourImage.dispose();groundColour.dispose();rockEffect.dispose();roadSection.dispose();roadPilot.dispose();riverEffect.dispose();fishingPierEffect.dispose();for(const meshes of roadMeshes.values())for(const mesh of meshes)mesh?.dispose();roadMeshes.clear();for(const {paint,dash}of solidPaints.values()){paint.dispose();dash?.dispose()}solidPaints.clear();for(const paint of spritePaints.splice(0))paint?.dispose();for(const resource of spriteResources.splice(0))resource.dispose();clearPaint?.dispose();clearPaint=undefined}};
 }

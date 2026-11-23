@@ -1,0 +1,51 @@
+{
+  "result": "pass",
+  "baseCommit": "be7de2268c509feb0f7df2c75f0957ec9ef99418",
+  "checks": {
+    "webTypecheck": "pass",
+    "nativeTypecheck": "pass",
+    "webProductionBuild": "pass",
+    "fishingSitePlacementAndSavedWorlds": "pass",
+    "fishingBehavior": {
+      "result": "pass",
+      "wetStandingSamples": 116,
+      "wetEdges": 7,
+      "routeCells": 6,
+      "returnRouteCells": 7,
+      "fish": 5,
+      "checks": [
+        "full-body deck support",
+        "removal/move restores water",
+        "exact mirror/rotation/frame transforms",
+        "unchanged bridges",
+        "bounded pier routes join ordinary outdoor navigation",
+        "real movement to deck and back to land",
+        "no fishing controls",
+        "water-only deterministic fish",
+        "offscreen culling",
+        "reduced motion",
+        "preserved planks and submerged support ends",
+        "software Skia painting and foreground occlusion"
+      ],
+      "physicalIPhoneTested": false,
+      "previewDirectory": ".qa/fishing-polish/behavior"
+    },
+    "lakeArtworkAndShader": {
+      "result": "pass",
+      "assets": 25,
+      "otherReachAndProtectedSamples": 10,
+      "geometryFiles": 7,
+      "shaderCompiled": true,
+      "sharedNativeShader": true,
+      "physicalIPhoneTested": false
+    },
+    "diffWhitespace": "pass",
+    "builtAssetIdentity": {
+      "result": "pass",
+      "publishedLakeAssets": 25,
+      "allBuiltBytesMatchSource": true
+    }
+  },
+  "physicalIPhoneTested": false,
+  "baselineCiNote": "The existing co-op protocol test fails on the previous deployed commit under the pinned Node runner; it is outside this visual change."
+}

@@ -1,0 +1,13 @@
+{
+  "batch": 4,
+  "masterSize": [2660, 2364],
+  "crop": [1080, 480, 1580, 1400],
+  "edgeFade": 64,
+  "protectedRects": [
+    {"id": "riverExtension2_1Flow", "bounds": [996, 458, 646, 458], "feather": 240},
+    {"id": "riverExtension2_4Flow", "bounds": [538, 1832, 1018, 476], "feather": 240}
+  ],
+  "protectedBridges": ["waterworks-bridge", "lower-river-bridge"],
+  "bridgeExtraRadius": 100,
+  "bridgeFeather": 120
+}

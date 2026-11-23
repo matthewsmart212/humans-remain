@@ -240,3 +240,8 @@ public/survival/expedition-menu-v2/loading-panel.webp -filter -diff -merge
 # Transparent Stillwater jetty and shoreline scenery are available offline.
 /public/survival/stillwater-fishing-v1/*.webp -filter -diff -merge -text
 /docs/qa/stillwater-fishing-v1/*.webp -filter -diff -merge -text
+
+# Registered Stillwater lake repaint is directly available on web and iOS.
+/public/survival/stillwater-lake-v2/*.webp -filter -diff -merge -text
+/artwork-archive/stillwater-lake-v2/*.png -filter -diff -merge -text
+/docs/qa/stillwater-lake-v2/*.webp -filter -diff -merge -text

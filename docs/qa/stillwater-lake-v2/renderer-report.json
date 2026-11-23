@@ -1,0 +1,226 @@
+{
+  "passed": true,
+  "renderer": "Production native renderer with CanvasKit software platform adapter",
+  "physicalIPhoneTested": false,
+  "baselineCommit": "be7de2268c509feb0f7df2c75f0957ec9ef99418",
+  "viewportPoints": [
+    844,
+    390
+  ],
+  "outputPixels": [
+    1688,
+    780
+  ],
+  "captureSettings": {
+    "tick": 1800,
+    "gamePhase": "day",
+    "nightAmount": 0,
+    "overview": {
+      "x": -1775,
+      "y": 6575,
+      "zoom": 0.7
+    },
+    "platform": {
+      "x": -1830,
+      "y": 6660,
+      "zoom": 1
+    },
+    "weatherTime": 30,
+    "clearRainAmount": 0,
+    "rainAmount": 1,
+    "heavyRainAmount": 0,
+    "fogAmount": 0,
+    "lightning": false
+  },
+  "textureChecks": [
+    {
+      "phase": "before",
+      "view": "overview",
+      "weather": "clear",
+      "campMissing": 0,
+      "riverMissing": 0,
+      "artworkActive": 0,
+      "artworkQueued": 0,
+      "artworkWarming": 0
+    },
+    {
+      "phase": "before",
+      "view": "platform",
+      "weather": "clear",
+      "campMissing": 0,
+      "riverMissing": 0,
+      "artworkActive": 0,
+      "artworkQueued": 0,
+      "artworkWarming": 0
+    },
+    {
+      "phase": "before",
+      "view": "overview",
+      "weather": "rain",
+      "campMissing": 0,
+      "riverMissing": 0,
+      "artworkActive": 0,
+      "artworkQueued": 0,
+      "artworkWarming": 0
+    },
+    {
+      "phase": "before",
+      "view": "platform",
+      "weather": "rain",
+      "campMissing": 0,
+      "riverMissing": 0,
+      "artworkActive": 0,
+      "artworkQueued": 0,
+      "artworkWarming": 0
+    },
+    {
+      "phase": "after",
+      "view": "overview",
+      "weather": "clear",
+      "campMissing": 0,
+      "riverMissing": 0,
+      "artworkActive": 0,
+      "artworkQueued": 0,
+      "artworkWarming": 0,
+      "visibleFish": 3
+    },
+    {
+      "phase": "after",
+      "view": "platform",
+      "weather": "clear",
+      "campMissing": 0,
+      "riverMissing": 0,
+      "artworkActive": 0,
+      "artworkQueued": 0,
+      "artworkWarming": 0,
+      "visibleFish": 3
+    },
+    {
+      "phase": "after",
+      "view": "overview",
+      "weather": "rain",
+      "campMissing": 0,
+      "riverMissing": 0,
+      "artworkActive": 0,
+      "artworkQueued": 0,
+      "artworkWarming": 0,
+      "visibleFish": 3
+    },
+    {
+      "phase": "after",
+      "view": "platform",
+      "weather": "rain",
+      "campMissing": 0,
+      "riverMissing": 0,
+      "artworkActive": 0,
+      "artworkQueued": 0,
+      "artworkWarming": 0,
+      "visibleFish": 3
+    }
+  ],
+  "shorelineSamples": [
+    {
+      "id": "entry",
+      "x": -1470,
+      "y": 6500,
+      "radius": 19,
+      "rawWater": false,
+      "walkable": true
+    },
+    {
+      "id": "approach-1",
+      "x": -1450,
+      "y": 6490,
+      "radius": 19,
+      "rawWater": false,
+      "walkable": true
+    },
+    {
+      "id": "approach-2",
+      "x": -1430,
+      "y": 6480,
+      "radius": 19,
+      "rawWater": false,
+      "walkable": true
+    },
+    {
+      "id": "approach-3",
+      "x": -1410,
+      "y": 6470,
+      "radius": 19,
+      "rawWater": false,
+      "walkable": true
+    },
+    {
+      "id": "approach-4",
+      "x": -1390,
+      "y": 6460,
+      "radius": 19,
+      "rawWater": false,
+      "walkable": true
+    },
+    {
+      "id": "approach-5",
+      "x": -1370,
+      "y": 6450,
+      "radius": 19,
+      "rawWater": false,
+      "walkable": true
+    },
+    {
+      "id": "approach-6",
+      "x": -1350,
+      "y": 6440,
+      "radius": 19,
+      "rawWater": false,
+      "walkable": true
+    },
+    {
+      "id": "gangway",
+      "x": -1592.828996282528,
+      "y": 6556.050185873606,
+      "radius": 19,
+      "rawWater": true,
+      "walkable": true
+    },
+    {
+      "id": "platform",
+      "x": -1859.228996282528,
+      "y": 6672.276951672863,
+      "radius": 19,
+      "rawWater": true,
+      "walkable": true
+    },
+    {
+      "id": "open-water",
+      "x": -1999.828996282528,
+      "y": 6784.033457249071,
+      "radius": 19,
+      "rawWater": true,
+      "walkable": false
+    }
+  ],
+  "artifacts": [
+    {
+      "file": "before-platform.webp",
+      "bytes": 290158
+    },
+    {
+      "file": "after-platform.webp",
+      "bytes": 202976
+    },
+    {
+      "file": "after-overview.webp",
+      "bytes": 290586
+    },
+    {
+      "file": "after-rain.webp",
+      "bytes": 210984
+    }
+  ],
+  "notes": [
+    "Frames contain actual game-world rendering; no interface was composited.",
+    "Before textures were read from SHA-256 and size-verified baseline Git LFS objects.",
+    "Diagnostic collision overlays are excluded from these review frames."
+  ]
+}
