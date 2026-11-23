@@ -1,0 +1,1060 @@
+{
+  "passed": true,
+  "renderer": "Production native renderer with CanvasKit software platform adapter",
+  "baselineCommit": "9ad7ea50415cd488ae015b7eb6bbda8e57f6cf20",
+  "finalSourceBaseCommit": "9ad7ea50415cd488ae015b7eb6bbda8e57f6cf20",
+  "finalModelSha256": "ae235b461c73f53343c4a71fe1a787a8432d5f690353488ba3ad5ae56890f7a4",
+  "physicalIPhoneTested": false,
+  "viewportPoints": [
+    844,
+    390
+  ],
+  "outputPixels": [
+    1688,
+    780
+  ],
+  "portraitViewportPoints": [
+    390,
+    844
+  ],
+  "portraitPixels": [
+    780,
+    1688
+  ],
+  "uniqueDecodedFiles": 82,
+  "verifiedSourceFiles": 108,
+  "sourceAssets": {
+    "public/survival/world-ground-v2/warm.webp": {
+      "sha256": "df034c82075e254d91cafe8f1ca77e93b29025f8d20ddfb72aabab67fc520c2b",
+      "bytes": 477550,
+      "verifiedLfs": false
+    },
+    "public/survival/world-ground-v2/brown.webp": {
+      "sha256": "9c7b342bac087749f32208dd5c44a30f474fc24c8230a3ebbfd17e209531cabc",
+      "bytes": 475862,
+      "verifiedLfs": false
+    },
+    "public/survival/world-ground-v3/clear-earth.webp": {
+      "sha256": "e906d407a055b37d397260c6695422f92b933c3487974ea6dcb7df496c6bcdf3",
+      "bytes": 307434,
+      "verifiedLfs": false
+    },
+    "public/survival/trees-world-v1/willow.webp": {
+      "sha256": "74cab9977412083d5699275ef761c8bfbbb0fad7ab0e0b6f3660d3efd8945244",
+      "bytes": 523428,
+      "verifiedLfs": false
+    },
+    "public/survival/woodland-canopy-v1/shade.webp": {
+      "sha256": "ff690f6b06c9f83762d60a4576be6bd301ba38c59a245b5b9a036ed136a389be",
+      "bytes": 29898,
+      "verifiedLfs": false
+    },
+    "public/survival/woodland-deadwood-v1/hollow-birch-log.webp": {
+      "sha256": "f84a1f462cda6ea0f9c8cd969eee293bc1519288b3caf0d82595ba5734a6cc04",
+      "bytes": 101904,
+      "verifiedLfs": false
+    },
+    "public/survival/tree-variants-v1/willow-forked.webp": {
+      "sha256": "fc984bde95c27a1971a1f1ca2b1029772b473159bf55c2ca26a9b81fe7101ca9",
+      "bytes": 376770,
+      "verifiedLfs": false
+    },
+    "public/survival/trees-world-v1/rowan.webp": {
+      "sha256": "153a614501e44b3b99257f7d37b2faa6a6e822ce2104f5f325ebca23c5532c3e",
+      "bytes": 431136,
+      "verifiedLfs": false
+    },
+    "public/survival/stillwater-fishing-v2/pier.webp": {
+      "sha256": "903ed90c4045cb41e18c31224c8a8ebcb87b20037d8c2cfcc71f6f99c5f664cd",
+      "bytes": 1080162,
+      "verifiedLfs": false
+    },
+    "public/survival/world-scenery-v1/willow-scrub.webp": {
+      "sha256": "e0996945c9032a16a190f602ffca84ee7a37e0671c204813140e6ef2f0514a70",
+      "bytes": 81110,
+      "verifiedLfs": false
+    },
+    "public/survival/stillwater-fishing-v1/reeds.webp": {
+      "sha256": "a82e756a3601244afde89fa99aa4a3ba129163a3f3a45ee09b8bf2563895db57",
+      "bytes": 474182,
+      "verifiedLfs": false
+    },
+    "public/survival/world-scenery-v1/meadow-fescue.webp": {
+      "sha256": "d7944ca27d0cf92b30ac997b68e7a81842553ebdb61a6a5cd3396225671a2bac",
+      "bytes": 81718,
+      "verifiedLfs": false
+    },
+    "public/survival/world-rocks-v1/smooth-river-boulder.webp": {
+      "sha256": "57d8d76f04a83ae0e918797631114e103820658fae1e97de76d1f10e8d472ace",
+      "bytes": 69862,
+      "verifiedLfs": false
+    },
+    "public/survival/world-scenery-v1/river-sedge.webp": {
+      "sha256": "fa068f895f6397a8cb73ec7e280cc30ced9ceb96c1de719b3b32a6b4f952702e",
+      "bytes": 70092,
+      "verifiedLfs": false
+    },
+    "public/survival/world-scenery-v1/reed-cluster.webp": {
+      "sha256": "ec4f49418e15159d30187dc7f6b85fbe70c73aa81a28fc0001cf8660a645f022",
+      "bytes": 74334,
+      "verifiedLfs": false
+    },
+    "public/survival/tree-variants-v1/willow-bent.webp": {
+      "sha256": "cbe6522cae6a6abf7f12868865732f23ebf9792b36f99d1c67316bbc987115dd",
+      "bytes": 344780,
+      "verifiedLfs": false
+    },
+    "public/survival/world-rocks-v1/flat-river-slab.webp": {
+      "sha256": "2066cae7bf20fc83d25fc055fd6a43f27c3893a18480d2e35386fa1771c71b1e",
+      "bytes": 85354,
+      "verifiedLfs": false
+    },
+    "public/survival/world-rocks-v1/ochre-lone-boulder.webp": {
+      "sha256": "cdf1e2f995f5423c2bad7c46c3eff92fb84dc59d21850b0c7cebdaa52f960ad6",
+      "bytes": 82926,
+      "verifiedLfs": false
+    },
+    "public/survival/world-rocks-v1/chalk-cracked-rock.webp": {
+      "sha256": "9c3c928c42f7b8b8d7da8aa26ec8b4ec2fad68df4fd5a5c04682bd029b10592c",
+      "bytes": 108536,
+      "verifiedLfs": false
+    },
+    "public/survival/world-scenery-v1/wetland-butterbur.webp": {
+      "sha256": "9f78a8a75bb76b8fdf565d282d9d5f0e7f490c3901fb04570d0e4eedac4d7e77",
+      "bytes": 58088,
+      "verifiedLfs": false
+    },
+    "public/survival/trees-v2/oak.webp": {
+      "sha256": "1086e48400f02b251cf479550ecfeca54cbac21609d27c646e3ca38210a91ebf",
+      "bytes": 426658,
+      "verifiedLfs": false
+    },
+    "public/survival/tree-variants-v1/oak-forked.webp": {
+      "sha256": "64cd7003ed22fb65d7f30854569b3d0717937edd3116603f270d80be108aa11a",
+      "bytes": 334090,
+      "verifiedLfs": false
+    },
+    "public/survival/tree-variants-v1/rowan-forked.webp": {
+      "sha256": "c3b2d663a3069568d72f89cb1e530cda944faf4f2cdd9aa5c3795b40c8acc06e",
+      "bytes": 333090,
+      "verifiedLfs": false
+    },
+    "public/survival/tree-variants-v1/oak-leaning.webp": {
+      "sha256": "917d72eccfbcbbc973faa9f91c54eac069c2e0c0ae360f56a5a758306f0b2dd3",
+      "bytes": 277218,
+      "verifiedLfs": false
+    },
+    "public/survival/world-rocks-v1/split-forest-rock.webp": {
+      "sha256": "0404e6e35cc1ac4df1c8bfe032b7cea6ad169f5176032adfdf1506136aeb8e3e",
+      "bytes": 98752,
+      "verifiedLfs": false
+    },
+    "public/survival/world-scenery-v1/blue-sword-fern.webp": {
+      "sha256": "fa2bb681f551a07b519adf76dc63c80c9022b622c23049bb26aa957b6c896bd4",
+      "bytes": 71282,
+      "verifiedLfs": false
+    },
+    "public/survival/world-scenery-v1/ground-ivy.webp": {
+      "sha256": "99205b0d7f2127491624691527db3dd54de2b94f08591bec09ffb60bf02b263f",
+      "bytes": 61268,
+      "verifiedLfs": false
+    },
+    "public/survival/world-scenery-v1/amber-blackberry.webp": {
+      "sha256": "7f2cc783dbe0b85d52ab18f2d9903517c8ddd721ea02f14895725b0748d8cbe3",
+      "bytes": 63906,
+      "verifiedLfs": false
+    },
+    "public/survival/world-scenery-v1/meadow-yarrow.webp": {
+      "sha256": "808334de706a9f67d8a05350f52d480745fba4c234860691b5944ecbe3b206a8",
+      "bytes": 90572,
+      "verifiedLfs": false
+    },
+    "public/survival/world-scenery-v1/dock-rosette.webp": {
+      "sha256": "17219ea4b3ea97b39514212787b30c9a9f54a781ac3387be573644406e8a48fc",
+      "bytes": 55356,
+      "verifiedLfs": false
+    },
+    "public/survival/scrap-runner/motion-a-v1.webp": {
+      "sha256": "d51735b19a2a34f1071505290689f6a964e82f2f522f9d2276682b6ee8ba7a65",
+      "bytes": 1056048,
+      "verifiedLfs": false
+    },
+    "public/survival/scrap-runner/motion-b-v1.webp": {
+      "sha256": "46c8a1d1bdef4a0a8d09e62a13cd3dc07932e1fcafd8f74cead3505bb9ea16d8",
+      "bytes": 930802,
+      "verifiedLfs": false
+    },
+    "public/survival/river-surface-flow-v1/ripples.webp": {
+      "sha256": "6b554bec63d0465a38d6ccab54ece5f5bb76ee8cc590d3bf908d46083cf3f952",
+      "bytes": 134472,
+      "verifiedLfs": false
+    },
+    "public/survival/stillwater-lake-v2/river-lower-pools-v1-reach-2-preview.webp": {
+      "sha256": "88c1e47e27dee9cf915d835cfe70b9942e675959155ed7601dcf9237340ba74b",
+      "bytes": 88318,
+      "verifiedLfs": false
+    },
+    "public/survival/stillwater-lake-v2/river-lower-pools-v1-reach-3-preview.webp": {
+      "sha256": "53a7a805d9cd8445d0cc9ed8ee64e60dcaf9382aacbb81f0d970cd5dddb680fe",
+      "bytes": 81572,
+      "verifiedLfs": false
+    },
+    "public/survival/stillwater-lake-v2/river-lower-pools-v1-reach-4-preview.webp": {
+      "sha256": "2e0d5a84dc5d6e5f73cde65a6c5486a2d600c4bcbfd24cf963ce8d9f84eb0ff2",
+      "bytes": 87134,
+      "verifiedLfs": false
+    },
+    "public/survival/stillwater-lake-v2/river-lower-pools-v1-reach-5-preview.webp": {
+      "sha256": "29f19c1870a6480bc9a78636e46dc4a52d264cba5781822d4af01be93ba03608",
+      "bytes": 89528,
+      "verifiedLfs": false
+    },
+    "public/survival/river-features-v4/lower-lake-footprint.png": {
+      "sha256": "d35e553918eb075ce39ac81c4dfe146a7e8fbd6897f1da9bed4b89c8148ea85f",
+      "bytes": 36712,
+      "verifiedLfs": false
+    },
+    "public/survival/river-calm-v2/riverExtension2_1Flow-mask.png": {
+      "sha256": "af5b41cfb567c48c23027f18a8cde94e1e620ead262026e8d48b2ab8ef2794e9",
+      "bytes": 13095,
+      "verifiedLfs": false
+    },
+    "public/survival/waterfall-pilot-v1/whitewater-frames.webp": {
+      "sha256": "8c8b6b842d2e770d0f3c20f3e3c3fd62570c03dfa2dee94dccfd316949a45389",
+      "bytes": 245432,
+      "verifiedLfs": false
+    },
+    "public/survival/river-calm-v2/riverExtension2_4Flow-mask.png": {
+      "sha256": "0da5caa3546e0da384f0d564c688f8be933b3e38496f44241dc5367d08479caf",
+      "bytes": 12177,
+      "verifiedLfs": false
+    },
+    "public/fonts/barlow-condensed-black.ttf": {
+      "sha256": "4aa9c0f6fd78002d8d4485f8ab338bb05b016b17620faee12cb89ac428af54d3",
+      "bytes": 34324,
+      "verifiedLfs": false
+    },
+    "public/survival/river-detail-v5/riverHD3_0_1536.webp": {
+      "sha256": "0bd7f40d37f0cac98d516906ef77cdfe959a37100a1b8179b999ef955852fe7f",
+      "bytes": 269924,
+      "verifiedLfs": false
+    },
+    "public/survival/river-detail-v5/riverHD3_512_1536.webp": {
+      "sha256": "2454aa3fc3871ba54d2a6d9a8089024743e749ca8b708c8518ff8e688615e47b",
+      "bytes": 247928,
+      "verifiedLfs": false
+    },
+    "public/survival/river-detail-v5/riverHD3_1024_1536.webp": {
+      "sha256": "b0cfb1e02222fbecc675dd3adc0cc768cd3fb33af9bfada61c96cf8b33fe799f",
+      "bytes": 322494,
+      "verifiedLfs": false
+    },
+    "public/survival/river-detail-v5/riverHD3_1536_1536.webp": {
+      "sha256": "4a49dda01f0bf8206db8cf728d7294d2d60df369ac9cd5fcc9ad81f81abd40aa",
+      "bytes": 405102,
+      "verifiedLfs": false
+    },
+    "public/survival/river-detail-v5/riverHD3_2048_1536.webp": {
+      "sha256": "f307686ae2db311957c12f4a2989aed681397dcd68dba31b4083755330b67fc3",
+      "bytes": 408472,
+      "verifiedLfs": false
+    },
+    "public/survival/river-detail-v5/riverHD3_2560_1536.webp": {
+      "sha256": "9f885099106987bba25c68890a3e94d21fc264e15b1c7ec691d3bf0a772940a6",
+      "bytes": 76004,
+      "verifiedLfs": false
+    },
+    "public/survival/river-detail-v5/riverHD3_0_2048.webp": {
+      "sha256": "ba36b7892a26748a23ca81aeed1c9e444c5774cdb0e6e21c37885586c4264ef3",
+      "bytes": 181998,
+      "verifiedLfs": false
+    },
+    "public/survival/river-detail-v5/riverHD3_512_2048.webp": {
+      "sha256": "0b0c61e5aadbd7b94f72cb1f04a91926f589d5f47cbe77de40883fd27f10fd99",
+      "bytes": 161498,
+      "verifiedLfs": false
+    },
+    "public/survival/river-detail-v5/riverHD3_1024_2048.webp": {
+      "sha256": "f55b53bf27f40e4943c26b88bdecd706895b6452c39dd82a6411120d048fd116",
+      "bytes": 191680,
+      "verifiedLfs": false
+    },
+    "public/survival/river-detail-v5/riverHD3_1536_2048.webp": {
+      "sha256": "d20f029b31b582424ab227b4489a387fd7e1bf80885182976edf1c424fc3f825",
+      "bytes": 243436,
+      "verifiedLfs": false
+    },
+    "public/survival/river-detail-v5/riverHD3_2048_2048.webp": {
+      "sha256": "76b496eee674ef0859f86df6e7678c8bb5e9b4f6acf3b23dd4500b88754fdcef",
+      "bytes": 239994,
+      "verifiedLfs": false
+    },
+    "public/survival/river-detail-v5/riverHD3_2560_2048.webp": {
+      "sha256": "cc902a2d8c9e7a991e73801b1334493e74896bbbbee6638450960cf15c9e39b7",
+      "bytes": 45856,
+      "verifiedLfs": false
+    },
+    "public/survival/river-detail-v5/riverHD4_0_0.webp": {
+      "sha256": "e6548d12eef985522930600859899dbeb190378d82ac2ee94140c78e3701032d",
+      "bytes": 410956,
+      "verifiedLfs": false
+    },
+    "public/survival/river-detail-v5/riverHD4_512_0.webp": {
+      "sha256": "6fc5fc54c2ed303e6508bcdeddcae64df68e9dded1737e6fa3a7f6de517c307f",
+      "bytes": 395678,
+      "verifiedLfs": false
+    },
+    "public/survival/river-detail-v5/riverHD4_1024_0.webp": {
+      "sha256": "6e675183910c8312d45421690720405d4ab845f7d4bc1695e916c739b625e1f1",
+      "bytes": 382716,
+      "verifiedLfs": false
+    },
+    "public/survival/stillwater-lake-v2/riverHD4_1536_0.webp": {
+      "sha256": "f94c7e89cb3c4ad8e73f7f103e59dd3bfa3a5a16ea9332fa406e599783622c3d",
+      "bytes": 389750,
+      "verifiedLfs": false
+    },
+    "public/survival/stillwater-lake-v2/riverHD4_2048_0.webp": {
+      "sha256": "c75c513bbb508c3640d2b4e7d9ee88d7a67f964a3e1e9260fcaef41bcacd38e6",
+      "bytes": 392870,
+      "verifiedLfs": false
+    },
+    "public/survival/stillwater-lake-v2/riverHD4_2560_0.webp": {
+      "sha256": "ab6b1faad8d22c5a5dec0bbe2742c1eda3c967fff3d1cc3dfc4c4ead771ba00d",
+      "bytes": 78294,
+      "verifiedLfs": false
+    },
+    "public/survival/river-detail-v5/riverHD4_0_512.webp": {
+      "sha256": "bd036cdbd39c91e8c17b6a4f1b9795512b0a7a61b5b4ee4fc466bc32ef51d674",
+      "bytes": 403954,
+      "verifiedLfs": false
+    },
+    "public/survival/river-detail-v5/riverHD4_512_512.webp": {
+      "sha256": "a22ba6663ee782eade390dae6d43b57f1e1619bf49cb2edd375cb834f9f3fbc0",
+      "bytes": 398614,
+      "verifiedLfs": false
+    },
+    "public/survival/stillwater-lake-v2/riverHD4_1024_512.webp": {
+      "sha256": "1074a35e843f7ed08822a52ed32c0e089f65f5ce66c813089faa29d9d51bc8ab",
+      "bytes": 395546,
+      "verifiedLfs": false
+    },
+    "public/survival/stillwater-lake-v2/riverHD4_1536_512.webp": {
+      "sha256": "458a700994d616c756b4556f054040bf9822b2d8a2769cec40830e0e602dee36",
+      "bytes": 314498,
+      "verifiedLfs": false
+    },
+    "public/survival/stillwater-lake-v2/riverHD4_2048_512.webp": {
+      "sha256": "9cdd045a955c8b35aad03098aa31edd30cbeda3db7230ee0df9455380373c57a",
+      "bytes": 302634,
+      "verifiedLfs": false
+    },
+    "public/survival/stillwater-lake-v2/riverHD4_2560_512.webp": {
+      "sha256": "06696e1d0d2d0ddfff16d88e62602ee6c86a18802ebe41646724e40cb95393cd",
+      "bytes": 69498,
+      "verifiedLfs": false
+    },
+    "public/survival/river-detail-v5/riverHD4_0_1024.webp": {
+      "sha256": "c80e51333953419ba5a5a96469300a954f2c9591f18f0b6de0390f67ca595fd5",
+      "bytes": 382632,
+      "verifiedLfs": false
+    },
+    "public/survival/river-detail-v5/riverHD4_512_1024.webp": {
+      "sha256": "37a6912fddfdb0233bff4c5bb44ccb97b9099a4204a2ad2f419b25a58db1ca49",
+      "bytes": 408818,
+      "verifiedLfs": false
+    },
+    "public/survival/stillwater-lake-v2/riverHD4_1024_1024.webp": {
+      "sha256": "5aef2484b6a0364ca865c05cd100a8bac6f674234ac4632aa5c6e7d24862aebb",
+      "bytes": 335844,
+      "verifiedLfs": false
+    },
+    "public/survival/stillwater-lake-v2/riverHD4_1536_1024.webp": {
+      "sha256": "ca53ee7dbfd2b736386d9bb7e5025528ae76b39fccf9ccb2a6d13386df3ac2ee",
+      "bytes": 197388,
+      "verifiedLfs": false
+    },
+    "public/survival/stillwater-lake-v2/riverHD4_2048_1024.webp": {
+      "sha256": "2a169e6700a7284c83bdfbca4a39317a6096cbe0758f31d4e8af15708a7fd758",
+      "bytes": 227940,
+      "verifiedLfs": false
+    },
+    "public/survival/stillwater-lake-v2/riverHD4_2560_1024.webp": {
+      "sha256": "20a9db523847b5429c9f5269c6d079a51262f1682fb5e755a8e195bafc33ae2a",
+      "bytes": 65364,
+      "verifiedLfs": false
+    },
+    "public/survival/river-detail-v5/riverHD4_0_1536.webp": {
+      "sha256": "ef4b8176b35a829eeb742401a50b49487288858f09ff1a5ae66d977802915ea1",
+      "bytes": 405278,
+      "verifiedLfs": false
+    },
+    "public/survival/river-detail-v5/riverHD4_512_1536.webp": {
+      "sha256": "b314d20d0d2e01b9d1f55bcb27309787e92bfbf7f06474aaf5ddb5f2e9a6904c",
+      "bytes": 431416,
+      "verifiedLfs": false
+    },
+    "public/survival/stillwater-lake-v2/riverHD4_1024_1536.webp": {
+      "sha256": "abb047c39c2389018f3a31d091ab2fa06191678895d1531efeab60459adcc204",
+      "bytes": 397892,
+      "verifiedLfs": false
+    },
+    "public/survival/stillwater-lake-v2/riverHD4_1536_1536.webp": {
+      "sha256": "1de2e3b7fef26bfb7146d8cdb4f04e6f5a9b81918584be6ed771950ce29d19b8",
+      "bytes": 335872,
+      "verifiedLfs": false
+    },
+    "public/survival/stillwater-lake-v2/riverHD4_2048_1536.webp": {
+      "sha256": "fbfb68c2928d167439a8ca12013c6cf47fe4dc44bfed6bdb7b4ec5b7835d5afd",
+      "bytes": 319226,
+      "verifiedLfs": false
+    },
+    "public/survival/stillwater-lake-v2/riverHD4_2560_1536.webp": {
+      "sha256": "2e402f63283cdea01ef796a247e577e3903a29c6ce21d6842198d0037a43608b",
+      "bytes": 68006,
+      "verifiedLfs": false
+    },
+    "public/survival/river-detail-v5/riverHD4_0_2048.webp": {
+      "sha256": "2fec72400998bfbfe9bc72ff865340a906cdc465c4287a87fa421cc344992105",
+      "bytes": 255026,
+      "verifiedLfs": false
+    },
+    "public/survival/river-detail-v5/riverHD4_512_2048.webp": {
+      "sha256": "5ea7296097a834e00f757bab7cad0f7683ce8fe89155fd61c3306b4f152bc812",
+      "bytes": 262344,
+      "verifiedLfs": false
+    },
+    "public/survival/river-detail-v5/riverHD4_1024_2048.webp": {
+      "sha256": "503b36d95ef758d04faad91cf4f8d0dee3ce90a9ce944bf907bd382db382c6a3",
+      "bytes": 247024,
+      "verifiedLfs": false
+    },
+    "public/survival/river-detail-v5/riverHD4_1536_2048.webp": {
+      "sha256": "2c8b7b9b07ba8c0a8f4613a1bb92fbcb48aa375e7406f4cff157c04ce4a81255",
+      "bytes": 222760,
+      "verifiedLfs": false
+    },
+    "public/survival/river-detail-v5/riverHD4_2048_2048.webp": {
+      "sha256": "6d5203bc05d04657b2c2579029f910c4563737d99fad3ad7d94b822178567ded",
+      "bytes": 214586,
+      "verifiedLfs": false
+    },
+    "public/survival/river-detail-v5/riverHD4_2560_2048.webp": {
+      "sha256": "872f97b13f19c4c6665a2abc6cf6242c692abcd238b7496544c6f5c8d3901599",
+      "bytes": 42588,
+      "verifiedLfs": false
+    },
+    "public/survival/river-detail-v5/riverHD5_0_0.webp": {
+      "sha256": "889b216217af8faa1a8b5b369de3c4ba1af2965ced95f4a9c5275a18af0ea28d",
+      "bytes": 391650,
+      "verifiedLfs": false
+    },
+    "public/survival/river-detail-v5/riverHD5_512_0.webp": {
+      "sha256": "126cbde4dfd9421695dcc79aa1ec2da24c67270fcdd065b2027fbeaced30ed18",
+      "bytes": 413774,
+      "verifiedLfs": false
+    },
+    "public/survival/river-detail-v5/riverHD5_1024_0.webp": {
+      "sha256": "24e9d7bdc0c04228addc6b2e72ab920aab0e0be3d2c32680954b52dd678fd790",
+      "bytes": 388222,
+      "verifiedLfs": false
+    },
+    "public/survival/river-detail-v5/riverHD5_1536_0.webp": {
+      "sha256": "d78a252d8ad8e07fc2d885adbfe1ce090b3c478caed3498558f0ac14a41d19d7",
+      "bytes": 372900,
+      "verifiedLfs": false
+    },
+    "public/survival/river-detail-v5/riverHD5_2048_0.webp": {
+      "sha256": "ea04f7fd23f23ffd0b952551ac3468926151cd162414b4e314b344adb94b150d",
+      "bytes": 346278,
+      "verifiedLfs": false
+    },
+    "public/survival/river-detail-v5/riverHD5_0_512.webp": {
+      "sha256": "b5b88962761c7bd28846377861f70bee00d5fc2f35fd767a30e578f4d18baeb2",
+      "bytes": 404704,
+      "verifiedLfs": false
+    },
+    "public/survival/river-detail-v5/riverHD5_512_512.webp": {
+      "sha256": "b8649cd926b1f9d1ec2458465a474186d9f3be2bac7c2c90ecf3476d3ee369a7",
+      "bytes": 398720,
+      "verifiedLfs": false
+    },
+    "public/survival/river-detail-v5/riverHD5_1024_512.webp": {
+      "sha256": "46d58ece6245c846337f70a44d288e0c56c6f1e6186a344cf328eef9eba0c435",
+      "bytes": 399694,
+      "verifiedLfs": false
+    },
+    "public/survival/river-detail-v5/riverHD5_1536_512.webp": {
+      "sha256": "7755f8f9a534cae69a85c3578ab3b18c323d7c530685ce48af6de151b0cf2409",
+      "bytes": 400252,
+      "verifiedLfs": false
+    },
+    "public/survival/river-detail-v5/riverHD5_2048_512.webp": {
+      "sha256": "750ecb772f75e4dfad77b51642ec1a22eb65e96b2e2fe1c85f9a83d3b17e1f1f",
+      "bytes": 367678,
+      "verifiedLfs": false
+    },
+    "public/survival/river-detail-v5/river-waterworks-approach-v1-reach-4-medium.webp": {
+      "sha256": "4fb37dd67b39863955f357f70b206c3933b31b4f16934ca39ab914a75242a5b9",
+      "bytes": 211190,
+      "verifiedLfs": false
+    },
+    "public/survival/river-detail-v5/river-waterworks-approach-v1-reach-4-preview.webp": {
+      "sha256": "8d747c8a59ae3b37ca148318c010c330753bb2097ed71ad7a38b8b8e2af603a7",
+      "bytes": 29966,
+      "verifiedLfs": false
+    },
+    "public/survival/river-detail-v5/river-waterworks-approach-v1-reach-5-medium.webp": {
+      "sha256": "e1928edeecdc7db64256066db5bc7fec527c1f34414d6ea74458cd0ab218ab93",
+      "bytes": 204718,
+      "verifiedLfs": false
+    },
+    "public/survival/river-detail-v5/river-waterworks-approach-v1-reach-5-preview.webp": {
+      "sha256": "8ad7650b09d9712d499c6ea534d35363cb229c37a0c82e6ed0160adf80210e0e",
+      "bytes": 29130,
+      "verifiedLfs": false
+    },
+    "public/survival/stillwater-lake-v2/river-lower-pools-v1-reach-1-medium.webp": {
+      "sha256": "9e42a13eef158a7d73ce97f2b67593f01bffed23ccb65dc32450a28cd5c37199",
+      "bytes": 567808,
+      "verifiedLfs": false
+    },
+    "public/survival/stillwater-lake-v2/river-lower-pools-v1-reach-1-preview.webp": {
+      "sha256": "8de61c6f48a358c12b66719f63a1441c83d97e8872c12b56fcf18b5be2198ad4",
+      "bytes": 85614,
+      "verifiedLfs": false
+    },
+    "public/survival/stillwater-lake-v2/river-lower-pools-v1-reach-2-medium.webp": {
+      "sha256": "2e96e89de6314f2b3b388346acca16907ece08d6cc2756152deeb7395817eb3a",
+      "bytes": 581378,
+      "verifiedLfs": false
+    },
+    "public/survival/stillwater-lake-v2/river-lower-pools-v1-reach-3-medium.webp": {
+      "sha256": "7f4edfaf745ef2fa51d4e6bed8299d108f6108e030891492a83d43337eb848dc",
+      "bytes": 542932,
+      "verifiedLfs": false
+    },
+    "public/survival/stillwater-lake-v2/river-lower-pools-v1-reach-4-medium.webp": {
+      "sha256": "fbef90b081e95a1357058b1466cb66b6d1ad451b65f1442920d8b073f2967a5f",
+      "bytes": 580192,
+      "verifiedLfs": false
+    },
+    "public/survival/stillwater-lake-v2/river-lower-pools-v1-reach-5-medium.webp": {
+      "sha256": "15518c0d1a87af8ba537f156f2702da584952fb3100e3bdcc9581745658756b4",
+      "bytes": 580880,
+      "verifiedLfs": false
+    },
+    "public/survival/river-detail-v5/river-southern-reach-v1-reach-1-medium.webp": {
+      "sha256": "ad5fbc81b515d371f2c49c752377eadbc59849eef09e5dce3229a25d9ca40c70",
+      "bytes": 231612,
+      "verifiedLfs": false
+    },
+    "public/survival/river-detail-v5/river-southern-reach-v1-reach-1-preview.webp": {
+      "sha256": "5dc78fd67450534e38661a523342231be09f37a860c8f09ebca579709bf1040f",
+      "bytes": 31900,
+      "verifiedLfs": false
+    },
+    "public/survival/river-detail-v5/river-southern-reach-v1-reach-2-medium.webp": {
+      "sha256": "6c5c542683acbe9ee42d86a09aa98eabe68f552993ec7b3b58c325ed27401ebe",
+      "bytes": 228830,
+      "verifiedLfs": false
+    },
+    "public/survival/river-detail-v5/river-southern-reach-v1-reach-2-preview.webp": {
+      "sha256": "3f7160829aee084bea9f26f87808d8dd22e76df7cdef2de785abff086ec2efc7",
+      "bytes": 32246,
+      "verifiedLfs": false
+    }
+  },
+  "textureChecks": {
+    "before": [
+      {
+        "view": "platform",
+        "weather": "clear",
+        "camera": {
+          "id": "platform",
+          "x": -1830,
+          "y": 6660,
+          "zoom": 1
+        },
+        "tick": 1800,
+        "campMissing": 0,
+        "riverMissing": 0,
+        "campPending": 0,
+        "riverPending": 0,
+        "active": 0,
+        "queued": 0,
+        "warming": 0,
+        "visibleFish": 3
+      },
+      {
+        "view": "entry",
+        "weather": "clear",
+        "camera": {
+          "id": "entry",
+          "x": -1430,
+          "y": 6480,
+          "zoom": 1.25
+        },
+        "tick": 1800,
+        "campMissing": 0,
+        "riverMissing": 0,
+        "campPending": 0,
+        "riverPending": 0,
+        "active": 0,
+        "queued": 0,
+        "warming": 0,
+        "visibleFish": 3
+      },
+      {
+        "view": "overview",
+        "weather": "clear",
+        "camera": {
+          "id": "overview",
+          "x": -2100,
+          "y": 6750,
+          "zoom": 0.6
+        },
+        "tick": 1800,
+        "campMissing": 0,
+        "riverMissing": 0,
+        "campPending": 0,
+        "riverPending": 0,
+        "active": 0,
+        "queued": 0,
+        "warming": 0,
+        "visibleFish": 3
+      },
+      {
+        "view": "north-join",
+        "weather": "clear",
+        "camera": {
+          "id": "north-join",
+          "x": -2870,
+          "y": 6150,
+          "zoom": 0.8
+        },
+        "tick": 1800,
+        "campMissing": 0,
+        "riverMissing": 0,
+        "campPending": 0,
+        "riverPending": 0,
+        "active": 0,
+        "queued": 0,
+        "warming": 0,
+        "visibleFish": 0
+      },
+      {
+        "view": "south-join",
+        "weather": "clear",
+        "camera": {
+          "id": "south-join",
+          "x": -2900,
+          "y": 7510,
+          "zoom": 0.8
+        },
+        "tick": 1800,
+        "campMissing": 0,
+        "riverMissing": 0,
+        "campPending": 0,
+        "riverPending": 0,
+        "active": 0,
+        "queued": 0,
+        "warming": 0,
+        "visibleFish": 0
+      },
+      {
+        "view": "full-lake",
+        "weather": "clear",
+        "camera": {
+          "id": "full-lake",
+          "x": -2350,
+          "y": 6790,
+          "zoom": 0.38
+        },
+        "tick": 1800,
+        "campMissing": 0,
+        "riverMissing": 0,
+        "campPending": 0,
+        "riverPending": 0,
+        "active": 0,
+        "queued": 0,
+        "warming": 0,
+        "visibleFish": 3
+      },
+      {
+        "view": "portrait",
+        "weather": "clear",
+        "camera": {
+          "id": "portrait",
+          "x": -2200,
+          "y": 6760,
+          "zoom": 0.6,
+          "width": 390,
+          "height": 844
+        },
+        "tick": 1800,
+        "campMissing": 0,
+        "riverMissing": 0,
+        "campPending": 0,
+        "riverPending": 0,
+        "active": 0,
+        "queued": 0,
+        "warming": 0,
+        "visibleFish": 2
+      },
+      {
+        "view": "platform",
+        "weather": "rain",
+        "camera": {
+          "id": "platform",
+          "x": -1830,
+          "y": 6660,
+          "zoom": 1
+        },
+        "tick": 1800,
+        "campMissing": 0,
+        "riverMissing": 0,
+        "campPending": 0,
+        "riverPending": 0,
+        "active": 0,
+        "queued": 0,
+        "warming": 0,
+        "visibleFish": 3
+      }
+    ],
+    "after": [
+      {
+        "view": "platform",
+        "weather": "clear",
+        "camera": {
+          "id": "platform",
+          "x": -1830,
+          "y": 6660,
+          "zoom": 1
+        },
+        "tick": 1800,
+        "campMissing": 0,
+        "riverMissing": 0,
+        "campPending": 0,
+        "riverPending": 0,
+        "active": 0,
+        "queued": 0,
+        "warming": 0,
+        "visibleFish": 3
+      },
+      {
+        "view": "entry",
+        "weather": "clear",
+        "camera": {
+          "id": "entry",
+          "x": -1430,
+          "y": 6480,
+          "zoom": 1.25
+        },
+        "tick": 1800,
+        "campMissing": 0,
+        "riverMissing": 0,
+        "campPending": 0,
+        "riverPending": 0,
+        "active": 0,
+        "queued": 0,
+        "warming": 0,
+        "visibleFish": 3
+      },
+      {
+        "view": "overview",
+        "weather": "clear",
+        "camera": {
+          "id": "overview",
+          "x": -2100,
+          "y": 6750,
+          "zoom": 0.6
+        },
+        "tick": 1800,
+        "campMissing": 0,
+        "riverMissing": 0,
+        "campPending": 0,
+        "riverPending": 0,
+        "active": 0,
+        "queued": 0,
+        "warming": 0,
+        "visibleFish": 3
+      },
+      {
+        "view": "north-join",
+        "weather": "clear",
+        "camera": {
+          "id": "north-join",
+          "x": -2870,
+          "y": 6150,
+          "zoom": 0.8
+        },
+        "tick": 1800,
+        "campMissing": 0,
+        "riverMissing": 0,
+        "campPending": 0,
+        "riverPending": 0,
+        "active": 0,
+        "queued": 0,
+        "warming": 0,
+        "visibleFish": 0
+      },
+      {
+        "view": "south-join",
+        "weather": "clear",
+        "camera": {
+          "id": "south-join",
+          "x": -2900,
+          "y": 7510,
+          "zoom": 0.8
+        },
+        "tick": 1800,
+        "campMissing": 0,
+        "riverMissing": 0,
+        "campPending": 0,
+        "riverPending": 0,
+        "active": 0,
+        "queued": 0,
+        "warming": 0,
+        "visibleFish": 0
+      },
+      {
+        "view": "full-lake",
+        "weather": "clear",
+        "camera": {
+          "id": "full-lake",
+          "x": -2350,
+          "y": 6790,
+          "zoom": 0.38
+        },
+        "tick": 1800,
+        "campMissing": 0,
+        "riverMissing": 0,
+        "campPending": 0,
+        "riverPending": 0,
+        "active": 0,
+        "queued": 0,
+        "warming": 0,
+        "visibleFish": 3
+      },
+      {
+        "view": "portrait",
+        "weather": "clear",
+        "camera": {
+          "id": "portrait",
+          "x": -1830,
+          "y": 6740,
+          "zoom": 0.35,
+          "width": 390,
+          "height": 844
+        },
+        "tick": 1800,
+        "campMissing": 0,
+        "riverMissing": 0,
+        "campPending": 0,
+        "riverPending": 0,
+        "active": 0,
+        "queued": 0,
+        "warming": 0,
+        "visibleFish": 3
+      },
+      {
+        "view": "platform",
+        "weather": "rain",
+        "camera": {
+          "id": "platform",
+          "x": -1830,
+          "y": 6660,
+          "zoom": 1
+        },
+        "tick": 1800,
+        "campMissing": 0,
+        "riverMissing": 0,
+        "campPending": 0,
+        "riverPending": 0,
+        "active": 0,
+        "queued": 0,
+        "warming": 0,
+        "visibleFish": 3
+      }
+    ]
+  },
+  "shorelineChecks": [
+    {
+      "id": "entry",
+      "x": -1470,
+      "y": 6500,
+      "radius": 19,
+      "rawWater": false,
+      "walkable": true
+    },
+    {
+      "id": "approach-1",
+      "x": -1450,
+      "y": 6490,
+      "radius": 19,
+      "rawWater": false,
+      "walkable": true
+    },
+    {
+      "id": "approach-2",
+      "x": -1430,
+      "y": 6480,
+      "radius": 19,
+      "rawWater": false,
+      "walkable": true
+    },
+    {
+      "id": "approach-3",
+      "x": -1410,
+      "y": 6470,
+      "radius": 19,
+      "rawWater": false,
+      "walkable": true
+    },
+    {
+      "id": "approach-4",
+      "x": -1390,
+      "y": 6460,
+      "radius": 19,
+      "rawWater": false,
+      "walkable": true
+    },
+    {
+      "id": "approach-5",
+      "x": -1370,
+      "y": 6450,
+      "radius": 19,
+      "rawWater": false,
+      "walkable": true
+    },
+    {
+      "id": "approach-6",
+      "x": -1350,
+      "y": 6440,
+      "radius": 19,
+      "rawWater": false,
+      "walkable": true
+    },
+    {
+      "id": "gangway",
+      "x": -1606.1078066914497,
+      "y": 6562.10966542751,
+      "radius": 19,
+      "rawWater": true,
+      "walkable": true
+    },
+    {
+      "id": "platform",
+      "x": -1901.3078066914497,
+      "y": 6690.901486988848,
+      "radius": 19,
+      "rawWater": true,
+      "walkable": true
+    },
+    {
+      "id": "open-water",
+      "x": -2057.1078066914497,
+      "y": 6814.739776951673,
+      "radius": 19,
+      "rawWater": true,
+      "walkable": false
+    }
+  ],
+  "artifacts": [
+    {
+      "file": "before-platform.webp",
+      "width": 1688,
+      "height": 780,
+      "bytes": 205126
+    },
+    {
+      "file": "before-full-lake.webp",
+      "width": 1688,
+      "height": 780,
+      "bytes": 501580
+    },
+    {
+      "file": "after-platform.webp",
+      "width": 1688,
+      "height": 780,
+      "bytes": 224078
+    },
+    {
+      "file": "after-entry.webp",
+      "width": 1688,
+      "height": 780,
+      "bytes": 313024
+    },
+    {
+      "file": "after-overview.webp",
+      "width": 1688,
+      "height": 780,
+      "bytes": 352884
+    },
+    {
+      "file": "after-north-join.webp",
+      "width": 1688,
+      "height": 780,
+      "bytes": 337634
+    },
+    {
+      "file": "after-south-join.webp",
+      "width": 1688,
+      "height": 780,
+      "bytes": 381188
+    },
+    {
+      "file": "after-full-lake.webp",
+      "width": 1688,
+      "height": 780,
+      "bytes": 508390
+    },
+    {
+      "file": "after-portrait.webp",
+      "width": 780,
+      "height": 1688,
+      "bytes": 380508
+    },
+    {
+      "file": "after-rain.webp",
+      "width": 1688,
+      "height": 780,
+      "bytes": 232052
+    }
+  ],
+  "notes": [
+    "Actual production native renderer and world snapshot with minimal platform adapters; no interface compositing.",
+    "The baseline model reads exact source from its recorded Git commit and SHA-verified LFS data.",
+    "Cold source assets were prefetched only for these views and checked against their Git LFS SHA and size.",
+    "Collision overlay is internal QA only and excluded from review images.",
+    "Software raster capture times do not measure iPhone frame rate."
+  ],
+  "reproduction": {
+    "workingDirectory": "Repository root",
+    "prerequisites": [
+      "Root npm ci",
+      "native/npm ci",
+      "git-lfs available; baseline Git commit present"
+    ],
+    "baselineCommand": "node docs/qa/stillwater-refinement-v3/render-production.mjs before --baseline=9ad7ea50415cd488ae015b7eb6bbda8e57f6cf20",
+    "currentCommand": "node docs/qa/stillwater-refinement-v3/render-production.mjs after",
+    "focusedCommand": "node docs/qa/stillwater-refinement-v3/render-production.mjs after --views=platform,entry",
+    "outputDirectory": ".qa/fishing-refinement"
+  },
+  "baselineModelSha256": "2fb6200400a4206a06f66d8df64b05111d632c857ef020bcbcec6d1c4241543d",
+  "portraitRecapture": {
+    "reason": "Recentered only the diagnostic portrait camera to show the entire pier.",
+    "uniqueDecodedFiles": 56,
+    "verifiedSourceFiles": 79,
+    "additionalSourcePaths": [],
+    "modelSha256": "ae235b461c73f53343c4a71fe1a787a8432d5f690353488ba3ad5ae56890f7a4"
+  },
+  "decodedFileCountScope": "The full eight-view capture session; portrait-only recapture is reported separately.",
+  "visualReview": {
+    "landing": "Wider gangway and short shore apron reach dry ground. Tight bank shadow avoids a floating landing.",
+    "water": "Continuous lake-to-river colour at both joins; submerged stone light retained; original stronger rapid-water texture remains by waterfall and bridge.",
+    "fish": "Anatomical silhouettes and soft highlights are legible near the pier. Motion is covered by the separate actual Skia painter study.",
+    "weather": "Clear and rain frames render with all assets settled."
+  }
+}

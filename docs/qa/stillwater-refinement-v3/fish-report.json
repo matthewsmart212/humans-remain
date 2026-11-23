@@ -1,0 +1,19 @@
+{
+  "result": "pass",
+  "fish": 6,
+  "forms": 3,
+  "waterSamples": 14400,
+  "averageWorldUnitsPerSecond": [
+    13.05,
+    26.61,
+    21.69,
+    22.2,
+    18.03,
+    19.9
+  ],
+  "slowestInstantaneousSpeed": 3.92,
+  "fastestInstantaneousSpeed": 58.59,
+  "cachedWaterValidation": true,
+  "reducedMotion": true,
+  "physicalIPhoneTested": false
+}

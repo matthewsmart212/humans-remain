@@ -3,6 +3,7 @@ import {resolveWorksiteWarehouse} from './camp-worksites-art';
 import {resolveAnimationDefaults} from './asset-animation-defaults';
 import {resolveWorkshopArtwork} from './workshop-animation-art';
 import {resolveTreatmentArtwork} from './treatment-animation-art';
+import {resolveFishingPierArtwork} from './fishing-site-reskin';
 import type {ArtworkRecord} from './artwork-model';
 import manifest from './wall-artwork-replacements.json';
 import campManifest from './camp-artwork-replacements.json';
@@ -19,7 +20,7 @@ export function resolveArtworkReskin(record:ArtworkRecord):ArtworkRecord{
 }
 
 function replacedArtwork(record:ArtworkRecord):ArtworkRecord{
- record=resolveTreatmentArtwork(resolveWorkshopArtwork(resolveSouthHeadquarters(resolveAnimationDefaults(record))));
+ record=resolveFishingPierArtwork(resolveTreatmentArtwork(resolveWorkshopArtwork(resolveSouthHeadquarters(resolveAnimationDefaults(record)))));
  const worksite=resolveWorksiteWarehouse(record);if(worksite!==record)return worksite;
  // Match all states together so a new owner upload never mixes old and new frames.
  const structure=structureManifest.find(r=>r.entryId===record.id&&r.sourceId===record.config.base.id);

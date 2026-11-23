@@ -20,3 +20,23 @@ float stillwaterPaintAmount(float2 source){
  }).join('\n ')}
  return amount;
 }`;
+
+// The exported painting has rectangular preservation areas for old artwork.
+// Those are not physical boundaries in the lake. A separate broad water field
+// carries the same material through its inlet and outlet without grading soil,
+// pale stones or timber. Its north edge ends below the previous river batch.
+export const STILLWATER_LAKE_WATER_SKSL=`
+float stillwaterWaterAmount(float2 source){
+ float2 nativePoint=(source-float2(${values([source.x,source.y])}))*float2(${values([paint.masterSize[0]/2/source.width,paint.masterSize[1]/2/source.height])});
+ float radius=length((nativePoint-float2(950.,625.))/float2(450.,430.));
+ return 1.-smoothstep(.86,1.10,radius);
+}
+half3 stillwaterWaterColour(half3 colour){
+ // Shift old blue towards the woodland while retaining reflected light and
+ // submerged stones. A fixed dark replacement erases those highlights and
+ // leaves hard-looking islands between the stones and foam.
+ float water=smoothstep(.025,.11,float(colour.b-colour.r))*smoothstep(.015,.075,float(colour.g-colour.r));
+ half excess=max(half(0.),colour.b-colour.g);
+ half3 settled=half3(colour.r+excess*.20,colour.g*.84+excess*.08,colour.b*.35+colour.g*.30)*.82;
+ return mix(colour,settled,water);
+}`;

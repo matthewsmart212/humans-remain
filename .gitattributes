@@ -245,3 +245,10 @@ public/survival/expedition-menu-v2/loading-panel.webp -filter -diff -merge
 /public/survival/stillwater-lake-v2/*.webp -filter -diff -merge -text
 /artwork-archive/stillwater-lake-v2/*.png -filter -diff -merge -text
 /docs/qa/stillwater-lake-v2/*.webp -filter -diff -merge -text
+
+# The wider jetty and compact visual evidence are direct web/native assets.
+/public/survival/stillwater-fishing-v2/*.webp -filter -diff -merge -text
+/artwork-archive/stillwater-fishing-v2/*.png -filter -diff -merge -text
+/docs/qa/stillwater-refinement-v3/*.webp -filter -diff -merge -text
+/docs/qa/stillwater-refinement-v3/*.mp4 -filter -diff -merge -text
+/docs/qa/stillwater-refinement-v3/*.gif -filter -diff -merge -text

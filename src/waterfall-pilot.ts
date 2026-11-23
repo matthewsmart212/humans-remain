@@ -1,5 +1,7 @@
 // The approved pilot on the broad upper cascade. The original river paintings and
 // collision remain untouched; every sample is aligned to their native pixels.
+import {EAST_TERRAIN_SCALE} from './east-approach';
+import {STILLWATER_LAKE_WATER_SKSL} from './stillwater-lake-art';
 const sx=2048/1070,sy=2816/1470;
 export const WATERFALL_PILOT={x:-6256+300*sx,y:-6200+320*sy,width:280*sx,height:260*sy};
 export const WATERFALL_IMAGES={
@@ -18,6 +20,7 @@ uniform shader stencil;
 uniform shader frames;
 uniform float4 bounds;
 uniform float clock;
+${STILLWATER_LAKE_WATER_SKSL}
 ${section?`uniform float2 nativeSize;
 uniform float2 artOrigin;
 uniform float2 artScale;
@@ -65,6 +68,10 @@ half4 main(float2 p){
  float crest=smoothstep(.48,.96,wave)*landing*(1.-smoothstep(.34,.64,radius));
  float glint=crest*smoothstep(.23,.76,flowing.g)*.19;
  colour=mix(colour,half3(.81,.90,.89),glint);
+ // The upstream lake water shares the surrounding material. The exact
+ // waterfall stencil, falling movement and white foam retain their shape.
+ float lakeWater=stillwaterWaterAmount(p/${EAST_TERRAIN_SCALE}+float2(600.));
+ colour=mix(colour,stillwaterWaterColour(colour),lakeWater);
  return half4(colour*mask,mask);
 }`;}
 export const WATERFALL_SHADER=waterfallShader();

@@ -59,6 +59,7 @@ jobs:
         run: |
           node scripts/check-fishing-site.mjs
           node scripts/check-fishing-site-behavior.mjs
+          node scripts/check-fishing-water-life.mjs
           node scripts/check-stillwater-lake.mjs
       - name: Test co-op room protocol and hibernation
         run: node scripts/check-coop-room.mjs

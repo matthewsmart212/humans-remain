@@ -150,6 +150,26 @@ try{
   kind:'sprite',base:{id:'fishing-test-art',url:'/survival/owner-pier-test.webp',name:'Owner pier',mime:'image/webp',width:1800,height:1100,bytes:1},
   frames:[],fps:1,worldWidth:880,anchor:[.74,.31],solid:true,footprint:{width:0,depth:0},collision:m.FISHING_PIER_COLLISION,
  }};
+ // An offline/published v1 artwork record must refresh with the wider asset;
+ // later owner uploads and explicitly edited dimensions/collision remain theirs.
+ const legacy={...replacement,config:{...replacement.config,
+  base:{...replacement.config.base,url:'/survival/stillwater-fishing-v1/pier.webp',width:1614,height:975},
+  worldWidth:740,anchor:[...m.FISHING_PIER_ANCHOR],collision:undefined,
+ }};
+ const legacyBefore=JSON.stringify(legacy);
+ try{
+  m.installImportedArt([...snapshot.records,legacy]);
+  assert.equal(m.fishingPierMetadata().image,m.FISHING_PIER_IMAGE,'Known old artwork receives the new landing');
+  assert.equal(m.fishingPierMetadata().width,m.FISHING_PIER_WIDTH,'Default saved width follows the wider deck');
+  assert.deepEqual(m.ASSET_BY_ID.get(m.FISHING_PIER_ID).collision,m.FISHING_PIER_COLLISION,'Saved default collision follows the actual new posts');
+  assert.equal(JSON.stringify(legacy),legacyBefore,'Artwork refresh does not mutate an owner record');
+  const customCollision={lineWidth:.02,paths:[{closed:true,points:[[.1,.2],[.2,.2],[.2,.3]]}]};
+  const ownerGeometry={...legacy,config:{...legacy.config,worldWidth:920,anchor:[.7,.25],collision:customCollision}};
+  m.installImportedArt([...snapshot.records,ownerGeometry]);
+  assert.equal(m.fishingPierMetadata().width,920,'Owner sizing survives the art refresh');
+  assert.deepEqual(m.fishingPierMetadata().anchor,[.7,.25]);
+  assert.deepEqual(m.ASSET_BY_ID.get(m.FISHING_PIER_ID).collision,customCollision,'Owner collision survives the art refresh');
+ }finally{m.installImportedArt(snapshot.records)}
  try{
   m.installImportedArt([...snapshot.records.filter(r=>r.id!==m.FISHING_PIER_ID),replacement]);
   const metadata=m.fishingPierMetadata(),expected=m.placementBounds(pier),geometry=m.fishingPierGeometry(pier);

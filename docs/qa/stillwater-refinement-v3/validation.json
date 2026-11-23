@@ -1,0 +1,114 @@
+{
+  "baselineCommit": "9ad7ea50415cd488ae015b7eb6bbda8e57f6cf20",
+  "checks": [
+    {
+      "command": "npm run typecheck",
+      "scope": "web",
+      "result": "pass"
+    },
+    {
+      "command": "npm run typecheck",
+      "scope": "native",
+      "result": "pass"
+    },
+    {
+      "command": "npm run build",
+      "scope": "production web bundle",
+      "result": "pass"
+    },
+    {
+      "command": "node scripts/check-fishing-site.mjs",
+      "result": "pass"
+    },
+    {
+      "command": "node scripts/check-fishing-site-behavior.mjs",
+      "result": "pass"
+    },
+    {
+      "command": "node scripts/check-fishing-water-life.mjs",
+      "result": "pass"
+    },
+    {
+      "command": "node scripts/check-stillwater-lake.mjs",
+      "result": "pass"
+    },
+    {
+      "command": "git diff --check",
+      "result": "pass"
+    }
+  ],
+  "pierBehaviour": {
+    "result": "pass",
+    "wetStandingSamples": 205,
+    "wetEdges": 8,
+    "routeCells": 4,
+    "returnRouteCells": 4,
+    "fish": 6,
+    "checks": [
+      "full-body deck support",
+      "removal/move restores water",
+      "exact mirror/rotation/frame transforms",
+      "unchanged bridges",
+      "bounded pier routes join ordinary outdoor navigation",
+      "real movement to deck and back to land",
+      "no fishing controls",
+      "water-only deterministic fish",
+      "offscreen culling",
+      "reduced motion",
+      "preserved planks and submerged support ends",
+      "software Skia painting and foreground occlusion"
+    ],
+    "physicalIPhoneTested": false
+  },
+  "fish": {
+    "result": "pass",
+    "fish": 6,
+    "forms": 3,
+    "waterSamples": 14400,
+    "averageWorldUnitsPerSecond": [
+      13.05,
+      26.61,
+      21.69,
+      22.2,
+      18.03,
+      19.9
+    ],
+    "slowestInstantaneousSpeed": 3.92,
+    "fastestInstantaneousSpeed": 58.59,
+    "cachedWaterValidation": true,
+    "reducedMotion": true,
+    "physicalIPhoneTested": false
+  },
+  "legacyAssetsVerifiedUnchanged": 78,
+  "assets": {
+    "public/survival/stillwater-fishing-v2/pier.webp": {
+      "bytes": 1080162,
+      "sha256": "903ed90c4045cb41e18c31224c8a8ebcb87b20037d8c2cfcc71f6f99c5f664cd"
+    },
+    "artwork-archive/stillwater-fishing-v2/pier.png": {
+      "bytes": 1611490,
+      "sha256": "261a5f53ae3f85143b47870fcc44ecf09a7a02173434b76389dd5a9d943d908e"
+    }
+  },
+  "physicalIPhoneTested": false,
+  "knownBaselineCIFailure": {
+    "check": "scripts/check-coop-room.mjs",
+    "reason": "Pinned Node22.13.1 runner cannot mock the requested method; ERR_INVALID_ARG_VALUE at line84",
+    "baselineRun": 45122708665
+  },
+  "scope": "Visual refinement only; no casting, catching, bait or fishing rewards",
+  "lake": {
+    "result": "pass",
+    "assets": 25,
+    "otherReachAndProtectedSamples": 8,
+    "dryMaterialSamples": 9,
+    "continuousLakeJoins": 2,
+    "movingWaterStillBanks": true,
+    "unrelatedWaterfallPreserved": true,
+    "geometryFiles": 7,
+    "shaderCompiled": true,
+    "waterfallShadersCompiled": true,
+    "sharedNativeShader": true,
+    "physicalIPhoneTested": false
+  }
+}

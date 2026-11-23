@@ -8,61 +8,13 @@ import type {Placement} from './world-layout';
 import type {World} from './survival-engine';
 import type {FoliageViewport} from './foliage-renderer';
 
-export type FishingFishOrbit={x:number;y:number;rx:number;ry:number;phase:number;speed:number;size:number;period:number;rippleOffset:number};
-const schools=new WeakMap<Placement,{geometry:FishingPierGeometry;fish:readonly FishingFishOrbit[]}>();
+export {fishingFishSchool,fishingFishPosition,type FishingFishOrbit} from './fishing-water-life';
+import {fishingFishSchool,drawFishingFish} from './fishing-water-life';
+
 const waterContacts=new WeakMap<FishingPierGeometry,readonly {x:number;y:number;size:number}[]>();
 const wetSurfaces=new WeakMap<FishingPierGeometry,readonly [number,number]>();
-const TAU=Math.PI*2;
+const pierShadows=new WeakMap<FishingPierGeometry,readonly {x:number;y:number}[]>();
 const intersects=(a:{x:number;y:number;width:number;height:number},b:FoliageViewport,pad=0)=>a.x+a.width+pad>=b.x&&a.x-pad<=b.x+b.width&&a.y+a.height+pad>=b.y&&a.y-pad<=b.y+b.height;
-function hash(text:string){let n=2166136261;for(let i=0;i<text.length;i++)n=Math.imul(n^text.charCodeAt(i),16777619);return n>>>0}
-
-/** Build a few complete water-only routes once, never scan world placements per frame. */
-export function fishingFishSchool(p:Placement):readonly FishingFishOrbit[]{
- const geometry=fishingPierGeometry(p),cached=schools.get(p);
- if(cached?.geometry===geometry)return cached.fish;
- const fish:FishingFishOrbit[]=[],seed=hash(p.id),origin=geometry.waterEnd;
- const scale=Math.max(.6,Math.min(1.5,geometry.bounds.width/660));
- if(geometry.deck.length>=3)for(let i=0;i<42&&fish.length<5;i++){
-  const angle=i*2.399963229728653+(seed%6283)/1000,ring=(80+(i%3)*65)*scale;
-  const x=origin.x+Math.cos(angle)*ring,y=origin.y+Math.sin(angle)*ring*.8;
-  if(fishingPierDeckContains(p,x,y))continue;
-  const rx=(25+(i*17%28))*scale,ry=(13+(i*11%14))*scale,size=(.8+(i*7%6)*.08)*scale;
-  let water=true;
-  // Sampling is finer than the artwork water-mask cells; the extra margin
-  // contains each fish, its tail, and the largest occasional ripple.
-  for(let j=0;j<40;j++)if(!riverWaterContains(x+Math.cos(j*TAU/40)*rx,y+Math.sin(j*TAU/40)*ry,36*scale)){water=false;break}
-  if(!water)continue;
-  fish.push({x,y,rx,ry,phase:((seed+i*977)%6283)/1000,speed:(.12+(i%4)*.018)*(i%2?-1:1),size,period:17+(i%4)*2,rippleOffset:((seed+i*131)%170)/10});
- }
- schools.set(p,{geometry,fish});return fish;
-}
-export function fishingFishPosition(fish:FishingFishOrbit,time:number){
- const phase=fish.phase+time*fish.speed;
- return {x:fish.x+Math.cos(phase)*fish.rx,y:fish.y+Math.sin(phase)*fish.ry,angle:Math.atan2(Math.cos(phase)*fish.ry*fish.speed,-Math.sin(phase)*fish.rx*fish.speed)};
-}
-function drawFish(ctx:CanvasRenderingContext2D,fish:FishingFishOrbit,time:number,reduced:boolean){
- const phase=fish.phase+time*fish.speed,c=Math.cos(phase),s=Math.sin(phase);
- const x=fish.x+c*fish.rx,y=fish.y+s*fish.ry,angle=Math.atan2(c*fish.ry*fish.speed,-s*fish.rx*fish.speed);
- ctx.save();ctx.translate(x,y);ctx.rotate(angle);ctx.scale(fish.size,fish.size);
- ctx.globalAlpha*=.72+.06*Math.sin(phase*.7+fish.phase);ctx.fillStyle='#0b2926';
- ctx.beginPath();ctx.ellipse(0,0,12.5,4.5,0,0,TAU);ctx.fill();
- const tail=reduced?0:Math.sin(time*3.4+fish.phase)*1.6;
- ctx.beginPath();ctx.moveTo(-10,0);ctx.lineTo(-18.75,-5+tail);ctx.lineTo(-16.25,tail);ctx.lineTo(-18.75,5+tail);ctx.closePath();ctx.fill();
- ctx.globalAlpha*=.5;ctx.beginPath();ctx.moveTo(-1.25,-2.5);ctx.lineTo(-6.25,-7.5);ctx.lineTo(5,-2.5);ctx.closePath();ctx.fill();
- // A faint interior back catches the water's light without outlining the fish.
- ctx.globalAlpha*=.4;ctx.fillStyle='#82927b';ctx.beginPath();ctx.ellipse(1,-1.1,7.5,.65,0,0,TAU);ctx.fill();
- ctx.restore();
- if(reduced)return;
- const age=(time+fish.rippleOffset)%fish.period,duration=1.7;
- if(age>=duration)return;
- // An expanding ring stays at the place where the fish disturbed the surface.
- const startPhase=fish.phase+(time-age)*fish.speed,rx=fish.x+Math.cos(startPhase)*fish.rx,ry=fish.y+Math.sin(startPhase)*fish.ry;
- const radius=(4+age*13)*fish.size;
- ctx.save();ctx.globalAlpha*=.17*(1-age/duration);ctx.strokeStyle='#c1d3c8';ctx.lineWidth=1;
- ctx.beginPath();ctx.ellipse(rx,ry,radius,radius*.55,0,0,TAU);ctx.stroke();
- if(age>.24){ctx.globalAlpha*=.45;ctx.beginPath();ctx.ellipse(rx,ry,radius*.64,radius*.35,0,0,TAU);ctx.stroke()}
- ctx.restore();
-}
 function placementTransform(ctx:CanvasRenderingContext2D,p:Placement,g:FishingPierGeometry){
  ctx.translate(p.x,p.y);ctx.rotate((p.rotation??0)*Math.PI/180);ctx.translate(-p.x,-p.y);
  if(p.flipX||p.flipY){const b=g.bounds,cx=b.x+b.width/2,cy=b.y+b.height/2;ctx.translate(cx,cy);ctx.scale(p.flipX?-1:1,p.flipY?-1:1);ctx.translate(-cx,-cy)}
@@ -82,10 +34,17 @@ function wetSurface(g:FishingPierGeometry):readonly [number,number]{
 }
 function drawPierShadow(ctx:FishingPierSurfaceContext,g:FishingPierGeometry){
  const scale=g.bounds.width/740;
+ let shadow=pierShadows.get(g);
+ if(!shadow){
+  // Water is below the boards; the landing rests directly on the bank. Keep
+  // its shadow close so the short apron feels seated instead of hovering.
+  shadow=g.deck.map(([x,y])=>riverWaterContains(x,y)?
+   {x:x+8*scale,y:y+22*scale}:{x:x+2*scale,y:y+4*scale});
+  pierShadows.set(g,shadow);
+ }
  ctx.save();ctx.fillStyle='#102b26';ctx.strokeStyle='#102b26';ctx.beginPath();
- for(let i=0;i<g.deck.length;i++){
-  const [x,y]=g.deck[i],sx=x+8*scale,sy=y+22*scale;
-  i?ctx.lineTo(sx,sy):ctx.moveTo(sx,sy);
+ for(let i=0;i<shadow.length;i++){
+  const {x,y}=shadow[i];i?ctx.lineTo(x,y):ctx.moveTo(x,y);
  }
  ctx.closePath();ctx.globalAlpha*=.16;ctx.fill();
  // A few soft edge bands follow the deck's actual silhouette. No broad oval
@@ -132,10 +91,10 @@ export function drawFishingSiteGround(ctx:CanvasRenderingContext2D,imgs:Record<s
   const g=fishingPierGeometry(p);if(intersects(g.worldBounds,view,40)&&wetSurface(g)[0])drawPierShadow(ctx,g);
  }
  if(life)for(const p of piers){
-  const g=fishingPierGeometry(p);if(!intersects(g.worldBounds,view,450))continue;
+  const g=fishingPierGeometry(p);if(!intersects(g.worldBounds,view,600))continue;
   for(const fish of fishingFishSchool(p)){
-   if(fish.x+fish.rx+40<view.x||fish.x-fish.rx-40>view.x+view.width||fish.y+fish.ry+40<view.y||fish.y-fish.ry-40>view.y+view.height)continue;
-   drawFish(ctx,fish,time,reduced);
+   if(fish.x+fish.rx+fish.drawRadius<view.x||fish.x-fish.rx-fish.drawRadius>view.x+view.width||fish.y+fish.ry+fish.drawRadius<view.y||fish.y-fish.ry-fish.drawRadius>view.y+view.height)continue;
+   drawFishingFish(ctx,fish,time,reduced);
   }
  }
  for(const p of piers){
