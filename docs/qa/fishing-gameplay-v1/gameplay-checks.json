@@ -1,0 +1,30 @@
+{
+  "result": "pass",
+  "standingSpots": 60,
+  "castStanding": {
+    "x": -1911.7620817843863,
+    "y": 6658.783147459728
+  },
+  "tackleStanding": {
+    "x": -1869.83574074324,
+    "y": 6644.06959313285
+  },
+  "baitStanding": {
+    "x": -1480,
+    "y": 6360
+  },
+  "fightSeconds": 26.383333333333333,
+  "checks": [
+    "actual tackle claim and capacity",
+    "reachable renewable bait",
+    "safe water and visible perch continuity",
+    "hold/release/cancel casting",
+    "bite bait accounting",
+    "missed bite and snapped line",
+    "playable reel/ease loop",
+    "bag-full retention and one catch award",
+    "release without inventory grant",
+    "timing and motor assists",
+    "movement/damage/menu/equipment cancellation"
+  ]
+}

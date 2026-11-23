@@ -1,0 +1,158 @@
+{
+  "baselineCommit": "e58693d43e8423c7455de2283f37f0f2751d3b61",
+  "sourceState": "Fishing working tree built on baseline; model checksum identifies reviewed code",
+  "modelSha256": "9064b5d19ea49b5d1ee14e44d5b4e87cfe9d5ca937a47a320415f0e943139984",
+  "renderer": "Production native renderer with CanvasKit software platform adapter",
+  "physicalIPhoneTested": false,
+  "captures": [
+    {
+      "name": "waiting-clear.png",
+      "stage": "waiting",
+      "campMissing": 0,
+      "riverMissing": 0,
+      "artworkActive": 0,
+      "artworkQueued": 0,
+      "artworkWarming": 0
+    },
+    {
+      "name": "casting-clear.png",
+      "stage": "casting",
+      "campMissing": 0,
+      "riverMissing": 0,
+      "artworkActive": 0,
+      "artworkQueued": 0,
+      "artworkWarming": 0
+    },
+    {
+      "name": "reeling-clear.png",
+      "stage": "reeling",
+      "campMissing": 0,
+      "riverMissing": 0,
+      "artworkActive": 0,
+      "artworkQueued": 0,
+      "artworkWarming": 0
+    },
+    {
+      "name": "landing-clear.png",
+      "stage": "landing",
+      "campMissing": 0,
+      "riverMissing": 0,
+      "artworkActive": 0,
+      "artworkQueued": 0,
+      "artworkWarming": 0
+    },
+    {
+      "name": "portrait-clear.png",
+      "stage": "waiting",
+      "campMissing": 0,
+      "riverMissing": 0,
+      "artworkActive": 0,
+      "artworkQueued": 0,
+      "artworkWarming": 0
+    },
+    {
+      "name": "grip-close-clear.png",
+      "stage": "reeling",
+      "campMissing": 0,
+      "riverMissing": 0,
+      "artworkActive": 0,
+      "artworkQueued": 0,
+      "artworkWarming": 0
+    }
+  ],
+  "shorelineChecks": [
+    {
+      "id": "entry",
+      "x": -1470,
+      "y": 6500,
+      "radius": 19,
+      "rawWater": false,
+      "walkable": true
+    },
+    {
+      "id": "approach-1",
+      "x": -1450,
+      "y": 6490,
+      "radius": 19,
+      "rawWater": false,
+      "walkable": true
+    },
+    {
+      "id": "approach-2",
+      "x": -1430,
+      "y": 6480,
+      "radius": 19,
+      "rawWater": false,
+      "walkable": true
+    },
+    {
+      "id": "approach-3",
+      "x": -1410,
+      "y": 6470,
+      "radius": 19,
+      "rawWater": false,
+      "walkable": true
+    },
+    {
+      "id": "approach-4",
+      "x": -1390,
+      "y": 6460,
+      "radius": 19,
+      "rawWater": false,
+      "walkable": true
+    },
+    {
+      "id": "approach-5",
+      "x": -1370,
+      "y": 6450,
+      "radius": 19,
+      "rawWater": false,
+      "walkable": true
+    },
+    {
+      "id": "approach-6",
+      "x": -1350,
+      "y": 6440,
+      "radius": 19,
+      "rawWater": false,
+      "walkable": true
+    },
+    {
+      "id": "gangway",
+      "x": -1606.1078066914497,
+      "y": 6562.10966542751,
+      "radius": 19,
+      "rawWater": true,
+      "walkable": true
+    },
+    {
+      "id": "platform",
+      "x": -1901.3078066914497,
+      "y": 6690.901486988848,
+      "radius": 19,
+      "rawWater": true,
+      "walkable": true
+    },
+    {
+      "id": "open-water",
+      "x": -2057.1078066914497,
+      "y": 6814.739776951673,
+      "radius": 19,
+      "rawWater": true,
+      "walkable": false
+    }
+  ],
+  "verification": {
+    "webTypecheck": "pass",
+    "webProductionBuild": "pass",
+    "nativeTypecheck": "pass",
+    "expoIosExport": "pass",
+    "iosModuleCount": 3008,
+    "fishingGameplay": "pass",
+    "fishingControls": "pass",
+    "fishingInventory": "pass",
+    "fishingSave": "pass",
+    "pierBehavior": "pass",
+    "fishWaterLife": "pass"
+  }
+}

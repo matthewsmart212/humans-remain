@@ -1,3 +1,4 @@
+import {stopFishing} from './fishing';
 import {cancelBuildingRepair} from './building-repair';
 import {setCampThreatSource} from './camp-hud';
 import {stepCampSiege} from './camp-siege';
@@ -17,7 +18,7 @@ export type ReturnRoute={sceneId:string;spawn:SceneSpawn};
 type Trip={portal:ScenePortal;sceneId:string;spawn:SceneSpawn;returning:boolean};
 type Phase='idle'|'loading'|'out'|'in';
 export type TravelSnapshot={currentId:string;worlds:[string,World][];route:ReturnRoute[]};
-const SHARED_RUN_KEYS=['creativeMode','survivorRole','progression','cause','ironworks','gear','cycle','kit','combatTest','survivalEnabled','survival','weather','nightAmount','tick','phase','round','phaseLeft','survived','bag','loads','stock','tools','torchOn','hunger','thirst','cooked','cookedRabbit','cookedVenison','needsDamageAt','drinkReady','kills','scrap','revives','attackReady'] as const;
+const SHARED_RUN_KEYS=['creativeMode','survivorRole','progression','cause','ironworks','gear','cycle','kit','combatTest','survivalEnabled','survival','weather','nightAmount','tick','phase','round','phaseLeft','survived','bag','loads','stock','tools','torchOn','hunger','thirst','cooked','cookedRabbit','cookedVenison','cookedFish','fishing','needsDamageAt','drinkReady','kills','scrap','revives','attackReady'] as const;
 function shareRun(from:World,to:World){for(const key of SHARED_RUN_KEYS)(to as any)[key]=from[key]}
 
 /** A session keeps each map's local world, while player/run data travels with you.
@@ -89,7 +90,7 @@ export class SceneTravel{
   throw Error('The destination entrance is blocked. Clear the landing before travelling.');
  }
  private transfer(next:World,spawn:SceneSpawn){
-  const from=this.current;cancelBuildingRepair(from,false);cancelBuildingRepair(next,false);releaseBruteGrab(from);releaseBruteGrab(next);
+  const from=this.current;stopFishing(from);stopFishing(next);cancelBuildingRepair(from,false);cancelBuildingRepair(next,false);releaseBruteGrab(from);releaseBruteGrab(next);
   // Local entities, doors, drops, cooking and collision stay on their own map.
   shareRun(from,next);
   next.player={...from.player,...spawn,moving:false,sprinting:false,walkBlend:0,runBlend:0};

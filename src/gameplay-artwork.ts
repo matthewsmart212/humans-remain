@@ -18,10 +18,10 @@ import {FURNACE_FIRE_IMAGES} from './ironworks-data';
 import {furnaceWorking} from './camp-furnace';
 import {PROVISION_IMAGES} from './food-provisions-art';
 import {BONFIRE_FOOD_IMAGES} from './bonfire-food-art';
-import {RABBIT_FOOD_IMAGES,VENISON_FOOD_IMAGES} from './food-items';
+import {RABBIT_FOOD_IMAGES,VENISON_FOOD_IMAGES,FISH_FOOD_IMAGES} from './food-items';
 
-// The six pinned meat sprites serve the spit, thrown food and ground pickups in every role.
-const campfireFoodImages={...BONFIRE_FOOD_IMAGES,...RABBIT_FOOD_IMAGES,...VENISON_FOOD_IMAGES};
+// The pinned food sprites serve the spit, thrown food and ground pickups in every role.
+const campfireFoodImages={...BONFIRE_FOOD_IMAGES,...RABBIT_FOOD_IMAGES,...VENISON_FOOD_IMAGES,...FISH_FOOD_IMAGES};
 /** Small, shared player/food set. Other animation families have a live owner. */
 export const PLAYER_MOVEMENT_IMAGES:Record<string,string>={...RUNNER_CYCLE_SOURCES,...ENGINEER_IMAGE_SOURCES,...REPAIR_HAMMER_IMAGES,...PROVISION_IMAGES,...campfireFoodImages,...LOOT_CHEST_IMAGES,stone:MINING_IMAGES.stone,torch:'/survival/equipment/torch-v1.png',bagScrap:'/survival/ui-backpack-v1/scrap.png',bagFuel:'/survival/ui-backpack-v1/fuel.png'};
 /** Do not download all the other characters' atlases to start a Hunter run. */

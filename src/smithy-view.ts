@@ -5,7 +5,7 @@ import {ASSET_BY_ID} from './world-assets';
 import {recipeIngredients} from './craft-material-view';
 import type {World} from './survival-engine';
 
-const notes:Record<GearKind,string>={repairHammer:'Restore camp ruins on site.',
+const notes:Record<GearKind,string>={fishingRod:'Cast from Stillwater pier and bring fresh fish back to camp.',repairHammer:'Restore camp ruins on site.',
  woodenPickaxe:'Break ordinary boulders into stone. A simple start for mining.',metalPickaxe:'Break boulders faster and mine iron-veined deposits.',
  woodenAxe:'A light wooden axe for gathering timber.',axe:'A sturdy steel axe. The fastest tool for chopping trees.',
  woodenKnife:'A light blade for quick, close-range hunting.',scrapKnife:'A sharp steel blade for fast, close-range attacks.',

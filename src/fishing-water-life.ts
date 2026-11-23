@@ -10,6 +10,7 @@ export type FishingFishOrbit={
 };
 type Pose={x:number;y:number;angle:number;speed:number;phase:number};
 type Drawing={now:Pose;then:Pose};
+type ControlledFish={pose:Pose;activity:number;surface:number;aboveWater:boolean};
 const schools=new WeakMap<Placement,{geometry:FishingPierGeometry;fish:readonly FishingFishOrbit[]}>();
 const drawings=new WeakMap<FishingFishOrbit,Drawing>();
 const emptyPose=():Pose=>({x:0,y:0,angle:0,speed:0,phase:0});
@@ -124,18 +125,18 @@ function brokenRing(ctx:CanvasRenderingContext2D,x:number,y:number,r:number,flat
 }
 
 /** Six small shared-renderer fish: no raster, layer or shader is made per frame. */
-export function drawFishingFish(ctx:CanvasRenderingContext2D,f: FishingFishOrbit,time:number,reduced:boolean){
+export function drawFishingFish(ctx:CanvasRenderingContext2D,f: FishingFishOrbit,time:number,reduced:boolean,controlled?:ControlledFish){
  let scratch=drawings.get(f);if(!scratch){scratch={now:emptyPose(),then:emptyPose()};drawings.set(f,scratch)}
  // Reduced motion freezes the actual pose as well as fins and surface effects.
  if(reduced)time=0;
- const pose=poseAt(f,time,scratch.now),age=(time+f.rippleOffset)%f.period;
- const surface=Math.pow(.5+.5*Math.cos(age/f.period*TAU),3);
- const activity=Math.min(1.8,pose.speed/(Math.abs(f.speed)*(f.rx+f.ry)*.5));
+ const pose=controlled?.pose??poseAt(f,time,scratch.now),age=(time+f.rippleOffset)%f.period;
+ const surface=controlled?.surface??Math.pow(.5+.5*Math.cos(age/f.period*TAU),3);
+ const activity=controlled?.activity??Math.min(1.8,pose.speed/(Math.abs(f.speed)*(f.rx+f.ry)*.5));
  const wave=reduced?0:time*(9.1+Math.abs(f.speed)*6)+f.phase*3+.5*Math.sin(time*f.tempo+f.phase);
  const amplitude=reduced?0:2.3+activity*2.2;
- const color=palettes[f.variant],bodyWidth=f.variant===0?1.13:f.variant===1?.92:.81;
+ const color=controlled?.aboveWater?{body:'#566244',flank:'#b4aa72',back:'#69734b',fin:'#aa7445',mark:'#3f4a32',shine:'#e2d6a1'}:palettes[f.variant],bodyWidth=f.variant===0?1.13:f.variant===1?.92:.81;
  ctx.save();ctx.translate(pose.x,pose.y);ctx.rotate(pose.angle);ctx.scale(f.size,f.size);
- ctx.globalAlpha*=(.53+.22*surface)*(1-f.depth*.22);
+ ctx.globalAlpha*=controlled?.aboveWater?1:(.53+.22*surface)*(1-f.depth*.22);
  // All fins share one subdued, translucent pass below the fleshy body.
  ctx.save();ctx.globalAlpha*=.64;ctx.fillStyle=color.fin;ctx.beginPath();
  fin(ctx,wave,amplitude,tail);fin(ctx,wave,amplitude,dorsal);fin(ctx,wave,amplitude,nearFin);fin(ctx,wave,amplitude,farFin);fin(ctx,wave,amplitude,rearFin);ctx.fill();ctx.restore();
@@ -146,7 +147,7 @@ export function drawFishingFish(ctx:CanvasRenderingContext2D,f: FishingFishOrbit
  // A narrow, interrupted flank glint belongs inside the fish, never its edge.
  ctx.save();ctx.globalAlpha*=.25+.1*surface;ctx.strokeStyle=color.shine;ctx.lineWidth=.48;ctx.beginPath();
  for(let i=2;i<=9;i++){const p=profile[i],y=bend(p.x,wave,amplitude)-p.width*bodyWidth*.38;i===2?ctx.moveTo(p.x,y):ctx.lineTo(p.x,y)}ctx.stroke();ctx.restore();
- if(!reduced&&surface>.55){
+ if(!reduced&&surface>.55&&!controlled?.aboveWater){
   // Two short trailing disturbances only appear as a fish nears the surface.
   ctx.save();ctx.globalAlpha*=surface*.11;ctx.strokeStyle='#a0b8a5';ctx.lineWidth=.55;ctx.beginPath();
   for(const side of [-1,1])for(let i=0;i<6;i++){
@@ -154,7 +155,7 @@ export function drawFishingFish(ctx:CanvasRenderingContext2D,f: FishingFishOrbit
   }ctx.stroke();ctx.restore();
  }
  ctx.restore();
- if(reduced)return;
+ if(reduced||controlled)return;
  const duration=2.1;if(age>=duration)return;
  // The disturbance stays where the fish surfaced while the animal swims on.
  const start=poseAt(f,time-age,scratch.then),radius=(2.5+age*10)*f.size;
@@ -162,4 +163,17 @@ export function drawFishingFish(ctx:CanvasRenderingContext2D,f: FishingFishOrbit
  brokenRing(ctx,start.x,start.y,radius,.49,.10);
  if(age>.33){ctx.globalAlpha*=.53;brokenRing(ctx,start.x,start.y,radius*.66,.49,-.08)}
  ctx.restore();
+}
+
+// The hooked fish is the same animal and anatomy as the reserved school fish.
+// Reusable records avoid introducing a second ambient orbit or per-frame cache.
+const controlledFish=palettes.map((_,variant)=>({
+ fish:{x:0,y:0,rx:65,ry:45,phase:variant*.7,speed:.35,size:1,period:9,rippleOffset:0,tempo:.7,variant,depth:.1,drawRadius:38} as FishingFishOrbit,
+ control:{pose:emptyPose(),activity:1,surface:.6,aboveWater:false} as ControlledFish,
+}));
+export function drawFishingFishAt(ctx:CanvasRenderingContext2D,fish:{x:number;y:number;angle:number;size:number;variant:number},time:number,reduced:boolean,activity=1,surface=.6,aboveWater=false){
+ const drawing=controlledFish[Math.max(0,Math.min(2,Math.round(fish.variant)))];
+ drawing.fish.size=fish.size;Object.assign(drawing.control.pose,{x:fish.x,y:fish.y,angle:fish.angle,speed:activity*20,phase:time});
+ drawing.control.activity=activity;drawing.control.surface=surface;drawing.control.aboveWater=aboveWater;
+ drawFishingFish(ctx,drawing.fish,time,reduced,drawing.control);
 }

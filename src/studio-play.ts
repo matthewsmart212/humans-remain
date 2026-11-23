@@ -1,3 +1,4 @@
+import {stepFishing} from './fishing';
 import {stepBuildingRepair} from './building-repair';
 import {stepLootChest} from './loot-chest';
 import {startExpedition} from './run-progression';
@@ -80,6 +81,7 @@ export function stepCampPlaySession(world:World,input:{x:number;y:number},sprint
  stepBuildingRepair(world,input);
  world.effects=world.effects.filter(e=>world.tick*STEP-e.born<(e.type==='kill'&&e.enemyKind==='iron-brute'?1.7:1.2));
  if(world.survivalEnabled){stepPlayerSurvival(world);if(world.player.hp<=0){world.phase='over';world.cause||='THE CREW WENT DOWN'}}
+ stepFishing(world,STEP);
  finishPhase?.('simSurvivalMs');
 }
 

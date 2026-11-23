@@ -3,12 +3,13 @@ import {nearbyChest} from './station-access';
 import {placementBounds,placementPoint} from './world-layout';
 import {packWeight,PACK_CAPACITY} from './expedition-inventory';
 import {PICKAXE_GEAR,isPickaxe,type PickaxeKind} from './pickaxes';
+import {FISHING_ART} from './fishing-art';
 export type AxeKind='woodenAxe'|'axe';
 export type KnifeKind='woodenKnife'|'scrapKnife';
 export type SpearKind='woodenSpear'|'metalSpear';
 export type SwordKind='woodenSword'|'metalSword';
-export type GearKind=PickaxeKind|AxeKind|KnifeKind|SpearKind|SwordKind|'repairHammer'|'bow'|'arrows';
-export type GearInventory=Record<AxeKind,number>&Partial<Record<PickaxeKind|KnifeKind|SpearKind|SwordKind|'repairHammer'|'bow'|'arrows',number>>;
+export type GearKind=PickaxeKind|AxeKind|KnifeKind|SpearKind|SwordKind|'repairHammer'|'bow'|'arrows'|'fishingRod';
+export type GearInventory=Record<AxeKind,number>&Partial<Record<PickaxeKind|KnifeKind|SpearKind|SwordKind|'repairHammer'|'bow'|'arrows'|'fishingRod',number>>;
 export type PlayerGear={bag:GearInventory;chest:GearInventory};
 export const KNIFE_GEAR={woodenKnife:{name:'Wooden knife',weight:.3,image:'/survival/equipment/wooden-knife-v1.png',damage:18},scrapKnife:{name:'Scrap knife',weight:.5,image:'/survival/equipment/scrap-knife-v1.png',damage:28}} as const;
 export const KNIFE_COOLDOWN=.30;
@@ -21,8 +22,8 @@ export const AXE_GEAR={woodenAxe:{name:'Wooden axe',weight:1.2,image:'/survival/
 export const isAxe=(id:unknown):id is AxeKind=>id==='axe'||id==='woodenAxe';
 export const BOW_GEAR={bow:{name:'Makeshift bow',weight:1,image:'/survival/scrap-runner/bow-v1/bow-icon.webp',damage:34},arrows:{name:'Arrows',weight:.025,image:'/survival/scrap-runner/bow-v1/arrows-icon.webp',damage:0}} as const;
 export const isBow=(id:unknown):id is 'bow'=>id==='bow';
-export const GEAR={repairHammer:{name:'Repair hammer',weight:1.2,image:'/survival/equipment/repair-hammer-v1.webp',damage:0},...PICKAXE_GEAR,...AXE_GEAR,...KNIFE_GEAR,...SPEAR_GEAR,...SWORD_GEAR,...BOW_GEAR};
-export const isGear=(id:unknown):id is GearKind=>id==='repairHammer'||isPickaxe(id)||isAxe(id)||isKnife(id)||isSpear(id)||isSword(id)||isBow(id)||id==='arrows';
+export const GEAR={fishingRod:{name:'Salvaged fishing rod',weight:.8,image:FISHING_ART.rod,damage:0},repairHammer:{name:'Repair hammer',weight:1.2,image:'/survival/equipment/repair-hammer-v1.webp',damage:0},...PICKAXE_GEAR,...AXE_GEAR,...KNIFE_GEAR,...SPEAR_GEAR,...SWORD_GEAR,...BOW_GEAR};
+export const isGear=(id:unknown):id is GearKind=>id==='fishingRod'||id==='repairHammer'||isPickaxe(id)||isAxe(id)||isKnife(id)||isSpear(id)||isSword(id)||isBow(id)||id==='arrows';
 export const newGear=():PlayerGear=>({bag:{repairHammer:1,woodenPickaxe:0,metalPickaxe:0,woodenAxe:0,axe:0,woodenKnife:0,scrapKnife:0,woodenSpear:1,metalSpear:1,woodenSword:1,metalSword:1,bow:1,arrows:40},chest:{repairHammer:0,woodenPickaxe:1,metalPickaxe:1,woodenAxe:1,axe:1,woodenKnife:1,scrapKnife:1,woodenSpear:0,metalSpear:0,woodenSword:0,metalSword:0,bow:0,arrows:120}});
 export function gear(w:World){const g=w.gear??=newGear();for(const side of ['bag','chest'] as const)for(const id of ['woodenPickaxe','metalPickaxe'] as const)if(g[side][id]===undefined)g[side][id]=!w.progression&&side==='chest'?1:0;return g}
 export const hasGear=(w:World,id:GearKind)=>(gear(w).bag[id]??0)>0;

@@ -9,6 +9,8 @@ import {IRONWORKS_NATIVE_ART} from './ironworks-art';
 
 const itemImages:Record<BagItemId|QuickItem,number>={
  ...FOOD_NATIVE_ART,
+ fishingRod:require('../public/survival/fishing-gameplay-v1/rod.webp'),
+ fishRaw:require('../public/survival/fishing-gameplay-v1/raw-perch.webp'),
  repairHammer:require('../public/survival/equipment/repair-hammer-v1.webp'),
  ironOre:IRONWORKS_NATIVE_ART.ironOre,
  ironIngot:IRONWORKS_NATIVE_ART.ironIngot,
@@ -48,6 +50,9 @@ export function QuickItemIcon({id,size}:{id:QuickItem;size:number}){
 const quickItemsByPath=new Map(QUICK_ITEMS.map(item=>[item.image,item.id]));
 const actionImages:Record<string,number>={
  ...Object.fromEntries(Object.entries(BAG_IMAGES).map(([id,path])=>[path,itemImages[id as BagItemId]])),
+ '/survival/fishing-gameplay-v1/reel.webp':require('../public/survival/fishing-gameplay-v1/reel.webp'),
+ '/survival/fishing-gameplay-v1/hook.webp':require('../public/survival/fishing-gameplay-v1/hook.webp'),
+ '/survival/fishing-gameplay-v1/worms.webp':require('../public/survival/fishing-gameplay-v1/worms.webp'),
  '/survival/headquarters-thumbnails-v1/c516848e71523b4a.webp':require('../public/survival/headquarters-thumbnails-v1/c516848e71523b4a.webp'),
  '/survival/headquarters-thumbnails-v1/323ca55ca57c492a.webp':require('../public/survival/headquarters-thumbnails-v1/323ca55ca57c492a.webp'),
  '/survival/headquarters-thumbnails-v1/8d4f357abc8188bf.webp':require('../public/survival/headquarters-thumbnails-v1/8d4f357abc8188bf.webp'),

@@ -88,6 +88,7 @@ import FieldKitHUD from './FieldKitHUD';
 import {continuousMapCamera} from './continuous-zoom';
 import PlayerMap,{preloadPlayerMap} from './PlayerMap';
 import {FieldKitController} from './field-kit';
+import {fishingHud} from './fishing';
 import './game-play.css';
 import {readTimeOfDay,rememberTimeOfDay,setWorldTimeOfDay,stepCampLighting,type TimeOfDay} from './camp-lighting';
 import {SceneTravel} from './scene-travel';
@@ -477,17 +478,18 @@ export default function WorldEditor({externalStart=false,onExternalStartState,on
  },[ready,externalStart,startScreen,layout.terrainImage?.url]);
  useEffect(()=>{
   const editing=(e:KeyboardEvent)=>['INPUT','SELECT','TEXTAREA'].includes((e.target as HTMLElement)?.tagName)||(e.target as HTMLElement)?.isContentEditable;
+  let primaryKey:string|null=null;
   const down=(e:KeyboardEvent)=>{
    if(startScreen||editing(e)||collisionEdit||assetBrowser)return;
    const k=e.key.toLowerCase();
-   if(k==='escape'){e.preventDefault();if(e.repeat)return;if(mapOpen){changeMap(false);return}if(world.current.stationPanel){world.current.stationPanel=undefined;clearInput();return}if(bagOpen){changeBag(false);return}if(helpOpen){setHelpOpen(false);return}if(askClear){setAskClear(false);return}if(mobile&&toolsOpen){closeTools();return}if(mobile&&modeRef.current==='play'&&monitorOpen){setMonitorOpen(false);return}if(mobile&&(libraryOpen||inspectorOpen)){setLibraryOpen(false);setInspectorOpen(false);return}if(modeRef.current==='play'){clearInput();setPaused(v=>world.current.phase==='over'||!v);return}cancelPlace();select(null);if(mobile)setLibraryOpen(false);return}
+   if(k==='escape'){e.preventDefault();if(e.repeat)return;if(mapOpen){changeMap(false);return}if(world.current.stationPanel){world.current.stationPanel=undefined;clearInput();return}if(bagOpen){changeBag(false);return}if(helpOpen){setHelpOpen(false);return}if(askClear){setAskClear(false);return}if(mobile&&toolsOpen){closeTools();return}if(mobile&&modeRef.current==='play'&&monitorOpen){setMonitorOpen(false);return}if(mobile&&(libraryOpen||inspectorOpen)){setLibraryOpen(false);setInspectorOpen(false);return}if(modeRef.current==='play'){if(fishingHud(world.current)?.active&&!world.current.fishing?.pendingCatch){clearInput();return}clearInput();setPaused(v=>world.current.phase==='over'||!v);return}cancelPlace();select(null);if(mobile)setLibraryOpen(false);return}
    if(k==='m'&&modeRef.current==='play'&&!e.ctrlKey&&!e.metaKey&&!e.altKey){e.preventDefault();if(!e.repeat)changeMap(!mapOpen);return}
    if(blockedInput.current||mapVisible.current)return;
    if(k==='f5'){e.preventDefault();if(!e.repeat){if(modeRef.current==='play')stopPlay();else startPlay()}return}
    if((e.ctrlKey||e.metaKey)&&k==='s'){e.preventDefault();if(modeRef.current!=='play')void save();return}
    if(modeRef.current!=='edit'){
-    if(modeRef.current==='play'&&!e.ctrlKey&&!e.metaKey&&!e.altKey&&['1','2','3','4','5','6'].includes(k)){e.preventDefault();if(!e.repeat&&!travel.current?.busy){attackHeld.current=false;fieldKit.release();selectQuickItem(world.current,(['fists','woodenAxe','axe','meal','rabbitMeal','venisonMeal'] as QuickItem[])[Number(k)-1])}return}
-    if(modeRef.current==='play'&&(k===' '||k==='e')){e.preventDefault();if(e.repeat||travel.current?.busy)return;const action=fieldKit.sample(world.current).action;if(fieldKit.press(world.current,action)){attackHeld.current=fieldKit.holdingAttack;if(action.key.startsWith('broken:'))saveRunRef.current()}if(k==='e'&&!fieldKit.holdingRepair){fieldKit.release('primary');attackHeld.current=fieldKit.holdingAttack}return}
+    if(modeRef.current==='play'&&!e.ctrlKey&&!e.metaKey&&!e.altKey&&['1','2','3','4','5','6'].includes(k)){e.preventDefault();if(!e.repeat&&!travel.current?.busy){attackHeld.current=false;fieldKit.cancel();selectQuickItem(world.current,(['fists','woodenAxe','axe','meal','rabbitMeal','venisonMeal'] as QuickItem[])[Number(k)-1])}return}
+    if(modeRef.current==='play'&&(k===' '||k==='e')){e.preventDefault();if(e.repeat||primaryKey!==null||travel.current?.busy)return;const action=fieldKit.sample(world.current).action;if(fieldKit.press(world.current,action)){primaryKey=k;attackHeld.current=fieldKit.holdingAttack;if(action.key.startsWith('broken:'))saveRunRef.current()}if(primaryKey===k&&k==='e'&&!fieldKit.holdingRepair&&!fieldKit.holdingFishing){primaryKey=null;fieldKit.release('primary');attackHeld.current=fieldKit.holdingAttack}return}
     if(modeRef.current==='play'&&k==='r'&&!e.ctrlKey&&!e.metaKey&&!e.altKey){e.preventDefault();if(e.repeat||travel.current?.busy)return;const repair=fieldKit.sample(world.current).repairAction;if(repair&&fieldKit.pressRepair(world.current,repair)){attackHeld.current=fieldKit.holdingAttack;if(repair.target?.buildingId==='headquarters')saveRunRef.current()}return}
     if(k==='b'&&modeRef.current==='play'){e.preventDefault();if(!e.repeat)changeBag(true);return}
     if(k==='q'&&modeRef.current==='play'&&!e.ctrlKey&&!e.metaKey&&!e.altKey){
@@ -506,7 +508,7 @@ if(k==='e'){e.preventDefault();if(!e.repeat){const gate=nearbyGate(world.current
    if(k==='f'&&selectedItem){e.preventDefault();focusObject(selectedItem);return}
    if(k===' '){e.preventDefault();keys.current.add(k)}
   };
-  const up=(e:KeyboardEvent)=>{keys.current.delete(e.key.toLowerCase());if(e.key===' '||e.key.toLowerCase()==='e'){fieldKit.release('primary');attackHeld.current=fieldKit.holdingAttack}if(e.key.toLowerCase()==='r'){fieldKit.release('repair');attackHeld.current=fieldKit.holdingAttack}if(e.key==='Shift')sprint.setShift(false)},blur=()=>{clearInput();cancelGesture()};
+  const up=(e:KeyboardEvent)=>{keys.current.delete(e.key.toLowerCase());if((e.key===' '||e.key.toLowerCase()==='e')&&primaryKey===e.key.toLowerCase()){primaryKey=null;fieldKit.release('primary');attackHeld.current=fieldKit.holdingAttack}if(e.key.toLowerCase()==='r'){fieldKit.release('repair');attackHeld.current=fieldKit.holdingAttack}if(e.key==='Shift')sprint.setShift(false)},blur=()=>{primaryKey=null;clearInput();cancelGesture()};
   window.addEventListener('keydown',down);window.addEventListener('keyup',up);window.addEventListener('blur',blur);
   return()=>{window.removeEventListener('keydown',down);window.removeEventListener('keyup',up);window.removeEventListener('blur',blur)};
  },[startScreen,selected,canEdit,collisionEdit,ready,assetBrowser,helpOpen,askClear,mobile,mode,libraryOpen,inspectorOpen,terrainBusy,toolsOpen,monitorOpen,bagOpen,mapOpen,paused,travelStatus]);

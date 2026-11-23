@@ -1,0 +1,82 @@
+{
+  "source": "equipment-atlas.png",
+  "sourceSize": [
+    1536,
+    1024
+  ],
+  "encoding": "lossless WebP",
+  "exports": [
+    {
+      "file": "public/survival/fishing-gameplay-v1/rod.webp",
+      "crop": {
+        "left": 0,
+        "top": 0,
+        "width": 512,
+        "height": 512
+      },
+      "width": 384,
+      "height": 384,
+      "bytes": 33722
+    },
+    {
+      "file": "public/survival/fishing-gameplay-v1/reel.webp",
+      "crop": {
+        "left": 512,
+        "top": 0,
+        "width": 512,
+        "height": 512
+      },
+      "width": 384,
+      "height": 384,
+      "bytes": 87740
+    },
+    {
+      "file": "public/survival/fishing-gameplay-v1/hook.webp",
+      "crop": {
+        "left": 1024,
+        "top": 0,
+        "width": 512,
+        "height": 512
+      },
+      "width": 384,
+      "height": 384,
+      "bytes": 39036
+    },
+    {
+      "file": "public/survival/fishing-gameplay-v1/worms.webp",
+      "crop": {
+        "left": 0,
+        "top": 512,
+        "width": 512,
+        "height": 512
+      },
+      "width": 384,
+      "height": 384,
+      "bytes": 97678
+    },
+    {
+      "file": "public/survival/fishing-gameplay-v1/raw-perch.webp",
+      "crop": {
+        "left": 512,
+        "top": 512,
+        "width": 512,
+        "height": 512
+      },
+      "width": 384,
+      "height": 384,
+      "bytes": 72322
+    },
+    {
+      "file": "public/survival/fishing-gameplay-v1/cooked-perch.webp",
+      "crop": {
+        "left": 1024,
+        "top": 512,
+        "width": 512,
+        "height": 512
+      },
+      "width": 384,
+      "height": 384,
+      "bytes": 52092
+    }
+  ]
+}

@@ -20,8 +20,11 @@ import {torchPose,drawTorch} from './torch';
 import {knifePose,drawKnife,drawKnifeGrip} from './knives';
 import {swordPose,drawSword} from './swords';
 import {spearPose,drawSpear} from './spears';
-import {drawWeaponGrip} from './weapon-grip';
+import {drawWeaponGrip,weaponGrip,type WeaponView} from './weapon-grip';
 import {heldMeal} from './food-items';
+import {fishingRenderState} from './fishing';
+import {drawFishingSurvivor} from './fishing-character';
+import {drawFishingAirborneTackle,drawFishingLine,drawFishingRod,fishingRodRig} from './fishing-renderer';
 
 /** Character rendering shared by gameplay, world editor and art yard. */
 export function drawWorker(ctx:CanvasRenderingContext2D,imgs:Record<string,HTMLImageElement>,w:World,_atlas?:Atlas,held?:{x:number;y:number;tilt?:number}){
@@ -44,6 +47,8 @@ export function drawWorker(ctx:CanvasRenderingContext2D,imgs:Record<string,HTMLI
  if(held){if(held.tilt)ctx.rotate(held.tilt);if(facing.mirror)ctx.scale(-1,1);ctx.drawImage(image,sx,sy,sw,sh,-f.anchor[0]*k,-f.anchor[1]*k,sw*k,sh*k);ctx.restore();return}
  if(p.hurtUntil>t&&!w.weather?.reducedMotion&&Math.floor(t*18)%2===0)ctx.globalAlpha=.5;
  if(p.downedUntil)ctx.scale(1,87/142);
+ const fishing=p.equipped==='fishingRod'?fishingRenderState(w):null;
+ if(!ownSprite&&fishing&&drawFishingSurvivor(ctx,imgs,w,fishing)){ctx.restore();return}
  if(!ownSprite&&drawRunnerBow(ctx,imgs,w)){ctx.restore();return}
  if(!ownSprite&&!isPickaxe(p.equipped)&&drawRunnerAxeAttack(ctx,imgs,w)){ctx.restore();return}
  if(facing.mirror)ctx.scale(-1,1);
@@ -51,7 +56,7 @@ export function drawWorker(ctx:CanvasRenderingContext2D,imgs:Record<string,HTMLI
  const hammer=p.equipped==='repairHammer',pickaxe=isPickaxe(p.equipped),axeImage=imgs[hammer?'repairHammer':pickaxe?p.equipped as string:p.equipped==='woodenAxe'?'woodenAxe':'campAxe'];
  const axe=(isAxe(p.equipped)||pickaxe||hammer)&&!p.downedUntil&&axeImage?axeAttachment(w,cycle?animation.direction:facing.view,animation.pose,cycle):undefined;
  if(hammer&&axe&&w.buildingRepair?.held&&!w.weather?.reducedMotion)axe.angle+=Math.sin((t-w.buildingRepair.started)/.65*Math.PI*2)*.9;
- const provision=heldProvision(w),food=heldMeal(w),mealImage=provision?imgs[provisionImageKey(provision)]:imgs[food==='venison'?'venisonCooked':food==='rabbit'?'rabbitCooked':'bonfireCooked'];
+ const provision=heldProvision(w),food=heldMeal(w),mealImage=provision?imgs[provisionImageKey(provision)]:imgs[food==='fish'?'fishCooked':food==='venison'?'venisonCooked':food==='rabbit'?'rabbitCooked':'bonfireCooked'];
  const meal=(food||provision)&&!p.downedUntil&&mealImage?axeAttachment(w,cycle?animation.direction:facing.view,animation.pose,cycle):undefined;
  const drawMeal=()=>{if(meal)ctx.drawImage(mealImage,meal.hand[0]-12,meal.hand[1]-17,24,20)};
  const knife=knifePose(w),knifeImage=knife?imgs[knife.item]:undefined;
@@ -59,6 +64,8 @@ export function drawWorker(ctx:CanvasRenderingContext2D,imgs:Record<string,HTMLI
  const spear=spearPose(w),spearImage=spear?imgs[spear.item]:undefined;
  const torch=imgs.torch?torchPose(w,imgs):undefined;
  const bow=imgs.bowCarry?bowCarryPose(w):undefined;
+ const rod=fishing&&!p.downedUntil?fishingRodRig(w,fishing,f.hand??weaponGrip(w).hand,runnerFacing(animation.direction).view as WeaponView,facing.mirror):undefined;
+ const drawRod=()=>{if(rod&&fishing){drawFishingLine(ctx,w,fishing,rod);drawFishingRod(ctx,w,fishing,rod);drawFishingAirborneTackle(ctx,w,fishing,facing.mirror)}};
  if(f.hand){
   for(const attachment of [axe,meal,knife,sword,spear,bow]){
    if(attachment)attachment.hand=f.hand;
@@ -71,6 +78,7 @@ export function drawWorker(ctx:CanvasRenderingContext2D,imgs:Record<string,HTMLI
  if(torch?.behind)drawTorch(ctx,imgs.torch,torch,w.torchOn);
  if(axe?.behind)(hammer?drawRepairHammer:pickaxe?drawPickaxe:drawAxe)(ctx,axeImage,axe);
  if(meal?.behind)drawMeal();
+ if(rod?.behind)drawRod();
  const legView=cycle&&runnerLegView(animation.direction,running);
  if(!ownSprite&&sword?.active&&cycle&&animation.pose==='punch')drawMovingSwordThrust(ctx,imgs,f,animation.direction,cycle,p.walkDistance);
  else if(!ownSprite&&legView&&imgs.runnerLegLayers){
@@ -84,5 +92,6 @@ export function drawWorker(ctx:CanvasRenderingContext2D,imgs:Record<string,HTMLI
  if(spear&&!spear.behind&&spearImage){drawSpear(ctx,spearImage,spear,'tip');drawWeaponGrip(ctx,image,f,spear)}
  if(axe&&!axe.behind){(hammer?drawRepairHammer:pickaxe?drawPickaxe:drawAxe)(ctx,axeImage,axe);drawAxeGrip(ctx,image,f,axe.hand)}
  if(meal&&!meal.behind){drawMeal();drawAxeGrip(ctx,image,f,meal.hand)}
+ if(rod&&!rod.behind){drawRod();drawWeaponGrip(ctx,image,f,{hand:rod.hand,striking:false})}
  ctx.restore();
 }

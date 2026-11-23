@@ -7,6 +7,8 @@ import {usesPaintedHomeTerrain} from './terrain-art';
 import type {Placement} from './world-layout';
 import type {World} from './survival-engine';
 import type {FoliageViewport} from './foliage-renderer';
+import {fishingRenderState} from './fishing';
+import {drawFishingWaterAction} from './fishing-renderer';
 
 export {fishingFishSchool,fishingFishPosition,type FishingFishOrbit} from './fishing-water-life';
 import {fishingFishSchool,drawFishingFish} from './fishing-water-life';
@@ -87,16 +89,21 @@ export function drawFishingSiteGround(ctx:CanvasRenderingContext2D,imgs:Record<s
  const image=imgs['placed:'+fishingPierMetadata().image];if(!image)return;
  const home=!w.scene&&usesPaintedHomeTerrain(w.layout?.terrainImage),life=home&&(view.scale??1)>=.25;
  const approved=fishingPierMetadata().image===FISHING_PIER_IMAGE,reduced=!!w.weather?.reducedMotion,time=reduced?0:w.tick/60;
+ const fishing=life?fishingRenderState(w):null;
  if(home&&approved)for(const p of piers){
   const g=fishingPierGeometry(p);if(intersects(g.worldBounds,view,40)&&wetSurface(g)[0])drawPierShadow(ctx,g);
  }
  if(life)for(const p of piers){
   const g=fishingPierGeometry(p);if(!intersects(g.worldBounds,view,600))continue;
-  for(const fish of fishingFishSchool(p)){
+  const school=fishingFishSchool(p);
+  for(let i=0;i<school.length;i++){
+   if(fishing?.pierId===p.id&&fishing.fishIndex===i&&fishing.phase!=='aiming'&&fishing.phase!=='equipped'&&fishing.phase!=='ready'&&fishing.phase!=='caught')continue;
+   const fish=school[i];
    if(fish.x+fish.rx+fish.drawRadius<view.x||fish.x-fish.rx-fish.drawRadius>view.x+view.width||fish.y+fish.ry+fish.drawRadius<view.y||fish.y-fish.ry-fish.drawRadius>view.y+view.height)continue;
    drawFishingFish(ctx,fish,time,reduced);
   }
  }
+ if(life&&fishing)drawFishingWaterAction(ctx,w,fishing);
  for(const p of piers){
   const g=fishingPierGeometry(p);if(!intersects(g.worldBounds,view))continue;
   const surface=ctx as FishingPierSurfaceContext,wet=home&&approved?wetSurface(g):undefined;

@@ -8,16 +8,16 @@ import {FOOD_RECIPES,isCookedFood,type FoodSpecies} from './food-items';
 import {assetImageKey,TREE_LOG_IMAGE} from './world-assets';
 
 const clamp=(n:number)=>Math.max(0,Math.min(1,n));
-const meatKey=(species:FoodSpecies,cooked=false)=>species==='venison'?(cooked?'venisonCooked':'venisonRaw'):species==='rabbit'?(cooked?'rabbitCooked':'rabbitRaw'):(cooked?'bonfireCooked':'bonfireRaw');
+const meatKey=(species:FoodSpecies,cooked=false)=>species==='fish'?(cooked?'fishCooked':'fishRaw'):species==='venison'?(cooked?'venisonCooked':'venisonRaw'):species==='rabbit'?(cooked?'rabbitCooked':'rabbitRaw'):(cooked?'bonfireCooked':'bonfireRaw');
 function fireShape(w:World){const p=w.layout?.items.find(p=>p.role==='hearth'),b=p?placementBounds(p):{width:112,height:112};return{...w.camp.hearth,width:b.width,height:b.height}}
 export function bonfireFoodDrawables(ctx:CanvasRenderingContext2D,imgs:Record<string,HTMLImageElement>,w:World){
  const t=timeOf(w),out:{y:number;draw:()=>void}[]=[],shape=fireShape(w),{height,width}=shape;
  const flame={x:w.camp.hearth.x,y:w.camp.hearth.y-height*.5};
- const food=(key:'bonfireRaw'|'bonfireCooked'|'rabbitRaw'|'rabbitCooked'|'venisonRaw'|'venisonCooked',p:Vec,alpha=1)=>{const im=imgs[key];if(!im)return;ctx.save();ctx.globalAlpha=alpha;ctx.drawImage(im,p.x-29,p.y-44,58,48);ctx.restore()};
+ const food=(key:'bonfireRaw'|'bonfireCooked'|'rabbitRaw'|'rabbitCooked'|'venisonRaw'|'venisonCooked'|'fishRaw'|'fishCooked',p:Vec,alpha=1)=>{const im=imgs[key];if(!im)return;ctx.save();ctx.globalAlpha=alpha;ctx.drawImage(im,p.x-29,p.y-44,58,48);ctx.restore()};
  for(const l of w.loot.filter(l=>isCookedFood(l.kind)))out.push({y:l.y,draw:()=>{
   const u=l.flight?Math.max(0,Math.min(1,(t-l.flight.born)/(l.flight.lands-l.flight.born))):1;
   const p=l.flight&&!w.weather?.reducedMotion?{x:l.flight.from.x+(l.x-l.flight.from.x)*u,y:l.flight.from.y+(l.y-l.flight.from.y)*u-Math.sin(u*Math.PI)*65}:l;
-  ctx.fillStyle='#37281038';ctx.beginPath();ctx.ellipse(l.x,l.y,23,8,0,0,Math.PI*2);ctx.fill();food(l.kind==='cookedVenison'?'venisonCooked':l.kind==='cookedRabbit'?'rabbitCooked':'bonfireCooked',p);
+  ctx.fillStyle='#37281038';ctx.beginPath();ctx.ellipse(l.x,l.y,23,8,0,0,Math.PI*2);ctx.fill();food(l.kind==='cookedFish'?'fishCooked':l.kind==='cookedVenison'?'venisonCooked':l.kind==='cookedRabbit'?'rabbitCooked':'bonfireCooked',p);
  }});
  for(const l of w.loot.filter(l=>isProvision(l.kind)))out.push({y:l.y,draw:()=>{
   if(!isProvision(l.kind))return;const image=imgs[provisionImageKey(l.kind)];if(!image)return;
@@ -25,11 +25,11 @@ export function bonfireFoodDrawables(ctx:CanvasRenderingContext2D,imgs:Record<st
  }});
  // Loose supplies dropped from the bag share cached item artwork on web and
  // native. Placed pickups and log bundles already have their own renderers.
- for(const l of w.loot.filter(l=>!l.placementId&&l.salvageVariant===undefined&&l.appearance!=='logs'&&['rawMeat','rawRabbit','rawVenison','scrap','fuel'].includes(l.kind)))out.push({y:l.y,draw:()=>{
-  const image=imgs[l.kind==='rawVenison'?'venisonRaw':l.kind==='rawRabbit'?'rabbitRaw':l.kind==='rawMeat'?'bonfireRaw':l.kind==='scrap'?'bagScrap':'bagFuel'];if(!image)return;
+ for(const l of w.loot.filter(l=>!l.placementId&&l.salvageVariant===undefined&&l.appearance!=='logs'&&['rawMeat','rawRabbit','rawVenison','rawFish','scrap','fuel'].includes(l.kind)))out.push({y:l.y,draw:()=>{
+  const image=imgs[l.kind==='rawFish'?'fishRaw':l.kind==='rawVenison'?'venisonRaw':l.kind==='rawRabbit'?'rabbitRaw':l.kind==='rawMeat'?'bonfireRaw':l.kind==='scrap'?'bagScrap':'bagFuel'];if(!image)return;
   ctx.save();ctx.fillStyle='#37281038';ctx.beginPath();ctx.ellipse(l.x,l.y,19,6,0,0,Math.PI*2);ctx.fill();ctx.drawImage(image,l.x-24,l.y-39,48,40);ctx.restore();
  }});
- if(w.fire.thrown){const f=w.fire.thrown,u=Math.max(0,Math.min(1,(t-f.born)/.45));if(u<1)out.push({y:w.camp.hearth.y+250,draw:()=>food((f.species??w.fire.species)==='venison'?'venisonRaw':(f.species??w.fire.species)==='rabbit'?'rabbitRaw':'bonfireRaw',{x:f.from.x+(flame.x-f.from.x)*u,y:f.from.y+(flame.y-f.from.y)*u-Math.sin(u*Math.PI)*75},u>.85?(1-u)/.15:1)})}
+ if(w.fire.thrown){const f=w.fire.thrown,u=Math.max(0,Math.min(1,(t-f.born)/.45));if(u<1)out.push({y:w.camp.hearth.y+250,draw:()=>food(meatKey(f.species??w.fire.species??'chicken'),{x:f.from.x+(flame.x-f.from.x)*u,y:f.from.y+(flame.y-f.from.y)*u-Math.sin(u*Math.PI)*75},u>.85?(1-u)/.15:1)})}
  if(!w.scene){
   const job=w.fire.queue?.[0],burning=shape.fuel>0;
   const spit=imgs.campSpit;

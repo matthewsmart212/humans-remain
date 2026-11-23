@@ -1,0 +1,13 @@
+Production transparent inventory/action sprite atlas for Humans Remain.
+Reference: supplied camp screenshot IMG_0252.jpeg, used for detailed hand-painted woodland survival item artwork, warm wood, worn brass, muted olive cloth and tactile outlined rendering.
+
+SIX isolated item illustrations in that exact style. Do not reproduce the scene, character, UI frames or text. Strict 3-column by 2-row grid on a 1536x1024 transparent canvas, each cell 512x512. Center each item with at least 56 pixels transparent margin. No overlap, labels, ground or drop shadows.
+
+Top left: salvaged fishing rod, slender flexible honey-brown wooden cane, metal line guides, cloth/cork grip and worn brass reel, diagonal bottom-left to top-right. No stray line or magical glow.
+Top middle: same worn brass fishing reel with short wooden crank, readable REEL action icon.
+Top right: simple curved worn dark-silver fishing hook with a short tied cord loop. No bait, blood or extra hooks.
+Bottom left: open olive bait tin containing reddish-brown earthworms, no letters.
+Bottom middle: whole European-perch-style fish side-on, muted olive/silver body, dark vertical bars, believable fins, orange-red lower fins, pointed dorsal fin and painted eye. Realistic anatomy with the game's softly stylized materials.
+Bottom right: whole small grilled fish, golden-brown skin and gentle char marks, on one short plain wooden skewer. No garnish, plate or smoke. Readable at 40 pixels.
+
+Consistent richly painted game item quality, subtle dark brown contours, readable silhouettes, restrained top-left light. Actual transparent alpha. Source atlas sliced without repainting into six lossless 384x384 WebPs; export metadata in exports.json.

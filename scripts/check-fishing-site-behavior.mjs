@@ -79,7 +79,7 @@ try{
  const arrival=m.pathTo(land,target,world,30000,21),departure=m.pathTo(target,land,world,30000,21);
  assert(arrival.length&&departure.length,'The local pier route joins ordinary outdoor paths in both directions');
  walkRoute(land,arrival);walkRoute(target,departure);
- const action=m.playInteraction(world);assert(!/fishing|cast|reel/i.test((action?.key??'')+' '+(action?.label??'')),'Visual phase adds no pretend fishing interaction');
+ const action=m.playInteraction(world);assert(!/fishing|cast|reel/i.test((action?.key??'')+' '+(action?.label??'')),'An unequipped survivor away from the fishing site has no fishing action');
 
  const fish=m.fishingFishSchool(pier);assert(fish.length>=3,'Several subtle fish inhabit the actual lake');
  assert.equal(m.fishingFishSchool(pier),fish,'Unchanged scenery reuses its prevalidated school');
@@ -153,5 +153,5 @@ try{
   assert.notDeepEqual(await probe(false),[255,0,102],'The same upright covers an actor behind it');
  }
  image.dispose();font.dispose();adapter.disposeLighting();
- console.log(JSON.stringify({result:'pass',wetStandingSamples:wet.length,wetEdges,routeCells:route.length,returnRouteCells:returnRoute.length,fish:fish.length,checks:['full-body deck support','removal/move restores water','exact mirror/rotation/frame transforms','unchanged bridges','bounded pier routes join ordinary outdoor navigation','real movement to deck and back to land','no fishing controls','water-only deterministic fish','offscreen culling','reduced motion','preserved planks and submerged support ends','software Skia painting and foreground occlusion'],physicalIPhoneTested:false,previewDirectory:output}));
+ console.log(JSON.stringify({result:'pass',wetStandingSamples:wet.length,wetEdges,routeCells:route.length,returnRouteCells:returnRoute.length,fish:fish.length,checks:['full-body deck support','removal/move restores water','exact mirror/rotation/frame transforms','unchanged bridges','bounded pier routes join ordinary outdoor navigation','real movement to deck and back to land','no fishing action away from the site','water-only deterministic fish','offscreen culling','reduced motion','preserved planks and submerged support ends','software Skia painting and foreground occlusion'],physicalIPhoneTested:false,previewDirectory:output}));
 }finally{fs.rmSync(temp,{recursive:true,force:true})}

@@ -12,4 +12,5 @@ export const FOOD_NATIVE_ART={...PROVISION_NATIVE_ART,
  meal:require('../public/survival/chicken-food-v1/cooked-chicken.webp'),
  rabbitMeal:require('../public/survival/rabbit-food-v1/cooked-rabbit.webp'),
  venisonMeal:require('../public/survival/venison-food-v1/cooked-venison.webp'),
+ fishMeal:require('../public/survival/fishing-gameplay-v1/cooked-perch.webp'),
 };

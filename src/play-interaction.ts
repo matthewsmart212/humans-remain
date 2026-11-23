@@ -31,6 +31,8 @@ import {nearbyLootChest,openLootChest,lootChestName,lootChestAction,lootChestOpe
 import {campInteraction,performCampInteraction} from './studio-play';
 import {startHealthRecovery} from './survival-needs';
 import {nearPotatoPatch,potatoPatchAction} from './potato-farming';
+import {fishingTackleTargets,claimFishingTackle,fishingBaitTargets,gatherFishingBait,FISHING_BAIT_LIMIT} from './fishing';
+import {FISHING_ART} from './fishing-art';
 
 export type PlayInteraction={repairAction?:PlayInteraction;repair?:boolean;image?:string;key:string;label:string;shortLabel:string;icon:'gate'|'chest'|'collect'|'cook'|'water';disabled:boolean;available?:boolean;target?:FieldKitTarget;perform:()=>unknown};
 
@@ -44,8 +46,8 @@ const stationArt={
 };
 const pickupItems={
  pallets:'logs',stone:'stone',scrap:'scrap',fuel:'fuel',ironOre:'ironOre',ironIngot:'ironIngot',
- rawMeat:'raw',rawRabbit:'rabbitRaw',rawVenison:'venisonRaw',
- cookedMeat:'meal',cookedRabbit:'rabbitMeal',cookedVenison:'venisonMeal',
+ rawMeat:'raw',rawRabbit:'rabbitRaw',rawVenison:'venisonRaw',rawFish:'fishRaw',
+ cookedMeat:'meal',cookedRabbit:'rabbitMeal',cookedVenison:'venisonMeal',cookedFish:'fishMeal',
 } as const;
 function pickupImage(kind:InventoryKind){
  return BAG_IMAGES[isProvision(kind)?kind:pickupItems[kind]];
@@ -92,6 +94,17 @@ export function playInteraction(world:World):PlayInteraction|null{
  const candidates:FocusCandidate<PlayInteraction>[]=[],add=(value:PlayInteraction)=>{
   const target=value.target!,available=value.available??!value.disabled;candidates.push({id:target.id!,x:target.x,y:target.y,available,value:{...value,available}});
  };
+ if(!world.fishing?.claimed)for(const target of fishingTackleTargets(world))if(withinActionReach(world,target)){
+  add({key:'fishing-tackle:'+target.id,label:'Take salvaged fishing rod and 10 worms',shortLabel:'TACKLE',icon:'chest',image:FISHING_ART.rod,disabled:false,
+   target:{...target,id:'fishing-tackle:'+target.id,label:'Old tackle box',detail:'Fishing rod · 10 worms'},
+   perform:()=>withinActionReach(world,target)&&claimFishingTackle(world,target.id)});
+ }
+ if(world.fishing&&world.fishing.bait<FISHING_BAIT_LIMIT)for(const target of fishingBaitTargets(world))if(withinActionReach(world,target)){
+  const wait=Math.max(0,Math.ceil(world.fishing.baitReadyAt-timeOf(world)));
+  add({key:'fishing-bait:'+target.id+':'+wait,label:wait?`Worms returning in ${wait}s`:'Gather worms in the damp reeds',shortLabel:wait?'WAIT':'BAIT',icon:'collect',image:FISHING_ART.worms,disabled:wait>0,
+   target:{...target,id:'fishing-bait:'+target.id,label:'Damp reed bed',detail:wait?`Search again in ${wait}s`:`Gather up to 4 worms · ${world.fishing.bait}/${FISHING_BAIT_LIMIT} bait`,blocked:wait>0},
+   perform:()=>withinActionReach(world,target)&&gatherFishingBait(world,target.id)});
+ }
  const headquarters=nearbyHeadquarters(world);
  if(headquarters){
   const restored=buildingRestored(world,'headquarters');

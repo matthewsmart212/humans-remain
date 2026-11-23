@@ -61,6 +61,12 @@ jobs:
           node scripts/check-fishing-site-behavior.mjs
           node scripts/check-fishing-water-life.mjs
           node scripts/check-stillwater-lake.mjs
+      - name: Test fishing gameplay, input, inventory and saved catches
+        run: |
+          node scripts/check-fishing-gameplay.mjs
+          node scripts/check-fishing-controls.mjs
+          node scripts/check-fishing-inventory.mjs
+          node scripts/check-fishing-save.mjs
       - name: Test co-op room protocol and hibernation
         run: node scripts/check-coop-room.mjs
       - name: Test all Hunter walking frames and carried tools

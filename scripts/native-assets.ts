@@ -1,6 +1,7 @@
 import {IRON_MINE_ENTRANCE_ID} from '../src/iron-mine-entrance';
 import {EVACUATION_VAN_ID,EVACUATION_BACKPACK_ID} from '../src/evacuation-van-art';
 import {FISHING_PIER_ID,FISHING_REEDS_ID} from '../src/fishing-site-art';
+import {FISHING_ART} from '../src/fishing-art';
 import {smallholdingBed} from '../src/smallholding-crops';
 import {smallholdingPath} from '../src/smallholding-path';
 import {SMALLHOLDING_FENCE_ASSETS} from '../src/smallholding-fences';
@@ -41,7 +42,7 @@ const savedWallIds=WORLD_ASSETS.filter(a=>wallIdentity(a.id)).map(a=>a.id);
 const savedPuddleIds=WORLD_ASSETS.filter(a=>a.puddle).map(a=>a.id);
 // An owner-authored or older layout can use undergrowth absent from the current map.
 const savedFoliageIds=WORLD_ASSETS.filter(a=>a.foliage).map(a=>a.id);
-const sources={...LOOT_CHEST_IMAGES,...Object.fromEntries(SPAWNABLES.map(v=>['spawn-thumb-'+v.id,v.image])),...EDITOR_IMAGE_SOURCES,...editorTerrainDetail(layout.terrainImage),
+const sources={...Object.fromEntries(Object.entries(FISHING_ART).map(([id,url])=>['fishing-'+id,url])),...LOOT_CHEST_IMAGES,...Object.fromEntries(SPAWNABLES.map(v=>['spawn-thumb-'+v.id,v.image])),...EDITOR_IMAGE_SOURCES,...editorTerrainDetail(layout.terrainImage),
  ...Object.fromEntries(OUTDOOR_TILES.map(t=>[t.key,t.image])),...CAMP_CHUNK_IMAGES,...RIVER_DETAIL_IMAGES,
  ...Object.assign({},...[...SCENES.values()].map(sceneImages)),
  ...WALKER_IMAGE_SOURCES,...BOMBER_IMAGE_SOURCES,...requiredImages([FISHING_PIER_ID,FISHING_REEDS_ID,EVACUATION_VAN_ID,EVACUATION_BACKPACK_ID,SMALLHOLDING_COTTAGE_ID,smallholdingPath.id,smallholdingBed.id,...SMALLHOLDING_FENCE_ASSETS.map(a=>a.id),IRON_MINE_ENTRANCE_ID,ABANDONED_CAMP_ID,WOODEN_LOOT_ID,...layout.items.map(p=>p.assetId),...GARDEN_ART.map(a=>a.id),...savedWallIds,...savedPuddleIds,...savedFoliageIds,...circularWallArt.map(a=>a.id)],layout.terrainImage),

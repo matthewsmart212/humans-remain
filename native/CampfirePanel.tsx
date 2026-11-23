@@ -13,6 +13,7 @@ import StationMenu from './StationMenu';
 import {ItemArt} from './FieldItemArt';
 
 const foodIds = {
+ fish: {raw: 'fishRaw', cooked: 'fishMeal'},
  chicken: {raw: 'raw', cooked: 'meal'}, rabbit: {raw: 'rabbitRaw', cooked: 'rabbitMeal'}, venison: {raw: 'venisonRaw', cooked: 'venisonMeal'},
 } as const;
 type Props = {world: World; width: number; height: number; safe: MenuInsets; onClose: () => void; onChange: () => void};

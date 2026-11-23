@@ -1,4 +1,5 @@
 import {placeStillwaterFishingSite} from './fishing-site-placement';
+import {validFishingProgress} from './fishing-save';
 import {placeEvacuationVan} from './evacuation-van-placement';
 import {placeSoutheastSmallholding,smallholdingReturnPoint} from './smallholding-placement';
 import {placeNorthwestIronMine} from './iron-mine-placement';
@@ -36,7 +37,7 @@ export async function prepareSavedCampArtwork(snapshot:TravelSnapshot,load:(sour
  if(camp?.layout)await load(requiredImages(camp.layout.items.map(p=>p.assetId),camp.layout.terrainImage));
 }
 const MAX_SAVE_BYTES=12_000_000;
-const OMIT=new Set(['scene','outdoorReady','foliageMotions','puddleMotion','stepOnMotions','effects','combatStats','stationPanel','lootChestId','rareCacheMenuAt','repairHammerUntil','buildingRepair','buildingHits','fieldKitTarget','fieldKitBuildingFocus','repairCheckpoint','furnaceId','smithyId','attackQueuedUntil','axeSwing','spearThrust','swordThrust','bowShot','bowLock','bruteGrab','dodge']);
+const OMIT=new Set(['fishingSession','scene','outdoorReady','foliageMotions','puddleMotion','stepOnMotions','effects','combatStats','stationPanel','lootChestId','rareCacheMenuAt','repairHammerUntil','buildingRepair','buildingHits','fieldKitTarget','fieldKitBuildingFocus','repairCheckpoint','furnaceId','smithyId','attackQueuedUntil','axeSwing','spearThrust','swordThrust','bowShot','bowLock','bruteGrab','dodge']);
 /** Shared with the native compact store so both formats retain identical state. */
 export function runSaveValue(key:string,value:unknown):unknown{return OMIT.has(key)?undefined:value instanceof Set?{$set:[...value]}:value}
 export function encodeRun(travel:SceneTravel):string|null{
@@ -88,6 +89,8 @@ export function decodeRun(text:string):TravelSnapshot{
   const [id,w]=pair as [string,World];
   if(typeof id!=='string'||ids.has(id)||id!==CAMP_SCENE_ID&&!SCENES.has(id)||!w?.layout||!Array.isArray(w.layout.items)||!w.player||!Number.isFinite(w.player.x)||!Number.isFinite(w.player.y)||!Number.isFinite(w.player.hp)||!Number.isSafeInteger(w.tick)||w.tick<0||!Array.isArray(w.enemies)||!Array.isArray(w.animals)||!Array.isArray(w.loot)||!w.bag||!w.stock||!w.camp||!w.fire||!['day','night','over'].includes(w.phase))throw Error('The saved world is incomplete.');
   if(w.layout.fishingSiteVersion!==undefined&&w.layout.fishingSiteVersion!==1)throw Error('The saved fishing site version is unsupported.');
+  if(!validFishingProgress(w.fishing))throw Error('The saved fishing progress is incomplete.');
+  if(w.cookedFish!==undefined&&(!Number.isSafeInteger(w.cookedFish)||w.cookedFish<0))throw Error('The saved fish inventory is incomplete.');
   if(w.progression&&!validRestorationSave(w.progression))throw Error('The saved building repairs are incomplete.');
   if(w.progression&&!validBlueprintSave(w.progression.blueprints))throw Error('The saved blueprints are incomplete.');
   if(w.progression&&!validJournalSave(w.progression))throw Error('The saved journal is incomplete.');
@@ -101,7 +104,7 @@ export function decodeRun(text:string):TravelSnapshot{
   ids.add(id);const set=(w.minedRockColliders as unknown as {$set?:unknown})?.$set;
   if(![w.player.stamina,w.player.hurtUntil,w.hunger,w.thirst,w.phaseLeft,w.round,w.survived,w.serial].every(Number.isFinite)||!w.cycle||!Number.isInteger(w.cycle.pattern)||w.cycle.pattern<0||w.cycle.pattern>5||!counters(w.bag)||!counters(w.stock)||!counters(w.gear?.bag)||!counters(w.gear?.chest)||!w.camp.hearth||!Number.isFinite(w.camp.hearth.fuel)||w.fire.queue!==undefined&&!Array.isArray(w.fire.queue)||w.fire.rack!==undefined&&!Array.isArray(w.fire.rack)||w.enemies.some(e=>!point(e)||!Number.isFinite(e.hp)||!Array.isArray(e.path))||w.loot.some(l=>!point(l)||!Number.isFinite(l.amount)))throw Error('The saved expedition contains incomplete game data.');
   w.minedRockColliders=new Set(Array.isArray(set)?set.filter((v):v is string=>typeof v==='string'):[]);
-  w.fire.queue??=[];w.fire.rack??=[];w.effects=[];w.buildingRepair=undefined;w.buildingHits=undefined;w.repairCheckpoint=undefined;w.stationPanel=undefined;w.attackUntil=0;w.attackQueuedUntil=undefined;w.axeSwing=undefined;w.spearThrust=undefined;w.swordThrust=undefined;w.bowShot=undefined;w.dodge=undefined;w.bruteGrab=undefined;
+  w.fire.queue??=[];w.fire.rack??=[];w.effects=[];w.fishingSession=undefined;w.buildingRepair=undefined;w.buildingHits=undefined;w.repairCheckpoint=undefined;w.stationPanel=undefined;w.attackUntil=0;w.attackQueuedUntil=undefined;w.axeSwing=undefined;w.spearThrust=undefined;w.swordThrust=undefined;w.bowShot=undefined;w.dodge=undefined;w.bruteGrab=undefined;
   w.player.moving=false;w.player.sprinting=false;w.player.hurtUntil=Math.max(w.player.hurtUntil,w.tick/60+1);
   for(const e of w.enemies){resetHound(w,e);e.path=[];e.repathAt=w.tick/60+.3;e.attackAt=w.tick/60+1;if(e.motion){e.motion.phase='recover';e.motion.since=w.tick/60;e.motion.resolved=true}if(e.brute){e.brute.phase='stalk';e.brute.since=w.tick/60;e.brute.hook=undefined;e.brute.jump=undefined;e.brute.recovery=undefined;e.brute.meleeAt=w.tick/60+1}}
   w.scene=id===CAMP_SCENE_ID?undefined:SCENES.get(id);

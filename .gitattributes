@@ -252,3 +252,11 @@ public/survival/expedition-menu-v2/loading-panel.webp -filter -diff -merge
 /docs/qa/stillwater-refinement-v3/*.webp -filter -diff -merge -text
 /docs/qa/stillwater-refinement-v3/*.mp4 -filter -diff -merge -text
 /docs/qa/stillwater-refinement-v3/*.gif -filter -diff -merge -text
+
+# Fishing equipment and review evidence ship as ordinary web/native blobs.
+/public/survival/fishing-gameplay-v1/*.webp -filter -diff -merge -text
+/artwork-archive/fishing-gameplay-v1/*.png -filter -diff -merge -text
+/docs/qa/fishing-gameplay-v1/*.webp -filter -diff -merge -text
+/docs/qa/fishing-gameplay-v1/*.png -filter -diff -merge -text
+/docs/qa/fishing-gameplay-v1/*.gif -filter -diff -merge -text
+/docs/qa/fishing-gameplay-v1/*.mp4 -filter -diff -merge -text
