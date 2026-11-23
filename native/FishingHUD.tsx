@@ -1,12 +1,11 @@
-import React,{useState} from 'react';
+import React from 'react';
 import {View,Text,Pressable,StyleSheet,type StyleProp,type ViewStyle} from 'react-native';
 import type {FishingHud} from '../src/fishing-types';
 import {FISHING_ART} from '../src/fishing-art';
 import {actionImageGlyph} from './FieldItemArt';
 
-type Props={hud:FishingHud;disabled?:boolean;compact?:boolean;style?:StyleProp<ViewStyle>;onCatch:(keep:boolean)=>void;onAssist:(assist:{autoHook?:boolean;toggleReel?:boolean})=>void};
-export default function FishingHUD({hud,disabled=false,compact=false,style,onCatch,onAssist}:Props){
- const [options,setOptions]=useState(false);
+type Props={hud:FishingHud;disabled?:boolean;compact?:boolean;style?:StyleProp<ViewStyle>;onCatch:(keep:boolean)=>void};
+export default function FishingHUD({hud,disabled=false,compact=false,style,onCatch}:Props){
  const tension=Math.max(0,Math.min(1,hud.tension)),charge=Math.max(0,Math.min(1,hud.charge)),fighting=hud.phase==='reeling',aiming=hud.phase==='aiming',danger=fighting&&tension>=.78;
  const caught=hud.catch;
  return <View style={[s.frame,compact&&s.compact,hud.phase==='bite'&&s.bite,style]}>
@@ -24,8 +23,7 @@ export default function FishingHUD({hud,disabled=false,compact=false,style,onCat
     <View style={s.meterEnds}><Text style={s.meterCaption}>{aiming?'NEAR':'SLACK'}</Text><Text style={s.meterCaption}>{aiming?'FAR':'SNAP'}</Text></View>
    </View>}
    <Text accessibilityLiveRegion="polite" style={s.hint}>{hud.hint}</Text>
-   {!hud.active&&<View style={s.footer}><Text style={s.best}>{hud.bestKg>0?`BEST ${hud.bestKg.toFixed(2)} kg`:'PERCH WATERS'}</Text><Pressable accessibilityRole="button" accessibilityLabel="Fishing assistance options" accessibilityState={{expanded:options}} disabled={disabled} hitSlop={6} onPress={()=>setOptions(value=>!value)}><Text style={s.optionsToggle}>OPTIONS {options?'−':'+'}</Text></Pressable></View>}
-   {!hud.active&&options&&<View style={s.options}>{([{key:'autoHook',label:'Auto hook',detail:'Hook bites for me'},{key:'toggleReel',label:'Tap to reel',detail:'Tap again to ease off'}] as const).map(option=><Pressable key={option.key} accessibilityRole="switch" accessibilityLabel={option.label} accessibilityHint={option.detail} accessibilityState={{checked:hud.assists[option.key],disabled}} disabled={disabled} onPress={()=>onAssist({[option.key]:!hud.assists[option.key]})} style={s.option}><View style={[s.checkbox,hud.assists[option.key]&&s.checked]}>{hud.assists[option.key]&&<Text style={s.checkmark}>✓</Text>}</View><View><Text style={s.optionLabel}>{option.label}</Text><Text style={s.optionDetail}>{option.detail}</Text></View></Pressable>)}</View>}
+   {!hud.active&&<View style={s.footer}><Text style={s.best}>{hud.bestKg>0?`BEST ${hud.bestKg.toFixed(2)} kg`:'PERCH WATERS'}</Text></View>}
   </>}
  </View>;
 }
@@ -36,6 +34,6 @@ const s=StyleSheet.create({
  compact:{paddingHorizontal:11,paddingVertical:9},innerRim:{position:'absolute',left:2,right:2,top:2,bottom:2,borderWidth:1,borderColor:'#8c724c66',borderTopLeftRadius:10,borderBottomRightRadius:10,borderTopRightRadius:3,borderBottomLeftRadius:3},rivet:{position:'absolute',width:5,height:5,borderRadius:3,borderWidth:1,borderColor:'#543923',backgroundColor:'#c29f68'},
  heading:{flexDirection:'row',alignItems:'center',justifyContent:'space-between',gap:8},eyebrow:{fontFamily:font,fontSize:12,lineHeight:20,letterSpacing:.9,color:'#ead7ac'},bait:{flexDirection:'row',gap:3,alignItems:'center'},baitCount:{fontFamily:font,fontSize:14,color:'#e6d6ad'},baitLabel:{fontFamily:font,fontSize:9,color:'#afbea8',letterSpacing:.4,marginLeft:2},
  hint:{fontFamily:font,fontSize:14,lineHeight:18,color:'#e0dcc5',marginTop:6},meter:{marginTop:8},track:{height:9,backgroundColor:'#173b34',borderRadius:5,borderWidth:1,borderColor:'#9b845c7f',overflow:'hidden'},fill:{height:'100%',borderTopWidth:1,borderTopColor:'#e0deb880',borderRadius:4},dangerZone:{position:'absolute',left:'78%',right:0,top:0,bottom:0,backgroundColor:'#63392f'},dangerMark:{position:'absolute',left:'78%',top:0,bottom:0,width:1,backgroundColor:'#dcc0809a'},meterEnds:{flexDirection:'row',justifyContent:'space-between',marginTop:2},meterCaption:{fontFamily:font,fontSize:9,color:'#adae96',letterSpacing:.6},dangerText:{color:'#ffc792'},bite:{borderColor:'#f3ce8b',shadowColor:'#d3a25e',shadowOpacity:.35},biteText:{color:'#ffe0a2',fontSize:16},
- footer:{flexDirection:'row',alignItems:'center',justifyContent:'space-between',borderTopWidth:1,borderTopColor:'#b0915435',marginTop:9,paddingTop:8},best:{fontFamily:font,fontSize:10,color:'#adbaa6',letterSpacing:.5},optionsToggle:{fontFamily:font,fontSize:10,color:'#d6bf91',letterSpacing:.5,paddingVertical:2},options:{marginTop:7,paddingTop:4,borderTopWidth:1,borderTopColor:'#b0915435'},option:{flexDirection:'row',gap:8,alignItems:'center',minHeight:36},checkbox:{width:17,height:17,borderWidth:1,borderColor:'#b4a27b',borderRadius:3,alignItems:'center',justifyContent:'center',backgroundColor:'#092523'},checked:{backgroundColor:'#9cbb94'},checkmark:{fontSize:13,lineHeight:15,color:'#16382d',fontWeight:'800'},optionLabel:{fontFamily:font,fontSize:13,color:'#e0dcc5'},optionDetail:{fontFamily:font,fontSize:11,color:'#b6c1ae'},
+ footer:{flexDirection:'row',alignItems:'center',borderTopWidth:1,borderTopColor:'#b0915435',marginTop:9,paddingTop:8},best:{fontFamily:font,fontSize:10,color:'#adbaa6',letterSpacing:.5},
  record:{fontFamily:font,fontSize:9,letterSpacing:.5,color:'#18372f',backgroundColor:'#dcc18a',borderRadius:3,paddingHorizontal:5,paddingVertical:3},catchFish:{flexDirection:'row',alignItems:'center',justifyContent:'center',gap:7,marginVertical:5},fishName:{fontFamily:font,fontSize:22,color:'#f5e4bd',letterSpacing:.9},weightRow:{flexDirection:'row',gap:3,alignItems:'baseline'},weight:{fontFamily:font,fontSize:14,color:'#cfcdac',marginTop:1},weightValue:{fontSize:24,color:'#f5e4bd',fontVariant:['tabular-nums']},catchNote:{fontFamily:font,fontSize:13,lineHeight:17,color:'#cdd4bd',marginBottom:10},catchActions:{flexDirection:'row',gap:8},catchButton:{flex:1,minHeight:38,borderWidth:1,borderColor:'#c2a269',borderRadius:5,backgroundColor:'#245149',alignItems:'center',justifyContent:'center'},releaseButton:{backgroundColor:'#0b2828',borderColor:'#7f8062'},buttonLabel:{fontFamily:font,fontSize:13,color:'#f8e7bf',letterSpacing:.6},disabled:{opacity:.4},pressed:{opacity:.72},bagFull:{fontFamily:font,textAlign:'center',fontSize:9,color:'#e0b985',letterSpacing:.5,marginTop:7},
 });

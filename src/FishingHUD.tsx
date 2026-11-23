@@ -1,14 +1,13 @@
-import React,{useState} from 'react';
+import React from 'react';
 import type {FishingHud} from './fishing-types';
 import {FISHING_ART} from './fishing-art';
 import './fishing-hud.css';
 
-export type FishingHUDProps={hud:FishingHud;disabled?:boolean;onCatch:(keep:boolean)=>void;onAssist:(assist:{autoHook?:boolean;toggleReel?:boolean})=>void};
+export type FishingHUDProps={hud:FishingHud;disabled?:boolean;onCatch:(keep:boolean)=>void};
 
 /** Fishing stays alongside the existing action hexagons, leaving the float and
  * fish visible. The simulation is the single source of both labels and meters. */
-export default function FishingHUD({hud,disabled=false,onCatch,onAssist}:FishingHUDProps){
- const [options,setOptions]=useState(false);
+export default function FishingHUD({hud,disabled=false,onCatch}:FishingHUDProps){
  const tension=Math.max(0,Math.min(1,hud.tension)),charge=Math.max(0,Math.min(1,hud.charge));
  const fighting=hud.phase==='reeling',aiming=hud.phase==='aiming';
  const danger=fighting&&tension>=.78;
@@ -28,7 +27,6 @@ export default function FishingHUD({hud,disabled=false,onCatch,onAssist}:Fishing
    <span className="fishing-meter-ends"><span>{aiming?'NEAR':'SLACK'}</span><span>{aiming?'FAR':'SNAP'}</span></span>
   </div>}
   <p className="fishing-hint" role="status">{hud.hint}</p>
-  {!hud.active&&<div className="fishing-footer"><span>{hud.bestKg>0?`BEST ${hud.bestKg.toFixed(2)} kg`:'PERCH WATERS'}</span><button type="button" disabled={disabled} className="fishing-options-toggle" onClick={()=>setOptions(value=>!value)} aria-expanded={options}>OPTIONS <span aria-hidden="true">{options?'−':'+'}</span></button></div>}
-  {!hud.active&&options&&<div className="fishing-options"><label><input type="checkbox" checked={hud.assists.autoHook} disabled={disabled} onChange={event=>onAssist({autoHook:event.target.checked})}/><span><b>Auto hook</b><small>Hook bites for me</small></span></label><label><input type="checkbox" checked={hud.assists.toggleReel} disabled={disabled} onChange={event=>onAssist({toggleReel:event.target.checked})}/><span><b>Tap to reel</b><small>Tap again to ease off</small></span></label></div>}
+  {!hud.active&&<div className="fishing-footer"><span>{hud.bestKg>0?`BEST ${hud.bestKg.toFixed(2)} kg`:'PERCH WATERS'}</span></div>}
  </section>;
 }

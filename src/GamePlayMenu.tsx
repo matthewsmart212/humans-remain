@@ -5,14 +5,15 @@ import {ArrowLeft,Maximize2,Minimize2,Pause,Play,RotateCcw,Users,Plus} from 'luc
 import {SURVIVOR_ROLES,type SurvivorRoleId} from './survivor-roles';
 import {GamePerformancePanel,PerformanceMenuOptions,type GameDiagnostics} from './GamePerformance';
 
-type Props={paused:boolean;fullscreen:boolean;hideButton?:boolean;defeated?:boolean;cause?:string;survival?:boolean;saveNotice?:string;saveBlocked?:boolean;onSandbox?:()=>void;onContinue?:()=>void;diagnostics?:GameDiagnostics;spawns?:PlaySpawnControls;onPause:()=>void;onResume:()=>void;onRestart:()=>void;onExit:()=>void;onExpand:()=>void;characterRole?:SurvivorRoleId;onChangeCharacter?:(role:SurvivorRoleId)=>Promise<void>;creativeMode?:boolean;onToggleCreative?:()=>void;fullZoom?:boolean;onToggleFullZoom?:()=>void};
+type Props={paused:boolean;fullscreen:boolean;hideButton?:boolean;defeated?:boolean;cause?:string;survival?:boolean;saveNotice?:string;saveBlocked?:boolean;onSandbox?:()=>void;onContinue?:()=>void;diagnostics?:GameDiagnostics;spawns?:PlaySpawnControls;onPause:()=>void;onResume:()=>void;onRestart:()=>void;onExit:()=>void;onExpand:()=>void;characterRole?:SurvivorRoleId;onChangeCharacter?:(role:SurvivorRoleId)=>Promise<void>;creativeMode?:boolean;onToggleCreative?:()=>void;fullZoom?:boolean;onToggleFullZoom?:()=>void;fishingAssists?:{autoHook:boolean;toggleReel:boolean};onFishingAssist?:(values:{autoHook?:boolean;toggleReel?:boolean})=>void};
 export function EditorOnly({playing,children}:{playing:boolean;children:React.ReactNode}){return playing?null:<>{children}</>}
 
 /** The play surface exposes game actions only; editor tools stay unmounted. */
-export default function GamePlayMenu({paused,fullscreen,hideButton=false,defeated=false,cause,survival=false,saveNotice,saveBlocked=false,onSandbox,onContinue,diagnostics,spawns,onPause,onResume,onRestart,onExit,onExpand,characterRole='survivor',onChangeCharacter,creativeMode=false,onToggleCreative,fullZoom=false,onToggleFullZoom}:Props){
+export default function GamePlayMenu({paused,fullscreen,hideButton=false,defeated=false,cause,survival=false,saveNotice,saveBlocked=false,onSandbox,onContinue,diagnostics,spawns,onPause,onResume,onRestart,onExit,onExpand,characterRole='survivor',onChangeCharacter,creativeMode=false,onToggleCreative,fullZoom=false,onToggleFullZoom,fishingAssists,onFishingAssist}:Props){
  const dialog=useRef<HTMLDialogElement>(null),title=useId();
  const [page,setPage]=useState<'pause'|'character'|'performance'|'spawn'|'restart'>('pause');
  const [changingCharacter,setChangingCharacter]=useState(false),[characterError,setCharacterError]=useState('');
+ const [,refreshFishing]=useState(0);
  const returnTarget=useRef<HTMLButtonElement|null>(null);
  const openPage=(next:typeof page,trigger?:HTMLButtonElement)=>{
   returnTarget.current=trigger??(document.activeElement instanceof HTMLButtonElement?document.activeElement:null);
@@ -56,6 +57,7 @@ export default function GamePlayMenu({paused,fullscreen,hideButton=false,defeate
     <details className="pause-disclosure"><summary>Game settings</summary><div>
      {onChangeCharacter&&!defeated&&<button type="button" onClick={e=>{setCharacterError('');openPage('character',e.currentTarget)}}><Users size={18}/>Change character <b className="pause-value">{SURVIVOR_ROLES.find(r=>r.id===characterRole)?.label}</b></button>}
      {onToggleFullZoom&&!defeated&&<><button type="button" aria-pressed={fullZoom} onClick={onToggleFullZoom}><Maximize2 size={18}/>Full zoom <b className="pause-value">{fullZoom?'On':'Off'}</b></button>{fullZoom&&<p>Pinch out further in the world view. Use the map button to open the map.</p>}</>}
+     {fishingAssists&&onFishingAssist&&!defeated&&<><p>Fishing assistance</p>{([{key:'autoHook',label:'Auto hook',description:'Hook fishing bites automatically'},{key:'toggleReel',label:'Tap to reel',description:'Tap once to reel and again to ease off'}] as const).map(option=><button key={option.key} type="button" role="switch" aria-checked={fishingAssists[option.key]} aria-label={option.description} onClick={()=>{onFishingAssist({[option.key]:!fishingAssists[option.key]});refreshFishing(value=>value+1)}}>{option.label}<b className="pause-value">{fishingAssists[option.key]?'On':'Off'}</b></button>)}</>}
      <button type="button" onClick={onExpand}>{fullscreen?<Minimize2 size={18}/>:<Maximize2 size={18}/>}<span>{fullscreen?'Exit full screen':'Full screen'}</span></button>
     </div></details>
     {(diagnostics||survival&&(onSandbox||onToggleCreative&&!defeated))&&<details className="pause-disclosure"><summary>Play tools</summary><div>

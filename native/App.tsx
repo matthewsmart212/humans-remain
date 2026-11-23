@@ -47,6 +47,7 @@ import {performanceWorldContext} from '../src/performance-context';
 import {NativeUiFrameProbe} from './UiFrameProbe';
 import {NativeDeviceContextProbe} from './DeviceContextProbe';
 import {FieldKitController} from '../src/field-kit';
+import {setFishingAssist} from '../src/fishing';
 import {loadGameWorld,loadPublishedGameWorld,type SavedWorld} from './game-world';
 
 // Statically replaced by Expo's environment transform; no Node runtime required.
@@ -139,6 +140,7 @@ function Game({role,onHome,entryVisible,onBootProgress,onBootError,coop}:{role:S
  };
  const restart=()=>{const r=runtime.current;if(!r)return;gamePerformance.stop(performance.now(),'New Survival run');try{clear();continuousZoom.current=1;mapVisible.current=false;mapRequested.current=false;setMapOpen(false);atlasZoom.set(1);playView.current.zoom=1;const session=createCampPlaySession(r.saved.layout,undefined,'survival');session.creativeMode=creativeMode;session.survivorRole=activeRole;bindTravel(r,session);saveBlocked.current=false;setSaveNotice('');change('playing');saveRun(true)}catch(e){setError(String(e));change('error')}};
  const toggleFullZoom=()=>{if(modeRef.current!=='paused')return;const next=!fullZoomEnabled.current;fullZoomEnabled.current=next;playView.current.fullZoom=next;if(!next){mapRequested.current=false;playView.current.zoom=Math.max(MIN_PLAY_ZOOM,playView.current.zoom);continuousZoom.current=playView.current.zoom;atlasZoom.set(continuousZoom.current)}setFullZoom(next);void AsyncStorage.setItem(FULL_ZOOM_SETTING_KEY,next?'1':'0').catch(()=>{})};
+ const toggleFishingAssist=(key:'autoHook'|'toggleReel')=>{const w=world.current;if(modeRef.current!=='paused'||!w?.fishing?.claimed||w.phase==='over'||saveBlocked.current)return;setFishingAssist(w,{[key]:!w.fishing[key]});saveRunRef.current();refresh(n=>n+1)};
   const toggleCreative=()=>{const w=world.current;if(coop||modeRef.current!=='paused'||!w?.progression||w.phase==='over')return;const next=!w.creativeMode;w.creativeMode=next;setCreativeMode(next);fieldKit.cancel();refresh(n=>n+1)};
   const changeCharacter=async(next:SurvivorRoleId)=>{
   const r=runtime.current,w=world.current;
@@ -305,6 +307,10 @@ function Game({role,onHome,entryVisible,onBootProgress,onBootError,coop}:{role:S
      {!coop&&w?.phase!=='over'&&button('Change character · '+(SURVIVOR_ROLES.find(option=>option.id===activeRole)?.label??'Survivor'),()=>{setCharacterError('');setCharacterOpen(true)},false,wide&&s.menuItem)}
      {w?.phase!=='over'&&<Pressable accessibilityRole="switch" accessibilityLabel="Full Zoom" accessibilityState={{checked:fullZoom}} onPress={toggleFullZoom} style={[s.button,wide&&s.menuItem]}><Text style={s.buttonText}>Full Zoom · {fullZoom?'ON':'OFF'}</Text></Pressable>}
       {fullZoom&&w?.phase!=='over'&&<Text style={s.description}>Pinch out further without opening the map. The map button still works.</Text>}
+     {w?.fishing?.claimed&&w.phase!=='over'&&<>
+      <Text style={s.section}>FISHING</Text>
+      {([{key:'autoHook',label:'Auto hook',detail:'Hook bites for me'},{key:'toggleReel',label:'Tap to reel',detail:'Tap again to ease off'}] as const).map(option=><Pressable key={option.key} accessibilityRole="switch" accessibilityLabel={option.label} accessibilityHint={option.detail} accessibilityState={{checked:!!w.fishing?.[option.key],disabled:saveBlocked.current}} disabled={saveBlocked.current} onPress={()=>toggleFishingAssist(option.key)} style={[s.button,wide&&s.menuItem,saveBlocked.current&&s.disabled]}><Text style={s.buttonText}>{option.label} · {w.fishing?.[option.key]?'ON':'OFF'}</Text><Text style={s.small}>{option.detail}</Text></Pressable>)}
+     </>}
      </>}
      {disclosure('tools','Play tools')}
      {pauseSection==='tools'&&<>

@@ -13,7 +13,7 @@ This update turns the existing Stillwater pier and visible perch into a playable
 7. Cook perch with the existing campfire system. Cooking takes 12 seconds, produces ordinary collectible cooked food, and restores 30 food plus 6 health when eaten. Raw portions weigh 0.55 kg; cooked portions weigh 0.4 kg. Record weight is separate from prepared inventory portion weight.
 8. Search the damp shoreline reeds for up to four worms. The bait tin holds ten; the 45-second search cooldown survives saving.
 
-Fishing options include **Auto hook** and **Tap to reel**. Both use the same fish, tension and reward rules. Movement, damage, menu/background interruption, a removed pier or a change of equipment ends an active attempt. A landed catch awaiting KEEP/RELEASE survives those interruptions and saving.
+After claiming the tackle, **Pause → Game settings** contains the **Auto hook** and **Tap to reel** assistance switches. The fishing panel has no Options button. Both assists use the same fish, tension and reward rules. Movement, damage, menu/background interruption, a removed pier or a change of equipment ends an active attempt. A landed catch awaiting KEEP/RELEASE survives those interruptions and saving.
 
 ## Implementation
 
