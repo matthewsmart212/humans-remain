@@ -7,7 +7,7 @@ import {usesPaintedHomeTerrain} from './terrain-art';
 import type {Placement} from './world-layout';
 import type {World} from './survival-engine';
 import type {FoliageViewport} from './foliage-renderer';
-import {fishingRenderState} from './fishing';
+import {fishingRenderState,fishingFishUnavailable} from './fishing';
 import {drawFishingWaterAction} from './fishing-renderer';
 
 export {fishingFishSchool,fishingFishPosition,type FishingFishOrbit} from './fishing-water-life';
@@ -97,6 +97,7 @@ export function drawFishingSiteGround(ctx:CanvasRenderingContext2D,imgs:Record<s
   const g=fishingPierGeometry(p);if(!intersects(g.worldBounds,view,600))continue;
   const school=fishingFishSchool(p);
   for(let i=0;i<school.length;i++){
+   if(fishingFishUnavailable(w,p.id,i))continue;
    if(fishing?.pierId===p.id&&fishing.fishIndex===i&&fishing.phase!=='aiming'&&fishing.phase!=='equipped'&&fishing.phase!=='ready'&&fishing.phase!=='caught')continue;
    const fish=school[i];
    if(fish.x+fish.rx+fish.drawRadius<view.x||fish.x-fish.rx-fish.drawRadius>view.x+view.width||fish.y+fish.ry+fish.drawRadius<view.y||fish.y-fish.ry-fish.drawRadius>view.y+view.height)continue;

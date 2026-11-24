@@ -3,11 +3,11 @@ import {availableQuickItems,quickItemCount,quickBarWidth,quickBarSliceImage,QUIC
 import QuickItemIcon from './QuickItemIcon';
 import {ACTION_HEX} from './action-hex';
 
-export default function QuickBar({selected,torch,cooked,cookedRabbit=0,cookedVenison=0,cookedFish=0,provisions,axes,disabled,onSelect,onExpandedChange}:QuickBarProps){
+export default function QuickBar({selected,torch,cooked,cookedRabbit=0,cookedVenison=0,cookedFish=0,cookedCarp=0,cookedPike=0,provisions,axes,disabled,onSelect,onExpandedChange}:QuickBarProps){
  const [expanded,setExpanded]=useState(false),root=useRef<HTMLElement>(null),toggle=useRef<HTMLButtonElement>(null),itemsId=useId();
  const notifyExpanded=useRef(onExpandedChange);notifyExpanded.current=onExpandedChange;
  const pointer=useRef<{id:number;x:number;y:number;moved:boolean}|null>(null);
- const items=availableQuickItems({torch,cooked,cookedRabbit,cookedVenison,cookedFish,provisions,axes}),active=items.find(item=>item.id===selected)??items[0],open=expanded&&!disabled,empty=items.length===1&&items[0].id==='fists';
+ const items=availableQuickItems({torch,cooked,cookedRabbit,cookedVenison,cookedFish,cookedCarp,cookedPike,provisions,axes}),active=items.find(item=>item.id===selected)??items[0],open=expanded&&!disabled,empty=items.length===1&&items[0].id==='fists';
  const visible=open?items:active?[active]:[];
  useEffect(()=>{notifyExpanded.current?.(open)},[open]);
  useEffect(()=>()=>notifyExpanded.current?.(false),[]);
@@ -34,7 +34,7 @@ export default function QuickBar({selected,torch,cooked,cookedRabbit=0,cookedVen
   onKeyDown={e=>{if(e.key==='Escape'&&open){e.preventDefault();e.stopPropagation();close()}else if(e.key===' '||e.key==='Enter')e.stopPropagation()}} onKeyUp={e=>{if(e.key===' '||e.key==='Enter'||e.key==='Escape')e.stopPropagation()}}>
   <span className="kit-quick-skin" aria-hidden="true">{open?QUICK_BAR_SLICES.map(part=><span key={part.id} className="kit-quick-slice" style={{...('width' in part?{width:part.width}:{flex:1}),...('flip' in part?{transform:'scaleX(-1)'}:{})}}><img src="/survival/ui-field-kit-v1/vitals.png" style={quickBarSliceImage(part)} alt="" draggable={false}/></span>):<img className="kit-quick-hex" src="/survival/ui-action-hex-v1/primary.png" alt="" draggable={false}/>}</span>
   <div className="kit-quick-items" id={itemsId} role="group" aria-label={open?'Available tools and items':'Active tool or item'}>
-   {visible.map(item=>{const count=quickItemCount(item.id,cooked,cookedRabbit,cookedVenison,axes?.arrows??0,provisions,cookedFish),size=open?layout.iconSize:layout.closedIconSize;return <button type="button" key={item.id} className="kit-quick-slot"
+   {visible.map(item=>{const count=quickItemCount(item.id,cooked,cookedRabbit,cookedVenison,axes?.arrows??0,provisions,cookedFish,cookedCarp,cookedPike),size=open?layout.iconSize:layout.closedIconSize;return <button type="button" key={item.id} className="kit-quick-slot"
     aria-label={`${item.label}${count!==undefined?`, ${count} ${item.id==='bow'?'arrows':'portions'}`:''}${open?'':'. Active item. Open item selector'}`} title={open?`${item.label} · Select and close`:'Open item selector'} aria-pressed={active?.id===item.id} aria-expanded={open?undefined:false} disabled={disabled}
     {...tap(()=>{if(open){onSelect(item.id);close()}else setExpanded(true)})}>
     <QuickItemIcon item={item} size={size}/><span className="kit-quick-label">{item.label}</span>{count!==undefined&&<b>{count}</b>}

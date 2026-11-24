@@ -6,8 +6,8 @@ import {itemCount,canCarryCount,packWeight} from './expedition-inventory';
 import {durationLabel} from './camp-station-view';
 import {PROVISIONS,huntersMealCount,canPackHuntersMeal,canPrepareHuntersMeal,prepareHuntersMeal} from './food-provisions';
 
-export const FIRE_FOOD_ART={fish:{raw:BAG_IMAGES.fishRaw,cooked:BAG_IMAGES.fishMeal},chicken:{raw:BAG_IMAGES.raw,cooked:BAG_IMAGES.meal},rabbit:{raw:BAG_IMAGES.rabbitRaw,cooked:BAG_IMAGES.rabbitMeal},venison:{raw:BAG_IMAGES.venisonRaw,cooked:BAG_IMAGES.venisonMeal}};
-export const FIRE_SPECIES:FoodSpecies[]=['chicken','rabbit','venison','fish'];
+export const FIRE_FOOD_ART={carp:{raw:BAG_IMAGES.carpRaw,cooked:BAG_IMAGES.carpMeal},pike:{raw:BAG_IMAGES.pikeRaw,cooked:BAG_IMAGES.pikeMeal},fish:{raw:BAG_IMAGES.fishRaw,cooked:BAG_IMAGES.fishMeal},chicken:{raw:BAG_IMAGES.raw,cooked:BAG_IMAGES.meal},rabbit:{raw:BAG_IMAGES.rabbitRaw,cooked:BAG_IMAGES.rabbitMeal},venison:{raw:BAG_IMAGES.venisonRaw,cooked:BAG_IMAGES.venisonMeal}};
+export const FIRE_SPECIES:FoodSpecies[]=['chicken','rabbit','venison','fish','carp','pike'];
 export function campfireView(w:World){
  const k=kitchen(w),fuel=w.camp.hearth.fuel,burning=fuel>0,incoming=!!k.logs?.length,logs=itemCount(w,'pallets')+w.stock.pallets;
  const spitFull=k.queue.length>=KITCHEN_QUEUE,hasFuelRoom=committedFuel(w)<=FIRE_CAPACITY-LOG_BURN_SECONDS;

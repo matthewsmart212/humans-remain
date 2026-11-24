@@ -14,6 +14,8 @@ import {ItemArt} from './FieldItemArt';
 
 const foodIds = {
  fish: {raw: 'fishRaw', cooked: 'fishMeal'},
+ carp: {raw: 'carpRaw', cooked: 'carpMeal'},
+ pike: {raw: 'pikeRaw', cooked: 'pikeMeal'},
  chicken: {raw: 'raw', cooked: 'meal'}, rabbit: {raw: 'rabbitRaw', cooked: 'rabbitMeal'}, venison: {raw: 'venisonRaw', cooked: 'venisonMeal'},
 } as const;
 type Props = {world: World; width: number; height: number; safe: MenuInsets; onClose: () => void; onChange: () => void};

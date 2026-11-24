@@ -1,0 +1,31 @@
+{
+  "passed": true,
+  "platform": "ios",
+  "bundles": [
+    "_expo/static/js/ios/index-c2cac83bb1df1fd755c1d24bcd25b9e2.hbc"
+  ],
+  "assetCount": 1009,
+  "verifiedNewFishingArt": 5,
+  "verifiedOfflineCues": 13,
+  "physicalDeviceTested": false,
+  "newFishingAssets": {
+    "public/audio/fishing-v2/cast.wav": "assets/7a80f290ddf63e57c47f43653957a338",
+    "public/audio/fishing-v2/splash.wav": "assets/6510056aef31dbcd0cdbbcccb77ef64d",
+    "public/audio/fishing-v2/nibble.wav": "assets/9065782cbc6d214a82361a038fda784c",
+    "public/audio/fishing-v2/bite.wav": "assets/bb9f9b428e8001e931bec990bdc9a859",
+    "public/audio/fishing-v2/hook.wav": "assets/c3a9bcd4a4aeaeaa6da2136fc7e938a9",
+    "public/audio/fishing-v2/surge.wav": "assets/597a05af6a31255349cad0c315f05d4a",
+    "public/audio/fishing-v2/land.wav": "assets/cc9d5bec604056e0836f46eac1a7ab4e",
+    "public/audio/fishing-v2/keep.wav": "assets/c5989d6379915fe30c75e6f6b05bd9d0",
+    "public/audio/fishing-v2/release.wav": "assets/898e0b6592a5dfb753cab29f31cda4e1",
+    "public/audio/fishing-v2/escape.wav": "assets/2cdbf826485d8d95e3ba3e00941f5e99",
+    "public/audio/fishing-v2/signal.wav": "assets/e2abec597c8bbf3b1f141ef309aa5836",
+    "public/audio/fishing-v2/warning.wav": "assets/9e2e8be925194649053dff8b9d1bb6e4",
+    "public/audio/fishing-v2/reel.wav": "assets/711919d4093e3bd80ab776ed73d73bda",
+    "public/survival/fishing-gameplay-v2/raw-carp.webp": "assets/7eb62ffb28d2e49f54c3c5b2c0a01632",
+    "public/survival/fishing-gameplay-v2/cooked-carp.webp": "assets/c49de0cdca8018d3b403d468f82f5338",
+    "public/survival/fishing-gameplay-v2/raw-pike.webp": "assets/c162f8a09a9da4c75abd3ad8d6eae4ea",
+    "public/survival/fishing-gameplay-v2/cooked-pike.webp": "assets/feb242478df8ae6989f2c9de243c664e",
+    "public/survival/fishing-gameplay-v2/scout-drone.webp": "assets/9b424a38b8b8ad0991073fb04de96705"
+  }
+}

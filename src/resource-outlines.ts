@@ -11,7 +11,7 @@ import {isAxe} from './player-gear';
 import {SCRAP_KEYS} from './scrap-salvage';
 import {isProvision} from './food-provisions-data';
 import {provisionImageKey} from './food-provisions-art';
-import {isCookedFood} from './food-items';
+import {isCookedFood,foodImageKeyForKind} from './food-items';
 import {chestFrame} from './chest-animation';
 import {placedAnimationFrame} from './step-on-animation';
 import {placedFireLit} from './camp-lighting';
@@ -73,7 +73,7 @@ export function pickupOutlineSprite(l:Loot){
  if(l.appearance==='logs')return{key:assetImageKey(TREE_LOG_IMAGE),x:l.x-35,y:l.y-34,width:70,height:47};
  if(['stone','ironOre','ironIngot'].includes(l.kind))return{key:l.kind,x:l.x-28,y:l.y-34,width:56,height:36};
  if(isProvision(l.kind))return{key:provisionImageKey(l.kind),x:l.x-24,y:l.y-43,width:48,height:48};
- const key=l.kind==='rawFish'?'fishRaw':l.kind==='cookedFish'?'fishCooked':l.kind==='rawVenison'?'venisonRaw':l.kind==='cookedVenison'?'venisonCooked':l.kind==='rawRabbit'?'rabbitRaw':l.kind==='cookedRabbit'?'rabbitCooked':l.kind==='rawMeat'?'bonfireRaw':l.kind==='cookedMeat'?'bonfireCooked':l.kind==='scrap'?'bagScrap':l.kind==='fuel'?'bagFuel':undefined;
+ const key=foodImageKeyForKind(l.kind)??(l.kind==='scrap'?'bagScrap':l.kind==='fuel'?'bagFuel':undefined);
  if(!key)return;
  return isCookedFood(l.kind)?{key,x:l.x-29,y:l.y-44,width:58,height:48}:{key,x:l.x-24,y:l.y-39,width:48,height:40};
 }

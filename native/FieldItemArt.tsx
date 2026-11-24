@@ -11,6 +11,8 @@ const itemImages:Record<BagItemId|QuickItem,number>={
  ...FOOD_NATIVE_ART,
  fishingRod:require('../public/survival/fishing-gameplay-v1/rod.webp'),
  fishRaw:require('../public/survival/fishing-gameplay-v1/raw-perch.webp'),
+ carpRaw:require('../public/survival/fishing-gameplay-v2/raw-carp.webp'),
+ pikeRaw:require('../public/survival/fishing-gameplay-v2/raw-pike.webp'),
  repairHammer:require('../public/survival/equipment/repair-hammer-v1.webp'),
  ironOre:IRONWORKS_NATIVE_ART.ironOre,
  ironIngot:IRONWORKS_NATIVE_ART.ironIngot,
@@ -49,6 +51,7 @@ export function QuickItemIcon({id,size}:{id:QuickItem;size:number}){
 
 const quickItemsByPath=new Map(QUICK_ITEMS.map(item=>[item.image,item.id]));
 const actionImages:Record<string,number>={
+ '/survival/fishing-gameplay-v2/scout-drone.webp':require('../public/survival/fishing-gameplay-v2/scout-drone.webp'),
  ...Object.fromEntries(Object.entries(BAG_IMAGES).map(([id,path])=>[path,itemImages[id as BagItemId]])),
  '/survival/fishing-gameplay-v1/reel.webp':require('../public/survival/fishing-gameplay-v1/reel.webp'),
  '/survival/fishing-gameplay-v1/hook.webp':require('../public/survival/fishing-gameplay-v1/hook.webp'),

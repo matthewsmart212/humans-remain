@@ -1,0 +1,19 @@
+{
+  "uiCases": 16,
+  "platforms": [
+    "web component",
+    "native component"
+  ],
+  "nativeDeferredPlaybackGuards": [
+    "world",
+    "hidden",
+    "pause",
+    "mute-unmute",
+    "dispose"
+  ],
+  "oneShotEvents": true,
+  "reelCuesPerSecond": 5,
+  "offlineSoundCues": 13,
+  "soundOffVisualInstructions": true,
+  "actualDeviceTest": false
+}

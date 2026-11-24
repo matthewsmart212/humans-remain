@@ -90,7 +90,7 @@ export function decodeRun(text:string):TravelSnapshot{
   if(typeof id!=='string'||ids.has(id)||id!==CAMP_SCENE_ID&&!SCENES.has(id)||!w?.layout||!Array.isArray(w.layout.items)||!w.player||!Number.isFinite(w.player.x)||!Number.isFinite(w.player.y)||!Number.isFinite(w.player.hp)||!Number.isSafeInteger(w.tick)||w.tick<0||!Array.isArray(w.enemies)||!Array.isArray(w.animals)||!Array.isArray(w.loot)||!w.bag||!w.stock||!w.camp||!w.fire||!['day','night','over'].includes(w.phase))throw Error('The saved world is incomplete.');
   if(w.layout.fishingSiteVersion!==undefined&&w.layout.fishingSiteVersion!==1)throw Error('The saved fishing site version is unsupported.');
   if(!validFishingProgress(w.fishing))throw Error('The saved fishing progress is incomplete.');
-  if(w.cookedFish!==undefined&&(!Number.isSafeInteger(w.cookedFish)||w.cookedFish<0))throw Error('The saved fish inventory is incomplete.');
+  if(['cookedFish','cookedCarp','cookedPike'].some(key=>{const value=w[key as 'cookedFish'|'cookedCarp'|'cookedPike'];return value!==undefined&&(!Number.isSafeInteger(value)||value<0)}))throw Error('The saved fish inventory is incomplete.');
   if(w.progression&&!validRestorationSave(w.progression))throw Error('The saved building repairs are incomplete.');
   if(w.progression&&!validBlueprintSave(w.progression.blueprints))throw Error('The saved blueprints are incomplete.');
   if(w.progression&&!validJournalSave(w.progression))throw Error('The saved journal is incomplete.');

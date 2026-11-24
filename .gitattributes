@@ -260,3 +260,11 @@ public/survival/expedition-menu-v2/loading-panel.webp -filter -diff -merge
 /docs/qa/fishing-gameplay-v1/*.png -filter -diff -merge -text
 /docs/qa/fishing-gameplay-v1/*.gif -filter -diff -merge -text
 /docs/qa/fishing-gameplay-v1/*.mp4 -filter -diff -merge -text
+
+# Fishing V2 art, short original foley and review evidence are bundled offline.
+/public/survival/fishing-gameplay-v2/*.webp -filter -diff -merge -text
+/public/audio/fishing-v2/*.wav -filter -diff -merge -text
+/artwork-archive/fishing-gameplay-v2/*.png -filter -diff -merge -text
+/docs/qa/fishing-gameplay-v2/*.png -filter -diff -merge -text
+/docs/qa/fishing-gameplay-v2/*.webp -filter -diff -merge -text
+/docs/qa/fishing-gameplay-v2/*.mp4 -filter -diff -merge -text

@@ -1,0 +1,42 @@
+[
+  {
+    "name": "raw-carp",
+    "prompt": "Create ONE finished game inventory artwork asset: a common carp, full body, broad deep rounded bronze-gold body, large interlocking scales, small two mouth barbels, olive dorsal ridge, tawny fins. Face LEFT, strict readable side profile, alive and freshly caught, gentle curved pose. Match the supplied reference's hand-painted detailed survival-game icon style, warm muted earth palette, delicate dark contour and lit scale edges. Carp must be recognizably different from the striped spiny perch reference: no dark vertical stripes, no tall spiky front dorsal. Fish alone centred on truly TRANSPARENT background with full silhouette visible and no frame, UI, lettering, scene, ground, extra objects, drop shadow, halo, or black fill. Fill most of a square canvas with generous safe transparent padding. Crisp readable silhouette at small sizes; do not make a photograph or glossy 3D render.",
+    "reference": "public/survival/fishing-gameplay-v1/raw-perch.webp",
+    "transparentBackground": true,
+    "generated": "2026-11-24",
+    "packaging": "Original PNG archived unchanged; alpha-preserving 512px WebP runtime copy."
+  },
+  {
+    "name": "raw-pike",
+    "prompt": "Create ONE finished game inventory artwork asset: a northern pike, full body, long narrow green-olive torpedo body with pale yellow speckled flank, elongated flat duckbill snout with closed mouth, rear-set dorsal fin and forked tail, yellowish fins. Face LEFT, strict readable side profile, alive and freshly caught, slight natural curve. Match the supplied reference's hand-painted detailed survival-game icon style, warm muted earth palette, delicate dark contour and lit scale edges. Visibly much longer and narrower than perch, no perch stripes or spiny dorsal. Fish alone centred on truly TRANSPARENT background with full silhouette visible and no frame, UI, lettering, scene, ground, extra objects, drop shadow, halo, or black fill. Fill most of a square canvas with generous safe transparent padding. Crisp readable silhouette at small sizes; do not make a photograph or glossy 3D render.",
+    "reference": "public/survival/fishing-gameplay-v1/raw-perch.webp",
+    "transparentBackground": true,
+    "generated": "2026-11-24",
+    "packaging": "Original PNG archived unchanged; alpha-preserving 512px WebP runtime copy."
+  },
+  {
+    "name": "scout-drone",
+    "prompt": "Create ONE finished game inventory artwork asset for the post-collapse woodland survival game Humans Remain: a small corroded submerged SCOUT DRONE fished from a lake, shown in a clear three-quarter side view. A compact rounded oblong worn olive-metal chassis, one subtle dull red circular camera lens, two short bent rotor arms with broken propellers, rusted seams, exposed loose copper wire, a few strands of dark green waterweed and hanging water droplets. Clearly a ruined mechanical salvage object, NOT a fish, robot companion, toy or character. Match the supplied reference's hand-painted detailed survival-game item art style, warm muted earth palette, dark contour, restrained painterly metallic highlights; not glossy 3D or photography. One isolated object centred on truly TRANSPARENT background, full silhouette visible, no frame, UI, letters, ground, water surface, scenery, halo or black fill. Fill most of square canvas with generous safe transparent padding. Make silhouette and red lens readable as a small inventory icon.",
+    "reference": "public/survival/fishing-gameplay-v1/reel.webp",
+    "transparentBackground": true,
+    "generated": "2026-11-24",
+    "packaging": "Original PNG archived unchanged; alpha-preserving 512px WebP runtime copy."
+  },
+  {
+    "name": "cooked-carp",
+    "prompt": "Create ONE finished game inventory food artwork asset: a whole COOKED CARP roasted on a simple thin wooden spit, facing LEFT, diagonally rising a little to the right like the reference. Broad deep round bronze-gold carp body, recognizable broad rounded head with little mouth barbel, large caramelized scales, golden crisp browned skin and a few dark grill marks, tawny tail. Match the supplied cooked perch reference's detailed hand-painted rustic woodland survival-game icon style, warm muted earth palette, delicate dark contour and appetizing painted highlights. Clearly a carp, not perch: deep rounded belly, no perch stripes or tall spiny dorsal. Food and single spit alone centred on truly TRANSPARENT background, full silhouette visible, no plate, scene, frame, UI, text, ground, shadow, halo or black fill. Fill most of square canvas with safe transparent padding. Crisp readable icon, no photography or glossy 3D.",
+    "reference": "public/survival/fishing-gameplay-v1/cooked-perch.webp",
+    "transparentBackground": true,
+    "generated": "2026-11-24",
+    "packaging": "Original PNG archived unchanged; alpha-preserving 512px WebP runtime copy."
+  },
+  {
+    "name": "cooked-pike",
+    "prompt": "Create ONE finished game inventory food artwork asset: a whole COOKED PIKE roasted on a simple thin wooden spit, facing LEFT, diagonally rising a little to the right like the reference. Distinct long narrow torpedo-shaped pike body and elongated flat duckbill snout, rear-set dorsal fin, golden browned roasted skin with olive-gold speckles and several dark grill marks, forked tawny tail. Match supplied cooked perch reference's detailed hand-painted rustic woodland survival-game icon style, warm muted earth palette, delicate dark contour and appetizing painted highlights. Clearly much longer and narrower than perch, no perch stripes or tall spiny dorsal. Food and single spit alone centred on truly TRANSPARENT background, full silhouette visible, no plate, scene, frame, UI, text, ground, shadow, halo or black fill. Fill most of square canvas with safe transparent padding. Crisp readable icon, no photography or glossy 3D.",
+    "reference": "public/survival/fishing-gameplay-v1/cooked-perch.webp",
+    "transparentBackground": true,
+    "generated": "2026-11-24",
+    "packaging": "Original PNG archived unchanged; alpha-preserving 512px WebP runtime copy."
+  }
+]

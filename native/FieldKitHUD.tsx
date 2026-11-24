@@ -26,10 +26,11 @@ import NativeQuickBar from './QuickBar';
 import HexActions from './HexActions';
 import {ACTION_HEX} from '../src/action-hex';
 import {selectQuickItem,type QuickItem} from '../src/quick-items';
-import type {World,Vec} from '../src/survival-engine';
+import {timeOf,type World,type Vec} from '../src/survival-engine';
 import {setFieldKitTarget} from '../src/field-kit-target';
 import {combatVitalsFrame,FIELD_KIT_TOP,FIELD_KIT_UTILITY} from '../src/field-kit-vitals-layout';
 import FishingHUD from './FishingHUD';
+import {NativeFishingFeedback} from './fishing-feedback';
 import {resolveFishingCatch} from '../src/fishing';
 
 const font='FieldKitBarlow';
@@ -114,10 +115,12 @@ export default function NativeFieldKitHUD({world,controller,input,enabled,mapOpe
   [START_SCREEN_MENU_FONT]:require('../public/fonts/camp-menu-semibold.ttf'),
  });
  const [stats,setStats]=useState(()=>controller.sample(world.current!)),[vitalsExpanded,setVitalsExpanded]=useState(false),[quickExpanded,setQuickExpanded]=useState(false),latest=useRef(stats);latest.current=stats;
+ const fishingFeedback=useRef<NativeFishingFeedback|null>(null);
+ useEffect(()=>{const feedback=new NativeFishingFeedback();fishingFeedback.current=feedback;return()=>{feedback.dispose();fishingFeedback.current=null}},[]);
  const available=useRef(false);available.current=enabled&&!bagOpen&&!mapOpen&&foreground&&!stats.stationPanel;
- const release=()=>{controller.cancel();onHeld(false)};
+ const release=()=>{controller.cancel();onHeld(false);fishingFeedback.current?.pause()};
  const releaseAction=(channel:'primary'|'repair',cancelled=false)=>{controller.release(channel,cancelled);onHeld(controller.holdingAttack);refresh()};
- const refresh=()=>{if(!world.current)return;const next=controller.sample(world.current);setFieldKitTarget(world.current,available.current?(next.repairAction?.target??next.action.target):undefined);latest.current=next;setStats(old=>sameFieldKit(old,next)?old:next)};
+ const refresh=()=>{if(!world.current)return;const next=controller.sample(world.current);fishingFeedback.current?.update(world.current,next.fishing??undefined,timeOf(world.current),available.current);setFieldKitTarget(world.current,available.current?(next.repairAction?.target??next.action.target):undefined);latest.current=next;setStats(old=>sameFieldKit(old,next)?old:next)};
  useEffect(()=>{const stop=startVisibleHudPolling(hudVisible,refresh,100);return()=>{stop();controller.cancel();onHeld(false)}},[world,controller,hudVisible]);
  useEffect(()=>{if(!enabled||bagOpen||mapOpen||!foreground||stats.stationPanel){release();input.current={x:0,y:0}}},[enabled,bagOpen,mapOpen,foreground,stats.stationPanel]);
  useEffect(()=>{const subscription=AppState.addEventListener('blur',release);return()=>subscription.remove()},[]);
@@ -147,7 +150,7 @@ export default function NativeFieldKitHUD({world,controller,input,enabled,mapOpe
     dodge={!showCompanion?undefined:stats.selected==='bow'?{glyph:<BowLockGlyph locked={!!stats.bowTarget}/>,label:stats.bowTarget?'UNLOCK':'LOCK',ariaLabel:stats.bowTarget?`Release lock on ${stats.bowTarget.label.toLowerCase()}`:'Lock onto a nearby target',pressed:!!stats.bowTarget,disabled:disabled||mapOpen,onDown:lock}:{icon:'dodge',label:'DODGE',detail:stats.dodge>0?`${stats.dodge.toFixed(1)}s`:undefined,ariaLabel:stats.dodge>0?`Dodge ready in ${stats.dodge.toFixed(1)} seconds`:'Dodge',disabled:disabled||stats.dodge>0,onDown:()=>{onDodge();refresh()}}}/>
 
   </View>}
-  {!bagOpen&&!stats.stationPanel&&<View pointerEvents="box-none" style={{position:'absolute',left:layout.left,bottom:layout.bottom}}><NativeQuickBar maxWidth={layout.quickbarMaxWidth} torch={stats.torch} axes={stats.axes} selected={stats.selected} cooked={stats.cooked} cookedRabbit={stats.cookedRabbit} cookedVenison={stats.cookedVenison} cookedFish={stats.cookedFish} provisions={stats.provisions} disabled={disabled} onSelect={select} onExpandedChange={setQuickExpanded}/></View>}
+  {!bagOpen&&!stats.stationPanel&&<View pointerEvents="box-none" style={{position:'absolute',left:layout.left,bottom:layout.bottom}}><NativeQuickBar maxWidth={layout.quickbarMaxWidth} torch={stats.torch} axes={stats.axes} selected={stats.selected} cooked={stats.cooked} cookedRabbit={stats.cookedRabbit} cookedVenison={stats.cookedVenison} cookedFish={stats.cookedFish} cookedCarp={stats.cookedCarp} cookedPike={stats.cookedPike} provisions={stats.provisions} disabled={disabled} onSelect={select} onExpandedChange={setQuickExpanded}/></View>}
   {stats.stationPanel&&!bagOpen&&enabled&&world.current&&<CampStationPanel key={stats.stationPanel} world={world.current} safe={safe} width={width} height={height} onClose={()=>{world.current!.stationPanel=undefined;refresh()}} onChange={()=>{onCheckpoint?.();refresh()}}/>}
   {bagOpen&&<NativeFieldKitBag stats={stats} width={width} safe={safe} onClose={()=>onBag(false)} onUse={id=>{if(!world.current||stats.action.owner!==world.current)return false;const result=useBackpackItem(world.current,id);refresh();return result}} onDrop={(id,quantity)=>{if(!world.current||stats.action.owner!==world.current)return{ok:false,message:'This run has ended.'};const result=dropBackpackItem(world.current,id,quantity);refresh();return result}}/>}
  </View>;

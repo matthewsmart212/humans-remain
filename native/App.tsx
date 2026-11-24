@@ -1,3 +1,4 @@
+import {loadFishingFeedbackSettings,saveFishingFeedbackSettings,type FishingFeedbackSettings} from './fishing-feedback';
 import {stationPalette} from '../src/station-palette';
 import NativeEntryFlow from './EntryFlow';
 import CoopLobby from './CoopLobby';
@@ -77,6 +78,9 @@ function Game({role,onHome,entryVisible,onBootProgress,onBootError,coop}:{role:S
  const warmedPeerRoles=useRef(new Set<SurvivorRoleId>());
  useEffect(()=>{if(!coop)return;return coop.subscribe(event=>{if(event!=='update')return;setCoopInfo(coop.status+' · '+coop.players.length+'/4 survivors');const renderer=runtime.current?.renderer;if(!renderer)return;for(const peer of coop.players){if(peer.id===coop.id||warmedPeerRoles.current.has(peer.role))continue;warmedPeerRoles.current.add(peer.role);void renderer.warmImages(playerMovementImagesForRole(peer.role),'foreground').catch(()=>warmedPeerRoles.current.delete(peer.role))}})},[coop]);
  const [creativeMode,setCreativeMode]=useState(false);
+ const [fishingFeedbackSettings,setFishingFeedbackSettings]=useState<FishingFeedbackSettings>({sound:true,haptics:true});
+ useEffect(()=>{let live=true;void loadFishingFeedbackSettings().then(value=>{if(live)setFishingFeedbackSettings(value)});return()=>{live=false}},[]);
+ const toggleFishingFeedback=(key:keyof FishingFeedbackSettings)=>{const next={...fishingFeedbackSettings,[key]:!fishingFeedbackSettings[key]};setFishingFeedbackSettings(next);saveFishingFeedbackSettings(next)};
   const [fullZoom,setFullZoom]=useState(false),fullZoomEnabled=useRef(false),mapRequested=useRef(false);
   const [characterOpen,setCharacterOpen]=useState(false),[characterLoading,setCharacterLoading]=useState(false),[characterError,setCharacterError]=useState('');
  const {width,height}=useWindowDimensions(),safe=useSafeAreaInsets(),dimensions=useRef({width,height});dimensions.current={width,height};
@@ -309,6 +313,7 @@ function Game({role,onHome,entryVisible,onBootProgress,onBootError,coop}:{role:S
       {fullZoom&&w?.phase!=='over'&&<Text style={s.description}>Pinch out further without opening the map. The map button still works.</Text>}
      {w?.fishing?.claimed&&w.phase!=='over'&&<>
       <Text style={s.section}>FISHING</Text>
+      {([{key:'sound',label:'Fishing sounds'},{key:'haptics',label:'Fishing vibration'}] as const).map(option=><Pressable key={option.key} accessibilityRole="switch" accessibilityLabel={option.label} accessibilityState={{checked:fishingFeedbackSettings[option.key]}} onPress={()=>toggleFishingFeedback(option.key)} style={[s.button,wide&&s.menuItem]}><Text style={s.buttonText}>{option.label} · {fishingFeedbackSettings[option.key]?'ON':'OFF'}</Text></Pressable>)}
       {([{key:'autoHook',label:'Auto hook',detail:'Hook bites for me'},{key:'toggleReel',label:'Tap to reel',detail:'Tap again to ease off'}] as const).map(option=><Pressable key={option.key} accessibilityRole="switch" accessibilityLabel={option.label} accessibilityHint={option.detail} accessibilityState={{checked:!!w.fishing?.[option.key],disabled:saveBlocked.current}} disabled={saveBlocked.current} onPress={()=>toggleFishingAssist(option.key)} style={[s.button,wide&&s.menuItem,saveBlocked.current&&s.disabled]}><Text style={s.buttonText}>{option.label} · {w.fishing?.[option.key]?'ON':'OFF'}</Text><Text style={s.small}>{option.detail}</Text></Pressable>)}
      </>}
      </>}

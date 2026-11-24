@@ -1,5 +1,5 @@
 import type {FishingRenderState} from './fishing-types';
-import {drawFishingAirborneTackle,drawFishingLine,drawFishingRod,fishingRodRig} from './fishing-renderer';
+import {drawFishingAim,drawFishingAirborneTackle,drawFishingLine,drawFishingRod,fishingRodRig} from './fishing-renderer';
 import {runnerFacing,type RunnerSprite} from './runner-cycles';
 import {SURVIVOR_ART} from './survivor-art';
 import {timeOf,type World} from './survival-engine';
@@ -42,6 +42,9 @@ const removal=Object.fromEntries(Object.entries(restingArmPixels).map(([view,pol
 })) as unknown as Record<WeaponView,Polygon[]>;
 const grips:Record<WeaponView,WeaponPoint>={down:[7,-47],'down-right':[11,-44],right:[18,-48],'up-right':[35,-56],up:[33,-58]};
 const outer:Polygon=[[-220,-240],[220,-240],[220,100],[-220,100]];
+const lowerBody:Polygon=[[-220,-20],[220,-20],[220,100],[-220,100]];
+const upperBody:Polygon=[[-220,-240],[220,-240],[220,-14],[-220,-14]];
+const rightShirt:Polygon=[[-14,-48],[7,-48],[7,-25],[-14,-25]];
 function path(ctx:CanvasRenderingContext2D,polygon:Polygon,reverse=false){
  for(let j=0;j<polygon.length;j++){const [x,y]=polygon[reverse?polygon.length-j-1:j];j?ctx.lineTo(x,y):ctx.moveTo(x,y)}ctx.closePath();
 }
@@ -49,10 +52,10 @@ function sprite(ctx:CanvasRenderingContext2D,imgs:Record<string,HTMLImageElement
  const image=imgs[f.sheet];if(!image)return;
  const [sx,sy,sw,sh]=f.crop,k=f.scale;ctx.drawImage(image,sx,sy,sw,sh,-f.anchor[0]*k,-f.anchor[1]*k,sw*k,sh*k);
 }
-function arm(ctx:CanvasRenderingContext2D,imgs:Record<string,HTMLImageElement>,source:Arm,hand:Point,palm=false){
- const [sx,sy]=source.shoulder,ax=source.hand[0]-sx,ay=source.hand[1]-sy,bx=hand[0]-sx,by=hand[1]-sy;
+function arm(ctx:CanvasRenderingContext2D,imgs:Record<string,HTMLImageElement>,source:Arm,hand:Point,palm=false,shoulder:Point=source.shoulder){
+ const [sx,sy]=source.shoulder,ax=source.hand[0]-sx,ay=source.hand[1]-sy,bx=hand[0]-shoulder[0],by=hand[1]-shoulder[1];
  const length=Math.hypot(ax,ay),newLength=Math.hypot(bx,by);
- ctx.save();ctx.translate(sx,sy);ctx.rotate(Math.atan2(by,bx));ctx.scale(newLength/length,1);ctx.rotate(-Math.atan2(ay,ax));ctx.translate(-sx,-sy);
+ ctx.save();ctx.translate(shoulder[0],shoulder[1]);ctx.rotate(Math.atan2(by,bx));ctx.scale(newLength/length,1);ctx.rotate(-Math.atan2(ay,ax));ctx.translate(-sx,-sy);
  ctx.beginPath();if(palm)ctx.ellipse(source.hand[0],source.hand[1],5.4,5.1,0,0,TAU);else path(ctx,source.outline);
  ctx.clip();sprite(ctx,imgs,source.sprite);ctx.restore();
 }
@@ -67,27 +70,37 @@ export function drawFishingSurvivor(ctx:CanvasRenderingContext2D,imgs:Record<str
  if(w.player.downedUntil||w.player.moving||state.phase==='equipped'||state.phase==='caught'||state.phase==='escaped')return false;
  const facing=runnerFacing(state.direction),view=facing.view as WeaponView,base=SURVIVOR_ART[view].idle;
  if(!imgs[base.sheet])return false;
- const now=w.weather?.reducedMotion?0:timeOf(w),breath=w.weather?.reducedMotion?0:Math.sin(now*2.3)*.32;
+ const reduced=!!w.weather?.reducedMotion,now=reduced?0:timeOf(w),breath=reduced?0:Math.sin(now*2.3)*.32;
  const windup=state.phase==='aiming'?state.charge:state.phase==='casting'?Math.max(0,1-state.phaseProgress*2.7):0;
- const landing=state.phase==='landing'?state.phaseProgress:0;
- const g=grips[view],hand:WeaponPoint=[g[0]+(state.phase==='casting'?Math.sin(state.phaseProgress*Math.PI)*3:0),g[1]+breath-windup*6-landing*4];
+ const landing=state.phase==='landing'?state.phaseProgress:0,reeling=state.phase==='reeling';
+ const brace=reeling&&state.holding?Math.min(1,state.tension*.85+(state.surge??0)*.45):reeling?-.22:0;
+ const follow=state.phase==='casting'?Math.sin(state.phaseProgress*Math.PI):0,side=view==='right'||view==='up-right'||view==='down-right'?1:.35;
+ const leanX=side*(-brace*3.6-windup*1.8+follow*2.6),leanY=brace*1.4-windup*.6,tilt=side*(-brace*.028-windup*.02+follow*.025),c=Math.cos(tilt),s=Math.sin(tilt);
+ const posed=(p:Point):Point=>[leanX+p[0]*c-(p[1]+20)*s,leanY-20+p[0]*s+(p[1]+20)*c];
+ const g=posed(grips[view]),hand:WeaponPoint=[g[0]+follow*3,g[1]+breath-windup*9-landing*5];
  const rig=fishingRodRig(w,state,hand,view,facing.mirror),layers=registered[view],near=layers[view==='up'||view==='up-right'?1:0];
- const nearHand:Point=[rig.reel.x-.7,rig.reel.y+2.5];
+ const crank=reeling&&state.holding&&!reduced?now*13:.65;
+ const nearHand:Point=[rig.reel.x+Math.cos(crank)*5.3,rig.reel.y+Math.sin(crank)*4.4],nearShoulder=posed(near.shoulder),farShoulder=posed(layers[layers.length-1].shoulder);
  ctx.save();if(facing.mirror)ctx.scale(-1,1);
+ drawFishingAim(ctx,w,state,facing.mirror);
  drawFishingLine(ctx,w,state,rig);
+ // Boots keep their original ground contact. A small upper-body lean braces
+ // against a rush, eases forward on release and follows through on the cast.
+ ctx.save();ctx.beginPath();path(ctx,lowerBody);ctx.clip();sprite(ctx,imgs,base);ctx.restore();
+ ctx.save();ctx.translate(leanX,leanY-20);ctx.rotate(tilt);ctx.translate(0,20);
  // The source punch supplies the shirt normally hidden by the side sleeve.
  // This is the same painted torso repair used by the existing bow pose.
  if(view==='right'){
-  ctx.save();ctx.beginPath();path(ctx,[[-14,-48],[7,-48],[7,-25],[-14,-25]]);ctx.clip();sprite(ctx,imgs,SURVIVOR_ART.right.punch);ctx.restore();
+  ctx.save();ctx.beginPath();path(ctx,rightShirt);ctx.clip();sprite(ctx,imgs,SURVIVOR_ART.right.punch);ctx.restore();
  }
  // Opposite winding removes only the original sleeves and palms. It works
  // identically in the web canvas and native Skia without an offscreen mask.
- ctx.save();ctx.beginPath();path(ctx,outer);for(const outline of removal[view])path(ctx,outline,true);ctx.clip();sprite(ctx,imgs,base);ctx.restore();
- if(view==='down'||view==='down-right')arm(ctx,imgs,layers[1],hand);
- arm(ctx,imgs,near,nearHand);
+ ctx.save();ctx.beginPath();path(ctx,upperBody);ctx.clip();ctx.beginPath();path(ctx,outer);for(const outline of removal[view])path(ctx,outline,true);ctx.clip();sprite(ctx,imgs,base);ctx.restore();ctx.restore();
+ if(view==='down'||view==='down-right')arm(ctx,imgs,layers[1],hand,false,farShoulder);
+ arm(ctx,imgs,near,nearHand,false,nearShoulder);
  drawFishingRod(ctx,w,state,rig);
- if(view==='down'||view==='down-right')arm(ctx,imgs,layers[1],hand,true);else hiddenHand(ctx,imgs,hand);
- arm(ctx,imgs,near,nearHand,true);
+ if(view==='down'||view==='down-right')arm(ctx,imgs,layers[1],hand,true,farShoulder);else hiddenHand(ctx,imgs,hand);
+ arm(ctx,imgs,near,nearHand,true,nearShoulder);
  drawFishingAirborneTackle(ctx,w,state,facing.mirror);
  ctx.restore();return true;
 }

@@ -46,8 +46,8 @@ const stationArt={
 };
 const pickupItems={
  pallets:'logs',stone:'stone',scrap:'scrap',fuel:'fuel',ironOre:'ironOre',ironIngot:'ironIngot',
- rawMeat:'raw',rawRabbit:'rabbitRaw',rawVenison:'venisonRaw',rawFish:'fishRaw',
- cookedMeat:'meal',cookedRabbit:'rabbitMeal',cookedVenison:'venisonMeal',cookedFish:'fishMeal',
+ rawMeat:'raw',rawRabbit:'rabbitRaw',rawVenison:'venisonRaw',rawFish:'fishRaw',rawCarp:'carpRaw',rawPike:'pikeRaw',
+ cookedMeat:'meal',cookedRabbit:'rabbitMeal',cookedVenison:'venisonMeal',cookedFish:'fishMeal',cookedCarp:'carpMeal',cookedPike:'pikeMeal',
 } as const;
 function pickupImage(kind:InventoryKind){
  return BAG_IMAGES[isProvision(kind)?kind:pickupItems[kind]];

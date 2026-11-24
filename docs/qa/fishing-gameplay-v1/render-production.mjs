@@ -8,7 +8,7 @@ import {promisify} from 'node:util';
 import {createRequire} from 'node:module';
 import {build} from 'esbuild';
 const root=process.cwd(),phase=process.argv[2]??'after';assert.equal(phase,'after','Gameplay QA runs the current production implementation');
-const directory=path.resolve('.qa/fishing-gameplay/world'),output=path.join(directory,phase);fs.mkdirSync(output,{recursive:true});
+const directory=path.resolve('.qa/fishing-gameplay-v2/world'),output=path.join(directory,phase);fs.mkdirSync(output,{recursive:true});
 const baseFile=path.join(directory,'baseline-ref.txt');if(!fs.existsSync(baseFile))fs.writeFileSync(baseFile,execFileSync('git',['rev-parse','HEAD'],{encoding:'utf8'}));
 const requestedBaseline=process.argv.find(a=>a.startsWith('--baseline='))?.slice(11);
 if(requestedBaseline){assert(/^[a-f0-9]{7,40}$/.test(requestedBaseline),'Use a Git commit SHA for --baseline');fs.writeFileSync(baseFile,requestedBaseline)}
@@ -76,34 +76,72 @@ try{
  const standing={x:-1911.7620817843863,y:6658.783147459728};
  Object.assign(world.player,{...standing,equipped:'fishingRod',direction:'down-left',moving:false,walkBlend:0,runBlend:0,hurtUntil:0});
  m.gear(world).bag.fishingRod=1;Object.assign(m.fishingProgress(world),{claimed:true,bait:10});world.tick=0;
- const stages={},saveStage=name=>stages[name]={tick:world.tick,direction:world.player.direction,fishing:structuredClone(world.fishing),fishingSession:world.fishingSession&&structuredClone(world.fishingSession)};
+ const stages={},saveStage=name=>stages[name]={tick:world.tick,position:{x:world.player.x,y:world.player.y},direction:world.player.direction,fishing:structuredClone(world.fishing),fishingSession:world.fishingSession&&structuredClone(world.fishingSession)};
  const step=dt=>{world.tick+=dt*60;m.stepFishing(world,dt)};
  saveStage('equipped');assert(m.pressFishingAction(world),'A real cast is available on the platform');
  for(let i=0;i<42;i++)step(1/60);saveStage('aiming');
- assert(m.releaseFishingAction(world));for(let i=0;i<20;i++)step(1/60);saveStage('casting');
+ const aiming=structuredClone(world.fishingSession),towards={x:world.player.x-aiming.target.x,y:world.player.y-aiming.target.y},aimDistance=Math.hypot(towards.x,towards.y);
+ for(let i=0;i<35;i++)m.fishingAimInput(world,{x:towards.x/aimDistance,y:towards.y/aimDistance},.05);
+ assert.equal(world.fishingSession.castValid,false,'A manual cast onto the near deck/bank is visibly invalid');saveStage('invalid-aim');
+ world.fishingSession=aiming;world.player.direction=aiming.direction;
+ const preview={...m.fishingRenderState(world).aimPreview};assert(m.releaseFishingAction(world));assert.deepEqual(world.fishingSession.target,preview,'Release preserves the exact displayed landing point');for(let i=0;i<20;i++)step(1/60);saveStage('casting');
  for(let i=0;i<26;i++)step(1/60);assert.equal(world.fishingSession.phase,'waiting');saveStage('waiting');
- for(let i=0;i<400&&world.fishingSession.phase==='waiting';i++)step(1/60);assert.equal(world.fishingSession.phase,'bite');saveStage('bite');
+ for(let i=0;i<400&&['waiting','nibble'].includes(world.fishingSession.phase);i++){
+  step(1/60);if(world.fishingSession.phase==='nibble'&&world.fishingSession.nibbleAmount>.4&&!stages.nibble)saveStage('nibble');
+ }assert.equal(world.fishingSession.phase,'bite');for(let i=0;i<12;i++)step(1/60);saveStage('bite');
  assert(m.pressFishingAction(world));m.releaseFishingAction(world);assert(m.pressFishingAction(world));
  for(let i=0;i<150;i++)step(1/60);assert.equal(world.fishingSession.phase,'reeling');saveStage('reeling');
  for(let i=0;i<3600&&world.fishingSession?.phase==='reeling';i++){
   const current=world.fishingSession;
+  if(current.fightBehavior==='warning'&&current.warning>.45&&!stages.warning)saveStage('warning');
+  if(current.fightBehavior==='surge'&&current.surge>.6&&!stages.surge)saveStage('surge');
   if(current.tension>.70&&current.holding)m.releaseFishingAction(world);
   else if(current.tension<.26&&!current.holding)m.pressFishingAction(world);
   step(1/60);
  }
- assert.equal(world.fishingSession?.phase,'landing');for(let i=0;i<43;i++)step(1/60);saveStage('landing');
- for(let i=0;i<20;i++)step(1/60);assert(world.fishing.pendingCatch);saveStage('caught');
+ assert.equal(world.fishingSession?.phase,'landing');for(let i=0;i<Math.round(m.FISHING_LANDING_SECONDS*.78*60);i++)step(1/60);saveStage('landing');
+ for(let i=0;i<120&&world.fishingSession;i++)step(1/60);assert(world.fishing.pendingCatch);saveStage('caught');
+ // A real rare salvage encounter: use its visible seeded clue and the same
+ // aim / hook / ease controls as the player, with no forced catch state.
+ world.fishing=structuredClone(stages.equipped.fishing);world.fishingSession=undefined;world.tick=27000;
+ Object.assign(world.player,{x:-1731.7620817843863,y:6613.783147459728});
+ const glint=m.fishingFeedingSpots(world).find(spot=>spot.kind==='salvage');assert(glint,'The rare metal clue is visible in this authored lake epoch');
+ assert(m.pressFishingAction(world));for(let i=0;i<72;i++)step(1/60);
+ for(let i=0;i<180;i++){
+  const target=world.fishingSession.target,dx=glint.x-target.x,dy=glint.y-target.y,d=Math.hypot(dx,dy);if(d<2.5&&world.fishingSession.aimManual)break;
+  m.fishingAimInput(world,{x:dx/Math.max(1,d),y:dy/Math.max(1,d)});step(1/60);
+ }
+ saveStage('drone-aiming');assert(m.releaseFishingAction(world));assert.equal(world.fishingSession.species,'drone');assert.equal(world.fishingSession.fishIndex,-1);
+ assert.deepEqual(world.fishingSession.target,stages['drone-aiming'].fishingSession.target);
+ for(let i=0;i<600&&world.fishingSession.phase!=='bite';i++)step(1/60);assert.equal(world.fishingSession.phase,'bite');
+ assert(m.pressFishingAction(world));m.releaseFishingAction(world);
+ for(let i=0;i<3600&&world.fishingSession?.phase==='reeling';i++){
+  const s=world.fishingSession,ease=s.fightBehavior==='warning'||s.fightBehavior==='surge'||s.tension>.68;
+  if(s.holding&&ease)m.releaseFishingAction(world);else if(!s.holding&&!ease&&s.tension<.6)m.pressFishingAction(world);
+  if(world.tick/60-s.started>2&&!stages['drone-hauling'])saveStage('drone-hauling');step(1/60);
+ }
+ assert.equal(world.fishingSession.phase,'landing');for(let i=0;i<Math.round(m.FISHING_LANDING_SECONDS*.78*60);i++)step(1/60);saveStage('drone-landing');
  console.log('Real fishing stages '+JSON.stringify(Object.fromEntries(Object.entries(stages).map(([k,v])=>[k,{tick:v.tick,direction:v.direction,phase:v.fishingSession?.phase??k,target:v.fishingSession?.target}]))));
  const views=[
   {id:'equipped',stage:'equipped',x:-1950,y:6640,zoom:.82},
+  {id:'aiming',stage:'aiming',x:-1950,y:6640,zoom:.82},
+  {id:'invalid-aim',stage:'invalid-aim',x:-1950,y:6640,zoom:.82},
   {id:'waiting',stage:'waiting',x:-1950,y:6640,zoom:.82},
   {id:'casting',stage:'casting',x:-1950,y:6640,zoom:.82},
   {id:'bite',stage:'bite',x:-1950,y:6640,zoom:.82},
+  {id:'nibble',stage:'nibble',x:-1950,y:6640,zoom:.82},
+  {id:'warning',stage:'warning',x:-1950,y:6640,zoom:.82},
+  {id:'surge',stage:'surge',x:-1950,y:6640,zoom:.82},
   {id:'reeling',stage:'reeling',x:-1950,y:6640,zoom:.82},
   {id:'landing',stage:'landing',x:-1950,y:6640,zoom:.82},
   {id:'portrait',stage:'waiting',x:-1940,y:6680,zoom:.55,width:390,height:844},
   {id:'portrait-reeling',stage:'reeling',x:-1940,y:6680,zoom:.55,width:390,height:844},
   {id:'grip-close',stage:'reeling',x:-1910,y:6600,zoom:1.45},
+  {id:'release-air',stage:'caught',release:.5,x:-1950,y:6640,zoom:.82},
+  {id:'release-water',stage:'caught',release:1.3,x:-1950,y:6640,zoom:.82},
+  {id:'drone-aiming',stage:'drone-aiming',x:-1950,y:6640,zoom:.82},
+  {id:'drone-hauling',stage:'drone-hauling',x:-1950,y:6640,zoom:.82},
+  {id:'drone-landing',stage:'drone-landing',x:-1950,y:6640,zoom:.82},
  ];
  const filter=process.argv.find(a=>a.startsWith('--views='))?.slice(8)?.split(',');
  const selected=filter?views.filter(v=>filter.includes(v.id)):views;
@@ -127,7 +165,8 @@ try{
  async function render(v,condition='clear',tick=1800,suffix=''){
   Object.assign(view,v);const width=v.width??844,height=v.height??390,camera=cameraFor(v),state=stages[v.stage];
   world.tick=state.tick;world.fishing=structuredClone(state.fishing);world.fishingSession=state.fishingSession&&structuredClone(state.fishingSession);tick=world.tick;
-  Object.assign(world.player,{...standing,direction:state.direction});
+  Object.assign(world.player,{...state.position,direction:state.direction});
+  if(v.release){assert(m.resolveFishingCatch(world,false));world.tick+=v.release*60;tick=world.tick}
   world.weather=m.createWeather({rain:condition==='rain',fog:false,lightning:false});Object.assign(world.weather,{time:tick/60,rain:condition==='rain'?1:0,heavy:0,fog:0,flash:0,rainTravel:tick/60*390});
   outdoor.update(camera,world.player);await outdoor.settled();assert(!outdoor.error);
   await renderer.prepareTerrain(world,width,height);

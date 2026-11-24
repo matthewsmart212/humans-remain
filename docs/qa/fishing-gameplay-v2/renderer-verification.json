@@ -1,0 +1,556 @@
+{
+  "result": "pass",
+  "renderer": "Production native Skia adapter with CanvasKit software platform",
+  "physicalIPhoneTested": false,
+  "deviceFrameTimingMeasured": false,
+  "baselineCommit": "1b857c7a3f18bb01462e85ff01ecf7af7b73410b",
+  "latestModelSha256": "aa4f950441c5e530d8ca511388319eb7eb3108ae6f5d36e45d80e2a7167d644a",
+  "finalRendererSourceSha256": {
+    "src/fishing-renderer.ts": "e8ef5b4a21c624d2d3fb5fc9bf5698e26279ffe64b24eed7e622a0a78b853915",
+    "src/fishing-character.ts": "ee7acb2f579b4f8662deb907b0c646da630c62b273fae63a8f9f4fe96bd71c67",
+    "src/fishing-water-life.ts": "1f57d01b3f8f87eeb397ce0893ef38fb404d56973cd1aef1c997069b3212096f",
+    "src/fishing-site-renderer.ts": "1a27764701531a939732cd7ec3464937aed01e31302c7c922601e0fd6c7967fc",
+    "src/worker-renderer.ts": "77e54151fae295a96ccd33f09186d96ceb79914f9213bc9387bfc3ce5964875f"
+  },
+  "evidence": "Actual authored-world native renders across the implementation review. Aim, invalid aim, casting, warning, and all drone views were refreshed after the final rendering changes. Other unchanged-phase views retain their earlier production captures.",
+  "nativeSupportedDrawingOnly": true,
+  "verifiedSourceAssets": 68,
+  "latestWorldCapturesZeroMissing": true,
+  "landscapeLogicalSize": [
+    844,
+    390
+  ],
+  "landscapePixelSize": [
+    1688,
+    780
+  ],
+  "renderChecks": {
+    "passed": true,
+    "renderer": "Production native Skia adapter via CanvasKit platform",
+    "physicalIPhoneTested": false,
+    "checks": [
+      "preview endpoint and airborne trajectory agree",
+      "bounded reused rod and aim geometry",
+      "nibble is shallow and bite is decisive",
+      "native water cues differ visibly",
+      "stable reduced-motion fish and effects",
+      "three weighted species and separate drone object",
+      "valid/invalid marker colour and shape"
+    ],
+    "nativeSupportedDrawingOnly": true
+  },
+  "waterLifeChecks": {
+    "result": "pass",
+    "fish": 6,
+    "forms": 3,
+    "waterSamples": 14400,
+    "averageWorldUnitsPerSecond": [
+      13.45,
+      23.04,
+      22.24,
+      21.52,
+      18.52,
+      17.43
+    ],
+    "slowestInstantaneousSpeed": 3.94,
+    "fastestInstantaneousSpeed": 50.74,
+    "cachedWaterValidation": true,
+    "reducedMotion": true,
+    "physicalIPhoneTested": false
+  },
+  "characterChecks": {
+    "renderer": "Production Skia adapter with CanvasKit software platform",
+    "facings": [
+      "down",
+      "down-right",
+      "right",
+      "up-right",
+      "up",
+      "up-left",
+      "left",
+      "down-left"
+    ],
+    "phases": [
+      "equipped",
+      "ready",
+      "aiming",
+      "casting",
+      "waiting",
+      "bite",
+      "reeling",
+      "landing"
+    ],
+    "physicalDevice": false
+  },
+  "shorelineChecks": [
+    {
+      "id": "entry",
+      "x": -1470,
+      "y": 6500,
+      "radius": 19,
+      "rawWater": false,
+      "walkable": true
+    },
+    {
+      "id": "approach-1",
+      "x": -1450,
+      "y": 6490,
+      "radius": 19,
+      "rawWater": false,
+      "walkable": true
+    },
+    {
+      "id": "approach-2",
+      "x": -1430,
+      "y": 6480,
+      "radius": 19,
+      "rawWater": false,
+      "walkable": true
+    },
+    {
+      "id": "approach-3",
+      "x": -1410,
+      "y": 6470,
+      "radius": 19,
+      "rawWater": false,
+      "walkable": true
+    },
+    {
+      "id": "approach-4",
+      "x": -1390,
+      "y": 6460,
+      "radius": 19,
+      "rawWater": false,
+      "walkable": true
+    },
+    {
+      "id": "approach-5",
+      "x": -1370,
+      "y": 6450,
+      "radius": 19,
+      "rawWater": false,
+      "walkable": true
+    },
+    {
+      "id": "approach-6",
+      "x": -1350,
+      "y": 6440,
+      "radius": 19,
+      "rawWater": false,
+      "walkable": true
+    },
+    {
+      "id": "gangway",
+      "x": -1606.1078066914497,
+      "y": 6562.10966542751,
+      "radius": 19,
+      "rawWater": true,
+      "walkable": true
+    },
+    {
+      "id": "platform",
+      "x": -1901.3078066914497,
+      "y": 6690.901486988848,
+      "radius": 19,
+      "rawWater": true,
+      "walkable": true
+    },
+    {
+      "id": "open-water",
+      "x": -2057.1078066914497,
+      "y": 6814.739776951673,
+      "radius": 19,
+      "rawWater": true,
+      "walkable": false
+    }
+  ],
+  "stages": {
+    "equipped": {
+      "tick": 0,
+      "phase": "equipped",
+      "direction": "down-left",
+      "position": {
+        "x": -1911.7620817843863,
+        "y": 6658.783147459728
+      },
+      "target": null,
+      "species": null,
+      "weight": null,
+      "fishIndex": null
+    },
+    "aiming": {
+      "tick": 42,
+      "phase": "aiming",
+      "direction": "down-left",
+      "position": {
+        "x": -1911.7620817843863,
+        "y": 6658.783147459728
+      },
+      "target": {
+        "x": -2028.8780501715046,
+        "y": 6935.490640901606
+      },
+      "species": "carp",
+      "weight": 2.73,
+      "fishIndex": 1
+    },
+    "invalid-aim": {
+      "tick": 42,
+      "phase": "aiming",
+      "direction": "down-left",
+      "position": {
+        "x": -1911.7620817843863,
+        "y": 6658.783147459728
+      },
+      "target": {
+        "x": -1923.639116894837,
+        "y": 6686.844774411151
+      },
+      "species": "carp",
+      "weight": 2.73,
+      "fishIndex": 1
+    },
+    "casting": {
+      "tick": 62,
+      "phase": "casting",
+      "direction": "down-left",
+      "position": {
+        "x": -1911.7620817843863,
+        "y": 6658.783147459728
+      },
+      "target": {
+        "x": -2028.8780501715046,
+        "y": 6935.490640901606
+      },
+      "species": "carp",
+      "weight": 2.73,
+      "fishIndex": 1
+    },
+    "waiting": {
+      "tick": 88,
+      "phase": "waiting",
+      "direction": "down-left",
+      "position": {
+        "x": -1911.7620817843863,
+        "y": 6658.783147459728
+      },
+      "target": {
+        "x": -2028.8780501715046,
+        "y": 6935.490640901606
+      },
+      "species": "carp",
+      "weight": 2.73,
+      "fishIndex": 1
+    },
+    "nibble": {
+      "tick": 215,
+      "phase": "nibble",
+      "direction": "down-left",
+      "position": {
+        "x": -1911.7620817843863,
+        "y": 6658.783147459728
+      },
+      "target": {
+        "x": -2028.8780501715046,
+        "y": 6935.490640901606
+      },
+      "species": "carp",
+      "weight": 2.73,
+      "fishIndex": 1
+    },
+    "bite": {
+      "tick": 286,
+      "phase": "bite",
+      "direction": "down-left",
+      "position": {
+        "x": -1911.7620817843863,
+        "y": 6658.783147459728
+      },
+      "target": {
+        "x": -2028.8780501715046,
+        "y": 6935.490640901606
+      },
+      "species": "carp",
+      "weight": 2.73,
+      "fishIndex": 1
+    },
+    "reeling": {
+      "tick": 436,
+      "phase": "reeling",
+      "direction": "down-left",
+      "position": {
+        "x": -1911.7620817843863,
+        "y": 6658.783147459728
+      },
+      "target": {
+        "x": -2028.8780501715046,
+        "y": 6935.490640901606
+      },
+      "species": "carp",
+      "weight": 2.73,
+      "fishIndex": 1
+    },
+    "warning": {
+      "tick": 503,
+      "phase": "reeling",
+      "direction": "down-left",
+      "position": {
+        "x": -1911.7620817843863,
+        "y": 6658.783147459728
+      },
+      "target": {
+        "x": -2028.8780501715046,
+        "y": 6935.490640901606
+      },
+      "species": "carp",
+      "weight": 2.73,
+      "fishIndex": 1
+    },
+    "surge": {
+      "tick": 550,
+      "phase": "reeling",
+      "direction": "down-left",
+      "position": {
+        "x": -1911.7620817843863,
+        "y": 6658.783147459728
+      },
+      "target": {
+        "x": -2028.8780501715046,
+        "y": 6935.490640901606
+      },
+      "species": "carp",
+      "weight": 2.73,
+      "fishIndex": 1
+    },
+    "landing": {
+      "tick": 1161,
+      "phase": "landing",
+      "direction": "down-left",
+      "position": {
+        "x": -1911.7620817843863,
+        "y": 6658.783147459728
+      },
+      "target": {
+        "x": -2028.8780501715046,
+        "y": 6935.490640901606
+      },
+      "species": "carp",
+      "weight": 2.73,
+      "fishIndex": 1
+    },
+    "caught": {
+      "tick": 1176,
+      "phase": "caught",
+      "direction": "down-left",
+      "position": {
+        "x": -1911.7620817843863,
+        "y": 6658.783147459728
+      },
+      "target": null,
+      "species": null,
+      "weight": null,
+      "fishIndex": null
+    },
+    "drone-aiming": {
+      "tick": 27129,
+      "phase": "aiming",
+      "direction": "left",
+      "position": {
+        "x": -1731.7620817843863,
+        "y": 6613.783147459728
+      },
+      "target": {
+        "x": -2222.9541773238043,
+        "y": 6751.873059125233
+      },
+      "species": "perch",
+      "weight": 0.76,
+      "fishIndex": 2
+    },
+    "drone-hauling": {
+      "tick": 27434,
+      "phase": "reeling",
+      "direction": "left",
+      "position": {
+        "x": -1731.7620817843863,
+        "y": 6613.783147459728
+      },
+      "target": {
+        "x": -2222.9541773238043,
+        "y": 6751.873059125233
+      },
+      "species": "drone",
+      "weight": 3.23,
+      "fishIndex": -1
+    },
+    "drone-landing": {
+      "tick": 28912,
+      "phase": "landing",
+      "direction": "left",
+      "position": {
+        "x": -1731.7620817843863,
+        "y": 6613.783147459728
+      },
+      "target": {
+        "x": -2222.9541773238043,
+        "y": 6751.873059125233
+      },
+      "species": "drone",
+      "weight": 3.23,
+      "fishIndex": -1
+    }
+  },
+  "images": [
+    {
+      "file": "world-aiming.webp",
+      "dimensions": [
+        1688,
+        780
+      ],
+      "bytes": 129148,
+      "sha256": "e848d68eace5697f5e4be36504f5cd2e948c418fe27296fd248dc02d38e8198c"
+    },
+    {
+      "file": "world-invalid-aim.webp",
+      "dimensions": [
+        1688,
+        780
+      ],
+      "bytes": 128458,
+      "sha256": "80806725a13a35af69859761f92739d9d24e89de6128e0984ef6fcb3bf8c73a7"
+    },
+    {
+      "file": "world-casting.webp",
+      "dimensions": [
+        1688,
+        780
+      ],
+      "bytes": 128198,
+      "sha256": "4a33b3ff597a8795283387a36cb2a8bcd714d100c6446c756b69565d3235ae87"
+    },
+    {
+      "file": "world-nibble.webp",
+      "dimensions": [
+        1688,
+        780
+      ],
+      "bytes": 129028,
+      "sha256": "6d5097f046cb732501d6258edbe85f23844e21e0066a0f82b11d28c3c3badcc8"
+    },
+    {
+      "file": "world-bite.webp",
+      "dimensions": [
+        1688,
+        780
+      ],
+      "bytes": 128874,
+      "sha256": "98c9d84fada3097715444a53d5ba8331cbda847db4618b816a5a1b16dc49d28e"
+    },
+    {
+      "file": "world-warning.webp",
+      "dimensions": [
+        1688,
+        780
+      ],
+      "bytes": 128832,
+      "sha256": "fdde3dc95be12b98f89a1bf3d38988cee42f8e47d435c1ed9a41e55a43e1c4d6"
+    },
+    {
+      "file": "world-surge.webp",
+      "dimensions": [
+        1688,
+        780
+      ],
+      "bytes": 128562,
+      "sha256": "c750ee41ac8daf1e9341ad3cbccc1aea275bcd3ef7e25b5e28d7e832404fb32b"
+    },
+    {
+      "file": "world-landing.webp",
+      "dimensions": [
+        1688,
+        780
+      ],
+      "bytes": 128062,
+      "sha256": "53201c6ddd802e90095762feae4dcd8fecc019b6004f12aa58395a2b787eb327"
+    },
+    {
+      "file": "world-release-air.webp",
+      "dimensions": [
+        1688,
+        780
+      ],
+      "bytes": 128540,
+      "sha256": "3a720b2886d9303f3c3159cbe9b4ff5ec30fc48f42bba84a5c0f5b3c5b8e051f"
+    },
+    {
+      "file": "world-release-water.webp",
+      "dimensions": [
+        1688,
+        780
+      ],
+      "bytes": 129048,
+      "sha256": "1ac17372c73186d595df03f7f747940a2bed3f82ed86e5f73c949ee892e5f119"
+    },
+    {
+      "file": "world-drone-aiming.webp",
+      "dimensions": [
+        1688,
+        780
+      ],
+      "bytes": 129560,
+      "sha256": "d271ca3c367512a1ae66d6454d8662f2db5e71bc3d0bf0403bf937329ca880f2"
+    },
+    {
+      "file": "world-drone-hauling.webp",
+      "dimensions": [
+        1688,
+        780
+      ],
+      "bytes": 129196,
+      "sha256": "b9ef5e28cadf9f2c55339f2d2769ff188e8ea87b332ea52736a1a6f0a4d77ef7"
+    },
+    {
+      "file": "world-drone-landing.webp",
+      "dimensions": [
+        1688,
+        780
+      ],
+      "bytes": 128956,
+      "sha256": "764f104b1ef28537eec626b48f263b8d50b9f7ca0624f43c91f53685c70ee614"
+    },
+    {
+      "file": "fish-species-and-drone.webp",
+      "dimensions": [
+        1440,
+        460
+      ],
+      "bytes": 24358,
+      "sha256": "19f8dbff5a1fad02b1a51a66821ee8e6e9aa30b387376e703faf3e58e50ae628"
+    },
+    {
+      "file": "water-cues.webp",
+      "dimensions": [
+        1260,
+        560
+      ],
+      "bytes": 14122,
+      "sha256": "528286ef1ca9871a1c4fc140901ab086089776706c04746ca0a97a5e255b4749"
+    },
+    {
+      "file": "reeling-eight-directions.webp",
+      "dimensions": [
+        1200,
+        700
+      ],
+      "bytes": 40370,
+      "sha256": "0a34ba3d0033d6396e991435f2d856e2915efe649c0b5d8ffc2436d43f6fa48f"
+    }
+  ],
+  "totalImageBytes": 1753312,
+  "commands": [
+    "node scripts/check-fishing-water-life.mjs --output=.qa/fishing-gameplay-v2/water-life",
+    "node docs/qa/fishing-gameplay-v1/render-character.mjs",
+    "node scripts/check-fishing-v2-render.mjs",
+    "node docs/qa/fishing-gameplay-v1/render-production.mjs after --views=aiming,invalid-aim,casting,nibble,bite,warning,surge,landing,release-air,release-water,drone-aiming,drone-hauling,drone-landing"
+  ]
+}
