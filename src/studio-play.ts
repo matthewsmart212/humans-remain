@@ -1,4 +1,6 @@
 import {stepFishing} from './fishing';
+import {ensurePatchQuest,stepPatchQuest} from './patch-quest';
+import {placePatchMaintenanceStation} from './patch-placement';
 import {stepBuildingRepair} from './building-repair';
 import {stepLootChest} from './loot-chest';
 import {startExpedition} from './run-progression';
@@ -27,7 +29,7 @@ import {layoutBlocked,validateLayout,type WorldLayout} from './world-layout';
 export function createCampPlaySession(draft:WorldLayout,from?:{x:number;y:number},mode:'sandbox'|'survival'='sandbox'):World {
  const checked=validateLayout(draft);
  if(!checked.layout||checked.errors.length)throw Error(checked.errors.join(' ')||'This world cannot be played yet.');
- const snapshot=JSON.parse(JSON.stringify(draft)) as WorldLayout;
+ const snapshot=placePatchMaintenanceStation(JSON.parse(JSON.stringify(draft)) as WorldLayout);
  const spawn=from||snapshot.spawn;
  if(layoutBlocked(snapshot,spawn.x,spawn.y,19))throw Error('The player start is blocked. Use Set spawn to choose clear ground, then press Play.');
  snapshot.spawn={...spawn};
@@ -49,7 +51,7 @@ export function createCampPlaySession(draft:WorldLayout,from?:{x:number;y:number
  seedCampPredators(world); }
  seedScrapSalvage(world);
  startSurvivalCycle(world);
- if(mode==='survival')startExpedition(world);
+ if(mode==='survival'){startExpedition(world);ensurePatchQuest(world)}
  return world;
 }
 
@@ -81,6 +83,7 @@ export function stepCampPlaySession(world:World,input:{x:number;y:number},sprint
  stepBuildingRepair(world,input);
  world.effects=world.effects.filter(e=>world.tick*STEP-e.born<(e.type==='kill'&&e.enemyKind==='iron-brute'?1.7:1.2));
  if(world.survivalEnabled){stepPlayerSurvival(world);if(world.player.hp<=0){world.phase='over';world.cause||='THE CREW WENT DOWN'}}
+ stepPatchQuest(world,input);
  stepFishing(world,STEP);
  finishPhase?.('simSurvivalMs');
 }

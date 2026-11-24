@@ -1,0 +1,54 @@
+{
+  "passed": true,
+  "existingPlacementsPreserved": 2914,
+  "newPlacements": 2,
+  "site": {
+    "station": {
+      "x": -3850,
+      "y": 7000
+    },
+    "robot": {
+      "x": -3725,
+      "y": 7080
+    },
+    "locker": {
+      "x": -4090,
+      "y": 6875
+    }
+  },
+  "routes": [
+    {
+      "target": "robot",
+      "steps": 259,
+      "end": {
+        "x": -3731.4105243400945,
+        "y": 7066.398517241969
+      }
+    },
+    {
+      "target": "locker",
+      "steps": 257,
+      "end": {
+        "x": -4091.4105243400945,
+        "y": 6886.398517241969
+      }
+    },
+    {
+      "target": "approach",
+      "steps": 260,
+      "end": {
+        "x": -3686.4105243400945,
+        "y": 7156.398517241969
+      }
+    }
+  ],
+  "checks": [
+    "authored migration and validation",
+    "immutable owner placement preservation",
+    "transforms and deliberate removals",
+    "occupied-site fallback",
+    "dry full-body approaches",
+    "camp-to-site and return navigation"
+  ],
+  "physicalIPhoneTested": false
+}

@@ -1,0 +1,1457 @@
+{
+  "passed": true,
+  "renderer": "Production native game renderer via CanvasKit software adapter",
+  "sourceCommit": "ef4fc17a0d6b3f500e6d05ae261822b88e1685a7",
+  "workingTree": true,
+  "modelSha256": "ac2c4cfb4ba877cd23553fe334e5a15080bd9fa76c74db824ddb1f3b596a88cc",
+  "viewport": {
+    "points": [
+      844,
+      390
+    ],
+    "density": 2
+  },
+  "captures": [
+    {
+      "file": "docs/qa/patch-v1/discovery.webp",
+      "view": {
+        "id": "discovery",
+        "x": -3850,
+        "y": 6975,
+        "zoom": 1,
+        "stage": "damaged"
+      },
+      "fixtureStage": "damaged",
+      "stats": {
+        "graphics": {
+          "backend": "native-skia",
+          "shaderFieldBytes": 21577728
+        },
+        "camp": {
+          "prefetchMargin": 1000,
+          "lookaheadMs": 3200,
+          "leadWorldUnits": 0,
+          "retainMargin": 2800,
+          "residencyMs": 4000,
+          "bytes": 0,
+          "missing": 0,
+          "residentBytes": 0,
+          "pendingBytes": 0,
+          "budgetBytes": 67108864,
+          "resident": 0,
+          "pending": 0,
+          "wanted": 0,
+          "visible": 0,
+          "requested": 0,
+          "completed": 0,
+          "failures": 0,
+          "evictions": 0,
+          "rapidEvictions": 0,
+          "recentReloads": 0,
+          "missingDetails": [],
+          "missingDetailsOmitted": 0
+        },
+        "rivers": {
+          "prefetchMargin": 1000,
+          "lookaheadMs": 3200,
+          "leadWorldUnits": 0,
+          "retainMargin": 2800,
+          "residencyMs": 4000,
+          "bytes": 25499584,
+          "missing": 0,
+          "residentBytes": 25499584,
+          "pendingBytes": 0,
+          "budgetBytes": 29360128,
+          "resident": 25,
+          "pending": 0,
+          "wanted": 25,
+          "visible": 6,
+          "requested": 25,
+          "completed": 25,
+          "failures": 0,
+          "evictions": 0,
+          "rapidEvictions": 0,
+          "recentReloads": 0,
+          "missingDetails": [],
+          "missingDetailsOmitted": 0
+        },
+        "artwork": {
+          "active": 0,
+          "queued": 0,
+          "queuedForeground": 0,
+          "cachedImages": 88,
+          "warming": 0,
+          "warmQueue": []
+        }
+      },
+      "bytes": 2247727,
+      "sourcePng": ".qa/patch-v1/after/discovery.png",
+      "reviewBytes": 266302
+    },
+    {
+      "file": "docs/qa/patch-v1/discovery-night.webp",
+      "view": {
+        "id": "discovery-night",
+        "x": -3850,
+        "y": 6975,
+        "zoom": 1,
+        "stage": "damaged",
+        "night": true
+      },
+      "fixtureStage": "damaged",
+      "stats": {
+        "graphics": {
+          "backend": "native-skia",
+          "shaderFieldBytes": 21577728
+        },
+        "camp": {
+          "prefetchMargin": 1000,
+          "lookaheadMs": 3200,
+          "leadWorldUnits": 0,
+          "retainMargin": 2800,
+          "residencyMs": 4000,
+          "bytes": 0,
+          "missing": 0,
+          "residentBytes": 0,
+          "pendingBytes": 0,
+          "budgetBytes": 67108864,
+          "resident": 0,
+          "pending": 0,
+          "wanted": 0,
+          "visible": 0,
+          "requested": 0,
+          "completed": 0,
+          "failures": 0,
+          "evictions": 0,
+          "rapidEvictions": 0,
+          "recentReloads": 0,
+          "missingDetails": [],
+          "missingDetailsOmitted": 0
+        },
+        "rivers": {
+          "prefetchMargin": 1000,
+          "lookaheadMs": 3200,
+          "leadWorldUnits": 0,
+          "retainMargin": 2800,
+          "residencyMs": 4000,
+          "bytes": 25499584,
+          "missing": 0,
+          "residentBytes": 25499584,
+          "pendingBytes": 0,
+          "budgetBytes": 29360128,
+          "resident": 25,
+          "pending": 0,
+          "wanted": 25,
+          "visible": 6,
+          "requested": 25,
+          "completed": 25,
+          "failures": 0,
+          "evictions": 0,
+          "rapidEvictions": 0,
+          "recentReloads": 0,
+          "missingDetails": [],
+          "missingDetailsOmitted": 0
+        },
+        "artwork": {
+          "active": 0,
+          "queued": 0,
+          "queuedForeground": 0,
+          "cachedImages": 88,
+          "warming": 0,
+          "warmQueue": []
+        }
+      },
+      "bytes": 1020004,
+      "sourcePng": ".qa/patch-v1/after/discovery-night.png",
+      "reviewBytes": 29600
+    },
+    {
+      "file": "docs/qa/patch-v1/repair.webp",
+      "view": {
+        "id": "repair",
+        "x": -3725,
+        "y": 7062,
+        "zoom": 1.55,
+        "stage": "repair"
+      },
+      "fixtureStage": "repair",
+      "stats": {
+        "graphics": {
+          "backend": "native-skia",
+          "shaderFieldBytes": 21577728
+        },
+        "camp": {
+          "prefetchMargin": 1000,
+          "lookaheadMs": 3200,
+          "leadWorldUnits": 0,
+          "retainMargin": 2800,
+          "residencyMs": 4000,
+          "bytes": 0,
+          "missing": 0,
+          "residentBytes": 0,
+          "pendingBytes": 0,
+          "budgetBytes": 67108864,
+          "resident": 0,
+          "pending": 0,
+          "wanted": 0,
+          "visible": 0,
+          "requested": 0,
+          "completed": 0,
+          "failures": 0,
+          "evictions": 0,
+          "rapidEvictions": 0,
+          "recentReloads": 0,
+          "missingDetails": [],
+          "missingDetailsOmitted": 0
+        },
+        "rivers": {
+          "prefetchMargin": 1000,
+          "lookaheadMs": 3200,
+          "leadWorldUnits": 0,
+          "retainMargin": 2800,
+          "residencyMs": 4000,
+          "bytes": 25499584,
+          "missing": 0,
+          "residentBytes": 25499584,
+          "pendingBytes": 0,
+          "budgetBytes": 29360128,
+          "resident": 25,
+          "pending": 0,
+          "wanted": 25,
+          "visible": 8,
+          "requested": 25,
+          "completed": 25,
+          "failures": 0,
+          "evictions": 0,
+          "rapidEvictions": 0,
+          "recentReloads": 0,
+          "missingDetails": [],
+          "missingDetailsOmitted": 0
+        },
+        "artwork": {
+          "active": 0,
+          "queued": 0,
+          "queuedForeground": 0,
+          "cachedImages": 88,
+          "warming": 0,
+          "warmQueue": []
+        }
+      },
+      "bytes": 2232939,
+      "sourcePng": ".qa/patch-v1/after/repair.png",
+      "reviewBytes": 255042
+    },
+    {
+      "file": "docs/qa/patch-v1/following.webp",
+      "view": {
+        "id": "following",
+        "x": -3725,
+        "y": 7062,
+        "zoom": 1.2,
+        "stage": "repaired"
+      },
+      "fixtureStage": "repaired",
+      "stats": {
+        "graphics": {
+          "backend": "native-skia",
+          "shaderFieldBytes": 21577728
+        },
+        "camp": {
+          "prefetchMargin": 1000,
+          "lookaheadMs": 3200,
+          "leadWorldUnits": 0,
+          "retainMargin": 2800,
+          "residencyMs": 4000,
+          "bytes": 0,
+          "missing": 0,
+          "residentBytes": 0,
+          "pendingBytes": 0,
+          "budgetBytes": 67108864,
+          "resident": 0,
+          "pending": 0,
+          "wanted": 0,
+          "visible": 0,
+          "requested": 0,
+          "completed": 0,
+          "failures": 0,
+          "evictions": 0,
+          "rapidEvictions": 0,
+          "recentReloads": 0,
+          "missingDetails": [],
+          "missingDetailsOmitted": 0
+        },
+        "rivers": {
+          "prefetchMargin": 1000,
+          "lookaheadMs": 3200,
+          "leadWorldUnits": 0,
+          "retainMargin": 2800,
+          "residencyMs": 4000,
+          "bytes": 25499584,
+          "missing": 0,
+          "residentBytes": 25499584,
+          "pendingBytes": 0,
+          "budgetBytes": 29360128,
+          "resident": 25,
+          "pending": 0,
+          "wanted": 25,
+          "visible": 8,
+          "requested": 25,
+          "completed": 25,
+          "failures": 0,
+          "evictions": 0,
+          "rapidEvictions": 0,
+          "recentReloads": 0,
+          "missingDetails": [],
+          "missingDetailsOmitted": 0
+        },
+        "artwork": {
+          "active": 0,
+          "queued": 0,
+          "queuedForeground": 0,
+          "cachedImages": 88,
+          "warming": 0,
+          "warmQueue": []
+        }
+      },
+      "bytes": 2233347,
+      "sourcePng": ".qa/patch-v1/after/following.png",
+      "reviewBytes": 255164
+    },
+    {
+      "file": "docs/qa/patch-v1/homecoming.webp",
+      "view": {
+        "id": "homecoming",
+        "x": 1718.1675873489273,
+        "y": 1323.5124773329626,
+        "zoom": 1,
+        "stage": "home"
+      },
+      "fixtureStage": "home",
+      "stats": {
+        "graphics": {
+          "backend": "native-skia",
+          "shaderFieldBytes": 21577728
+        },
+        "camp": {
+          "prefetchMargin": 1000,
+          "lookaheadMs": 3200,
+          "leadWorldUnits": 0,
+          "retainMargin": 2800,
+          "residencyMs": 4000,
+          "bytes": 66942720,
+          "missing": 0,
+          "residentBytes": 66942720,
+          "pendingBytes": 0,
+          "budgetBytes": 67108864,
+          "resident": 62,
+          "pending": 0,
+          "wanted": 62,
+          "visible": 10,
+          "requested": 62,
+          "completed": 62,
+          "failures": 0,
+          "evictions": 0,
+          "rapidEvictions": 0,
+          "recentReloads": 0,
+          "missingDetails": [],
+          "missingDetailsOmitted": 0
+        },
+        "rivers": {
+          "prefetchMargin": 1000,
+          "lookaheadMs": 3200,
+          "leadWorldUnits": 0,
+          "retainMargin": 2800,
+          "residencyMs": 4000,
+          "bytes": 0,
+          "missing": 0,
+          "residentBytes": 0,
+          "pendingBytes": 0,
+          "budgetBytes": 29360128,
+          "resident": 0,
+          "pending": 0,
+          "wanted": 0,
+          "visible": 0,
+          "requested": 25,
+          "completed": 25,
+          "failures": 0,
+          "evictions": 25,
+          "rapidEvictions": 0,
+          "recentReloads": 0,
+          "missingDetails": [],
+          "missingDetailsOmitted": 0
+        },
+        "artwork": {
+          "active": 0,
+          "queued": 0,
+          "queuedForeground": 0,
+          "cachedImages": 125,
+          "warming": 0,
+          "warmQueue": []
+        }
+      },
+      "bytes": 2621301,
+      "sourcePng": ".qa/patch-v1/after/homecoming.png",
+      "reviewBytes": 369604
+    }
+  ],
+  "artwork": [
+    {
+      "file": "public/survival/world-ground-v2/warm.webp",
+      "sha256": "df034c82075e254d91cafe8f1ca77e93b29025f8d20ddfb72aabab67fc520c2b",
+      "bytes": 477550,
+      "verifiedLfs": false
+    },
+    {
+      "file": "public/survival/world-ground-v2/brown.webp",
+      "sha256": "9c7b342bac087749f32208dd5c44a30f474fc24c8230a3ebbfd17e209531cabc",
+      "bytes": 475862,
+      "verifiedLfs": false
+    },
+    {
+      "file": "public/survival/world-ground-v3/clear-earth.webp",
+      "sha256": "e906d407a055b37d397260c6695422f92b933c3487974ea6dcb7df496c6bcdf3",
+      "bytes": 307434,
+      "verifiedLfs": false
+    },
+    {
+      "file": "public/survival/tree-variants-v1/willow-bent.webp",
+      "sha256": "cbe6522cae6a6abf7f12868865732f23ebf9792b36f99d1c67316bbc987115dd",
+      "bytes": 344780,
+      "verifiedLfs": false
+    },
+    {
+      "file": "public/survival/woodland-canopy-v1/shade.webp",
+      "sha256": "ff690f6b06c9f83762d60a4576be6bd301ba38c59a245b5b9a036ed136a389be",
+      "bytes": 29898,
+      "verifiedLfs": false
+    },
+    {
+      "file": "public/survival/woodland-deadwood-v1/hollow-birch-log.webp",
+      "sha256": "f84a1f462cda6ea0f9c8cd969eee293bc1519288b3caf0d82595ba5734a6cc04",
+      "bytes": 101904,
+      "verifiedLfs": false
+    },
+    {
+      "file": "public/survival/tree-variants-v1/willow-forked.webp",
+      "sha256": "fc984bde95c27a1971a1f1ca2b1029772b473159bf55c2ca26a9b81fe7101ca9",
+      "bytes": 376770,
+      "verifiedLfs": false
+    },
+    {
+      "file": "public/survival/tree-variants-v1/oak-forked.webp",
+      "sha256": "64cd7003ed22fb65d7f30854569b3d0717937edd3116603f270d80be108aa11a",
+      "bytes": 334090,
+      "verifiedLfs": false
+    },
+    {
+      "file": "public/survival/tree-variants-v1/oak-leaning.webp",
+      "sha256": "917d72eccfbcbbc973faa9f91c54eac069c2e0c0ae360f56a5a758306f0b2dd3",
+      "bytes": 277218,
+      "verifiedLfs": false
+    },
+    {
+      "file": "public/survival/patch-v1/station.webp",
+      "sha256": "1763fe2b3e3835ecce9cfb5c56ee840cc76b0b9c4605d659067753fd1604610f",
+      "bytes": 262918,
+      "verifiedLfs": false
+    },
+    {
+      "file": "public/survival/patch-v1/locker.webp",
+      "sha256": "bbba5f99d50269a7a262db130ce11584a62e17a3609c099135955fb181453972",
+      "bytes": 13782,
+      "verifiedLfs": false
+    },
+    {
+      "file": "public/survival/headquarters-v4/broken-exterior.webp",
+      "sha256": "7c2a15490e83daa2520f4f6bf606528a750c7df47393fc8c16671448d1b48474",
+      "bytes": 340322,
+      "verifiedLfs": false
+    },
+    {
+      "file": "public/survival/headquarters-v4/broken-interior.webp",
+      "sha256": "a30daace53324a7630d8f54d5ff87cea785628ff7557603bf9d307858255ee26",
+      "bytes": 1489224,
+      "verifiedLfs": false
+    },
+    {
+      "file": "public/survival/headquarters-v4/repaired-interior.webp",
+      "sha256": "b0cb72e9b21daa5bbd3066ae8a1297606c3eaa96c39e19b8a9dfdfbe1d2262f2",
+      "bytes": 1568262,
+      "verifiedLfs": false
+    },
+    {
+      "file": "public/survival/headquarters-v4/repaired-exterior.webp",
+      "sha256": "11e32559ee35c698a5b1e0e810a9ccc171391a9ddfa55cba439370724218b580",
+      "bytes": 377440,
+      "verifiedLfs": false
+    },
+    {
+      "file": "public/survival/camp-ruins-v1/fire.webp",
+      "sha256": "1549c8e94b4f0fe4b360ece9e883a353ef8f3045268ceaf58503c9e4ada827e0",
+      "bytes": 265440,
+      "verifiedLfs": false
+    },
+    {
+      "file": "public/survival/camp-hearth-v4/flame-0.webp",
+      "sha256": "edfaa998ac95e5ffe6679f77168a03423f0dff4e737f9047416936d68343ee28",
+      "bytes": 386656,
+      "verifiedLfs": false
+    },
+    {
+      "file": "public/survival/camp-hearth-v4/unlit.webp",
+      "sha256": "2d71981cbf4d5f7a801e7e77ef48a513660ed7208158ef531e0980752b2e88c2",
+      "bytes": 326058,
+      "verifiedLfs": false
+    },
+    {
+      "file": "public/survival/camp-workshop-v2/broken.webp",
+      "sha256": "1dfd464d3db10dd3f94d740ae61825edf39b483782408e2e3c29ff471bc6d333",
+      "bytes": 153566,
+      "verifiedLfs": false
+    },
+    {
+      "file": "public/survival/camp-workshop-v2/idle-00.webp",
+      "sha256": "fc6c00e9d861fe3eb25b7b28e2b1c672f0b4543002dd41eadedd4b55dc4bc7ca",
+      "bytes": 381002,
+      "verifiedLfs": false
+    },
+    {
+      "file": "public/survival/camp-treatment-v2/broken.webp",
+      "sha256": "49148eecb76fb5151663a0b5e72353d6ccd6e46d232848caa66874d807c0b637",
+      "bytes": 426052,
+      "verifiedLfs": false
+    },
+    {
+      "file": "public/survival/camp-treatment-v2/idle-00.webp",
+      "sha256": "af0e7f2298ff770bbbafb688594b618a5ba1778708018c9266d7f29618d57085",
+      "bytes": 1163078,
+      "verifiedLfs": false
+    },
+    {
+      "file": "public/survival/camp-ruins-v1/well.webp",
+      "sha256": "83d88f56a0c9694b66c1104f38ee23884d9963c96487f8dd0a961c882907aed0",
+      "bytes": 1071420,
+      "verifiedLfs": false
+    },
+    {
+      "file": "public/survival/camp-well-v2/oak-well.webp",
+      "sha256": "b9d1d0a031498083a136ae5148435ec1d10fcb782cadcd19b21f887aa67226c4",
+      "bytes": 785734,
+      "verifiedLfs": false
+    },
+    {
+      "file": "public/survival/camp-ruins-v1/bunker.webp",
+      "sha256": "e51a51438ac05f8c85b6b1fc1758433a141561b6f6119ca5c63d6277ff9d1d24",
+      "bytes": 142772,
+      "verifiedLfs": false
+    },
+    {
+      "file": "public/survival/camp-structures-v3/bunker-0.webp",
+      "sha256": "74707745cfc085612d8c45eb9f7981139d243c33144fe6e24d4a43e0f8af9286",
+      "bytes": 142924,
+      "verifiedLfs": false
+    },
+    {
+      "file": "public/survival/camp-ground-v3/bonfire-clearing.webp",
+      "sha256": "27a11f98608f854b070c778d3957af86567440ace173de74c7e52912276c3ef3",
+      "bytes": 634442,
+      "verifiedLfs": false
+    },
+    {
+      "file": "public/survival/camp-craft-v2/warehouse-broken.webp",
+      "sha256": "6262e9f350b59fe317fe00087de7f0b79d5011f716cf7e4efedbfac5602dd67f",
+      "bytes": 385386,
+      "verifiedLfs": false
+    },
+    {
+      "file": "public/survival/camp-craft-v2/warehouse-full.webp",
+      "sha256": "a0bbbe33651cb65630a0ca4c55d403c2df8cbce8b9c9962397c816df0f1f1480",
+      "bytes": 386168,
+      "verifiedLfs": false
+    },
+    {
+      "file": "public/survival/camp-craft-v2/warehouse-empty.webp",
+      "sha256": "f51ae150262f9523460d01e70f2fb0a72df7f301a0928da580f9b5f7b65e75a5",
+      "bytes": 383058,
+      "verifiedLfs": false
+    },
+    {
+      "file": "public/survival/camp-craft-v2/warehouse-light.webp",
+      "sha256": "0c132f713c51909107fd745ad76029f9b20b883c51490006e9b53b13319f5967",
+      "bytes": 383820,
+      "verifiedLfs": false
+    },
+    {
+      "file": "public/survival/camp-craft-v2/warehouse-half.webp",
+      "sha256": "3daf344ca4afee0f48583724db442bb638da17cb465208312360697342f774d2",
+      "bytes": 384476,
+      "verifiedLfs": false
+    },
+    {
+      "file": "public/survival/puddles-v1/round.webp",
+      "sha256": "8a89bb36c4c3c1577d8107e68b481301e6bed772195c62a68112cad9a8f23600",
+      "bytes": 69502,
+      "verifiedLfs": false
+    },
+    {
+      "file": "public/survival/puddles-v1/lobed.webp",
+      "sha256": "76172867eabcb1bee1a1eee5b2e3ed70c8f760f0eecf931ad07e4d1fa2d3f408",
+      "bytes": 62390,
+      "verifiedLfs": false
+    },
+    {
+      "file": "public/survival/camp-furnace-v4/broken.webp",
+      "sha256": "0893dbdd08814ce37bbe51ff4cfcf988095c5e463bfcfead36384a7509e03b3d",
+      "bytes": 345286,
+      "verifiedLfs": false
+    },
+    {
+      "file": "public/survival/camp-furnace-v4/cold.webp",
+      "sha256": "78b382ce39da1f88d6e0a9737777e1f7023ec40e15fb7cd17c7b16afa274beff",
+      "bytes": 352138,
+      "verifiedLfs": false
+    },
+    {
+      "file": "public/survival/camp-furnace-v4/active-00.webp",
+      "sha256": "ca2dc8621b13c008005a6d8a75c0f7c6c68425103aadbe252f531195fa09b393",
+      "bytes": 354468,
+      "verifiedLfs": false
+    },
+    {
+      "file": "public/survival/potato-patch-v2/broken.webp",
+      "sha256": "c1fdf45511548cab76d141565e9497db3196d33e5c6beaf5591ab748dd92d659",
+      "bytes": 500074,
+      "verifiedLfs": false
+    },
+    {
+      "file": "public/survival/potato-patch-v2/tier-1-stage-0.webp",
+      "sha256": "370826ec71b6e6ba40fe8cfea886c3cd5c951d600ae0e384a8c1ea66daefd290",
+      "bytes": 455244,
+      "verifiedLfs": false
+    },
+    {
+      "file": "public/survival/vegetable-garden-v1/potato-stage-0.webp",
+      "sha256": "c495ea80be02d38961c4abd345aef971302ff14045f9330c014fc8ddd79547b6",
+      "bytes": 6000,
+      "verifiedLfs": false
+    },
+    {
+      "file": "public/survival/vegetable-garden-v1/potato-stage-1.webp",
+      "sha256": "86845fe025af227c731280c0d7115b8428ae29ab0c06ee7257976413ef8a47a8",
+      "bytes": 17522,
+      "verifiedLfs": false
+    },
+    {
+      "file": "public/survival/vegetable-garden-v1/potato-stage-2.webp",
+      "sha256": "c907e2efd7c2aeb7ebefbfb0736fa4fd52a4c7b082efeb47fc34817e43916387",
+      "bytes": 42496,
+      "verifiedLfs": false
+    },
+    {
+      "file": "public/survival/vegetable-garden-v1/potato-stage-3.webp",
+      "sha256": "f1f67aa644a87f8911ab2330d4ea045a22c49cf4d6b222b0296334929d1dfb90",
+      "bytes": 53600,
+      "verifiedLfs": false
+    },
+    {
+      "file": "public/survival/vegetable-crops-v1/potato-item.webp",
+      "sha256": "6c08e2659a6ba41952f9d4c5a592705e2a73bc27479f2aadd218802e93b3359e",
+      "bytes": 12314,
+      "verifiedLfs": false
+    },
+    {
+      "file": "public/survival/vegetable-garden-v1/carrot-stage-0.webp",
+      "sha256": "54ed21260441eacb74496438541d9de954db165bdb14b158f056d77814e701a9",
+      "bytes": 4808,
+      "verifiedLfs": false
+    },
+    {
+      "file": "public/survival/vegetable-garden-v1/carrot-stage-1.webp",
+      "sha256": "d5884b7dd5fb0ea46bcee30e2fe3c1d4ddde294c3dd1f32598b78cc78298df69",
+      "bytes": 15782,
+      "verifiedLfs": false
+    },
+    {
+      "file": "public/survival/vegetable-garden-v1/carrot-stage-2.webp",
+      "sha256": "e4bc9b87ac22aa76b3c940b45e91c8a7de954bebff0cc7ea22928de9477f9e93",
+      "bytes": 40728,
+      "verifiedLfs": false
+    },
+    {
+      "file": "public/survival/vegetable-garden-v1/carrot-stage-3.webp",
+      "sha256": "9c203894567513d6a9e68ba1c87e0849bffdecdb8c10558a79948c555a431bf9",
+      "bytes": 53896,
+      "verifiedLfs": false
+    },
+    {
+      "file": "public/survival/vegetable-crops-v1/carrot-item.webp",
+      "sha256": "37d1418a22c32e6199a361abe38677a8f90500f8a6058f2fb9cb81508fda2495",
+      "bytes": 16754,
+      "verifiedLfs": false
+    },
+    {
+      "file": "public/survival/camp-circular-wall-weathered-v2/wall-14.webp",
+      "sha256": "41cf31f5d0a3f72436b0e939467fb8aacdc6c7349edc093e8972c10c69a1a0cd",
+      "bytes": 308052,
+      "verifiedLfs": false
+    },
+    {
+      "file": "public/survival/woodland-forage-v2/berry-bush.webp",
+      "sha256": "e6946229042156e343f9f6d042143eb39bce9b62235a8bcb4f1ff1d9021509df",
+      "bytes": 486530,
+      "verifiedLfs": false
+    },
+    {
+      "file": "public/survival/woodland-forage-v2/berry-truss-purple.webp",
+      "sha256": "4ebbc1defbeb45542ec0c99db080096c9a9556f68c9f7b6fb98a7b7aabc57e65",
+      "bytes": 11336,
+      "verifiedLfs": false
+    },
+    {
+      "file": "public/survival/woodland-forage-v2/berry-truss-russet.webp",
+      "sha256": "c8056a2f23831c576bceef9ae82e670c67c3686feb03ba662fabc5aa0c8e4bb1",
+      "bytes": 10020,
+      "verifiedLfs": false
+    },
+    {
+      "file": "public/survival/patch-v1/robot.webp",
+      "sha256": "5819bcb690914443d296f5b91c23a98e75d86b680c579ffed69ed57819de75a0",
+      "bytes": 151682,
+      "verifiedLfs": false
+    },
+    {
+      "file": "public/survival/patch-v1/damaged.webp",
+      "sha256": "b09df13c18e35ebddeb63ece11dbab970e0e449b357b2413e9b00c47d8e14b0d",
+      "bytes": 15772,
+      "verifiedLfs": false
+    },
+    {
+      "file": "public/survival/loot-chest-v5/reclamation-case.webp",
+      "sha256": "cb7e86f027521681219e360f28adaa5af6a14a9830d6eedfc1060a13dcb2407a",
+      "bytes": 206226,
+      "verifiedLfs": false
+    },
+    {
+      "file": "public/survival/loot-chest-v4/ground-contact.webp",
+      "sha256": "d95cc3bed0d285e17e78196f4dc3979232c5ec7796488c8218ac13a7564189f4",
+      "bytes": 51348,
+      "verifiedLfs": false
+    },
+    {
+      "file": "public/survival/scrap-runner/motion-a-v1.webp",
+      "sha256": "d51735b19a2a34f1071505290689f6a964e82f2f522f9d2276682b6ee8ba7a65",
+      "bytes": 1056048,
+      "verifiedLfs": false
+    },
+    {
+      "file": "public/survival/scrap-runner/motion-b-v1.webp",
+      "sha256": "46c8a1d1bdef4a0a8d09e62a13cd3dc07932e1fcafd8f74cead3505bb9ea16d8",
+      "bytes": 930802,
+      "verifiedLfs": false
+    },
+    {
+      "file": "public/survival/river-surface-flow-v1/ripples.webp",
+      "sha256": "6b554bec63d0465a38d6ccab54ece5f5bb76ee8cc590d3bf908d46083cf3f952",
+      "bytes": 134472,
+      "verifiedLfs": false
+    },
+    {
+      "file": "public/survival/stillwater-lake-v2/river-lower-pools-v1-reach-3-preview.webp",
+      "sha256": "53a7a805d9cd8445d0cc9ed8ee64e60dcaf9382aacbb81f0d970cd5dddb680fe",
+      "bytes": 81572,
+      "verifiedLfs": false
+    },
+    {
+      "file": "public/survival/stillwater-lake-v2/river-lower-pools-v1-reach-4-preview.webp",
+      "sha256": "2e0d5a84dc5d6e5f73cde65a6c5486a2d600c4bcbfd24cf963ce8d9f84eb0ff2",
+      "bytes": 87134,
+      "verifiedLfs": false
+    },
+    {
+      "file": "public/survival/river-features-v4/lower-lake-footprint.png",
+      "sha256": "d35e553918eb075ce39ac81c4dfe146a7e8fbd6897f1da9bed4b89c8148ea85f",
+      "bytes": 36712,
+      "verifiedLfs": false
+    },
+    {
+      "file": "public/fonts/barlow-condensed-black.ttf",
+      "sha256": "4aa9c0f6fd78002d8d4485f8ab338bb05b016b17620faee12cb89ac428af54d3",
+      "bytes": 34324,
+      "verifiedLfs": false
+    },
+    {
+      "file": "public/survival/river-detail-v5/riverHD3_0_2048.webp",
+      "sha256": "ba36b7892a26748a23ca81aeed1c9e444c5774cdb0e6e21c37885586c4264ef3",
+      "bytes": 181998,
+      "verifiedLfs": false
+    },
+    {
+      "file": "public/survival/river-detail-v5/riverHD3_512_2048.webp",
+      "sha256": "0b0c61e5aadbd7b94f72cb1f04a91926f589d5f47cbe77de40883fd27f10fd99",
+      "bytes": 161498,
+      "verifiedLfs": false
+    },
+    {
+      "file": "public/survival/river-detail-v5/riverHD3_1024_2048.webp",
+      "sha256": "f55b53bf27f40e4943c26b88bdecd706895b6452c39dd82a6411120d048fd116",
+      "bytes": 191680,
+      "verifiedLfs": false
+    },
+    {
+      "file": "public/survival/river-detail-v5/riverHD3_1536_2048.webp",
+      "sha256": "d20f029b31b582424ab227b4489a387fd7e1bf80885182976edf1c424fc3f825",
+      "bytes": 243436,
+      "verifiedLfs": false
+    },
+    {
+      "file": "public/survival/river-detail-v5/riverHD3_2048_2048.webp",
+      "sha256": "76b496eee674ef0859f86df6e7678c8bb5e9b4f6acf3b23dd4500b88754fdcef",
+      "bytes": 239994,
+      "verifiedLfs": false
+    },
+    {
+      "file": "public/survival/river-detail-v5/riverHD3_2560_2048.webp",
+      "sha256": "cc902a2d8c9e7a991e73801b1334493e74896bbbbee6638450960cf15c9e39b7",
+      "bytes": 45856,
+      "verifiedLfs": false
+    },
+    {
+      "file": "public/survival/river-detail-v5/riverHD4_0_0.webp",
+      "sha256": "e6548d12eef985522930600859899dbeb190378d82ac2ee94140c78e3701032d",
+      "bytes": 410956,
+      "verifiedLfs": false
+    },
+    {
+      "file": "public/survival/river-detail-v5/riverHD4_512_0.webp",
+      "sha256": "6fc5fc54c2ed303e6508bcdeddcae64df68e9dded1737e6fa3a7f6de517c307f",
+      "bytes": 395678,
+      "verifiedLfs": false
+    },
+    {
+      "file": "public/survival/river-detail-v5/riverHD4_1024_0.webp",
+      "sha256": "6e675183910c8312d45421690720405d4ab845f7d4bc1695e916c739b625e1f1",
+      "bytes": 382716,
+      "verifiedLfs": false
+    },
+    {
+      "file": "public/survival/stillwater-lake-v2/riverHD4_1536_0.webp",
+      "sha256": "f94c7e89cb3c4ad8e73f7f103e59dd3bfa3a5a16ea9332fa406e599783622c3d",
+      "bytes": 389750,
+      "verifiedLfs": false
+    },
+    {
+      "file": "public/survival/stillwater-lake-v2/riverHD4_2048_0.webp",
+      "sha256": "c75c513bbb508c3640d2b4e7d9ee88d7a67f964a3e1e9260fcaef41bcacd38e6",
+      "bytes": 392870,
+      "verifiedLfs": false
+    },
+    {
+      "file": "public/survival/river-detail-v5/riverHD4_0_512.webp",
+      "sha256": "bd036cdbd39c91e8c17b6a4f1b9795512b0a7a61b5b4ee4fc466bc32ef51d674",
+      "bytes": 403954,
+      "verifiedLfs": false
+    },
+    {
+      "file": "public/survival/river-detail-v5/riverHD4_512_512.webp",
+      "sha256": "a22ba6663ee782eade390dae6d43b57f1e1619bf49cb2edd375cb834f9f3fbc0",
+      "bytes": 398614,
+      "verifiedLfs": false
+    },
+    {
+      "file": "public/survival/stillwater-lake-v2/riverHD4_1024_512.webp",
+      "sha256": "1074a35e843f7ed08822a52ed32c0e089f65f5ce66c813089faa29d9d51bc8ab",
+      "bytes": 395546,
+      "verifiedLfs": false
+    },
+    {
+      "file": "public/survival/stillwater-lake-v2/riverHD4_1536_512.webp",
+      "sha256": "458a700994d616c756b4556f054040bf9822b2d8a2769cec40830e0e602dee36",
+      "bytes": 314498,
+      "verifiedLfs": false
+    },
+    {
+      "file": "public/survival/stillwater-lake-v2/riverHD4_2048_512.webp",
+      "sha256": "9cdd045a955c8b35aad03098aa31edd30cbeda3db7230ee0df9455380373c57a",
+      "bytes": 302634,
+      "verifiedLfs": false
+    },
+    {
+      "file": "public/survival/river-detail-v5/riverHD4_0_1024.webp",
+      "sha256": "c80e51333953419ba5a5a96469300a954f2c9591f18f0b6de0390f67ca595fd5",
+      "bytes": 382632,
+      "verifiedLfs": false
+    },
+    {
+      "file": "public/survival/river-detail-v5/riverHD4_512_1024.webp",
+      "sha256": "37a6912fddfdb0233bff4c5bb44ccb97b9099a4204a2ad2f419b25a58db1ca49",
+      "bytes": 408818,
+      "verifiedLfs": false
+    },
+    {
+      "file": "public/survival/stillwater-lake-v2/riverHD4_1024_1024.webp",
+      "sha256": "5aef2484b6a0364ca865c05cd100a8bac6f674234ac4632aa5c6e7d24862aebb",
+      "bytes": 335844,
+      "verifiedLfs": false
+    },
+    {
+      "file": "public/survival/stillwater-lake-v2/riverHD4_1536_1024.webp",
+      "sha256": "ca53ee7dbfd2b736386d9bb7e5025528ae76b39fccf9ccb2a6d13386df3ac2ee",
+      "bytes": 197388,
+      "verifiedLfs": false
+    },
+    {
+      "file": "public/survival/stillwater-lake-v2/riverHD4_2048_1024.webp",
+      "sha256": "2a169e6700a7284c83bdfbca4a39317a6096cbe0758f31d4e8af15708a7fd758",
+      "bytes": 227940,
+      "verifiedLfs": false
+    },
+    {
+      "file": "public/survival/river-detail-v5/riverHD4_0_1536.webp",
+      "sha256": "ef4b8176b35a829eeb742401a50b49487288858f09ff1a5ae66d977802915ea1",
+      "bytes": 405278,
+      "verifiedLfs": false
+    },
+    {
+      "file": "public/survival/river-detail-v5/riverHD4_512_1536.webp",
+      "sha256": "b314d20d0d2e01b9d1f55bcb27309787e92bfbf7f06474aaf5ddb5f2e9a6904c",
+      "bytes": 431416,
+      "verifiedLfs": false
+    },
+    {
+      "file": "public/survival/stillwater-lake-v2/riverHD4_1024_1536.webp",
+      "sha256": "abb047c39c2389018f3a31d091ab2fa06191678895d1531efeab60459adcc204",
+      "bytes": 397892,
+      "verifiedLfs": false
+    },
+    {
+      "file": "public/survival/stillwater-lake-v2/riverHD4_1536_1536.webp",
+      "sha256": "1de2e3b7fef26bfb7146d8cdb4f04e6f5a9b81918584be6ed771950ce29d19b8",
+      "bytes": 335872,
+      "verifiedLfs": false
+    },
+    {
+      "file": "public/survival/stillwater-lake-v2/riverHD4_2048_1536.webp",
+      "sha256": "fbfb68c2928d167439a8ca12013c6cf47fe4dc44bfed6bdb7b4ec5b7835d5afd",
+      "bytes": 319226,
+      "verifiedLfs": false
+    },
+    {
+      "file": "public/survival/river-detail-v5/riverHD4_0_2048.webp",
+      "sha256": "2fec72400998bfbfe9bc72ff865340a906cdc465c4287a87fa421cc344992105",
+      "bytes": 255026,
+      "verifiedLfs": false
+    },
+    {
+      "file": "public/survival/river-detail-v5/riverHD4_512_2048.webp",
+      "sha256": "5ea7296097a834e00f757bab7cad0f7683ce8fe89155fd61c3306b4f152bc812",
+      "bytes": 262344,
+      "verifiedLfs": false
+    },
+    {
+      "file": "public/survival/river-detail-v5/riverHD4_1024_2048.webp",
+      "sha256": "503b36d95ef758d04faad91cf4f8d0dee3ce90a9ce944bf907bd382db382c6a3",
+      "bytes": 247024,
+      "verifiedLfs": false
+    },
+    {
+      "file": "public/survival/river-detail-v5/riverHD4_1536_2048.webp",
+      "sha256": "2c8b7b9b07ba8c0a8f4613a1bb92fbcb48aa375e7406f4cff157c04ce4a81255",
+      "bytes": 222760,
+      "verifiedLfs": false
+    },
+    {
+      "file": "public/survival/river-detail-v5/riverHD4_2048_2048.webp",
+      "sha256": "6d5203bc05d04657b2c2579029f910c4563737d99fad3ad7d94b822178567ded",
+      "bytes": 214586,
+      "verifiedLfs": false
+    },
+    {
+      "file": "public/survival/river-detail-v5/riverHD5_0_0.webp",
+      "sha256": "889b216217af8faa1a8b5b369de3c4ba1af2965ced95f4a9c5275a18af0ea28d",
+      "bytes": 391650,
+      "verifiedLfs": false
+    },
+    {
+      "file": "public/survival/river-detail-v5/riverHD5_512_0.webp",
+      "sha256": "126cbde4dfd9421695dcc79aa1ec2da24c67270fcdd065b2027fbeaced30ed18",
+      "bytes": 413774,
+      "verifiedLfs": false
+    },
+    {
+      "file": "public/survival/river-detail-v5/riverHD5_1024_0.webp",
+      "sha256": "24e9d7bdc0c04228addc6b2e72ab920aab0e0be3d2c32680954b52dd678fd790",
+      "bytes": 388222,
+      "verifiedLfs": false
+    },
+    {
+      "file": "public/survival/river-detail-v5/riverHD5_1536_0.webp",
+      "sha256": "d78a252d8ad8e07fc2d885adbfe1ce090b3c478caed3498558f0ac14a41d19d7",
+      "bytes": 372900,
+      "verifiedLfs": false
+    },
+    {
+      "file": "public/survival/river-detail-v5/riverHD5_2048_0.webp",
+      "sha256": "ea04f7fd23f23ffd0b952551ac3468926151cd162414b4e314b344adb94b150d",
+      "bytes": 346278,
+      "verifiedLfs": false
+    },
+    {
+      "file": "public/survival/river-detail-v5/river-waterworks-approach-v1-reach-5-medium.webp",
+      "sha256": "e1928edeecdc7db64256066db5bc7fec527c1f34414d6ea74458cd0ab218ab93",
+      "bytes": 204718,
+      "verifiedLfs": false
+    },
+    {
+      "file": "public/survival/river-detail-v5/river-waterworks-approach-v1-reach-5-preview.webp",
+      "sha256": "8ad7650b09d9712d499c6ea534d35363cb229c37a0c82e6ed0160adf80210e0e",
+      "bytes": 29130,
+      "verifiedLfs": false
+    },
+    {
+      "file": "public/survival/stillwater-lake-v2/river-lower-pools-v1-reach-1-medium.webp",
+      "sha256": "9e42a13eef158a7d73ce97f2b67593f01bffed23ccb65dc32450a28cd5c37199",
+      "bytes": 567808,
+      "verifiedLfs": false
+    },
+    {
+      "file": "public/survival/stillwater-lake-v2/river-lower-pools-v1-reach-1-preview.webp",
+      "sha256": "8de61c6f48a358c12b66719f63a1441c83d97e8872c12b56fcf18b5be2198ad4",
+      "bytes": 85614,
+      "verifiedLfs": false
+    },
+    {
+      "file": "public/survival/stillwater-lake-v2/river-lower-pools-v1-reach-2-medium.webp",
+      "sha256": "2e96e89de6314f2b3b388346acca16907ece08d6cc2756152deeb7395817eb3a",
+      "bytes": 581378,
+      "verifiedLfs": false
+    },
+    {
+      "file": "public/survival/stillwater-lake-v2/river-lower-pools-v1-reach-2-preview.webp",
+      "sha256": "88c1e47e27dee9cf915d835cfe70b9942e675959155ed7601dcf9237340ba74b",
+      "bytes": 88318,
+      "verifiedLfs": false
+    },
+    {
+      "file": "public/survival/stillwater-lake-v2/river-lower-pools-v1-reach-3-medium.webp",
+      "sha256": "7f4edfaf745ef2fa51d4e6bed8299d108f6108e030891492a83d43337eb848dc",
+      "bytes": 542932,
+      "verifiedLfs": false
+    },
+    {
+      "file": "public/survival/stillwater-lake-v2/river-lower-pools-v1-reach-4-medium.webp",
+      "sha256": "fbef90b081e95a1357058b1466cb66b6d1ad451b65f1442920d8b073f2967a5f",
+      "bytes": 580192,
+      "verifiedLfs": false
+    },
+    {
+      "file": "public/survival/stillwater-lake-v2/river-lower-pools-v1-reach-5-medium.webp",
+      "sha256": "15518c0d1a87af8ba537f156f2702da584952fb3100e3bdcc9581745658756b4",
+      "bytes": 580880,
+      "verifiedLfs": false
+    },
+    {
+      "file": "public/survival/stillwater-lake-v2/river-lower-pools-v1-reach-5-preview.webp",
+      "sha256": "29f19c1870a6480bc9a78636e46dc4a52d264cba5781822d4af01be93ba03608",
+      "bytes": 89528,
+      "verifiedLfs": false
+    },
+    {
+      "file": "public/survival/river-detail-v5/river-southern-reach-v1-reach-1-medium.webp",
+      "sha256": "ad5fbc81b515d371f2c49c752377eadbc59849eef09e5dce3229a25d9ca40c70",
+      "bytes": 231612,
+      "verifiedLfs": false
+    },
+    {
+      "file": "public/survival/river-detail-v5/river-southern-reach-v1-reach-1-preview.webp",
+      "sha256": "5dc78fd67450534e38661a523342231be09f37a860c8f09ebca579709bf1040f",
+      "bytes": 31900,
+      "verifiedLfs": false
+    },
+    {
+      "file": "public/survival/camp-ruins-v1/fire.png",
+      "sha256": "861ea500d86ac84129a25f4a197242314ac7df006f52f340a49c12f311d4038f",
+      "bytes": 1044985,
+      "verifiedLfs": false
+    },
+    {
+      "file": "public/survival/camp-ruins-v1/well.png",
+      "sha256": "539d2c10d59be361dd051d0cf150232c5808ca41af7b47ca179466d82fe57085",
+      "bytes": 1867834,
+      "verifiedLfs": false
+    },
+    {
+      "file": "public/survival/terrain-stream-v2/homeGround_2048_1536L1.webp",
+      "sha256": "041bba4004c7c1719a52dab223c536471fc9e6297e4f75a4ab2bad58cfd4ce6a",
+      "bytes": 87802,
+      "verifiedLfs": false
+    },
+    {
+      "file": "public/survival/terrain-stream-v2/homeGround_2048_2048L1.webp",
+      "sha256": "bae4f7bbaba5a081d35748db4412b6d8523c5f0656f00381d15068ee1a9ac57d",
+      "bytes": 89618,
+      "verifiedLfs": false
+    },
+    {
+      "file": "public/survival/terrain-stream-v2/homeGround_2560_1536L1.webp",
+      "sha256": "4de18bdfae2f99ca3840a9a9e58ea1213d1b6a3283e3b48f3937f5f719711ee6",
+      "bytes": 102522,
+      "verifiedLfs": false
+    },
+    {
+      "file": "public/survival/terrain-stream-v2/homeGround_2560_2048L1.webp",
+      "sha256": "91b42dadfe17cf2bead7ee5915316b1284463b180e645a4d2091dfe50c8fa13f",
+      "bytes": 91340,
+      "verifiedLfs": false
+    },
+    {
+      "file": "public/survival/terrain-stream-v2/homeGround_1536_1536L1.webp",
+      "sha256": "4ea4983bc2f9a087c19875ea8e7cda82484b6e6691616a0dc9749083ef9dd552",
+      "bytes": 104852,
+      "verifiedLfs": false
+    },
+    {
+      "file": "public/survival/terrain-stream-v2/homeGround_1536_2048L1.webp",
+      "sha256": "7aa88560c0b96e56ddf79c9f361b70bbaafb7f71fc1098524d5d7ce29a699e17",
+      "bytes": 91968,
+      "verifiedLfs": false
+    },
+    {
+      "file": "public/survival/terrain-stream-v2/homeGround_3072_1536L1.webp",
+      "sha256": "bd3e8ad2a2f2a7cb30dd6366ab0015e196b1dd311bea1e343f48ab700eee086d",
+      "bytes": 100258,
+      "verifiedLfs": false
+    },
+    {
+      "file": "public/survival/terrain-stream-v2/homeGround_3072_2048L1.webp",
+      "sha256": "a18065d94f1f43337d930eb7705716c0f23e3cc99a5912ad32c23e574ef726c2",
+      "bytes": 100398,
+      "verifiedLfs": false
+    },
+    {
+      "file": "public/survival/terrain-stream-v2/homeGround_1024_1536L1.webp",
+      "sha256": "51962fa370748b970b061146daba6fab557a5cecd8f809d3dd1533124b12ed46",
+      "bytes": 94002,
+      "verifiedLfs": false
+    },
+    {
+      "file": "public/survival/terrain-stream-v2/homeGround_1024_2048L1.webp",
+      "sha256": "ff3c115de35243e669c02504c68197aef0583a1c2dec511e58bf72ad75bad8bb",
+      "bytes": 104038,
+      "verifiedLfs": false
+    },
+    {
+      "file": "public/survival/terrain-stream-v2/homeGround_2048_1024L1.webp",
+      "sha256": "35f22b6b8496e1a8628d4d5aa185e225a0e896d05459fa74820af8de5dea867f",
+      "bytes": 92982,
+      "verifiedLfs": false
+    },
+    {
+      "file": "public/survival/terrain-stream-v2/homeGround_2048_2560L1.webp",
+      "sha256": "3d21528fc599b313fe055bb374165ba44c79f98d89adeb81045f82dc918651e2",
+      "bytes": 85278,
+      "verifiedLfs": false
+    },
+    {
+      "file": "public/survival/terrain-stream-v2/homeGround_2560_1024L1.webp",
+      "sha256": "7ed318a1676a4f75f1ce33c5dae186e408be7ef8adf94f93cb01c666709e2fd3",
+      "bytes": 91630,
+      "verifiedLfs": false
+    },
+    {
+      "file": "public/survival/terrain-stream-v2/homeGround_2560_2560L1.webp",
+      "sha256": "1103c18775f3bcd051f329e2dd49da10cabc3830445587918ca32cdfc2b32c7d",
+      "bytes": 100496,
+      "verifiedLfs": false
+    },
+    {
+      "file": "public/survival/terrain-stream-v2/homeGround_1536_1024L1.webp",
+      "sha256": "2ce9ff0eed918cbb4bf5911560334b9c8fd2519e2ba87a68f2c4a37439b3c6eb",
+      "bytes": 86804,
+      "verifiedLfs": false
+    },
+    {
+      "file": "public/survival/terrain-stream-v2/homeGround_1536_2560L1.webp",
+      "sha256": "81a84a5a6a1a89d23012992fee75c888aa4c3a439a4fd62b72f847d2232ffae4",
+      "bytes": 109018,
+      "verifiedLfs": false
+    },
+    {
+      "file": "public/survival/terrain-stream-v2/homeGround_3072_1024L1.webp",
+      "sha256": "5699781d8e1a7741778ce50ddf70a60efb21a8a5f8e5ed6509a0d44a63477fb0",
+      "bytes": 90442,
+      "verifiedLfs": false
+    },
+    {
+      "file": "public/survival/terrain-stream-v2/homeGround_3072_2560L1.webp",
+      "sha256": "989f53947a43da019ba0e5a21ad7f2ab7700f5b5c65a6d31f0c16898c12d0d30",
+      "bytes": 103520,
+      "verifiedLfs": false
+    },
+    {
+      "file": "public/survival/terrain-stream-v2/homeGround_2048_512L1.webp",
+      "sha256": "e3ea29895e6c3ac49b554686a983b9b2032fcbb0e943f53c5054df810d394c07",
+      "bytes": 62266,
+      "verifiedLfs": false
+    },
+    {
+      "file": "public/survival/terrain-stream-v2/homeGround_2560_512L1.webp",
+      "sha256": "365303e894f0ef92a1967fc0078a6143a097df7168f3bb94e34da9ea08f3472d",
+      "bytes": 68604,
+      "verifiedLfs": false
+    },
+    {
+      "file": "public/survival/terrain-stream-v2/homeGround_2048_3072L1.webp",
+      "sha256": "8614d21e5d4820104d5a24e51897a4dd9d1393ad5358a7b0c8300ad4a4cdd582",
+      "bytes": 108028,
+      "verifiedLfs": false
+    },
+    {
+      "file": "public/survival/terrain-stream-v2/homeGround_1024_1024L1.webp",
+      "sha256": "1a17f4805e75b348e9731975832b2e9338b9c1703930059c40b3b8863d6341e5",
+      "bytes": 88314,
+      "verifiedLfs": false
+    },
+    {
+      "file": "public/survival/terrain-stream-v2/homeGround_2560_3072L1.webp",
+      "sha256": "4a005e2836fa0909a8f654bb536671d9c2c226af1109d7223eb957fd3e87d594",
+      "bytes": 95946,
+      "verifiedLfs": false
+    },
+    {
+      "file": "public/survival/terrain-stream-v2/homeGround_1536_512L1.webp",
+      "sha256": "85a4e5fa7a91b261f253057477f4370b80836ca5e729cd914c38a86841aadcc7",
+      "bytes": 53470,
+      "verifiedLfs": false
+    },
+    {
+      "file": "public/survival/terrain-stream-v2/homeGround_1024_2560L1.webp",
+      "sha256": "ad9087a71603e477e28237c0a2d30e2000ed491fe90bd06a26de6a432e8ed16d",
+      "bytes": 100896,
+      "verifiedLfs": false
+    },
+    {
+      "file": "public/survival/terrain-stream-v2/homeGround_3584_1536L1.webp",
+      "sha256": "a20f409b38e469827183f4b8bc5f32376959d7e9d144e593c2b6ec3d79dea0b1",
+      "bytes": 95662,
+      "verifiedLfs": false
+    },
+    {
+      "file": "public/survival/terrain-stream-v2/homeGround_3584_2048L1.webp",
+      "sha256": "0eceb2c152871ea974d5e90bb50bb2aa3f49d607c89328b739d56b0788c119f6",
+      "bytes": 84582,
+      "verifiedLfs": false
+    },
+    {
+      "file": "public/survival/terrain-stream-v2/homeGround_1536_3072L1.webp",
+      "sha256": "f51d6e87dedb1e349fe85e21554317d5004ad0564a1b14c7672eaf2f104ac54c",
+      "bytes": 95356,
+      "verifiedLfs": false
+    },
+    {
+      "file": "public/survival/terrain-stream-v2/homeGround_3072_512L1.webp",
+      "sha256": "a8e54e2f777ef7cfa47c0c6b980cb45e34fec2abd98900be23a3616274e6ce68",
+      "bytes": 74856,
+      "verifiedLfs": false
+    },
+    {
+      "file": "public/survival/terrain-stream-v2/homeGround_3584_1024L1.webp",
+      "sha256": "cf45bef9e7a3f2cd46b942b0997795e96272ccbe8b345411decda7b5aab7af30",
+      "bytes": 76294,
+      "verifiedLfs": false
+    },
+    {
+      "file": "public/survival/terrain-stream-v2/homeGround_3072_3072L1.webp",
+      "sha256": "43709c051417c34eab4b039caa9425c6c05908938fdc1281ee492b687396e715",
+      "bytes": 104214,
+      "verifiedLfs": false
+    },
+    {
+      "file": "public/survival/terrain-stream-v2/homeGround_3584_2560L1.webp",
+      "sha256": "8410175cba707efa38d56dd5f2e4c4957ecdfb10b3310f868fc2daa43e415f71",
+      "bytes": 84812,
+      "verifiedLfs": false
+    },
+    {
+      "file": "public/survival/terrain-stream-v2/homeGround_512_1536L1.webp",
+      "sha256": "b8673622fad292d305675d5b1af70301e3acb82b95b7a54051176acb7e9d381c",
+      "bytes": 88156,
+      "verifiedLfs": false
+    },
+    {
+      "file": "public/survival/terrain-stream-v2/homeGround_512_2048L1.webp",
+      "sha256": "2c2f55ea192033e42238dcddfbb89dfac05e4675102ffe72020cabdf6b5aaf9a",
+      "bytes": 91124,
+      "verifiedLfs": false
+    },
+    {
+      "file": "public/survival/terrain-stream-v2/homeGround_1024_512L1.webp",
+      "sha256": "95e65f5315f94af979e34b2d7092fb464a0f1ba02b416ff83749406a3f674db5",
+      "bytes": 77138,
+      "verifiedLfs": false
+    },
+    {
+      "file": "public/survival/terrain-stream-v2/homeGround_1024_3072L1.webp",
+      "sha256": "1ae0ccd3b00e51c217f26fedcf32a34bad702fa67bf05df72a44a3b51d8e4cf7",
+      "bytes": 97988,
+      "verifiedLfs": false
+    },
+    {
+      "file": "public/survival/terrain-stream-v2/homeGround_2048_0L1.webp",
+      "sha256": "c77154b688e3cf1ca184210b0f83dff7805d4b4655d938f308cbb9d3df155d57",
+      "bytes": 59560,
+      "verifiedLfs": false
+    },
+    {
+      "file": "public/survival/terrain-stream-v2/homeGround_2560_0L1.webp",
+      "sha256": "3a14a699e8511796b114b6efa7e4b676744a598ad09f85ff1d425e39e1aa0b42",
+      "bytes": 58736,
+      "verifiedLfs": false
+    },
+    {
+      "file": "public/survival/terrain-stream-v2/homeGround_512_1024L1.webp",
+      "sha256": "202e22e9aad73f3ca402e2d5e68861d8f132c757db3e655b55ec6e1ce6d5b10c",
+      "bytes": 60644,
+      "verifiedLfs": false
+    },
+    {
+      "file": "public/survival/terrain-stream-v2/homeGround_512_2560L1.webp",
+      "sha256": "1cfa04acfa3da76cc6d63b8843bdf415c21081ba2a7a7af21c9f6673414d3da2",
+      "bytes": 97598,
+      "verifiedLfs": false
+    },
+    {
+      "file": "public/survival/terrain-stream-v2/homeGround_1536_0L1.webp",
+      "sha256": "f176f4545a87bc371fa3d64734a0499926857eb008660205ee82165c489c6a94",
+      "bytes": 55294,
+      "verifiedLfs": false
+    },
+    {
+      "file": "public/survival/terrain-stream-v2/homeGround_3584_512L1.webp",
+      "sha256": "59e90e2a742c3d80193eeadea55f077d8d434d66c1654ad07a9cb8707d9d4af3",
+      "bytes": 58434,
+      "verifiedLfs": false
+    },
+    {
+      "file": "public/survival/terrain-stream-v2/homeGround_3584_3072L1.webp",
+      "sha256": "854e6be38175056dd68735ad8bc5289c86c9e5f25a2e7e9b5b6615d3f6bd3ea1",
+      "bytes": 87040,
+      "verifiedLfs": false
+    },
+    {
+      "file": "public/survival/terrain-stream-v2/homeGround_4096_1536L1.webp",
+      "sha256": "a0e7ab142951413b35317711b71f30a7ec7f4eb4ac2babad3f1bcffcfcc3e8a9",
+      "bytes": 82370,
+      "verifiedLfs": false
+    },
+    {
+      "file": "public/survival/terrain-stream-v2/homeGround_4096_2048L1.webp",
+      "sha256": "8d0ee8962290c6b7d49eeb69f577e617f23bdb7ab0d95eb5497af873016a6a10",
+      "bytes": 91628,
+      "verifiedLfs": false
+    },
+    {
+      "file": "public/survival/terrain-stream-v2/homeGround_3072_0L1.webp",
+      "sha256": "eeabb4531ad8ff474c71b22477ba4153563f3303763a41b8a9fd3f39f2f6785f",
+      "bytes": 77056,
+      "verifiedLfs": false
+    },
+    {
+      "file": "public/survival/terrain-stream-v2/homeGround_4096_1024L1.webp",
+      "sha256": "ddba601163fc3c4b43df8b24c396d2071c89cc4af23a058b2e4b6bf26b5058e1",
+      "bytes": 50672,
+      "verifiedLfs": false
+    },
+    {
+      "file": "public/survival/terrain-stream-v2/homeGround_512_512L1.webp",
+      "sha256": "82ca44adaa3d911ef21cf75e2d8c6503b1e56a54e0194162875c549596d59fad",
+      "bytes": 59958,
+      "verifiedLfs": false
+    },
+    {
+      "file": "public/survival/terrain-stream-v2/homeGround_1024_0L1.webp",
+      "sha256": "0b3671db6784d912e38de1e804a21f840454f99de36b221cc8e118733fc3ed0e",
+      "bytes": 59414,
+      "verifiedLfs": false
+    },
+    {
+      "file": "public/survival/terrain-stream-v2/homeGround_4096_2560L1.webp",
+      "sha256": "56bc1c677a66bee172328a61628c621d396271f85f42fa3c8a31045d96d3d3f5",
+      "bytes": 94996,
+      "verifiedLfs": false
+    },
+    {
+      "file": "public/survival/terrain-stream-v2/homeGround_512_3072L1.webp",
+      "sha256": "c64522ef584ce37da0da62c5d6be1faf2f2e965018f7090b2f40e6091490e970",
+      "bytes": 87786,
+      "verifiedLfs": false
+    },
+    {
+      "file": "public/survival/terrain-stream-v2/homeGround_0_1536L1.webp",
+      "sha256": "6c4cbe5e29353dee2555da368d99ec5e089dfa2e8fd24479aa91878f6842f787",
+      "bytes": 80476,
+      "verifiedLfs": false
+    },
+    {
+      "file": "public/survival/terrain-stream-v2/homeGround_0_2048L1.webp",
+      "sha256": "3b8c71fca7add11c28751ba13958aefe02e6aa2ef60b52fffa483da657ae49a2",
+      "bytes": 88462,
+      "verifiedLfs": false
+    },
+    {
+      "file": "public/survival/terrain-stream-v2/homeGround_3584_0L1.webp",
+      "sha256": "1d4b7b25ff55035c48b451f19171934d521953c4da7d0ede0e57ac732f241685",
+      "bytes": 82604,
+      "verifiedLfs": false
+    },
+    {
+      "file": "public/survival/terrain-stream-v2/homeGround_0_1024L1.webp",
+      "sha256": "40c2b34a959d53b64c86f6fa1bd92d40a664f975179446997ea9876d35490546",
+      "bytes": 56844,
+      "verifiedLfs": false
+    },
+    {
+      "file": "public/survival/terrain-stream-v2/homeGround_4096_512L1.webp",
+      "sha256": "52bd3356b996d99942cbe6c7380569562d5f6792ec49f5a35c7473eac5cb76d4",
+      "bytes": 55840,
+      "verifiedLfs": false
+    },
+    {
+      "file": "public/survival/terrain-stream-v2/homeGround_0_2560L1.webp",
+      "sha256": "77466a81e53f3ad11ec604517628462db7059ea345624fa9c5cab7ad9b01fff8",
+      "bytes": 84860,
+      "verifiedLfs": false
+    },
+    {
+      "file": "public/survival/terrain-stream-v2/homeGround_4096_3072L1.webp",
+      "sha256": "b03931b862504b5919d44e4f5a8fa824096c2b09c61d7fd3f463b397b6548576",
+      "bytes": 89054,
+      "verifiedLfs": false
+    },
+    {
+      "file": "public/survival/terrain-stream-v2/homeGround_512_0L1.webp",
+      "sha256": "3017f5727cdeff4028c18096cd3f74ca1bb16daccdf6ed05cfd8d49f63bcc5a7",
+      "bytes": 67218,
+      "verifiedLfs": false
+    },
+    {
+      "file": "public/survival/terrain-stream-v2/homeGround_0_512L1.webp",
+      "sha256": "14e0c448448e9026fbe66ae230367684e9f6bb185d9b3f28b4d5f24889b75730",
+      "bytes": 56572,
+      "verifiedLfs": false
+    },
+    {
+      "file": "public/survival/terrain-stream-v2/homeGround_0_3072L1.webp",
+      "sha256": "ca3cbf94999802a9c7cff90db294f9b631d32003e8784461e0187f075e8aa117",
+      "bytes": 92698,
+      "verifiedLfs": false
+    },
+    {
+      "file": "public/survival/terrain-stream-v2/homeGround_4096_0L1.webp",
+      "sha256": "e45697289cc26459d2faa3b130ef544f9b576077897a336ca3d521234db5556b",
+      "bytes": 68958,
+      "verifiedLfs": false
+    }
+  ],
+  "limitations": "Staged save/repair poses for visual inspection; gameplay transitions validated separately. No physical iPhone, touch or frame-rate test.",
+  "reviewEncoding": "WebP quality 90; native capture dimensions unchanged"
+}

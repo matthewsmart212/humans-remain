@@ -1,0 +1,65 @@
+{
+  "version": 1,
+  "frameSize": [
+    256,
+    256
+  ],
+  "footAnchor": [
+    128,
+    228
+  ],
+  "directions": [
+    "down",
+    "down-right",
+    "right",
+    "up-right",
+    "up",
+    "up-left",
+    "left",
+    "down-left"
+  ],
+  "standingPixels": 200,
+  "seatedPixels": 160,
+  "sources": {
+    "robot-source.png": "b285cc00d73cd74f023597fa8dfc01182633852ea2a3a968357a5b6d84dd0d38",
+    "station-source.png": "f8b44b0312132def5d0ab245aafdb3455f9c20a545cbdef0d30e94cf1544a762",
+    "locker-source.png": "ee227d254c6900a0060966bb602c841a90967d688987a10be17672175a616937"
+  },
+  "files": {
+    "damaged.webp": {
+      "bytes": 15772,
+      "size": [
+        256,
+        256
+      ]
+    },
+    "locker.webp": {
+      "bytes": 13782,
+      "size": [
+        256,
+        256
+      ]
+    },
+    "portrait.webp": {
+      "bytes": 13428,
+      "size": [
+        192,
+        192
+      ]
+    },
+    "robot.webp": {
+      "bytes": 151682,
+      "size": [
+        1024,
+        512
+      ]
+    },
+    "station.webp": {
+      "bytes": 262918,
+      "size": [
+        1100,
+        825
+      ]
+    }
+  }
+}

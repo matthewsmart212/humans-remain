@@ -30,6 +30,11 @@ export const LOOT_CHEST_REWARDS=[
  {kind:'woodenAxe',name:'Wooden axe',amount:1,artId:'woodenAxe',description:'Gather timber from trees'},
  {kind:'woodenPickaxe',name:'Wooden pickaxe',amount:1,artId:'woodenPickaxe',description:'Mine rocks and basic ore'},
 ] as const;
+/** These rows stay empty until P-04 brings his parcel home. */
+const CAMP_CHEST_REWARDS=[...LOOT_CHEST_REWARDS,
+ {kind:'pallets',name:'Logs',amount:0,description:'Supplies brought home by P-04.'},
+ {kind:'scrap',name:'Metal scrap',amount:0,description:'Salvaged pieces saved for the camp.'},
+] as const;
 const ABANDONED_CAMP_REWARDS=[
  {kind:'beans',amount:2,...PROVISIONS.beans},
  {kind:'energyBar',amount:1,...PROVISIONS.energyBar},
@@ -66,7 +71,7 @@ export function lootChestRewards(id=LOOT_CHEST_ID){
  if(vanCargo(id))return EVACUATION_VAN_REWARDS;
  if(abandonedBackpack(id))return EVACUATION_BACKPACK_REWARDS;
  if(id===SURVEY_CACHE_ID)return SURVEY_CACHE_REWARDS;
- return id===LOOT_CHEST_ID?LOOT_CHEST_REWARDS:ABANDONED_CAMP_REWARDS;
+ return id===LOOT_CHEST_ID?CAMP_CHEST_REWARDS:ABANDONED_CAMP_REWARDS;
 }
 export function lootChestName(id=LOOT_CHEST_ID){
  if(vanCargo(id))return 'Evacuation van';

@@ -40,7 +40,7 @@ export function gateColliders(p:Placement,amount:number,assets=ASSET_BY_ID):Coll
 export function gatesBlocked(w:World,x:number,y:number,r:number){return layoutViews(w.layout).gates.some(p=>gateColliders(p,gatePose(w,p.id)).some(c=>hitCollider(c,x,y,r)))}
 /** Current gate colliders, for many queries while no gate can move. */
 export function gateBlockers(w:World):Collider[]{return layoutViews(w.layout).gates.flatMap(p=>gateColliders(p,gatePose(w,p.id)))}
-function occupied(w:World,p:Placement,amount:number,swing= w.gateMotions?.[p.id]?.swing??1){const bodies=gateColliders(p,amount*swing).filter(c=>c.id.includes(':leaf-'));return [{...w.player,r:20},...w.enemies.filter(e=>e.hp>0).map(e=>({...e,r:19})),...w.animals.filter(e=>e.hp>0).map(e=>({...e,r:12}))].some(v=>bodies.some(c=>hitCollider(c,v.x,v.y,v.r)))}
+function occupied(w:World,p:Placement,amount:number,swing= w.gateMotions?.[p.id]?.swing??1){const bodies=gateColliders(p,amount*swing).filter(c=>c.id.includes(':leaf-'));return [{...w.player,r:20},...(w.patchQuest?.servoInstalled?[{...w.patchQuest.position,r:15}]:[]),...w.enemies.filter(e=>e.hp>0).map(e=>({...e,r:19})),...w.animals.filter(e=>e.hp>0).map(e=>({...e,r:12}))].some(v=>bodies.some(c=>hitCollider(c,v.x,v.y,v.r)))}
 export function nearbyGateAction(w:World){
  if(w.player.downedUntil)return null;
  let best:{placement:Placement;x:number;y:number}|null=null,distance=Infinity;

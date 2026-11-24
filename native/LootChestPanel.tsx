@@ -8,13 +8,16 @@ import {stationPalette as palette} from '../src/station-palette';
 import type {World} from '../src/survival-engine';
 import type {MenuInsets} from '../src/station-menu-layout';
 import {packLoad} from '../src/expedition-inventory';
-import {lootChestName,lootChestEmptyMessage,lootChestRewards, lootChestContents, lootChestRemaining, canCarryLootChestReward, takeLootChestReward, takeAllLootChestRewards} from '../src/loot-chest';
+import {LOOT_CHEST_ID,lootChestName,lootChestEmptyMessage,lootChestRewards, lootChestContents, lootChestRemaining, canCarryLootChestReward, takeLootChestReward, takeAllLootChestRewards} from '../src/loot-chest';
+import {readPatchNote} from '../src/patch-quest';
+import {PatchNoteIcon} from './PatchPanel';
 
 type Props = {world: World; width: number; height: number; safe: MenuInsets; onClose: () => void; onChange: () => void};
 
 export default function LootChestPanel({world, width, height, safe, onClose, onChange}: Props) {
  const [message, setMessage] = useStationFeedback();
  const name = lootChestName(world.lootChestId);
+ const hasNote = !!world.progression&&(world.lootChestId??LOOT_CHEST_ID)===LOOT_CHEST_ID;
  const contents = lootChestContents(world,world.lootChestId);
  const remaining = lootChestRemaining(world,world.lootChestId);
  const load = packLoad(world);
@@ -27,15 +30,21 @@ export default function LootChestPanel({world, width, height, safe, onClose, onC
   setMessage(gained ? `Collected ${gained} ${gained === 1 ? 'item' : 'items'}.` : 'Backpack full. Make room before collecting.');
   onChange();
  };
+ const readNote=()=>{if(readPatchNote(world)){world.stationPanel='patch-note';onChange()}};
  return <StationMenu compact fitContent world={world} title={name} label={`${name} supplies`} onClose={onClose} width={width} height={height} safe={safe} weight={load.weight} loadLabel={load.label} message={message}>
-  {(!remaining||!canTake)&&<Text style={s.name}>{remaining?'Backpack full':lootChestEmptyMessage(world.lootChestId)}</Text>}
+  {(remaining&&!canTake||!remaining&&!hasNote)&&<Text style={s.name}>{remaining?'Backpack full':lootChestEmptyMessage(world.lootChestId)}</Text>}
   <ScrollView style={s.list} contentContainerStyle={s.content} accessibilityLabel={`${name} contents`}>
    {rewards.map(({kind, name, description, count, capacity}) => <View key={kind} style={s.reward}>
-    <ItemArt id={kind} size={38}/>
+    <ItemArt id={kind==='pallets'?'logs':kind} size={38}/>
     <View style={s.details}><Text style={s.name}>{name}</Text><Text style={s.note}>{description}</Text></View>
     {count>1&&<Text style={s.amount}>×{count}</Text>}
     <StationButton label={canTake && !capacity ? 'Pack full' : 'Take'} accessibilityLabel={`Take ${name}`} disabled={!capacity} onPress={() => collect(takeLootChestReward(world, kind))} />
    </View>)}
+   {hasNote&&<View style={s.reward}>
+    <PatchNoteIcon/>
+    <View style={s.details}><Text style={s.name}>A folded note</Text><Text style={s.note}>{world.patchQuest?.noteRead?'Signed P-04':'Left with the supplies'}</Text></View>
+    <StationButton label="Read" accessibilityLabel="Read the folded note" onPress={readNote}/>
+   </View>}
   </ScrollView>
   {canTake&&rewards.length>1&&<StationButton primary label="Take all that fits" accessibilityLabel="Collect all rewards that fit in backpack" onPress={() => collect(takeAllLootChestRewards(world))} />}
  </StationMenu>;

@@ -1,0 +1,14 @@
+{
+  "passed": true,
+  "platform": "ios",
+  "bundle": "_expo/static/js/ios/index-5313fbfc3a00f11e77407ae04604918e.hbc",
+  "assetCount": 1014,
+  "verifiedPatchAssets": {
+    "public/survival/patch-v1/damaged.webp": "assets/dd5966b23b2ed43d8217082ccbed42c6",
+    "public/survival/patch-v1/locker.webp": "assets/18ac3c227378321304c82e3c77d9ef47",
+    "public/survival/patch-v1/portrait.webp": "assets/bb840d4a38ed87bee7d900b0ee8a83fc",
+    "public/survival/patch-v1/robot.webp": "assets/f80384a54d182f01b7cd83cb535b8dad",
+    "public/survival/patch-v1/station.webp": "assets/6c68a42a00d31afb8a99412548a4b6bc"
+  },
+  "physicalDeviceTested": false
+}

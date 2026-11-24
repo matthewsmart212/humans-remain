@@ -51,6 +51,7 @@ export function QuickItemIcon({id,size}:{id:QuickItem;size:number}){
 
 const quickItemsByPath=new Map(QUICK_ITEMS.map(item=>[item.image,item.id]));
 const actionImages:Record<string,number>={
+ '/survival/patch-v1/portrait.webp':require('../public/survival/patch-v1/portrait.webp'),
  '/survival/fishing-gameplay-v2/scout-drone.webp':require('../public/survival/fishing-gameplay-v2/scout-drone.webp'),
  ...Object.fromEntries(Object.entries(BAG_IMAGES).map(([id,path])=>[path,itemImages[id as BagItemId]])),
  '/survival/fishing-gameplay-v1/reel.webp':require('../public/survival/fishing-gameplay-v1/reel.webp'),

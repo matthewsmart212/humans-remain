@@ -1,0 +1,78 @@
+{
+  "passed": true,
+  "checks": [
+    "Starter-cache note present",
+    "Note text readable and records progress",
+    "Paper persists after collecting all supplies",
+    "No duplicate paper in other caches",
+    "Damaged status, invitation and recruited commands are correctly staged",
+    "Shared menu safe-area bounds for four phone sizes"
+  ],
+  "bounds": [
+    {
+      "width": 844,
+      "height": 390,
+      "safe": {
+        "top": 0,
+        "right": 47,
+        "bottom": 21,
+        "left": 47
+      },
+      "panel": {
+        "x": 334.88,
+        "y": 12,
+        "width": 450.12,
+        "height": 345
+      }
+    },
+    {
+      "width": 667,
+      "height": 320,
+      "safe": {
+        "top": 0,
+        "right": 0,
+        "bottom": 0,
+        "left": 0
+      },
+      "panel": {
+        "x": 237.05,
+        "y": 12,
+        "width": 417.95,
+        "height": 296
+      }
+    },
+    {
+      "width": 390,
+      "height": 844,
+      "safe": {
+        "top": 47,
+        "right": 0,
+        "bottom": 34,
+        "left": 0
+      },
+      "panel": {
+        "x": 12,
+        "y": 332,
+        "width": 366,
+        "height": 466
+      }
+    },
+    {
+      "width": 320,
+      "height": 568,
+      "safe": {
+        "top": 20,
+        "right": 0,
+        "bottom": 0,
+        "left": 0
+      },
+      "panel": {
+        "x": 12,
+        "y": 226,
+        "width": 296,
+        "height": 330
+      }
+    }
+  ],
+  "visualLimit": "SSR and shared layout verification only. Chromium screenshots blocked by environment Unix socket policy."
+}

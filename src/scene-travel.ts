@@ -1,4 +1,5 @@
 import {stopFishing} from './fishing';
+import {cancelPatchRepair} from './patch-quest';
 import {cancelBuildingRepair} from './building-repair';
 import {setCampThreatSource} from './camp-hud';
 import {stepCampSiege} from './camp-siege';
@@ -90,7 +91,7 @@ export class SceneTravel{
   throw Error('The destination entrance is blocked. Clear the landing before travelling.');
  }
  private transfer(next:World,spawn:SceneSpawn){
-  const from=this.current;stopFishing(from);stopFishing(next);cancelBuildingRepair(from,false);cancelBuildingRepair(next,false);releaseBruteGrab(from);releaseBruteGrab(next);
+  const from=this.current;stopFishing(from);stopFishing(next);cancelPatchRepair(from);cancelPatchRepair(next);cancelBuildingRepair(from,false);cancelBuildingRepair(next,false);releaseBruteGrab(from);releaseBruteGrab(next);
   // Local entities, doors, drops, cooking and collision stay on their own map.
   shareRun(from,next);
   next.player={...from.player,...spawn,moving:false,sprinting:false,walkBlend:0,runBlend:0};

@@ -1,3 +1,4 @@
+import {patchDrawables,drawPatchFeedback,drawPatchGroundContacts} from './patch-renderer';
 import {drawBurningHearth,hasPaintedHearthAnimation} from './hearth-animation-art';
 import {FISHING_PIER_ID} from './fishing-site-art';
 import {drawFishingSiteGround,fishingPierForegroundDrawables} from './fishing-site-renderer';
@@ -304,6 +305,7 @@ export function drawWorldEditor(ctx:CanvasRenderingContext2D,atlas:Atlas,imgs:Re
  clearTerrainViewport(ctx);if(w.scene){ctx.fillStyle=w.scene.background;ctx.fillRect(0,0,ctx.canvas.width,ctx.canvas.height)}ctx.save();ctx.scale(c.scale,c.scale);ctx.translate(-c.x,-c.y);if(w.combatTest&&!w.weather?.reducedMotion){const t=timeOf(w),amount=Math.min(1,Math.max(0,(w.shakeUntil-t)/.12));if(amount)ctx.translate(Math.sin(t*139)*2*amount/c.scale,Math.cos(t*113)*1.5*amount/c.scale)}if(w.scene)drawSceneTerrain(ctx,imgs,w.scene);else drawHomeTerrain(ctx,imgs,w.layout?.terrainImage,w.layout?.terrainBorder,viewport);
  drawFishingSiteGround(ctx,imgs,w,viewport);
  drawPlacedGround(ctx,imgs,w.layout,view.hideFoliage,viewport);
+ drawPatchGroundContacts(ctx,w,viewport);
  const campContacts=w.scene?undefined:[] as CampGroundContact[];
  const outline=(view.playing||view.follow)&&!brutePlayerCarried(w)?playerOutlinePass(ctx,imgs,w,c.scale):undefined;
  const placed=placedDrawables(ctx,imgs,w,true,viewport,view.hideFoliage,campContacts,outline);
@@ -322,7 +324,7 @@ export function drawWorldEditor(ctx:CanvasRenderingContext2D,atlas:Atlas,imgs:Re
    if(Math.abs(chest.x-w.player.x)<160&&Math.abs(chest.y-w.player.y)<250)outline.covers.push({y:chest.y,draw:chest.mask});
   }
  }
- const draws:WorldDraw[]=[...groundLoot,...predatorDrawables(ctx,imgs,w,viewport),...placed,...chests,...bonfireFoodDrawables(ctx,imgs,w),...combatDrawables(ctx,imgs,w),...chickenDrawables(ctx,imgs,w,viewport),...deerDrawables(ctx,imgs,w,viewport),...rabbitDrawables(ctx,imgs,w,viewport)];if(!brutePlayerCarried(w))draws.push({y:w.player.y,draw:()=>drawWorker(ctx,imgs,w,atlas)});
+ const draws:WorldDraw[]=[...patchDrawables(ctx,imgs,w,viewport,!view.playing),...groundLoot,...predatorDrawables(ctx,imgs,w,viewport),...placed,...chests,...bonfireFoodDrawables(ctx,imgs,w),...combatDrawables(ctx,imgs,w),...chickenDrawables(ctx,imgs,w,viewport),...deerDrawables(ctx,imgs,w,viewport),...rabbitDrawables(ctx,imgs,w,viewport)];if(!brutePlayerCarried(w))draws.push({y:w.player.y,draw:()=>drawWorker(ctx,imgs,w,atlas)});
  draws.push(...bowArrowDrawables(ctx,imgs,w));
  // Co-op phase 1: visual peers only. No peer is inserted into the local simulation.
  for(const peer of peers){
@@ -355,6 +357,7 @@ export function drawWorldEditor(ctx:CanvasRenderingContext2D,atlas:Atlas,imgs:Re
  if(w.weather){const strike=groundLightning(w,{x:c.x,y:c.y,width:ctx.canvas.width/c.scale,height:ctx.canvas.height/c.scale});if(strike)(ctx as CanvasRenderingContext2D&{drawGroundLightning?:(strike:GroundStrike,age:number,reduced:boolean)=>void}).drawGroundLightning?.(strike,w.weather.strikeAge,w.weather.reducedMotion)}
  // These are light sources: darkness and weather must not dim their cores.
  if(w.combatTest){drawCombatGround(ctx,w,imgs);drawBomberGround(ctx,w);drawWalkerEmissives(ctx,w);drawBomberEmissives(ctx,w)}
+ if(view.playing)drawPatchFeedback(ctx,imgs,w,viewport);
  if(view.playing)drawResourceOutlines(ctx,imgs,w,{x:c.x,y:c.y,width:ctx.canvas.width/c.scale,height:ctx.canvas.height/c.scale,scale:pickupScale},view.hideFoliage,pickupCues);
  drawCombatFeedback(ctx,w,imgs);
  if(view.playing){drawAnimalHealth(ctx,w,{x:c.x,y:c.y,width:ctx.canvas.width/c.scale,height:ctx.canvas.height/c.scale,scale:pickupScale});drawAnimalHitFeedback(ctx,w,pickupScale)}

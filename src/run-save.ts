@@ -1,5 +1,7 @@
 import {placeStillwaterFishingSite} from './fishing-site-placement';
 import {validFishingProgress} from './fishing-save';
+import {validPatchQuest,restorePatchQuest} from './patch-quest';
+import {placePatchMaintenanceStation} from './patch-placement';
 import {placeEvacuationVan} from './evacuation-van-placement';
 import {placeSoutheastSmallholding,smallholdingReturnPoint} from './smallholding-placement';
 import {placeNorthwestIronMine} from './iron-mine-placement';
@@ -37,7 +39,7 @@ export async function prepareSavedCampArtwork(snapshot:TravelSnapshot,load:(sour
  if(camp?.layout)await load(requiredImages(camp.layout.items.map(p=>p.assetId),camp.layout.terrainImage));
 }
 const MAX_SAVE_BYTES=12_000_000;
-const OMIT=new Set(['fishingSession','scene','outdoorReady','foliageMotions','puddleMotion','stepOnMotions','effects','combatStats','stationPanel','lootChestId','rareCacheMenuAt','repairHammerUntil','buildingRepair','buildingHits','fieldKitTarget','fieldKitBuildingFocus','repairCheckpoint','furnaceId','smithyId','attackQueuedUntil','axeSwing','spearThrust','swordThrust','bowShot','bowLock','bruteGrab','dodge']);
+const OMIT=new Set(['patchRepair','fishingSession','scene','outdoorReady','foliageMotions','puddleMotion','stepOnMotions','effects','combatStats','stationPanel','lootChestId','rareCacheMenuAt','repairHammerUntil','buildingRepair','buildingHits','fieldKitTarget','fieldKitBuildingFocus','repairCheckpoint','furnaceId','smithyId','attackQueuedUntil','axeSwing','spearThrust','swordThrust','bowShot','bowLock','bruteGrab','dodge']);
 /** Shared with the native compact store so both formats retain identical state. */
 export function runSaveValue(key:string,value:unknown):unknown{return OMIT.has(key)?undefined:value instanceof Set?{$set:[...value]}:value}
 export function encodeRun(travel:SceneTravel):string|null{
@@ -54,7 +56,7 @@ type SavedPoint={x:number;y:number};
 export function migrateSavedCampPerimeter(w:World,route:{sceneId:string;spawn:SavedPoint}[]){
  if(!w.layout)return false;
  const structures=placeCampWorksites(expandHeadquartersSpace(fitHeadquartersInterior(placeSouthFacingHeadquarters(addApprovedCampPerimeter(w.layout)))));
- const next=placeStillwaterFishingSite(placeEvacuationVan(placeSoutheastSmallholding(placeNorthwestIronMine(placeNorthwestAbandonedCamp(structures)))));if(next===w.layout)return false;
+ const next=placePatchMaintenanceStation(placeStillwaterFishingSite(placeEvacuationVan(placeSoutheastSmallholding(placeNorthwestIronMine(placeNorthwestAbandonedCamp(structures))))));if(next===w.layout)return false;
  const previous=new Map(w.layout.items.map(p=>[p.id,p]));
  const added=next.items.filter(p=>{
   const old=previous.get(p.id);
@@ -90,6 +92,8 @@ export function decodeRun(text:string):TravelSnapshot{
   if(typeof id!=='string'||ids.has(id)||id!==CAMP_SCENE_ID&&!SCENES.has(id)||!w?.layout||!Array.isArray(w.layout.items)||!w.player||!Number.isFinite(w.player.x)||!Number.isFinite(w.player.y)||!Number.isFinite(w.player.hp)||!Number.isSafeInteger(w.tick)||w.tick<0||!Array.isArray(w.enemies)||!Array.isArray(w.animals)||!Array.isArray(w.loot)||!w.bag||!w.stock||!w.camp||!w.fire||!['day','night','over'].includes(w.phase))throw Error('The saved world is incomplete.');
   if(w.layout.fishingSiteVersion!==undefined&&w.layout.fishingSiteVersion!==1)throw Error('The saved fishing site version is unsupported.');
   if(!validFishingProgress(w.fishing))throw Error('The saved fishing progress is incomplete.');
+  if(w.layout.patchSiteVersion!==undefined&&w.layout.patchSiteVersion!==1)throw Error('The saved maintenance site version is unsupported.');
+  if(!validPatchQuest(w.patchQuest))throw Error('The saved companion progress is incomplete.');
   if(['cookedFish','cookedCarp','cookedPike'].some(key=>{const value=w[key as 'cookedFish'|'cookedCarp'|'cookedPike'];return value!==undefined&&(!Number.isSafeInteger(value)||value<0)}))throw Error('The saved fish inventory is incomplete.');
   if(w.progression&&!validRestorationSave(w.progression))throw Error('The saved building repairs are incomplete.');
   if(w.progression&&!validBlueprintSave(w.progression.blueprints))throw Error('The saved blueprints are incomplete.');
@@ -104,7 +108,7 @@ export function decodeRun(text:string):TravelSnapshot{
   ids.add(id);const set=(w.minedRockColliders as unknown as {$set?:unknown})?.$set;
   if(![w.player.stamina,w.player.hurtUntil,w.hunger,w.thirst,w.phaseLeft,w.round,w.survived,w.serial].every(Number.isFinite)||!w.cycle||!Number.isInteger(w.cycle.pattern)||w.cycle.pattern<0||w.cycle.pattern>5||!counters(w.bag)||!counters(w.stock)||!counters(w.gear?.bag)||!counters(w.gear?.chest)||!w.camp.hearth||!Number.isFinite(w.camp.hearth.fuel)||w.fire.queue!==undefined&&!Array.isArray(w.fire.queue)||w.fire.rack!==undefined&&!Array.isArray(w.fire.rack)||w.enemies.some(e=>!point(e)||!Number.isFinite(e.hp)||!Array.isArray(e.path))||w.loot.some(l=>!point(l)||!Number.isFinite(l.amount)))throw Error('The saved expedition contains incomplete game data.');
   w.minedRockColliders=new Set(Array.isArray(set)?set.filter((v):v is string=>typeof v==='string'):[]);
-  w.fire.queue??=[];w.fire.rack??=[];w.effects=[];w.fishingSession=undefined;w.buildingRepair=undefined;w.buildingHits=undefined;w.repairCheckpoint=undefined;w.stationPanel=undefined;w.attackUntil=0;w.attackQueuedUntil=undefined;w.axeSwing=undefined;w.spearThrust=undefined;w.swordThrust=undefined;w.bowShot=undefined;w.dodge=undefined;w.bruteGrab=undefined;
+  w.fire.queue??=[];w.fire.rack??=[];w.effects=[];w.patchRepair=undefined;w.fishingSession=undefined;w.buildingRepair=undefined;w.buildingHits=undefined;w.repairCheckpoint=undefined;w.stationPanel=undefined;w.attackUntil=0;w.attackQueuedUntil=undefined;w.axeSwing=undefined;w.spearThrust=undefined;w.swordThrust=undefined;w.bowShot=undefined;w.dodge=undefined;w.bruteGrab=undefined;
   w.player.moving=false;w.player.sprinting=false;w.player.hurtUntil=Math.max(w.player.hurtUntil,w.tick/60+1);
   for(const e of w.enemies){resetHound(w,e);e.path=[];e.repathAt=w.tick/60+.3;e.attackAt=w.tick/60+1;if(e.motion){e.motion.phase='recover';e.motion.since=w.tick/60;e.motion.resolved=true}if(e.brute){e.brute.phase='stalk';e.brute.since=w.tick/60;e.brute.hook=undefined;e.brute.jump=undefined;e.brute.recovery=undefined;e.brute.meleeAt=w.tick/60+1}}
   w.scene=id===CAMP_SCENE_ID?undefined:SCENES.get(id);
@@ -132,6 +136,7 @@ export function decodeRun(text:string):TravelSnapshot{
    }
    seedWoodlandChestWolves(w);
    seedSmallholdingRabbits(w);
+   restorePatchQuest(w);
   }
  }
  if(!ids.has(CAMP_SCENE_ID)||!ids.has(data.currentId)||data.route.some((r:any)=>!ids.has(r?.sceneId)||!r.spawn||!Number.isFinite(r.spawn.x)||!Number.isFinite(r.spawn.y)))throw Error('The expedition return route is missing.');

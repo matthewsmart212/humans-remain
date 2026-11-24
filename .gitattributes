@@ -268,3 +268,8 @@ public/survival/expedition-menu-v2/loading-panel.webp -filter -diff -merge
 /docs/qa/fishing-gameplay-v2/*.png -filter -diff -merge -text
 /docs/qa/fishing-gameplay-v2/*.webp -filter -diff -merge -text
 /docs/qa/fishing-gameplay-v2/*.mp4 -filter -diff -merge -text
+
+# Compact companion art and review frames are ordinary offline web/Expo blobs.
+/public/survival/patch-v1/*.webp -filter -diff -merge -text
+/docs/qa/patch-v1/*.webp -filter -diff -merge -text
+/artwork-archive/patch-v1/*.png -filter -diff -merge -text

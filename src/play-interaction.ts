@@ -27,14 +27,15 @@ import {nearbyChest,chestDock} from './station-access';
 export {nearbyChest} from './station-access';
 import {nearbyGate,nearbyGateAction,toggleGate,gateActionLabel} from './camp-gates';
 import {chestIsOpen,toggleChest} from './chest-animation';
-import {nearbyLootChest,openLootChest,lootChestName,lootChestAction,lootChestOpened,lootChestRemaining} from './loot-chest';
+import {nearbyLootChest,openLootChest,lootChestName,lootChestAction,lootChestOpened,lootChestRemaining,LOOT_CHEST_ID} from './loot-chest';
 import {campInteraction,performCampInteraction} from './studio-play';
 import {startHealthRecovery} from './survival-needs';
 import {nearPotatoPatch,potatoPatchAction} from './potato-farming';
 import {fishingTackleTargets,claimFishingTackle,fishingBaitTargets,gatherFishingBait,FISHING_BAIT_LIMIT} from './fishing';
 import {FISHING_ART} from './fishing-art';
+import {patchInteraction,patchRepairProgress,beginPatchRepair,holdPatchRepair,claimPatchServo,inspectPatch} from './patch-quest';
 
-export type PlayInteraction={repairAction?:PlayInteraction;repair?:boolean;image?:string;key:string;label:string;shortLabel:string;icon:'gate'|'chest'|'collect'|'cook'|'water';disabled:boolean;available?:boolean;target?:FieldKitTarget;perform:()=>unknown};
+export type PlayInteraction={repairAction?:PlayInteraction;repair?:boolean;patchRepair?:boolean;image?:string;key:string;label:string;shortLabel:string;icon:'gate'|'chest'|'collect'|'cook'|'water';disabled:boolean;available?:boolean;target?:FieldKitTarget;perform:()=>unknown};
 
 // Use the same small painted station portraits shown in the camp plans.
 const stationArt={
@@ -94,6 +95,18 @@ export function playInteraction(world:World):PlayInteraction|null{
  const candidates:FocusCandidate<PlayInteraction>[]=[],add=(value:PlayInteraction)=>{
   const target=value.target!,available=value.available??!value.disabled;candidates.push({id:target.id!,x:target.x,y:target.y,available,value:{...value,available}});
  };
+ const companion=patchInteraction(world);
+ if(companion){
+  const repair=companion.shortLabel==='REPAIR',robot=companion.target==='robot';
+  add({key:repair?'patch:repair':companion.key,label:repair?'Hold to fit drive servo':companion.label,
+   shortLabel:repair&&world.patchRepair?.held?'HOLD':companion.shortLabel,icon:robot?'chest':'collect',
+   image:robot?'/survival/patch-v1/portrait.webp':REPAIR_HAMMER_IMAGE,disabled:companion.disabled,
+   repair,patchRepair:repair,
+   target:{id:companion.key,x:companion.x,y:companion.y,label:robot?(world.patchQuest?.suppliesDelivered?'Patch':'P-04'):'Service locker',
+    detail:repair?'Drive servo secured':robot?undefined:'Drive servo',
+    ...(repair?{repairState:world.patchRepair?.held?'holding' as const:'ready' as const,progress:Math.floor(patchRepairProgress(world)*100)/100,progressLabel:'Servo installation'}:{})},
+   perform:()=>repair?(world.patchRepair?holdPatchRepair(world,true):beginPatchRepair(world)):robot?inspectPatch(world):claimPatchServo(world)});
+ }
  if(!world.fishing?.claimed)for(const target of fishingTackleTargets(world))if(withinActionReach(world,target)){
   add({key:'fishing-tackle:'+target.id,label:'Take salvaged fishing rod and 10 worms',shortLabel:'TACKLE',icon:'chest',image:FISHING_ART.rod,disabled:false,
    target:{...target,id:'fishing-tackle:'+target.id,label:'Old tackle box',detail:'Fishing rod · 10 worms'},
@@ -113,7 +126,7 @@ export function playInteraction(world:World):PlayInteraction|null{
    target:{id:'headquarters',buildingId:'headquarters',x:headquarters.x,y:headquarters.y,label:'Headquarters',detail:restored?'Camp upgrades':'Repair to establish camp'},perform:()=>openHeadquarters(world)});
  }
  const furnace=nearbyFurnace(world);
- const rareCache=nearbyLootChest(world);if(rareCache){const opened=lootChestOpened(world,rareCache.id),remaining=lootChestRemaining(world,rareCache.id);add({key:'rare-chest:'+rareCache.id,...lootChestAction(rareCache.id,opened),icon:'chest',disabled:false,target:{id:'rare-chest:'+rareCache.id,x:rareCache.x,y:rareCache.y,label:lootChestName(rareCache.id),detail:opened?(remaining?remaining+' supplies':'Empty'):undefined},perform:()=>openLootChest(world,rareCache.id)});}
+ const rareCache=nearbyLootChest(world);if(rareCache){const opened=lootChestOpened(world,rareCache.id),remaining=lootChestRemaining(world,rareCache.id);add({key:'rare-chest:'+rareCache.id,...lootChestAction(rareCache.id,opened),icon:'chest',disabled:false,target:{id:'rare-chest:'+rareCache.id,x:rareCache.x,y:rareCache.y,label:lootChestName(rareCache.id),detail:opened?(remaining?remaining+' supplies':rareCache.id===LOOT_CHEST_ID&&world.progression?'Folded note':'Empty'):undefined},perform:()=>openLootChest(world,rareCache.id)});}
  const gatePoint=nearbyGateAction(world);
  if(gatePoint){
   const gate=gatePoint.placement,action=gateActionLabel(world,gate.id),mine=gate.assetId===IRON_MINE_DOOR_ID;

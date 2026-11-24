@@ -20,6 +20,7 @@ import {PROVISION_IMAGES} from './food-provisions-art';
 import {BONFIRE_FOOD_IMAGES} from './bonfire-food-art';
 import {RABBIT_FOOD_IMAGES,VENISON_FOOD_IMAGES,FISH_FOOD_IMAGES} from './food-items';
 import {FISHING_ART} from './fishing-art';
+import {PATCH_IMAGES} from './patch-art';
 
 // The pinned food sprites serve the spit, thrown food and ground pickups in every role.
 const campfireFoodImages={...BONFIRE_FOOD_IMAGES,...RABBIT_FOOD_IMAGES,...VENISON_FOOD_IMAGES,...FISH_FOOD_IMAGES};
@@ -41,6 +42,7 @@ const equipment:Record<string,string>={...MINING_IMAGES,...KNIFE_IMAGES,...SWORD
 export function gameplayImageSources(w:World):Record<string,string>{
  const out:Record<string,string>=w.layout&&!w.scene?{...LOOT_CHEST_IMAGES}:{},gear=new Set(Object.entries(w.gear?.bag??{}).filter(([,count])=>!!count).map(([id])=>id));
  if(w.fishing?.claimed)out.fishingScoutDrone=FISHING_ART.scoutDrone;
+ if(!w.scene&&w.patchQuest&&Math.hypot(w.patchQuest.position.x-w.player.x,w.patchQuest.position.y-w.player.y)<2100)Object.assign(out,PATCH_IMAGES);
  if(w.survivorRole==='hunter')Object.assign(out,HUNTER_IMAGE_SOURCES);
  if(w.player.equipped)gear.add(w.player.equipped);
  for(const drop of w.loot)gear.add(drop.kind);
