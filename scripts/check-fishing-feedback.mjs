@@ -40,22 +40,32 @@ try{
  // display are adapted. Assertions inspect the text, roles and actual handlers.
  const expand=node=>node==null||typeof node!=='object'?node:Array.isArray(node)?node.map(expand):typeof node.type==='function'?expand(node.type(node.props)):{...node,props:{...node.props,children:expand(node.props?.children)}};
  const nodes=node=>node==null||typeof node!=='object'?[]:Array.isArray(node)?node.flatMap(nodes):[node,...nodes(node.props?.children)];
- const text=node=>node==null||typeof node==='boolean'?'':Array.isArray(node)?node.map(text).join(' '):typeof node==='object'?text(node.props?.children):String(node);
+ const text=node=>node==null||typeof node==='boolean'?'':Array.isArray(node)?node.map(text).join(' '):typeof node==='object'?node.props?.className==='fishing-sr-only'?'':text(node.props?.children):String(node);
  const base={phase:'ready',action:'CAST',command:'TAP TO CAST',detail:'Hold to aim.',hint:'Hold to aim.',tone:'neutral',bait:4,tension:0,charge:0,holding:false,active:false,disabled:false,progress:0,castValid:true,castHint:'Clear water',nibbleAmount:0,canKeep:false,assists:{autoHook:false,toggleReel:false},caught:0,bestKg:0};
  let uiCases=0;
  for(const platform of ['Web','Native']){
   const decisions=[],draw=hud=>expand(m[platform+'HUD']({hud,compact:true,inputMode:'touch',onCatch:value=>decisions.push(value)}));
-  let tree=draw(base);assert.match(text(tree),/Hold CAST, then drag on the left to aim/);assert(!/OPTIONS/.test(text(tree)));
-  if(platform==='Web')assert.match(text(expand(m.WebHUD({hud:base,inputMode:'keyboard',onCatch(){}}))),/Hold Space, then use WASD/);
+  const accessible=node=>nodes(node).map(n=>n.props['aria-label']??n.props.accessibilityLabel??'').join(' ');
+  let tree=draw(base);assert.match(text(tree),/TAP TO CAST/);assert.match(text(tree),/Hold CAST.*drag on left/);assert.match(accessible(tree),/Hold CAST, then drag on the left to aim/);assert(!/OPTIONS/.test(text(tree)));
+  if(platform==='Web'){const keyboard=expand(m.WebHUD({hud:base,inputMode:'keyboard',onCatch(){}}));assert.match(text(keyboard),/Hold Space.*WASD/);assert.match(accessible(keyboard),/Hold Space, then use WASD/)}
   tree=draw({...base,phase:'nibble',active:true,disabled:true,command:'WAIT',detail:'Just a nibble. Wait for the float to sink.'});assert.match(text(tree),/NIBBLE · WAIT/);assert(!/TAP HOOK/.test(text(tree)));uiCases++;
   tree=draw({...base,phase:'bite',active:true,command:'TAP HOOK',detail:'The float is under. Hook the fish now!'});assert.match(text(tree),/BITE!/);assert(nodes(tree).some(n=>n.props['aria-live']==='assertive'||n.props.accessibilityLiveRegion==='assertive'));uiCases++;
-  tree=draw({...base,phase:'aiming',active:true,command:'ADJUST YOUR AIM',castValid:false,castHint:'Aim into open water',charge:.5});assert.match(text(tree),/ADJUST YOUR AIM/);assert.match(text(tree),/×/);assert.match(text(tree),/landing marker/);uiCases++;
-  tree=draw({...base,phase:'reeling',active:true,command:'RELEASE TO EASE OFF',detail:'A strong pull is coming.',holding:true,fightBehavior:'warning',tension:.7,progress:.45});assert.match(text(tree),/PULL COMING/);assert.match(text(tree),/LINE TENSION/);assert.match(text(tree),/TO SHORE/);assert.match(text(tree),/45/);uiCases++;
+  tree=draw({...base,phase:'aiming',active:true,command:'ADJUST YOUR AIM',castValid:false,castHint:'Aim into open water',charge:.5});assert.match(text(tree),/ADJUST AIM/);assert.match(text(tree),/×/);assert.match(text(tree),/Aim into open water/);assert.match(accessible(tree),/landing marker/);uiCases++;
+  tree=draw({...base,phase:'reeling',active:true,command:'RELEASE TO EASE OFF',detail:'A strong pull is coming.',holding:true,fightBehavior:'warning',tension:.7,progress:.45});assert.match(text(tree),/RELEASE REEL/);assert.match(text(tree),/Strong pull coming/);assert.match(text(tree),/LINE TENSION/);assert.match(text(tree),/TO SHORE/);assert.match(text(tree),/45/);uiCases++;
+  // Compact guidance must still distinguish the next action, including when
+  // the player has already eased off and when toggle-reel is enabled.
+  tree=draw({...base,phase:'ready',disabled:true,bait:0,command:'GATHER BAIT',detail:'Walk to the lakeshore reeds and tap BAIT.'});assert.match(text(tree),/GATHER BAIT/);assert.match(text(tree),/reeds.*BAIT/);uiCases++;
+  tree=draw({...base,phase:'ready',disabled:true,command:'FIND CLEAR WATER',detail:'Move to the pier edge or a clear bank.'});assert.match(text(tree),/FIND CLEAR WATER/);assert.match(text(tree),/Pier edge or clear bank/);uiCases++;
+  for(const toggleReel of [false,true]){
+   tree=draw({...base,phase:'reeling',active:true,holding:false,fightBehavior:'surge',tension:.8,assists:{...base.assists,toggleReel}});assert.match(text(tree),/WAIT · EASING/);assert(!/RELEASE REEL|TAP TO EASE/.test(text(tree)));assert.match(text(tree),/TOO TIGHT/);uiCases++;
+   tree=draw({...base,phase:'reeling',active:true,holding:true,fightBehavior:'calm',assists:{...base.assists,toggleReel}});assert.match(text(tree),toggleReel?/REELING.*Tap to ease off/:/HOLD TO REEL/);uiCases++;
+  }
+  tree=draw({...base,phase:'escaped',active:true,command:'CATCH LOST',detail:'Line snapped · Release REEL before the big pull'});assert.match(text(tree),/Line snapped.*ease off/);assert.match(accessible(tree),/Release REEL before the big pull/);uiCases++;
   for(const species of ['perch','carp','pike','drone']){
    const hud={...base,phase:'caught',active:true,canKeep:true,rewardLabel:species==='drone'?'6 scrap + 2 iron ore':'3 raw '+species+' portions',rewardWeight:1.65,catch:{id:1,species,name:species,kg:3.2,isRecord:true,image:'/test.webp',portions:3}};
-   tree=draw(hud);assert.match(text(tree),new RegExp(species==='drone'?'SALVAGE FOUND':'SPECIES BEST'));assert.match(text(tree),/1\.65\s+kg in bag/);
+   tree=draw(hud);assert.match(text(tree),species==='drone'?/Scout drone|SCOUT DRONE/:/BEST/);assert.match(text(tree),/1\.65\s+kg in bag/);assert.match(accessible(tree),new RegExp(hud.rewardLabel.replace('+','\\+')));if(species!=='drone')assert.match(accessible(tree),/Species best/);
    const buttons=nodes(tree).filter(n=>['button','pressable'].includes(n.type));assert.equal(buttons.length,2);(buttons[0].props.onClick??buttons[0].props.onPress)();(buttons[1].props.onClick??buttons[1].props.onPress)();assert.deepEqual(decisions.splice(0),[true,false]);
-   const full=draw({...hud,canKeep:false});assert(nodes(full).filter(n=>['button','pressable'].includes(n.type))[0].props.disabled);assert.match(text(full),/CATCH HELD SAFELY/);uiCases++;
+   const full=draw({...hud,canKeep:false});assert(nodes(full).filter(n=>['button','pressable'].includes(n.type))[0].props.disabled);assert.match(text(full),/catch held safely/);assert.match(text(full),/Open bag to make room/);uiCases++;
   }
  }
 

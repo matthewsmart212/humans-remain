@@ -157,14 +157,16 @@ try{
    const hud={...caught,catch:catchState,rewardLabel:m.fishingCatchRewardLabel(catchState),rewardWeight:m.fishingCatchRewardWeight(catchState)},choices=[];
    const component=mount(Component,{hud,onCatch:keep=>choices.push(keep)}),tree=component.render(),buttons=nodes(tree).filter(n=>n.type===(kind==='web'?'button':'pressable'));
    assert.equal(buttons.length,2);assert.equal(buttons[0].props.disabled,true,'Full bag blocks only keeping/salvaging');assert.equal(buttons[1].props.disabled,false,'Release/return remains usable with a full bag');
-   assert.match(words(tree),new RegExp(hud.rewardLabel.replace(/[+]/g,'\\+')),'The catch panel names the actual complete reward');assert(words(tree).includes(hud.rewardWeight.toFixed(2)),'The catch panel displays the added pack weight');
+   const rewardText=nodes(tree).map(n=>n.props?.[kind==='web'?'aria-label':'accessibilityLabel']??'').join(' ');
+   assert.match(rewardText,new RegExp(hud.rewardLabel.replace(/[+]/g,'\\+')),'The catch panel names the actual complete reward accessibly');assert.match(words(tree),species==='drone'?/6 scrap \+ 2 iron ore/:new RegExp(`${catchState.portions} raw portion`),'The compact reward retains quantity and raw food or salvage');assert(words(tree).includes(hud.rewardWeight.toFixed(2)),'The catch panel displays the added pack weight');
    assert.equal(words(buttons[0]).trim(),species==='drone'?'SALVAGE':'KEEP');assert.equal(words(buttons[1]).trim(),species==='drone'?'RETURN':'RELEASE');
    buttons[1].props[kind==='web'?'onClick':'onPress']();assert.deepEqual(choices,[false]);
    if(kind==='web'){let stopped=false;tree.props.onKeyDown({key:'Escape',stopPropagation(){stopped=true}});assert.equal(stopped,false,'Escape reaches the game even when the catch panel has focus')}
    component.unmount();
   }
   for(const hud of [nibbleHud,biteHud,reelHud]){
-   const component=mount(Component,{hud,onCatch(){}}),tree=component.render();assert(words(tree).includes(hud.command));assert(words(tree).includes(hud.detail),'The prompt explains the current action without relying on sound');
+   const component=mount(Component,{hud,onCatch(){}}),tree=component.render(),guidance=nodes(tree).map(n=>n.props?.[kind==='web'?'aria-label':'accessibilityLabel']??'').join(' ');
+   assert.match(words(tree),hud.phase==='nibble'?/NIBBLE · WAIT/:hud.phase==='bite'?/BITE! TAP HOOK/:/HOLD TO REEL|TAP TO REEL|REELING|RELEASE REEL|TAP TO EASE|WAIT · EASING/,'The current action stays visible without sound');assert(guidance.includes(hud.detail),'Complete phase guidance remains accessible');
    assert.equal(nodes(tree).filter(n=>n.type===(kind==='web'?'button':'pressable')).length,0,'Active fishing does not add competing panel controls');
    if(hud.phase==='bite')assert(nodes(tree).some(n=>n.props?.[kind==='web'?'aria-live':'accessibilityLiveRegion']==='assertive'),'A real bite has an urgent accessible cue');
    if(hud.phase==='reeling')for(const label of ['Line tension','Catch brought to shore'])assert(nodes(tree).some(n=>n.props?.[kind==='web'?'aria-label':'accessibilityLabel']===label),'Fight and landing progress each have a named meter');

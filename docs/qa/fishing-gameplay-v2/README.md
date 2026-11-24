@@ -11,7 +11,7 @@ Game settings, alongside sound and native vibration controls.
 
 The largest HUD line always gives the current action. A warning precedes every
 strong pull by at least 0.8 seconds. Releasing changes the instruction to WAIT ·
-LINE EASING. Tension and progress to shore have separate labels and shapes. All
+EASING. Tension and progress to shore have separate labels and shapes. All
 essential instructions remain visible with sound and vibration disabled.
 
 Perch, carp and pike have different silhouettes, sizes that reflect weight, turns, bursts
@@ -31,6 +31,46 @@ reward and consumes the pending catch once. Release visibly returns the same
 animal to the lake. Existing serialized perch catches retain their original
 single reward; no live cast or feedback event is restored from a save. The game
 still starts a fresh session on Play, as it did before this update.
+
+## Compact HUD follow-up — 24 November 2026
+
+The web and native overlays now share concise presentation copy. The normal
+card is 184 px wide and the catch card is 200 px. Each phase has one primary
+action, a small bait count and only the context needed for that action. The
+generic stage heading, species footer, cast-distance meter and heavy double
+frame are removed. The landing marker continues to show the actual cast.
+
+Touch guidance explicitly says to hold CAST and drag on the left; keyboard
+guidance names Space and WASD. Nibble, bite, incoming pull, easing, invalid aim,
+no bait and failed catches remain distinct. Tension and shore progress retain
+separate slim meters, text labels and accessible values. Complete instructions
+remain available to assistive technology, including actual live-region text on
+web for changes that only affect the detailed guidance.
+
+The catch card keeps a small image, species, weight, a record marker and the
+actual reward with pack weight. Raw portions remain labelled as raw. Keep and
+Release retain 44 px minimum touch targets. A full bag still disables only
+Keep, and the card explains that the catch is held safely while space is made.
+Fishing mechanics, inputs, rewards, animation and audio are unchanged.
+
+This follow-up passed the web and native TypeScript checks, web production
+build, fishing-controls checks and 30 web/native feedback UI cases. Those
+component checks cover input-specific guidance, hold/toggle/easing distinctions,
+reward decisions and full-bag recovery. Static rendering of the actual React
+component, CSS, fonts and artwork checked 34 states: the ready card measured
+184×55 px, reeling 184×84–102 px, catches 200×131 px, and full-bag catches
+200×167 px with 44 px buttons. The layout check covered 320/390 px portrait
+and 844/1024 px landscape widths, retaining clearance from the action controls.
+
+The local browser remains blocked by the runtime socket policy. These are
+static HTML/CSS measurements under WeasyPrint, not browser or physical iPhone
+screenshots. Unsupported dynamic/media features and a landscape full-bag
+pagination artifact were assessed from the production anchors and measured
+card bounds rather than treated as browser behavior. Static button previews
+pin the declared 44 px minimum because WeasyPrint drops that minimum for nested
+flex controls. The older V2 verification
+below records the broader gameplay, rendering and export work from the
+mechanics update.
 
 ## Verification
 
