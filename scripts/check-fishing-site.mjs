@@ -184,7 +184,18 @@ try{
   assert.equal(draws.length,1,'A fresh published load paints the replacement instead of hiding the deck');
   assert.equal(draws[0][0],image);assert.deepEqual(draws[0].slice(1,5),metadata.crop);
   assert.deepEqual(draws[0].slice(5),[expected.x,expected.y,expected.width,expected.height]);
-  const offlineOwner={...snapshot,layout:{...layout,name:'Cached owner lake',updatedAt:'2099-01-01T00:00:00.000Z'},
+  // Exercise a cached owner world from before Patch. Every existing item,
+  // including the replacement pier, must survive the approved site migration.
+  const approvedPatchSite=[
+   {id:'stillwater-maintenance-station',assetId:'art_patch_maintenance_station',x:-3850,y:7000,
+    scale:1,solid:true,allowTransparency:false,role:'prop',roof:'auto'},
+   {id:'stillwater-maintenance-locker',assetId:'art_patch_service_locker',x:-4090,y:6840,
+    scale:1,solid:true,allowTransparency:false,role:'prop',roof:'auto'},
+  ];
+  const patchIds=new Set(approvedPatchSite.map(p=>p.id));
+  const offlineLayout={...layout,items:layout.items.filter(p=>!patchIds.has(p.id)),name:'Cached owner lake',updatedAt:'2099-01-01T00:00:00.000Z'};
+  delete offlineLayout.patchSiteVersion;
+  const offlineOwner={...snapshot,layout:offlineLayout,
    records:[...snapshot.records.filter(r=>r.id!==m.FISHING_PIER_ID),replacement]};
   nativeCache.set('humans-remain-published-world-v1:'+m.WORLD_URL,JSON.stringify(offlineOwner));
   const previousFetch=globalThis.fetch,previousWarn=console.warn;
@@ -192,7 +203,9 @@ try{
    globalThis.fetch=async()=>{throw Error('Offline fixture')};console.warn=()=>{};
    const loaded=await m.loadPublishedGameWorld();
    assert.equal(loaded.source,'Cached published world');assert.equal(loaded.layout.name,offlineOwner.layout.name);
-   assert.deepEqual(loaded.layout.items,offlineOwner.layout.items,'Offline loading preserves the owner layout');
+   assert.deepEqual(loaded.layout.items,[...offlineOwner.layout.items,...approvedPatchSite],
+    'Offline loading preserves every owner placement and appends only the approved Patch site');
+   assert.equal(loaded.layout.patchSiteVersion,1,'The offline site migration is recorded once');
    assert.equal(m.ASSET_BY_ID.get(m.FISHING_PIER_ID).image,replacement.config.base.url,
     'Comparing bundle timestamps does not overwrite cached owner artwork');
    assert.equal(m.fishingPierMetadata().image,replacement.config.base.url);

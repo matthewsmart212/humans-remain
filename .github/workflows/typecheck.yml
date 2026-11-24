@@ -68,6 +68,10 @@ jobs:
           node scripts/check-fishing-inventory.mjs
           node scripts/check-fishing-save.mjs
           node scripts/check-fishing-feedback.mjs
+      - name: Test Patch rescue, following and owner world preservation
+        run: |
+          node scripts/check-patch-quest.mjs
+          node scripts/check-patch-site.mjs
       - name: Test co-op room protocol and hibernation
         run: node scripts/check-coop-room.mjs
       - name: Test all Hunter walking frames and carried tools

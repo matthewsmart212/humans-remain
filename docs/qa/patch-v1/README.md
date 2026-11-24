@@ -50,11 +50,17 @@ Passed on the final working tree:
 | `node scripts/check-fishing-feedback.mjs` | Pass; 51 component cases |
 | `node scripts/check-fishing-gameplay.mjs` | Pass; all species and automatic collection |
 | `node scripts/check-fishing-save.mjs` | Pass |
+| Existing four-script Stillwater site, behavior, water-life and lake suite | Pass; complete owner layout preservation, physical deck routes, fish and shaders |
+| `node scripts/check-fishing-inventory.mjs` | Pass; fish, tools, food and atomic rewards |
+| `node scripts/check-coop-room.mjs` | Pass; existing room protocol and interpolation |
+| `node scripts/check-hunter-walk-frames.mjs` | Pass; existing walking, sprinting and carried-tool frames |
 | `node scripts/check-native-compact-save.mjs` | Pass |
 | Existing station menu layout suite | Pass; 108 cases |
 | Patch UI component and safe-area checks | Pass; four phone sizes, see `ui-verification.json` |
 | Production native renderer captures | 5/5 pass with zero missing textures, see `renderer-report.json` |
 | `git diff --check` | Pass |
+
+The `Typecheck web and iOS` workflow now runs both Patch regression scripts on pushes and pull requests. The existing offline fishing-cache check separately verifies that loading an older cache preserves every owner-authored item while adding exactly the two approved Patch scenery objects.
 
 The route fixture walks the actual authored bridge journey in 2,364 movement ticks and asserts that Patch never teleports or enters blocked ground. This is a navigation regression check, not a claim about first-time quest duration.
 
