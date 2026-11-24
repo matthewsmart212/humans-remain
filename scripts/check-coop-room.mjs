@@ -81,10 +81,17 @@ assert.equal((await call('/rooms/INVALID')).status,404);
 const native=await build({entryPoints:['native/coop-client.ts'],bundle:true,platform:'node',format:'esm',write:false});
 const {CoopClient}=await import('data:text/javascript;base64,'+Buffer.from(native.outputFiles[0].text).toString('base64'));
 const socket=new FakeSocket();
-const transport=mock.method(globalThis,'WebSocket',function(){return socket});
-const clock=mock.method(Date,'now',()=>1000);
+const webSocketDescriptor=Object.getOwnPropertyDescriptor(globalThis,'WebSocket');
+let clock;
 const client=new CoopClient(roomCode,'Engineer','engineer','https://coop.test');
 try{
+ // Node versions differ in whether they expose a global WebSocket. Install
+ // our transport explicitly, preserving even an absent or accessor global.
+ Object.defineProperty(globalThis,'WebSocket',{configurable:true,writable:true,value:class FakeWebSocket {
+  static OPEN=1;
+  constructor(){return socket}
+ }});
+ clock=mock.method(Date,'now',()=>1000);
  client.connect();
  for(const walkDistance of [108,4]){
   socket.onmessage({data:JSON.stringify({type:'pose',peer:{...relay.peer,sprinting:true,walkDistance}})});
@@ -92,6 +99,10 @@ try{
  const phases=[0,25,50,75,100,150].map(ms=>client.remotePoses(1000+ms)[0].walkDistance);
  assert.deepEqual(phases,[108,110,0,2,4,4],'Remote Hunter crosses the stride boundary going forward, then holds the last pose');
 }finally{
- client.dispose();clock.mock.restore();transport.mock.restore();
+ try{client.dispose();clock?.mock.restore()}
+ finally{
+  if(webSocketDescriptor)Object.defineProperty(globalThis,'WebSocket',webSocketDescriptor);
+  else delete globalThis.WebSocket;
+ }
 }
 console.log('Co-op room contract and native interpolation across a stride boundary passed.');
