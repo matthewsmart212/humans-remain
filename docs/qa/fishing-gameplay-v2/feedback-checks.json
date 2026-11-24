@@ -1,5 +1,5 @@
 {
-  "uiCases": 30,
+  "uiCases": 51,
   "platforms": [
     "web component",
     "native component"
@@ -14,6 +14,8 @@
   "oneShotEvents": true,
   "reelCuesPerSecond": 5,
   "offlineSoundCues": 13,
-  "soundOffVisualInstructions": true,
+  "visualFishingWithoutInstructionPanels": true,
+  "accessibleInstructions": true,
+  "automaticCatchCheckpoints": true,
   "actualDeviceTest": false
 }

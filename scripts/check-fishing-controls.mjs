@@ -10,6 +10,8 @@ import {build} from 'esbuild';
 const require=createRequire(import.meta.url),temp=fs.mkdtempSync(path.join(os.tmpdir(),'fishing-controls-'));
 const nodes=value=>!value||typeof value!=='object'?[]:Array.isArray(value)?value.flatMap(nodes):[value,...nodes(value.props?.children)];
 const words=value=>value==null||typeof value==='boolean'?'':Array.isArray(value)?value.map(words).join(' '):typeof value==='object'?words(value.props?.children):String(value);
+const visibleWords=value=>value==null||typeof value==='boolean'?'':Array.isArray(value)?value.map(visibleWords).join(' '):typeof value==='object'?(value.props?.className?.split(' ').includes('fishing-sr-only')||value.props?.style?.visibility==='hidden')?'':visibleWords(value.props?.children):String(value);
+const accessibleWords=value=>nodes(value).map(n=>n.props?.['aria-label']??n.props?.accessibilityLabel??(n.props?.className?.split(' ').includes('fishing-sr-only')?words(n):'')).join(' ');
 globalThis.__fishReact={memo:component=>component,createElement:(type,props,...children)=>({type,props:{...props,children}}),useRef:value=>({current:value}),useState:value=>[typeof value==='function'?value():value,()=>{}],useEffect:()=>{},useMemo:fn=>fn(),useCallback:fn=>fn};
 globalThis.__fishAppState=new Map();
 function mount(Component,initial){
@@ -40,7 +42,7 @@ const aliases={
 const hostGlobals=new Map(['window','document','ResizeObserver'].map(name=>[name,Object.getOwnPropertyDescriptor(globalThis,name)]));
 try{
  const file=path.join(temp,'controls.cjs');
- await build({stdin:{contents:"export {KitButton as WebButton} from './src/FieldKitHUD';export {default as WebMovement} from './src/FieldKitMovement';export {FieldKitMovement as NativeMovement} from './native/FieldKitHUD';export {default as NativeButtons} from './native/HexActions';export {default as WebFishing} from './src/FishingHUD';export {default as NativeFishing} from './native/FishingHUD';export {ACTION_HEX} from './src/action-hex';export {FieldKitController} from './src/field-kit';export {movePlayer} from './src/survival-engine';export {createCampPlaySession} from './src/studio-play';export {installImportedArt} from './src/imported-art';export {fishingPiers,fishingPierGeometry,fishingPierDeckContains} from './src/fishing-site-geometry';export * from './src/fishing';export * from './src/fishing-rewards';export {FISHING_SPECIES} from './src/fishing-catalog';",resolveDir:process.cwd()},bundle:true,platform:'node',format:'cjs',outfile:file,loader:{'.css':'empty'},logLevel:'error',plugins:[{name:'host-stubs',setup(b){b.onResolve({filter:/^(react(?:\/jsx-runtime)?|react-native|react-native-reanimated|react-native-gesture-handler|expo-font|expo-audio|expo-haptics|@react-native-async-storage\/async-storage|@shopify\/react-native-skia)$/},a=>({path:a.path,namespace:'host'}));b.onLoad({filter:/.*/,namespace:'host'},a=>({contents:aliases[a.path],loader:'js'}));b.onResolve({filter:/\.(png|webp|jpg|jpeg|ttf|wav)$/},a=>({path:path.resolve(a.resolveDir,a.path),namespace:'art'}));b.onLoad({filter:/.*/,namespace:'art'},a=>({contents:`module.exports=${JSON.stringify(a.path)}`,loader:'js'}))}}]});
+ await build({stdin:{contents:"export {KitButton as WebButton} from './src/FieldKitHUD';export {default as WebMovement} from './src/FieldKitMovement';export {FieldKitMovement as NativeMovement} from './native/FieldKitHUD';export {default as NativeButtons} from './native/HexActions';export {default as WebFishing} from './src/FishingHUD';export {default as NativeFishing} from './native/FishingHUD';export {ACTION_HEX} from './src/action-hex';export {FieldKitController,sameFieldKit} from './src/field-kit';export {movePlayer} from './src/survival-engine';export {createCampPlaySession} from './src/studio-play';export {installImportedArt} from './src/imported-art';export {fishingPiers,fishingPierGeometry,fishingPierDeckContains} from './src/fishing-site-geometry';export * from './src/fishing';export * from './src/fishing-rewards';export {FISHING_SPECIES} from './src/fishing-catalog';",resolveDir:process.cwd()},bundle:true,platform:'node',format:'cjs',outfile:file,loader:{'.css':'empty'},logLevel:'error',plugins:[{name:'host-stubs',setup(b){b.onResolve({filter:/^(react(?:\/jsx-runtime)?|react-native|react-native-reanimated|react-native-gesture-handler|expo-font|expo-audio|expo-haptics|@react-native-async-storage\/async-storage|@shopify\/react-native-skia)$/},a=>({path:a.path,namespace:'host'}));b.onLoad({filter:/.*/,namespace:'host'},a=>({contents:aliases[a.path],loader:'js'}));b.onResolve({filter:/\.(png|webp|jpg|jpeg|ttf|wav)$/},a=>({path:path.resolve(a.resolveDir,a.path),namespace:'art'}));b.onLoad({filter:/.*/,namespace:'art'},a=>({contents:`module.exports=${JSON.stringify(a.path)}`,loader:'js'}))}}]});
  const m=require(file);
  const snapshot=JSON.parse(fs.readFileSync('native/assets/world-snapshot.json','utf8'));m.installImportedArt(snapshot.records);
  const world=m.createCampPlaySession(snapshot.layout);world.enemies=[];world.animals=[];world.loot=[];world.gear.bag.fishingRod=1;world.player.equipped='fishingRod';
@@ -150,28 +152,49 @@ try{
  assert(controller.press(world,controller.sample(world).action));controller.release('primary');advanceTo('waiting');assert.equal(controller.sample(world).action.label,'RETRIEVE');
  assert(controller.press(world,controller.sample(world).action));controller.release('primary');assert.equal(world.fishingSession,undefined);assert.equal(world.fishing.bait,bait,'Retrieving before the bite keeps the bait');
 
+ // A catch receipt is sampled independently from fishing action ownership.
+ // Unequipping the rod must retain the brief confirmation without replacing
+ // the real nearby interaction or combat action with a phantom CAST button.
+ const receiptWorld=m.createCampPlaySession(snapshot.layout);receiptWorld.enemies=[];receiptWorld.animals=[];receiptWorld.loot=[];
+ Object.assign(receiptWorld.player,{...edge,equipped:'fists'});Object.assign(m.fishingProgress(receiptWorld),{claimed:true,bait:4});
+ const receiptController=new m.FieldKitController(),beforeCatch=receiptController.sample(receiptWorld);
+ const storedCatch={id:1,species:'perch',name:m.FISHING_SPECIES.perch.name,kg:.71,portions:1,isRecord:true,image:m.FISHING_SPECIES.perch.image};
+ receiptWorld.fishing.pendingCatch=storedCatch;m.stepFishing(receiptWorld,1/60);
+ const afterCatch=receiptController.sample(receiptWorld),receipt=afterCatch.fishingReceipt;
+ assert(receipt,'A successful automatic collection has its own snapshot receipt');assert.equal(afterCatch.fishing,null,'An unequipped rod does not create a fishing HUD state');assert.notEqual(afterCatch.action.fishing,true);assert.equal(afterCatch.action.key,beforeCatch.action.key,'The previous action keeps ownership');assert.equal(receiptWorld.bag.rawFish,1);
+ assert.equal(m.sameFieldKit(afterCatch,{...afterCatch,fishingReceipt:undefined}),false,'Receipt expiration alone refreshes the HUD');
+ receiptWorld.tick+=Math.ceil(m.FISHING_RECEIPT_SECONDS*60)+1;assert.equal(receiptController.sample(receiptWorld).fishingReceipt,undefined,'Expired receipts are removed');
+ receiptController.reset();assert.equal(receiptController.sample(receiptWorld).fishingReceipt,undefined,'Sampling or remounting cannot restart an expired receipt');
+
  const caught={phase:'caught',action:'CAUGHT',hint:'',command:'YOUR CATCH',detail:'',tone:'good',bait:5,tension:0,charge:0,progress:1,castValid:true,castHint:'',nibbleAmount:0,holding:false,active:true,disabled:true,canKeep:false,assists:{autoHook:false,toggleReel:false},caught:1,bestKg:.71};
  for(const [Component,kind]of [[m.WebFishing,'web'],[m.NativeFishing,'native']]){
+  const receiptComponent=mount(Component,{receipt:{...receipt,age:.3},onCatch(){throw Error('Receipt cannot resolve a catch')},onOpenBag(){}}),receiptTree=receiptComponent.render();
+  assert.match(visibleWords(receiptTree),/Perch caught/);assert.match(visibleWords(receiptTree),/In bag/);assert.equal(nodes(receiptTree).filter(n=>n.type===(kind==='web'?'button':'pressable')).length,0);assert.match(accessibleWords(receiptTree),/1 raw perch portion/);receiptComponent.unmount();
   for(const species of ['perch','carp','pike','drone']){
    const catchState={id:1,species,name:m.FISHING_SPECIES[species].name,kg:species==='perch'?.71:3.1,portions:species==='perch'||species==='drone'?1:3,isRecord:species!=='drone',image:m.FISHING_SPECIES[species].image};
-   const hud={...caught,catch:catchState,rewardLabel:m.fishingCatchRewardLabel(catchState),rewardWeight:m.fishingCatchRewardWeight(catchState)},choices=[];
-   const component=mount(Component,{hud,onCatch:keep=>choices.push(keep)}),tree=component.render(),buttons=nodes(tree).filter(n=>n.type===(kind==='web'?'button':'pressable'));
-   assert.equal(buttons.length,2);assert.equal(buttons[0].props.disabled,true,'Full bag blocks only keeping/salvaging');assert.equal(buttons[1].props.disabled,false,'Release/return remains usable with a full bag');
-   const rewardText=nodes(tree).map(n=>n.props?.[kind==='web'?'aria-label':'accessibilityLabel']??'').join(' ');
-   assert.match(rewardText,new RegExp(hud.rewardLabel.replace(/[+]/g,'\\+')),'The catch panel names the actual complete reward accessibly');assert.match(words(tree),species==='drone'?/6 scrap \+ 2 iron ore/:new RegExp(`${catchState.portions} raw portion`),'The compact reward retains quantity and raw food or salvage');assert(words(tree).includes(hud.rewardWeight.toFixed(2)),'The catch panel displays the added pack weight');
-   assert.equal(words(buttons[0]).trim(),species==='drone'?'SALVAGE':'KEEP');assert.equal(words(buttons[1]).trim(),species==='drone'?'RETURN':'RELEASE');
+   const hud={...caught,catch:catchState,rewardLabel:m.fishingCatchRewardLabel(catchState),rewardWeight:m.fishingCatchRewardWeight(catchState)},choices=[];let bagOpens=0;
+   const component=mount(Component,{hud,onCatch:keep=>choices.push(keep),onOpenBag:()=>bagOpens++}),tree=component.render(),buttons=nodes(tree).filter(n=>n.type===(kind==='web'?'button':'pressable'));
+   assert.equal(buttons.length,2);assert.equal(buttons[0].props.disabled,false,'Full bag leaves the BAG action usable');assert.equal(buttons[1].props.disabled,false,'Release/return remains usable with a full bag');
+   const rewardText=accessibleWords(tree);assert(rewardText.includes(hud.rewardLabel),'The held catch retains its complete reward accessibly');assert(rewardText.includes(hud.rewardWeight.toFixed(2)),'The required pack weight stays accessible');assert.match(visibleWords(tree),/Bag full · catch held/);assert(visibleWords(tree).includes(catchState.kg.toFixed(2)),'The held fish stays identifiable');
+   assert.equal(words(buttons[0]).trim(),'BAG');assert.equal(words(buttons[1]).trim(),species==='drone'?'RETURN':'RELEASE');
+   buttons[0].props[kind==='web'?'onClick':'onPress']();assert.equal(bagOpens,1,'BAG opens inventory without resolving the held animal');assert.deepEqual(choices,[]);
    buttons[1].props[kind==='web'?'onClick':'onPress']();assert.deepEqual(choices,[false]);
-   if(kind==='web'){let stopped=false;tree.props.onKeyDown({key:'Escape',stopPropagation(){stopped=true}});assert.equal(stopped,false,'Escape reaches the game even when the catch panel has focus')}
+   if(kind==='web'){let stopped=false;tree.props.onKeyDown({key:'Escape',stopPropagation(){stopped=true}});assert.equal(stopped,false,'Escape reaches the game even when the full-bag panel has focus')}
    component.unmount();
   }
   for(const hud of [nibbleHud,biteHud,reelHud]){
-   const component=mount(Component,{hud,onCatch(){}}),tree=component.render(),guidance=nodes(tree).map(n=>n.props?.[kind==='web'?'aria-label':'accessibilityLabel']??'').join(' ');
-   assert.match(words(tree),hud.phase==='nibble'?/NIBBLE · WAIT/:hud.phase==='bite'?/BITE! TAP HOOK/:/HOLD TO REEL|TAP TO REEL|REELING|RELEASE REEL|TAP TO EASE|WAIT · EASING/,'The current action stays visible without sound');assert(guidance.includes(hud.detail),'Complete phase guidance remains accessible');
+   const component=mount(Component,{hud,onCatch(){},onOpenBag(){}}),tree=component.render(),guidance=accessibleWords(tree);
+   assert(guidance.includes(hud.command)&&guidance.includes(hud.detail),'Complete phase guidance remains accessible');
+   assert(!/HOLD TO|TAP HOOK|NIBBLE|Fish is|Wait for|Bring it|RELEASE TO/.test(visibleWords(tree)),'Explanatory instructions do not return to the visible overlay');
    assert.equal(nodes(tree).filter(n=>n.type===(kind==='web'?'button':'pressable')).length,0,'Active fishing does not add competing panel controls');
    if(hud.phase==='bite')assert(nodes(tree).some(n=>n.props?.[kind==='web'?'aria-live':'accessibilityLiveRegion']==='assertive'),'A real bite has an urgent accessible cue');
-   if(hud.phase==='reeling')for(const label of ['Line tension','Catch brought to shore'])assert(nodes(tree).some(n=>n.props?.[kind==='web'?'aria-label':'accessibilityLabel']===label),'Fight and landing progress each have a named meter');
+   if(hud.phase==='reeling'){
+    assert.match(visibleWords(tree),/TENSION/);assert.match(visibleWords(tree),/TO SHORE/);
+    for(const label of ['Line tension','Catch brought to shore'])assert(nodes(tree).some(n=>n.props?.[kind==='web'?'aria-label':'accessibilityLabel']===label),'Fight and landing progress each have a named meter');
+   }else assert.equal(visibleWords(tree).trim(),String(hud.bait),'Non-fighting phases show only the bait resource');
    component.unmount();
   }
  }
- console.log(JSON.stringify({passed:true,checks:['real authored-pier CAST→WAIT/nibble→HOOK→REEL with bait spent only at the true bite','WASD/left-stick aim with deadzone and a stationary survivor','web owning pointer, one release and synthetic click suppression','cast cancellation on lost capture, blur, disabling and unmount','held keyboard ownership and repeat suppression','native owning touch and cancellation on move, cancel, background, disabling and unmount','real web/native two-contact aiming and input interruptions without accidental casts','early retrieve keeps bait, modal cleanup and unresolved catch persistence','all fish and salvage rewards, pack weight and bag-full KEEP/RELEASE availability on both platforms','accessible nibble/bite/fight prompts and Escape propagation'],physicalDeviceTested:false},null,2));
+
+ console.log(JSON.stringify({passed:true,checks:['real authored-pier CAST→WAIT/nibble→HOOK→REEL with bait spent only at the true bite','WASD/left-stick aim with deadzone and a stationary survivor','web owning pointer, one release and synthetic click suppression','cast cancellation on lost capture, blur, disabling and unmount','held keyboard ownership and repeat suppression','native owning touch and cancellation on move, cancel, background, disabling and unmount','real web/native two-contact aiming and input interruptions without accidental casts','early retrieve keeps bait, modal cleanup and unresolved catch persistence','independent automatic-catch receipt survives unequipping without action takeover and expires without replay','all fish and salvage full-bag BAG/RELEASE controls and accessible reward details on both platforms','visual-only bait/meters, accessible nibble/bite/fight guidance and Escape propagation'],physicalDeviceTested:false},null,2));
 }finally{fs.rmSync(temp,{recursive:true,force:true});delete globalThis.__fishReact;delete globalThis.__fishAppState;for(const[name,descriptor]of hostGlobals){if(descriptor)Object.defineProperty(globalThis,name,descriptor);else delete globalThis[name]}}

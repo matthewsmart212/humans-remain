@@ -11,6 +11,10 @@ export type FishingCatch={
  /** Optional for old saves; lets a continued catch return to its actual lake. */
  water?:Vec;size?:number;variant?:number;pierId?:string;fishIndex?:number;
 };
+/** A short-lived collection confirmation; never serialized with a saved run. */
+export type FishingCatchReceipt={
+ id:number;catch:FishingCatch;rewardLabel:string;rewardWeight:number;age:number;duration:number;
+};
 export type FishingProgress={
  version:1;bait:number;claimed:boolean;attempts:number;caught:number;kept:number;released:number;bestKg:number;
  baitReadyAt:number;autoHook:boolean;toggleReel:boolean;pendingCatch?:FishingCatch;
@@ -35,7 +39,7 @@ export type FishingHud={
  hint:string;command:string;detail:string;tone:'neutral'|'good'|'warn'|'danger';
  bait:number;tension:number;charge:number;holding:boolean;active:boolean;disabled:boolean;
  progress:number;fightBehavior?:FishingFightBehavior;castValid:boolean;castHint:string;nibbleAmount:number;species?:FishingSpecies;
- canKeep:boolean;catch?:FishingCatch;rewardLabel?:string;rewardWeight?:number;
+ canKeep:boolean;catch?:FishingCatch;rewardLabel?:string;rewardWeight?:number;receipt?:FishingCatchReceipt;
  assists:{autoHook:boolean;toggleReel:boolean};caught:number;bestKg:number;event?:FishingEvent;
 };
 export type FishingRenderState={

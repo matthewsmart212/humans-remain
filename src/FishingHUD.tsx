@@ -1,41 +1,46 @@
 import React from 'react';
-import type {FishingHud} from './fishing-types';
+import type {FishingHud,FishingCatchReceipt} from './fishing-types';
 import {FISHING_ART} from './fishing-art';
 import {FISHING_SPECIES} from './fishing-catalog';
-import {fishingTensionLabel,fishingProgressLabel} from './fishing-feedback';
-import {fishingCompactCopy,fishingCompactReward,FISHING_HUD_WIDTH,FISHING_CATCH_WIDTH} from './fishing-hud-presentation';
+import {fishingTensionLabel} from './fishing-feedback';
+import {fishingAccessibleStatus,fishingHudKind,fishingHudWidth,fishingLostLabel,fishingReceiptPresentation} from './fishing-hud-presentation';
 import './fishing-hud.css';
 
-export type FishingHUDProps={hud:FishingHud;disabled?:boolean;onCatch:(keep:boolean)=>void;inputMode?:'touch'|'keyboard'};
+export type FishingHUDProps={hud?:FishingHud;receipt?:FishingCatchReceipt;disabled?:boolean;onCatch:(keep:boolean)=>void;onOpenBag:()=>void;inputMode?:'touch'|'keyboard'};
 
-/** The action is always the largest line. Status and instructions never rely
- * on colour, sound or knowing what a moving meter means. */
-export default function FishingHUD({hud,disabled=false,onCatch,inputMode='touch'}:FishingHUDProps){
- const tension=Math.max(0,Math.min(1,hud.tension));
- const fighting=hud.phase==='reeling',aiming=hud.phase==='aiming',progress=Math.round(Math.max(0,Math.min(1,hud.progress))*100);
- const heldCatch=hud.catch,drone=heldCatch?.species==='drone';
- const copy=fishingCompactCopy(hud,inputMode);
+/** The lake and action button teach the loop; this overlay only shows resources,
+ * the fight's two meters, a short receipt, or the full-bag exception. */
+export default function FishingHUD({hud,receipt,disabled=false,onCatch,onOpenBag,inputMode='touch'}:FishingHUDProps){
+ const notice=receipt??hud?.receipt,kind=fishingHudKind(hud,notice);
  const stopKeys=(event:React.KeyboardEvent)=>{if(event.key!=='Escape')event.stopPropagation()};
- if(heldCatch)return <section className="fishing-hud fishing-catch" style={{width:FISHING_CATCH_WIDTH}} aria-label={drone?'Your salvage':'Your catch'} onKeyDown={stopKeys} onKeyUp={stopKeys}>
-  <div className="fishing-catch-fish"><img src={heldCatch.image||FISHING_ART.rawFish} alt="" draggable={false}/><div className="fishing-catch-summary"><div className="fishing-catch-name"><h2>{FISHING_SPECIES[heldCatch.species].shortName}</h2>{heldCatch.isRecord&&!drone&&<strong className="fishing-record" aria-label="Species best">BEST</strong>}</div><p><strong>{heldCatch.kg.toFixed(2)}</strong> kg</p></div></div>
-  <p className="fishing-reward" aria-label={`${hud.rewardLabel}. ${(hud.rewardWeight??0).toFixed(2)} kg in bag`}>{fishingCompactReward(hud)}</p>
-  {!hud.canKeep&&<p className="fishing-bag-full" role="status"><strong>Bag full · catch held safely</strong><span>Open bag to make room</span></p>}
-  <div className="fishing-catch-actions"><button type="button" aria-label={drone?'Salvage metal into your bag':`Keep ${heldCatch.species} in your bag for cooking`} disabled={disabled||!hud.canKeep} onClick={()=>onCatch(true)}>{drone?'SALVAGE':'KEEP'}</button><button type="button" className="fishing-release" aria-label={`${drone?'Return drone':'Release '+heldCatch.species} to the lake`} disabled={disabled} onClick={()=>onCatch(false)}>{drone?'RETURN':'RELEASE'}</button></div>
- </section>;
- return <section className="fishing-hud" style={{width:FISHING_HUD_WIDTH}} data-phase={hud.phase} data-tone={hud.tone} aria-label="Fishing" onKeyDown={stopKeys} onKeyUp={stopKeys}>
-  <div className="fishing-instruction" role="status" aria-live={hud.phase==='bite'?'assertive':'polite'} aria-atomic="true" aria-label={copy.accessibilityLabel}>
-   <span className="fishing-sr-only">{copy.accessibilityLabel}</span>
-   <div className="fishing-heading"><strong className="fishing-command" aria-hidden="true">{copy.command}</strong><span className="fishing-bait" aria-label={`${hud.bait} bait remaining`}><img src={FISHING_ART.worms} alt="" draggable={false}/><b>{hud.bait}</b></span></div>
-   {copy.detail&&<p className="fishing-detail" aria-hidden="true" data-valid={aiming?hud.castValid:undefined}>{aiming&&<b>{hud.castValid?'✓ ':'× '}</b>}{copy.detail}</p>}
-  </div>
-  {fighting&&<>
+ if(kind==='hidden')return null;
+ if(kind==='full'&&hud?.catch){
+  const caught=hud.catch,drone=caught.species==='drone';
+  return <section className="fishing-hud fishing-full" data-kind={kind} style={{width:fishingHudWidth(kind)}} aria-label="Catch held safely" onKeyDown={stopKeys} onKeyUp={stopKeys}>
+   <div className="fishing-held-catch"><img src={caught.image||FISHING_ART.rawFish} alt="" draggable={false}/><strong>{FISHING_SPECIES[caught.species].shortName}<small>{caught.kg.toFixed(2)} kg</small></strong></div>
+   <p className="fishing-full-note" role="status" aria-label={`${fishingAccessibleStatus(hud)} ${hud.rewardLabel}. ${(hud.rewardWeight??0).toFixed(2)} kg in bag.`}>Bag full · catch held</p>
+   <div className="fishing-catch-actions"><button type="button" disabled={disabled} onClick={onOpenBag} aria-label="Open bag to make room for your catch">BAG</button><button type="button" className="fishing-release" disabled={disabled} onClick={()=>onCatch(false)} aria-label={`Return ${drone?'drone':caught.species} to the lake`}>{drone?'RETURN':'RELEASE'}</button></div>
+  </section>;
+ }
+ if(kind==='receipt'&&notice){
+  const copy=fishingReceiptPresentation(notice);
+  return <section key={notice.id} className="fishing-hud fishing-receipt" data-kind={kind} style={{width:fishingHudWidth(kind),opacity:copy.opacity}} role="status" aria-live="polite" aria-atomic="true" aria-label={copy.accessibilityLabel}>
+   <img src={notice.catch.image||FISHING_ART.rawFish} alt="" draggable={false}/><div><strong>{copy.title}</strong><span>{copy.detail}</span></div><b className="fishing-stowed" aria-hidden="true">✓</b>
+  </section>;
+ }
+ if(!hud)return null;
+ const status=fishingAccessibleStatus(hud,inputMode),tension=Math.max(0,Math.min(1,hud.tension)),progress=Math.round(Math.max(0,Math.min(1,hud.progress))*100);
+ const warning=hud.tension>.78||hud.fightBehavior==='warning'||hud.fightBehavior==='surge';
+ return <section className={`fishing-hud fishing-${kind}`} data-kind={kind} data-phase={hud.phase} data-warning={warning} data-danger={tension>.78} style={{width:fishingHudWidth(kind)}} aria-label="Fishing">
+  <span className="fishing-sr-only" role="status" aria-live={hud.phase==='bite'?'assertive':'polite'} aria-atomic="true">{status}</span>
+  {kind==='fight'?<>
    <div className="fishing-meter" role="meter" aria-label="Line tension" aria-valuemin={0} aria-valuemax={100} aria-valuenow={Math.round(tension*100)} aria-valuetext={fishingTensionLabel(hud)}>
-    <div className="fishing-meter-label"><span>LINE TENSION</span><b>{fishingTensionLabel(hud)}</b></div>
+    <div className="fishing-meter-label"><span>TENSION</span><b className="fishing-strain" aria-hidden="true" style={{visibility:warning?'visible':'hidden'}}>!</b></div>
     <span className="fishing-meter-track"><i style={{width:`${tension*100}%`}}/><b className="fishing-danger-mark"/></span>
    </div>
    <div className="fishing-progress" role="progressbar" aria-label="Catch brought to shore" aria-valuemin={0} aria-valuemax={100} aria-valuenow={progress}>
-    <div className="fishing-meter-label"><span>{fishingProgressLabel(hud)}</span><b>{progress}%</b></div><span className="fishing-progress-track"><i style={{width:`${progress}%`}}/></span>
+    <div className="fishing-meter-label"><span>TO SHORE</span></div><span className="fishing-progress-track"><i style={{width:`${progress}%`}}/></span>
    </div>
-  </>}
+  </>:kind==='lost'?<span className="fishing-lost-label">{fishingLostLabel(hud)}</span>:<span className="fishing-bait-count" data-empty={hud.bait===0} aria-label={`${hud.bait} bait remaining`}><img src={FISHING_ART.worms} alt="" draggable={false}/><b>{hud.bait}</b></span>}
  </section>;
 }

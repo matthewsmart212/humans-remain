@@ -9,13 +9,14 @@ import {gear,hasGear,GEAR} from './player-gear';
 import {packWeight,PACK_CAPACITY} from './expedition-inventory';
 import {canKeepFishingCatch,keepFishingCatch,fishingCatchRewardLabel,fishingCatchRewardWeight,fishingPortions} from './fishing-rewards';
 import {FISHING_SPECIES,fishingSpecies,fishingHash,fishingRandom} from './fishing-catalog';
-import type {FishingProgress,FishingSession,FishingHud,FishingRenderState,FishingVisualFish,FishingSpecies,FishingFeedingSpot,FishingEvent,FishingEventType,FishingAftermath,FishingFightBehavior,FishingCatch} from './fishing-types';
+import type {FishingProgress,FishingSession,FishingHud,FishingRenderState,FishingVisualFish,FishingSpecies,FishingFeedingSpot,FishingEvent,FishingEventType,FishingAftermath,FishingFightBehavior,FishingCatch,FishingCatchReceipt} from './fishing-types';
 export type {FishingProgress,FishingSession,FishingHud,FishingRenderState} from './fishing-types';
 
 export const FISHING_BAIT_LIMIT=10;
 export const FISHING_CAST_SECONDS=.68;
 export const FISHING_BITE_SECONDS=2.4;
 export const FISHING_LANDING_SECONDS=1.15;
+export const FISHING_RECEIPT_SECONDS=2.6;
 export const FISHING_FEEDING_SECONDS=75;
 const TAU=Math.PI*2,now=(w:World)=>w.tick/60;
 const fishClock=(w:World)=>w.weather?.reducedMotion?0:now(w);
@@ -27,12 +28,19 @@ const directions:Direction[]=['right','down-right','down','down-left','left','up
 const facing=(a:Vec,b:Vec)=>directions[(Math.round(Math.atan2(b.y-a.y,b.x-a.x)/(Math.PI/4))+8)%8];
 const fishRadius=(fish:FishingVisualFish)=>Math.max(28,Math.min(68,fish.size*(fish.species==='pike'?39:fish.species==='carp'?34:35)));
 type Runtime={serial:number;event?:FishingEvent;hidden?:Map<string,number>;aftermath?:(Omit<FishingAftermath,'age'>&{started:number});
+ receipt?:(Omit<FishingCatchReceipt,'age'>&{started:number});
  feeding?:{tick:number;layout:World['layout'];x:number;y:number;reduced:boolean;caught:number;salvagedAt:number;spots:FishingFeedingSpot[]}};
 const runtimes=new WeakMap<World,Runtime>();
 const salvageAnchors=new WeakMap<Placement,{geometry:ReturnType<typeof fishingPierGeometry>;epoch:number;point?:Vec}>();
 function runtime(w:World){let r=runtimes.get(w);if(!r){r={serial:0};runtimes.set(w,r)}return r}
 function emit(w:World,type:FishingEventType){const r=runtime(w);r.event={id:++r.serial,type,at:now(w)}}
 function notice(w:World,message:string){w.notice=message;w.noticeUntil=now(w)+4}
+/** Reading a receipt never creates an award or restarts its lifetime. */
+export function fishingCatchReceipt(w:World):FishingCatchReceipt|undefined{
+ const receipt=runtimes.get(w)?.receipt;if(!receipt)return;
+ const age=now(w)-receipt.started;if(age<0||age>=receipt.duration)return;
+ return{id:receipt.id,catch:receipt.catch,rewardLabel:receipt.rewardLabel,rewardWeight:receipt.rewardWeight,age,duration:receipt.duration};
+}
 /** A held or freshly landed animal cannot also reappear in the ambient school. */
 export function fishingFishUnavailable(w:World,pierId:string,index:number){
  if(index<0)return false;
@@ -187,7 +195,7 @@ export function fishingAimInput(w:World,input:Vec,dt=1/60):boolean{
  return true;
 }
 function phase(s:FishingSession,next:FishingSession['phase'],t:number){s.phase=next;s.started=t;s.input='none';s.holding=false;s.nibbleAmount=0}
-function escape(w:World,message:string){const s=w.fishingSession;if(!s)return;s.fishStart={...s.fish};s.failureReason=message;phase(s,'escaped',now(w));emit(w,'escape');notice(w,message)}
+function escape(w:World,message:string){const s=w.fishingSession;if(!s)return;s.fishStart={...s.fish};s.failureReason=message;phase(s,'escaped',now(w));emit(w,'escape')}
 function behavior(w:World,s:FishingSession,next:FishingFightBehavior){
  const t=now(w),profile=FISHING_SPECIES[s.species],random=fishingRandom(s.attempt*97+s.fishIndex*19,s.fightStep++);
  s.fightBehavior=next;s.behaviorSince=t;s.warning=0;s.surge=0;
@@ -213,7 +221,7 @@ export function pressFishingAction(w:World):boolean{
    if(s.input==='reel')return false;
    s.input='reel';s.holding=progress.toggleReel?!s.holding:true;return true;
   }
-  if(s.phase==='waiting'){stopFishing(w,'Line retrieved · Bait kept');return true}
+  if(s.phase==='waiting'){stopFishing(w,'Bait kept');return true}
   return false;
  }
  if(progress.bait<1){notice(w,'Gather worms beside the lakeshore reeds');return false}
@@ -241,7 +249,7 @@ export function releaseFishingAction(w:World,cancelled=false):boolean{
    const landing=fish&&castLanding(w,s.origin,target,Math.max(36,fishRadius(fish)));
    if(pier&&fish&&landing&&waterPath(w,fish,target,fishRadius(fish)))choice={pier,index:s.fishIndex,fish,target,landing,productive:feedingIndex(w,pier)===s.fishIndex};
   }
-  if(!choice){stopFishing(w,'Cast cancelled · Aim at clear water near a fish');return false}
+  if(!choice){stopFishing(w,'Cast cancelled');return false}
   s.fishStart={...choice.fish};s.fish={...choice.fish};s.target=choice.target;s.landingPoint=choice.landing;
   s.pierId=choice.pier.id;s.fishIndex=choice.index;s.species=choice.fish.species!;s.weight=choice.fish.kg!;s.productive=choice.productive;
   s.direction=w.player.direction=facing(s.origin,s.target);s.castStarted=now(w);
@@ -263,7 +271,7 @@ function catchVisual(caught:FishingCatch):FishingVisualFish{
 }
 export function resolveFishingCatch(w:World,keep:boolean):boolean{
  const p=fishingProgress(w),caught=p.pendingCatch;if(!caught||w.phase==='over'||w.player.hp<=0||w.player.downedUntil)return false;
- if(keep&&!keepFishingCatch(w,caught)){notice(w,'Pack full · Free room for the whole catch, or release it');return false}
+ if(keep&&!keepFishingCatch(w,caught)){notice(w,'Bag full · Catch held');return false}
  p.pendingCatch=undefined;p.caught++;if(keep)p.kept++;else p.released++;
  if(caught.species!=='drone'){
   p.bestKg=Math.max(p.bestKg,caught.kg);p.bestBySpecies??={};p.bestBySpecies[caught.species]=Math.max(p.bestBySpecies[caught.species]??0,caught.kg);
@@ -275,7 +283,9 @@ export function resolveFishingCatch(w:World,keep:boolean):boolean{
   runtime(w).aftermath={kind:keep?'keep':'release',started:now(w),duration:keep?.85:2.2,from:{x:w.player.x,y:w.player.y},to:{...water},fish,pierId:caught.pierId,fishIndex:caught.fishIndex};
  }
  emit(w,keep?'keep':'release');
- notice(w,keep?`${FISHING_SPECIES[caught.species].shortName} kept · ${fishingCatchRewardLabel(caught)}`:caught.species==='drone'?'Scout drone returned to the water':'Fish released · Back to the lake');return true;
+ const r=runtime(w);
+ r.receipt=keep?{id:r.event!.id,catch:{...caught},rewardLabel:fishingCatchRewardLabel(caught),rewardWeight:fishingCatchRewardWeight(caught),started:now(w),duration:FISHING_RECEIPT_SECONDS}:undefined;
+ return true;
 }
 function moveFish(w:World,s:FishingSession,point:Vec){
  if(!fishingOpenWater(w,point,fishRadius(s.fish)))return;
@@ -284,6 +294,10 @@ function moveFish(w:World,s:FishingSession,point:Vec){
  s.fish.x=point.x;s.fish.y=point.y;
 }
 export function stepFishing(w:World,dt:number){
+ // A full bag keeps the whole animal pending. Making room (including after
+ // loading an old pending catch) retries the same atomic collection path.
+ const pending=w.fishing?.pendingCatch;
+ if(pending&&canKeepFishingCatch(w,pending))resolveFishingCatch(w,true);
  const s=w.fishingSession;if(!s)return;
  if(!equipped(w)||length(w.player,s.origin)>4||w.player.hp<s.lastHp||!fishingPiers(w.layout).some(p=>p.id===s.pierId)||s.phase!=='aiming'&&!fishingOpenWater(w,s.target,Math.max(32,fishRadius(s.fish)))){stopFishing(w);return}
  const t=now(w),age=t-s.started,p=fishingProgress(w);s.lastHp=w.player.hp;
@@ -339,6 +353,7 @@ export function stepFishing(w:World,dt:number){
    p.pendingCatch={id:s.attempt,species:s.species,name:FISHING_SPECIES[s.species].name,kg:s.weight,isRecord:s.weight>best,image:FISHING_SPECIES[s.species].image,
     portions:fishingPortions(s.species,s.weight),water:{...s.landingPoint},size:s.fish.size,variant:s.fish.variant,pierId:s.pierId,fishIndex:s.fishIndex};
    w.fishingSession=undefined;
+   if(canKeepFishingCatch(w,p.pendingCatch))resolveFishingCatch(w,true);
   }
  }else if(s.phase==='escaped'){
   const pier=fishingPiers(w.layout).find(p=>p.id===s.pierId),ambient=pier&&visualFish(pier,s.fishIndex,fishClock(w));
@@ -370,7 +385,7 @@ export function fishingHud(w:World):FishingHud|null{
  else if(disabled){command='FIND CLEAR WATER';detail='Move to the pier edge or a clear bank.'}
  return{phase:phaseName,action,command,detail,hint:command+' · '+detail,tone,bait:progress.bait,tension:s?.tension??0,charge:s?.charge??0,holding:s?.holding??false,active:!!s||!!caught,disabled,
   progress:s&&s.initialDistance>0?clamp(1-s.distance/s.initialDistance):caught?1:0,fightBehavior:s?.phase==='reeling'?s.fightBehavior:undefined,castValid:s?.castValid??!disabled,castHint:s?.castHint??'',nibbleAmount:s?.nibbleAmount??0,species,
-  canKeep:!!caught&&canKeepFishingCatch(w,caught),catch:caught,rewardLabel:caught?fishingCatchRewardLabel(caught):undefined,rewardWeight:caught?fishingCatchRewardWeight(caught):undefined,
+  canKeep:!!caught&&canKeepFishingCatch(w,caught),catch:caught,rewardLabel:caught?fishingCatchRewardLabel(caught):undefined,rewardWeight:caught?fishingCatchRewardWeight(caught):undefined,receipt:fishingCatchReceipt(w),
   assists:{autoHook:progress.autoHook,toggleReel:progress.toggleReel},caught:progress.caught,bestKg:progress.bestKg,event:runtimes.get(w)?.event};
 }
 export function fishingRenderState(w:World):FishingRenderState|null{

@@ -7,7 +7,7 @@ import {build} from 'esbuild';
 
 const temp=fs.mkdtempSync(path.join(os.tmpdir(),'fishing-gameplay-'));
 try{
- const modules=['survival-engine','fishing','fishing-catalog','fishing-rewards','fishing-site-art','fishing-site-geometry','fishing-site-placement','fishing-water-life','world-assets','world-layout','imported-art','outdoor-terrain','play-interaction','player-gear','expedition-inventory','studio-play'];
+ const modules=['survival-engine','fishing','fishing-catalog','fishing-rewards','fishing-save','fishing-site-art','fishing-site-geometry','fishing-site-placement','fishing-water-life','world-assets','world-layout','imported-art','outdoor-terrain','play-interaction','player-gear','expedition-inventory','studio-play'];
  await build({stdin:{contents:modules.map(n=>`export * from './src/${n}';`).join('\n'),resolveDir:process.cwd()},bundle:true,platform:'node',format:'cjs',outfile:path.join(temp,'game.cjs'),logLevel:'error'});
  const m=createRequire(import.meta.url)(path.join(temp,'game.cjs'));
  const snapshot=JSON.parse(fs.readFileSync('native/assets/world-snapshot.json','utf8'));m.installImportedArt(snapshot.records);
@@ -48,7 +48,7 @@ try{
    advance(w,1/60);
    if(w.fishingSession?.phase==='reeling')assert(m.fishingOpenWater(w,w.fishingSession.fish,26),'The hooked fish remains in lake water');
   }
-  assert(w.fishing.pendingCatch,'Reeling and easing off can land the actual fish');
+  assert(w.fishing.pendingCatch||m.fishingCatchReceipt(w),'Reeling and easing off lands or automatically bags the actual fish');
   return (w.tick-start)/60;
  };
 
@@ -90,13 +90,37 @@ try{
  const missed=atPier();cast(missed);bite(missed);assert.equal(missed.fishing.bait,9);advance(missed,4);assert(!missed.fishingSession);assert(!missed.fishing.pendingCatch);assert.equal(missed.fishing.bait,9);
  const snapped=atPier();cast(snapped);bite(snapped);m.pressFishingAction(snapped);m.releaseFishingAction(snapped);m.pressFishingAction(snapped);advance(snapped,14);assert(!snapped.fishing.pendingCatch);assert.equal(snapped.bag.rawFish,0);assert.equal(snapped.fishing.bait,9);
 
- // Adaptive hold/release wins. Full pack does not discard the undecided fish.
- const landed=atPier(),fightSeconds=playCatch(landed),caught=landed.fishing.pendingCatch;
- assert.equal(landed.fishing.bait,9);assert.equal(landed.bag.rawFish,0);assert(m.fishingHud(landed).active);assert(m.fishingHud(landed).disabled);
- m.setItemCount(landed,'fuel',290);assert(!m.fishingHud(landed).canKeep);assert(!m.resolveFishingCatch(landed,true));assert.equal(landed.fishing.pendingCatch,caught);
- landed.player.equipped=null;assert.equal(m.fishingHud(landed).phase,'caught','Pending catch stays actionable when unequipped');m.stopFishing(landed);assert(landed.fishing.pendingCatch);
- const rewards=m.fishingCatchRewards(caught);m.setItemCount(landed,'fuel',0);assert(m.resolveFishingCatch(landed,true));for(const reward of rewards)assert.equal(m.itemCount(landed,reward.kind),reward.count);assert.equal(landed.fishing.kept,1);assert.equal(landed.fishing.caught,1);assert(!m.resolveFishingCatch(landed,true));for(const reward of rewards)assert.equal(m.itemCount(landed,reward.kind),reward.count);
- const released=atPier();playCatch(released);assert(m.resolveFishingCatch(released,false));assert.equal(released.bag.rawFish,0);assert.equal(released.fishing.released,1);assert.equal(released.fishing.caught,1);assert(!m.resolveFishingCatch(released,false));
+ // Adaptive hold/release bags the complete catch immediately, exactly once.
+ const landed=atPier(),landingNotice=landed.notice,fightSeconds=playCatch(landed),receipt=m.fishingCatchReceipt(landed),caught=receipt.catch;
+ assert.equal(landed.fishing.bait,9);assert(!landed.fishing.pendingCatch);assert(!m.fishingHud(landed).active);assert.equal(m.fishingHud(landed).phase,'ready');
+ const rewards=m.fishingCatchRewards(caught);for(const reward of rewards)assert.equal(m.itemCount(landed,reward.kind),reward.count);
+ assert.equal(landed.fishing.kept,1);assert.equal(landed.fishing.caught,1);assert.equal(receipt.id,m.fishingHud(landed).event.id);assert.equal(receipt.age,0);assert.equal(receipt.duration,2.6);
+ assert.equal(receipt.rewardLabel,m.fishingCatchRewardLabel(caught));assert.equal(receipt.rewardWeight,m.fishingCatchRewardWeight(caught));assert.equal(landed.notice,landingNotice,'Collection does not replace an unrelated notice with a global explanation');
+ advance(landed,.3);assert.equal(m.fishingCatchReceipt(landed).id,receipt.id,'Repeated steps do not restart the receipt');assert(m.fishingCatchReceipt(landed).age>0);assert(!m.resolveFishingCatch(landed,true));
+ for(const reward of rewards)assert.equal(m.itemCount(landed,reward.kind),reward.count);assert.equal(landed.fishing.kept,1);
+ const restored=atPier();restored.fishing=structuredClone(landed.fishing);assert.equal(m.fishingCatchReceipt(restored),undefined,'A new world with saved fishing progress cannot replay a collection receipt');
+ advance(landed,2.4);assert.equal(m.fishingCatchReceipt(landed),undefined,'Receipt expires by simulation time, without remounting or UI actions');assert.equal(m.fishingHud(landed).receipt,undefined);
+
+ // A full pack holds the animal, without a partial reward or repeating notices.
+ const held=atPier(),heldNotice=held.notice;m.setItemCount(held,'fuel',290);playCatch(held);const waitingCatch=held.fishing.pendingCatch;
+ assert(waitingCatch);assert(m.fishingHud(held).active);assert(m.fishingHud(held).disabled);assert(!m.fishingHud(held).canKeep);assert.equal(held.fishing.kept,0);assert.equal(m.fishingCatchReceipt(held),undefined);
+ const heldRewards=m.fishingCatchRewards(waitingCatch);advance(held,1);assert.equal(held.fishing.pendingCatch,waitingCatch);assert.equal(held.notice,heldNotice,'Capacity retries do not spam notices');for(const reward of heldRewards)assert.equal(m.itemCount(held,reward.kind),0);
+ held.player.equipped=null;assert.equal(m.fishingHud(held).phase,'caught','Pending catch stays actionable when unequipped');m.stopFishing(held);assert(held.fishing.pendingCatch);
+ m.setItemCount(held,'fuel',0);advance(held,1/60);assert(!held.fishing.pendingCatch,'Making room automatically collects a held catch without another fishing session');for(const reward of heldRewards)assert.equal(m.itemCount(held,reward.kind),reward.count);assert.equal(held.fishing.kept,1);assert.equal(held.fishing.caught,1);
+ assert(m.fishingCatchReceipt(held),'The pure receipt remains observable after collecting with the rod unequipped');assert.equal(m.fishingHud(held),null,'A receipt alone must not take ownership of the action button');
+ advance(held,.5);for(const reward of heldRewards)assert.equal(m.itemCount(held,reward.kind),reward.count);assert.equal(held.fishing.kept,1);
+ const released=atPier(),releaseNotice=released.notice;m.setItemCount(released,'fuel',290);playCatch(released);const releasedCatch=released.fishing.pendingCatch;assert(m.resolveFishingCatch(released,false));assert.equal(released.bag.rawFish,0);assert.equal(released.fishing.released,1);assert.equal(released.fishing.caught,1);assert(!m.resolveFishingCatch(released,false));
+ const releaseEffect=m.fishingRenderState(released).aftermath;assert.equal(releaseEffect.kind,'release');assert.deepEqual(releaseEffect.to,releasedCatch.water);assert.equal(m.fishingCatchReceipt(released),undefined);assert.equal(released.notice,releaseNotice);advance(released,2.3);assert(!m.fishingFishUnavailable(released,releasedCatch.pierId,releasedCatch.fishIndex));
+
+ // Old pending catches keep their original one-portion reward; unsafe states
+ // do not award on retry, and mixed salvage never fits only partially.
+ const legacy=atPier();legacy.fishing.attempts=3;legacy.fishing.pendingCatch={id:3,species:'perch',name:'Perch',kg:3.7,isRecord:true,image:m.FISHING_SPECIES.perch.image};assert(m.validFishingProgress(legacy.fishing));advance(legacy,1/60);assert.equal(m.itemCount(legacy,'rawFish'),1);assert.equal(legacy.fishing.kept,1);assert(!legacy.fishing.pendingCatch);assert(m.validFishingProgress(legacy.fishing),'Automatically collecting a legacy catch preserves a valid saved progression');
+ for(const block of [w=>{w.player.hp=0},w=>{w.player.downedUntil=100},w=>{w.phase='over'}]){
+  const w=atPier();w.fishing.attempts=receipt.catch.id;w.fishing.pendingCatch={...receipt.catch};const pending=w.fishing.pendingCatch;block(w);advance(w,.5);assert.equal(w.fishing.pendingCatch,pending);assert.equal(w.fishing.kept,0);assert.equal(m.fishingCatchReceipt(w),undefined);for(const reward of m.fishingCatchRewards(pending))assert.equal(m.itemCount(w,reward.kind),0);
+ }
+ const mixed=atPier();mixed.fishing.attempts=4;mixed.fishing.pendingCatch={id:4,species:'drone',name:'Scout drone',kg:4.2,isRecord:false,image:m.FISHING_SPECIES.drone.image};
+ m.setItemCount(mixed,'fuel',Math.floor((m.PACK_CAPACITY-m.GEAR.fishingRod.weight-2)/m.ITEM_RULES.fuel.weight));advance(mixed,.5);assert(mixed.fishing.pendingCatch);assert.equal(m.itemCount(mixed,'scrap'),0);assert.equal(m.itemCount(mixed,'ironOre'),0);
+ m.setItemCount(mixed,'fuel',0);advance(mixed,1/60);assert(!mixed.fishing.pendingCatch);assert.equal(m.itemCount(mixed,'scrap'),6);assert.equal(m.itemCount(mixed,'ironOre'),2);advance(mixed,.5);assert.equal(m.itemCount(mixed,'scrap'),6);assert.equal(m.itemCount(mixed,'ironOre'),2);
 
  // Both motor/timing assists use the same bite and fight rules.
  const assist=atPier();m.setFishingAssist(assist,{autoHook:true,toggleReel:true});cast(assist);advance(assist,6);assert.equal(assist.fishingSession.phase,'reeling');assert.equal(assist.fishing.bait,9);
@@ -161,12 +185,12 @@ try{
   assert(w,`A player can deliberately aim for a visible ${species}`);
   const animal=school[w.fishingSession.fishIndex],visual=w.fishingSession.fish;
   assert.equal(visual.size,animal.size);assert.equal(w.fishingSession.weight,m.fishingAmbientFishWeight(animal,w.fishingSession.fishIndex));
-  speciesTimes[species]=playCatch(w);const caught=w.fishing.pendingCatch;
+  speciesTimes[species]=playCatch(w);const caught=m.fishingCatchReceipt(w).catch;
   assert.equal(caught.species,species);assert.equal(caught.portions,m.fishingPortions(species,caught.kg));
-  assert(m.fishingFishUnavailable(w,caught.pierId,caught.fishIndex),'The held animal cannot also appear in its ambient school');
-  assert(m.resolveFishingCatch(w,false));w.player.equipped=null;
-  const aftermath=m.fishingRenderState(w).aftermath;assert.equal(aftermath.kind,'release');assert.equal(aftermath.fish.species,species);
-  assert.deepEqual(aftermath.to,caught.water);advance(w,2.3);assert(!m.fishingFishUnavailable(w,caught.pierId,caught.fishIndex));
+  assert(!w.fishing.pendingCatch);assert.equal(w.fishing.kept,1);assert.equal(w.fishing.bestBySpecies[species],caught.kg);for(const reward of m.fishingCatchRewards(caught))assert.equal(m.itemCount(w,reward.kind),reward.count);
+  assert(m.fishingFishUnavailable(w,caught.pierId,caught.fishIndex),'The collected animal cannot immediately reappear in its ambient school');w.player.equipped=null;
+  const aftermath=m.fishingRenderState(w).aftermath;assert.equal(aftermath.kind,'keep');assert.equal(aftermath.fish.species,species);
+  assert.deepEqual(aftermath.to,caught.water);advance(w,7.1);assert(!m.fishingFishUnavailable(w,caught.pierId,caught.fishIndex));assert.equal(w.fishing.kept,1);
  }
  assert(Object.values(speciesTimes).every(seconds=>seconds>=11&&seconds<=22),'Normal species fights stay short, including their landing animation');
  const feeding=atPier(),spotBefore=m.fishingFeedingSpots(feeding).find(spot=>spot.kind==='fish');feeding.tick=m.FISHING_FEEDING_SECONDS*60;
@@ -182,11 +206,11 @@ try{
   }
  }
  assert(salvageWorld,'A visible rare drone clue can be deliberately cast onto');assert.equal(salvageWorld.fishingSession.fishIndex,-1);
- const salvageSeconds=playCatch(salvageWorld),drone=salvageWorld.fishing.pendingCatch;assert.equal(drone.species,'drone');assert.equal(drone.isRecord,false);
- assert(m.resolveFishingCatch(salvageWorld,true));assert.equal(m.itemCount(salvageWorld,'scrap'),6);assert.equal(m.itemCount(salvageWorld,'ironOre'),2);
+ const salvageSeconds=playCatch(salvageWorld),drone=m.fishingCatchReceipt(salvageWorld).catch;assert.equal(drone.species,'drone');assert.equal(drone.isRecord,false);
+ assert(!salvageWorld.fishing.pendingCatch);assert.equal(m.itemCount(salvageWorld,'scrap'),6);assert.equal(m.itemCount(salvageWorld,'ironOre'),2);assert.equal(salvageWorld.fishing.kept,1);
  assert(!m.fishingFeedingSpots(salvageWorld).some(spot=>spot.kind==='salvage'),'A recovered drone cannot be farmed again in the same feeding window');
 
- const report={result:'pass',standingSpots:standing.length,castStanding:stand,tackleStanding:claimSpot,baitStanding:baitSite.position,fightSeconds,speciesTimes,salvageSeconds,checks:['actual tackle claim and capacity','reachable renewable bait','safe water and visible fish continuity','hold/release/cancel casting','bite bait accounting','missed bite and snapped line','playable reel/ease loop','bag-full retention and one catch award','release without inventory grant','timing and motor assists','movement/damage/menu/equipment cancellation','real left-stick aiming and invalid landing feedback','WAIT nibbles and TAP HOOK bites with one-shot events','three deliberately targeted species and size/weight continuity','telegraphed variable fights and short catch times','release animation and hidden held fish','shifting feeding spots','visible rare drone and atomic salvage']};
+ const report={result:'pass',standingSpots:standing.length,castStanding:stand,tackleStanding:claimSpot,baitStanding:baitSite.position,fightSeconds,speciesTimes,salvageSeconds,checks:['actual tackle claim and capacity','reachable renewable bait','safe water and visible fish continuity','hold/release/cancel casting','bite bait accounting','missed bite and snapped line','playable reel/ease loop','automatic whole-catch awards exactly once','simulation-timed transient receipt without global explanation or replay','bag-full retention and automatic collection after making room','release without inventory grant','legacy single-portion pending catches','no automatic awards while dead, downed or game over','mixed salvage remains atomic with partial capacity','timing and motor assists','movement/damage/menu/equipment cancellation','real left-stick aiming and invalid landing feedback','WAIT nibbles and TAP HOOK bites with one-shot events','three deliberately targeted species and size/weight continuity','telegraphed variable fights and short catch times','keep/release animation and temporarily hidden collected fish','shifting feeding spots','visible rare drone and atomic salvage']};
  console.log(JSON.stringify(report));
  if(process.argv[2]){fs.mkdirSync(path.dirname(process.argv[2]),{recursive:true});fs.writeFileSync(process.argv[2],JSON.stringify(report,null,2)+'\n')}
 }finally{fs.rmSync(temp,{recursive:true,force:true})}

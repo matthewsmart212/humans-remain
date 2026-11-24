@@ -5,14 +5,16 @@
 Tap CAST for a quick throw, or hold it and move the left thumb / WASD to aim.
 The landing marker shows the exact committed target and marks invalid targets
 with a cross. The survivor remains planted while aiming. Cancelled and invalid
-casts spend no bait. A nibble says WAIT; the submerged float and TAP HOOK prompt
-identify the true bite. Auto hook and tap-to-reel assistance remain in Pause →
+casts spend no bait. A shallow nibble and the submerged float distinguish the
+true bite; the HOOK action gains a gold highlight. Auto hook and tap-to-reel
+assistance remain in Pause →
 Game settings, alongside sound and native vibration controls.
 
-The largest HUD line always gives the current action. A warning precedes every
-strong pull by at least 0.8 seconds. Releasing changes the instruction to WAIT ·
-EASING. Tension and progress to shore have separate labels and shapes. All
-essential instructions remain visible with sound and vibration disabled.
+Ordinary fishing shows only the bait count. During the fight, two slim meters
+keep stable TENSION and TO SHORE labels, without changing explanatory text.
+Fish turns warn of a strong pull at least 0.8 seconds ahead; rod strain, the
+tension bar and its warning mark convey the load. Full instructions remain
+available to assistive technology. The visual loop works without sound.
 
 Perch, carp and pike have different silhouettes, sizes that reflect weight, turns, bursts
 and tiring periods. Shifting feeding ripples guide cast selection. Rod/body/hand
@@ -26,51 +28,52 @@ quickbar and eating. A rare visible submerged scout-drone clue can be hauled
 for six scrap and two iron ore (3 kg). Its intermittent signal is audiovisual;
 this update adds no companion quest or new enemy-attraction behavior.
 
-Full bags preserve the complete catch. Keep reserves room for the complete
-reward and consumes the pending catch once. Release visibly returns the same
-animal to the lake. Existing serialized perch catches retain their original
+A successful landing automatically adds the complete reward to the bag. Full
+bags preserve the catch; BAG opens inventory and RELEASE returns it to the
+lake. Making room automatically collects the held catch. Existing serialized
+perch catches retain their original
 single reward; no live cast or feedback event is restored from a save. The game
 still starts a fresh session on Play, as it did before this update.
 
-## Compact HUD follow-up — 24 November 2026
+## Visual fishing follow-up — 24 November 2026
 
-The web and native overlays now share concise presentation copy. The normal
-card is 184 px wide and the catch card is 200 px. Each phase has one primary
-action, a small bait count and only the context needed for that action. The
-generic stage heading, species footer, cast-distance meter and heavy double
-frame are removed. The landing marker continues to show the actual cast.
+The previous compact instruction card is replaced with a small bait badge,
+visual feedback and a short collection receipt beside the action control in
+both orientations. A normal catch has no Keep/Release decision screen. Its
+thumbnail, name, weight, check mark and “In bag” confirmation fade after 2.6
+simulation seconds. Receipts remain visible when the rod is unequipped, without
+taking over another primary action, and are never restored from a saved run.
 
-Touch guidance explicitly says to hold CAST and drag on the left; keyboard
-guidance names Space and WASD. Nibble, bite, incoming pull, easing, invalid aim,
-no bait and failed catches remain distinct. Tension and shore progress retain
-separate slim meters, text labels and accessible values. Complete instructions
-remain available to assistive technology, including actual live-region text on
-web for changes that only affect the detailed guidance.
+Automatic collection uses the existing whole-reward resolution path. This
+preserves portions, real pack weight, records, counters and landing aftermath.
+Repeated simulation steps cannot award twice. Full bags keep the complete fish
+or mixed salvage pending, including old saved catches, and retry only when the
+complete reward fits. Dead, downed and game-over worlds cannot collect it.
 
-The catch card keeps a small image, species, weight, a record marker and the
-actual reward with pack weight. Raw portions remain labelled as raw. Keep and
-Release retain 44 px minimum touch targets. A full bag still disables only
-Keep, and the card explains that the catch is held safely while space is made.
-Fishing mechanics, inputs, rewards, animation and audio are unchanged.
+Both HUDs checkpoint each automatic award and newly held full-bag catch once,
+scoped to the current world. Manual release still checkpoints. Polling and
+receipt expiry do not replay saves. The full-bag exception keeps 44 px BAG and
+RELEASE/RETURN targets; ordinary fishing has no panel buttons or visible
+explanatory paragraphs. Large top-left success/release/escape explanations are
+removed. Invalid casts and early retrieval retain only brief result notices.
 
-This follow-up passed the web and native TypeScript checks, web production
-build, fishing-controls checks and 30 web/native feedback UI cases. Those
-component checks cover input-specific guidance, hold/toggle/easing distinctions,
-reward decisions and full-bag recovery. Static rendering of the actual React
-component, CSS, fonts and artwork checked 34 states: the ready card measured
-184×55 px, reeling 184×84–102 px, catches 200×131 px, and full-bag catches
-200×167 px with 44 px buttons. The layout check covered 320/390 px portrait
-and 844/1024 px landscape widths, retaining clearance from the action controls.
+This update passed web/native TypeScript, the web production build, fishing
+gameplay, controls, inventory, save and feedback checks. Feedback covers 51
+actual web/native component cases, including visual-only ordinary stages,
+stable meters, accessible guidance, receipt-only success, full-bag handlers,
+and once-only checkpoints. Engine checks cover every species, automatic
+collection, atomic salvage, full-bag recovery, legacy portions and expiry.
 
-The local browser remains blocked by the runtime socket policy. These are
-static HTML/CSS measurements under WeasyPrint, not browser or physical iPhone
-screenshots. Unsupported dynamic/media features and a landscape full-bag
-pagination artifact were assessed from the production anchors and measured
-card bounds rather than treated as browser behavior. Static button previews
-pin the declared 44 px minimum because WeasyPrint drops that minimum for nested
-flex controls. The older V2 verification
-below records the broader gameplay, rendering and export work from the
-mechanics update.
+The browser remains blocked by the runtime socket policy. Visual QA uses
+static rendering of the actual React component, stylesheet, fonts and artwork,
+plus source-based action-control bounds. Sixteen rendered states measured a
+38×24 px bait badge, 132×55 px fight display and 178×44 px receipt. All 48
+placements at 320×568, 390×844 and 844×390 fit the viewport and clear the primary
+control. The fixture pins the declared 44 px button minimum for WeasyPrint
+compatibility and uses zero safe-area insets for those calculations. It is not
+physical iPhone or browser interaction testing. The earlier compact-card implementation and its original
+measurements remain in commit 5909ff0; the broader V2 evidence below describes
+the original mechanics, rendering and export work.
 
 ## Verification
 

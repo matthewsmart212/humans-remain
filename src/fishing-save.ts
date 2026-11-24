@@ -30,8 +30,8 @@ export function validFishingProgress(value:unknown):value is FishingProgress|und
  if(!bounded(value.bestKg,0,8)||!bounded(value.baitReadyAt,0,Number.MAX_SAFE_INTEGER))return false;
  if(value.salvagedAt!==undefined&&!bounded(value.salvagedAt,0,Number.MAX_SAFE_INTEGER))return false;
  if(value.bestBySpecies!==undefined&&(!record(value.bestBySpecies)||Object.entries(value.bestBySpecies).some(([key,kg])=>!['perch','carp','pike'].includes(key)||!bounded(kg,0,8))))return false;
- // A landed fish is undecided until KEEP or RELEASE. Failed casts can leave
- // attempts ahead of the counters, and only one result can await a decision.
+ // A bag-blocked or legacy catch stays pending until stored or released. Failed casts can leave
+ // attempts ahead of the counters, and only one result can await collection or release.
  if(value.caught!==value.kept+value.released||value.caught>value.attempts)return false;
  if(value.pendingCatch!==undefined){
   if(!validPendingCatch(value.pendingCatch)||value.pendingCatch.id!==value.attempts||value.caught>=value.attempts)return false;
