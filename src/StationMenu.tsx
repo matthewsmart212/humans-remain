@@ -18,8 +18,8 @@ function currentControls(panel: HTMLElement) {
   .filter(el => el.tabIndex >= 0 && el.getClientRects().length > 0 && !el.closest('[inert]'));
 }
 
-type Props={world:World;title:string;label?:string;subtitle?:string;image?:string;closeLabel?:string;onClose:()=>void;weight?:number;loadLabel?:string;message?:string;hint?:string;kind?:'backpack';className?:string;compact?:boolean;fitContent?:boolean;footerAction?:React.ReactNode;children:React.ReactNode};
-export default function StationMenu({world,title,label=title,subtitle,image,closeLabel=`Leave ${title.toLowerCase()}`,onClose,weight,loadLabel,message,hint,kind,className='',compact=false,fitContent=false,footerAction,children}:Props){
+type Props={world:World;title:string;label?:string;subtitle?:string;image?:string;emblem?:React.ReactNode;closeLabel?:string;onClose:()=>void;weight?:number;loadLabel?:string;message?:string;hint?:string;kind?:'backpack';className?:string;compact?:boolean;fitContent?:boolean;footerAction?:React.ReactNode;children:React.ReactNode};
+export default function StationMenu({world,title,label=title,subtitle,image,emblem,closeLabel=`Leave ${title.toLowerCase()}`,onClose,weight,loadLabel,message,hint,kind,className='',compact=false,fitContent=false,footerAction,children}:Props){
  const layer=useRef<HTMLDivElement>(null),panel=useRef<HTMLElement>(null),[frame,setFrame]=useState<ReturnType<typeof stationMenuLayout>>();
  useLayoutEffect(()=>{const el=layer.current;if(!el)return;const previous=document.activeElement as HTMLElement|null;
   const resize=()=>{const b=el.getBoundingClientRect(),s=getComputedStyle(el),safe:MenuInsets={top:parseFloat(s.paddingTop)||0,right:parseFloat(s.paddingRight)||0,bottom:parseFloat(s.paddingBottom)||0,left:parseFloat(s.paddingLeft)||0};setFrame(stationMenuLayout(b.width,b.height,safe));presentStationMenu(world,true,kind==='backpack',safe)};
@@ -75,7 +75,7 @@ export default function StationMenu({world,title,label=title,subtitle,image,clos
   <button className="station-world-exit" aria-hidden="true" aria-label={closeLabel} tabIndex={-1} onClick={onClose}/>
   <section ref={panel} tabIndex={-1} className={`supply-panel station-menu ${compact?'station-menu--simplified':''} ${fitContent?'station-menu--fit':''} ${className}`} role="dialog" aria-modal="true" aria-label={label} data-wide={frame?.wide} data-short={frame?.compact} style={frame?{left:frame.panel.x,top:frame.panel.y,width:frame.panel.width,height:fitContent?'auto':frame.panel.height,maxHeight:frame.panel.height}:undefined}>
    <header className="station-menu-header">
-    <img src={image??fieldKitArt(kind==='backpack'?'backpack':'chest')} alt=""/>
+    {emblem?<span className="station-menu-custom-emblem" aria-hidden="true">{emblem}</span>:<img src={image??fieldKitArt(kind==='backpack'?'backpack':'chest')} alt=""/>}
     <div><h2>{title}</h2>
      {subtitle&&!message&&<small>{subtitle}</small>}
      <div role="status" className="station-menu-feedback">{message}</div>

@@ -14,6 +14,7 @@ type Props = {
  label?: string;
  subtitle?: string;
  image?: ImageSourcePropType;
+ emblem?: React.ReactNode;
  closeLabel?: string;
  onClose: () => void;
  onBack?: () => void;
@@ -32,7 +33,7 @@ type Props = {
 };
 
 export default function StationMenu({
- world, title, label = title, subtitle, image, closeLabel = `Leave ${title.toLowerCase()}`,
+ world, title, label = title, subtitle, image, emblem, closeLabel = `Leave ${title.toLowerCase()}`,
  onClose, onBack = onClose, weight, loadLabel, message, hint, kind, compact = false, fitContent = false,
  footerAction, width, height, safe, children,
 }: Props) {
@@ -67,7 +68,7 @@ export default function StationMenu({
    ]}>
     <View style={styles.header}>
      <View style={styles.emblem}>
-      <Image source={image ?? art[kind === 'backpack' ? 'backpack' : 'chest']} resizeMode="contain" style={styles.icon} />
+      {emblem??<Image source={image ?? art[kind === 'backpack' ? 'backpack' : 'chest']} resizeMode="contain" style={styles.icon} />}
      </View>
      <View style={styles.heading}>
       <Text accessibilityRole="header" style={styles.title}>{title}</Text>

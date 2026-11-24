@@ -273,3 +273,11 @@ public/survival/expedition-menu-v2/loading-panel.webp -filter -diff -merge
 /public/survival/patch-v1/*.webp -filter -diff -merge -text
 /docs/qa/patch-v1/*.webp -filter -diff -merge -text
 /artwork-archive/patch-v1/*.png -filter -diff -merge -text
+
+# Patch's articulated walk atlas and visual QA are real offline web/Expo assets.
+/public/survival/patch-v2/*.webp -filter -diff -merge -text
+/artwork-archive/patch-v2/*.png -filter -diff -merge -text
+/docs/qa/patch-v2/*.webp -filter -diff -merge -text
+/docs/qa/patch-v2/*.png -filter -diff -merge -text
+/docs/qa/patch-v2/*.gif -filter -diff -merge -text
+/docs/qa/patch-v2/*.mp4 -filter -diff -merge -text

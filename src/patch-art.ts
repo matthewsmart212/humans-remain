@@ -12,11 +12,15 @@ export const PATCH_STATION_WIDTH=420;
 export const PATCH_LOCKER_WIDTH=66;
 export const PATCH_STATION_ANCHOR=[.5,.90] as const;
 export const PATCH_LOCKER_ANCHOR=[.5,.9] as const;
-export const PATCH_IMAGES={patchRobot:'/survival/patch-v1/robot.webp',patchDamaged:'/survival/patch-v1/damaged.webp'};
+export const PATCH_IMAGES={patchRobot:'/survival/patch-v1/robot.webp',patchDamaged:'/survival/patch-v1/damaged.webp',patchWalk:'/survival/patch-v2/walk.webp'};
 export const PATCH_ROBOT_CELL=256;
 export const PATCH_ROBOT_ANCHOR=[128,228] as const;
-export const PATCH_ROBOT_SCALE=.3;
+// Both dimensions are 50% larger; quest collision and navigation stay separate.
+export const PATCH_ROBOT_SCALE=.45;
 export const PATCH_ROBOT_FRAMES:Record<Direction,number>={down:0,'down-right':1,right:2,'up-right':3,up:4,'up-left':5,left:6,'down-left':7};
+export const PATCH_WALK_PHASES=8;
+// The run stores actual walked ground modulo one complete left/right stride.
+export const PATCH_WALK_CYCLE_DISTANCE=112;
 // Caged-lamp centers measured in the registered atlas cells (never mirrored).
 export const PATCH_ROBOT_LAMPS:readonly (readonly [number,number])[]=[[114,43],[113,43],[117,43],[101,43],[132,44],[156,44],[134,42],[144,43]];
 export const PATCH_DAMAGED_LAMP=[96,81] as const;

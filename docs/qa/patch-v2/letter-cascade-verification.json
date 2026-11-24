@@ -1,0 +1,113 @@
+{
+  "renderer": "WeasyPrint: actual production React SSR markup and complete bundled CSS; frame geometry from stationMenuLayout. Static style proof, not a browser or device capture.",
+  "checks": [
+    {
+      "device": "portrait",
+      "viewport": [
+        390,
+        720
+      ],
+      "panel": {
+        "x": 12,
+        "y": 270,
+        "width": 366,
+        "height": 438
+      },
+      "paragraphs": 5,
+      "ink": [
+        0.18823529411764706,
+        0.18823529411764706,
+        0.1450980392156863
+      ],
+      "paper": [
+        0.9098039215686274,
+        0.8745098039215686,
+        0.7764705882352941
+      ],
+      "minimumTextContrast": 10.032,
+      "fontSize": 17.0
+    },
+    {
+      "device": "landscape",
+      "viewport": [
+        844,
+        390
+      ],
+      "panel": {
+        "x": 334.88,
+        "y": 12,
+        "width": 450.12,
+        "height": 345
+      },
+      "paragraphs": 4,
+      "ink": [
+        0.18823529411764706,
+        0.18823529411764706,
+        0.1450980392156863
+      ],
+      "paper": [
+        0.9098039215686274,
+        0.8745098039215686,
+        0.7764705882352941
+      ],
+      "minimumTextContrast": 10.032,
+      "fontSize": 17.0
+    },
+    {
+      "device": "safari-bars",
+      "viewport": [
+        667,
+        290
+      ],
+      "panel": {
+        "x": 237.05,
+        "y": 12,
+        "width": 417.95,
+        "height": 266
+      },
+      "paragraphs": 3,
+      "ink": [
+        0.18823529411764706,
+        0.18823529411764706,
+        0.1450980392156863
+      ],
+      "paper": [
+        0.9098039215686274,
+        0.8745098039215686,
+        0.7764705882352941
+      ],
+      "minimumTextContrast": 10.032,
+      "fontSize": 17.0
+    },
+    {
+      "device": "small-portrait",
+      "viewport": [
+        320,
+        568
+      ],
+      "panel": {
+        "x": 12,
+        "y": 226,
+        "width": 296,
+        "height": 330
+      },
+      "paragraphs": 4,
+      "ink": [
+        0.18823529411764706,
+        0.18823529411764706,
+        0.1450980392156863
+      ],
+      "paper": [
+        0.9098039215686274,
+        0.8745098039215686,
+        0.7764705882352941
+      ],
+      "minimumTextContrast": 10.032,
+      "fontSize": 17.0
+    }
+  ],
+  "limitations": [
+    "Print renderer does not reproduce Safari scrolling or responsive media/container behavior; browser/device verification is still required.",
+    "PDF page clipping approximates the top of the scrollable note; no scroll offset was fabricated."
+  ]
+}

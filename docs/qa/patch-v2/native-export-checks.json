@@ -1,0 +1,45 @@
+{
+  "passed": true,
+  "platform": "ios",
+  "bundle": "_expo/static/js/ios/index-ce34851e19db5005c00a757b5cb6cfb8.hbc",
+  "assets": 1015,
+  "patchAssets": [
+    {
+      "source": "public/survival/patch-v1/robot.webp",
+      "bytes": 151682,
+      "sha256": "5819bcb690914443d296f5b91c23a98e75d86b680c579ffed69ed57819de75a0",
+      "exported": "assets/f80384a54d182f01b7cd83cb535b8dad"
+    },
+    {
+      "source": "public/survival/patch-v1/portrait.webp",
+      "bytes": 13428,
+      "sha256": "015beafc7183c35d796e2ac860d216c9252b870369f8e789dbc2bfe66dc4b6b4",
+      "exported": "assets/bb840d4a38ed87bee7d900b0ee8a83fc"
+    },
+    {
+      "source": "public/survival/patch-v1/station.webp",
+      "bytes": 262918,
+      "sha256": "1763fe2b3e3835ecce9cfb5c56ee840cc76b0b9c4605d659067753fd1604610f",
+      "exported": "assets/6c68a42a00d31afb8a99412548a4b6bc"
+    },
+    {
+      "source": "public/survival/patch-v1/damaged.webp",
+      "bytes": 15772,
+      "sha256": "b09df13c18e35ebddeb63ece11dbab970e0e449b357b2413e9b00c47d8e14b0d",
+      "exported": "assets/dd5966b23b2ed43d8217082ccbed42c6"
+    },
+    {
+      "source": "public/survival/patch-v1/locker.webp",
+      "bytes": 13782,
+      "sha256": "bbba5f99d50269a7a262db130ce11584a62e17a3609c099135955fb181453972",
+      "exported": "assets/18ac3c227378321304c82e3c77d9ef47"
+    },
+    {
+      "source": "public/survival/patch-v2/walk.webp",
+      "bytes": 1452844,
+      "sha256": "c10b2064c5db2f1af27460465a44098140efa1620f44a6679f94f782148f3f28",
+      "exported": "assets/cf1ce57cb3262c677023472fc7d38635"
+    }
+  ],
+  "physicalIPhoneTested": false
+}

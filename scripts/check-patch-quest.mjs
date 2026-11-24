@@ -8,7 +8,7 @@ import {build} from 'esbuild';
 const temporary=fs.mkdtempSync(path.join(os.tmpdir(),'patch-quest-'));
 try{
  await build({stdin:{contents:[
-  ...['patch-quest','patch-placement','studio-play','survival-engine','imported-art','loot-chest','run-save','scene-travel','world-scenes','world-assets','layout-views','field-kit','station-access','camp-gates'].map(id=>`export * from './src/${id}';`),
+  ...['patch-quest','patch-placement','studio-play','survival-engine','imported-art','loot-chest','run-save','scene-travel','world-scenes','world-layout','world-assets','layout-views','field-kit','station-access','camp-gates'].map(id=>`export * from './src/${id}';`),
   "export * from './native/run-save-store';",
  ].join('\n'),resolveDir:process.cwd()},bundle:true,platform:'node',format:'cjs',outfile:path.join(temporary,'model.cjs'),logLevel:'error'});
  const m=createRequire(import.meta.url)(path.join(temporary,'model.cjs'));
@@ -86,6 +86,48 @@ try{
  world.outdoorReady=undefined;assert.equal(q.command,'stay',`Patch returns over known ground even off camera: ${JSON.stringify({pos:q.position,home,trail:q.homeTrail})}`);
  assert(Math.hypot(q.position.x-home.x,q.position.y-home.y)<80);
 
+ // Isolate follower ergonomics from the authored world without replacing the
+ // actual collision, movement, routing, interaction or quest implementation.
+ const follower=(player={x:1300,y:1000},position={x:1000,y:1000})=>{
+  const w=m.createWorld({...m.emptyLayout(),spawn:player});w.editorPreview=true;w.progression=structuredClone(world.progression);
+  w.patchQuest={...structuredClone(q),position:{...position},command:'follow',moving:false,walkDistance:0,followTrail:[],homeTrail:[]};return w;
+ };
+ const corner=follower({x:1040,y:1000},{x:960,y:1000});
+ const wallId='patch-corner-fixture';m.ASSET_BY_ID.set(wallId,{id:wallId,name:'Corner fixture',group:'Test',image:'/fixture.webp',crop:[0,0,20,180],anchor:[10,90],width:20,height:180,solid:true,role:'prop',body:[{x:0,y:0,hw:10,hh:90}]});
+ corner.layout={...corner.layout,items:[{id:wallId,assetId:wallId,x:1000,y:1000,scale:1,solid:true,role:'prop',roof:'auto'}]};
+ assert.equal(m.patchInteraction(corner),null,'A wall blocks conversation even at short straight-line distance');
+ for(let i=0;i<480;i++){step(corner);assert(!m.worldBlocked(corner,corner.patchQuest.position.x,corner.patchQuest.position.y,15))}
+ assert(corner.patchQuest.position.x>1025,'The follower rounds the wall instead of stopping within 88 units on its far side');
+
+ const catching=follower({x:1219,y:1000});let before={...catching.patchQuest.position};step(catching);
+ const firstStride=Math.hypot(catching.patchQuest.position.x-before.x,catching.patchQuest.position.y-before.y);
+ catching.player.x=catching.patchQuest.position.x+221;before={...catching.patchQuest.position};step(catching);
+ const secondStride=Math.hypot(catching.patchQuest.position.x-before.x,catching.patchQuest.position.y-before.y);
+ assert(Math.abs(firstStride-secondStride)<.5,'Crossing the old catch-up threshold does not abruptly switch walking speed');
+ assert.equal(m.patchStatus(catching).line,'With you.');
+ const settled=follower();let walkedDistance=0;
+ for(let i=0;i<180;i++){before={...settled.patchQuest.position};step(settled);walkedDistance+=Math.hypot(settled.patchQuest.position.x-before.x,settled.patchQuest.position.y-before.y)}
+ const gap=Math.hypot(settled.player.x-settled.patchQuest.position.x,settled.player.y-settled.patchQuest.position.y);
+ assert(gap>80&&gap<=91,'The intentional stand-off leaves the tool action available');
+ assert.equal(m.patchInteraction(settled),null);
+ assert(Math.abs(settled.patchQuest.walkDistance-walkedDistance%112)<1e-6,'Walking frames remain driven by actual ground travel');
+ const rest={...settled.patchQuest.position},restGait=settled.patchQuest.walkDistance;step(settled,90);
+ assert.deepEqual(settled.patchQuest.position,rest);assert.equal(settled.patchQuest.walkDistance,restGait);assert(!settled.patchQuest.moving,'Settled feet do not creep or cycle the gait');
+ settled.player.x=settled.patchQuest.position.x+76;step(settled,30);assert.deepEqual(settled.patchQuest.position,rest,'Patch does not back away when approached');
+ assert.equal(m.patchInteraction(settled)?.target,'robot');assert(m.commandPatch(settled,'stay'));
+ assert.equal(m.patchStatus(settled).line,'I will wait here.','Waiting away from camp does not claim shelter occupancy');
+ const talking=follower({x:1040,y:1000});talking.patchQuest.command='camp';talking.patchQuest.homeTrail=[{x:700,y:1000}];
+ assert.equal(m.patchStatus(talking).line,'On my way home.');
+ assert(m.inspectPatch(talking));const talkingPosition={...talking.patchQuest.position};step(talking,90);
+ assert.deepEqual(talking.patchQuest.position,talkingPosition,'Opening conversation pauses Return to camp without changing its command');
+ assert.equal(talking.patchQuest.command,'camp');talking.stationPanel=undefined;step(talking,30);
+ assert(talking.patchQuest.position.x<talkingPosition.x,'Closing conversation resumes the selected command');
+ const signalling=fresh();let pulses=0,lit=false;
+ for(let tick=0;tick<324;tick++){signalling.tick=tick;const next=m.patchBeacon(signalling)>.5;if(next&&!lit)pulses++;lit=next}
+ assert.equal(pulses,3,'The unrepaired beacon matches the three-flash clue');
+ signalling.weather={reducedMotion:true};const steady=m.patchBeacon(signalling);
+ for(const tick of [0,54,108,250]){signalling.tick=tick;assert.equal(m.patchBeacon(signalling),steady,'Reduced motion keeps the beacon steady')}
+
  // Reading after recruitment never resets discovery or unique grants.
  playerAt(world,{x:chest.x,y:chest.y+45});world.lootChestId=m.LOOT_CHEST_ID;world.stationPanel='rare-cache';
  assert(m.readPatchNote(world));assert(q.noteRead&&q.suppliesDelivered&&q.servoInstalled);
@@ -154,5 +196,5 @@ try{
   v=>v.recruited=false,v=>v.returnedToCamp=false,v=>v.command='fly',v=>v.homeTrail=[{x:1e9,y:0}],v=>v.followTrail=null,
  ]){const bad=structuredClone(raw);corrupt(active(bad).patchQuest);assert.throws(()=>m.decodeRun(JSON.stringify(bad)),/Patch|patch|companion|incomplete|supported/)}
  const newRun=fresh(),newState=m.ensurePatchQuest(newRun);assert(!newState.noteRead&&!newState.servoClaimed&&!newState.suppliesDelivered);assert(!newRun.lootChests?.[m.LOOT_CHEST_ID]);
- console.log(`PASS: out-of-order note/discovery/servo, full-bag unique claims, movement/damage/release cancellation, exact six-second repair, authored bridge journey (${walked} movement ticks), physical follow/stay/return, once-only chest parcel, owner-removal paper, actual FieldKit/controller/studio-loop repair and range guards, companion gate occupancy, fresh-run reset, strict web/native round trips and transient-input omission.`);
+ console.log(`PASS: out-of-order note/discovery/servo, full-bag unique claims, movement/damage/release cancellation, exact six-second repair, authored bridge journey (${walked} movement ticks), physical follow/stay/return, wall-corner approach, smooth catch-up and stable tool-safe stopping, travel-driven gait, conversation pause/resume, once-only chest parcel, owner-removal paper, actual FieldKit/controller/studio-loop repair and range guards, companion gate occupancy, fresh-run reset, strict web/native round trips and transient-input omission.`);
 }finally{fs.rmSync(temporary,{recursive:true,force:true})}

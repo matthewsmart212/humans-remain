@@ -35,7 +35,9 @@ export type PatchRepair={worked:number;duration:number;held:boolean;updatedAt:nu
 export type PatchInteraction={key:'patch:robot'|'patch:locker';action:'patch';target:'robot'|'locker';label:string;shortLabel:'INSPECT'|'REPAIR'|'PATCH'|'TAKE';disabled:boolean;x:number;y:number};
 export type PatchStatus={title:string;line:string;objective:string;canRepair:boolean;canRecruit:boolean;canCommand:boolean;servo:boolean};
 
-const BODY=15,INTERACT_REACH=80,FOLLOW_GAP=88,TRAIL_STEP=28;
+// Stay just outside action reach so a following companion does not replace
+// the player's tool button. A small step towards him opens conversation.
+const BODY=15,INTERACT_REACH=80,FOLLOW_GAP=88,FOLLOW_SETTLE=2,TRAIL_STEP=28;
 const point=(p:Vec):Vec=>({x:p.x,y:p.y});
 const distance=(a:Vec,b:Vec)=>Math.hypot(a.x-b.x,a.y-b.y);
 type Runtime={path:Vec[];routeAt:number;routeTarget?:Vec;speech?:string;speechUntil:number;homeSample?:Vec;followSample?:Vec};
@@ -100,7 +102,8 @@ export function patchStatus(w:World):PatchStatus|null{
  const title=state.suppliesDelivered?'Patch':'P-04';
  const canRepair=state.discovered&&state.servoClaimed&&!state.servoInstalled;
  const canRecruit=state.servoInstalled&&!state.recruited,canCommand=state.suppliesDelivered;
- const line=state.suppliesDelivered?'Shelter occupied.':state.recruited?'I have something for the camp.':state.servoInstalled?'Supplies… still required?':state.servoClaimed?'Replacement servo secured.':'Drive servo damaged.';
+ const home=homePoint(w),campIdle=state.command==='stay'&&!!home&&distance(state.position,home)<150;
+ const line=state.suppliesDelivered?(campIdle?'Shelter occupied.':state.command==='follow'?'With you.':state.command==='camp'?'On my way home.':'I will wait here.'):state.recruited?'I have something for the camp.':state.servoInstalled?'Supplies… still required?':state.servoClaimed?'Replacement servo secured.':'Drive servo damaged.';
  const objective=state.suppliesDelivered?'':state.recruited?'Bring P-04 back to the camp chest.':state.servoInstalled?'Bring him home.':state.servoClaimed?'Hold REPAIR beside P-04.':'A service locker is nearby.';
  return{title,line,objective,canRepair,canRecruit,canCommand,servo:state.servoClaimed&&!state.servoInstalled};
 }
@@ -115,7 +118,7 @@ export function beginPatchRepair(w:World){
 }
 export function cancelPatchRepair(w:World,notify=false){
  if(!w.patchRepair)return false;w.patchRepair=undefined;
- if(notify){w.notice='Repair paused · Servo kept';w.noticeUntil=timeOf(w)+2}
+ if(notify){w.notice='Repair stopped · Servo kept';w.noticeUntil=timeOf(w)+2}
  return true;
 }
 export function holdPatchRepair(w:World,held:boolean){
@@ -224,7 +227,9 @@ export function stepPatchQuest(w:World,input:Vec={x:0,y:0}){
  state.moving=false;
  if(!active(w)){cancelPatchRepair(w);return}
  stepRepair(w,input);
- if(!state.servoInstalled||!state.recruited||state.command==='stay')return;
+ // Conversation pauses motion without overwriting the selected command.
+ // Otherwise Return to camp can walk the actor out of its own menu's reach.
+ if(!state.servoInstalled||!state.recruited||state.command==='stay'||w.stationPanel==='patch')return;
  const nav=navigationWorld(w),r=runtime(w);
  if(!state.suppliesDelivered){
   const home=homePoint(w);
@@ -236,13 +241,18 @@ export function stepPatchQuest(w:World,input:Vec={x:0,y:0}){
  if(state.command==='follow'){
   recordPlayerTrail(nav,state,r);
   while(state.followTrail.length&&distance(state.position,state.followTrail[0])<24)state.followTrail.shift();
-  const playerDistance=distance(state.position,w.player);
-  if(playerDistance>FOLLOW_GAP){
+  const playerDistance=distance(state.position,w.player),clearApproach=clearSegment(nav,state.position,w.player);
+  // A nearby player across a wall is not an arrived follower. Complete the
+  // real route before settling, even if straight-line distance is short.
+  if(!clearApproach||playerDistance>FOLLOW_GAP+FOLLOW_SETTLE){
    // Direct following remains swept; otherwise use the survivor's actual path.
    let target:Vec=w.player;
-   if(clearSegment(nav,state.position,w.player))state.followTrail=[point(w.player)];
+   if(clearApproach)state.followTrail=[point(w.player)];
    else if(state.followTrail.length)target=state.followTrail[0];
-   routeTowards(nav,state,r,target,playerDistance>220?470:270);
+   // Proportional catch-up removes the old abrupt 270/470 speed switch and
+   // eases into stationary feet. Corners retain enough speed to round safely.
+   const speed=Math.min(470,Math.max(clearApproach?0:160,(playerDistance-FOLLOW_GAP)*4));
+   routeTowards(nav,state,r,target,speed);
   }
   if(state.returnedToCamp&&state.moving){
    if(!r.homeSample||distance(r.homeSample,state.position)>=TRAIL_STEP){appendTrail(nav,state.homeTrail,state.position,1024);r.homeSample=point(state.position)}

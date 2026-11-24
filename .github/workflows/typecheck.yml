@@ -72,6 +72,8 @@ jobs:
         run: |
           node scripts/check-patch-quest.mjs
           node scripts/check-patch-site.mjs
+          node scripts/check-patch-animation.mjs --browser-only
+          node scripts/check-patch-ui.mjs
       - name: Test co-op room protocol and hibernation
         run: node scripts/check-coop-room.mjs
       - name: Test all Hunter walking frames and carried tools
@@ -97,3 +99,5 @@ jobs:
         working-directory: native
       - name: Render rare chest effects with web and native Skia
         run: node scripts/check-loot-chest-fx.mjs
+      - name: Verify Patch walking frames on web and native Skia
+        run: node scripts/check-patch-animation.mjs

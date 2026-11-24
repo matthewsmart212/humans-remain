@@ -1,0 +1,36 @@
+{
+  "passed": true,
+  "results": [
+    {
+      "target": "browser",
+      "skiaVersion": "2.6.2",
+      "walkFrames": 64,
+      "legFrames": 64,
+      "smallestAdjacentLegChange": 643,
+      "maxParityMean": 0,
+      "maxParityPixels": 0
+    },
+    {
+      "target": "native",
+      "skiaVersion": "2.14.0",
+      "walkFrames": 64,
+      "legFrames": 64,
+      "smallestAdjacentLegChange": 643,
+      "maxParityMean": 0,
+      "maxParityPixels": 0
+    }
+  ],
+  "checks": [
+    "eight headings and eight actual leg poses",
+    "256-pixel bounds and transparent cell gutters",
+    "1.5x standing/damaged/walking scale",
+    "distance-driven phases and continuous turns",
+    "steady planted idle",
+    "essential reduced-motion locomotion",
+    "per-frame lamp registration",
+    "larger partial repair arc",
+    "browser/native offline atlas parity",
+    "shared depth and expanded culling"
+  ],
+  "physicalIPhoneTested": false
+}
