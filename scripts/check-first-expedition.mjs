@@ -69,14 +69,45 @@ try{
    for(const e of w.enemies){e.hp=0;e.deadAt=m.timeOf(w)}
   }
  }
- assert.deepEqual(waveTotals,[3,4,5]);assert.equal(w.survived,3);assert(w.progression.completed);assert(w.enemies.every(e=>!e.siegeNight));checks.push('Three real day/night cycles, 3/4/5 enemies, mid-raid reload without restart, dawn cleanup and completion');
+ assert.deepEqual(waveTotals,[0,4,5]);assert(reloaded);assert.equal(w.survived,3);assert(w.progression.completed);assert(w.enemies.every(e=>!e.siegeNight));checks.push('Three real day/night cycles, a quiet first night and 4/5 enemies on nights two and three, mid-raid reload without restart, dawn cleanup and completion');
+ // Only the scheduled camp force stands down. Simulate a manually placed hostile on the first night.
+ const field=make();field.phase='night';field.player.hurtUntil=0;
+ const intruder=m.spawnCombatEnemyAt(field,'scrap-walker',{x:field.player.x+30,y:field.player.y});intruder.attackAt=0;
+ for(let i=0;i<180&&field.player.hp===100;i++)tick(field);
+ assert(field.player.hp<100);assert.equal(field.progression.siege.spawned,0);assert.equal(intruder.siegeNight,undefined);
  // Ignore the camp: visible Walkers must actually walk into range and destroy it.
- w=make();w.animals=[];w.survivalEnabled=false;Object.assign(w.player,{x:w.progression.camp.x+2600,y:w.progression.camp.y+2600});w.phase='night';w.phaseLeft=60;
+ w=make();w.animals=[];w.survivalEnabled=false;Object.assign(w.player,{x:w.progression.camp.x+2600,y:w.progression.camp.y+2600});w.round=2;w.phase='night';w.phaseLeft=60;
  for(let i=0;i<3600&&w.phase!=='over';i++)tick(w);assert.equal(w.phase,'over');assert.equal(w.progression.hqHp,0);assert.match(w.cause,/Headquarters/);checks.push('Collision-aware raid arrival, defence damage and camp defeat');
  // Enter the real bunker, save there, restore, and continue the outdoor siege.
  w=make();collectStarterTools(m,w);w.animals=[];w.survivalEnabled=false;reachCampLevel(m,w,4);establishBuilding(m,w,'bunker');const portal=m.scenePortals(w)[0];assert(portal);const center=portal.area.reduce((p,[x,y])=>({x:p.x+x/portal.area.length,y:p.y+y/portal.area.length}),{x:0,y:0});at(w,center);w.stepOnMotions={[portal.animationPlacementId]:{position:99,active:true}};
  const t=new m.SceneTravel(w,resources);for(let i=0;i<40;i++)t.tick(m.STEP);assert.equal(t.current.scene?.id,'bunker');t.current.loot.push({id:t.current.serial++,x:640,y:670,kind:'scrap',amount:2});const saved=m.encodeRun(t);assert(saved);const t2=new m.SceneTravel(make(),resources);await t2.restore(m.decodeRun(saved));assert.equal(t2.current.scene.id,'bunker');assert.equal(t2.current.loot.length,1);assert.equal(t2.capture().route.length,1);
- const healthBefore=JSON.stringify([t2.current.progression.hqHp,t2.current.progression.defence,t2.current.progression.buildingHp]);t2.current.phase='night';t2.current.phaseLeft=60;for(let i=0;i<3600&&t2.current.phase!=='over';i++){m.stepCampPlaySession(t2.current,{x:0,y:0},false,false);t2.tick(m.STEP)}assert.notEqual(JSON.stringify([t2.current.progression.hqHp,t2.current.progression.defence,t2.current.progression.buildingHp]),healthBefore,'At an established camp the robots can strike multiple repaired buildings during the first raid');const home=t2.returnToCamp();assert(!home.scene);assert.equal(m.campAccessLevel(home),4);checks.push('Bunker local state and return route persist; hiding indoors cannot pause camp attacks');
+ const health=world=>JSON.stringify([world.progression.hqHp,world.progression.defence,world.progression.buildingHp]);
+ const healthBefore=health(t2.current);
+ // Resume a save made indoors by a previous release with its first raid already at HQ.
+ const oldRaid=JSON.parse(saved);
+ for(const [id,scene] of oldRaid.worlds){
+  scene.phase='night';scene.phaseLeft=30;scene.progression.siege={night:1,spawned:2,nextAt:scene.tick/60+2,ended:0};
+  if(id===m.CAMP_SCENE_ID){
+   const table=m.headquartersDock(m.headquartersBench(scene));
+   const queued=m.spawnCombatEnemyAt(scene,'scrap-walker',table);
+   Object.assign(queued,{siegeNight:1,siegeBuilding:'headquarters',siegeTarget:true});
+   m.spawnCombatEnemyAt(scene,'scrap-walker',{x:table.x+2000,y:table.y+2000});
+  }
+ }
+ const continued=m.decodeRun(JSON.stringify(oldRaid));
+ assert(continued.worlds.every(([,scene])=>scene.progression.siege.spawned===0));
+ const outside=continued.worlds.find(([id])=>id===m.CAMP_SCENE_ID)[1];
+ assert.equal(outside.enemies.length,1);assert.equal(outside.enemies[0].siegeNight,undefined,'Manual encounters survive migration');
+ await t2.restore(continued);
+ const interiorTick=()=>{m.stepCampPlaySession(t2.current,{x:0,y:0},false,false);t2.tick(m.STEP)};
+ for(let i=0;i<=30*60;i++)interiorTick();
+ assert.equal(t2.current.round,2);assert.equal(t2.current.phase,'day');assert.equal(health(t2.current),healthBefore);
+ assert.equal(t2.current.progression.siege.ended,1);
+ // At the following nightfall the normal wave can actually reach a repaired facility.
+ t2.current.phaseLeft=m.STEP;interiorTick();assert.equal(t2.current.phase,'night');assert.equal(t2.current.progression.siege.spawned,0);
+ for(let i=0;i<3600&&t2.current.phase!=='over';i++)interiorTick();
+ assert.notEqual(health(t2.current),healthBefore,'Night two can damage the real outdoor camp while the player is inside');
+ const home=t2.returnToCamp();assert(!home.scene);assert.equal(m.campAccessLevel(home),4);checks.push('First-night indoor save retires only the previous raid, preserves camp health and off-site encounters, and resumes normal background raids on night two');
  for(const bad of ['broken','{}',JSON.stringify({...JSON.parse(save),version:99}),JSON.stringify({...JSON.parse(save),currentId:'missing'})])assert.throws(()=>m.decodeRun(bad));
  const writes=[];let release;const writer=new m.RunSaveWriter(async(_key,value)=>{if(value==='old')await new Promise(r=>release=r);writes.push(value)});writer.save('old');writer.save('new');await Promise.resolve();await Promise.resolve();release();await writer.flush();assert.deepEqual(writes,['old','new']);const denied=new m.RunSaveWriter(async()=>{throw Error('quota')});await denied.save(save);assert(denied.error);checks.push('Corrupt/unsupported saves rejected, ordered native writes and storage-failure reporting');
  const report={passed:true,checks,saveBytes:save.length,browserTested:false,physicalIPhoneTested:false};fs.mkdirSync('docs/qa/first-expedition-v1',{recursive:true});fs.writeFileSync('docs/qa/first-expedition-v1/checks.json',JSON.stringify(report,null,2)+'\n');console.log(JSON.stringify(report,null,2));

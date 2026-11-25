@@ -2,6 +2,8 @@ import type {World} from './survival-engine';
 import {setWorldWeather,type WeatherOptions} from './weather-model';
 
 export const RUN_DAY_SECONDS=180,RUN_NIGHT_SECONDS=90,DUSK_SECONDS=20,DAWN_SECONDS=10;
+export const FIRST_CAMP_RAID_NIGHT=2;
+export function isCampRaidNight(w:Pick<World,'round'|'phase'>){return w.phase==='night'&&w.round>=FIRST_CAMP_RAID_NIGHT}
 const fronts={clear:{rain:false,fog:false,lightning:false},mist:{rain:false,fog:true,lightning:false},showers:{rain:true,fog:false,lightning:false},wetMist:{rain:true,fog:true,lightning:false},downpour:{rain:true,heavyRain:true,fog:false,lightning:false},storm:{rain:true,heavyRain:true,fog:true,lightning:true}} satisfies Record<string,WeatherOptions>;
 type Front=keyof typeof fronts;
 const patterns:{weight:number;fronts:[Front,Front,Front]}[]=[

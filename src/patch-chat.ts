@@ -75,11 +75,11 @@ function show(w:World,turn:Turn,page:number|'last'=0,existingPages?:string[]){
  * on a head-on approach. Look for a dry, unobstructed shoulder of the scene. */
 function entranceMark(w:World,robot:Vec):Entrance|undefined{
  const player=w.player,dx=player.x-robot.x,dy=player.y-robot.y;
- if(Math.abs(dx)>=56)return;
+ if(Math.abs(dx)>=61)return;
  const side=dx < -3?-1:1;
  const nearestY=Math.max(-16,Math.min(16,dy));
  const offsets=w.patchQuest?.servoInstalled&&dy>=0?[34,nearestY,16,-16,-32]:[nearestY,16,-16,32,-32];
- for(const reach of [68,60]){
+ for(const reach of [68,64]){
   for(const sign of [side,-side]){
    for(const offset of new Set(offsets)){
     const target={x:robot.x+reach*sign,y:robot.y+offset};

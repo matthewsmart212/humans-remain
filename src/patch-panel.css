@@ -114,63 +114,100 @@
  .camp-studio .field-kit .station-menu.patch-note-menu .patch-note-provenance { font-size: 9px; letter-spacing: .8px; }
 }
 
-/* Response lines share the matte at the edge of the shot. The remaining scene
-   keeps its normal movement surface and the subtitle is painted on the left. */
+
 .patch-chat-hud {
  --patch-safe-top: env(safe-area-inset-top,0px); --patch-safe-right: env(safe-area-inset-right,0px);
  --patch-safe-bottom: env(safe-area-inset-bottom,0px); --patch-safe-left: env(safe-area-inset-left,0px);
- position: absolute; z-index: 3; right: var(--kit-right); bottom: var(--kit-bottom);
- width: min(42%,355px); max-height: 50%; min-height: 0; box-sizing: border-box;
- display: grid; grid-template-columns: minmax(0,1fr) 44px; grid-template-rows: minmax(0,1fr);
- align-items: end; column-gap: 4px; pointer-events: none; outline: none;
+ --patch-brass: #bb9860; --patch-corner: clamp(15px,2.7vw,36px);
+ position: absolute; z-index: 3; box-sizing: border-box; pointer-events: none; outline: none;
 }
-.patch-chat-transcript {
- position: absolute; width: 1px; height: 1px; overflow: hidden;
- clip-path: inset(50%); white-space: nowrap;
+.patch-chat-frame {
+ background: linear-gradient(135deg,#20444352,#071b2066 75%),url('/survival/patch-ui-v1/panel-texture.webp') center/210px repeat #103433;
+ border-radius: 9px; box-shadow: inset 0 0 0 1px #c09b65,inset 0 0 0 3px #142b2b,inset 0 0 0 4px #906f404d,0 3px 8px #07131299;
+}
+.patch-chat-corners { position: absolute; inset: 0; pointer-events: none; z-index: 1; }
+.patch-chat-corners i {
+ position: absolute; width: var(--patch-corner); height: var(--patch-corner);
+ background: url('/survival/patch-ui-v1/copper-corner.png') center/100% 100% no-repeat;
+}
+.patch-chat-corners i:first-child { left: 0; top: 0; }
+.patch-chat-corners i:nth-child(2) { right: 0; top: 0; transform: scaleX(-1); }
+.patch-chat-corners i:nth-child(3) { right: 0; bottom: 0; transform: rotate(180deg); }
+.patch-chat-corners i:last-child { left: 0; bottom: 0; transform: scaleY(-1); }
+.patch-chat-speech,.patch-chat-actions { position: absolute; box-sizing: border-box; min-height: 0; min-width: 0; }
+.patch-chat-speech { display: flex; align-items: center; gap: calc(var(--patch-pad) * 1.4); padding: var(--patch-pad) calc(var(--patch-pad) * 1.55); }
+.patch-chat-portrait { flex: none; width: var(--patch-portrait); height: var(--patch-portrait); }
+.patch-chat-portrait img { width: 100%; height: 100%; object-fit: contain; filter: drop-shadow(0 2px 2px #030f10); }
+.patch-chat-transcript { display: flex; flex-direction: column; align-items: flex-start; gap: 4px; max-height: 100%; min-height: 0; min-width: 0; }
+.patch-chat-name {
+ flex: none; display: block; padding: 1px 12px 2px; min-width: 3.2em; text-align: center; box-sizing: border-box;
+ background: linear-gradient(170deg,#f0d79a,#c5a264 55%,#ac854e); color: #24271e;
+ clip-path: polygon(5px 0,calc(100% - 5px) 0,100% 5px,100% calc(100% - 5px),calc(100% - 5px) 100%,5px 100%,0 calc(100% - 5px),0 5px);
+ font: 800 calc(var(--patch-speech-size) * 1.02)/1.1 'Barlow Condensed',sans-serif; letter-spacing: .08em;
+}
+.patch-chat-identity { display: flex; align-items: baseline; gap: 8px; }
+.patch-chat-identity b { font: 800 calc(var(--patch-speech-size) * 1.14)/1.1 'Barlow Condensed',sans-serif; text-transform: uppercase; letter-spacing: .065em; color: #edc787; }
+.patch-chat-identity small { font: 600 calc(var(--patch-choice-size) * .86)/1.1 Barlow,sans-serif; color: #c6b28e; }
+.patch-chat-copy { min-height: 0; overflow-y: auto; overscroll-behavior: contain; pointer-events: auto; touch-action: pan-y; }
+.camp-studio .field-kit .patch-chat-hud p.patch-chat-line {
+ color: #fcf2d6; font: 600 var(--patch-speech-size)/1.24 Barlow,sans-serif; margin: 0;
+ text-shadow: 0 1px 2px #08181c; white-space: normal; overflow-wrap: break-word;
+}
+.patch-chat-actions { padding: var(--patch-pad); display: flex; flex-direction: column; }
+.patch-chat-greeting .patch-chat-actions { justify-content: center; }
+.patch-chat-greeting[data-wide=true] .patch-chat-actions::before {
+ content: ''; position: absolute; top: 13%; bottom: 13%; left: 0; width: 1px;
+ background: linear-gradient(transparent,#bea377 18%,#bea377 82%,transparent);
+}
+.patch-chat-branch .patch-chat-actions { padding-top: 0; padding-bottom: calc(var(--patch-pad) * 1.05); }
+.camp-studio .field-kit .patch-chat-actions h3 {
+ margin: 0 4px; flex: none; min-height: var(--patch-heading); display: flex; align-items: center;
+ padding: 0 calc(var(--patch-heading) + 2px) 0 4px; border-bottom: 1px solid #99875588;
+ font: 700 calc(var(--patch-speech-size) * 1.19)/1.1 'Barlow Condensed',sans-serif;
+ letter-spacing: .025em; color: #f7e8c5;
 }
 .patch-chat-options {
- display: flex; flex-direction: column; align-self: stretch; min-width: 0; min-height: 0;
+ display: flex; flex-direction: column; min-width: 0; min-height: 0;
  overflow-y: auto; overscroll-behavior: contain; touch-action: pan-y; pointer-events: auto;
- scrollbar-width: none;
- border-block: 1px solid #9b855c88;
- background: linear-gradient(100deg,#111913f7,#131c15e6 68%,#111912cc);
+ scrollbar-width: thin; scrollbar-color: #99865c #142a2b;
 }
-.patch-chat-options::-webkit-scrollbar { display: none; }
-.patch-chat-scroll-track { position: absolute; top: 3px; bottom: 3px; right: 49px; width: 2px; pointer-events: none; }
-.patch-chat-scroll-track span { position: absolute; inset-inline: 0; background: #ba9c64; }
+.patch-chat-greeting .patch-chat-options { gap: 4px; }
 .camp-studio .field-kit .patch-chat-hud button {
- display: flex; align-items: center; justify-content: flex-start; flex: none; box-sizing: border-box; min-width: 0; min-height: 44px;
- margin: 0; padding: 7px 13px; border: 0; border-radius: 0; box-shadow: none;
- background: transparent; color: #f7efdc; font: 500 16px/1.26 Barlow,sans-serif;
- text-align: left; text-wrap: pretty; pointer-events: auto;
+ display: flex; align-items: center; justify-content: flex-start; gap: var(--patch-pad);
+ min-width: 0; min-height: 44px; flex: none; box-sizing: border-box; margin: 0; box-shadow: none; padding: 5px calc(var(--patch-pad) * 1.2);
+ background: transparent; border: 0; border-radius: 0; font: 600 var(--patch-choice-size)/1.17 Barlow,sans-serif;
+ text-align: left; text-wrap: pretty; color: #f4e9cd; pointer-events: auto;
 }
-.camp-studio .field-kit .patch-chat-options button + button { border-top: 1px solid #b7a47738; }
-.patch-chat-options button::before {
- content: ''; flex: 0 0 6px; width: 6px; height: 6px; box-sizing: border-box;
- transform: rotate(45deg); margin: 0 13px 0 1px; border: 1px solid #c3ad83; opacity: .75;
+.camp-studio .field-kit .patch-chat-options button { min-height: var(--patch-row,44px); }
+.camp-studio .field-kit .patch-chat-greeting .patch-chat-options button {
+ border: 1px solid #aa925f; border-radius: 4px; background: linear-gradient(125deg,#244342,#152f30);
+ box-shadow: inset 0 0 0 2px #142b2d;
 }
-.camp-studio .field-kit .patch-chat-options button:first-child,
-.camp-studio .field-kit .patch-chat-options button[aria-pressed=true] { color: #ffe2ac; }
-.patch-chat-options button:first-child::before, .patch-chat-options button[aria-pressed=true]::before {
- opacity: 1; border-color: #edc88c; background: #e1b16a;
+.camp-studio .field-kit .patch-chat-greeting .patch-chat-options button:first-child { border-color: #f1c97f; color: #ffdf9e; }
+.camp-studio .field-kit .patch-chat-greeting .patch-chat-options button:first-child { margin-right: var(--patch-heading); }
+.patch-chat-diamond { width: 6px; height: 6px; margin-inline: 4px; flex: none; transform: rotate(45deg); border: 1px solid #b5aa80; }
+.patch-chat-options button:first-child .patch-chat-diamond { background: #e2ba73; }
+.patch-chat-icon { width: calc(var(--patch-choice-size) * 1.56); height: calc(var(--patch-choice-size) * 1.56); flex: none; object-fit: contain; }
+.patch-chat-chevron {
+ width: 7px; height: 7px; flex: none; margin-left: auto; margin-right: 3px; transform: rotate(-45deg);
+ border-right: 1.5px solid #d8bf89; border-bottom: 1.5px solid #d8bf89;
 }
-.camp-studio .field-kit .patch-chat-options button[aria-pressed=true]::after {
- content: '✓'; margin-left: auto; padding-left: 6px; color: #edc88c;
+.camp-studio .field-kit .patch-chat-branch .patch-chat-options button { padding-left: calc(var(--patch-pad) * 1.5); border-bottom: 1px solid #777e665e; }
+.camp-studio .field-kit .patch-chat-branch .patch-chat-options button:first-child,
+.camp-studio .field-kit .patch-chat-options button[aria-pressed=true] {
+ background: #455b45aa; box-shadow: inset 3px 0 #e0b974; color: #ffe4ac;
+}
+.camp-studio .field-kit .patch-chat-options button[aria-pressed=true] .patch-chat-chevron {
+ width: 6px; height: 10px; border-color: #f4d492; transform: rotate(45deg);
 }
 .camp-studio .field-kit .patch-chat-options button:focus-visible,
-.camp-studio .field-kit .patch-chat-options button:active { outline: 2px solid #dfc291; outline-offset: -2px; background: #433d2c; }
-@media(hover:hover) {
- .camp-studio .field-kit .patch-chat-options button:hover { background: #413e2f; color: #ffe2ac; }
-}
+.camp-studio .field-kit .patch-chat-options button:active { background: #435c4b; outline: 2px solid #ebc47e; outline-offset: -2px; }
+@media(hover:hover) { .camp-studio .field-kit .patch-chat-options button:hover { background: #435b4a; } }
 .camp-studio .field-kit .patch-chat-hud .patch-chat-end {
- width: 44px; height: 44px; padding: 0; justify-content: center;
- color: #ede1c7; background: transparent; font: 400 21px/1 Barlow,sans-serif;
+ position: absolute; width: var(--patch-heading); height: var(--patch-heading); min-width: 44px; min-height: 44px; padding: 0; justify-content: center;
+ right: var(--patch-pad); top: 0; color: #f7e5c2; background: transparent;
 }
-.patch-chat-end span {
- display: grid; place-items: center; width: 29px; height: 29px; pointer-events: none;
- border: 1px solid #c7af8088; border-radius: 50%; background: #182019e8;
-}
-.patch-chat-end:focus-visible span { outline: 2px solid #dfc291; outline-offset: 2px; }
-@media(orientation:portrait) {
- .patch-chat-hud { max-height: 36%; width: min(355px,calc(100% - var(--kit-left) - var(--kit-right))); }
-}
+.camp-studio .field-kit .patch-chat-greeting .patch-chat-end { top: var(--patch-pad); }
+.patch-chat-end img { width: 72%; height: 72%; object-fit: contain; pointer-events: none; }
+.patch-chat-end:focus-visible { outline: 2px solid #f0cc8d; outline-offset: -2px; }
+.patch-chat-greeting[data-wide=false] .patch-chat-actions { padding-top: 0; }

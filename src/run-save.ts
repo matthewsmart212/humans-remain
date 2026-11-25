@@ -16,6 +16,7 @@ import {validBlueprintSave} from './headquarters-plans';
 import {migrateCampLevel,validCampLevelSave} from './camp-levels';
 import {validJournalSave} from './headquarters-journal';
 import {worldBlocked,type World} from './survival-engine';
+import {FIRST_CAMP_RAID_NIGHT} from './survival-cycle';
 import {nearbyClearGround} from './nearby-clear-ground';
 import type {SceneTravel,TravelSnapshot} from './scene-travel';
 import {SCENES,CAMP_SCENE_ID} from './world-scenes';
@@ -152,6 +153,13 @@ export function decodeRun(text:string):TravelSnapshot{
  if(!ids.has(CAMP_SCENE_ID)||!ids.has(data.currentId)||data.route.some((r:any)=>!ids.has(r?.sceneId)||!r.spawn||!Number.isFinite(r.spawn.x)||!Number.isFinite(r.spawn.y)))throw Error('The expedition return route is missing.');
  const active=data.worlds.find(([id]:[string])=>id===data.currentId)[1] as World,p=active.progression;
  if(!p||p.version!==2||!point(p.camp)||!p.siege||![p.hqHp,p.hqMax,p.defence,p.defenceMax,p.siege.spawned,p.siege.nextAt,p.siege.night,p.siege.ended].every(n=>Number.isFinite(n)&&n>=0)||p.hqMax<=0||p.defenceMax<=0||p.hqHp>p.hqMax||p.defence>p.defenceMax||(p.repairPart!==undefined&&typeof p.repairPart!=='boolean')||![p.briefed,p.furnaceRestored,p.metalCrafted,p.fortified,p.completed].every(v=>typeof v==='boolean'))throw Error('The saved expedition progress is incomplete.');
+ // A previous release could save a live attack on night one, including while indoors.
+ // Keep explicit editor spawns, existing building health and every later raid in progress.
+ for(const [id,world] of data.worlds as [string,World][]){
+  const siege=world.progression?.siege;
+  if(siege&&siege.night>0&&siege.night<FIRST_CAMP_RAID_NIGHT){siege.spawned=0;siege.nextAt=0}
+  if(id===CAMP_SCENE_ID)world.enemies=world.enemies.filter(e=>!e.siegeNight||e.siegeNight>=FIRST_CAMP_RAID_NIGHT);
+ }
  return{currentId:data.currentId,worlds:data.worlds,route:data.route};
 }
 /** Async adapters serialize writes; an older autosave can never overtake a new run. */

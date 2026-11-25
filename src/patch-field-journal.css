@@ -1,27 +1,75 @@
-.patch-field-notes { position:absolute;left:var(--kit-left,14px);top:calc(var(--kit-top,12px) + 50px);z-index:8;pointer-events:auto;max-width:calc(100% - var(--kit-left,14px) - var(--kit-right,14px));color:#f4ead0;font-family:Barlow,sans-serif }
-.patch-field-notes.in-atlas { left:max(12px,env(safe-area-inset-left));top:auto;bottom:calc(max(12px,env(safe-area-inset-bottom)) + 55px) }
-.patch-field-notes[data-open=true] { z-index:28;top:max(10px,env(safe-area-inset-top));bottom:auto;left:max(12px,env(safe-area-inset-left)) }
-.camp-studio .patch-field-notes button,.patch-field-notes button { appearance:none;box-sizing:border-box;cursor:pointer;touch-action:manipulation;display:inline-flex;align-items:center;justify-content:center;min-height:44px;min-width:44px;border:0;border-radius:0;color:inherit;background:transparent;font:600 14px/1.2 Barlow,sans-serif;padding:6px;box-shadow:none }
-.camp-studio .patch-field-notes .field-notes-tab[hidden],.patch-field-notes .field-notes-tab[hidden] { display:none }
-.camp-studio .patch-field-notes .field-notes-tab,.patch-field-notes .field-notes-tab { justify-content:flex-start;align-items:flex-start;gap:8px;text-align:left;width:min(244px,36vw);border-left:2px solid #c59651;padding:7px 10px 8px;color:#f2e9d6;background:linear-gradient(90deg,#161e19ee 10%,#17201bd8 84%,#1820198a);text-shadow:0 1px 2px #000 }
-.field-notes-tab svg { color:#e7bd7f;flex:none;margin-top:2px }
-.field-notes-tab b { display:block;color:#e5ba78;font:600 14px/1.2 Barlow,sans-serif }
-.field-notes-tab span span { display:block;margin-top:3px;font:500 13px/1.22 Barlow,sans-serif }
-.camp-studio .in-atlas .field-notes-tab,.in-atlas .field-notes-tab {align-items:center;width:auto;background:#23291ff2}
-.field-notes-book {box-sizing:border-box;display:flex;flex-direction:column;width:min(480px,calc(100vw - max(12px,env(safe-area-inset-left)) - max(12px,env(safe-area-inset-right))));max-height:calc(100dvh - max(10px,env(safe-area-inset-top)) - max(10px,env(safe-area-inset-bottom)));border:1px solid #8b7954;border-left:5px solid #655644;border-radius:3px 9px 7px 3px;box-shadow:4px 5px 0 -2px #766c55,0 8px 30px #090c09aa;overflow:hidden;color:#292b23;background:#d8cbb0 url('/survival/patch-v3/letter.webp') center/100% 160%;font-family:Georgia,serif;outline:none}
+.patch-field-notes {
+ --journal-teal:#103e40;
+ --journal-cloth:url('/survival/patch-ui-v1/panel-texture.webp');
+ position:absolute;left:var(--kit-left,14px);top:calc(var(--kit-top,12px) + 50px);
+ z-index:8;pointer-events:auto;max-width:calc(100% - var(--kit-left,14px) - var(--kit-right,14px));
+ color:#f8ecd7;font-family:Barlow,sans-serif;
+}
+.patch-field-notes.in-atlas {left:max(12px,env(safe-area-inset-left));top:auto;bottom:calc(max(12px,env(safe-area-inset-bottom)) + 55px)}
+.patch-field-notes[data-open=true] {z-index:28;top:max(10px,env(safe-area-inset-top));bottom:auto;left:max(12px,env(safe-area-inset-left))}
+.camp-studio .patch-field-notes button,.patch-field-notes button {
+ appearance:none;box-sizing:border-box;cursor:pointer;touch-action:manipulation;
+ display:inline-flex;align-items:center;justify-content:center;min-height:44px;min-width:44px;
+ border:0;border-radius:0;color:inherit;background:transparent;font:600 14px/1.2 Barlow,sans-serif;padding:6px;box-shadow:none;
+}
+.camp-studio .patch-field-notes .field-notes-tab[hidden],.patch-field-notes .field-notes-tab[hidden] {display:none}
+.camp-studio .patch-field-notes .field-notes-tab,.patch-field-notes .field-notes-tab {
+ position:relative;isolation:isolate;display:flex;justify-content:flex-start;align-items:center;gap:6px;
+ width:min(256px,40vw);min-height:45px;text-align:left;padding:5px 7px;
+ color:#fcf3df;border:1px solid #b19366;border-radius:5px;
+ background:linear-gradient(125deg,#18575966,#0d434959),var(--journal-cloth) center/128px,var(--journal-teal);
+ box-shadow:inset 0 0 0 1px #071e20,inset 0 0 0 2px #8aa59a45,0 2px 3px #0b100e99;
+ text-shadow:0 1px 1px #051d1c;
+}
+.field-notes-tab::before,.field-notes-tab::after,.field-notes-book::before,.field-notes-book::after {
+ content:'';position:absolute;z-index:1;width:16px;height:16px;
+ background:url('/survival/patch-ui-v1/copper-corner.png') center/contain no-repeat;pointer-events:none;
+}
+.field-notes-tab::before,.field-notes-book::before {left:-1px;top:-1px}
+.field-notes-tab::after,.field-notes-book::after {right:-1px;bottom:-1px;transform:rotate(180deg)}
+.field-notes-bookmark {
+ display:flex;align-items:center;justify-content:center;align-self:stretch;
+ flex:0 0 29px;padding-right:5px;box-sizing:border-box;
+ border-right:1px solid #b0946299;box-shadow:1px 0 #061d20;
+}
+.field-notes-bookmark img {display:block;width:21px;height:21px;object-fit:contain;filter:drop-shadow(0 1px 1px #061f21)}
+.field-notes-copy {min-width:0;flex:1}
+.field-notes-copy > b {display:block;color:#f5c77e;font:700 15px/1.06 Barlow,sans-serif}
+.field-notes-lead {display:block;margin-top:2px;color:#f9f2e3;font:700 12.5px/1.2 'Barlow Condensed',Barlow,sans-serif}
+.field-notes-lead strong {font-weight:700}
+.field-notes-lead > span {color:#dfbd91;font-family:Barlow,sans-serif;font-weight:500}
+.field-notes-chevron {flex:none;color:#e1c293;width:11px}
+.camp-studio .in-atlas .field-notes-tab,.in-atlas .field-notes-tab {width:auto;min-width:136px}
+.camp-studio .patch-field-notes .field-notes-tab:hover {border-color:#efc789}
+.field-notes-book {
+ position:relative;box-sizing:border-box;display:flex;flex-direction:column;
+ width:min(480px,calc(100vw - max(12px,env(safe-area-inset-left)) - max(12px,env(safe-area-inset-right))));
+ max-height:calc(100dvh - max(10px,env(safe-area-inset-top)) - max(10px,env(safe-area-inset-bottom)));
+ padding:3px;border:1px solid #b0956b;border-radius:5px;overflow:hidden;
+ background:linear-gradient(115deg,#18575966,#0d434959),var(--journal-cloth) center/144px,var(--journal-teal);
+ box-shadow:inset 0 0 0 1px #142722,inset 0 0 0 2px #c4a4774d,0 5px 16px #081713bf;
+ color:#f7eed9;font-family:Georgia,serif;outline:none;
+}
 .field-notes-book header,.field-notes-book footer {display:flex;align-items:center;justify-content:space-between;gap:10px;flex:none}
-.field-notes-book header {border-bottom:1px solid #675e4866;padding:7px 10px 7px 20px;background:#242b25;color:#f3e9d4}
-.field-notes-book small {font:600 10px/1.2 Barlow,sans-serif;text-transform:uppercase;letter-spacing:.18em;color:#debd82}
-.field-notes-book h2 {font:normal 23px/1.15 Georgia,serif;margin:2px 0}
-.field-notes-scroll {min-height:0;overflow-y:auto;overscroll-behavior:contain;padding:14px 18px;color:#25271f}
+.field-notes-book header {padding:5px 5px 6px 15px;border-bottom:1px solid #bba47999}
+.field-notes-book small {font:600 10px/1.2 Barlow,sans-serif;text-transform:uppercase;letter-spacing:.16em;color:#ddbc87}
+.field-notes-book h2 {font:normal 23px/1.15 Georgia,serif;color:#fae1af;margin:2px 0}
+.field-notes-scroll {
+ min-height:0;overflow-y:auto;overscroll-behavior:contain;touch-action:pan-y;padding:15px 18px 17px;
+ color:#25271f;background:#dfd5ba url('/survival/patch-v3/letter.webp') center/100% 135%;
+ box-shadow:inset 1px 0 3px #5f4b2a69;
+}
 .field-notes-objective {display:flex;align-items:baseline;gap:8px;padding-bottom:10px;border-bottom:1px solid #766b5359;font:600 15px/1.3 Barlow,sans-serif}
 .field-notes-objective i {font-style:normal;color:#745025}
 .field-notes-entry {display:flex;align-items:center;gap:15px;padding:12px 0 3px}
-.field-notes-entry figure {flex:0 0 28%;margin:0}.field-notes-entry img{width:100%;max-height:114px;object-fit:contain;filter:sepia(.3)}
-.field-notes-entry h3 {font:600 18px/1.18 Georgia,serif;margin:0 0 5px}.patch-field-notes .field-notes-entry p{font:normal 15px/1.4 Georgia,serif;margin:0;color:#28291f;-webkit-text-fill-color:#28291f;text-shadow:none}
-.field-notes-book footer {background:#ccc0a5e6;color:#34382b;border-top:1px solid #75694f66;padding:0 8px}
-.field-notes-pages,.field-notes-track {display:flex;align-items:center;gap:5px}.field-notes-pages span{font:500 13px/1 Barlow,sans-serif}
-.camp-studio .patch-field-notes button:disabled,.patch-field-notes button:disabled{cursor:default;opacity:.45}
-.patch-field-notes button:focus-visible{outline:2px solid #f6c372;outline-offset:-3px}
-@media(orientation:portrait){.field-notes-tab{min-width:180px!important}.field-kit:has(.kit-vitals-toggle[data-expanded=true]) .patch-field-notes:not([data-open=true]){display:none}}
-@media(orientation:landscape){.field-kit:has(.kit-vitals-toggle[data-expanded=true]) .patch-field-notes:not([data-open=true]){display:none}}
+.field-notes-entry figure {flex:0 0 28%;margin:0}
+.field-notes-entry img {width:100%;max-height:114px;object-fit:contain;filter:sepia(.3)}
+.field-notes-entry h3 {font:600 18px/1.18 Georgia,serif;margin:0 0 5px;color:#302c23}
+.patch-field-notes .field-notes-entry p {font:normal 16px/1.42 Georgia,serif;margin:0;color:#28291f;-webkit-text-fill-color:#28291f;text-shadow:none}
+.field-notes-book footer {color:#f6d79f;border-top:1px solid #998665;padding:1px 7px}
+.field-notes-pages,.field-notes-track {display:flex;align-items:center;gap:5px}
+.field-notes-pages span {font:500 13px/1 Barlow,sans-serif;color:#f1e6cd}
+.camp-studio .patch-field-notes button:disabled,.patch-field-notes button:disabled {cursor:default;opacity:.5}
+.patch-field-notes button:focus-visible {outline:2px solid #f6c372;outline-offset:-3px}
+@media(orientation:portrait){.camp-studio .patch-field-notes:not(.in-atlas) .field-notes-tab {width:min(256px,82vw)}}
+.field-kit:has(.kit-vitals-toggle[data-expanded=true]) .patch-field-notes:not([data-open=true]) {display:none}

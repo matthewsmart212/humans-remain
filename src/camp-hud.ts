@@ -1,4 +1,5 @@
 import {timeOf,type World} from './survival-engine';
+import {isCampRaidNight} from './survival-cycle';
 import {CAMP_BUILDING_IDS,CAMP_REPAIRS,buildingEstablished,buildingHp,buildingMaxHp,type CampBuildingId} from './camp-restoration';
 
 export type CampThreat={compact:boolean;title:string;detail:string;critical:boolean;approaching:boolean};
@@ -12,7 +13,7 @@ export class CampThreatTracker{
  private attackedAt:number|undefined;
  sample(w:World):CampThreat|null{
   const camp=campSources.get(w)??w,t=timeOf(w),hits=CAMP_BUILDING_IDS.filter(id=>{const age=t-(camp.buildingHits?.[id]??-Infinity);return age>=0&&age<HIT_VISIBILITY});
-  const raiders=camp.enemies.some(e=>e.hp>0&&!!e.siegeNight);
+  const raiders=isCampRaidNight(camp)&&camp.enemies.some(e=>e.hp>0&&e.siegeNight===camp.round);
   if(!w.progression||w.phase==='over'||(!raiders&&!hits.length)){this.started=undefined;this.attackedAt=undefined;return null}
   if(this.started===undefined||t<this.started){this.started=t;this.attackedAt=undefined}
   if(hits.length&&this.attackedAt===undefined)this.attackedAt=t;

@@ -152,15 +152,15 @@ try{
  assert.equal(m.buildingHp(roundTrip(w),'workshop'),0);fund(w,'workshop');assert(m.beginBuildingRepair(w,'workshop'));work(w,241);assert(m.buildingRestored(w,'workshop'));assert(m.recipeUnlocked(w,'woodenAxe'));assert.equal(w.progression.restoredBuildings.filter(id=>id==='workshop').length,1);
  // Each night-raid species attacks a real authored building, with player aggro and line-of-sight.
  for(const kind of ['scrap-walker','scrap-hound','scrap-bomber']){
-  const raid=roundTrip(w),site=visit(raid,'workshop');raid.player.x+=2000;raid.player.hurtUntil=0;raid.phase='night';
-  const e=m.spawnCombatEnemyAt(raid,kind,{x:site.x,y:site.y+60});assert(e);e.siegeNight=1;e.attackAt=0;
+  const raid=roundTrip(w),site=visit(raid,'workshop');raid.player.x+=2000;raid.player.hurtUntil=0;raid.round=2;raid.phase='night';
+  const e=m.spawnCombatEnemyAt(raid,kind,{x:site.x,y:site.y+60});assert(e);e.siegeNight=raid.round;e.attackAt=0;
   const hp=m.buildingHp(raid,'workshop');for(let tick=0;tick<300&&e.hp>0;tick++){raid.tick++;m.stepSiegeWalker(raid,e,true)}
   assert(m.buildingHp(raid,'workshop')<hp,kind+' damages workshop');assert.equal(e.siegeBuilding,'workshop');
   if(kind!=='scrap-bomber'){Object.assign(raid.player,{x:e.x,y:e.y+60});assert.equal(m.stepSiegeWalker(raid,e),false,kind+' returns to player combat')}
  }
  // No hit can reach through an intervening wall.
- const wall=roundTrip(w),wallSite=visit(wall,'workshop');wall.player.x+=2000;
- const attacker=m.spawnCombatEnemyAt(wall,'scrap-walker',{x:wallSite.x,y:wallSite.y+70});attacker.siegeNight=1;attacker.siegeTarget=true;attacker.siegeBuilding='workshop';attacker.repathAt=Infinity;attacker.motion.phase='windup';attacker.motion.since=-10;
+ const wall=roundTrip(w),wallSite=visit(wall,'workshop');wall.player.x+=2000;wall.round=2;wall.phase='night';
+ const attacker=m.spawnCombatEnemyAt(wall,'scrap-walker',{x:wallSite.x,y:wallSite.y+70});attacker.siegeNight=wall.round;attacker.siegeTarget=true;attacker.siegeBuilding='workshop';attacker.repathAt=Infinity;attacker.motion.phase='windup';attacker.motion.since=-10;
  wall.layout={...wall.layout,items:[...wall.layout.items,{id:'raid-wall',assetId:'base_well_t1',x:wallSite.x,y:wallSite.y+35,scale:1,solid:true,role:'prop',roof:'hidden',frame:{sourceAssetId:'base_well_t1',width:120,height:10,anchor:[.5,.5]},collision:{lineWidth:.01,paths:[{closed:true,points:[[0,0],[1,0],[1,1],[0,1]]}]}}]};
  const safeHp=m.buildingHp(wall,'workshop');for(let tick=0;tick<60;tick++){wall.tick++;m.stepSiegeWalker(wall,attacker,true)}assert.equal(m.buildingHp(wall,'workshop'),safeHp);
  // Building health stays separate from the hold progress rendered by the HUD.
@@ -178,9 +178,9 @@ try{
  // HQ attackers must travel through the doorway and strike at the planning table.
  for(const kind of ['scrap-walker','scrap-hound','scrap-bomber']){
   const raid=make(),site=m.buildingAttackSite(raid,'headquarters'),bench=m.headquartersBench(raid),roof=raid.layout.items.find(p=>p.assetId==='base_shelter_t1');
-  raid.player.x+=3000;raid.player.y+=3000;raid.phase='night';raid.progression.defence=0;
+  raid.player.x+=3000;raid.player.y+=3000;raid.round=2;raid.phase='night';raid.progression.defence=0;
   assert(m.distance(site,m.headquartersDock(bench))<1);assert(m.distance(site,raid.progression.camp)>300);
-  const e=m.spawnCombatEnemyAt(raid,kind,{...raid.progression.camp});assert(e);e.siegeNight=1;e.attackAt=0;
+  const e=m.spawnCombatEnemyAt(raid,kind,{...raid.progression.camp});assert(e);e.siegeNight=raid.round;e.attackAt=0;
   const hp=raid.progression.hqHp;for(let tick=0;tick<30;tick++){raid.tick++;m.stepSiegeWalker(raid,e,true)}assert.equal(raid.progression.hqHp,hp,'No hits on the old empty camp point');
   for(let tick=0;tick<1800&&raid.progression.hqHp===hp;tick++){raid.tick++;m.stepSiegeWalker(raid,e,true)}
   assert(raid.progression.hqHp<hp,kind+' reaches and attacks the table');assert(m.distance(e,site)<site.reach,kind+' gets close to the table');

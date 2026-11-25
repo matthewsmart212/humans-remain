@@ -397,7 +397,7 @@ export function drawWorldEditor(ctx:CanvasRenderingContext2D,atlas:Atlas,imgs:Re
  drawCombatScreenFeedback(ctx,w);
  if(view.playing&&(c.meeting>0||patchChat(w))){
   ctx.save();ctx.scale(density,density);
-  drawPatchMeeting(ctx,w,ctx.canvas.width/density,ctx.canvas.height/density,c.meeting);
+  drawPatchMeeting(ctx,ctx.canvas.width/density,ctx.canvas.height/density,c.meeting);
   ctx.restore();
  }
  if(fade>0){ctx.save();ctx.globalAlpha=Math.min(1,fade);ctx.fillStyle='#100e0c';ctx.fillRect(0,0,ctx.canvas.width,ctx.canvas.height);ctx.restore()}

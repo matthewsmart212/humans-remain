@@ -19,17 +19,27 @@ export function fieldNoteArt(id:string){
  }
 }
 
-/** Keep the live tracker short enough to leave the playfield visible on a phone. */
+const trackerCopy={
+ letter:{action:'Find the amber flashes',location:'Beyond the lake'},
+ diagnose:{action:'Inspect the drive',location:'Rescue shelter'},
+ dispatch:{action:'Read the ledger',location:'Signal post'},
+ salvage:{action:'Find the hauler',location:'Cable works'},
+ brake:{action:'Free the drive',location:'Brake housing'},
+ repair:{action:'Repair P-04',location:'Rescue shelter'},
+ invite:{action:'Invite P-04 home',location:'Rescue shelter'},
+ escort:{action:'Bring P-04 home',location:'Camp chest'},
+} as const;
+
+export function fieldNoteTrackerCopy(w:World){
+ const stage=patchJournalStage(w);
+ if(!stage||stage==='home')return;
+ return trackerCopy[stage==='salvage'&&w.patchQuest?.haulerInspected?'brake':stage];
+}
+
+/** The stable summary also tells the HUD when its two-line tracker needs updating. */
 export function fieldNoteTracker(w:World):string|undefined{
- switch(patchJournalStage(w)){
-  case 'letter':return 'Look for amber flashes beyond the lake';
-  case 'diagnose':return 'Examine P-04’s damaged drive';
-  case 'dispatch':return 'Find the signal post at the southern bridge';
-  case 'salvage':return w.patchQuest?.haulerInspected?'Release the drive at the brake housing':'Find the cable-hauler on the mine road';
-  case 'repair':return 'Take the W-6 drive to P-04';
-  case 'invite':return 'Invite P-04 back to camp';
-  case 'escort':return 'Walk home with P-04';
- }
+ const copy=fieldNoteTrackerCopy(w);
+ return copy&&`${copy.action} · ${copy.location}`;
 }
 
 /** The compass is useful on the journey. It clears itself upon reaching the site. */

@@ -1,12 +1,12 @@
 import {PATCH_ROBOT_ANCHOR,PATCH_ROBOT_CELL,PATCH_ROBOT_SCALE} from './patch-art';
 import {drawPatchBubble} from './patch-speech-bubble';
 import {patchChat} from './patch-chat';
-import {patchSpriteFrame} from './patch-animation';
+import {patchSpriteFrame,type PatchSpriteFrame} from './patch-animation';
 import {patchLandmarks,patchRescueSite} from './patch-placement';
 import {ASSET_BY_ID} from './world-assets';
 import {placementArtPoint} from './world-layout';
 import {patchBeacon,patchRepairProgress,patchSpeech} from './patch-quest';
-import {lineClear,type World} from './survival-engine';
+import {lineClear,type Vec,type World} from './survival-engine';
 import type {PresentedWorld} from './player-presentation';
 import type {FoliageViewport} from './foliage-renderer';
 
@@ -25,6 +25,14 @@ function pose(w:PresentedWorld,view?:FoliageViewport,editor=false,margin=0){
 function visibleFrame(p:NonNullable<ReturnType<typeof pose>>,imgs:Record<string,HTMLImageElement>){
  const mode=p.damaged&&imgs.patchDamaged?'damaged':p.moving&&imgs.patchWalk?'walk':imgs.patchRobot?'idle':!p.damaged&&imgs.patchWalk?'walk':undefined;
  return mode?patchSpriteFrame(mode,p.direction,p.moving?p.walkDistance:0):undefined;
+}
+/** The nighttime spill and hot lamp use the same registered atlas point as the painted lamp. */
+function emitter(position:Vec,frame:PatchSpriteFrame){
+ const [ratio,dx,dy]=frame.registration;
+ return {
+  x:position.x+(dx+(frame.lamp[0]-PATCH_ROBOT_ANCHOR[0])*ratio)*PATCH_ROBOT_SCALE,
+  y:position.y+(dy+(frame.lamp[1]-PATCH_ROBOT_ANCHOR[1])*ratio)*PATCH_ROBOT_SCALE,
+ };
 }
 /** Tight masonry/metal contacts belong beneath the complete prop painting. */
 export function drawPatchGroundContacts(ctx:CanvasRenderingContext2D,w:World,view:FoliageViewport){
@@ -72,10 +80,7 @@ export function patchDrawables(ctx:CanvasRenderingContext2D,imgs:Record<string,H
 export function drawPatchFeedback(ctx:CanvasRenderingContext2D,imgs:Record<string,HTMLImageElement>,w:World,view:FoliageViewport){
  const p=pose(w,view);if(!p)return;const frame=visibleFrame(p,imgs);if(!frame)return;
  if(Math.hypot(p.x-w.player.x,p.y-w.player.y)>1000||!lineClear(w.player,p,w))return;
- const pulse=patchBeacon(w),lamp=frame.lamp;
- const [ratio,dx,dy]=frame.registration;
- const lampX=p.x+(dx+(lamp[0]-PATCH_ROBOT_ANCHOR[0])*ratio)*PATCH_ROBOT_SCALE;
- const lampY=p.y+(dy+(lamp[1]-PATCH_ROBOT_ANCHOR[1])*ratio)*PATCH_ROBOT_SCALE;
+ const pulse=patchBeacon(w),{x:lampX,y:lampY}=emitter(p,frame);
  if(pulse>0){
   ctx.save();ctx.globalAlpha=pulse;const radius=14*VISUAL_SCALE;
   const glow=ctx.createRadialGradient(lampX,lampY,0,lampX,lampY,radius);glow.addColorStop(0,'#ffc46980');glow.addColorStop(.3,'#ffbe4e38');glow.addColorStop(1,'#ffb64b00');
@@ -89,18 +94,19 @@ export function drawPatchFeedback(ctx:CanvasRenderingContext2D,imgs:Record<strin
  // lamp, feet and choice tray continue to share the same screen coordinates.
  ctx.save();ctx.translate(view.x,view.y);ctx.scale(1/scale,1/scale);
  const feet=(p.y-view.y)*scale,head=feet-(p.damaged?157:200)*PATCH_ROBOT_SCALE*scale;
- drawPatchBubble(ctx,speech,{x:(p.x-view.x)*scale,head,feet,halfWidth:(p.damaged?41:28)*scale},
+ drawPatchBubble(ctx,speech,{x:(p.x-view.x)*scale,head,feet,halfWidth:(p.damaged?83:91)*PATCH_ROBOT_SCALE*scale},
   view.width*scale,view.height*scale);
  ctx.restore();
 }
 
 /** One moving light uniform leaves the cached camp light field intact. */
 export function patchNightLight(w:World,view:FoliageViewport){
- const p=pose(w,view,false,145);
+ const p=pose(w,view,false,264);
  if(!p||Math.hypot(p.x-w.player.x,p.y-w.player.y)>1000||!lineClear(w.player,p,w))return;
  const pulse=patchBeacon(w),talking=!!patchChat(w);
  // In the two-shot the lamp lights the survivor opposite him, even through
  // the long rest between the three signal flashes.
- const radius=talking?203:p.damaged?125:145;
- return {x:p.x,y:p.y-(p.damaged?32:49),radius,strength:talking ? .72+pulse*.18 : .24+pulse*.55};
+ const radius=(talking?203:p.damaged?125:145)*1.3;
+ const frame=patchSpriteFrame(p.damaged?'damaged':p.moving?'walk':'idle',p.direction,p.walkDistance);
+ return {...emitter(p,frame),radius,strength:talking ? .72+pulse*.18 : .24+pulse*.55};
 }

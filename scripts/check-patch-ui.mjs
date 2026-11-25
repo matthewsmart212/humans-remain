@@ -226,7 +226,7 @@ async function readPaperContrast(){
 try{
  const [styles]=await Promise.all([
   build({entryPoints:['src/main.tsx'],bundle:true,platform:'browser',format:'esm',outdir:path.join(temporary,'app'),write:false,alias:{'react-native':'react-native-web'},define:{global:'globalThis'},loader:{'.woff':'file','.woff2':'file'},external:['/fonts/*','/survival/*','/previews/*','/art/*','fs','path'],logLevel:'error'}),
-  build({stdin:{contents:`export {default as React} from 'react';export {renderToStaticMarkup} from 'react-dom/server';export {default as CampStationPanel} from './src/CampStationPanel';export {default as StationMenu} from './src/StationMenu';export {PatchChatHUD,PatchNotePanel} from './src/PatchPanel';export * from './src/survival-engine';export * from './src/world-layout';export * from './src/run-progression';export * from './src/patch-quest';export * from './src/patch-dialogue';export * from './src/patch-chat';export * from './src/patch-placement';export * from './src/imported-art';export * from './src/loot-chest';export * from './src/station-menu-layout';export * from './src/patch-panel-layout';`,resolveDir:process.cwd()},outfile:path.join(temporary,'ui.cjs'),bundle:true,platform:'node',format:'cjs',alias:{'react-native':'react-native-web'},loader:{'.css':'empty'},logLevel:'error'}),
+  build({stdin:{contents:`export {default as React} from 'react';export {renderToStaticMarkup} from 'react-dom/server';export {default as CampStationPanel} from './src/CampStationPanel';export {default as StationMenu} from './src/StationMenu';export {PatchChatHUD,PatchNotePanel} from './src/PatchPanel';export * from './src/survival-engine';export * from './src/world-layout';export * from './src/run-progression';export * from './src/patch-quest';export * from './src/patch-dialogue';export * from './src/patch-chat';export * from './src/patch-placement';export * from './src/imported-art';export * from './src/loot-chest';export * from './src/station-menu-layout';export * from './src/patch-panel-layout';export * from './src/patch-conversation-layout';`,resolveDir:process.cwd()},outfile:path.join(temporary,'ui.cjs'),bundle:true,platform:'node',format:'cjs',alias:{'react-native':'react-native-web'},loader:{'.css':'empty'},logLevel:'error'}),
  ]);
  const css=styles.outputFiles.filter(file=>file.path.endsWith('.css')).map(file=>file.text).join('\n');
  assert(css.includes('.world-editor p')&&css.includes('.patch-note-paper'),'Full app CSS must include the conflicting editor rule and letter styles');
@@ -302,6 +302,11 @@ try{
  const nativePanel=fs.readFileSync('native/PatchPanel.tsx','utf8');
  assert(nativePanel.includes("require('../public/survival/patch-v3/letter.webp')"));
  assert(nativePanel.includes("require('../public/survival/patch-v4/gate-memory.webp')"),'The letter keeps the illustrated memory available after homecoming');
+ for(const art of ['portrait.webp','panel-texture.webp','copper-corner.png','close.png','talk.png','wrench.png','follow.png']){
+  const bytes=fs.readFileSync('public/survival/patch-ui-v1/'+art);
+  assert(bytes.length>200&&!bytes.subarray(0,32).toString().includes('git-lfs'),'The story frame embeds real image bytes');
+  assert(nativePanel.includes("require('../public/survival/patch-ui-v1/"+art+"')"),art+' is packaged for offline conversations');
+ }
  for(const [name,required] of [['paragraph',7],['signatureText',7],['provenanceText',4.5]]){
   const ink=nativePanel.match(new RegExp(`${name}:\\{[^}]*color:'(#[\\da-f]{6})'`,'i'))?.[1];
   assert(ink,`Native ${name} has an explicit, inspectable ink color`);
@@ -322,7 +327,10 @@ try{
  const readChat=()=>{
   const root=wrap(chatMarkup()),tray=find(root,'patch-chat-hud'),options=find(root,'patch-chat-options'),transcript=find(root,'patch-chat-transcript');
   assert(tray&&options&&transcript);
-  assert(!find(root,'station-menu')&&!descendants(root).some(n=>n.attrs.role==='dialog'||n.attrs['aria-modal']==='true'||n.tag==='img'),'Chat exposes replies without a dialog, portrait or backdrop');
+  assert(!find(root,'station-menu')&&!descendants(root).some(n=>n.attrs.role==='dialog'||n.attrs['aria-modal']==='true'),'The portrait and replies share the live field of play');
+  const portrait=find(root,'patch-chat-portrait'),line=find(root,'patch-chat-line');
+  assert.equal(portrait?.children[0]?.attrs.src,'/survival/patch-ui-v1/portrait.webp');
+  assert.equal(line?.text,m.patchChat(world).line,'The visible subtitle follows each exchange');
   assert.equal(tray.attrs.role,'group');
   assert.equal(transcript.attrs.role,'status');
   assert(transcript.text.includes(m.patchChat(world).line),'Assistive technology can read the current subtitle');
@@ -331,9 +339,14 @@ try{
  };
  assert.equal(chatMarkup(),'','Approaching alone reveals no controls');
  assert(m.inspectPatch(world));
- assert.deepEqual(readChat().labels,['Inspect the damaged drive','Ask Patch']);
+ const initialChat=readChat();
+ assert.deepEqual(initialChat.labels,['Inspect the damaged drive','Ask Patch']);
+ assert(find(initialChat.root,'patch-chat-greeting')&&find(initialChat.root,'patch-chat-name'));
+ assert.deepEqual(initialChat.options.children.map(button=>button.children[0]?.attrs.src),['/survival/patch-ui-v1/wrench.png','/survival/patch-ui-v1/talk.png']);
  assert(m.choosePatchChat(world,'ask'));
- assert(readChat().labels.includes('What happened to your receiver?'));
+ const questions=readChat();assert(questions.labels.includes('What happened to your receiver?'));
+ assert(find(questions.root,'patch-chat-branch')&&find(questions.root,'patch-chat-identity'));
+ assert.equal(descendants(questions.root).find(n=>n.tag==='h3')?.text,'Ask Patch');
  assert(m.choosePatchChat(world,'topic:reclamation'));
  const pages=[m.patchChat(world).line];
  while(m.patchChat(world).pageIndex+1<m.patchChat(world).pageCount){
@@ -366,6 +379,13 @@ try{
  const selected=options.children.filter(button=>button.attrs['aria-pressed']==='true');
  assert.deepEqual(selected.map(button=>button.attrs['data-choice']),[world.patchQuest.command],'The active command is announced to screen readers');
  for(const device of devices){
+  for(const view of ['greeting','topics','answer']){
+   const count=view==='greeting'?2:6;
+   const {hud,speech,actions,wide,pad,row}=m.patchConversationLayout(device.width,device.height,device.safe,view,count);
+   assert(hud.x>=device.safe.left&&hud.y>=device.safe.top&&hud.x+hud.width<=device.width-device.safe.right&&hud.y+hud.height<=device.height-device.safe.bottom,device.name+' keeps both panels within safe bounds');
+   assert(wide?speech.x+speech.width<=actions.x:speech.y+speech.height<=actions.y,'Speech and reply hit targets stay separate');
+   if(view==='greeting'&&wide)assert(actions.height>=2*row+2*pad+4,'The greeting fits the initial two replies');
+  }
   const style=cascade(css,{...device,containerWidth:device.width});
   const journalInk=style.value(evidence,'color');
   assert(raster.contrast(journalInk)>=4.5,`${device.name}: field journal evidence must be legible on the actual paper`);

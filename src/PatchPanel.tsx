@@ -1,5 +1,5 @@
 import {PATCH_LETTER_POSTSCRIPT,patchLetterDirections} from './patch-letter';
-import React,{useLayoutEffect,useRef} from 'react';
+import React,{useLayoutEffect,useRef,useState} from 'react';
 import type {World} from './survival-engine';
 import StationMenu from './StationMenu';
 import {LOOT_CHEST_ID,lootChestInMenuRange} from './loot-chest';
@@ -7,6 +7,7 @@ import {PATCH_NOTE_TEXT,PATCH_QUEST_TITLE} from './patch-quest';
 import {patchChat,choosePatchChat,closePatchChat,type PatchChat} from './patch-chat';
 import {patchJournalStage} from './patch-journal';
 import {patchDialogueReply} from './patch-dialogue';
+import {patchConversationLayout,localPatchRect,patchChoiceIcon} from './patch-conversation-layout';
 import {setPatchChatBounds} from './patch-chat-bounds';
 import './patch-panel.css';
 
@@ -69,44 +70,38 @@ export function PatchChatHUD({world,onChange}:ChatProps){
  return chat?<PatchReplies world={world} chat={chat} onChange={onChange}/>:null;
 }
 
+const art='/survival/patch-ui-v1/';
+const emptyInsets={top:0,right:0,bottom:0,left:0};
+function Corners(){
+ return <span aria-hidden="true" className="patch-chat-corners"><i/><i/><i/><i/></span>;
+}
+
 function PatchReplies({world,chat,onChange}:ChatProps&{chat:PatchChat}){
- const tray=useRef<HTMLElement>(null),choices=useRef<HTMLDivElement>(null);
- const scrollMark=useRef<HTMLSpanElement>(null);
- const pressedChoice=useRef<EventTarget|null>(null);
- const focusNext=useRef(false);
- const showScrollPosition=()=>{
-  const list=choices.current,mark=scrollMark.current;
-  if(!list||!mark)return;
-  const total=list.scrollHeight;
-  mark.hidden=total<=list.clientHeight+1;
-  if(!mark.hidden){
-   mark.style.top=(100*list.scrollTop/total)+'%';
-   mark.style.height=(100*list.clientHeight/total)+'%';
-  }
- };
+ const tray=useRef<HTMLElement>(null),choices=useRef<HTMLDivElement>(null),copy=useRef<HTMLDivElement>(null);
+ const pressedChoice=useRef<EventTarget|null>(null),focusNext=useRef(false);
+ const [frame,setFrame]=useState({width:844,height:390,safe:emptyInsets});
+ const layout=patchConversationLayout(frame.width,frame.height,frame.safe,chat.view,chat.choices.length);
+ const {hud,speech,actions,greeting}=layout;
  useLayoutEffect(()=>{
   const el=tray.current,kit=el?.closest('.field-kit');
   if(!el||!kit)return;
   const measure=()=>{
-   const rect=el.getBoundingClientRect(),frame=kit.getBoundingClientRect();
-   showScrollPosition();
-   const css=getComputedStyle(el);
+   const rect=kit.getBoundingClientRect(),css=getComputedStyle(el);
    const inset=(edge:string)=>parseFloat(css.getPropertyValue('--patch-safe-'+edge))||0;
-   setPatchChatBounds(world,{x:rect.left-frame.left,y:rect.top-frame.top,width:rect.width,height:rect.height},
-    {top:inset('top'),right:inset('right'),bottom:inset('bottom'),left:inset('left')});
+   setFrame({width:rect.width,height:rect.height,safe:{top:inset('top'),right:inset('right'),bottom:inset('bottom'),left:inset('left')}});
   };
-  // Keep keyboard entry inside the response list. Movement keys still reach the world.
   el.focus({preventScroll:true});
-  measure();
-  const observer=new ResizeObserver(measure);
-  observer.observe(kit);observer.observe(el);
-  return ()=>{observer.disconnect();setPatchChatBounds(world,undefined)};
+  measure();const observer=new ResizeObserver(measure);observer.observe(kit);
+  window.addEventListener('resize',measure);
+  return ()=>{observer.disconnect();window.removeEventListener('resize',measure);setPatchChatBounds(world,undefined)};
  },[world]);
  useLayoutEffect(()=>{
-  const list=choices.current;
-  if(list)list.scrollTop=0;
-  showScrollPosition();
-  if(focusNext.current){list?.querySelector('button')?.focus({preventScroll:true});focusNext.current=false}
+  setPatchChatBounds(world,actions,frame.safe);
+ },[world,actions.x,actions.y,actions.width,actions.height,frame.safe]);
+ useLayoutEffect(()=>{
+  if(choices.current)choices.current.scrollTop=0;
+  if(copy.current)copy.current.scrollTop=0;
+  if(focusNext.current){choices.current?.querySelector('button')?.focus({preventScroll:true});focusNext.current=false}
  },[chat]);
  const choose=(id:string,event:React.MouseEvent<HTMLButtonElement>)=>{
   const stage=patchJournalStage(world),command=world.patchQuest?.command;
@@ -115,7 +110,11 @@ function PatchReplies({world,chat,onChange}:ChatProps&{chat:PatchChat}){
  };
  const end=()=>{if(closePatchChat(world))onChange()};
  const buttonKeys=(event:React.KeyboardEvent)=>{if(event.key==='Enter'||event.key===' ')event.stopPropagation()};
- return <section ref={tray} role="group" aria-label={`Replies to ${chat.speaker}`} tabIndex={-1} className="patch-chat-hud"
+ return <section ref={tray} role="group" aria-label={`Replies to ${chat.speaker}`} tabIndex={-1}
+  className={`patch-chat-hud ${greeting?'patch-chat-greeting patch-chat-frame':'patch-chat-branch'}`} data-wide={layout.wide}
+  style={{left:hud.x,top:hud.y,width:hud.width,height:hud.height,
+   '--patch-pad':layout.pad+'px','--patch-row':layout.row+'px','--patch-heading':layout.header+'px',
+   '--patch-portrait':layout.portrait+'px','--patch-speech-size':layout.font+'px','--patch-choice-size':layout.labelFont+'px'} as React.CSSProperties}
   onKeyDown={buttonKeys} onKeyUp={buttonKeys}
   onPointerDown={e=>{pressedChoice.current=(e.target as HTMLElement).closest('button');e.stopPropagation()}}
   onPointerCancel={()=>{pressedChoice.current=null}}
@@ -127,11 +126,28 @@ function PatchReplies({world,chat,onChange}:ChatProps&{chat:PatchChat}){
    }
    pressedChoice.current=null;
   }}>
-  <span className="patch-chat-transcript" role="status" aria-live="polite" aria-atomic="true">{chat.speaker} — {chat.line}</span>
-  <div ref={choices} className="patch-chat-options" onScroll={showScrollPosition}>
-   {chat.choices.map(choice=><button type="button" key={choice.id} data-choice={choice.id} aria-pressed={['follow','stay','camp'].includes(choice.id)?world.patchQuest?.command===choice.id:undefined} onClick={e=>choose(choice.id,e)}>{choice.label}</button>)}
+  <div className={`patch-chat-speech ${greeting?'':'patch-chat-frame'}`} style={localPatchRect(speech,hud)}>
+   {!greeting&&<Corners/>}
+   <div className="patch-chat-portrait"><img src={art+'portrait.webp'} alt="Patch, a battered rescue robot with an amber lamp" draggable={false}/></div>
+   <div className="patch-chat-transcript" role="status" aria-live="polite" aria-atomic="true">
+    {greeting?<span className="patch-chat-name">{chat.speaker}</span>:
+     <span className="patch-chat-identity" aria-label={chat.speaker}><b>Patch</b><small>P-04</small></span>}
+    <div ref={copy} className="patch-chat-copy"><p className="patch-chat-line">{chat.line}</p></div>
+   </div>
   </div>
-  <span className="patch-chat-scroll-track" aria-hidden="true"><span ref={scrollMark} hidden/></span>
-  <button type="button" className="patch-chat-end" aria-label="End conversation" title="End conversation" onClick={end}><span aria-hidden="true">×</span></button>
+  <div className={`patch-chat-actions ${greeting?'':'patch-chat-frame'}`} style={localPatchRect(actions,hud)}>
+   {!greeting&&<><Corners/><h3>Ask Patch</h3></>}
+   <div ref={choices} className="patch-chat-options">
+    {chat.choices.map(choice=>{
+     const icon=(greeting||choice.id==='topic:damage')&&patchChoiceIcon(choice.id);
+     return <button type="button" key={choice.id} data-choice={choice.id} aria-pressed={['follow','stay','camp'].includes(choice.id)?world.patchQuest?.command===choice.id:undefined} onClick={e=>choose(choice.id,e)}>
+      {icon?<img className="patch-chat-icon" src={art+icon+'.png'} aria-hidden="true" alt="" draggable={false}/>:!greeting&&<i className="patch-chat-diamond" aria-hidden="true"/>}
+      <span>{choice.label}</span>{(greeting||choice.id==='more')&&<i aria-hidden="true" className="patch-chat-chevron"/>}
+     </button>;
+    })}
+   </div>
+   <button type="button" className="patch-chat-end" aria-label="End conversation" title="End conversation" onClick={end}><img src={art+'close.png'} alt="" draggable={false}/></button>
+  </div>
+  {greeting&&<Corners/>}
  </section>;
 }

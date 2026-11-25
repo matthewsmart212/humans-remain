@@ -294,3 +294,7 @@ public/survival/expedition-menu-v2/loading-panel.webp -filter -diff -merge
 
 # Authored rescue-route scenery must load in web and offline native clients.
 /public/survival/patch-v5/*.webp -filter -diff -merge -text
+
+# Patch's field panels bundle their small UI artwork directly for web and iOS.
+/public/survival/patch-ui-v1/*.png -filter -diff -merge -text
+/public/survival/patch-ui-v1/*.webp -filter -diff -merge -text

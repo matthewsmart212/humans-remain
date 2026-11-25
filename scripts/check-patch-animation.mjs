@@ -33,7 +33,7 @@ const results=[],browserFrames=new Map(),browserCalls=new Map();
 try{
  for(const target of targets){
   const skiaRoot=path.resolve(target==='native'?'native/node_modules/@shopify/react-native-skia':'node_modules/@shopify/react-native-skia');
-  const file=path.join(temporary,target+'.cjs'),modules=['patch-art','patch-animation','patch-meeting','placed-world-renderer','continuous-zoom','patch-chat','patch-chat-bounds','patch-dialogue','patch-speech-bubble','player-presentation','patch-renderer','patch-quest','patch-placement','gameplay-artwork','survival-engine','world-layout','skia-adapter'];
+  const file=path.join(temporary,target+'.cjs'),modules=['patch-art','patch-animation','patch-meeting','placed-world-renderer','continuous-zoom','patch-chat','patch-chat-bounds','patch-conversation-layout','patch-dialogue','patch-speech-bubble','player-presentation','patch-renderer','patch-quest','patch-placement','gameplay-artwork','survival-engine','world-layout','skia-adapter'];
   await build({stdin:{contents:modules.map(id=>`export * from './src/${id}';`).join('\n')+`\nexport {JsiSkApi} from ${JSON.stringify(path.join(skiaRoot,'lib/module/skia/web/JsiSkia.js'))};`,resolveDir:root},bundle:true,platform:'node',format:'cjs',outfile:file,logLevel:'error'});
   const m=require(file),kitRequire=createRequire(path.join(skiaRoot,'package.json'));
   const kit=await kitRequire('canvaskit-wasm')({locateFile:f=>path.join(path.dirname(kitRequire.resolve('canvaskit-wasm')),f)}),api=m.JsiSkApi(kit);
@@ -71,7 +71,8 @@ try{
    }
    assert.equal(frameHashes.size,64,'Every direction/phase has its own artwork');
    assert.equal(legHashes.size,64,'Walking legs are authored, not repeated standing cutouts');
-   assert.equal(m.PATCH_ROBOT_SCALE/.3,1.5,'Both visual dimensions grow by exactly 50 percent');
+   const artScale=m.PATCH_ROBOT_SCALE;
+   assert(Math.abs(artScale/.45-1.30)<1e-12,'All poses are 30 percent larger than the previous release');
    assert.equal(m.PATCH_WALK_CYCLE_DISTANCE,112,'Existing saved gait distance stays compatible');
    for(const distance of [0,13.999,14,27.999,28,97.999,98,111.999,112,126,224]){
     const expected=Math.floor((distance%112)/14);
@@ -121,12 +122,16 @@ try{
      const rendered=render(name);rowFrames.push(rendered.pixels);
      const draw=rendered.calls.find(c=>c[0]==='drawImage');
      assert.deepEqual(draw.slice(1,6),['patchWalk',phase*256,row*256,256,256],'The painter uses the selected walking cell');
+     const shadow=rendered.calls.find(c=>c[0]==='ellipse');
+     assert.equal(shadow[3],17*(artScale/.3));assert.equal(shadow[4],5*(artScale/.3),'The shadow follows the enlarged feet');
      const [ratio,dx,dy]=frame.registration;
      assert(ratio>.95&&ratio<1.03,'Registration keeps the enlarged size');
-     assert.deepEqual(draw.slice(6),[ground.x+(dx-128*ratio)*.45,ground.y+(dy-228*ratio)*.45,256*ratio*.45,256*ratio*.45],'The gait registration is isotropic and foot-anchored');
+     assert.deepEqual(draw.slice(6),[ground.x+(dx-128*ratio)*artScale,ground.y+(dy-228*ratio)*artScale,256*ratio*artScale,256*ratio*artScale],'The gait registration is isotropic and foot-anchored');
      assert(!rendered.calls.some(c=>['rotate','translate','scale'].includes(c[0])),'Walking never rocks or bobs the entire standing image');
      const glow=rendered.calls.find(c=>c[0]==='createRadialGradient'),[lx,ly]=metadata.lamps[row][phase];assert(glow,'Lamp feedback is rendered');
-     assert.equal(glow[1],ground.x+(dx+(lx-128)*ratio)*.45);assert.equal(glow[2],ground.y+(dy+(ly-228)*ratio)*.45,'Lamp follows this exact gait cell');
+     const field=m.patchNightLight(world,viewport);
+     assert.equal(field.x,glow[1]);assert.equal(field.y,glow[2],'The night lighting field is centred on the registered lamp');
+     assert.equal(glow[1],ground.x+(dx+(lx-128)*ratio)*artScale);assert.equal(glow[2],ground.y+(dy+(ly-228)*ratio)*artScale,'Lamp follows this exact gait cell');
      if(target==='browser'){browserFrames.set(name,rendered.pixels);browserCalls.set(name,rendered.calls)}
      else{
       assert.deepEqual(rendered.calls,browserCalls.get(name),'Browser and native use identical crop, anchor, shadow and lamp commands');
@@ -149,10 +154,10 @@ try{
    const fallback=render('loading-fallback',true,{patchRobot:images.patchRobot,patchDamaged:images.patchDamaged});
    assert.equal(fallback.calls.find(c=>c[0]==='drawImage')[1],'patchRobot','Late walk download retains a visible companion');
    q.servoInstalled=false;q.moving=false;world.tick=0;const damaged=render('damaged');world.tick=360;assert(damaged.pixels.equals(render().pixels),'Reduced-motion rescue beacon is steady');
-   assert.deepEqual(damaged.calls.find(c=>c[0]==='drawImage').slice(6),[ground.x-128*.45,ground.y-228*.45,256*.45,256*.45],'The damaged pose is enlarged by the same amount');
+   assert.deepEqual(damaged.calls.find(c=>c[0]==='drawImage').slice(6),[ground.x-128*artScale,ground.y-228*artScale,256*artScale,256*artScale],'The damaged pose is enlarged by the same amount');
    world.patchRepair={worked:3,duration:6,held:true};const half=render('repair-half');
    const arc=half.calls.filter(c=>c[0]==='moveTo'||c[0]==='lineTo');assert.equal(arc.length,21);
-   assert.deepEqual(arc[0],['moveTo',ground.x,ground.y-12]);assert(Math.abs(arc.at(-1)[1]-128)<1e-7);assert.equal(arc.at(-1)[2],ground.y+18,'Half repair draws only the right half of the larger ring');
+   assert.equal(arc[0][0],'moveTo');assert.equal(arc[0][1],ground.x);assert(Math.abs(arc[0][2]-(ground.y-8*artScale/.3))<1e-7);assert(Math.abs(arc.at(-1)[1]-128)<1e-7);assert.equal(arc.at(-1)[2],ground.y+12*artScale/.3,'Half repair draws only the right half of the larger ring');
    world.patchRepair=undefined;
    assert.equal(m.patchDrawables({},images,world,{x:4000,y:4000,width:100,height:100}).length,0,'Distant actors do no GPU work');
    q.servoInstalled=true;assert.equal(m.patchDrawables({},images,world,{x:80,y:55,width:96,height:20}).length,1,'Expanded cull bounds retain visible head/lamp edges');
@@ -194,7 +199,8 @@ try{
    world.tick+=181;assert.equal(m.patchSpeech(world),undefined,'The existing three-second command lifetime remains intact');
    assert(!render().calls.some(call=>call[0]==='fillText'),'Expired bubbles leave no persistent world UI');
    // Every word of the industrial-gate answer must survive real choices,
-   // renderer interpolation, both turning pages and the instrumented Skia draw.
+   // including page changes. The HUD owns that transcript in a meeting.
+   Object.assign(world.player,{x:q.position.x+68,y:q.position.y+26});
    assert(m.inspectPatch(world));assert(m.choosePatchChat(world,'ask'));assert(m.choosePatchChat(world,'topic:reclamation'));
    const reply=[],phoneBounds=[
     {width:667,height:320,scale:.38,x:330,y:156},
@@ -205,26 +211,28 @@ try{
     const page=m.patchChat(world);reply.push(page.line);
     for(const phone of phoneBounds){
      const {width:pw,height:ph,scale,x,y}=phone;
-     const dock={x:pw*.55,y:ph*.65,width:pw*.4,height:ph*.27};
-     m.setPatchChatBounds(world,dock,{left:pw>ph?44:0,right:pw>ph?44:0,top:0,bottom:18});
+     const safe={left:pw>ph?44:0,right:pw>ph?44:0,top:0,bottom:18};
+     const panel=m.patchConversationLayout(pw,ph,safe,page.view,page.choices.length);
+     m.setPatchChatBounds(world,panel.actions,safe);
+     const framed=m.patchMeetingCamera(world,{x:0,y:0,scale},pw,ph,world.tick/60);
+     for(const [actor,half,tall] of [[q.position,92*artScale,200*artScale],[world.player,39,119]]){
+      const left=(actor.x-half-framed.x)*framed.scale,right=(actor.x+half-framed.x)*framed.scale;
+      const top=(actor.y-tall-framed.y)*framed.scale,bottom=(actor.y-framed.y)*framed.scale;
+      assert(left>=safe.left&&right<=pw-safe.right&&top>=0&&bottom<=ph,'Both complete sprites stay inside the safe viewport');
+      for(const r of [panel.speech,panel.actions])assert(right<=r.x||left>=r.x+r.width||bottom<=r.y||top>=r.y+r.height,'Portrait and reply cards clear the staged actors');
+     }
      const view={x:q.position.x-x/scale,y:q.position.y-y/scale,width:pw/scale,height:ph/scale,scale};
      const phoneSurface=api.Surface.Make(pw,ph),ctx=new adapter.SkiaContext(phoneSurface.getCanvas(),pw,ph,font);
      ctx.fillStyle='#59614b';ctx.fillRect(0,0,pw,ph);ctx.scale(scale,scale);ctx.translate(-view.x,-view.y);
-     const painted=[],nativeText=ctx.fillText.bind(ctx);
-     ctx.fillText=(line,px,py)=>{
-      const width=ctx.measureText(line).width,left=ctx.textAlign==='right'?px-width:px;
-      painted.push(line);assert(left>=0&&left+width<=pw&&py>0&&py<=ph,'All glyphs remain in the phone viewport');
-      assert(left+width<=dock.x||left>=dock.x+dock.width||py<=dock.y||py-18>=dock.y+dock.height,'The choices never obscure a reply');
-      nativeText(line,px,py);
-     };
+     const painted=[];
+     ctx.fillText=(line)=>{painted.push(line)};
      const display=m.presentPlayer(world,m.samplePlayer(world),.5);
      m.patchDrawables(ctx,images,display,view)[0].draw();
      m.drawPatchFeedback(ctx,images,display,view);
      assert.equal(painted.length,0,'Active meeting dialogue is outside the ambient bubble painter');
      ctx.translate(view.x,view.y);ctx.scale(1/scale,1/scale);
-     m.drawPatchMeeting(ctx,display,pw,ph,1);
-     assert.equal(painted.shift(),page.speaker);
-     assert.equal(painted.join(' '),page.line,'Canvas displays the complete page without ellipses');
+     m.drawPatchMeeting(ctx,pw,ph,1);
+     assert.deepEqual(painted,[],'The canvas does not repeat the portrait HUD transcript');
      phoneSurface.flush();
      if(previews){const shot=phoneSurface.makeImageSnapshot();fs.writeFileSync(path.join(previews,target+'-chat-'+pw+'-'+page.pageIndex+'.png'),Buffer.from(shot.encodeToBytes()));shot.dispose()}
      ctx.dispose();phoneSurface.dispose();
@@ -234,6 +242,7 @@ try{
    }while(true);
    assert.equal(reply.join(' '),m.patchDialogueReply(world,'reclamation'));
    assert(reply.length>1);m.setPatchChatBounds(world,undefined);m.closePatchChat(world);
+   m.patchMeetingCamera(world,{x:0,y:0,scale:1},844,390,world.tick/60);
    // Render-space framing never changes actor coordinates or the user's zoom.
    const followView={follow:true,playing:true,zoom:.73,x:0,y:0,grid:false,collision:false};
    const sourcePose=structuredClone(q.position);
@@ -241,7 +250,7 @@ try{
    world.weather.reducedMotion=false;world.player.x=q.position.x+55;world.player.y=q.position.y+24;
    const baseline=camera(10);assert(m.inspectPatch(world));const enter=camera(10),mid=camera(10.32),close=camera(10.65),retina=camera(10.65,2);
    assert.deepEqual(enter,baseline);assert(mid.scale>baseline.scale&&mid.scale<close.scale);
-   assert(close.scale>2*baseline.scale,'Normal phone gameplay pushes into an actual close two-shot');
+   assert(Math.abs(close.scale-.70*1.5679918032786886)<1e-10,'The greeting uses 70 percent of the previous magnification at this measured pose');
    assert.equal(close.meeting,1);assert.equal(retina.scale,close.scale*2);assert.equal(retina.x,close.x);
    for(const actor of [q.position,world.player]){
     const sx=(actor.x-close.x)*close.scale,sy=(actor.y-close.y)*close.scale;
@@ -252,7 +261,7 @@ try{
    assert.deepEqual(mapReference,baseline,'Atlas queries can sample the unmodified gameplay frame');
    assert(m.choosePatchChat(world,'ask'));assert(m.choosePatchChat(world,'topic:reclamation'));
    assert.deepEqual(camera(10.7),close,'Changing speaker coverage starts at the previous frame');
-   const answer=camera(11.2);assert(answer.scale>close.scale,'The gate account draws closer');
+   const answer=camera(11.2);assert(Math.abs(answer.scale-.70*1.7422131147540982)<1e-10,'The gate account retains its closer lens with the same reduction');
    assert(m.choosePatchChat(world,'more'));assert.deepEqual(camera(11.4),answer,'Paging holds the shot');
    m.closePatchChat(world);assert.deepEqual(camera(11.4),answer);
    const leaving=camera(11.61);assert(leaving.scale>baseline.scale&&leaving.scale<answer.scale);
@@ -262,7 +271,7 @@ try{
    results.push({target,skiaVersion:JSON.parse(fs.readFileSync(path.join(skiaRoot,'package.json'))).version,walkFrames:frameHashes.size,legFrames:legHashes.size,smallestAdjacentLegChange:smallestLegDifference,maxParityMean:maxParityError,maxParityPixels:mostParityPixels});
   }finally{for(const image of Object.values(images))image?.dispose();surface.dispose();dialogueFont.dispose();font.dispose();face.dispose();adapter.disposeLighting()}
  }
- const report={passed:true,results,checks:['eight headings and eight actual leg poses','256-pixel bounds and transparent cell gutters','1.5x standing/damaged/walking scale','distance-driven phases and continuous turns','steady planted idle','essential reduced-motion locomotion','per-frame lamp registration','larger partial repair arc','browser/native offline atlas parity','shared depth and expanded culling','real repair/recruitment/command speech bubbles and timed expiry','one/two-line speech and native/web bubble rendering parity','complete field subtitles at three phone sizes and zoom levels, including edge and choice clearance','two-actor camera entry/exit, atlas isolation, depth-independent zoom and reduced motion'],physicalIPhoneTested:false};
+ const report={passed:true,results,checks:['eight headings and eight actual leg poses','256-pixel bounds and transparent cell gutters','30 percent larger standing/damaged/walking scale','distance-driven phases and continuous turns','steady planted idle','essential reduced-motion locomotion','per-frame lamp registration','larger partial repair arc','browser/native offline atlas parity','shared depth and expanded culling','real repair/recruitment/command speech bubbles and timed expiry','one/two-line speech and native/web bubble rendering parity','single active transcript in the web/native HUD at three viewport sizes','two-actor camera entry/exit, atlas isolation, depth-independent zoom and reduced motion'],physicalIPhoneTested:false};
  if(previews)fs.writeFileSync(path.join(previews,'report.json'),JSON.stringify(report,null,2)+'\n');
  console.log(JSON.stringify(report,null,2));
 }finally{fs.rmSync(temporary,{recursive:true,force:true})}

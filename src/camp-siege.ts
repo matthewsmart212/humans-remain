@@ -5,14 +5,14 @@ import {damageBuilding} from './building-damage';
 import {stepScrapBomber} from './scrap-bomber';
 import {initHound,resetHound} from './hound-ai';
 import {combatEnemyBody,ENEMY_TYPES} from './enemy-types';
-import {RUN_NIGHT_SECONDS} from './survival-cycle';
+import {isCampRaidNight,RUN_NIGHT_SECONDS} from './survival-cycle';
 import {type World,type Enemy,worldBlocked,pathTo,moveBody,lineClear,distance,facing,timeOf,STEP} from './survival-engine';
 import {spawnCombatEnemyAt} from './studio-combat';
 import {COMBAT_ENEMY_LIMIT,type EnemyKind} from './enemy-types';
 import {releaseBruteGrab} from './brute-control';
 
 export const NIGHT_WAVES:readonly (readonly EnemyKind[])[]=[
- ['scrap-walker','scrap-walker','scrap-walker'],
+ [], // The first day and night give the survivor time to explore and establish camp.
  ['scrap-walker','scrap-hound','scrap-walker','scrap-walker'],
  ['scrap-walker','scrap-bomber','scrap-walker','scrap-hound','scrap-walker'],
 ];
@@ -27,7 +27,7 @@ function spawnWaveEnemy(w:World,kind:EnemyKind){
   if(worldBlocked(navigation,pos.x,pos.y,30)||w.enemies.some(e=>e.hp>0&&distance(e,pos)<90)||!hasRoute(navigation,pos,target))continue;
   const e=spawnCombatEnemyAt(w,kind,pos);if(!e)return false;e.siegeNight=w.round;
   // Early raids use worn robots. Sandbox enemies keep their full existing stats.
-  e.hp=e.maxHp=kind==='scrap-walker'?(w.round===1?72:96):kind==='scrap-hound'?84:64;
+  e.hp=e.maxHp=kind==='scrap-walker'?96:kind==='scrap-hound'?84:64;
   if(e.motion)e.motion.healthFrom=e.hp;return true;
  }
  return false;
@@ -55,6 +55,7 @@ function siegePose(e:Enemy,phase:'chase'|'windup'|'strike'|'recover',t:number){
 /** Every night-raid robot can attack a facility; nearby survivors still draw aggro. */
 export function stepSiegeWalker(w:World,e:Enemy,away=false){
  const p=w.progression;if(!p||w.scene||!e.siegeNight||e.hp<=0||w.phase==='over')return false;
+ if(!isCampRaidNight(w)||e.siegeNight!==w.round)return true;
  if(e.kind==='scrap-bomber'&&e.bomber)return stepScrapBomber(w,e,away);
  const t=timeOf(w),nearPlayer=!away&&distance(e,w.player)<260&&lineClear(e,w.player,w),recentHit=t-(e.motion?.hitAt??-100)<2.5;
  if(nearPlayer||!away&&recentHit){if(e.siegeTarget){e.siegeTarget=false;e.siegeBuilding=undefined;e.path=[];e.repathAt=0;e.attackAt=t+.5;resetHound(w,e);siegePose(e,'recover',t)}return false}
@@ -87,10 +88,17 @@ export function stepSiegeWalker(w:World,e:Enemy,away=false){
 export function stepCampSiege(w:World,away=false){
  const p=w.progression;if(!p||w.phase==='over')return;const s=p.siege,t=timeOf(w);
  if(w.phase==='day'){
-  if(s.night>s.ended){s.ended=s.night;releaseBruteGrab(w,'',false);w.enemies=w.enemies.filter(e=>!e.siegeNight);w.notice=`Night ${s.ended} survived`;w.noticeUntil=t+5}
+  if(s.night>s.ended){
+   s.ended=s.night;
+   const captor=w.bruteGrab?.enemyId;
+   if(captor!==undefined&&w.enemies.some(e=>e.id===captor&&e.siegeNight))releaseBruteGrab(w,'',false);
+   w.enemies=w.enemies.filter(e=>!e.siegeNight);w.notice=`Night ${s.ended} survived`;w.noticeUntil=t+5;
+  }
   if(w.survived>=3&&p.metalCrafted&&!p.completed){p.completed=true}return;
  }
- if(s.night!==w.round){s.night=w.round;s.spawned=0;s.nextAt=t+RUN_NIGHT_SECONDS*.05}
+ const raidNight=isCampRaidNight(w);
+ if(s.night!==w.round){s.night=w.round;s.spawned=0;s.nextAt=raidNight?t+RUN_NIGHT_SECONDS*.05:0}
+ if(!raidNight)return;
  const plan=wavePlan(w.round);
  if(s.spawned<plan.length&&t>=s.nextAt&&w.enemies.filter(e=>e.hp>0).length<COMBAT_ENEMY_LIMIT){if(spawnWaveEnemy(w,plan[s.spawned]))s.spawned++;s.nextAt=t+RUN_NIGHT_SECONDS*(7/60)}
  if(away){for(const enemy of w.enemies)stepSiegeWalker(w,enemy,true);w.enemies=w.enemies.filter(e=>!e.bomber?.detonated)}
