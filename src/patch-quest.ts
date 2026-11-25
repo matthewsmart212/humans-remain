@@ -106,6 +106,14 @@ export function canTalkToPatch(w:World){
  return !!state&&available(w)&&!w.stationPanel&&!w.patchRepair&&w.player.hurtUntil<=timeOf(w)&&
   nearRobot(w,state)&&(!w.combatTest||!nearbyCombatThreat(w));
 }
+// At shallow angles below him, the painted three-quarter idle keeps Patch's
+// amber optic visible as he looks toward the survivor.
+function faceDuringConversation(state:PatchQuestState,player:Vec){
+ const dx=player.x-state.position.x,dy=player.y-state.position.y;
+ if(!state.servoInstalled||Math.hypot(dx,dy)<=3)return;
+ const heading=facing(dx,dy);
+ state.direction=dy>0&&(heading==='right'||heading==='left')?(dx>0?'down-right':'down-left'):heading;
+}
 export function inspectPatch(w:World){
  const state=ensurePatchQuest(w);
  if(!state||!canTalkToPatch(w))return false;
@@ -113,8 +121,8 @@ export function inspectPatch(w:World){
  state.moving=false;
  if(distance(w.player,state.position)>3){
   w.player.direction=facing(state.position.x-w.player.x,state.position.y-w.player.y);
-  if(state.servoInstalled)state.direction=facing(w.player.x-state.position.x,w.player.y-state.position.y);
  }
+ faceDuringConversation(state,w.player);
  runtime(state).speechUntil=0;
  return openPatchChat(w);
 }
@@ -329,7 +337,7 @@ export function stepPatchQuest(w:World,input:Vec={x:0,y:0}){
  if(!active(w)){cancelPatchRepair(w);return}
  stepRepair(w,input);
  if(chatting){
-  if(state.servoInstalled&&distance(w.player,state.position)>3)turnTowards(state,w.player.x-state.position.x,w.player.y-state.position.y);
+  faceDuringConversation(state,w.player);
   return;
  }
  if(!state.servoInstalled||!state.recruited||state.command==='stay')return;

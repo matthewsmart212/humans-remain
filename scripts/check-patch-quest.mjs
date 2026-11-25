@@ -140,6 +140,10 @@ try{
    }
    assert.deepEqual(actor.position,robot,'The stranded or waiting robot stays put');
    assert(Math.abs(meeting.player.x-robot.x)>=56,'The survivor clears the optic from approach '+JSON.stringify({dx,dy,robot,repaired,player:meeting.player}));
+   const settledDx=meeting.player.x-actor.position.x,settledDy=meeting.player.y-actor.position.y;
+   if(repaired&&settledDy>0&&settledDy<Math.abs(settledDx)*.4){
+    assert.equal(actor.direction,settledDx>0?'down-right':'down-left','The shallow side of the chest still shows the optic');
+   }
    if(Math.abs(dx)>=56){
     alreadyClear++;assert.deepEqual({x:meeting.player.x,y:meeting.player.y},start,'A clear composition needs no step');
    }

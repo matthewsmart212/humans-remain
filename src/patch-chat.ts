@@ -118,7 +118,6 @@ export function patchMeetingInput(w:World,input:Vec):Vec{
  if(d<=1.4||d>=entrance.previousDistance-.025){
   session.entrance=undefined;
   w.player.direction=facing(q.position.x-w.player.x,0);
-  if(q.servoInstalled)q.direction=facing(w.player.x-q.position.x,w.player.y-q.position.y);
   return input;
  }
  entrance.previousDistance=d;
