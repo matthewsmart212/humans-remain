@@ -1,3 +1,4 @@
+import {patchChat} from './patch-chat';
 import {timeOf,type World} from './survival-engine';
 import {patchQuestSite} from './patch-placement';
 import type {PatchQuestState} from './patch-quest';
@@ -22,7 +23,7 @@ export class PatchCueTracker{
   this.owner=q;this.installed=q.servoInstalled;this.delivered=q.suppliesDelivered;this.pulse=beat;
   if(arrived)return{cue:'home',volume:.85};
   if(repaired)return{cue:'servo',volume:.8};
-  if(!ping||q.servoInstalled||w.stationPanel||w.patchRepair)return;
+  if(!ping||q.servoInstalled||w.stationPanel||w.patchRepair||patchChat(w))return;
   const distance=Math.hypot(q.position.x-w.player.x,q.position.y-w.player.y);
   if(distance<480&&patchQuestSite(w.layout))return{cue:'beacon',volume:.55*(1-distance/480)};
  }

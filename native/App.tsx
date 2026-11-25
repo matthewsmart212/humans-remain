@@ -1,3 +1,4 @@
+import {closePatchChat} from '../src/patch-chat';
 import {NativePatchAudio} from './patch-audio';
 import {PATCH_SOUND_KEY} from '../src/patch-audio-cues';
 import {loadFishingFeedbackSettings,saveFishingFeedbackSettings,type FishingFeedbackSettings} from './fishing-feedback';
@@ -134,7 +135,7 @@ function Game({role,onHome,entryVisible,onBootProgress,onBootError,coop}:{role:S
  const [mode,setMode]=useState<Mode>('loading'),[boot,setBoot]=useState(0),[status,setStatus]=useState('Opening game…'),[error,setError]=useState(''),[,refresh]=useState(0),[sprinting,setSprinting]=useState(false);
  useEffect(()=>{if(mode!=='paused')setPauseSection(null)},[mode]);
  const empty=useMemo(()=>{const r=Skia.PictureRecorder();r.beginRecording();const p=r.finishRecordingAsPicture();r.dispose();return p},[]),picture=useSharedValue<SkPicture>(empty);
- const clear=(preserveZoom=false)=>{input.current=zero();sprint.current=false;swing.current=false;fieldKit.cancel();if(!preserveZoom)pinch.cancel();setSprinting(false);if(world.current)clearAttackQueue(world.current)};
+ const clear=(preserveZoom=false)=>{if(world.current)closePatchChat(world.current);input.current=zero();sprint.current=false;swing.current=false;fieldKit.cancel();if(!preserveZoom)pinch.cancel();setSprinting(false);if(world.current)clearAttackQueue(world.current)};
  const change=(next:Mode)=>{frameDiagnostics.reset();if(next!=='playing'){pinch.stopAnimation();mapVisible.current=false;continuousZoom.current=playView.current.zoom;mapRequested.current=false;setMapOpen(false);atlasZoom.set(continuousZoom.current)}gamePerformance.setActivity(next==='playing'?'playing':next==='bag'?'bag':next==='paused'||next==='map'?'paused':next==='error'?'error':'menu',performance.now());if(next==='error')gamePerformance.stop(performance.now(),'Runtime error');modeRef.current=next;enabled.current=next==='playing';if(next!=='paused')setPerformanceOpen(false);setMode(next)};
  const openMap=()=>{gamePerformance.trace(performance.now(),'native-map-button');if(!enabled.current||runtime.current?.travel.busy||!world.current||world.current.phase==='over')return;const c=mapCamera();if(c){mapRequested.current=true;animateZoom(MIN_PLAY_ZOOM*Math.min(2.5,c.entry*.5)/c.entry)}};
  const pause=()=>{if(modeRef.current==='playing'||modeRef.current==='bag'||modeRef.current==='map'){clear();change('paused');saveRun()}};

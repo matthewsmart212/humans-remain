@@ -1,10 +1,12 @@
 import {PATCH_LETTER_POSTSCRIPT,patchLetterDirections} from './patch-letter';
-import React,{useEffect,useRef} from 'react';
+import React,{useLayoutEffect,useRef} from 'react';
 import type {World} from './survival-engine';
 import StationMenu from './StationMenu';
 import {LOOT_CHEST_ID,lootChestInMenuRange} from './loot-chest';
-import {PATCH_NOTE_TEXT,PATCH_QUEST_TITLE,patchStatus,recruitPatch,commandPatch} from './patch-quest';
-import {usePatchConversation} from './use-patch-conversation';
+import {PATCH_NOTE_TEXT,PATCH_QUEST_TITLE} from './patch-quest';
+import {patchChat,choosePatchChat,closePatchChat,type PatchChat} from './patch-chat';
+import {patchDialogueReply} from './patch-dialogue';
+import {setPatchChatBounds} from './patch-chat-bounds';
 import './patch-panel.css';
 
 type Props={world:World;onClose:()=>void;onChange:()=>void};
@@ -31,17 +33,22 @@ export function PatchNotePanel({world,onClose,onChange}:Props){
 }
 
 function LetterReader({world,onClose}:Pick<Props,'world'|'onClose'>){
- const [reverse,setReverse]=React.useState(false);
+ const [side,setSide]=React.useState<'letter'|'sketch'|'memory'>('letter');
+ const reverse=side!=='letter',memory=side==='memory';
  const caption=reverse?'Read letter':'Turn over';
  return <StationMenu compact presentation="letter" world={world} title={PATCH_QUEST_TITLE} label={`${PATCH_QUEST_TITLE}, a folded note from P-04`} emblem={<NoteEmblem/>} closeLabel="Back to supplies" onClose={onClose} className="patch-note-menu"
   footerAction={<div className="patch-note-actions">
-   <button type="button" className="patch-note-turn" aria-label={reverse?'Read the front of the letter':'Turn over to see the station sketch'} onClick={()=>setReverse(value=>!value)}>{caption} <span aria-hidden="true">↶</span></button>
+   <button type="button" className="patch-note-turn" aria-label={reverse?'Read the front of the letter':'Turn over to see the station sketch'} onClick={()=>setSide(reverse?'letter':'sketch')}>{caption} <span aria-hidden="true">↶</span></button>
+   {reverse&&world.patchQuest?.suppliesDelivered&&<button type="button" className="patch-note-turn" aria-pressed={memory} onClick={()=>setSide(memory?'sketch':'memory')}>{memory?'Station sketch':'Gate memory'}</button>}
    <button type="button" className="patch-note-return" onClick={onClose}>Back to supplies</button>
   </div>}>
-  <article key={String(reverse)} className="patch-note-paper" tabIndex={0} aria-label={reverse?'Station sketch':"P-04's note"}>
+  <article key={side} className="patch-note-paper" tabIndex={0} aria-label={memory?'Gate memory':reverse?'Station sketch':"P-04's note"}>
    <div className={reverse?"patch-note-sheet patch-note-sheet--sketch":"patch-note-sheet"}>
-    <div className="patch-note-provenance"><span>{reverse?'Pencilled on the reverse':'Left with the supplies'}</span><span className="patch-note-rule" aria-hidden="true"/></div>
-    {reverse?<div className="patch-note-sketch">
+    <div className="patch-note-provenance"><span>{memory?'As remembered by P-04':reverse?'Pencilled on the reverse':'Left with the supplies'}</span><span className="patch-note-rule" aria-hidden="true"/></div>
+    {memory?<div className="patch-note-sketch patch-note-memory">
+     <img src="/survival/patch-v4/gate-memory.webp" alt="P-04 pulling an injured evacuee through the industrial gate"/>
+     <div><h3>The industrial gate</h3><p>{patchDialogueReply(world,'reclamation')}</p></div>
+    </div>:reverse?<div className="patch-note-sketch">
      <img src="/survival/patch-v4/station-sketch.webp" alt="A pencil sketch of a broken-roofed shed with a chain hoist."/>
      <div><h3>Maintenance station</h3><p>{patchLetterDirections(world)}</p></div>
     </div>:<>
@@ -54,48 +61,62 @@ function LetterReader({world,onClose}:Pick<Props,'world'|'onClose'>){
  </StationMenu>;
 }
 
-/** Short conversation choices leave the repair itself in the game world. */
-export default function PatchPanel({world,onClose,onChange}:Props){
- const talk=usePatchConversation(world,onClose);
- const copy=useRef<HTMLDivElement>(null);
- useEffect(()=>{copy.current?.scrollTo({top:0})},[talk.page]);
- const status=patchStatus(world);
- if(!status)return null;
- const invite=()=>{if(recruitPatch(world)){onClose();onChange()}};
- const command=(value:'follow'|'stay'|'camp')=>{if(commandPatch(world,value)){onClose();onChange()}};
- const current=world.patchQuest?.command;
- const commands=<div className="patch-choices" data-commands={status.canCommand}>
-   {status.canRecruit?<button type="button" className="supply-primary" onClick={invite}>Come with us</button>:status.canCommand?<>
-    <button type="button" aria-pressed={current==='follow'} onClick={()=>command('follow')}>Follow me</button>
-    <button type="button" aria-pressed={current==='stay'} onClick={()=>command('stay')}>Stay here</button>
-    <button type="button" aria-pressed={current==='camp'} onClick={()=>command('camp')}>Return to camp</button>
-   </>:<button type="button" onClick={onClose}>{status.canRepair?'Ready to repair':world.patchQuest?.recruited?'Let’s get you home':'I’ll look for it'}</button>}
-  </div>;
- return <StationMenu compact presentation="conversation" world={world} title={status.title} subtitle={talk.condition} label={`${status.title} companion`} image="/survival/patch-v3/portrait.webp" closeLabel="End conversation" onClose={onClose} onBack={talk.back} className="patch-menu" footerAction={commands}>
-  <div className="patch-dialogue-body">
-   <figure className="patch-portrait" data-memory={talk.atGate}>
-    {talk.atGate?<img src="/survival/patch-v4/gate-memory.webp" alt="P-04 pulling an injured evacuee through the industrial gate"/>:
-     <img src="/survival/patch-v3/portrait.webp" alt="Patch, a battered rescue robot with a warm amber eye"/>}
-    <figcaption>{talk.atGate?'The industrial gate':<><span>P-04</span><span className="patch-signal" aria-hidden="true"><i/><i/><i/></span></>}</figcaption>
-   </figure>
-   <div ref={copy} className="patch-dialogue-copy" tabIndex={0} aria-label="Conversation with Patch">
-    <div className="patch-conversation" aria-live="polite" aria-atomic="true">
-     {talk.question&&<p className="patch-player-question">{talk.question}</p>}
-     <p className="patch-line">{talk.line}</p>
-    </div>
-    {talk.page.kind==='greeting'&&!!status.objective&&!status.canCommand&&<p className="patch-objective">{status.objective}</p>}
-    {talk.topics.length>0&&<div className="patch-talk">
-     {talk.showTopics?<>
-      <div className="patch-topics" aria-label="Questions for Patch">
-       {talk.topics.map(item=><button type="button" key={item.id} onClick={()=>talk.select(item.id)}>{item.label}<span aria-hidden="true">›</span></button>)}
-      </div>
-      <button type="button" className="patch-talk-back" onClick={talk.back}>Back to conversation</button>
-     </>:<>
-      {talk.next&&<button type="button" className="patch-next" onClick={talk.next.open}>{talk.next.label}<span aria-hidden="true">›</span></button>}
-      <button type="button" className="patch-talk-toggle" onClick={talk.ask}>{talk.question?'Ask something else':'Ask Patch'}</button>
-     </>}
-    </div>}
-   </div>
+type ChatProps={world:World;onChange:(save?:boolean)=>void};
+
+export function PatchChatHUD({world,onChange}:ChatProps){
+ const chat=patchChat(world);
+ return chat?<PatchReplies world={world} chat={chat} onChange={onChange}/>:null;
+}
+
+function PatchReplies({world,chat,onChange}:ChatProps&{chat:PatchChat}){
+ const tray=useRef<HTMLElement>(null),choices=useRef<HTMLDivElement>(null);
+ const pressedChoice=useRef<EventTarget|null>(null);
+ const focusNext=useRef(false);
+ useLayoutEffect(()=>{
+  const el=tray.current,kit=el?.closest('.field-kit');
+  if(!el||!kit)return;
+  const measure=()=>{
+   const rect=el.getBoundingClientRect(),frame=kit.getBoundingClientRect();
+   const css=getComputedStyle(el);
+   const inset=(edge:string)=>parseFloat(css.getPropertyValue('--patch-safe-'+edge))||0;
+   setPatchChatBounds(world,{x:rect.left-frame.left,y:rect.top-frame.top,width:rect.width,height:rect.height},
+    {top:inset('top'),right:inset('right'),bottom:inset('bottom'),left:inset('left')});
+  };
+  // Keep keyboard entry inside the response list. Movement keys still reach the world.
+  el.focus({preventScroll:true});
+  measure();
+  const observer=new ResizeObserver(measure);
+  observer.observe(kit);observer.observe(el);
+  return ()=>{observer.disconnect();setPatchChatBounds(world,undefined)};
+ },[world]);
+ useLayoutEffect(()=>{
+  const list=choices.current;
+  if(list)list.scrollTop=0;
+  if(focusNext.current){list?.querySelector('button')?.focus({preventScroll:true});focusNext.current=false}
+ },[chat]);
+ const choose=(id:string,event:React.MouseEvent<HTMLButtonElement>)=>{
+  const recruited=world.patchQuest?.recruited,command=world.patchQuest?.command;
+  focusNext.current=event.detail===0;
+  if(choosePatchChat(world,id,chat))onChange(recruited!==world.patchQuest?.recruited||command!==world.patchQuest?.command);
+ };
+ const end=()=>{if(closePatchChat(world))onChange()};
+ const buttonKeys=(event:React.KeyboardEvent)=>{if(event.key==='Enter'||event.key===' ')event.stopPropagation()};
+ return <section ref={tray} role="group" aria-label={`Replies to ${chat.speaker}`} tabIndex={-1} className="patch-chat-hud"
+  onKeyDown={buttonKeys} onKeyUp={buttonKeys}
+  onPointerDown={e=>{pressedChoice.current=(e.target as HTMLElement).closest('button');e.stopPropagation()}}
+  onPointerCancel={()=>{pressedChoice.current=null}}
+  onClickCapture={e=>{
+   // Mobile browsers can retarget Inspect’s synthetic click after its release
+   // swaps the action hex for the reply controls underneath the finger.
+   if(e.detail>0&&pressedChoice.current!==(e.target as HTMLElement).closest('button')){
+    e.preventDefault();e.stopPropagation();
+   }
+   pressedChoice.current=null;
+  }}>
+  <span className="patch-chat-transcript" role="status" aria-live="polite" aria-atomic="true">{chat.speaker} — {chat.line}</span>
+  <div ref={choices} className="patch-chat-options">
+   {chat.choices.map(choice=><button type="button" key={choice.id} data-choice={choice.id} aria-pressed={['follow','stay','camp'].includes(choice.id)?world.patchQuest?.command===choice.id:undefined} onClick={e=>choose(choice.id,e)}>{choice.label}</button>)}
   </div>
- </StationMenu>;
+  <button type="button" className="patch-chat-end" aria-label="End conversation" title="End conversation" onClick={end}>×</button>
+ </section>;
 }

@@ -2,7 +2,7 @@ import assert from 'node:assert/strict';
 import {build} from 'esbuild';
 
 const {outputFiles}=await build({stdin:{
- contents:['patch-awareness','patch-audio-cues','patch-quest','patch-placement','world-layout','survival-engine','patch-art','world-assets']
+ contents:['patch-chat','patch-awareness','patch-audio-cues','patch-quest','patch-placement','world-layout','survival-engine','patch-art','world-assets']
   .map(m=>"export * from './src/"+m+"';").join('\n'),resolveDir:process.cwd(),
 },bundle:true,platform:'node',format:'esm',write:false});
 const game=await import('data:text/javascript;base64,'+Buffer.from(outputFiles[0].contents).toString('base64'));
@@ -25,9 +25,10 @@ w.enemies=[];w.thirst=10;
 assert.match(scan(),/Water/);
 q.command='camp';
 assert.equal(scan(),undefined,'The lookout stays quiet when returning alone');
-q.command='follow';w.tick+=600;w.thirst=90;w.player.hp=12;w.stationPanel='patch';
+q.command='follow';w.tick+=600;w.thirst=90;w.player.hp=12;w.player.x=q.position.x+30;
+assert(game.inspectPatch(w));
 assert.equal(scan(),undefined,'A conversation owns its dialogue');
-w.stationPanel=undefined;
+game.closePatchChat(w);
 assert.match(scan(),/hurt/);
 
 const cues=new game.PatchCueTracker();

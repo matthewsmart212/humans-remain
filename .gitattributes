@@ -117,6 +117,7 @@ docs/qa/headquarters-doorway-v5/*.webp -filter -diff -merge
 /docs/qa/circular-wall-nw-v1/world-before-after.jpg -filter -diff -merge -text
 /docs/qa/starting-screen-ui-v2/responsive-review.jpg -filter -diff -merge -text
 /public/fonts/camp-menu-semibold.ttf -filter -diff -merge -text
+/public/fonts/barlow-medium.ttf -filter -diff -merge -text
 /public/previews/dawn-camp/preview-poster.webp -filter -diff -merge -text
 /public/survival/camp-craft-v2/furnace-broken.webp -filter -diff -merge -text
 /public/survival/camp-craft-v2/furnace-idle.webp -filter -diff -merge -text

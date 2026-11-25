@@ -5,7 +5,7 @@ import CanvasKitInit from 'canvaskit-wasm/bin/full/canvaskit';
 import {JsiSkApi} from '@shopify/react-native-skia/lib/module/skia/web/JsiSkia';
 import {JsiSkSurface} from '@shopify/react-native-skia/lib/module/skia/web/JsiSkSurface';
 import {JsiSkImage} from '@shopify/react-native-skia/lib/module/skia/web/JsiSkImage';
-import {createSkiaAdapter} from './skia-adapter';
+import {createDialogueFont,createSkiaAdapter} from './skia-adapter';
 import {campLights} from './camp-lighting';
 import type {World} from './survival-engine';
 import type {Atlas} from './packaging-renderer';
@@ -33,11 +33,13 @@ async function loadGraphics(signal?:AbortSignal){
 }
 export async function createWebWorld(canvas:HTMLCanvasElement,showcase:WorldDraw,extraImages:Record<string,string>={},options:LoadOptions={}){
  options.onProgress?.('Starting the graphics engine…');
- const [,fontBytes]=await Promise.all([loadGraphics(options.signal),fetchArtworkBytes('/fonts/barlow-condensed-black.ttf',options.signal)]);
+ const [,fontBytes,dialogueBytes]=await Promise.all([loadGraphics(options.signal),fetchArtworkBytes('/fonts/barlow-condensed-black.ttf',options.signal),
+  fetchArtworkBytes('/fonts/barlow-medium.ttf',options.signal).catch(()=>undefined)]);
  const kit=(globalThis as any).CanvasKit,skia=JsiSkApi(kit);
  options.onProgress?.('Preparing the workshop…');
  const atlas={} as Atlas;
  const fontData=skia.Data.fromBytes(fontBytes),face=skia.Typeface.MakeFreeTypeFaceFromData(fontData);fontData.dispose();if(!face)throw Error('Font unavailable');const font=skia.Font(face,30);
+ const dialogueFont=dialogueBytes?createDialogueFont(skia,skia.Data.fromBytes(dialogueBytes)):undefined;
  let adapter:ReturnType<typeof createSkiaAdapter>;
  const diagnostics=options.diagnostics,keyByUrl=new Map<string,string>(),loading=new Map<string,{stage:string;since:number}>();
  const rememberSources=(sources:Record<string,string>)=>{for(const [key,url]of Object.entries(sources))if(!keyByUrl.has(url))keyByUrl.set(url,key)};
@@ -70,7 +72,7 @@ export async function createWebWorld(canvas:HTMLCanvasElement,showcase:WorldDraw
  const publishImages=(sources:Record<string,string>)=>{for(const key of Object.keys(sources))if(loader.images[key])imgs[key]=loader.images[key]};
  const loadImages:typeof loader.load=async(sources,progress,priority)=>{rememberSources(sources);await loader.load(sources,p=>{publishImages(sources);progress?.(p)},priority);publishImages(sources)};
  const cancel=()=>loader.dispose();options.signal?.addEventListener('abort',cancel,{once:true});if(options.signal?.aborted)cancel();
- try{await loadImages({... (options.sources??EDITOR_ENTRY_IMAGES),...extraImages},progress=>options.onProgress?.('Loading your camp artwork…',progress));adapter=createSkiaAdapter(skia,diagnostics)}catch(e){loader.dispose();options.signal?.removeEventListener('abort',cancel);font.dispose();face.dispose();throw e}
+ try{await loadImages({... (options.sources??EDITOR_ENTRY_IMAGES),...extraImages},progress=>options.onProgress?.('Loading your camp artwork…',progress));adapter=createSkiaAdapter(skia,diagnostics,dialogueFont)}catch(e){loader.dispose();options.signal?.removeEventListener('abort',cancel);dialogueFont?.dispose();font.dispose();face.dispose();throw e}
  const {SkiaContext,warmLighting,disposeLighting}=adapter;
  const drawingSurface=createWebWorldSurface(kit,canvas);
  let surface:JsiSkSurface|undefined,rawSurface:unknown;
@@ -139,6 +141,6 @@ export async function createWebWorld(canvas:HTMLCanvasElement,showcase:WorldDraw
     }else{for(const waiter of warming.get(warmKey)||[])waiter.reject(Error('Map artwork is unavailable'));warming.delete(warmKey);warmSince.delete(warmKey)}
    }
   },
-  dispose(){if(disposed)return;disposed=true;stopObserving?.();gameplay.dispose();streams.dispose();for(const waiters of warming.values())for(const waiter of waiters)waiter.reject(Error('Renderer closed'));warming.clear();urgentWarm.clear();warmSince.clear();options.signal?.removeEventListener('abort',cancel);loader.dispose();for(const key of Object.keys(imgs))delete imgs[key];preparationPaint.dispose();disposeLighting();font.dispose();face.dispose();drawingSurface.dispose();surface=undefined;rawSurface=undefined}
+  dispose(){if(disposed)return;disposed=true;stopObserving?.();gameplay.dispose();streams.dispose();for(const waiters of warming.values())for(const waiter of waiters)waiter.reject(Error('Renderer closed'));warming.clear();urgentWarm.clear();warmSince.clear();options.signal?.removeEventListener('abort',cancel);loader.dispose();for(const key of Object.keys(imgs))delete imgs[key];preparationPaint.dispose();disposeLighting();dialogueFont?.dispose();font.dispose();face.dispose();drawingSurface.dispose();surface=undefined;rawSurface=undefined}
  };
 }

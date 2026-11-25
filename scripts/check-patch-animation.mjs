@@ -33,7 +33,7 @@ const results=[],browserFrames=new Map(),browserCalls=new Map();
 try{
  for(const target of targets){
   const skiaRoot=path.resolve(target==='native'?'native/node_modules/@shopify/react-native-skia':'node_modules/@shopify/react-native-skia');
-  const file=path.join(temporary,target+'.cjs'),modules=['patch-art','patch-animation','player-presentation','patch-renderer','patch-quest','patch-placement','gameplay-artwork','survival-engine','world-layout','skia-adapter'];
+  const file=path.join(temporary,target+'.cjs'),modules=['patch-art','patch-animation','patch-chat','patch-chat-bounds','patch-dialogue','patch-speech-bubble','player-presentation','patch-renderer','patch-quest','patch-placement','gameplay-artwork','survival-engine','world-layout','skia-adapter'];
   await build({stdin:{contents:modules.map(id=>`export * from './src/${id}';`).join('\n')+`\nexport {JsiSkApi} from ${JSON.stringify(path.join(skiaRoot,'lib/module/skia/web/JsiSkia.js'))};`,resolveDir:root},bundle:true,platform:'node',format:'cjs',outfile:file,logLevel:'error'});
   const m=require(file),kitRequire=createRequire(path.join(skiaRoot,'package.json'));
   const kit=await kitRequire('canvaskit-wasm')({locateFile:f=>path.join(path.dirname(kitRequire.resolve('canvaskit-wasm')),f)}),api=m.JsiSkApi(kit);
@@ -42,7 +42,8 @@ try{
   // family/weight so speech checks verify painted text as well as draw calls.
   const fontBytes=fs.readFileSync(require.resolve('@fontsource/barlow-condensed/files/barlow-condensed-latin-900-normal.woff'));
   const fontData=api.Data.fromBytes(fontBytes),face=api.Typeface.MakeFreeTypeFaceFromData(fontData);fontData.dispose();assert(face,'The Barlow Condensed Black test face decodes');
-  const adapter=m.createSkiaAdapter(api),font=api.Font(face,16),images={};
+  const dialogueFont=m.createDialogueFont(api,api.Data.fromBytes(fs.readFileSync('public/fonts/barlow-medium.ttf')));assert(dialogueFont);
+  const adapter=m.createSkiaAdapter(api,undefined,dialogueFont),font=api.Font(face,16),images={};
   const surface=api.Surface.Make(width,height);assert(surface);
   try{
    for(const [key,url] of Object.entries(m.PATCH_IMAGES)){
@@ -187,15 +188,54 @@ try{
    assert(m.recruitPatch(world));checkSpeech('speech-recruited','I know that camp. Lead the way.');
    Object.assign(q,{returnedToCamp:true,suppliesDelivered:true});
    for(const [command,line] of [['follow','With you.'],['stay','I will wait here.'],['camp','Returning to camp.']]){
-    world.stationPanel='patch';assert(m.commandPatch(world,command));checkSpeech('speech-'+command,line);
+    assert(m.inspectPatch(world));assert(m.choosePatchChat(world,command));checkSpeech('speech-'+command,line);
    }
    world.player.x+=1100;assert(!render().calls.some(call=>call[0]==='fillText'),'A distant actor cannot speak across the screen');world.player.x-=1100;
    world.tick+=181;assert.equal(m.patchSpeech(world),undefined,'The existing three-second command lifetime remains intact');
    assert(!render().calls.some(call=>call[0]==='fillText'),'Expired bubbles leave no persistent world UI');
+   // Every word of the industrial-gate answer must survive real choices,
+   // renderer interpolation, both turning pages and the instrumented Skia draw.
+   assert(m.inspectPatch(world));assert(m.choosePatchChat(world,'ask'));assert(m.choosePatchChat(world,'topic:reclamation'));
+   const reply=[],phoneBounds=[
+    {width:667,height:320,scale:.38,x:330,y:156},
+    {width:844,height:390,scale:.9,x:96,y:55},
+    {width:390,height:844,scale:1.8,x:310,y:790},
+   ];
+   do{
+    const page=m.patchChat(world);reply.push(page.line);
+    for(const phone of phoneBounds){
+     const {width:pw,height:ph,scale,x,y}=phone;
+     const dock={x:pw*.55,y:ph*.65,width:pw*.4,height:ph*.27};
+     m.setPatchChatBounds(world,dock,{left:pw>ph?44:0,right:pw>ph?44:0,top:0,bottom:18});
+     const view={x:q.position.x-x/scale,y:q.position.y-y/scale,width:pw/scale,height:ph/scale,scale};
+     const phoneSurface=api.Surface.Make(pw,ph),ctx=new adapter.SkiaContext(phoneSurface.getCanvas(),pw,ph,font);
+     ctx.fillStyle='#59614b';ctx.fillRect(0,0,pw,ph);ctx.scale(scale,scale);ctx.translate(-view.x,-view.y);
+     const painted=[],nativeText=ctx.fillText.bind(ctx);
+     ctx.fillText=(line,px,py)=>{
+      const width=ctx.measureText(line).width,left=ctx.textAlign==='right'?px-width:px;
+      painted.push(line);assert(left>=0&&left+width<=pw&&py>0&&py<=ph,'All glyphs remain in the phone viewport');
+      assert(left+width<=dock.x||left>=dock.x+dock.width||py<=dock.y||py-18>=dock.y+dock.height,'The choices never obscure a reply');
+      nativeText(line,px,py);
+     };
+     const display=m.presentPlayer(world,m.samplePlayer(world),.5);
+     m.patchDrawables(ctx,images,display,view)[0].draw();
+     m.drawPatchFeedback(ctx,images,display,view);
+     assert.equal(painted.shift(),page.speaker);
+     if(page.pageCount>1)assert.equal(painted.shift(),(page.pageIndex+1)+' / '+page.pageCount);
+     assert.equal(painted.join(' '),page.line,'Canvas displays the complete page without ellipses');
+     phoneSurface.flush();
+     if(previews){const shot=phoneSurface.makeImageSnapshot();fs.writeFileSync(path.join(previews,target+'-chat-'+pw+'-'+page.pageIndex+'.png'),Buffer.from(shot.encodeToBytes()));shot.dispose()}
+     ctx.dispose();phoneSurface.dispose();
+    }
+    if(!page.choices.some(c=>c.id==='more'))break;
+    assert(m.choosePatchChat(world,'more'));
+   }while(true);
+   assert.equal(reply.join(' '),m.patchDialogueReply(world,'reclamation'));
+   assert(reply.length>1);m.setPatchChatBounds(world,undefined);m.closePatchChat(world);
    results.push({target,skiaVersion:JSON.parse(fs.readFileSync(path.join(skiaRoot,'package.json'))).version,walkFrames:frameHashes.size,legFrames:legHashes.size,smallestAdjacentLegChange:smallestLegDifference,maxParityMean:maxParityError,maxParityPixels:mostParityPixels});
-  }finally{for(const image of Object.values(images))image?.dispose();surface.dispose();font.dispose();face.dispose();adapter.disposeLighting()}
+  }finally{for(const image of Object.values(images))image?.dispose();surface.dispose();dialogueFont.dispose();font.dispose();face.dispose();adapter.disposeLighting()}
  }
- const report={passed:true,results,checks:['eight headings and eight actual leg poses','256-pixel bounds and transparent cell gutters','1.5x standing/damaged/walking scale','distance-driven phases and continuous turns','steady planted idle','essential reduced-motion locomotion','per-frame lamp registration','larger partial repair arc','browser/native offline atlas parity','shared depth and expanded culling','real repair/recruitment/command speech bubbles and timed expiry','one/two-line speech and native/web bubble rendering parity'],physicalIPhoneTested:false};
+ const report={passed:true,results,checks:['eight headings and eight actual leg poses','256-pixel bounds and transparent cell gutters','1.5x standing/damaged/walking scale','distance-driven phases and continuous turns','steady planted idle','essential reduced-motion locomotion','per-frame lamp registration','larger partial repair arc','browser/native offline atlas parity','shared depth and expanded culling','real repair/recruitment/command speech bubbles and timed expiry','one/two-line speech and native/web bubble rendering parity','complete paged gate conversation at three real phone sizes and zoom levels, including edge and tray clearance'],physicalIPhoneTested:false};
  if(previews)fs.writeFileSync(path.join(previews,'report.json'),JSON.stringify(report,null,2)+'\n');
  console.log(JSON.stringify(report,null,2));
 }finally{fs.rmSync(temporary,{recursive:true,force:true})}

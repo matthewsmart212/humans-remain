@@ -20,7 +20,7 @@ const provisionModules:Record<string,number>=Object.fromEntries(PROVISION_IDS.ma
 import {BACKPACK_NATIVE_ART} from './backpack-art';
 export {BACKPACK_NATIVE_ART};
 import {createArtworkLoader,loadingDeadline,artworkFailureDetails,type ArtworkPriority} from '../src/artwork-loading';
-import {createSkiaAdapter} from '../src/skia-adapter';
+import {createDialogueFont,createSkiaAdapter} from '../src/skia-adapter';
 import {createTerrainArtStreams} from '../src/terrain-art-streams';
 import {CAMP_CHUNK_IMAGES} from '../src/terrain-stream-art';
 import {RIVER_DETAIL_IMAGES} from '../src/river-art';
@@ -44,7 +44,10 @@ export async function createNativeRenderer(view:EditorView={...PLAY_VIEW},diagno
  const face=open('Font typeface',()=>{try{return Skia.Typeface.MakeFreeTypeFaceFromData(bytes)}finally{bytes.dispose()}});
  if(!face)throw Error('The game font could not open.');
  const font=open('Font face',()=>Skia.Font(face,30));
- const adapter=open('Skia adapter',()=>createSkiaAdapter(Skia,diagnostics));
+ const dialogueAsset=Asset.fromModule(require('../public/fonts/barlow-medium.ttf'));
+ const dialogueFont=await dialogueAsset.downloadAsync().then(()=>Skia.Data.fromURI(dialogueAsset.localUri||dialogueAsset.uri))
+  .then(data=>createDialogueFont(Skia,data)).catch(()=>undefined);
+ const adapter=open('Skia adapter',()=>createSkiaAdapter(Skia,diagnostics,dialogueFont));
  const keyByUrl=new Map<string,string>();
  let disposed=false,revision=0;
  const prepared:Record<string,SkImage>={};
@@ -52,7 +55,7 @@ export async function createNativeRenderer(view:EditorView={...PLAY_VIEW},diagno
  // here would upload a texture into the JS thread's own GPU context, which the
  // UI-thread renderer cannot use; it would only duplicate texture memory.
  const preparationSurface=open('Preparation surface',()=>Skia.Surface.Make(1,1)),preparationPaint=Skia.Paint();
- if(!preparationSurface){preparationPaint.dispose();adapter.disposeLighting();font.dispose();face.dispose();throw Error('The image preparation surface is unavailable.')}
+ if(!preparationSurface){preparationPaint.dispose();adapter.disposeLighting();dialogueFont?.dispose();font.dispose();face.dispose();throw Error('The image preparation surface is unavailable.')}
  // Pictures retain their own image references on the render thread. Removing a
  // streamed image from the loader releases our ownership; Skia/JS GC releases
  // its native handle once the last submitted Picture has finished using it.
@@ -135,6 +138,6 @@ export async function createNativeRenderer(view:EditorView={...PLAY_VIEW},diagno
    const started=diagnostics?.tracing?performance.now():undefined;
    try{drawWorldEditor(ctx as unknown as CanvasRenderingContext2D,{} as Atlas,prepared as unknown as Record<string,HTMLImageElement>,world,view,fade,peers);return recorder.finishRecordingAsPicture()}finally{if(started!==undefined)diagnostics!.phase('worldDrawMs',performance.now()-started);const cleanup=started!==undefined?performance.now():undefined;ctx.dispose();recorder.dispose();if(cleanup!==undefined)diagnostics!.phase('cleanupMs',performance.now()-cleanup)}
   },
-  dispose(){if(disposed)return;disposed=true;unregisterPreparation();if(!sharedPreparation)preparation.dispose();streams.dispose();for(const job of queue.splice(0))job.reject(Error('Renderer closed'));loader.dispose();for(const key of Object.keys(prepared))delete prepared[key];preparationSurface.dispose();preparationPaint.dispose();adapter.disposeLighting();font.dispose();face.dispose()}
+  dispose(){if(disposed)return;disposed=true;unregisterPreparation();if(!sharedPreparation)preparation.dispose();streams.dispose();for(const job of queue.splice(0))job.reject(Error('Renderer closed'));loader.dispose();for(const key of Object.keys(prepared))delete prepared[key];preparationSurface.dispose();preparationPaint.dispose();adapter.disposeLighting();dialogueFont?.dispose();font.dispose();face.dispose()}
  };
 }

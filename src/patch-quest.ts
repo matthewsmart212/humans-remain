@@ -1,6 +1,8 @@
 import {facing,moveBody,pathTo,timeOf,withinActionReach,worldBlocked,STEP,type Direction,type Vec,type World} from './survival-engine';
 import {campLootChest,lootChestContents,lootChestInMenuRange,LOOT_CHEST_ID,LOOT_CHEST_REWARDS} from './loot-chest';
 import {PATCH_ROBOT_FRAMES,PATCH_WALK_CYCLE_DISTANCE} from './patch-art';
+import {nearbyCombatThreat} from './combat-model';
+import {closePatchChat,openPatchChat,patchChat,stepPatchChat} from './patch-chat';
 import {patchSupportSpeech} from './patch-awareness';
 import {patchQuestSite} from './patch-placement';
 
@@ -57,7 +59,7 @@ function say(w:World,line:string,seconds=3){
 }
 export function patchSpeech(w:World){
  const r=w.patchQuest&&runtimes.get(w.patchQuest);
- return r&&timeOf(w)<r.speechUntil?r.speech:patchSupportSpeech(w);
+ return patchChat(w)?.line??(r&&timeOf(w)<r.speechUntil?r.speech:patchSupportSpeech(w));
 }
 export function patchBeacon(w:World){
  const t=timeOf(w);
@@ -94,15 +96,21 @@ export function readPatchNote(w:World){
  if(!active(w)||!['rare-cache','patch-note'].includes(w.stationPanel??'')||(w.lootChestId??LOOT_CHEST_ID)!==LOOT_CHEST_ID||!w.lootChests?.[LOOT_CHEST_ID]||!lootChestInMenuRange(w,LOOT_CHEST_ID))return false;
  const state=ensurePatchQuest(w);if(!state)return false;state.noteRead=true;return true;
 }
+export function canTalkToPatch(w:World){
+ const state=w.patchQuest;
+ return !!state&&available(w)&&!w.stationPanel&&!w.patchRepair&&w.player.hurtUntil<=timeOf(w)&&
+  nearRobot(w,state)&&(!w.combatTest||!nearbyCombatThreat(w));
+}
 export function inspectPatch(w:World){
  const state=ensurePatchQuest(w);
- if(!state||!available(w)||!nearRobot(w,state)||w.stationPanel&&w.stationPanel!=='patch')return false;
- if(!state.discovered){state.discovered=true;say(w,'Human detected.');}
+ if(!state||!canTalkToPatch(w))return false;
+ state.discovered=true;
  state.moving=false;
  if(state.servoInstalled&&distance(w.player,state.position)>3){
   state.direction=facing(w.player.x-state.position.x,w.player.y-state.position.y);
  }
- w.stationPanel='patch';return true;
+ runtime(state).speechUntil=0;
+ return openPatchChat(w);
 }
 /** This unique component is a story fact, independent of backpack capacity. */
 export function claimPatchServo(w:World){
@@ -111,7 +119,7 @@ export function claimPatchServo(w:World){
  state.servoClaimed=true;w.notice=state.discovered?'Drive servo secured · Bring it back to P-04':'Drive servo secured · Stamped P-04';w.noticeUntil=timeOf(w)+4;return true;
 }
 export function patchInteraction(w:World):PatchInteraction|null{
- const state=ensurePatchQuest(w);if(!state||!active(w)||w.stationPanel)return null;
+ const state=ensurePatchQuest(w);if(!state||!active(w)||w.stationPanel||patchChat(w))return null;
  const site=patchQuestSite(w.layout),choices:PatchInteraction[]=[];
  if(nearRobot(w,state)){
   const repair=state.discovered&&state.servoClaimed&&!state.servoInstalled;
@@ -135,8 +143,8 @@ export function patchStatus(w:World):PatchStatus|null{
 export const patchRepairProgress=(w:World)=>w.patchRepair?Math.max(0,Math.min(1,w.patchRepair.worked/w.patchRepair.duration)):0;
 export function beginPatchRepair(w:World){
  const state=ensurePatchQuest(w);
- if(!state||!available(w)||w.patchRepair||!state.discovered||!state.servoClaimed||state.servoInstalled||!nearRobot(w,state)||w.player.hurtUntil>timeOf(w)||w.stationPanel&&w.stationPanel!=='patch')return false;
- w.stationPanel=undefined;w.attackQueuedUntil=undefined;
+ if(!state||!available(w)||w.patchRepair||!state.discovered||!state.servoClaimed||state.servoInstalled||!nearRobot(w,state)||w.player.hurtUntil>timeOf(w)||w.stationPanel)return false;
+ closePatchChat(w);w.attackQueuedUntil=undefined;
  w.player.moving=false;w.player.sprinting=false;w.player.direction=facing(state.position.x-w.player.x,state.position.y-w.player.y);
  w.patchRepair={worked:0,duration:PATCH_REPAIR_SECONDS,held:false,updatedAt:timeOf(w),origin:point(w.player),hp:w.player.hp,hurtUntil:w.player.hurtUntil};
  return true;
@@ -168,17 +176,17 @@ function stepRepair(w:World,input:Vec){
 }
 export function recruitPatch(w:World){
  const state=ensurePatchQuest(w);
- if(!state||!available(w)||!state.servoInstalled||state.recruited||!nearRobot(w,state)||w.stationPanel&&w.stationPanel!=='patch')return false;
+ if(!state||!available(w)||!state.servoInstalled||state.recruited||!nearRobot(w,state)||w.stationPanel)return false;
  state.recruited=true;state.command='follow';state.followTrail=[point(w.player)];
- runtime(state).followSample=point(w.player);w.stationPanel=undefined;say(w,'I know that camp. Lead the way.',4);return true;
+ runtime(state).followSample=point(w.player);closePatchChat(w);say(w,'I know that camp. Lead the way.',4);return true;
 }
 export function commandPatch(w:World,command:PatchCommand){
  const state=ensurePatchQuest(w);
- if(!state||!available(w)||!state.suppliesDelivered||!nearRobot(w,state)||!['follow','stay','camp'].includes(command)||w.stationPanel&&w.stationPanel!=='patch')return false;
+ if(!state||!available(w)||!state.suppliesDelivered||!nearRobot(w,state)||!['follow','stay','camp'].includes(command)||w.stationPanel)return false;
  state.command=command;state.moving=false;state.followTrail=[];
  const r=runtime(state);r.path=[];r.routeAt=0;r.routeTarget=undefined;r.followSample=point(w.player);
  if(command==='follow')state.followTrail.push(point(w.player));
- w.stationPanel=undefined;say(w,command==='follow'?'With you.':command==='stay'?'I will wait here.':'Returning to camp.');return true;
+ closePatchChat(w);say(w,command==='follow'?'With you.':command==='stay'?'I will wait here.':'Returning to camp.');return true;
 }
 
 /** Streamed artwork is not physical geometry. A distant companion can still
@@ -273,14 +281,17 @@ export function deliverPatchSupplies(w:World){
 }
 /** One actor, bounded route queries, swept collision and no teleport recovery. */
 export function stepPatchQuest(w:World,input:Vec={x:0,y:0}){
+ const chatting=stepPatchChat(w);
  const state=ensurePatchQuest(w);if(!state)return;
  const wasMoving=state.moving;
  state.moving=false;
  if(!active(w)){cancelPatchRepair(w);return}
  stepRepair(w,input);
- // Conversation pauses motion without overwriting the selected command.
- // Otherwise Return to camp can walk the actor out of its own menu's reach.
- if(!state.servoInstalled||!state.recruited||state.command==='stay'||w.stationPanel==='patch')return;
+ if(chatting){
+  if(state.servoInstalled&&distance(w.player,state.position)>3)turnTowards(state,w.player.x-state.position.x,w.player.y-state.position.y);
+  return;
+ }
+ if(!state.servoInstalled||!state.recruited||state.command==='stay')return;
  const nav=navigationWorld(w),r=runtime(state);
  if(!wasMoving)r.speed=0;
  if(!state.suppliesDelivered){
@@ -336,6 +347,7 @@ export function validPatchQuest(value:unknown):value is PatchQuestState|undefine
 }
 /** Restore facts and real route history, never a held repair or stale speech. */
 export function restorePatchQuest(w:World){
+ closePatchChat(w);
  w.patchRepair=undefined;
  if(w.patchQuest){runtimes.delete(w.patchQuest);w.patchQuest.moving=false}
  return ensurePatchQuest(w);

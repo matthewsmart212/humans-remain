@@ -8,7 +8,7 @@ import {build} from 'esbuild';
 const temporary=fs.mkdtempSync(path.join(os.tmpdir(),'patch-quest-'));
 try{
  await build({stdin:{contents:[
-  ...['patch-quest','patch-map','patch-placement','studio-play','survival-engine','imported-art','loot-chest','run-save','scene-travel','world-scenes','world-layout','world-assets','layout-views','field-kit','station-access','camp-gates'].map(id=>`export * from './src/${id}';`),
+  ...['patch-quest','patch-chat','patch-map','patch-placement','studio-play','survival-engine','imported-art','loot-chest','run-save','scene-travel','world-scenes','world-layout','world-assets','layout-views','field-kit','station-access','camp-gates'].map(id=>`export * from './src/${id}';`),
   "export * from './native/run-save-store';",
  ].join('\n'),resolveDir:process.cwd()},bundle:true,platform:'node',format:'cjs',outfile:path.join(temporary,'model.cjs'),logLevel:'error'});
  const m=createRequire(import.meta.url)(path.join(temporary,'model.cjs'));
@@ -110,6 +110,8 @@ try{
  const wallId='patch-corner-fixture';m.ASSET_BY_ID.set(wallId,{id:wallId,name:'Corner fixture',group:'Test',image:'/fixture.webp',crop:[0,0,20,180],anchor:[10,90],width:20,height:180,solid:true,role:'prop',body:[{x:0,y:0,hw:10,hh:90}]});
  corner.layout={...corner.layout,items:[{id:wallId,assetId:wallId,x:1000,y:1000,scale:1,solid:true,role:'prop',roof:'auto'}]};
  assert.equal(m.patchInteraction(corner),null,'A wall blocks conversation even at short straight-line distance');
+ corner.player.x=970;assert(m.inspectPatch(corner));corner.player.x=1040;
+ assert(!m.choosePatchChat(corner,'ask')&&!m.patchChat(corner),'A wall breaks a conversation before a stale response can be selected');
  for(let i=0;i<480;i++){step(corner);assert(!m.worldBlocked(corner,corner.patchQuest.position.x,corner.patchQuest.position.y,15))}
  assert(corner.patchQuest.position.x>1025,'The follower rounds the wall instead of stopping within 88 units on its far side');
 
@@ -134,11 +136,11 @@ try{
  const talking=follower({x:1040,y:1000});talking.patchQuest.command='camp';talking.patchQuest.homeTrail=[{x:700,y:1000}];
  assert.equal(m.patchStatus(talking).line,'On my way home.');
  talking.patchQuest.moving=true;talking.patchQuest.direction='left';
- assert(m.inspectPatch(talking));assert(!talking.patchQuest.moving,'Opening the menu plants both feet before the UI can pause simulation');
+ assert(m.inspectPatch(talking));assert(!talking.patchQuest.moving,'Starting a conversation plants both feet while the simulation continues');
  assert.equal(talking.patchQuest.direction,'right','A repaired Patch turns to the person he is talking to');
  const talkingPosition={...talking.patchQuest.position};step(talking,90);
  assert.deepEqual(talking.patchQuest.position,talkingPosition,'Opening conversation pauses Return to camp without changing its command');
- assert.equal(talking.patchQuest.command,'camp');talking.stationPanel=undefined;step(talking,30);
+ assert.equal(talking.patchQuest.command,'camp');m.closePatchChat(talking);step(talking,30);
  assert(talking.patchQuest.position.x<talkingPosition.x,'Closing conversation resumes the selected command');
  const signalling=fresh();let pulses=0,lit=false;
  for(let tick=0;tick<324;tick++){signalling.tick=tick;const next=m.patchBeacon(signalling)>.5;if(next&&!lit)pulses++;lit=next}
@@ -166,7 +168,7 @@ try{
  const preservedWaypoint={x:270,y:300,sceneId:'camp'};integrated.waypoint=preservedWaypoint;
  const staged=fresh();m.ensurePatchQuest(staged);playerAt(staged,site.robot);m.inspectPatch(staged);
  assert.deepEqual(m.patchMapLead(staged),{...site.locker,label:'Service locker'});
- staged.stationPanel=undefined;playerAt(staged,site.locker);m.claimPatchServo(staged);
+ m.closePatchChat(staged);playerAt(staged,site.locker);m.claimPatchServo(staged);
  assert.deepEqual(m.patchMapLead(staged),{...site.robot,label:'P-04'});
  assert.equal(m.patchMapLead({...staged,scene:{id:'bunker'}}),undefined,'Camp leads stay outdoors');
  integrated.stationPanel='patch-note';assert(m.atStation(integrated));
@@ -176,11 +178,12 @@ try{
  assert.equal(shown.key,'patch:locker');assert(controller.press(integrated,shown));controller.release();
  playerAt(integrated,{x:site.robot.x,y:site.robot.y+45});shown=controller.sample(integrated).action;
  assert.equal(shown.label,'INSPECT');assert(controller.press(integrated,shown));controller.release();
- assert.equal(integrated.stationPanel,'patch');assert(m.atStation(integrated));controller.sample(integrated);assert.equal(integrated.stationPanel,'patch');
- integrated.player.x+=300;controller.sample(integrated);assert.equal(integrated.stationPanel,undefined,'P-04 panel closes outside actor range');
+ assert.equal(integrated.stationPanel,undefined);assert(!m.atStation(integrated));assert(m.patchChat(integrated));
+ const startedX=integrated.player.x;liveStep(3,{x:1,y:0});assert(integrated.player.x>startedX,'Player movement continues during a conversation');assert(m.patchChat(integrated));
+ integrated.player.x+=300;liveStep();assert(!m.patchChat(integrated),'Walking away ends the live exchange');
  playerAt(integrated,{x:site.robot.x,y:site.robot.y+45});shown=controller.sample(integrated).action;
  assert.equal(shown.label,'TALK');assert(controller.press(integrated,shown));controller.release();
- assert.equal(integrated.stationPanel,'patch','The player can still ask about the part before fitting it');integrated.stationPanel=undefined;
+ assert(m.patchChat(integrated),'The player can still ask about the part before fitting it');m.closePatchChat(integrated);
  shown=controller.sample(integrated).repairAction;
  assert.equal(shown.key,'patch:repair');assert(shown.repair&&shown.patchRepair&&!shown.disabled);
  assert(controller.pressRepair(integrated,shown));assert(controller.holdingRepair);liveStep(90);

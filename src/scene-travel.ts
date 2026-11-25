@@ -1,3 +1,4 @@
+import {closePatchChat} from './patch-chat';
 import {stopFishing} from './fishing';
 import {cancelPatchRepair} from './patch-quest';
 import {cancelBuildingRepair} from './building-repair';
@@ -58,7 +59,7 @@ export class SceneTravel{
  }
  private request(portal:ScenePortal){
   try{
-   this.trip=this.destination(portal);this.error='';
+   this.trip=this.destination(portal);closePatchChat(this.current);this.error='';
    this.resources.pin([sceneId(this.current),this.trip.sceneId]);
    if(this.resources.ready(this.trip.sceneId)){this.phase='out';this.elapsed=0;return}
    const token=++this.epoch;this.phase='loading';this.status('Preparing '+(this.scenes.get(this.trip.sceneId)?.name||'camp')+'…');

@@ -25,10 +25,17 @@ import {WATERFALL_SHADER,WATERFALL_SECTION_SHADER} from './waterfall-pilot';
 import type {WaterfallSampling} from './waterfalls';
 /** Canvas2D subset used by our existing renderer, backed by native Skia. */
 import {PaintStyle,BlendMode,TileMode,FilterMode,MipmapMode,VertexMode,ClipOp,AlphaType,ColorType,StrokeCap,StrokeJoin} from '@shopify/react-native-skia/lib/module/skia/types';
-import type {SkCanvas,SkImage,SkShader,SkSurface,SkFont,SkPaint,Skia as SkiaApi} from '@shopify/react-native-skia';
+import type {SkCanvas,SkImage,SkShader,SkSurface,SkFont,SkPaint,SkData,Skia as SkiaApi} from '@shopify/react-native-skia';
 import type {GamePerformanceRecorder} from './performance-recording';
 const open=<T,>(name:string,run:()=>T):T=>{try{return run()}catch(e){const error=e instanceof Error?e:Error(String(e));error.message=`${name}: ${error.message}`;throw error}};
-export function createSkiaAdapter(Skia:Pick<typeof SkiaApi,'Paint'|'Shader'|'Color'|'Surface'|'Matrix'|'Path'|'PathEffect'|'XYWHRect'|'ColorFilter'|'ImageFilter'|'MakeVertices'|'RuntimeEffect'|'Image'|'Data'>,diagnostics?:GamePerformanceRecorder){
+/** The existing HUD uses Barlow Condensed Black. Longer dialogue uses the
+ * game's Barlow Medium so counters and punctuation are clear at phone size. */
+export function createDialogueFont(skia:Pick<typeof SkiaApi,'Typeface'|'Font'>,bytes:SkData){
+ const typeface=skia.Typeface.MakeFreeTypeFaceFromData(bytes);
+ try{return typeface?skia.Font(typeface,18):undefined}
+ finally{typeface?.dispose();bytes.dispose()}
+}
+export function createSkiaAdapter(Skia:Pick<typeof SkiaApi,'Paint'|'Shader'|'Color'|'Surface'|'Matrix'|'Path'|'PathEffect'|'XYWHRect'|'ColorFilter'|'ImageFilter'|'MakeVertices'|'RuntimeEffect'|'Image'|'Data'>,diagnostics?:GamePerformanceRecorder,dialogueFont?:SkFont){
 const lighting=open('Night lighting',()=>createNightLighting(Skia)),weather=open('Weather',()=>createWeatherRenderer(Skia)),silhouettes=open('Silhouettes',()=>createArtworkSilhouettes(Skia,diagnostics)),lightning=open('Lightning',()=>createGroundLightningRenderer(Skia));
 const chestLight=createLootChestLight(Skia);
 const groundColour=(()=>{const effect=Skia.RuntimeEffect.Make(WORLD_GROUND_COLOUR_SHADER);if(!effect)throw Error('The terrain colour shader could not compile.');return effect})();
@@ -356,7 +363,24 @@ class SkiaContext{
  strokeRounded(){this.c.drawPath(this.path.path(),this.paint(true,true))}
  setLineDash(d:number[]){this.dash=d}
  createRadialGradient(x:number,y:number,r0:number,_x:number,_y:number,r1:number){return new Gradient(x,y,r0,r1)}
- private text(s:string,x:number,y:number,stroke:boolean){const size=Number(this.font.match(/([\d.]+)px/)?.[1]||30);this.face.setSize(size);let widths=textWidths.get(this.face);if(!widths)textWidths.set(this.face,widths=new Map());const key=size+'|'+s;let width=widths.get(key);if(width===undefined){width=this.face.getGlyphWidths(this.face.getGlyphIDs(s)).reduce((a,b)=>a+b,0);if(widths.size>=1024)widths.clear();widths.set(key,width)}this.c.drawText(s,this.textAlign==='center'?x-width/2:this.textAlign==='right'||this.textAlign==='end'?x-width:x,y,this.paint(stroke),this.face)}
+ private get textFace(){return dialogueFont&&this.font.endsWith("'Barlow'")?dialogueFont:this.face}
+ measureText(s:string){
+  const size=Number(this.font.match(/([\d.]+)px/)?.[1]||30);
+  const face=this.textFace;face.setSize(size);
+  let widths=textWidths.get(face);
+  if(!widths)textWidths.set(face,widths=new Map());
+  const key=size+'|'+s;let width=widths.get(key);
+  if(width===undefined){
+   width=face.getGlyphWidths(face.getGlyphIDs(s)).reduce((sum,n)=>sum+n,0);
+   if(widths.size>=1024)widths.clear();
+   widths.set(key,width);
+  }
+  return {width};
+ }
+ private text(s:string,x:number,y:number,stroke:boolean){
+  const {width}=this.measureText(s);
+  this.c.drawText(s,this.textAlign==='center'?x-width/2:this.textAlign==='right'||this.textAlign==='end'?x-width:x,y,this.paint(stroke),this.textFace);
+ }
  fillText(s:string,x:number,y:number){this.text(s,x,y,false)} strokeText(s:string,x:number,y:number){this.text(s,x,y,true)}
  drawImage(source:SkImage|NativeLayer,...args:number[]){const layer=source instanceof NativeLayer,im=layer?source.image():source as SkImage;let sx=0,sy=0,sw:number,sh:number,dx=0,dy=0,dw:number,dh:number;
   // Sprite sheets always pass a source rectangle; only ask native for the size otherwise.

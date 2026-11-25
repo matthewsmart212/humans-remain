@@ -19,12 +19,12 @@ function currentControls(panel: HTMLElement) {
   .filter(el => el.tabIndex >= 0 && el.getClientRects().length > 0 && !el.closest('[inert]'));
 }
 
-type Props={world:World;title:string;label?:string;subtitle?:string;image?:string;emblem?:React.ReactNode;closeLabel?:string;onClose:()=>void;onBack?:()=>void;weight?:number;loadLabel?:string;message?:string;hint?:string;kind?:'backpack';className?:string;compact?:boolean;fitContent?:boolean;presentation?:'station'|'letter'|'conversation';footerAction?:React.ReactNode;children:React.ReactNode};
+type Props={world:World;title:string;label?:string;subtitle?:string;image?:string;emblem?:React.ReactNode;closeLabel?:string;onClose:()=>void;onBack?:()=>void;weight?:number;loadLabel?:string;message?:string;hint?:string;kind?:'backpack';className?:string;compact?:boolean;fitContent?:boolean;presentation?:'station'|'letter';footerAction?:React.ReactNode;children:React.ReactNode};
 export default function StationMenu({world,title,label=title,subtitle,image,emblem,closeLabel=`Leave ${title.toLowerCase()}`,onClose,onBack=onClose,weight,loadLabel,message,hint,kind,className='',compact=false,fitContent=false,presentation='station',footerAction,children}:Props){
  const pointerStartedHere=useRef(false);
  const layer=useRef<HTMLDivElement>(null),panel=useRef<HTMLElement>(null),[frame,setFrame]=useState<ReturnType<typeof stationMenuLayout>>();
  useLayoutEffect(()=>{const el=layer.current;if(!el)return;const previous=document.activeElement as HTMLElement|null;
-  const resize=()=>{const b=el.getBoundingClientRect(),s=getComputedStyle(el),safe:MenuInsets={top:parseFloat(s.paddingTop)||0,right:parseFloat(s.paddingRight)||0,bottom:parseFloat(s.paddingBottom)||0,left:parseFloat(s.paddingLeft)||0};setFrame(presentation==='station'?stationMenuLayout(b.width,b.height,safe):patchPanelLayout(b.width,b.height,safe,presentation));presentStationMenu(world,true,kind==='backpack',safe)};
+  const resize=()=>{const b=el.getBoundingClientRect(),s=getComputedStyle(el),safe:MenuInsets={top:parseFloat(s.paddingTop)||0,right:parseFloat(s.paddingRight)||0,bottom:parseFloat(s.paddingBottom)||0,left:parseFloat(s.paddingLeft)||0};setFrame(presentation==='station'?stationMenuLayout(b.width,b.height,safe):patchPanelLayout(b.width,b.height,safe));presentStationMenu(world,true,kind==='backpack',safe)};
   resize();panel.current?.focus({preventScroll:true});const observer=new ResizeObserver(resize);observer.observe(el);window.addEventListener('resize',resize);
   return()=>{observer.disconnect();window.removeEventListener('resize',resize);presentStationMenu(world,false);previous?.focus({preventScroll:true})};
  },[world.fire,kind,presentation]);

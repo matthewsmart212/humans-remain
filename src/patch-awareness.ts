@@ -1,3 +1,4 @@
+import {patchChat} from './patch-chat';
 import {facing,lineClear,timeOf,type Direction,type World} from './survival-engine';
 import type {PatchQuestState} from './patch-quest';
 
@@ -11,13 +12,13 @@ const observations=new WeakMap<PatchQuestState,Observation>();
 
 export function patchSupportSpeech(w:World){
  const q=w.patchQuest,observation=q&&observations.get(q);
- if(q?.command==='follow'&&!w.stationPanel&&!w.scene&&observation&&timeOf(w)<observation.until)return observation.line;
+ if(q?.command==='follow'&&!w.stationPanel&&!w.scene&&observation&&!patchChat(w)&&timeOf(w)<observation.until)return observation.line;
 }
 
 /** A nearby, following rescue unit keeps watch. It never marks unseen enemies. */
 export function stepPatchAwareness(w:World){
  const q=w.patchQuest;
- if(!q?.suppliesDelivered||q.command!=='follow'||w.scene||w.stationPanel||w.phase==='over'||w.player.downedUntil||w.player.hp<=0)return;
+ if(!q?.suppliesDelivered||q.command!=='follow'||w.scene||w.stationPanel||patchChat(w)||w.phase==='over'||w.player.downedUntil||w.player.hp<=0)return;
  const t=timeOf(w);
  let state=observations.get(q);
  if(!state){state={line:'',until:0,warnedAt:-Infinity,nextScan:t};observations.set(q,state)}

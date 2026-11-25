@@ -26,7 +26,7 @@ type Props = {
  kind?: 'backpack';
  compact?: boolean;
  fitContent?: boolean;
- presentation?: 'station' | 'letter' | 'conversation';
+ presentation?: 'station' | 'letter';
  footerAction?: React.ReactNode;
  width: number;
  height: number;
@@ -43,7 +43,7 @@ export default function StationMenu({
  const back = useRef(onBack);
  back.current = onBack;
  const story = presentation !== 'station', letter = presentation === 'letter';
- const layout = story ? patchPanelLayout(width, height, safe, presentation) : stationMenuLayout(width, height, safe);
+ const layout = story ? patchPanelLayout(width, height, safe) : stationMenuLayout(width, height, safe);
  const panel = layout.panel;
  const tight = compact && layout.compact;
  const pack = menuPackReadout(weight, loadLabel, kind === 'backpack');

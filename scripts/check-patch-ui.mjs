@@ -226,7 +226,7 @@ async function readPaperContrast(){
 try{
  const [styles]=await Promise.all([
   build({entryPoints:['src/main.tsx'],bundle:true,platform:'browser',format:'esm',outdir:path.join(temporary,'app'),write:false,alias:{'react-native':'react-native-web'},define:{global:'globalThis'},loader:{'.woff':'file','.woff2':'file'},external:['/fonts/*','/survival/*','/previews/*','/art/*','fs','path'],logLevel:'error'}),
-  build({stdin:{contents:`export {default as React} from 'react';export {renderToStaticMarkup} from 'react-dom/server';export {default as CampStationPanel} from './src/CampStationPanel';export {default as StationMenu} from './src/StationMenu';export {PatchNotePanel} from './src/PatchPanel';export * from './src/survival-engine';export * from './src/world-layout';export * from './src/run-progression';export * from './src/patch-quest';export * from './src/patch-dialogue';export * from './src/loot-chest';export * from './src/station-menu-layout';export * from './src/patch-panel-layout';`,resolveDir:process.cwd()},outfile:path.join(temporary,'ui.cjs'),bundle:true,platform:'node',format:'cjs',alias:{'react-native':'react-native-web'},loader:{'.css':'empty'},logLevel:'error'}),
+  build({stdin:{contents:`export {default as React} from 'react';export {renderToStaticMarkup} from 'react-dom/server';export {default as CampStationPanel} from './src/CampStationPanel';export {default as StationMenu} from './src/StationMenu';export {PatchChatHUD,PatchNotePanel} from './src/PatchPanel';export * from './src/survival-engine';export * from './src/world-layout';export * from './src/run-progression';export * from './src/patch-quest';export * from './src/patch-dialogue';export * from './src/patch-chat';export * from './src/patch-placement';export * from './src/imported-art';export * from './src/loot-chest';export * from './src/station-menu-layout';export * from './src/patch-panel-layout';`,resolveDir:process.cwd()},outfile:path.join(temporary,'ui.cjs'),bundle:true,platform:'node',format:'cjs',alias:{'react-native':'react-native-web'},loader:{'.css':'empty'},logLevel:'error'}),
  ]);
  const css=styles.outputFiles.filter(file=>file.path.endsWith('.css')).map(file=>file.text).join('\n');
  assert(css.includes('.world-editor p')&&css.includes('.patch-note-paper'),'Full app CSS must include the conflicting editor rule and letter styles');
@@ -263,7 +263,7 @@ try{
  const raster=await readPaperContrast();
  let minimumContrast=Infinity,minimumBodyRasterContrast=Infinity,minimumMetadataRasterContrast=Infinity;const geometry=[];
  for(const device of devices){
-  const layout=m.patchPanelLayout(device.width,device.height,device.safe,'letter'),p=layout.panel;
+  const layout=m.patchPanelLayout(device.width,device.height,device.safe),p=layout.panel;
   assert(p.x>=device.safe.left+12&&p.y>=device.safe.top+12);assert(p.x+p.width<=device.width-device.safe.right-12+1e-6);assert(p.y+p.height<=device.height-device.safe.bottom-12+1e-6,device.name);
   const root=wrap(note),panel=find(root,'station-menu');panel.attrs['data-short']=String(layout.compact);panel.attrs['data-wide']=String(layout.wide);
   let frame={...device,containerWidth:p.width},style=cascade(css,frame);const inset=boxSides(style.value(panel,'padding')),border=parseFloat(style.value(panel,'border-width')??style.value(panel,'border')??'0');
@@ -301,7 +301,7 @@ try{
  // inks too. These are declaration/asset checks, not a device-render claim.
  const nativePanel=fs.readFileSync('native/PatchPanel.tsx','utf8');
  assert(nativePanel.includes("require('../public/survival/patch-v3/letter.webp')"));
- assert(nativePanel.includes("require('../public/survival/patch-v3/portrait.webp')"));
+ assert(nativePanel.includes("require('../public/survival/patch-v4/gate-memory.webp')"),'The letter keeps the illustrated memory available after homecoming');
  for(const [name,required] of [['paragraph',7],['signatureText',7],['provenanceText',4.5]]){
   const ink=nativePanel.match(new RegExp(`${name}:\\{[^}]*color:'(#[\\da-f]{6})'`,'i'))?.[1];
   assert(ink,`Native ${name} has an explicit, inspectable ink color`);
@@ -309,35 +309,66 @@ try{
   assert(raster.contrast(ink)>=required,`Native ${name} actual paper contrast must be at least ${required}:1 (measured ${raster.contrast(ink).toFixed(2)}:1)`);
  }
 
- world.stationPanel='patch';Object.assign(world.patchQuest,{discovered:false,servoClaimed:false});
- assert(!render().includes('Ask Patch'),'Questions require meeting the author');
- Object.assign(world.patchQuest,{discovered:true});assert.equal(find(wrap(render()),'patch-line').text,m.patchOpeningLine(world));assert(!render().includes('Follow me'));
- assert(render().includes('Ask Patch'),'Meeting P-04 exposes optional conversation');
- Object.assign(world.patchQuest,{servoClaimed:true,servoInstalled:true});assert(render().includes('Come with us'));assert(!render().includes('Follow me'),'Commands wait for homecoming');
+ // Open the same transient session as Inspect. The readout and choices belong
+ // to the world HUD, so they must never create a second station or modal.
+ const authored=JSON.parse(fs.readFileSync('native/assets/world-snapshot.json','utf8'));
+ m.installImportedArt(authored.records);
+ world.layout=m.placePatchMaintenanceStation(authored.layout);
+ const site=m.patchQuestSite(world.layout);
+ assert(site,'The published layout contains P-04 and the service locker');
+ world.stationPanel=undefined;
+ Object.assign(world.player,{x:site.robot.x+55,y:site.robot.y+30});
+ const chatMarkup=()=>m.renderToStaticMarkup(m.React.createElement(m.PatchChatHUD,props));
+ const readChat=()=>{
+  const root=wrap(chatMarkup()),tray=find(root,'patch-chat-hud'),options=find(root,'patch-chat-options'),transcript=find(root,'patch-chat-transcript');
+  assert(tray&&options&&transcript);
+  assert(!find(root,'station-menu')&&!descendants(root).some(n=>n.attrs.role==='dialog'||n.attrs['aria-modal']==='true'||n.tag==='img'),'Chat exposes replies without a dialog, portrait or backdrop');
+  assert.equal(tray.attrs.role,'group');
+  assert.equal(transcript.attrs.role,'status');
+  assert(transcript.text.includes(m.patchChat(world).line),'Assistive technology can read the current world bubble');
+  assert.equal(world.stationPanel,undefined);
+  return {root,tray,options,labels:options.children.map(n=>n.text)};
+ };
+ assert.equal(chatMarkup(),'','Approaching alone reveals no controls');
+ assert(m.inspectPatch(world));
+ assert.deepEqual(readChat().labels,['Ask Patch']);
+ assert(m.choosePatchChat(world,'ask'));
+ assert(readChat().labels.includes('What happened to your receiver?'));
+ assert(m.choosePatchChat(world,'topic:reclamation'));
+ const pages=[m.patchChat(world).line];
+ while(m.patchChat(world).pageIndex+1<m.patchChat(world).pageCount){
+  assert(readChat().labels.includes('Continue'));
+  assert(m.choosePatchChat(world,'more'));
+  pages.push(m.patchChat(world).line);
+ }
+ assert.equal(pages.join(' '),m.patchDialogueReply(world,'reclamation'),'Every word of the gate story reaches a bubble');
+ assert(m.choosePatchChat(world,'followup'));
+ while(m.patchChat(world).pageIndex+1<m.patchChat(world).pageCount)assert(m.choosePatchChat(world,'more'));
+ assert(readChat().labels.includes('Ask something else'));
+ m.closePatchChat(world);
+ Object.assign(world.patchQuest,{servoClaimed:true,servoInstalled:true});
+ assert(m.inspectPatch(world));assert(readChat().labels.includes('Come with us'));assert(!readChat().labels.includes('Follow me'));
+ m.closePatchChat(world);
  Object.assign(world.patchQuest,{recruited:true,returnedToCamp:true,suppliesDelivered:true});
- for(const [command,subtitle] of [['follow','Following you'],['stay','Waiting here'],['camp','Returning to camp']]){
-  world.patchQuest.command=command;const html=render(),root=wrap(html),choices=find(root,'patch-choices');
-  assert(html.includes(subtitle));assert.equal(find(root,'patch-line').text,m.patchOpeningLine(world),'Conversation uses its current milestone/command greeting');
-  assert(find(root,'patch-portrait').children.some(n=>n.tag==='img'&&n.attrs.src==='/survival/patch-v3/portrait.webp'),'The conversation uses the close-up portrait');
-  assert.deepEqual(choices.children.map(n=>n.text),['Follow me','Stay here','Return to camp']);assert.equal(choices.children.filter(n=>n.attrs['aria-pressed']==='true').length,1,'Exactly one command is selected');
-  assert(find(root,'station-menu-footer').text.includes('Follow me'),'Commands remain in the persistent footer while dialogue scrolls');
-  for(const device of devices){
-   const layout=m.patchPanelLayout(device.width,device.height,device.safe,'conversation'),p=layout.panel,panel=find(root,'station-menu');
-   assert(p.x>=device.safe.left+12&&p.y>=device.safe.top+12);
-   assert(p.x+p.width<=device.width-device.safe.right-12+1e-6&&p.y+p.height<=device.height-device.safe.bottom-12+1e-6,`${device.name}: conversation stays inside safe bounds`);
-   panel.attrs['data-short']=String(layout.compact);panel.attrs['data-wide']=String(layout.wide);
-   let frame={...device,containerWidth:p.width},style=cascade(css,frame);const inset=boxSides(style.value(panel,'padding'));
-   frame={...frame,containerWidth:p.width-inset[1]-inset[3]-2};style=cascade(css,frame);
-   const narrow=frame.containerWidth<480;
-   assert.equal(style.value(choices,'display'),'grid');assert.equal(style.value(choices,'grid-template-columns'),narrow?'1fr 1fr':'1fr 1fr 1fr');
-   if(narrow)assert.equal(style.value(choices.children[0],'grid-column')?.replace(/\s/g,''),'1/-1','Follow has its own row only on narrow conversations');
-   else assert.notEqual(style.value(choices.children[0],'grid-column')?.replace(/\s/g,''),'1/-1','Landscape commands share one row');
-   for(const button of [...choices.children,find(root,'patch-talk-toggle')])assert(parseFloat(style.value(button,'min-height'))>=44,'Commands and optional conversation keep 44px targets');
-   const copy=find(root,'patch-dialogue-copy');assert.equal(style.value(copy,'overflow-y'),'auto','Long replies and questions remain scrollable');assert.equal(style.value(copy,'min-height'),'0');
-   assert(parseFloat(style.value(find(root,'patch-line'),'font-size')??style.value(find(root,'patch-line'),'font')?.match(/(\d+)px/)?.[1])>=16,'Phone conversation text remains readable');
+ assert(m.inspectPatch(world));
+ const {root:chatRoot,tray,options,labels}=readChat();
+ assert.deepEqual(labels,['Ask Patch','Follow me','Stay here','Return to camp']);
+ const end=find(chatRoot,'patch-chat-end');
+ assert.equal(end.attrs['aria-label'],'End conversation');
+ for(const device of devices){
+  const style=cascade(css,{...device,containerWidth:device.width});
+  assert.equal(style.value(tray,'position'),'absolute');
+  assert.equal(style.value(tray,'pointer-events'),'none','Empty tray space passes through to gameplay');
+  assert.equal(style.value(options,'overflow-y'),'auto','Replies remain reachable when the phone has little vertical room');
+  assert.equal(style.value(options,'touch-action'),'pan-y');
+  for(const button of [...options.children,end]){
+   assert.equal(style.value(button,'pointer-events'),'auto');
+   assert(parseFloat(style.value(button,'min-height'))>=44,device.name+' has 44px reply targets');
   }
  }
+ m.closePatchChat(world);
+ assert.equal(chatMarkup(),'');
  console.log(`PASS: Patch UI real markup, complete app CSS cascade (canonical paper baseline minimum ${minimumContrast.toFixed(2)}:1), original pale-ink regression fixture, exact lore, retained zero-weight note, note emblem, back/range behavior and staged commands.`);
  console.log(`PASS: actual ${raster.width}×${raster.height} paper, ${raster.samples} central reading-area pixels over black; minimum body/signature contrast ${minimumBodyRasterContrast.toFixed(2)}:1, provenance ${minimumMetadataRasterContrast.toFixed(2)}:1, alpha ${raster.minimumAlpha}/255. Native ink declarations pass the same texture thresholds.`);
- console.log(`PASS: shared story safe-area bounds and scroll/text-width constraints at ${geometry.join('; ')}; narrow/wide command layouts and readable portrait dialogue. Browser glyph placement, scrolling and touch interaction still require rendered/device QA.`);
+ console.log(`PASS: shared story safe-area bounds and scroll/text-width constraints at ${geometry.join('; ')}; live HUD reply targets, paged speech, accessible transcript and ungated world input.`);
 }finally{fs.rmSync(temporary,{recursive:true,force:true})}

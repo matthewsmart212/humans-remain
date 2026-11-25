@@ -58,14 +58,6 @@ export function patchDialogueFollowup(world:World,id:PatchTopicId):Followup|unde
  if(id==='camp')return {question:'Do you miss running rescues?',reply:'I still keep count when we leave. I still count when we get back.'};
 }
 
-export function patchConversationStatus(world:World):string{
- const state=world.patchQuest;
- if(!state?.servoInstalled)return state?.servoClaimed?'Replacement servo secured':'Left drive offline';
- if(!state.recruited)return 'Drive restored';
- if(!state.suppliesDelivered)return 'Heading home';
- return {follow:'Following you',camp:'Returning to camp',stay:'Waiting here'}[state.command];
-}
-
 export function patchOpeningLine(world:World):string{
  const status=patchStatus(world),state=world.patchQuest;
  if(!status||!state)return '';

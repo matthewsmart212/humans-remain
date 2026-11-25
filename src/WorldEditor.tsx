@@ -1,3 +1,4 @@
+import {closePatchChat,patchChat} from './patch-chat';
 import {waitForStartingWorld} from './start-world-ready';
 import {isModuleImportError,recoverFailedModuleLoad} from './module-load-recovery';
 import GameStart from './GameStart';
@@ -178,7 +179,7 @@ export default function WorldEditor({externalStart=false,onExternalStartState,on
  const cancelPlace=()=>{placementEpoch.current++;placingRef.current=null;setPlacing(null);updateView({ghost:null,placingSpawn:false})};
  const cancelGesture=()=>{const g=gesture.current;if(g?.kind==='move'&&g.moved)setCurrent(g.before,false);gesture.current=null;pinch.current=null;pointers.current.clear();playZoomInput.current?.cancel()};
  const equipAxe=()=>{if(toggleAxe(world.current))setAxeEquipped(world.current.player.equipped==='axe')};
- const clearInput=(preserveZoom=false)=>{keys.current.clear();touchInput.current={x:0,y:0};sprint.reset();attackHeld.current=false;fieldKit.cancel();clearAttackQueue(world.current);if(!preserveZoom)playZoomInput.current?.cancel()};
+ const clearInput=(preserveZoom=false)=>{closePatchChat(world.current);keys.current.clear();touchInput.current={x:0,y:0};sprint.reset();attackHeld.current=false;fieldKit.cancel();clearAttackQueue(world.current);if(!preserveZoom)playZoomInput.current?.cancel()};
  const changeBag=(open:boolean)=>{clearInput();gamePerformance.setActivity(open?'bag':'playing',performance.now());setBagOpen(open);if(!open)canvas.current?.focus({preventScroll:true})};
  const continuousZoom=useRef(1),mapVisible=useRef(false),[atlasAmount,setAtlasAmount]=useState(1),zoomAnimation=useRef(0),mapRequested=useRef(false);
  const mapCamera=()=>continuousMapCamera(world.current,viewRef.current,canvas.current?.clientWidth||1,canvas.current?.clientHeight||1,continuousZoom.current);
@@ -492,12 +493,13 @@ export default function WorldEditor({externalStart=false,onExternalStartState,on
   const down=(e:KeyboardEvent)=>{
    if(startScreen||editing(e)||collisionEdit||assetBrowser)return;
    const k=e.key.toLowerCase();
-   if(k==='escape'){e.preventDefault();if(e.repeat)return;if(mapOpen){changeMap(false);return}if(world.current.stationPanel){world.current.stationPanel=undefined;clearInput();return}if(bagOpen){changeBag(false);return}if(helpOpen){setHelpOpen(false);return}if(askClear){setAskClear(false);return}if(mobile&&toolsOpen){closeTools();return}if(mobile&&modeRef.current==='play'&&monitorOpen){setMonitorOpen(false);return}if(mobile&&(libraryOpen||inspectorOpen)){setLibraryOpen(false);setInspectorOpen(false);return}if(modeRef.current==='play'){if(fishingHud(world.current)?.active&&!world.current.fishing?.pendingCatch){clearInput();return}clearInput();setPaused(v=>world.current.phase==='over'||!v);return}cancelPlace();select(null);if(mobile)setLibraryOpen(false);return}
+   if(k==='escape'){e.preventDefault();if(e.repeat)return;if(mapOpen){changeMap(false);return}if(closePatchChat(world.current))return;if(world.current.stationPanel){world.current.stationPanel=undefined;clearInput();return}if(bagOpen){changeBag(false);return}if(helpOpen){setHelpOpen(false);return}if(askClear){setAskClear(false);return}if(mobile&&toolsOpen){closeTools();return}if(mobile&&modeRef.current==='play'&&monitorOpen){setMonitorOpen(false);return}if(mobile&&(libraryOpen||inspectorOpen)){setLibraryOpen(false);setInspectorOpen(false);return}if(modeRef.current==='play'){if(fishingHud(world.current)?.active&&!world.current.fishing?.pendingCatch){clearInput();return}clearInput();setPaused(v=>world.current.phase==='over'||!v);return}cancelPlace();select(null);if(mobile)setLibraryOpen(false);return}
    if(k==='m'&&modeRef.current==='play'&&!e.ctrlKey&&!e.metaKey&&!e.altKey){e.preventDefault();if(!e.repeat)changeMap(!mapOpen);return}
    if(blockedInput.current||mapVisible.current)return;
    if(k==='f5'){e.preventDefault();if(!e.repeat){if(modeRef.current==='play')stopPlay();else startPlay()}return}
    if((e.ctrlKey||e.metaKey)&&k==='s'){e.preventDefault();if(modeRef.current!=='play')void save();return}
    if(modeRef.current!=='edit'){
+    if(patchChat(world.current)&&[' ','e','r','q','1','2','3','4','5','6'].includes(k)){e.preventDefault();return}
     if(modeRef.current==='play'&&!e.ctrlKey&&!e.metaKey&&!e.altKey&&['1','2','3','4','5','6'].includes(k)){e.preventDefault();if(!e.repeat&&!travel.current?.busy){attackHeld.current=false;fieldKit.cancel();selectQuickItem(world.current,(['fists','woodenAxe','axe','meal','rabbitMeal','venisonMeal'] as QuickItem[])[Number(k)-1])}return}
     if(modeRef.current==='play'&&(k===' '||k==='e')){e.preventDefault();if(e.repeat||primaryKey!==null||travel.current?.busy)return;const action=fieldKit.sample(world.current).action;if(fieldKit.press(world.current,action)){primaryKey=k;attackHeld.current=fieldKit.holdingAttack;if(action.key.startsWith('broken:'))saveRunRef.current()}if(primaryKey===k&&k==='e'&&!fieldKit.holdingRepair&&!fieldKit.holdingFishing){primaryKey=null;fieldKit.release('primary');attackHeld.current=fieldKit.holdingAttack}return}
     if(modeRef.current==='play'&&k==='r'&&!e.ctrlKey&&!e.metaKey&&!e.altKey){e.preventDefault();if(e.repeat||travel.current?.busy)return;const repair=fieldKit.sample(world.current).repairAction;if(repair&&fieldKit.pressRepair(world.current,repair)){attackHeld.current=fieldKit.holdingAttack;if(repair.target?.buildingId==='headquarters')saveRunRef.current()}return}
