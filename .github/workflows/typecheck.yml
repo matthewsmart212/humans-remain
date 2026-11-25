@@ -71,6 +71,7 @@ jobs:
       - name: Test Patch rescue, following and owner world preservation
         run: |
           node scripts/check-patch-quest.mjs
+          node scripts/check-patch-dialogue.mjs
           node scripts/check-patch-site.mjs
           node scripts/check-patch-animation.mjs --browser-only
           node scripts/check-patch-ui.mjs

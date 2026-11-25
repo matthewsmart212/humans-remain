@@ -1,10 +1,13 @@
-/* Letter ink is explicit on every text element. The production editor also
- * styles paragraphs; inherited color alone lets its pale UI ink leak here. */
-.camp-studio .field-kit .station-menu.patch-note-menu {
+/* Patch's story surfaces keep station input/focus handling, with their own art. */
+.station-menu-layer.patch-story-layer {
+ background: radial-gradient(ellipse at 50% 45%,#131b1666,#070d0bd9);
+}
+.camp-studio .field-kit .station-menu-layer .station-menu.patch-note-menu {
  --patch-paper: #e8dfc6;
- --patch-ink: #303025;
- --patch-ink-soft: #444131;
- gap: 8px;
+ --patch-ink: #292a20;
+ --patch-ink-soft: #353629;
+ padding: 0; gap: 6px; border: 0; border-radius: 0;
+ background: transparent; box-shadow: none;
 }
 .patch-note-menu .station-menu-content { overflow: hidden; }
 .patch-note-menu .station-menu-custom-emblem {
@@ -12,25 +15,30 @@
  flex: 0 0 34px; width: 34px; height: 38px;
 }
 .patch-note-emblem { display: block; width: 29px; height: 35px; transform: rotate(-4deg); }
+.station-menu-layer .patch-note-menu .station-menu-header {
+ padding: 0 12px; min-height: 44px; border: 0;
+}
+.station-menu-layer .patch-note-menu .station-menu-header h2 {
+ font: 600 23px/1.2 'Barlow Condensed',sans-serif; letter-spacing: .4px; color: #f2e5cb;
+}
 .camp-studio .field-kit .station-menu.patch-note-menu .patch-note-paper {
- position: relative; flex: 1 1 auto; min-height: 0;
+ position: relative; flex: 1 1 auto; min-height: 0; padding: 0;
  overflow-y: auto; overflow-x: hidden; overscroll-behavior: contain; touch-action: pan-y;
  -webkit-overflow-scrolling: touch;
- scrollbar-width: thin; scrollbar-color: #877856 var(--patch-paper);
- border: 1px solid #b8a476; border-radius: 3px 10px 3px 3px;
- padding: 19px 23px 24px;
- color: var(--patch-ink);
- background: linear-gradient(100deg,#d5c69f33,transparent 9%,transparent 91%,#d5c69f33),var(--patch-paper);
- box-shadow: inset 0 0 0 3px #f7f0dc55,inset 0 -10px 30px #c2ad7a12;
- text-shadow: none; user-select: text; -webkit-user-select: text;
+ scrollbar-width: thin; scrollbar-color: #b6a47b #111a16;
+ border: 0; border-radius: 0; color: var(--patch-ink);
+ background: transparent; text-shadow: none;
+ user-select: text; -webkit-user-select: text;
 }
-.patch-note-paper::before {
- content: ''; position: absolute; right: 0; top: 0; width: 16px; height: 16px;
- background: linear-gradient(45deg,#c7b48a 0 49%,#f2ead4 51%);
- border-radius: 0 9px 0 3px; pointer-events: none;
+.patch-note-sheet {
+ position: relative; min-height: 100%; box-sizing: border-box;
+ padding: 38px 48px 48px;
+ background: url('/survival/patch-v3/letter.webp') center/100% 100% no-repeat;
+ filter: drop-shadow(0 9px 12px #0007);
 }
+/* Explicit ink prevents the global .world-editor p rule whitening the letter. */
 .camp-studio .field-kit .station-menu.patch-note-menu .patch-note-paper p {
- margin: 0 0 14px; max-width: 58ch;
+ margin: 0 0 15px; max-width: 58ch;
  color: var(--patch-ink); -webkit-text-fill-color: var(--patch-ink);
  opacity: 1; text-shadow: none; white-space: pre-line; overflow-wrap: break-word;
  font: 400 17px/1.52 Georgia,'Times New Roman',serif;
@@ -38,50 +46,94 @@
 .camp-studio .field-kit .station-menu.patch-note-menu .patch-note-paper p.patch-note-salutation { font-style: italic; }
 .camp-studio .field-kit .station-menu.patch-note-menu .patch-note-paper p.patch-note-promise { font-weight: 700; }
 .camp-studio .field-kit .station-menu.patch-note-menu .patch-note-provenance {
- display: flex; align-items: center; gap: 12px; margin-bottom: 17px;
+ display: flex; align-items: center; gap: 12px; margin-bottom: 21px;
  color: var(--patch-ink-soft); font: 700 10px/1.3 Barlow,sans-serif;
- letter-spacing: 1.1px; text-transform: uppercase;
+ letter-spacing: 1.4px; text-transform: uppercase;
 }
 .patch-note-rule { height: 1px; flex: 1; background: #81745266; }
 .camp-studio .field-kit .station-menu.patch-note-menu .patch-note-signature {
- display: flex; align-items: center; gap: 10px; margin-top: 20px;
+ display: flex; align-items: center; gap: 10px; margin-top: 24px;
  color: var(--patch-ink); -webkit-text-fill-color: var(--patch-ink);
- font: 700 19px/1.3 'Courier New',monospace; letter-spacing: 1.5px;
+ font: 700 20px/1.3 'Courier New',monospace; letter-spacing: 1.5px;
 }
 .patch-note-signature-mark { display: flex; gap: 3px; }
 .patch-note-signature-mark i { display: block; width: 3px; height: 9px; border-radius: 1px; background: #716345; }
 .patch-note-paper:focus-visible { outline: 2px solid var(--station-brass); outline-offset: -3px; }
 .patch-note-paper ::selection { background: #c6b174; color: #202217; }
-.camp-studio .field-kit .station-menu.patch-note-menu .station-menu-footer { padding-top: 2px; }
+.station-menu-layer .patch-note-menu .station-menu-footer { padding: 0 12px; border: 0; }
 .camp-studio .field-kit .station-menu.patch-note-menu .patch-note-return {
- min-height: 44px; padding: 4px 7px; gap: 7px; border-color: transparent;
- background: transparent; box-shadow: none; color: #e6e4d5; font: 600 13px/1.2 Barlow,sans-serif;
+ min-height: 44px; padding: 4px 10px; border-color: #b5a27c55; border-radius: 4px;
+ background: #151d19b8; box-shadow: none; color: #f2e5cb; font: 600 14px/1.2 Barlow,sans-serif;
 }
-.camp-studio .field-kit .station-menu.patch-menu .patch-conversation {
- padding: 11px 12px 12px; border-left: 2px solid #c5a365;
- border-radius: 2px 6px 6px 2px; background: #181e1b;
+
+.camp-studio .field-kit .station-menu-layer .station-menu.patch-menu {
+ padding: 14px; gap: 10px; border-radius: 6px; border-color: #9b835a88;
+ border-top-color: #c8a569; background: linear-gradient(140deg,#30382e,#18211b 72%);
+ box-shadow: 0 18px 64px #030906cc,inset 0 1px #ead5ae16;
 }
-.patch-signal { display: flex; gap: 5px; margin-bottom: 8px; }
-.patch-signal i { display: block; width: 4px; height: 4px; border-radius: 50%; background: #e4b96b; }
-.camp-studio .field-kit .station-menu.patch-menu p.patch-line { margin: 0; font: 600 20px/1.25 'Barlow Condensed',sans-serif; color: #f4efdf; }
-.camp-studio .field-kit .station-menu.patch-menu p.patch-objective { margin: 7px 0 0; color: #c6caba; font: 400 14px/1.4 Barlow,sans-serif; }
-.patch-choices { display: grid; grid-template-columns: 1fr; gap: 7px; padding: 4px 0 2px; }
-.patch-choices[data-commands=true] { grid-template-columns: 1fr 1fr; }
-.patch-choices[data-commands=true] > button:first-child { grid-column: 1/-1; }
-.camp-studio .field-kit .station-menu.patch-menu .patch-choices button { min-height: 44px; font-size: 14px; }
-.camp-studio .field-kit .station-menu.patch-menu .patch-choices button[aria-pressed=true]:not(.supply-primary) { border-color: #bfa56c; background: #363e32; }
+.station-menu-layer .patch-menu .station-menu-header { min-height: 48px; padding-bottom: 8px; }
+.station-menu-layer .patch-menu .station-menu-header > img { display: none; }
+.station-menu-layer .patch-menu .station-menu-header h2 { font-size: 29px; color: #f3e6cc; }
+.station-menu-layer .patch-menu .station-menu-header small { color: #bdc3af; font-size: 12px; }
+.patch-menu .station-menu-content { overflow: hidden; }
+.patch-dialogue-body { display: grid; grid-template-columns: 31% minmax(0,1fr); gap: 17px; flex: 1; min-height: 0; }
+.patch-portrait { position: relative; overflow: hidden; min-height: 0; margin: 0; border: 1px solid #ad956347; border-radius: 3px; background: #17231b; }
+.patch-portrait > img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; object-position: 50% 36%; }
+.patch-portrait::after { content: ''; position: absolute; inset: 55% 0 0; background: linear-gradient(transparent,#0c1512e8); pointer-events: none; }
+.patch-portrait figcaption { position: absolute; z-index: 1; inset: auto 12px 11px; display: flex; align-items: center; justify-content: space-between; gap: 8px; font: 600 12px/1.2 Barlow,sans-serif; letter-spacing: 1.5px; color: #e6cfa6; }
+.patch-signal { display: flex; gap: 4px; }
+.patch-signal i { display: block; width: 3px; height: 8px; border-radius: 1px; background: #e4b96b; box-shadow: 0 0 5px #e7a85433; }
+.patch-dialogue-copy { min-height: 0; min-width: 0; overflow-y: auto; overscroll-behavior: contain; touch-action: pan-y; scrollbar-width: thin; scrollbar-color: #8e8667 transparent; padding: 7px 6px 7px 0; }
+.patch-dialogue-copy:focus-visible { outline: 1px solid #c7ac7c; outline-offset: -1px; }
+.patch-conversation { padding: 0 0 10px; }
+.camp-studio .field-kit .station-menu.patch-menu p.patch-line { margin: 0; font: 500 19px/1.4 Barlow,sans-serif; color: #f4efdf; white-space: pre-line; }
+.camp-studio .field-kit .station-menu.patch-menu p.patch-objective { margin: 11px 0 0; padding-left: 10px; border-left: 2px solid #bc9d65; color: #d4c297; font: 500 14px/1.4 Barlow,sans-serif; }
+.camp-studio .field-kit .station-menu.patch-menu p.patch-player-question { margin: 0 0 10px; color: #d1b77f; font: 500 14px/1.4 Barlow,sans-serif; }
+.patch-talk { margin-top: 6px; }
+.patch-topics { display: flex; flex-direction: column; gap: 6px; }
+.camp-studio .field-kit .station-menu.patch-menu .patch-topics button,
+.camp-studio .field-kit .station-menu.patch-menu .patch-talk-toggle,
+.camp-studio .field-kit .station-menu.patch-menu .patch-talk-back {
+ min-height: 44px; width: 100%; padding: 9px 12px; text-align: left;
+ color: #e9dfc7; font: 500 14px/1.3 Barlow,sans-serif;
+ border: 1px solid #9d93624d; border-radius: 3px; background: #121b164d; box-shadow: none;
+}
+.camp-studio .field-kit .station-menu.patch-menu .patch-talk-toggle { width: auto; min-width: 120px; color: #e7c992; border-color: #b9a57577; }
+.camp-studio .field-kit .station-menu.patch-menu .patch-talk-back { margin-top: 6px; border-color: transparent; color: #bfc7b5; }
+.camp-studio .field-kit .station-menu.patch-menu .patch-topics button:hover { border-color: #c6aa73; background: #394332; }
+.station-menu-layer .patch-menu .station-menu-footer { padding-top: 9px; border-color: #ac9b6a40; }
+.patch-menu .station-menu-footer-action { width: 100%; }
+.patch-choices { display: grid; grid-template-columns: 1fr; gap: 8px; width: 100%; }
+.patch-choices[data-commands=true] { grid-template-columns: 1fr 1fr 1fr; }
+.camp-studio .field-kit .station-menu.patch-menu .patch-choices button { min-height: 44px; font: 600 14px/1.2 Barlow,sans-serif; padding: 8px 10px; border-radius: 4px; background: #2b362a; border-color: #b19a635c; color: #f0e6d2; }
+.camp-studio .field-kit .station-menu.patch-menu .patch-choices button.supply-primary { background: #d0ad70; border-color: #e4c792; color: #202a21; }
+.camp-studio .field-kit .station-menu.patch-menu .patch-choices button[aria-pressed=true]:not(.supply-primary) { border-color: #cdb079; background: #444c36; }
+
 .rare-cache-note-icon { width: 30px; height: 38px; margin: 0 auto; position: relative; border: 1px solid #b49d70; border-radius: 2px; background: #dfd1ad; transform: rotate(-5deg); }
 .rare-cache-note-icon::before { content: ''; position: absolute; left: 6px; right: 6px; top: 10px; height: 1px; background: #787a62; box-shadow: 0 5px #787a62,0 10px #787a62; }
 .rare-cache-note-icon::after { content: ''; position: absolute; top: -1px; right: -1px; width: 8px; height: 8px; border-left: 1px solid #b49d70; border-bottom: 1px solid #b49d70; background: #ede3c8; }
 @media(max-height:440px) {
- .camp-studio .field-kit .station-menu.patch-note-menu .patch-note-paper { padding: 14px 18px 20px; }
+ .patch-note-sheet { padding: 26px 40px 36px; }
  .camp-studio .field-kit .station-menu.patch-note-menu .patch-note-paper p { font-size: 16px; line-height: 1.48; margin-bottom: 12px; }
- .camp-studio .field-kit .station-menu.patch-note-menu .patch-note-provenance { margin-bottom: 13px; }
- .camp-studio .field-kit .station-menu.patch-menu .patch-conversation { padding: 9px 11px; }
- .patch-signal { margin-bottom: 6px; }
+ .camp-studio .field-kit .station-menu.patch-note-menu .patch-note-provenance { margin-bottom: 15px; }
+ .camp-studio .field-kit .station-menu-layer .station-menu.patch-menu { padding: 8px 10px; gap: 6px; }
+ .station-menu-layer .patch-menu .station-menu-header { min-height: 44px; padding-bottom: 3px; }
+ .patch-dialogue-body { gap: 13px; }
+ .patch-dialogue-copy { padding-top: 3px; }
+ .camp-studio .field-kit .station-menu.patch-menu p.patch-line { font-size: 17px; line-height: 1.4; }
+ .station-menu-layer .patch-menu .station-menu-footer { padding-top: 5px; }
+}
+@container(max-width:479px) {
+ .patch-note-sheet { padding: 28px 26px 36px; }
+ .patch-dialogue-body { grid-template-columns: 1fr; grid-template-rows: 125px minmax(0,1fr); gap: 12px; }
+ .patch-portrait > img { object-position: 50% 56%; }
+ .patch-choices[data-commands=true] { grid-template-columns: 1fr 1fr; }
+ .patch-choices[data-commands=true] > button:first-child { grid-column: 1/-1; }
+ .camp-studio .field-kit .station-menu.patch-menu p.patch-line { font-size: 17px; }
 }
 @container(max-width:350px) {
- .camp-studio .field-kit .station-menu.patch-note-menu .patch-note-paper { padding: 15px 16px 20px; }
+ .patch-note-sheet { padding: 25px 22px 32px; }
  .camp-studio .field-kit .station-menu.patch-note-menu .patch-note-paper p { font-size: 16px; line-height: 1.5; }
  .camp-studio .field-kit .station-menu.patch-note-menu .patch-note-provenance { font-size: 9px; letter-spacing: .8px; }
+ .patch-dialogue-body { grid-template-rows: 105px minmax(0,1fr); }
 }

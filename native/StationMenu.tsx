@@ -3,6 +3,7 @@ import {BackHandler, Image, Pressable, StyleSheet, Text, View, type ImageSourceP
 import {menuPackReadout} from '../src/station-menu-model';
 import {FIELD_KIT_NATIVE_ART as art} from './field-kit-art';
 import {stationMenuLayout, presentStationMenu, type MenuInsets} from '../src/station-menu-layout';
+import {patchPanelLayout} from '../src/patch-panel-layout';
 import {stationPalette as palette} from '../src/station-palette';
 import type {World} from '../src/survival-engine';
 
@@ -25,6 +26,7 @@ type Props = {
  kind?: 'backpack';
  compact?: boolean;
  fitContent?: boolean;
+ presentation?: 'station' | 'letter' | 'conversation';
  footerAction?: React.ReactNode;
  width: number;
  height: number;
@@ -35,12 +37,13 @@ type Props = {
 export default function StationMenu({
  world, title, label = title, subtitle, image, emblem, closeLabel = `Leave ${title.toLowerCase()}`,
  onClose, onBack = onClose, weight, loadLabel, message, hint, kind, compact = false, fitContent = false,
- footerAction, width, height, safe, children,
+ footerAction, width, height, safe, children, presentation = 'station',
 }: Props) {
  const [closeFocused, setCloseFocused] = useState(false);
  const back = useRef(onBack);
  back.current = onBack;
- const layout = stationMenuLayout(width, height, safe);
+ const story = presentation !== 'station', letter = presentation === 'letter';
+ const layout = story ? patchPanelLayout(width, height, safe, presentation) : stationMenuLayout(width, height, safe);
  const panel = layout.panel;
  const tight = compact && layout.compact;
  const pack = menuPackReadout(weight, loadLabel, kind === 'backpack');
@@ -60,31 +63,32 @@ export default function StationMenu({
 
  return (
   <View accessibilityViewIsModal onAccessibilityEscape={onBack} style={StyleSheet.absoluteFill}>
-   <Pressable accessible={false} importantForAccessibility="no" onPress={onBack} style={styles.scrim} />
+   <Pressable accessible={false} importantForAccessibility="no" onPress={onBack} style={[styles.scrim, story && styles.storyScrim]} />
    <View accessibilityLabel={label} style={[
     styles.frame, tight && styles.tightFrame,
+    story && styles.storyFrame, letter && styles.letterFrame,
     {left: panel.x, top: panel.y, width: panel.width},
     fitContent ? {maxHeight: panel.height} : {height: panel.height},
    ]}>
-    <View style={styles.header}>
-     <View style={styles.emblem}>
+    <View style={[styles.header, story && styles.storyHeader, letter && styles.letterHeader]}>
+     {!story && <View style={styles.emblem}>
       {emblem??<Image source={image ?? art[kind === 'backpack' ? 'backpack' : 'chest']} resizeMode="contain" style={styles.icon} />}
-     </View>
+     </View>}
      <View style={styles.heading}>
-      <Text accessibilityRole="header" style={styles.title}>{title}</Text>
+      <Text accessibilityRole="header" style={[styles.title, story && styles.storyTitle]}>{title}</Text>
       {message ? <Text accessibilityLiveRegion="polite" style={styles.feedback}>{message}</Text> :
-       !!subtitle && <Text style={styles.secondary}>{subtitle}</Text>}
+       !!subtitle && <Text style={[styles.secondary, story && styles.storySubtitle]}>{subtitle}</Text>}
      </View>
      <Pressable accessibilityRole="button" accessibilityLabel={closeLabel} onPress={onClose}
       onFocus={() => setCloseFocused(true)} onBlur={() => setCloseFocused(false)}
-      style={({pressed}) => [styles.close, (pressed || closeFocused) && styles.closeFocused]}>
+      style={({pressed}) => [styles.close, story && styles.storyClose, (pressed || closeFocused) && styles.closeFocused]}>
       <Text accessible={false} style={styles.closeGlyph}>×</Text>
      </Pressable>
     </View>
 
-    <View style={[styles.content, tight && styles.tightContent, fitContent && styles.fitContent]}>{children}</View>
+    <View style={[styles.content, tight && styles.tightContent, fitContent && styles.fitContent, story && styles.storyContent]}>{children}</View>
 
-    {(!!pack || !!hint || !!footerAction) && <View style={styles.footer}>
+    {(!!pack || !!hint || !!footerAction) && <View style={[styles.footer, story && styles.storyFooter, letter && styles.letterFooter]}>
      {!!hint && <Text style={styles.secondary}>{hint}</Text>}
      <View style={styles.load}>
       {pack&&<>
@@ -122,4 +126,15 @@ const styles = StyleSheet.create({
  load: {flexDirection: 'row', alignItems: 'center', gap: 6},
  packIcon: {width: 18, height: 18}, weight: {fontSize: 12, fontWeight: '600', color: palette.text},
  feedback: {color: palette.brass, fontSize: 13, lineHeight: 17},
+ storyScrim: {backgroundColor: 'rgba(6,10,8,.76)'},
+ storyFrame: {padding: 12, gap: 10, borderRadius: 7, borderColor: '#59604a', borderTopColor: '#c6a36b', backgroundColor: '#19211c', shadowOpacity: .55, shadowRadius: 24},
+ letterFrame: {padding: 0, gap: 4, borderWidth: 0, borderTopWidth: 0, backgroundColor: 'transparent', shadowOpacity: 0, elevation: 0},
+ storyHeader: {minHeight: 44, paddingBottom: 7, gap: 10},
+ letterHeader: {paddingHorizontal: 12, paddingBottom: 2, borderBottomWidth: 0},
+ storyTitle: {fontSize: 24, lineHeight: 28, letterSpacing: .3, color: '#f0e9d6'},
+ storySubtitle: {fontSize: 12, lineHeight: 17, color: '#bdc5b6'},
+ storyClose: {borderColor: '#89907170', backgroundColor: '#18201bd9', borderRadius: 4},
+ storyContent: {gap: 0},
+ storyFooter: {paddingTop: 0, borderTopWidth: 0},
+ letterFooter: {paddingHorizontal: 12},
 });

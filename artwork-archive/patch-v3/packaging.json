@@ -1,0 +1,41 @@
+{
+  "letter": {
+    "sourceSize": [
+      1122,
+      1402
+    ],
+    "runtimeSize": [
+      819,
+      1024
+    ],
+    "mode": "RGBA",
+    "runtimeBytes": 174974,
+    "runtimeSha256": "f4e3237ad527606dd83294a33783ed5582c2f11161461f3d3517a8a3943ca18c",
+    "sourceSha256": "f8c99bfb076e15be752a11fc3db415fe28b5cc57e6c483b19e79381a3ddd9a7e",
+    "alphaExtrema": [
+      0,
+      255
+    ],
+    "alphaBounds": [
+      0,
+      0,
+      818,
+      1024
+    ],
+    "transparentPixels": 47752
+  },
+  "portrait": {
+    "sourceSize": [
+      1254,
+      1254
+    ],
+    "runtimeSize": [
+      1024,
+      1024
+    ],
+    "mode": "RGB",
+    "runtimeBytes": 234058,
+    "runtimeSha256": "2ed1524af33923dd20838a2ae32c67aa0acd66ef0ea97d188fcf98eb78e8d091",
+    "sourceSha256": "046502ddde5d47a3c34c1c28411a13499f797645ca888be0556e7dc26f8a50d3"
+  }
+}

@@ -9,7 +9,8 @@ import postcss from 'postcss';
 // A focused DOM/cascade check, not a browser layout emulator. It reads every
 // stylesheet reached by the real app entry point, including world-editor.css
 // (the source of the original pale-on-paper regression). No browser/Python
-// dependency is needed in CI. Safe-area geometry comes from the live menu model.
+// dependency is needed in CI. Safe-area geometry comes from the live story menu
+// model; CanvasKit decodes the actual paper used by both web and native readers.
 const temporary=fs.mkdtempSync(path.join(os.tmpdir(),'patch-ui-'));
 const expectedNote=`To whoever finds this place,
 
@@ -162,7 +163,17 @@ function cascade(css,frame){
  const cache=new Map();
  const properties=node=>{
   if(cache.has(node))return cache.get(node);const props=new Map();
-  const set=(property,value,rank)=>{if(!props.has(property)||compare(rank,props.get(property).rank)>=0)props.set(property,{value,rank})};
+  const assign=(property,value,rank)=>{if(!props.has(property)||compare(rank,props.get(property).rank)>=0)props.set(property,{value,rank})};
+  const set=(property,value,rank)=>{
+   assign(property,value,rank);
+   // A high-specificity font shorthand also wins against an older font-size
+   // longhand. Without expanding it, this check incorrectly reports the old
+   // 14px station paragraph size even when the browser paints the new 17px ink.
+   if(property==='font'){
+    const size=value.match(/(?:^|\s)(\d+(?:\.\d+)?(?:px|rem|em))(?:\s*\/\s*([^\s]+))?\s/);
+    if(size){assign('font-size',size[1],rank);assign('line-height',size[2]??'normal',rank)}
+   }
+  };
   rules.forEach((rule,index)=>{
    const matching=rule.selectors.filter(s=>matches(node,s.selector));if(!matching.length)return;
    const spec=matching.map(s=>s.specificity).sort(compare).at(-1);
@@ -182,16 +193,40 @@ function cascade(css,frame){
  };
  return {value,properties};
 }
+function rgbLuminance(rgb){return rgb.map(v=>v/255).map(v=>v<=.04045?v/12.92:((v+.055)/1.055)**2.4).reduce((sum,v,i)=>sum+v*[.2126,.7152,.0722][i],0)}
+function luminance(hex){assert(/^#[\da-f]{6}$/i.test(hex),`Expected opaque color: ${hex}`);return rgbLuminance(hex.slice(1).match(/../g).map(v=>parseInt(v,16)))}
 function contrast(a,b){
- const luminance=hex=>{assert(/^#[\da-f]{6}$/i.test(hex),`Expected opaque color: ${hex}`);return hex.slice(1).match(/../g).map(v=>parseInt(v,16)/255).map(v=>v<=.04045?v/12.92:((v+.055)/1.055)**2.4).reduce((sum,v,i)=>sum+v*[.2126,.7152,.0722][i],0)};
  const x=luminance(a),y=luminance(b);return(Math.max(x,y)+.05)/(Math.min(x,y)+.05);
 }
 const boxSides=value=>{const v=(value??'0').split(/\s+/).map(parseFloat);return v.length===1?[v[0],v[0],v[0],v[0]]:v.length===2?[v[0],v[1],v[0],v[1]]:v.length===3?[v[0],v[1],v[2],v[1]]:v};
 
+async function readPaperContrast(){
+ const require=createRequire(path.resolve('node_modules/@shopify/react-native-skia/package.json'));
+ const kit=await require('canvaskit-wasm')({locateFile:file=>path.join(path.dirname(require.resolve('canvaskit-wasm')),file)});
+ const image=kit.MakeImageFromEncoded(fs.readFileSync('public/survival/patch-v3/letter.webp'));
+ assert(image,'The physical letter is an actual decodable image, not an LFS pointer');
+ try{
+  const width=image.width(),height=image.height();assert(width>=512&&height>=512,'Paper remains sharp on phone readers');
+  const pixels=image.readPixels(0,0,{width,height,colorType:kit.ColorType.RGBA_8888,alphaType:kit.AlphaType.Unpremul,colorSpace:kit.ColorSpace.SRGB});
+  assert(pixels,'The actual paper pixels can be read');
+  let minimumLuminance=Infinity,minimumAlpha=255,samples=0;
+  // This is a texture-readability check, not browser glyph coverage. Sample
+  // every pixel in the central 80% reading area, including creases. Composite
+  // over black as the conservative backdrop for the slightly translucent paper.
+  for(let y=Math.ceil(height*.1);y<Math.floor(height*.9);y++)for(let x=Math.ceil(width*.1);x<Math.floor(width*.9);x++){
+   const i=(y*width+x)*4,alpha=pixels[i+3]/255;
+   minimumLuminance=Math.min(minimumLuminance,rgbLuminance([pixels[i]*alpha,pixels[i+1]*alpha,pixels[i+2]*alpha]));
+   minimumAlpha=Math.min(minimumAlpha,pixels[i+3]);samples++;
+  }
+  assert(minimumAlpha>=240,'The reading area must not expose the moving world through transparent holes');
+  return{width,height,minimumAlpha,samples,minimumLuminance,contrast:ink=>(minimumLuminance+.05)/(luminance(ink)+.05)};
+ }finally{image.delete()}
+}
+
 try{
  const [styles]=await Promise.all([
   build({entryPoints:['src/main.tsx'],bundle:true,platform:'browser',format:'esm',outdir:path.join(temporary,'app'),write:false,alias:{'react-native':'react-native-web'},define:{global:'globalThis'},loader:{'.woff':'file','.woff2':'file'},external:['/fonts/*','/survival/*','/previews/*','/art/*','fs','path'],logLevel:'error'}),
-  build({stdin:{contents:`export {default as React} from 'react';export {renderToStaticMarkup} from 'react-dom/server';export {default as CampStationPanel} from './src/CampStationPanel';export {default as StationMenu} from './src/StationMenu';export {PatchNotePanel} from './src/PatchPanel';export * from './src/survival-engine';export * from './src/world-layout';export * from './src/run-progression';export * from './src/patch-quest';export * from './src/loot-chest';export * from './src/station-menu-layout';`,resolveDir:process.cwd()},outfile:path.join(temporary,'ui.cjs'),bundle:true,platform:'node',format:'cjs',alias:{'react-native':'react-native-web'},loader:{'.css':'empty'},logLevel:'error'}),
+  build({stdin:{contents:`export {default as React} from 'react';export {renderToStaticMarkup} from 'react-dom/server';export {default as CampStationPanel} from './src/CampStationPanel';export {default as StationMenu} from './src/StationMenu';export {PatchNotePanel} from './src/PatchPanel';export * from './src/survival-engine';export * from './src/world-layout';export * from './src/run-progression';export * from './src/patch-quest';export * from './src/patch-dialogue';export * from './src/loot-chest';export * from './src/station-menu-layout';export * from './src/patch-panel-layout';`,resolveDir:process.cwd()},outfile:path.join(temporary,'ui.cjs'),bundle:true,platform:'node',format:'cjs',alias:{'react-native':'react-native-web'},loader:{'.css':'empty'},logLevel:'error'}),
  ]);
  const css=styles.outputFiles.filter(file=>file.path.endsWith('.css')).map(file=>file.text).join('\n');
  assert(css.includes('.world-editor p')&&css.includes('.patch-note-paper'),'Full app CSS must include the conflicting editor rule and letter styles');
@@ -204,9 +239,9 @@ try{
  assert(m.readPatchNote(world));assert(world.patchQuest.noteRead);
  world.stationPanel='patch-note';const note=render();
  const wrap=markup=>dom(`<html><body><div class="world-editor camp-studio" data-mode="play" data-mobile="true"><div class="field-kit">${markup}</div></div></body></html>`);
- const initial=wrap(note),paper=find(initial,'patch-note-paper');assert(paper,'The note has a dedicated paper surface');
+ const initial=wrap(note),paper=find(initial,'patch-note-paper'),sheet=find(initial,'patch-note-sheet');assert(paper&&sheet,'The whole physical sheet sits inside a dedicated scroll surface');
  assert.equal(paper.attrs.tabindex,'0','The scrollable letter is keyboard reachable');assert.equal(paper.attrs['aria-label'],"P-04's note");
- assert.equal([...paper.children.filter(n=>n.tag==='p').map(n=>n.text),find(initial,'patch-note-signature').text].join('\n\n'),expectedNote,'All paragraphs and the signature are rendered verbatim');
+ assert.equal([...sheet.children.filter(n=>n.tag==='p').map(n=>n.text),find(initial,'patch-note-signature').text].join('\n\n'),expectedNote,'All paragraphs and the signature are rendered verbatim');
  assert(find(initial,'patch-note-emblem')?.tag==='svg','A folded-page emblem replaces the generic chest');
  assert(!find(initial,'station-menu-header').children.some(n=>n.tag==='img'),'The letter header does not fall back to a chest image');
  assert(find(initial,'patch-note-return')?.text.includes('Back to supplies'));
@@ -219,46 +254,84 @@ try{
  world.player.x+=1000;back();assert.equal(closed,1,'An out-of-range note closes instead of reopening remote supplies');world.player.x-=1000;
  world.lootChestId='other-cache';assert(!render().includes('Read the folded note'),'The note remains unique to camp supplies');world.lootChestId=m.LOOT_CHEST_ID;
 
- let minimumContrast=Infinity;const geometry=[];
+ const raster=await readPaperContrast();
+ let minimumContrast=Infinity,minimumBodyRasterContrast=Infinity,minimumMetadataRasterContrast=Infinity;const geometry=[];
  for(const device of devices){
-  const layout=m.stationMenuLayout(device.width,device.height,device.safe),p=layout.panel;
+  const layout=m.patchPanelLayout(device.width,device.height,device.safe,'letter'),p=layout.panel;
   assert(p.x>=device.safe.left+12&&p.y>=device.safe.top+12);assert(p.x+p.width<=device.width-device.safe.right-12+1e-6);assert(p.y+p.height<=device.height-device.safe.bottom-12+1e-6,device.name);
   const root=wrap(note),panel=find(root,'station-menu');panel.attrs['data-short']=String(layout.compact);panel.attrs['data-wide']=String(layout.wide);
-  let frame={...device,containerWidth:p.width},style=cascade(css,frame);const inset=boxSides(style.value(panel,'padding'));
-  frame={...frame,containerWidth:p.width-inset[1]-inset[3]-2};style=cascade(css,frame);
-  const page=find(root,'patch-note-paper'),paragraphs=page.children.filter(n=>n.tag==='p'),signature=find(root,'patch-note-signature'),provenance=find(root,'patch-note-provenance');
-  const background=style.value(page,'background-color')??style.value(page,'background')?.match(/#[\da-f]{6}\s*$/i)?.[0].trim();
-  assert(background,'The actual paper background must end in an opaque color');
+  let frame={...device,containerWidth:p.width},style=cascade(css,frame);const inset=boxSides(style.value(panel,'padding')),border=parseFloat(style.value(panel,'border-width')??style.value(panel,'border')??'0');
+  frame={...frame,containerWidth:p.width-inset[1]-inset[3]-2*border};style=cascade(css,frame);
+  const page=find(root,'patch-note-paper'),physicalSheet=find(root,'patch-note-sheet'),paragraphs=physicalSheet.children.filter(n=>n.tag==='p'),signature=find(root,'patch-note-signature'),provenance=find(root,'patch-note-provenance');
+  const background=style.value(page,'--patch-paper');
+  assert(background,'Keep an explicit paper-color baseline for the original CSS ink regression');
+  assert(style.value(physicalSheet,'background')?.includes('/survival/patch-v3/letter.webp'),'The reader uses the verified physical paper texture');
   const printed=[...paragraphs,...descendants(signature).filter(n=>!n.children.length&&n.text.trim()),...descendants(provenance).filter(n=>!n.children.length&&n.text.trim())];
   for(const node of printed){
    const ink=style.value(node,'color'),ratio=contrast(ink,background);minimumContrast=Math.min(minimumContrast,ratio);
-   assert(ratio>=7,`${device.name}: letter ink ${ink} on ${background} has insufficient contrast (${ratio.toFixed(2)}:1)`);
+   assert(ratio>=7,`${device.name}: letter ink ${ink} on baseline ${background} has insufficient contrast (${ratio.toFixed(2)}:1)`);
+   const metadata=node===provenance||node.parent===provenance,rasterRatio=raster.contrast(ink),required=metadata?4.5:7;
+   if(metadata)minimumMetadataRasterContrast=Math.min(minimumMetadataRasterContrast,rasterRatio);else minimumBodyRasterContrast=Math.min(minimumBodyRasterContrast,rasterRatio);
+   assert(rasterRatio>=required,`${device.name}: ${metadata?'provenance':'body/signature'} ink ${ink} over real paper needs ${required}:1, measured ${rasterRatio.toFixed(2)}:1`);
    assert(!['hidden','collapse'].includes(style.value(node,'visibility'))&&style.value(node,'display')!=='none','The lore must remain visible');
    assert(style.value(node,'opacity')===undefined||Number(style.value(node,'opacity'))===1,'No faded letter text');
   }
-  for(const paragraph of paragraphs){assert.equal(style.value(paragraph,'-webkit-text-fill-color'),style.value(paragraph,'color'),'Safari text fill matches ink');assert.equal(style.value(paragraph,'white-space'),'pre-line');assert.equal(style.value(paragraph,'overflow-wrap'),'break-word');const fontSize=parseFloat(style.value(paragraph,'font-size')??style.value(paragraph,'font')?.match(/(\d+)px/)?.[1]);assert(fontSize>=16,'Phone letter text remains at least 16px')}
+  for(const paragraph of paragraphs){assert.equal(style.value(paragraph,'-webkit-text-fill-color'),style.value(paragraph,'color'),'Safari text fill matches ink');assert.equal(style.value(paragraph,'white-space'),'pre-line');assert.equal(style.value(paragraph,'overflow-wrap'),'break-word');const fontSize=parseFloat(style.value(paragraph,'font-size')??style.value(paragraph,'font')?.match(/(\d+)px/)?.[1]);assert(fontSize>=16,`${device.name}: letter text remains at least 16px; font-size=${style.value(paragraph,'font-size')}, font=${style.value(paragraph,'font')}`)}
   assert.equal(style.value(page,'overflow-y'),'auto','The entire letter remains scrollable');assert.equal(style.value(page,'overflow-x'),'hidden','The letter never needs horizontal scrolling');assert.equal(style.value(page,'min-height'),'0','The scroll surface can shrink inside the phone panel');
   assert.equal(style.value(page,'touch-action'),'pan-y','Reading gestures scroll vertically');
   assert(parseFloat(style.value(find(root,'patch-note-return'),'min-height'))>=44,'Back keeps a 44px touch target');
-  const paperInset=boxSides(style.value(page,'padding')),textWidth=frame.containerWidth-paperInset[1]-paperInset[3]-2;
+  assert(parseFloat(style.value(find(root,'station-menu-close'),'min-height'))>=44,'Close keeps a 44px touch target');
+  const paperInset=boxSides(style.value(physicalSheet,'padding')),textWidth=frame.containerWidth-paperInset[1]-paperInset[3];
   assert(textWidth>=230,`${device.name}: readable line width survives the actual panel and paper padding`);
   geometry.push(`${device.width}×${device.height} (${Math.round(textWidth)}px text)`);
  }
  // Prove this check catches the shipped failure: removing direct paragraph
  // ink lets .world-editor p override the inherited parchment color.
  const broken=postcss.parse(css);broken.walkRules(rule=>{if(rule.selector.includes('.patch-note-paper p'))rule.walkDecls(decl=>{if(['color','-webkit-text-fill-color'].includes(decl.prop))decl.remove()})});
- const brokenStyle=cascade(broken.toString(),{...devices[0],containerWidth:340}),paragraph=paper.children.find(n=>n.tag==='p');
+ const brokenStyle=cascade(broken.toString(),{...devices[0],containerWidth:340}),paragraph=sheet.children.find(n=>n.tag==='p');
  assert(contrast(brokenStyle.value(paragraph,'color'),brokenStyle.value(paper,'--patch-paper'))<7,'The regression fixture must reproduce the original low-contrast failure');
 
- world.stationPanel='patch';Object.assign(world.patchQuest,{discovered:true,servoClaimed:false});assert(render().includes('Drive servo damaged.'));assert(!render().includes('Follow me'));
+ // Native reads the same generated paper and must retain the measured dark
+ // inks too. These are declaration/asset checks, not a device-render claim.
+ const nativePanel=fs.readFileSync('native/PatchPanel.tsx','utf8');
+ assert(nativePanel.includes("require('../public/survival/patch-v3/letter.webp')"));
+ assert(nativePanel.includes("require('../public/survival/patch-v3/portrait.webp')"));
+ for(const [name,required] of [['paragraph',7],['signatureText',7],['provenanceText',4.5]]){
+  const ink=nativePanel.match(new RegExp(`${name}:\\{[^}]*color:'(#[\\da-f]{6})'`,'i'))?.[1];
+  assert(ink,`Native ${name} has an explicit, inspectable ink color`);
+  assert(contrast(ink,'#e8dfc6')>=7,`Native ${name} retains the canonical paper baseline contrast`);
+  assert(raster.contrast(ink)>=required,`Native ${name} actual paper contrast must be at least ${required}:1 (measured ${raster.contrast(ink).toFixed(2)}:1)`);
+ }
+
+ world.stationPanel='patch';Object.assign(world.patchQuest,{discovered:false,servoClaimed:false});
+ assert(!render().includes('Ask Patch'),'Questions require meeting the author');
+ Object.assign(world.patchQuest,{discovered:true});assert.equal(find(wrap(render()),'patch-line').text,m.patchOpeningLine(world));assert(!render().includes('Follow me'));
+ assert(render().includes('Ask Patch'),'Meeting P-04 exposes optional conversation');
  Object.assign(world.patchQuest,{servoClaimed:true,servoInstalled:true});assert(render().includes('Come with us'));assert(!render().includes('Follow me'),'Commands wait for homecoming');
  Object.assign(world.patchQuest,{recruited:true,returnedToCamp:true,suppliesDelivered:true});
  for(const [command,subtitle] of [['follow','Following you'],['stay','Waiting here'],['camp','Returning to camp']]){
   world.patchQuest.command=command;const html=render(),root=wrap(html),choices=find(root,'patch-choices');
-  assert(html.includes(subtitle));assert(html.includes(m.patchStatus(world).line),'Conversation uses current core status');
+  assert(html.includes(subtitle));assert.equal(find(root,'patch-line').text,m.patchOpeningLine(world),'Conversation uses its current milestone/command greeting');
+  assert(find(root,'patch-portrait').children.some(n=>n.tag==='img'&&n.attrs.src==='/survival/patch-v3/portrait.webp'),'The conversation uses the close-up portrait');
   assert.deepEqual(choices.children.map(n=>n.text),['Follow me','Stay here','Return to camp']);assert.equal(choices.children.filter(n=>n.attrs['aria-pressed']==='true').length,1,'Exactly one command is selected');
-  const style=cascade(css,{...devices[2],containerWidth:428});assert.equal(style.value(choices,'display'),'grid');assert.equal(style.value(choices,'grid-template-columns'),'1fr 1fr');assert.equal(style.value(choices.children[0],'grid-column')?.replace(/\s/g,''),'1/-1','Follow has its own row');
+  assert(find(root,'station-menu-footer').text.includes('Follow me'),'Commands remain in the persistent footer while dialogue scrolls');
+  for(const device of devices){
+   const layout=m.patchPanelLayout(device.width,device.height,device.safe,'conversation'),p=layout.panel,panel=find(root,'station-menu');
+   assert(p.x>=device.safe.left+12&&p.y>=device.safe.top+12);
+   assert(p.x+p.width<=device.width-device.safe.right-12+1e-6&&p.y+p.height<=device.height-device.safe.bottom-12+1e-6,`${device.name}: conversation stays inside safe bounds`);
+   panel.attrs['data-short']=String(layout.compact);panel.attrs['data-wide']=String(layout.wide);
+   let frame={...device,containerWidth:p.width},style=cascade(css,frame);const inset=boxSides(style.value(panel,'padding'));
+   frame={...frame,containerWidth:p.width-inset[1]-inset[3]-2};style=cascade(css,frame);
+   const narrow=frame.containerWidth<480;
+   assert.equal(style.value(choices,'display'),'grid');assert.equal(style.value(choices,'grid-template-columns'),narrow?'1fr 1fr':'1fr 1fr 1fr');
+   if(narrow)assert.equal(style.value(choices.children[0],'grid-column')?.replace(/\s/g,''),'1/-1','Follow has its own row only on narrow conversations');
+   else assert.notEqual(style.value(choices.children[0],'grid-column')?.replace(/\s/g,''),'1/-1','Landscape commands share one row');
+   for(const button of [...choices.children,find(root,'patch-talk-toggle')])assert(parseFloat(style.value(button,'min-height'))>=44,'Commands and optional conversation keep 44px targets');
+   const copy=find(root,'patch-dialogue-copy');assert.equal(style.value(copy,'overflow-y'),'auto','Long replies and questions remain scrollable');assert.equal(style.value(copy,'min-height'),'0');
+   assert(parseFloat(style.value(find(root,'patch-line'),'font-size')??style.value(find(root,'patch-line'),'font')?.match(/(\d+)px/)?.[1])>=16,'Phone conversation text remains readable');
+  }
  }
- console.log(`PASS: Patch UI real markup, complete app CSS cascade (minimum letter contrast ${minimumContrast.toFixed(2)}:1), original pale-ink regression fixture, exact lore, retained zero-weight note, note emblem, back/range behavior and staged commands.`);
- console.log(`PASS: shared safe-area bounds and scroll/text-width constraints at ${geometry.join('; ')}. Browser paint, scrolling and touch interaction still require device QA.`);
+ console.log(`PASS: Patch UI real markup, complete app CSS cascade (canonical paper baseline minimum ${minimumContrast.toFixed(2)}:1), original pale-ink regression fixture, exact lore, retained zero-weight note, note emblem, back/range behavior and staged commands.`);
+ console.log(`PASS: actual ${raster.width}×${raster.height} paper, ${raster.samples} central reading-area pixels over black; minimum body/signature contrast ${minimumBodyRasterContrast.toFixed(2)}:1, provenance ${minimumMetadataRasterContrast.toFixed(2)}:1, alpha ${raster.minimumAlpha}/255. Native ink declarations pass the same texture thresholds.`);
+ console.log(`PASS: shared story safe-area bounds and scroll/text-width constraints at ${geometry.join('; ')}; narrow/wide command layouts and readable portrait dialogue. Browser glyph placement, scrolling and touch interaction still require rendered/device QA.`);
 }finally{fs.rmSync(temporary,{recursive:true,force:true})}

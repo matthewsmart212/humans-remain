@@ -8,6 +8,45 @@ import {lineClear,type World} from './survival-engine';
 import type {FoliageViewport} from './foliage-renderer';
 
 const TAU=Math.PI*2,VISUAL_SCALE=PATCH_ROBOT_SCALE/.3;
+
+// Speech is authored and brief. A conservative character budget avoids a
+// Canvas measureText dependency that the native Skia adapter does not have.
+function speechLines(speech:string){
+ const words=speech.trim().split(/\s+/),lines:string[]=[];
+ let line='';
+ for(const word of words){
+  if(line&&line.length+word.length+1>22){lines.push(line);line=word}
+  else line+=(line?' ':'')+word;
+ }
+ if(line)lines.push(line);
+ if(lines.length>2)lines.splice(1,lines.length-1,lines.slice(1).join(' '));
+ return lines.slice(0,2).map(line=>line.length>28?line.slice(0,27).trimEnd()+'…':line);
+}
+
+/** Uses only path primitives shared by Canvas and both Skia implementations. */
+function speechBubble(ctx:CanvasRenderingContext2D,speech:string,x:number,tipY:number,view:FoliageViewport){
+ const lines=speechLines(speech);if(!lines.length)return;
+ const width=Math.max(100,Math.min(254,Math.max(...lines.map(line=>line.length))*8+30));
+ const height=lines.length*19+18,margin=8;
+ const left=Math.max(view.x+margin,Math.min(x-width/2,view.x+view.width-margin-width));
+ const top=Math.max(view.y+6,tipY-7-height),right=left+width,bottom=top+height;
+ const pointer=Math.max(left+15,Math.min(x,right-15));
+ const pointerY=Math.max(tipY,bottom+6);
+ const outline=(dy=0)=>{
+  ctx.beginPath();ctx.moveTo(left+5,top+dy);ctx.lineTo(right-5,top+dy);
+  ctx.lineTo(right,top+5+dy);ctx.lineTo(right,bottom-5+dy);ctx.lineTo(right-5,bottom+dy);
+  ctx.lineTo(pointer+6,bottom+dy);ctx.lineTo(pointer,pointerY+dy);ctx.lineTo(pointer-6,bottom+dy);
+  ctx.lineTo(left+5,bottom+dy);ctx.lineTo(left,bottom-5+dy);ctx.lineTo(left,top+5+dy);ctx.closePath();
+ };
+ ctx.save();
+ outline(2);ctx.fillStyle='#0b100e55';ctx.fill();
+ outline();ctx.fillStyle='#20271ff5';ctx.fill();ctx.strokeStyle='#ae915a99';ctx.lineWidth=1;ctx.stroke();
+ ctx.beginPath();ctx.moveTo(left+8,top+2);ctx.lineTo(right-8,top+2);ctx.strokeStyle='#d6b77a26';ctx.stroke();
+ ctx.font="600 16px 'Barlow Condensed'";ctx.textAlign='center';ctx.textBaseline='alphabetic';ctx.fillStyle='#f6ecd4';
+ lines.forEach((line,index)=>ctx.fillText(line,left+width/2,top+25+index*19));
+ ctx.restore();
+}
+
 function pose(w:World,view?:FoliageViewport,editor=false){
  if(w.scene||!w.layout||!w.progression&&!editor)return null;
  const q=w.patchQuest,site=patchQuestSite(w.layout);
@@ -76,8 +115,6 @@ export function drawPatchFeedback(ctx:CanvasRenderingContext2D,imgs:Record<strin
   ctx.fillStyle='#ffe1a4';ctx.beginPath();ctx.arc(lampX,lampY,1.5*VISUAL_SCALE,0,TAU);ctx.fill();ctx.restore();
  }
  const speech=patchSpeech(w);if(!speech)return;
- ctx.save();ctx.font="600 16px 'Barlow Condensed'";ctx.textAlign='center';ctx.textBaseline='bottom';
- ctx.lineJoin='round';ctx.lineWidth=4;ctx.strokeStyle='#17211dee';ctx.fillStyle='#f3dfb8';
- const speechY=p.y-(p.damaged?168:PATCH_ROBOT_ANCHOR[1])*PATCH_ROBOT_SCALE-16;
- ctx.strokeText(speech,p.x,speechY);ctx.fillText(speech,p.x,speechY);ctx.restore();
+ const tipY=p.y-(p.damaged?168:PATCH_ROBOT_ANCHOR[1])*PATCH_ROBOT_SCALE-9;
+ speechBubble(ctx,speech,p.x,tipY,view);
 }
