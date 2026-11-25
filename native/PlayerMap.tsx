@@ -22,6 +22,8 @@ import type {ZoomStore} from './play-zoom';
 import {PLAYER_MAP_MARKER,mapArtDisplayFactor} from '../src/player-map-art';
 import {playerMapLabels} from '../src/player-map-labels';
 import {PLAYER_MAP_NIGHT,playerMapNightAmount,playerMapInk} from '../src/player-map-lighting';
+import {patchMapLead,samePatchMapLead} from '../src/patch-map';
+import {PATCH_QUEST_TITLE} from '../src/patch-quest';
 import {clearWaypoint,currentWaypoint,placeWaypoint,WaypointTap,WAYPOINT_PIN} from '../src/waypoint';
 
 const headingNames:Record<Direction,string>={up:'north','up-right':'north-east',right:'east','down-right':'south-east',down:'south','down-left':'south-west',left:'west','up-left':'north-west'};
@@ -50,7 +52,7 @@ type Props={world:React.RefObject<World|null>;width:number;height:number;safe:{t
 const OPEN_TILES=48,CLOSED_TILES=32;
 const unsubscribed=()=>()=>{};
 const clampZoom=(zoom:number)=>Math.max(1,Math.min(PLAYER_MAP_MAX_ZOOM,zoom));
-const sampleWorld=(w:World)=>({world:w,layout:w.layout,scene:w.scene,x:w.player.x,y:w.player.y,direction:w.player.direction,waypoint:w.waypoint,night:playerMapNightAmount(w),fireLit:w.camp.hearth.fuel>0});
+const sampleWorld=(w:World)=>({world:w,layout:w.layout,scene:w.scene,x:w.player.x,y:w.player.y,direction:w.player.direction,waypoint:w.waypoint,lead:patchMapLead(w),night:playerMapNightAmount(w),fireLit:w.camp.hearth.fuel>0});
 function outdoorFollowZoom(bounds:WorldBounds,width:number,height:number){
  if(width<=0||height<=0)return 2.5;
  const fitScale=playerMapView(bounds,width,height,1).scale;
@@ -191,7 +193,7 @@ function NativePlayerMap({world,width,height,safe,onClose,active=true,fullZoom=f
  const normalized=(next:Camera):Camera=>{const {scene,size}=current.current,v=playerMapView(scene.bounds,size.width,size.height,next.zoom,next.focus);return{zoom:clampZoom(next.zoom),focus:{x:v.x+v.width/2,y:v.y+v.height/2}}};
  useEffect(()=>{if(continuous){entering.current=false;progress.setValue(1);return}let active=true;const ready=()=>{if(!active)return;entering.current=false;body.current?.measureInWindow((x,y)=>{origin.current={x,y}})};const enter=(reduce:boolean)=>{if(!active||closing.current)return;reducedMotion.current=reduce;if(reduce){progress.setValue(1);ready()}else Animated.timing(progress,{toValue:1,duration:420,easing:Easing.out(Easing.cubic),useNativeDriver:true}).start(({finished})=>{if(finished)ready()})};void AccessibilityInfo.isReduceMotionEnabled().then(enter,()=>enter(false));return()=>{active=false;progress.stopAnimation()}},[progress]);
 
- useEffect(()=>{if(!active)return;const refresh=()=>{const w=world.current;if(!w)return;const next=sampleWorld(w);setSample(old=>old.world===next.world&&old.layout===next.layout&&old.scene===next.scene&&old.x===next.x&&old.y===next.y&&old.direction===next.direction&&old.waypoint===next.waypoint&&old.night===next.night&&old.fireLit===next.fireLit?old:next)};refresh();const timer=setInterval(refresh,100);return()=>clearInterval(timer)},[world,active]);
+ useEffect(()=>{if(!active)return;const refresh=()=>{const w=world.current;if(!w)return;const next=sampleWorld(w);setSample(old=>old.world===next.world&&old.layout===next.layout&&old.scene===next.scene&&old.x===next.x&&old.y===next.y&&old.direction===next.direction&&old.waypoint===next.waypoint&&samePatchMapLead(old.lead,next.lead)&&old.night===next.night&&old.fireLit===next.fireLit?old:next)};refresh();const timer=setInterval(refresh,100);return()=>clearInterval(timer)},[world,active]);
  useEffect(()=>{const listener=BackHandler.addEventListener('hardwareBackPress',()=>{if(!active)return false;close.current();return true});return()=>listener.remove()},[active]);
  useEffect(()=>{gesture.current=null;following.current=true;uiFollowing.value=true;uiEpoch.value=++cameraEpoch.current;coverageSent.value='';updateCamera({zoom:sample.scene?1:2.5,focus:{x:sample.x,y:sample.y}})},[scene.id]);
  useEffect(()=>{if(!continuous&&following.current&&!sample.scene&&cameraRef.current.zoom<outdoorMinimumZoom)updateCamera({...cameraRef.current,zoom:outdoorMinimumZoom})},[scene.id,sample.scene,outdoorMinimumZoom]);
@@ -220,7 +222,13 @@ function NativePlayerMap({world,width,height,safe,onClose,active=true,fullZoom=f
  const zoomBy=(factor:number)=>updateCamera(normalized({...cameraRef.current,zoom:clampZoom(cameraRef.current.zoom*factor)}));
  const findMe=()=>{const w=world.current;if(!w)return;following.current=true;uiFollowing.value=true;uiEpoch.value=++cameraEpoch.current;updateCamera({zoom:Math.max(cameraRef.current.zoom,w.scene?1:outdoorMinimumZoom),focus:{x:w.player.x,y:w.player.y}})};
  const fit=()=>{following.current=false;uiFollowing.value=false;uiEpoch.value=++cameraEpoch.current;updateCamera({zoom:1,focus:{x:scene.bounds.left+scene.bounds.width/2,y:scene.bounds.top+scene.bounds.height/2}})};
- const target=currentWaypoint(sample.world);
+ const target=currentWaypoint(sample.world),lead=sample.lead;
+ const showLead=()=>{
+  if(!lead)return;
+  setPlacingWaypoint(false);
+  following.current=false;uiFollowing.value=false;uiEpoch.value=++cameraEpoch.current;
+  updateCamera({zoom:Math.max(cameraRef.current.zoom,outdoorMinimumZoom),focus:{x:lead.x,y:lead.y}});
+ };
  const labelData=useMemo(()=>{const illustrations=new Map(features.illustrations.filter(a=>a.kind!=='palisade').map(a=>[a.id,a]));return features.landmarks.map(mark=>({...mark,illustration:illustrations.get(mark.id)}))},[features]);
  const removeDestination=()=>{if(world.current){clearWaypoint(world.current);setPlacingWaypoint(false);setSample(sampleWorld(world.current))}};
  const finishWaypoint=(event:GestureResponderEvent)=>{const t=event.nativeEvent.changedTouches[0];if(placingWaypoint&&t&&!event.nativeEvent.touches.length&&waypointTap.current.end(t.identifier,t.pageX,t.pageY)&&world.current&&placeWaypoint(world.current,unprojectMapPoint({x:t.pageX-origin.current.x,y:t.pageY-origin.current.y},presentationView.value))){setPlacingWaypoint(false);setSample(sampleWorld(world.current))}waypointTap.current.cancel();gesture.current=null};
@@ -254,6 +262,11 @@ function NativePlayerMap({world,width,height,safe,onClose,active=true,fullZoom=f
      <Rect x={size.width-28} y={0} width={28} height={size.height}><LinearGradient start={{x:size.width-28,y:0}} end={{x:size.width,y:0}} colors={['#18210f00','#18210fc0']}/></Rect>
      {sample.night>0&&<Rect x={0} y={0} width={size.width} height={size.height} opacity={sample.night}><RadialGradient c={{x:size.width/2,y:size.height/2}} r={Math.hypot(size.width,size.height)/2} colors={['#07132700','#07132700','#0713277a']} positions={[0,.36,1]}/></Rect>}
      {labelData.filter(point=>!artReady||!point.illustration).map(point=><NativeMapLandmark key={point.id} data={point} view={presentationView} width={size.width} height={size.height}><LandmarkSymbol kind={point.kind}/></NativeMapLandmark>)}
+     {lead&&<NativeMapPoint point={lead} view={presentationView} width={size.width} height={size.height} clip>
+      <Path path="M-12 -23H12Q16 -23 16 -19V-10Q16 -6 12 -6H5L0 0L-5 -6H-12Q-16 -6 -16 -10V-19Q-16 -23 -12 -23Z" color="#322c24"/>
+      <Path path="M-12 -23H12Q16 -23 16 -19V-10Q16 -6 12 -6H5L0 0L-5 -6H-12Q-16 -6 -16 -10V-19Q-16 -23 -12 -23Z" color="#d8ab67" style="stroke" strokeWidth={1.5}/>
+      {[-8,0,8].map(x=><Circle key={x} cx={x} cy={-14.5} r={2.2} color="#ffe1a0"/>)}
+     </NativeMapPoint>}
      {target&&<NativeMapPoint point={target} view={presentationView} width={size.width} height={size.height} yOffset={-16}><Path path={WAYPOINT_PIN} color="#173f40"/><Path path={WAYPOINT_PIN} color="#e2bf75" style="stroke" strokeWidth={2}/><Circle cy={-6} r={4} color="#f4e6c7"/></NativeMapPoint>}
      {<NativeMapPoint point={{x:sample.x,y:sample.y}} view={presentationView} width={size.width} height={size.height} clip>
       <Group transform={[{rotate:playerMapHeading(sample.direction)*Math.PI/180}]}><Path path={PLAYER_MAP_MARKER.pointer} color="#f7e9bd"/><Path path={PLAYER_MAP_MARKER.pointer} color="#173c38" style="stroke" strokeWidth={1.5} strokeJoin="round"/></Group>
@@ -268,6 +281,9 @@ function NativePlayerMap({world,width,height,safe,onClose,active=true,fullZoom=f
     {anyError?<View style={s.textureNotice}><Text style={s.textureText}>Map artwork couldn’t load.</Text><Pressable accessibilityRole="button" accessibilityLabel="Retry loading map artwork" onPress={()=>{setTextures({});setRetry(value=>value+1)}} style={s.retry}><Text style={s.controlText}>Retry</Text></Pressable></View>:loading?<View pointerEvents="none" style={s.textureNotice}><Text style={s.textureText}>Loading map…</Text></View>:null}
    </View>
    <Pressable accessibilityRole="button" accessibilityLabel="Exit map" onPress={requestClose} style={({pressed})=>[s.close,{position:'absolute',top:Math.max(12,safe.top),right:Math.max(12,safe.right)},pressed&&{opacity:.8}]}><Canvas pointerEvents="none" style={{width:44,height:44}}><Path path="M14 14L30 30M30 14L14 30" color={stationPalette.text} style="stroke" strokeWidth={2} strokeCap="round"/></Canvas></Pressable>
+   {lead&&<Pressable accessibilityRole="button" accessibilityLabel={`Show ${lead.label} on the map`} onPress={showLead} style={({pressed})=>[s.lead,{left:Math.max(12,safe.left),bottom:Math.max(12,safe.bottom)},pressed&&s.pressed]}>
+    <ControlSymbol kind="location"/><View><Text style={s.leadTitle}>{PATCH_QUEST_TITLE}</Text><Text style={s.leadLabel}>Locate {lead.label}</Text></View>
+   </Pressable>}
    <MapAction kind="place" label={placingWaypoint?'Cancel waypoint placement':'Place waypoint'} selected={placingWaypoint} top={Math.max(12,safe.top)+58} right={Math.max(12,safe.right)} onPress={()=>{waypointTap.current.cancel();setPlacingWaypoint(v=>!v)}}/>
    {sample.waypoint&&<MapAction kind="clear" label="Remove waypoint" top={Math.max(12,safe.top)+116} right={Math.max(12,safe.right)} onPress={removeDestination}/>}
    {placingWaypoint&&<View pointerEvents="none" style={[s.placementHint,{top:Math.max(12,safe.top)+62,right:Math.max(12,safe.right)+64}]}><Text style={s.placementText}>Tap a spot to set your waypoint</Text></View>}
@@ -277,6 +293,8 @@ function NativePlayerMap({world,width,height,safe,onClose,active=true,fullZoom=f
 export default memo(NativePlayerMap);
 
 const s=StyleSheet.create({
+ lead:{position:'absolute',minHeight:48,paddingHorizontal:12,paddingVertical:6,borderWidth:1,borderColor:'#ab8c58',borderRadius:6,flexDirection:'row',gap:10,alignItems:'center',backgroundColor:'#272a24f5'},
+ leadTitle:{fontFamily:atlasFont,fontSize:11,color:'#f0c88c'},leadLabel:{fontFamily:atlasFont,fontSize:15,color:'#fff1d2'},
  waypointLabel:{position:'absolute',width:68,paddingVertical:3,borderWidth:1,borderColor:'#b99355',borderRadius:5,backgroundColor:'#123b3de8'},waypointText:{fontFamily:atlasFont,fontSize:11,color:'#f4e6c7',textAlign:'center'},placementHint:{position:'absolute',maxWidth:180,paddingVertical:9,paddingHorizontal:13,borderWidth:1,borderColor:'#bd985a',borderRadius:9,backgroundColor:'#143b3ef2'},placementText:{fontFamily:atlasFont,fontSize:13,lineHeight:16,color:'#f4e6c7'},
  overlay:{position:'absolute',top:0,right:0,bottom:0,left:0,backgroundColor:'#080b09f5',zIndex:100},panel:{flex:1,overflow:'hidden',borderRadius:3,borderWidth:1,borderColor:'#75694d',backgroundColor:'#222a18'},
  header:{minHeight:70,paddingHorizontal:20,paddingVertical:12,flexDirection:'row',alignItems:'center',gap:12,borderBottomWidth:1,borderBottomColor:'#a1936b3b',backgroundColor:'#222a18'},headerCompact:{minHeight:55,paddingVertical:7},heading:{flex:1,minWidth:0},eyebrow:{fontFamily:'FieldKitBarlow',fontSize:8,letterSpacing:2.6,color:'#a99d7a'},title:{fontFamily:atlasFont,fontSize:25,letterSpacing:1,color:'#f0e7ce',marginTop:4},titleCompact:{fontSize:21,marginTop:2},status:{alignItems:'flex-end',gap:6},statusText:{fontFamily:'FieldKitBarlow',fontSize:8,letterSpacing:1.8,color:'#c7bd9a'},paused:{fontFamily:atlasFont,fontSize:9,fontStyle:'italic',color:'#b1ad87'},close:{width:48,height:48,alignItems:'center',justifyContent:'center',borderRadius:7,borderWidth:1,borderColor:stationPalette.line,backgroundColor:stationPalette.panel,shadowColor:'#172c25',shadowOffset:{width:0,height:2},shadowOpacity:.4,shadowRadius:3,elevation:3},closeText:{fontFamily:atlasFont,fontSize:28,lineHeight:32,color:'#dfd5b8'},

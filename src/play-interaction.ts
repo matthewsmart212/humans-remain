@@ -97,15 +97,22 @@ export function playInteraction(world:World):PlayInteraction|null{
  };
  const companion=patchInteraction(world);
  if(companion){
-  const repair=companion.shortLabel==='REPAIR',robot=companion.target==='robot';
-  add({key:repair?'patch:repair':companion.key,label:repair?'Hold to fit drive servo':companion.label,
-   shortLabel:repair&&world.patchRepair?.held?'HOLD':companion.shortLabel,icon:robot?'chest':'collect',
-   image:robot?'/survival/patch-v1/portrait.webp':REPAIR_HAMMER_IMAGE,disabled:companion.disabled,
-   repair,patchRepair:repair,
-   target:{id:companion.key,x:companion.x,y:companion.y,label:robot?(world.patchQuest?.suppliesDelivered?'Patch':'P-04'):'Service locker',
-    detail:repair?'Drive servo secured':robot?undefined:'Drive servo',
-    ...(repair?{repairState:world.patchRepair?.held?'holding' as const:'ready' as const,progress:Math.floor(patchRepairProgress(world)*100)/100,progressLabel:'Servo installation'}:{})},
-   perform:()=>repair?(world.patchRepair?holdPatchRepair(world,true):beginPatchRepair(world)):robot?inspectPatch(world):claimPatchServo(world)});
+  const robot=companion.target==='robot';
+  const target={id:companion.key,x:companion.x,y:companion.y,label:robot?(world.patchQuest?.suppliesDelivered?'Patch':'P-04'):'Service locker'};
+  const action:PlayInteraction={key:companion.key,label:companion.label,shortLabel:companion.shortLabel,
+   icon:robot?'chest':'collect',image:robot?'/survival/patch-v1/portrait.webp':REPAIR_HAMMER_IMAGE,
+   disabled:companion.disabled,target:{...target,detail:robot?undefined:'Drive servo'},
+   perform:()=>robot?inspectPatch(world):claimPatchServo(world)};
+  if(companion.canRepair){
+   const progress=patchRepairProgress(world),holding=!!world.patchRepair?.held;
+   const stage=progress<1/3?'Opening the drive housing':progress<2/3?'Seating the servo':'Calibrating the joint';
+   action.repairAction={key:'patch:repair',label:'Hold to fit drive servo',shortLabel:holding?'HOLD':'REPAIR',
+    icon:'chest',image:REPAIR_HAMMER_IMAGE,disabled:companion.disabled,repair:true,patchRepair:true,
+    target:{...target,detail:holding?stage:'Drive servo secured · Hold for 6 seconds',
+     repairState:holding?'holding':'ready',progress:Math.floor(progress*100)/100,progressLabel:'Servo installation'},
+    perform:()=>world.patchRepair?holdPatchRepair(world,true):beginPatchRepair(world)};
+  }
+  add(action);
  }
  if(!world.fishing?.claimed)for(const target of fishingTackleTargets(world))if(withinActionReach(world,target)){
   add({key:'fishing-tackle:'+target.id,label:'Take salvaged fishing rod and 10 worms',shortLabel:'TACKLE',icon:'chest',image:FISHING_ART.rod,disabled:false,

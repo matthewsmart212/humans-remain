@@ -19,6 +19,7 @@ export function createNightLighting(Skia:Pick<typeof SkiaApi,'Paint'|'Shader'|'S
  uniform float torchEnabled;
  uniform float4 warning0;
  uniform float4 warning1;
+ uniform float4 rescue;
  float warningLight(float2 p,float4 source){
   return (1.0-smoothstep(0.1,1.0,length(p-source.xy)/max(1.0,source.z)))*source.w;
  }
@@ -31,9 +32,10 @@ export function createNightLighting(Skia:Pick<typeof SkiaApi,'Paint'|'Shader'|'S
   float spill=(1.0-smoothstep(25.0,135.0,length(v)))*0.65;
   float torchLight=max(beam,spill)*torchEnabled;
   float red=max(warningLight(p,warning0),warningLight(p,warning1));
-  float light=max(torchLight,red);
+  float amber=warningLight(p,rescue);
+  float light=max(amber,max(torchLight,red));
   half4 night=field.eval(p)*darkness*(1.0-light*0.96);
-  float glow=torchLight*(0.035+darkness*0.025);
+  float glow=max(amber*darkness*0.11,torchLight*(0.035+darkness*0.025));
   half4 shaded=half4(half3(1.0,0.77,0.39)*glow,glow)+night*(1.0-glow);
   float redGlow=red*0.08*darkness;
   return half4(half3(1.0,0.045,0.018)*redGlow,redGlow)+shaded*(1.0-redGlow);
@@ -79,12 +81,13 @@ export function createNightLighting(Skia:Pick<typeof SkiaApi,'Paint'|'Shader'|'S
  return{
   // Upload the small cached mask to the actual surface before the first frame.
   warm(canvas:SkCanvas,lights:CampLight[]){if(disposed)return;prepare(lights);paint.setAlphaf(1);canvas.drawRect(Skia.XYWHRect(0,0,1,1),paint)},
-  draw(canvas:SkCanvas,lights:CampLight[],amount:number,view:LightViewport,torch?:TorchBeam,warningLights:CampLight[]=[]){
+  draw(canvas:SkCanvas,lights:CampLight[],amount:number,view:LightViewport,torch?:TorchBeam,warningLights:CampLight[]=[],rescueLight?:CampLight){
    if(disposed||(amount<=0&&!torch))return;prepare(lights);
    const warningUniforms=[0,1].flatMap(i=>{const l=warningLights[i];return l?[l.x,l.y,Math.max(1,l.radius),Math.max(0,Math.min(1,l.strength))]:[0,0,1,0]});
-   const shader=torch||warningLights.length?effect.makeShaderWithChildren([
+   const rescueUniforms=rescueLight?[rescueLight.x,rescueLight.y,rescueLight.radius,rescueLight.strength]:[0,0,1,0];
+   const shader=torch||warningLights.length||rescueLight?effect.makeShaderWithChildren([
     torch?.x??0,torch?.y??0,torch?.dx??1,torch?.dy??0,torch?.range??1,
-    Math.max(0,Math.min(1,amount)),torch?1:0,...warningUniforms,
+    Math.max(0,Math.min(1,amount)),torch?1:0,...warningUniforms,...rescueUniforms,
    ],[field]):undefined;
    paint.setShader(shader??field);paint.setAlphaf(shader?1:Math.min(1,amount));
    canvas.drawRect(Skia.XYWHRect(view.x,view.y,view.width,view.height),paint);

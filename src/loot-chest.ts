@@ -98,7 +98,7 @@ export const lootChestOpened=(w:ChestWorld,id=LOOT_CHEST_ID)=>w.lootChests?.[id]
 /** Convert previously unclaimed resources to the new starter tools once. */
 export function lootChestContents(w:ChestWorld,id=LOOT_CHEST_ID):LootChestContents{
  const state=w.lootChests?.[id];if(!state)return {};
- if(state.rewardVersion===2)return state.contents??{};
+ if(state.rewardVersion===2)return state.contents??={};
  const old=state.contents as Record<string,number>|undefined;
  const legacy=['scrap','ironIngot','pallets','energyBar'];
  if(id===LOOT_CHEST_ID&&old&&legacy.some(key=>key in old)){

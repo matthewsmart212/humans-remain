@@ -104,7 +104,7 @@ export class FieldKitController{
     description:combat?(weapon?'Attack with '+weapon.name.toLowerCase():'Attack with fists'):move.description,
     icon:move.icon,image:weapon?.image,disabled:downed,attack:true,target:tree};
   }
-  if(candidate?.repairAction){const repair=candidate.repairAction;repairAction={owner:w,key:repair.key,label:repair.shortLabel,description:repair.label,icon:repair.icon,image:repair.image,disabled:repair.disabled||downed,attack:false,target:repair.target,repair:repair.repair,interaction:repair}}
+  if(candidate?.repairAction){const repair=candidate.repairAction;repairAction={owner:w,key:repair.key,label:repair.shortLabel,description:repair.label,icon:repair.icon,image:repair.image,disabled:repair.disabled||downed,attack:false,target:repair.target,repair:repair.repair,patchRepair:repair.patchRepair,interaction:repair}}
   if(!w.bruteGrab&&this.locked?.world===w&&(this.locked.action.attack||w.stationPanel)){const shown=this.locked.action;action={...shown,target:shown.target?.id===action.target?.id?action.target:undefined}}
   if(downed||w.stationPanel)action={...action,target:undefined};
   if(downed||w.stationPanel||w.bruteGrab||fishing?.active)repairAction=undefined;

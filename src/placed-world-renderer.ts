@@ -357,7 +357,7 @@ export function drawWorldEditor(ctx:CanvasRenderingContext2D,atlas:Atlas,imgs:Re
  if(w.weather){const strike=groundLightning(w,{x:c.x,y:c.y,width:ctx.canvas.width/c.scale,height:ctx.canvas.height/c.scale});if(strike)(ctx as CanvasRenderingContext2D&{drawGroundLightning?:(strike:GroundStrike,age:number,reduced:boolean)=>void}).drawGroundLightning?.(strike,w.weather.strikeAge,w.weather.reducedMotion)}
  // These are light sources: darkness and weather must not dim their cores.
  if(w.combatTest){drawCombatGround(ctx,w,imgs);drawBomberGround(ctx,w);drawWalkerEmissives(ctx,w);drawBomberEmissives(ctx,w)}
- if(view.playing)drawPatchFeedback(ctx,imgs,w,viewport);
+ if(view.playing)drawPatchFeedback(ctx,imgs,w,{...viewport,scale:pickupScale});
  if(view.playing)drawResourceOutlines(ctx,imgs,w,{x:c.x,y:c.y,width:ctx.canvas.width/c.scale,height:ctx.canvas.height/c.scale,scale:pickupScale},view.hideFoliage,pickupCues);
  drawCombatFeedback(ctx,w,imgs);
  if(view.playing){drawAnimalHealth(ctx,w,{x:c.x,y:c.y,width:ctx.canvas.width/c.scale,height:ctx.canvas.height/c.scale,scale:pickupScale});drawAnimalHitFeedback(ctx,w,pickupScale)}

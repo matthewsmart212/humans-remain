@@ -7,12 +7,14 @@ import {PLAYER_MAP_ART_URL,PLAYER_MAP_MARKER,PLAYER_MAP_PORTRAIT_URL,mapArtDispl
 import {playerMapLabels} from './player-map-labels';
 import {PLAYER_MAP_NIGHT,playerMapNightAmount,playerMapInk} from './player-map-lighting';
 import {clearWaypoint,currentWaypoint,placeWaypoint,WaypointTap,WAYPOINT_PIN} from './waypoint';
+import {patchMapLead,samePatchMapLead,type PatchMapLead} from './patch-map';
+import {PATCH_QUEST_TITLE} from './patch-quest';
 import './player-map.css';
 import {stationCSSColors} from './station-css-colors';
 
 type Props={world:RefObject<World>;open:boolean;onClose:()=>void;continuous?:{zoom:number;entry:number;opacity:number;focus:Vec}};
-type Position={world:World;layout:World['layout'];scene:World['scene'];x:number;y:number;direction:Direction;waypoint:World['waypoint'];night:number;fireLit:boolean};
-const readPosition=(world:World):Position=>({world,layout:world.layout,scene:world.scene,x:world.player.x,y:world.player.y,direction:world.player.direction,waypoint:world.waypoint,night:playerMapNightAmount(world),fireLit:world.camp.hearth.fuel>0});
+type Position={world:World;layout:World['layout'];scene:World['scene'];x:number;y:number;direction:Direction;waypoint:World['waypoint'];lead?:PatchMapLead;night:number;fireLit:boolean};
+const readPosition=(world:World):Position=>({world,layout:world.layout,scene:world.scene,x:world.player.x,y:world.player.y,direction:world.player.direction,waypoint:world.waypoint,lead:patchMapLead(world),night:playerMapNightAmount(world),fireLit:world.camp.hearth.fuel>0});
 const clampZoom=(zoom:number)=>Math.max(1,Math.min(12,zoom));
 const headingName=(direction:Direction)=>({'up':'N','up-right':'NE','right':'E','down-right':'SE','down':'S','down-left':'SW','left':'W','up-left':'NW'}[direction]);
 export function preloadPlayerMap(world:World){prefetchPlayerMapImages([...playerMapScene(world).images.map(image=>image.url),...(!world.scene?[PLAYER_MAP_ART_URL]:[]),PLAYER_MAP_PORTRAIT_URL])}
@@ -47,7 +49,7 @@ function PlayerMapContent({world,onClose,continuous}:Props&{titleId:string}){
  const paths=useMemo(()=>features.paths.map(feature=>({...feature,shape:new Path2D(feature.path)})),[features]);
  const footprint=useMemo(()=>{const shape=new Path2D();for(const polygon of model.footprint){if(!polygon.length)continue;shape.moveTo(polygon[0].x,polygon[0].y);for(const p of polygon.slice(1))shape.lineTo(p.x,p.y);shape.closePath()}return shape},[model]);
 
- useEffect(()=>{const sample=()=>{const next=readPosition(world.current);setPosition(old=>old.world===next.world&&old.layout===next.layout&&old.scene===next.scene&&old.x===next.x&&old.y===next.y&&old.direction===next.direction&&old.waypoint===next.waypoint&&old.night===next.night&&old.fireLit===next.fireLit?old:next)};sample();const timer=setInterval(sample,50);return()=>clearInterval(timer)},[world]);
+ useEffect(()=>{const sample=()=>{const next=readPosition(world.current);setPosition(old=>old.world===next.world&&old.layout===next.layout&&old.scene===next.scene&&old.x===next.x&&old.y===next.y&&old.direction===next.direction&&old.waypoint===next.waypoint&&samePatchMapLead(old.lead,next.lead)&&old.night===next.night&&old.fireLit===next.fireLit?old:next)};sample();const timer=setInterval(sample,50);return()=>clearInterval(timer)},[world]);
  useEffect(()=>{if(sceneId.current===model.id)return;sceneId.current=model.id;setCamera({zoom:position.world.scene?1:2.5,focus:{x:position.x,y:position.y}});setFollowing(true);fingers.current.clear();gesture.current=null},[model.id]);
  // Layout dimensions exclude the dialog's entrance transform. Measuring its
  // animated bounding box stretches only the canvas and makes DOM pins drift.
@@ -122,6 +124,13 @@ function PlayerMapContent({world,onClose,continuous}:Props&{titleId:string}){
  };
  useEffect(()=>{const el=viewport.current;if(!el||continuous)return;const wheel=(e:WheelEvent)=>{e.preventDefault();zoomBy(Math.exp(-e.deltaY*.0015),local(e))};el.addEventListener('wheel',wheel,{passive:false});return()=>el.removeEventListener('wheel',wheel)},[size,continuous]);
  const target=currentWaypoint(position.world),targetPoint=target?projectMapPoint(target,view):null;
+ const lead=position.lead,leadPoint=lead?projectMapPoint(lead,view):undefined;
+ const showLead=()=>{
+  if(!lead)return;
+  setPlacingWaypoint(false);
+  setFollowing(false);
+  setCamera({zoom:Math.max(camera.zoom,locateZoom),focus:{x:lead.x,y:lead.y}});
+ };
  const setDestination=(pixel:Vec)=>{if(placeWaypoint(world.current,unprojectMapPoint(pixel,viewRef.current))){setPlacingWaypoint(false);setPosition(readPosition(world.current))}};
  const removeDestination=()=>{clearWaypoint(world.current);setPlacingWaypoint(false);setPosition(readPosition(world.current))};
  const within=point.x>=-20&&point.y>=-20&&point.x<=size.width+20&&point.y<=size.height+20;
@@ -133,6 +142,9 @@ function PlayerMapContent({world,onClose,continuous}:Props&{titleId:string}){
   <button type="button" className="player-map-close" aria-label="Exit map" title="Exit map (M / Esc)" onClick={onClose}><X size={22} strokeWidth={2}/></button>
   <button type="button" className="player-map-close player-map-place" aria-label={placingWaypoint?'Cancel waypoint placement':'Place waypoint'} aria-pressed={placingWaypoint} title="Place waypoint" onPointerDown={e=>e.stopPropagation()} onClick={()=>{waypointTap.current.cancel();setPlacingWaypoint(v=>!v)}}><MapPinPlus size={23}/></button>
   {position.waypoint&&<button type="button" className="player-map-close player-map-clear" aria-label="Remove waypoint" title="Remove waypoint" onPointerDown={e=>e.stopPropagation()} onClick={removeDestination}><Trash2 size={20}/></button>}
+  {lead&&<button type="button" className="player-map-lead" onClick={showLead} aria-label={`Show ${lead.label} on the map`}>
+   <Crosshair size={20} aria-hidden="true"/><span><small>{PATCH_QUEST_TITLE}</small><strong>Locate {lead.label}</strong></span>
+  </button>}
   {placingWaypoint&&<div className="player-map-placement-hint" role="status">Select a spot, or focus the map and press Enter.</div>}
   <div ref={viewport} className={`player-map-viewport${placingWaypoint?' is-placing-waypoint':''}`} aria-label={`Map of ${model.name}. You are facing ${currentHeading}. Drag to explore; pinch or scroll to zoom.`} tabIndex={0}
    onPointerDown={e=>{if(e.button!==0)return;e.preventDefault();if(!continuous||!e.currentTarget.closest('.we-world')?.hasPointerCapture(e.pointerId))e.currentTarget.setPointerCapture(e.pointerId);const p=local(e);if(e.isPrimary){fingers.current.clear();gesture.current=null;waypointTap.current.cancel()}fingers.current.set(e.pointerId,p);if(placingWaypoint)waypointTap.current.begin(e.pointerId,p.x,p.y,fingers.current.size);beginGesture()}} onPointerMove={move} onPointerUp={e=>{const p=local(e);if(placingWaypoint&&fingers.current.size===1&&waypointTap.current.end(e.pointerId,p.x,p.y))setDestination(p);end(e)}} onPointerCancel={e=>{waypointTap.current.cancel();end(e)}} onLostPointerCapture={e=>{waypointTap.current.cancel();end(e)}} onContextMenu={e=>e.preventDefault()}
@@ -140,6 +152,7 @@ function PlayerMapContent({world,onClose,continuous}:Props&{titleId:string}){
    <canvas ref={canvas} aria-hidden="true"/>
    <div className="player-map-grid" aria-hidden="true"/>
    {visibleLandmarks.map(({mark,anchor,box,illustrated,opacity})=>{const Icon={camp:Tent,well:Droplets,bunker:DoorClosed,mine:Pickaxe,vehicle:Truck,fishing:Fish,headquarters:House,storage:Archive,building:Warehouse}[mark.kind];return <React.Fragment key={mark.id}>{!illustrated&&<div className={`player-map-landmark player-map-landmark-${mark.kind}`} style={{left:anchor.x,top:anchor.y}} title={mark.label}><span><Icon size={mark.kind==='camp'?23:19} strokeWidth={1.6}/></span></div>}{box&&<b className="player-map-caption" style={{left:box.left,top:box.top,width:box.width,opacity}}>{mark.label}</b>}</React.Fragment>})}
+   {lead&&leadPoint&&<div className="player-map-beacon" role="img" aria-label={lead.label} style={{left:leadPoint.x,top:leadPoint.y}}><i/><i/><i/></div>}
    {targetPoint&&<div className="player-map-waypoint" style={{left:targetPoint.x,top:targetPoint.y}} role="img" aria-label="Your waypoint"><svg viewBox="-20 -24 40 48" aria-hidden="true"><path d={WAYPOINT_PIN} fill="#173f40" stroke="#e2bf75" strokeWidth="2"/><circle cy={-6} r={4} fill="#f4e6c7"/></svg><b>WAYPOINT</b></div>}
    {within&&<div className="player-map-player" data-heading={currentHeading} style={{left:point.x,top:point.y,width:PLAYER_MAP_MARKER.size,height:PLAYER_MAP_MARKER.size}} role="img" aria-label={`Your location. Facing ${currentHeading}.`}><svg className="player-map-heading" viewBox="-34 -34 68 68" style={{transform:`rotate(${playerMapHeading(position.direction)}deg)`}} aria-hidden="true"><path d={PLAYER_MAP_MARKER.pointer} fill="#f7e9bd" stroke="#173c38" strokeWidth="1.5" strokeLinejoin="round"/></svg><img className="player-map-portrait" src={PLAYER_MAP_PORTRAIT_URL} width={PLAYER_MAP_MARKER.size} height={PLAYER_MAP_MARKER.size} alt="" draggable={false}/></div>}
    {imageFailed&&<div className="player-map-image-note" role="status">Some map artwork couldn’t load. Your location and landmarks are still shown.</div>}

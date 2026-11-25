@@ -1,3 +1,5 @@
+import {NativePatchAudio} from './patch-audio';
+import {PATCH_SOUND_KEY} from '../src/patch-audio-cues';
 import {loadFishingFeedbackSettings,saveFishingFeedbackSettings,type FishingFeedbackSettings} from './fishing-feedback';
 import {stationPalette} from '../src/station-palette';
 import NativeEntryFlow from './EntryFlow';
@@ -78,6 +80,10 @@ function Game({role,onHome,entryVisible,onBootProgress,onBootError,coop}:{role:S
  const warmedPeerRoles=useRef(new Set<SurvivorRoleId>());
  useEffect(()=>{if(!coop)return;return coop.subscribe(event=>{if(event!=='update')return;setCoopInfo(coop.status+' · '+coop.players.length+'/4 survivors');const renderer=runtime.current?.renderer;if(!renderer)return;for(const peer of coop.players){if(peer.id===coop.id||warmedPeerRoles.current.has(peer.role))continue;warmedPeerRoles.current.add(peer.role);void renderer.warmImages(playerMovementImagesForRole(peer.role),'foreground').catch(()=>warmedPeerRoles.current.delete(peer.role))}})},[coop]);
  const [creativeMode,setCreativeMode]=useState(false);
+ const patchAudio=useMemo(()=>new NativePatchAudio(),[]),[patchSound,setPatchSound]=useState(true);
+ const patchSoundEdited=useRef(false);
+ useEffect(()=>{let live=true;void AsyncStorage.getItem(PATCH_SOUND_KEY).then(value=>{if(live&&!patchSoundEdited.current){patchAudio.enabled=value!=='off';setPatchSound(patchAudio.enabled)}}).catch(()=>{if(live&&!patchSoundEdited.current)patchAudio.enabled=true});return()=>{live=false;patchAudio.stop()}},[patchAudio]);
+ const togglePatchSound=()=>{const on=!patchSound;patchSoundEdited.current=true;patchAudio.enabled=on;setPatchSound(on);if(!on)patchAudio.stop();void AsyncStorage.setItem(PATCH_SOUND_KEY,on?'on':'off').catch(()=>{})};
  const [fishingFeedbackSettings,setFishingFeedbackSettings]=useState<FishingFeedbackSettings>({sound:true,haptics:true});
  useEffect(()=>{let live=true;void loadFishingFeedbackSettings().then(value=>{if(live)setFishingFeedbackSettings(value)});return()=>{live=false}},[]);
  const toggleFishingFeedback=(key:keyof FishingFeedbackSettings)=>{const next={...fishingFeedbackSettings,[key]:!fishingFeedbackSettings[key]};setFishingFeedbackSettings(next);saveFishingFeedbackSettings(next)};
@@ -187,6 +193,7 @@ function Game({role,onHome,entryVisible,onBootProgress,onBootError,coop}:{role:S
      r.travel.tick(STEP,true);acc-=STEP;
      if(world.current!==current){previous=undefined;acc=0;break}
     }
+    if(world.current)patchAudio.update(world.current,playing&&!r.travel.busy&&!mapVisible.current);
     if(playing&&world.current)coop?.sendPose(world.current,Date.now());
     // The HUD disables movement during travel. Refresh it on both edges,
     // including when the arrival fade finishes on the same world.
@@ -258,7 +265,7 @@ function Game({role,onHome,entryVisible,onBootProgress,onBootError,coop}:{role:S
      if(appActive)raf=requestAnimationFrame(frame);
    }catch(e){stop();throw e}
   })().catch(e=>{if(!live)return;console.error('Unable to open game',e);setError(e instanceof Error?e.message:String(e));change('error');onBootError(e instanceof Error?e.message:String(e))});
-  const subscription=AppState.addEventListener('change',state=>{appActive=state==='active';coop?.setForeground(appActive);last=0;acc=0;if(!appActive){pause();gamePerformance.setActivity('background',performance.now());cancelAnimationFrame(raf);raf=0}else if(local&&!raf){gamePerformance.setActivity('paused',performance.now());raf=requestAnimationFrame(frame)}});
+  const subscription=AppState.addEventListener('change',state=>{appActive=state==='active';coop?.setForeground(appActive);last=0;acc=0;if(!appActive){patchAudio.stop();pause();gamePerformance.setActivity('background',performance.now());cancelAnimationFrame(raf);raf=0}else if(local&&!raf){gamePerformance.setActivity('paused',performance.now());raf=requestAnimationFrame(frame)}});
   const memoryWarning=AppState.addEventListener('memoryWarning',()=>{gamePerformance.trace(performance.now(),'native-memory-warning',0,{atlasZoom:continuousZoom.current,mapVisible:mapVisible.current});});
   const accessibility=AccessibilityInfo.addEventListener('reduceMotionChanged',reduced=>{if(local)local.reduced=reduced;if(world.current?.weather)world.current.weather.reducedMotion=reduced});
   return()=>{live=false;cancelAnimationFrame(raf);subscription.remove();memoryWarning.remove();accessibility.remove();picture.value=empty;stop()};
@@ -311,6 +318,7 @@ function Game({role,onHome,entryVisible,onBootProgress,onBootError,coop}:{role:S
      {!coop&&w?.phase!=='over'&&button('Change character · '+(SURVIVOR_ROLES.find(option=>option.id===activeRole)?.label??'Survivor'),()=>{setCharacterError('');setCharacterOpen(true)},false,wide&&s.menuItem)}
      {w?.phase!=='over'&&<Pressable accessibilityRole="switch" accessibilityLabel="Full Zoom" accessibilityState={{checked:fullZoom}} onPress={toggleFullZoom} style={[s.button,wide&&s.menuItem]}><Text style={s.buttonText}>Full Zoom · {fullZoom?'ON':'OFF'}</Text></Pressable>}
       {fullZoom&&w?.phase!=='over'&&<Text style={s.description}>Pinch out further without opening the map. The map button still works.</Text>}
+      <Pressable accessibilityRole="switch" accessibilityLabel="Companion sounds" accessibilityState={{checked:patchSound}} onPress={togglePatchSound} style={[s.button,wide&&s.menuItem]}><Text style={s.buttonText}>Companion sounds · {patchSound?'ON':'OFF'}</Text></Pressable>
      {w?.fishing?.claimed&&w.phase!=='over'&&<>
       <Text style={s.section}>FISHING</Text>
       {([{key:'sound',label:'Fishing sounds'},{key:'haptics',label:'Fishing vibration'}] as const).map(option=><Pressable key={option.key} accessibilityRole="switch" accessibilityLabel={option.label} accessibilityState={{checked:fishingFeedbackSettings[option.key]}} onPress={()=>toggleFishingFeedback(option.key)} style={[s.button,wide&&s.menuItem]}><Text style={s.buttonText}>{option.label} · {fishingFeedbackSettings[option.key]?'ON':'OFF'}</Text></Pressable>)}

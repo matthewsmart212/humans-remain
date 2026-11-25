@@ -286,3 +286,7 @@ public/survival/expedition-menu-v2/loading-panel.webp -filter -diff -merge
 /public/survival/patch-v3/*.webp -filter -diff -merge -text
 /artwork-archive/patch-v3/*.png -filter -diff -merge -text
 /docs/qa/patch-v3/*.png -filter -diff -merge -text
+/public/audio/patch/*.wav -filter -diff -merge -text
+
+# Pencil landmark on the reverse of the camp letter, bundled on both platforms.
+/public/survival/patch-v4/*.webp -filter -diff -merge -text

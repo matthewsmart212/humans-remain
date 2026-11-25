@@ -53,6 +53,8 @@ import {WALKER_IMAGE_SOURCES} from './walker-sprites';
 import {SKITTER_IMAGE_SOURCES} from './skitter-sprites';
 import {HOUND_IMAGE_SOURCES} from './hound-sprites';
 import {BRUTE_IMAGE_SOURCES} from './brute-sprites';
+import {PatchAudio} from './patch-audio';
+import {PATCH_SOUND_KEY} from './patch-audio-cues';
 import {CombatAudio,combatSoundEnabled} from './combat-audio';
 import SprintButton,{useSprintControl} from './SprintButton';
 import {HOME_TERRAIN,usesPaintedHomeTerrain} from './terrain-art';
@@ -130,6 +132,7 @@ export default function WorldEditor({externalStart=false,onExternalStartState,on
 
  const touchInput=useRef({x:0,y:0});
  const sprint=useSprintControl(),attackHeld=useRef(false);
+ const patchAudio=useRef<PatchAudio|null>(null);
  const combatAudio=useRef<CombatAudio|null>(null);
  const [axeEquipped,setAxeEquipped]=useState(true);
  const [initialDraft]=useState(()=>readEditorDraft());
@@ -387,10 +390,16 @@ export default function WorldEditor({externalStart=false,onExternalStartState,on
  useEffect(()=>{const flush=()=>{if(draftHydrated.current)try{persistEditorDraft(layoutRef.current)}catch{}};window.addEventListener('beforeunload',flush);return()=>{flush();window.removeEventListener('beforeunload',flush)}},[]);
  useEffect(()=>{if(!draftHydrated.current)return;const timeout=setTimeout(()=>{try{persistEditorDraft(layout)}catch{setStatus('Local storage full · use Export to keep your draft')}},350);return()=>clearTimeout(timeout)},[layout,ready]);
  useEffect(()=>{
+  const companion=new PatchAudio();patchAudio.current=companion;
+  const unlockPatch=()=>{if(modeRef.current==='play')companion.unlock()};
+  const patchSetting=(event:Event)=>{companion.enabled=(event as CustomEvent<boolean>).detail;if(companion.enabled)unlockPatch();else companion.stop()};
+  window.addEventListener(PATCH_SOUND_KEY,patchSetting);
+  document.addEventListener('pointerup',unlockPatch,true);document.addEventListener('keydown',unlockPatch,true);
   const audio=new CombatAudio();combatAudio.current=audio;audio.setEnabled(combatSoundEnabled());
   const unlock=()=>{if(modeRef.current==='play')audio.unlock()},settings=()=>{audio.setEnabled(combatSoundEnabled());unlock()};
   document.addEventListener('pointerdown',unlock,true);document.addEventListener('keydown',unlock,true);window.addEventListener('camp-combat-sound',settings);
-  return()=>{document.removeEventListener('pointerdown',unlock,true);document.removeEventListener('keydown',unlock,true);window.removeEventListener('camp-combat-sound',settings);audio.dispose();combatAudio.current=null};
+  return()=>{window.removeEventListener(PATCH_SOUND_KEY,patchSetting);document.removeEventListener('pointerup',unlockPatch,true);document.removeEventListener('keydown',unlockPatch,true);companion.dispose();patchAudio.current=null;
+   document.removeEventListener('pointerdown',unlock,true);document.removeEventListener('keydown',unlock,true);window.removeEventListener('camp-combat-sound',settings);audio.dispose();combatAudio.current=null};
  },[]);
  useEffect(()=>{let previous:PlayerSample|undefined;let alive=true,raf=0,last=0,acc=0;const localAt=layoutRef.current.updatedAt,controller=new AbortController();
   const local=draftHydrated.current?{layout:layoutRef.current,raw:JSON.stringify(layoutRef.current),unconfirmedEmpty:false}:initialDraft;
@@ -448,6 +457,7 @@ export default function WorldEditor({externalStart=false,onExternalStartState,on
     // as soon as travel unlocks, even when the player has no further input.
     const busy=travel.current?.busy??false;
     if(busy!==lastTravelBusy){lastTravelBusy=busy;setTravelling(busy)}
+    patchAudio.current?.update(world.current,modeRef.current==='play'&&!blocked&&!busy&&!mapVisible.current);
     combatAudio.current?.update(world.current,modeRef.current==='play'&&!blocked&&!travel.current?.busy);
     const drawStarted=performance.now();
     try{r.draw(presentPlayer(world.current,previous,blocked?1:acc/STEP))}catch(e){r.dispose();gamePerformance.stop(performance.now(),'Renderer error');setError('The workspace could not draw the world. Your draft is safe; retry loading.');console.error(e);return}

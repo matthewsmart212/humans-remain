@@ -5,6 +5,7 @@ import {ASSET_BY_ID} from './world-assets';
 import {placementArtPoint} from './world-layout';
 import {patchBeacon,patchRepairProgress,patchSpeech} from './patch-quest';
 import {lineClear,type World} from './survival-engine';
+import type {PresentedWorld} from './player-presentation';
 import type {FoliageViewport} from './foliage-renderer';
 
 const TAU=Math.PI*2,VISUAL_SCALE=PATCH_ROBOT_SCALE/.3;
@@ -47,15 +48,15 @@ function speechBubble(ctx:CanvasRenderingContext2D,speech:string,x:number,tipY:n
  ctx.restore();
 }
 
-function pose(w:World,view?:FoliageViewport,editor=false){
+function pose(w:PresentedWorld,view?:FoliageViewport,editor=false,margin=0){
  if(w.scene||!w.layout||!w.progression&&!editor)return null;
  const q=w.patchQuest,site=patchQuestSite(w.layout);
  if(!q?.servoInstalled&&!site)return null;
- const position=q?.servoInstalled?q.position:site!.robot;
+ const position=q?.servoInstalled?(w.presentedPatch??q.position):site!.robot;
  const halfWidth=PATCH_ROBOT_CELL*PATCH_ROBOT_SCALE/2+24,above=PATCH_ROBOT_ANCHOR[1]*PATCH_ROBOT_SCALE+32,below=(PATCH_ROBOT_CELL-PATCH_ROBOT_ANCHOR[1])*PATCH_ROBOT_SCALE+8;
- if(view&&(position.x<view.x-halfWidth||position.x>view.x+view.width+halfWidth||position.y<view.y-below||position.y>view.y+view.height+above))return null;
+ if(view&&(position.x<view.x-halfWidth-margin||position.x>view.x+view.width+halfWidth+margin||position.y<view.y-below-margin||position.y>view.y+view.height+above+margin))return null;
  const damaged=!q?.servoInstalled;
- return{...position,damaged,direction:damaged?'down-right' as const:q!.direction,moving:!!q?.moving&&!damaged,walkDistance:q?.walkDistance??0};
+ return{...position,damaged,direction:damaged?'down-right' as const:q!.direction,moving:!!q?.moving&&!damaged,walkDistance:w.presentedPatch?.walkDistance??q?.walkDistance??0};
 }
 function visibleFrame(p:NonNullable<ReturnType<typeof pose>>,imgs:Record<string,HTMLImageElement>){
  const mode=p.damaged&&imgs.patchDamaged?'damaged':p.moving&&imgs.patchWalk?'walk':imgs.patchRobot?'idle':!p.damaged&&imgs.patchWalk?'walk':undefined;
@@ -87,7 +88,8 @@ export function patchDrawables(ctx:CanvasRenderingContext2D,imgs:Record<string,H
   ctx.fillStyle='#111c1333';ctx.beginPath();ctx.ellipse(p.x,p.y+VISUAL_SCALE,shadowWidth*.72,shadowHeight*.65,0,0,TAU);ctx.fill();
   // Art contains the leg/arm movement. Keep the registered feet at the actor's
   // actual ground point: no rotating or bobbing a standing sprite to fake it.
-  ctx.drawImage(image,...frame.source,p.x-PATCH_ROBOT_ANCHOR[0]*scale,p.y-PATCH_ROBOT_ANCHOR[1]*scale,cell*scale,cell*scale);
+  const [ratio,dx,dy]=frame.registration;
+  ctx.drawImage(image,...frame.source,p.x+(dx-PATCH_ROBOT_ANCHOR[0]*ratio)*scale,p.y+(dy-PATCH_ROBOT_ANCHOR[1]*ratio)*scale,cell*ratio*scale,cell*ratio*scale);
   ctx.restore();
   const progress=patchRepairProgress(w);
   if(progress>0){
@@ -107,7 +109,9 @@ export function drawPatchFeedback(ctx:CanvasRenderingContext2D,imgs:Record<strin
  const p=pose(w,view);if(!p)return;const frame=visibleFrame(p,imgs);if(!frame)return;
  if(Math.hypot(p.x-w.player.x,p.y-w.player.y)>1000||!lineClear(w.player,p,w))return;
  const pulse=patchBeacon(w),lamp=frame.lamp;
- const lampX=p.x+(lamp[0]-PATCH_ROBOT_ANCHOR[0])*PATCH_ROBOT_SCALE,lampY=p.y+(lamp[1]-PATCH_ROBOT_ANCHOR[1])*PATCH_ROBOT_SCALE;
+ const [ratio,dx,dy]=frame.registration;
+ const lampX=p.x+(dx+(lamp[0]-PATCH_ROBOT_ANCHOR[0])*ratio)*PATCH_ROBOT_SCALE;
+ const lampY=p.y+(dy+(lamp[1]-PATCH_ROBOT_ANCHOR[1])*ratio)*PATCH_ROBOT_SCALE;
  if(pulse>0){
   ctx.save();ctx.globalAlpha=pulse;const radius=14*VISUAL_SCALE;
   const glow=ctx.createRadialGradient(lampX,lampY,0,lampX,lampY,radius);glow.addColorStop(0,'#ffc46980');glow.addColorStop(.3,'#ffbe4e38');glow.addColorStop(1,'#ffb64b00');
@@ -116,5 +120,18 @@ export function drawPatchFeedback(ctx:CanvasRenderingContext2D,imgs:Record<strin
  }
  const speech=patchSpeech(w);if(!speech)return;
  const tipY=p.y-(p.damaged?168:PATCH_ROBOT_ANCHOR[1])*PATCH_ROBOT_SCALE-9;
- speechBubble(ctx,speech,p.x,tipY,view);
+ // The camera scales the world; keep subtitles at the same point size on a
+ // zoomed-out phone and a full-size display.
+ const scale=view.scale||1;
+ ctx.save();ctx.scale(1/scale,1/scale);
+ speechBubble(ctx,speech,p.x*scale,tipY*scale,{x:view.x*scale,y:view.y*scale,width:view.width*scale,height:view.height*scale});
+ ctx.restore();
+}
+
+/** One moving light uniform leaves the cached camp light field intact. */
+export function patchNightLight(w:World,view:FoliageViewport){
+ const p=pose(w,view,false,145);
+ if(!p||Math.hypot(p.x-w.player.x,p.y-w.player.y)>1000||!lineClear(w.player,p,w))return;
+ const pulse=patchBeacon(w);
+ return {x:p.x,y:p.y-(p.damaged?32:49),radius:p.damaged?125:145,strength:.24+pulse*.55};
 }

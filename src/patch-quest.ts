@@ -1,8 +1,10 @@
 import {facing,moveBody,pathTo,timeOf,withinActionReach,worldBlocked,STEP,type Direction,type Vec,type World} from './survival-engine';
 import {campLootChest,lootChestContents,lootChestInMenuRange,LOOT_CHEST_ID,LOOT_CHEST_REWARDS} from './loot-chest';
+import {PATCH_ROBOT_FRAMES,PATCH_WALK_CYCLE_DISTANCE} from './patch-art';
+import {patchSupportSpeech} from './patch-awareness';
 import {patchQuestSite} from './patch-placement';
 
-export const PATCH_QUEST_TITLE='Someone Was Here';
+export const PATCH_QUEST_TITLE='A Light Left On';
 export const PATCH_REPAIR_SECONDS=6;
 export const PATCH_NOTE_TEXT=`To whoever finds this place,
 
@@ -32,7 +34,7 @@ export type PatchQuestState={
  followTrail:Vec[];homeTrail:Vec[];
 };
 export type PatchRepair={worked:number;duration:number;held:boolean;updatedAt:number;origin:Vec;hp:number;hurtUntil:number};
-export type PatchInteraction={key:'patch:robot'|'patch:locker';action:'patch';target:'robot'|'locker';label:string;shortLabel:'INSPECT'|'REPAIR'|'PATCH'|'TAKE';disabled:boolean;x:number;y:number};
+export type PatchInteraction={key:'patch:robot'|'patch:locker';action:'patch';target:'robot'|'locker';label:string;shortLabel:'INSPECT'|'TALK'|'TAKE';canRepair?:boolean;disabled:boolean;x:number;y:number};
 export type PatchStatus={title:string;line:string;objective:string;canRepair:boolean;canRecruit:boolean;canCommand:boolean;servo:boolean};
 
 // Stay just outside action reach so a following companion does not replace
@@ -40,17 +42,36 @@ export type PatchStatus={title:string;line:string;objective:string;canRepair:boo
 const BODY=15,INTERACT_REACH=80,FOLLOW_GAP=88,FOLLOW_SETTLE=2,TRAIL_STEP=28;
 const point=(p:Vec):Vec=>({x:p.x,y:p.y});
 const distance=(a:Vec,b:Vec)=>Math.hypot(a.x-b.x,a.y-b.y);
-type Runtime={path:Vec[];routeAt:number;routeTarget?:Vec;speech?:string;speechUntil:number;homeSample?:Vec;followSample?:Vec};
-const runtimes=new WeakMap<World,Runtime>();
-function runtime(w:World){let r=runtimes.get(w);if(!r){r={path:[],routeAt:0,speechUntil:0};runtimes.set(w,r)}return r}
-function say(w:World,line:string,seconds=3){const r=runtime(w);r.speech=line;r.speechUntil=timeOf(w)+seconds}
-export function patchSpeech(w:World){const r=runtimes.get(w);return r&&timeOf(w)<r.speechUntil?r.speech:undefined}
+type Runtime={path:Vec[];routeAt:number;routeTarget?:Vec;speed:number;speech?:string;speechUntil:number;homeSample?:Vec;followSample?:Vec};
+// Presentation interpolates the player into a new World every frame. The
+// quest object is shared by those views and identifies this particular run.
+const runtimes=new WeakMap<PatchQuestState,Runtime>();
+function runtime(state:PatchQuestState){
+ let r=runtimes.get(state);
+ if(!r){r={path:[],routeAt:0,speed:0,speechUntil:0};runtimes.set(state,r)}
+ return r;
+}
+function say(w:World,line:string,seconds=3){
+ const r=runtime(w.patchQuest!);
+ r.speech=line;r.speechUntil=timeOf(w)+seconds;
+}
+export function patchSpeech(w:World){
+ const r=w.patchQuest&&runtimes.get(w.patchQuest);
+ return r&&timeOf(w)<r.speechUntil?r.speech:patchSupportSpeech(w);
+}
 export function patchBeacon(w:World){
- if(w.patchQuest?.servoInstalled)return .25;
- // Three readable pulses, followed by a long pause. Reduced motion is steady.
+ const t=timeOf(w);
+ if(w.patchQuest?.servoInstalled){
+  // His caged lamp brightens as his voice opens, then settles.
+  const speaking=!!patchSpeech(w);
+  if(!speaking)return .32;
+  return w.weather?.reducedMotion ? .8 : .76+.12*Math.cos(t*9);
+ }
  if(w.weather?.reducedMotion)return .65;
- const phase=timeOf(w)%5.4;
- return phase<2.7&&phase%.9<.42?.95:.1;
+ const phase=t%5.4,on=phase%.9;
+ if(phase>=2.7||on>=.42)return .1;
+ const envelope=Math.min(1,on/.055,(.42-on)/.13);
+ return .1+.85*envelope;
 }
 function active(w:World){return !w.scene&&!!w.progression&&!!w.layout&&w.phase!=='over'&&w.player.hp>0&&!w.player.downedUntil}
 function available(w:World){return active(w)&&!w.bruteGrab&&!w.dodge&&!w.buildingRepair&&!w.fishingSession&&!w.axeSwing&&!w.spearThrust&&!w.swordThrust&&!w.bowShot&&timeOf(w)>=w.attackUntil}
@@ -77,13 +98,17 @@ export function inspectPatch(w:World){
  const state=ensurePatchQuest(w);
  if(!state||!available(w)||!nearRobot(w,state)||w.stationPanel&&w.stationPanel!=='patch')return false;
  if(!state.discovered){state.discovered=true;say(w,'Human detected.');}
+ state.moving=false;
+ if(state.servoInstalled&&distance(w.player,state.position)>3){
+  state.direction=facing(w.player.x-state.position.x,w.player.y-state.position.y);
+ }
  w.stationPanel='patch';return true;
 }
 /** This unique component is a story fact, independent of backpack capacity. */
 export function claimPatchServo(w:World){
  const state=ensurePatchQuest(w),site=patchQuestSite(w.layout);
  if(!state||!site||!available(w)||w.stationPanel||state.servoClaimed||!withinActionReach(w,site.locker,INTERACT_REACH))return false;
- state.servoClaimed=true;w.notice='Drive servo secured';w.noticeUntil=timeOf(w)+2.5;return true;
+ state.servoClaimed=true;w.notice=state.discovered?'Drive servo secured · Bring it back to P-04':'Drive servo secured · Stamped P-04';w.noticeUntil=timeOf(w)+4;return true;
 }
 export function patchInteraction(w:World):PatchInteraction|null{
  const state=ensurePatchQuest(w);if(!state||!active(w)||w.stationPanel)return null;
@@ -91,8 +116,8 @@ export function patchInteraction(w:World):PatchInteraction|null{
  if(nearRobot(w,state)){
   const repair=state.discovered&&state.servoClaimed&&!state.servoInstalled;
   choices.push({key:'patch:robot',action:'patch',target:'robot',...state.position,
-   label:repair?'Fit drive servo':state.suppliesDelivered?'Talk to Patch':'Inspect P-04',
-   shortLabel:repair?'REPAIR':state.servoInstalled?'PATCH':'INSPECT',disabled:!available(w)});
+   label:state.suppliesDelivered?'Talk to Patch':state.discovered?'Talk to P-04':'Inspect P-04',
+   shortLabel:state.discovered?'TALK':'INSPECT',canRepair:repair,disabled:!available(w)});
  }
  if(site&&!state.servoClaimed&&withinActionReach(w,site.locker,INTERACT_REACH))choices.push({key:'patch:locker',action:'patch',target:'locker',...site.locker,label:'Take drive servo',shortLabel:'TAKE',disabled:!available(w)});
  choices.sort((a,b)=>distance(w.player,a)-distance(w.player,b));return choices[0]??null;
@@ -104,7 +129,7 @@ export function patchStatus(w:World):PatchStatus|null{
  const canRecruit=state.servoInstalled&&!state.recruited,canCommand=state.suppliesDelivered;
  const home=homePoint(w),campIdle=state.command==='stay'&&!!home&&distance(state.position,home)<150;
  const line=state.suppliesDelivered?(campIdle?'Shelter occupied.':state.command==='follow'?'With you.':state.command==='camp'?'On my way home.':'I will wait here.'):state.recruited?'I have something for the camp.':state.servoInstalled?'Supplies… still required?':state.servoClaimed?'Replacement servo secured.':'Drive servo damaged.';
- const objective=state.suppliesDelivered?'':state.recruited?'Bring P-04 back to the camp chest.':state.servoInstalled?'Bring him home.':state.servoClaimed?'Hold REPAIR beside P-04.':'A service locker is nearby.';
+ const objective=state.suppliesDelivered?'':state.recruited?'Walk him back to the chest where he left the tools.':state.servoInstalled?'Invite P-04 to come home with you.':state.servoClaimed?'Stand beside P-04 and hold REPAIR for six seconds.':'Look for the service locker beside the maintenance station.';
  return{title,line,objective,canRepair,canRecruit,canCommand,servo:state.servoClaimed&&!state.servoInstalled};
 }
 export const patchRepairProgress=(w:World)=>w.patchRepair?Math.max(0,Math.min(1,w.patchRepair.worked/w.patchRepair.duration)):0;
@@ -138,20 +163,20 @@ function stepRepair(w:World,input:Vec){
  if(job.worked>=job.duration-1e-8){
   // The servo is committed once, only after the final uninterrupted tick.
   state.servoInstalled=true;state.moving=false;w.patchRepair=undefined;
-  say(w,'Supplies… still required?',4);w.notice='Drive restored';w.noticeUntil=timeOf(w)+2.5;
+  say(w,'Supplies… still required?',4);w.notice='Drive restored · Speak to P-04';w.noticeUntil=timeOf(w)+4;
  }
 }
 export function recruitPatch(w:World){
  const state=ensurePatchQuest(w);
  if(!state||!available(w)||!state.servoInstalled||state.recruited||!nearRobot(w,state)||w.stationPanel&&w.stationPanel!=='patch')return false;
  state.recruited=true;state.command='follow';state.followTrail=[point(w.player)];
- runtime(w).followSample=point(w.player);w.stationPanel=undefined;say(w,'Lead the way.');return true;
+ runtime(state).followSample=point(w.player);w.stationPanel=undefined;say(w,'I know that camp. Lead the way.',4);return true;
 }
 export function commandPatch(w:World,command:PatchCommand){
  const state=ensurePatchQuest(w);
  if(!state||!available(w)||!state.suppliesDelivered||!nearRobot(w,state)||!['follow','stay','camp'].includes(command)||w.stationPanel&&w.stationPanel!=='patch')return false;
  state.command=command;state.moving=false;state.followTrail=[];
- const r=runtime(w);r.path=[];r.routeAt=0;r.routeTarget=undefined;r.followSample=point(w.player);
+ const r=runtime(state);r.path=[];r.routeAt=0;r.routeTarget=undefined;r.followSample=point(w.player);
  if(command==='follow')state.followTrail.push(point(w.player));
  w.stationPanel=undefined;say(w,command==='follow'?'With you.':command==='stay'?'I will wait here.':'Returning to camp.');return true;
 }
@@ -185,30 +210,55 @@ function recordPlayerTrail(w:World,state:PatchQuestState,r:Runtime){
  if(previous&&distance(previous,w.player)>600){r.path=[];r.routeAt=0;return}
  appendTrail(w,state.followTrail,w.player,512);
 }
-function walkTowards(w:World,state:PatchQuestState,target:Vec,speed:number){
- const dx=target.x-state.position.x,dy=target.y-state.position.y,d=Math.hypot(dx,dy);if(d<.001)return;
- const travel=Math.min(speed*STEP,d),before=point(state.position);
+const headings=Object.fromEntries(Object.entries(PATCH_ROBOT_FRAMES).map(([direction,row])=>{
+ const angle=row*Math.PI/4;
+ return [direction,{x:Math.sin(angle),y:Math.cos(angle)}];
+})) as Record<Direction,Vec>;
+function turnTowards(state:PatchQuestState,dx:number,dy:number){
+ const length=Math.hypot(dx,dy),axis=headings[state.direction];
+ // Five degrees of overlap keeps a slightly changing diagonal from flipping
+ // the whole painted silhouette back and forth along a sector boundary.
+ if(length>.001&&dx*axis.x+dy*axis.y<length*.887)
+  state.direction=facing(dx,dy);
+}
+function walkTowards(w:World,state:PatchQuestState,r:Runtime,target:Vec,speed:number){
+ const dx=target.x-state.position.x,dy=target.y-state.position.y,d=Math.hypot(dx,dy);
+ if(d<.001)return;
+ // Take up the load gradually after a stop. Distance to a waypoint caps the
+ // displacement, so acceleration never carries him through a turn or wall.
+ r.speed=Math.min(speed,r.speed+1000*STEP);
+ const travel=Math.min(r.speed*STEP,d),before=point(state.position);
  moveBody(w,state.position,dx/d*travel,dy/d*travel,BODY);
  const moved=distance(before,state.position);state.moving=moved>.01;
- if(state.moving){state.direction=facing(state.position.x-before.x,state.position.y-before.y);state.walkDistance=(state.walkDistance+moved)%112}
+ if(state.moving){
+  turnTowards(state,state.position.x-before.x,state.position.y-before.y);
+  state.walkDistance=(state.walkDistance+moved)%PATCH_WALK_CYCLE_DISTANCE;
+ }
 }
-function routeTowards(w:World,state:PatchQuestState,r:Runtime,target:Vec,speed:number){
- if(clearSegment(w,state.position,target)){r.path=[];walkTowards(w,state,target,speed);return}
+function routeTowards(w:World,state:PatchQuestState,r:Runtime,target:Vec,speed:number,direct=clearSegment(w,state.position,target)){
+ if(direct){r.path=[];walkTowards(w,state,r,target,speed);return}
  const t=timeOf(w);
  if(t>=r.routeAt&&(!r.path.length||!r.routeTarget||distance(r.routeTarget,target)>90)){
   r.path=pathTo(state.position,target,w,4096,29);
   r.routeTarget=point(target);r.routeAt=t+1.3;
  }
  while(r.path.length&&distance(state.position,r.path[0])<12)r.path.shift();
+ // A grid search makes right angles, even in open ground. Aim a few cells
+ // ahead when Patch's entire body fits on that diagonal.
+ for(let i=Math.min(3,r.path.length-1);i>0;i--){
+  if(clearSegment(w,state.position,r.path[i])){r.path.splice(0,i);break}
+ }
  const next=r.path[0];
- if(next&&clearSegment(w,state.position,next))walkTowards(w,state,next,speed);
+ if(next&&clearSegment(w,state.position,next))walkTowards(w,state,r,next,speed);
  else if(next){r.path=[];r.routeAt=Math.max(r.routeAt,t+.25)}
 }
 function homePoint(w:World){const chest=campLootChest(w);return chest?{x:chest.x,y:chest.y+78}:undefined}
 /** Rewards stay in the original chest, including when the player's bag is full. */
 export function deliverPatchSupplies(w:World){
  const state=w.patchQuest,home=homePoint(w);
- if(!state||!state.recruited||state.suppliesDelivered||!home||distance(state.position,home)>80)return false;
+ // Let the survivor witness the homecoming, including when Patch catches
+ // up along an old trail after the survivor has already passed the chest.
+ if(!state||!state.recruited||state.suppliesDelivered||!home||distance(state.position,home)>80||distance(w.player,home)>200)return false;
  const nav=navigationWorld(w);
  if(!clearSegment(nav,state.position,home))return false;
  const chests=w.lootChests??={};
@@ -217,20 +267,22 @@ export function deliverPatchSupplies(w:World){
  contents.pallets=(contents.pallets??0)+2;contents.scrap=(contents.scrap??0)+2;
  state.returnedToCamp=true;state.suppliesDelivered=true;state.command='stay';state.moving=false;
  state.followTrail=[];state.homeTrail=[point(state.position)];
- const r=runtime(w);r.path=[];r.homeSample=point(state.position);
- say(w,'Shelter occupied.',4.5);w.notice='Patch joined the camp';w.noticeUntil=timeOf(w)+3;
+ const r=runtime(state);r.path=[];r.homeSample=point(state.position);
+ say(w,'Shelter occupied.',6);w.notice='This time, someone brought the rescuer home.';w.noticeUntil=timeOf(w)+6;
  return true;
 }
 /** One actor, bounded route queries, swept collision and no teleport recovery. */
 export function stepPatchQuest(w:World,input:Vec={x:0,y:0}){
  const state=ensurePatchQuest(w);if(!state)return;
+ const wasMoving=state.moving;
  state.moving=false;
  if(!active(w)){cancelPatchRepair(w);return}
  stepRepair(w,input);
  // Conversation pauses motion without overwriting the selected command.
  // Otherwise Return to camp can walk the actor out of its own menu's reach.
  if(!state.servoInstalled||!state.recruited||state.command==='stay'||w.stationPanel==='patch')return;
- const nav=navigationWorld(w),r=runtime(w);
+ const nav=navigationWorld(w),r=runtime(state);
+ if(!wasMoving)r.speed=0;
  if(!state.suppliesDelivered){
   const home=homePoint(w);
   // Near the chest, finish the last few steps independently of follower gap.
@@ -252,7 +304,9 @@ export function stepPatchQuest(w:World,input:Vec={x:0,y:0}){
    // Proportional catch-up removes the old abrupt 270/470 speed switch and
    // eases into stationary feet. Corners retain enough speed to round safely.
    const speed=Math.min(470,Math.max(clearApproach?0:160,(playerDistance-FOLLOW_GAP)*4));
-   routeTowards(nav,state,r,target,speed);
+   routeTowards(nav,state,r,target,speed,clearApproach||target!==w.player&&clearSegment(nav,state.position,target));
+  }else if(playerDistance>8){
+   turnTowards(state,w.player.x-state.position.x,w.player.y-state.position.y);
   }
   if(state.returnedToCamp&&state.moving){
    if(!r.homeSample||distance(r.homeSample,state.position)>=TRAIL_STEP){appendTrail(nav,state.homeTrail,state.position,1024);r.homeSample=point(state.position)}
@@ -282,7 +336,7 @@ export function validPatchQuest(value:unknown):value is PatchQuestState|undefine
 }
 /** Restore facts and real route history, never a held repair or stale speech. */
 export function restorePatchQuest(w:World){
- w.patchRepair=undefined;runtimes.delete(w);
- if(w.patchQuest)w.patchQuest.moving=false;
+ w.patchRepair=undefined;
+ if(w.patchQuest){runtimes.delete(w.patchQuest);w.patchQuest.moving=false}
  return ensurePatchQuest(w);
 }

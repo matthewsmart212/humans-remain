@@ -43,7 +43,7 @@ try{
  const init=require('canvaskit-wasm'),kit=await init({locateFile:f=>path.join(path.dirname(require.resolve('canvaskit-wasm')),f)});globalThis.CanvasKit=kit;
  const skia=m.JsiSkApi(kit),lighting=m.createNightLighting(skia),surface=skia.Surface.Make(844,390),canvas=surface.getCanvas(),view={x:0,y:0,width:844,height:390},source=[{x:260,y:190,radius:270,strength:1}];
  console.log('CanvasKit cached light field initialized.');
- const paint=(sources=source,amount=1,transform,warningLights=[])=>{canvas.clear(skia.Color('#ffffff'));canvas.save();if(transform){canvas.scale(transform.zoom,transform.zoom);canvas.translate(-transform.x,-transform.y)}lighting.draw(canvas,sources,amount,view,undefined,warningLights);canvas.restore();surface.flush();const im=surface.makeImageSnapshot(),pixels=im.readPixels();im.dispose();return(x,y)=>Array.from(pixels.slice((y*844+x)*4,(y*844+x)*4+4))};
+ const paint=(sources=source,amount=1,transform,warningLights=[],rescueLight)=>{canvas.clear(skia.Color('#ffffff'));canvas.save();if(transform){canvas.scale(transform.zoom,transform.zoom);canvas.translate(-transform.x,-transform.y)}lighting.draw(canvas,sources,amount,view,undefined,warningLights,rescueLight);canvas.restore();surface.flush();const im=surface.makeImageSnapshot(),pixels=im.readPixels();im.dispose();return(x,y)=>Array.from(pixels.slice((y*844+x)*4,(y*844+x)*4+4))};
  const luminance=p=>p[0]*.2126+p[1]*.7152+p[2]*.0722;
  const day=paint(source,0);assert.deepEqual(day(260,190),[255,255,255,255]);
  const night=paint(),levels=[0,50,120,200,270,340].map(d=>luminance(night(260+d,190)));
@@ -63,6 +63,12 @@ try{
  const cached=lighting.shaderBuilds;
  for(let i=0;i<20;i++)paint([],1,undefined,[{...warning[0],x:260+i*4}]);
  assert.equal(lighting.shaderBuilds,cached,'Moving warning lights do not rebuild the camp lightmap');
+ const rescue={x:240,y:190,radius:140,strength:.8},amber=paint([],1,undefined,[],rescue);
+ assert(luminance(amber(240,190))>luminance(unlit(240,190))+50,'Patch lights his immediate surroundings');
+ assert(amber(240,190)[0]>amber(240,190)[2],'The rescue lamp casts amber on nearby terrain');
+ assert.deepEqual(amber(500,190),unlit(500,190),'The rescue lamp has local reach');
+ paint([],1,undefined,[],{...rescue,x:275});
+ assert.equal(lighting.shaderBuilds,cached,'A following rescue unit never rebakes static camp lighting');
  const gone=paint([]);assert.deepEqual(gone(260,190),unlit(260,190),'Removing bomber immediately removes local light');
  console.log('PASS: rendered pixels, soft falloff, fire off, overlap and camera alignment.');
  lighting.draw(canvas,source,1,view);const count=lighting.shaderBuilds;

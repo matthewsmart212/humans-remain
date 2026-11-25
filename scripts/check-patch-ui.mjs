@@ -236,6 +236,7 @@ try{
  world.stationPanel='rare-cache';world.lootChestId=m.LOOT_CHEST_ID;world.lootChests={[m.LOOT_CHEST_ID]:{openedAt:0,menuShown:true,rewardVersion:2,contents:Object.fromEntries(m.LOOT_CHEST_REWARDS.map(r=>[r.kind,r.amount]))}};
  const props={world,onClose:()=>{},onChange:()=>{}},render=()=>m.renderToStaticMarkup(m.React.createElement(m.CampStationPanel,props));
  assert(render().includes('Read the folded note'),'The starter supplies expose a readable note');
+ assert(render().indexOf('Read the folded note')<render().indexOf('aria-label="Take '),'P-04 left the letter on top of the supplies, visible before scrolling the loot list');
  assert(m.readPatchNote(world));assert(world.patchQuest.noteRead);
  world.stationPanel='patch-note';const note=render();
  const wrap=markup=>dom(`<html><body><div class="world-editor camp-studio" data-mode="play" data-mobile="true"><div class="field-kit">${markup}</div></div></body></html>`);
@@ -245,6 +246,11 @@ try{
  assert(find(initial,'patch-note-emblem')?.tag==='svg','A folded-page emblem replaces the generic chest');
  assert(!find(initial,'station-menu-header').children.some(n=>n.tag==='img'),'The letter header does not fall back to a chest image');
  assert(find(initial,'patch-note-return')?.text.includes('Back to supplies'));
+ assert.equal(find(initial,'patch-note-turn')?.attrs['aria-label'],'Turn over to see the station sketch');
+ assert(!find(initial,'patch-note-postscript'),'The fresh pencil is absent before homecoming');
+ world.patchQuest.suppliesDelivered=true;
+ assert(find(wrap(render()),'patch-note-postscript')?.text.includes('Now I know your footsteps.'));
+ world.patchQuest.suppliesDelivered=false;
  const plain=wrap(m.renderToStaticMarkup(m.React.createElement(m.StationMenu,{world,title:'Supplies',onClose:()=>{},children:'Supplies'})));
  assert(find(plain,'station-menu-header').children.some(n=>n.tag==='img'),'Other station menus keep their default emblem');
  let returned=0,closed=0;const back=m.PatchNotePanel({...props,onChange:()=>returned++,onClose:()=>closed++}).props.onClose;

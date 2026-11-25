@@ -341,7 +341,7 @@ class SkiaContext{
  drawGroundLightning(strike:GroundStrike|undefined,age:number,reduced:boolean){lightning.draw(this.c,strike,age,reduced)}
  drawLootChestLight(x:number,y:number,fx:LootChestFx,front:boolean){chestLight.draw(this.c,x,y,fx,front)}
  drawWeather(state:WeatherState|undefined,view:WeatherView,night:number,shelters:readonly (readonly [number,number][])[]){weather.draw(this.c,state,view,night,shelters)}
- drawNightLighting(lights:CampLight[],amount:number,view:LightViewport,torch?:import('./torch').TorchBeam,warningLights:CampLight[]=[]){lighting.draw(this.c,lights,amount,view,torch,warningLights)}
+ drawNightLighting(lights:CampLight[],amount:number,view:LightViewport,torch?:import('./torch').TorchBeam,warningLights:CampLight[]=[],rescueLight?:CampLight){lighting.draw(this.c,lights,amount,view,torch,warningLights,rescueLight)}
  clearRect(x:number,y:number,w:number,h:number){if(!clearPaint){clearPaint=Skia.Paint();clearPaint.setBlendMode(BlendMode.Clear)}this.c.drawRect({x,y,width:w,height:h},clearPaint)}
  fillRect(x:number,y:number,w:number,h:number){this.c.drawRect({x,y,width:w,height:h},this.paint())}
  strokeRect(x:number,y:number,w:number,h:number){this.c.drawRect({x,y,width:w,height:h},this.paint(true))}

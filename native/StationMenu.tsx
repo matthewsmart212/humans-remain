@@ -130,7 +130,7 @@ const styles = StyleSheet.create({
  storyFrame: {padding: 12, gap: 10, borderRadius: 7, borderColor: '#59604a', borderTopColor: '#c6a36b', backgroundColor: '#19211c', shadowOpacity: .55, shadowRadius: 24},
  letterFrame: {padding: 0, gap: 4, borderWidth: 0, borderTopWidth: 0, backgroundColor: 'transparent', shadowOpacity: 0, elevation: 0},
  storyHeader: {minHeight: 44, paddingBottom: 7, gap: 10},
- letterHeader: {paddingHorizontal: 12, paddingBottom: 2, borderBottomWidth: 0},
+ letterHeader: {paddingHorizontal: 12, paddingBottom: 2, borderBottomWidth: 0, backgroundColor: '#101a16f5', borderRadius: 4},
  storyTitle: {fontSize: 24, lineHeight: 28, letterSpacing: .3, color: '#f0e9d6'},
  storySubtitle: {fontSize: 12, lineHeight: 17, color: '#bdc5b6'},
  storyClose: {borderColor: '#89907170', backgroundColor: '#18201bd9', borderRadius: 4},

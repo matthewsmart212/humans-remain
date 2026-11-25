@@ -33,7 +33,7 @@ const results=[],browserFrames=new Map(),browserCalls=new Map();
 try{
  for(const target of targets){
   const skiaRoot=path.resolve(target==='native'?'native/node_modules/@shopify/react-native-skia':'node_modules/@shopify/react-native-skia');
-  const file=path.join(temporary,target+'.cjs'),modules=['patch-art','patch-animation','patch-renderer','patch-quest','patch-placement','gameplay-artwork','survival-engine','world-layout','skia-adapter'];
+  const file=path.join(temporary,target+'.cjs'),modules=['patch-art','patch-animation','player-presentation','patch-renderer','patch-quest','patch-placement','gameplay-artwork','survival-engine','world-layout','skia-adapter'];
   await build({stdin:{contents:modules.map(id=>`export * from './src/${id}';`).join('\n')+`\nexport {JsiSkApi} from ${JSON.stringify(path.join(skiaRoot,'lib/module/skia/web/JsiSkia.js'))};`,resolveDir:root},bundle:true,platform:'node',format:'cjs',outfile:file,logLevel:'error'});
   const m=require(file),kitRequire=createRequire(path.join(skiaRoot,'package.json'));
   const kit=await kitRequire('canvaskit-wasm')({locateFile:f=>path.join(path.dirname(kitRequire.resolve('canvaskit-wasm')),f)}),api=m.JsiSkApi(kit);
@@ -89,14 +89,23 @@ try{
    assert.equal(m.gameplayImageSources(world).patchWalk,m.PATCH_IMAGES.patchWalk,'Nearby gameplay preloads the same walk atlas');
    const bindings=fs.readFileSync('native/bundled-art.ts','utf8');
    assert(bindings.includes(JSON.stringify(m.PATCH_IMAGES.patchWalk)+':require("./../public'+m.PATCH_IMAGES.patchWalk+'")'),'Expo bundles the walk atlas for offline use');
+   const previous=m.samplePlayer(world),ground={...q.position};
+   q.position.x+=6;q.walkDistance=3;previous.patch.walkDistance=109;
+   const halfway=m.presentPlayer(world,previous,.5);
+   assert.equal(halfway.presentedPatch.x,ground.x+3);
+   assert.equal(halfway.presentedPatch.walkDistance,0,'The render pose crosses the stride seam smoothly');
+   assert.equal(halfway.patchQuest,q,'Interpolated views share run facts and live speech');
+   assert.equal(q.position.x,ground.x+6,'Painting does not change the simulated position');
+   q.position.x=ground.x;q.walkDistance=0;
    const imageKeys=new Map(Object.entries(images).map(([key,image])=>[image,key]));
    const observed=new Set(['drawImage','ellipse','arc','moveTo','lineTo','closePath','fill','stroke','rotate','translate','scale','createRadialGradient','strokeText','fillText']);
    const render=(name,feedback=true,available=images)=>{
     const context=new adapter.SkiaContext(surface.getCanvas(),width,height,font),calls=[];
     context.fillStyle='#59614b';context.fillRect(0,0,width,height);
     const ctx=new Proxy(context,{get(object,key){const value=Reflect.get(object,key);if(typeof value!=='function')return value;return(...args)=>{if(observed.has(key))calls.push([key,...args.map(a=>imageKeys.get(a)??a)]);return value.apply(object,args)}}});
-    const draws=m.patchDrawables(ctx,available,world,viewport);assert.equal(draws.length,1);assert.equal(draws[0].y,q.position.y,'Actor sorting stays at the feet');draws[0].draw();
-    if(feedback)m.drawPatchFeedback(ctx,available,world,viewport);
+    const presented=m.presentPlayer(world,m.samplePlayer(world),.5);assert.notEqual(presented,world);
+    const draws=m.patchDrawables(ctx,available,presented,viewport);assert.equal(draws.length,1);assert.equal(draws[0].y,q.position.y,'Actor sorting stays at the feet');draws[0].draw();
+    if(feedback)m.drawPatchFeedback(ctx,available,presented,viewport);
     surface.flush();const shot=surface.makeImageSnapshot(),pixels=Buffer.from(shot.readPixels());
     if(previews&&name)fs.writeFileSync(path.join(previews,target+'-'+name+'.png'),Buffer.from(shot.encodeToBytes()));
     shot.dispose();context.dispose();return{pixels,calls};
@@ -111,10 +120,12 @@ try{
      const rendered=render(name);rowFrames.push(rendered.pixels);
      const draw=rendered.calls.find(c=>c[0]==='drawImage');
      assert.deepEqual(draw.slice(1,6),['patchWalk',phase*256,row*256,256,256],'The painter uses the selected walking cell');
-     assert.deepEqual(draw.slice(6),[128-128*.45,170-228*.45,256*.45,256*.45],'All poses share one fixed foot anchor and visual scale');
+     const [ratio,dx,dy]=frame.registration;
+     assert(ratio>.95&&ratio<1.03,'Registration keeps the enlarged size');
+     assert.deepEqual(draw.slice(6),[128+(dx-128*ratio)*.45,170+(dy-228*ratio)*.45,256*ratio*.45,256*ratio*.45],'The gait registration is isotropic and foot-anchored');
      assert(!rendered.calls.some(c=>['rotate','translate','scale'].includes(c[0])),'Walking never rocks or bobs the entire standing image');
      const glow=rendered.calls.find(c=>c[0]==='createRadialGradient'),[lx,ly]=metadata.lamps[row][phase];assert(glow,'Lamp feedback is rendered');
-     assert.equal(glow[1],128+(lx-128)*.45);assert.equal(glow[2],170+(ly-228)*.45,'Lamp follows this exact gait cell');
+     assert.equal(glow[1],128+(dx+(lx-128)*ratio)*.45);assert.equal(glow[2],170+(dy+(ly-228)*ratio)*.45,'Lamp follows this exact gait cell');
      if(target==='browser'){browserFrames.set(name,rendered.pixels);browserCalls.set(name,rendered.calls)}
      else{
       assert.deepEqual(rendered.calls,browserCalls.get(name),'Browser and native use identical crop, anchor, shadow and lamp commands');
@@ -173,7 +184,7 @@ try{
     return shot;
    };
    assert.equal(checkSpeech('speech-repair','Supplies… still required?').calls.filter(call=>call[0]==='fillText').length,2);
-   assert(m.recruitPatch(world));checkSpeech('speech-recruited','Lead the way.');
+   assert(m.recruitPatch(world));checkSpeech('speech-recruited','I know that camp. Lead the way.');
    Object.assign(q,{returnedToCamp:true,suppliesDelivered:true});
    for(const [command,line] of [['follow','With you.'],['stay','I will wait here.'],['camp','Returning to camp.']]){
     world.stationPanel='patch';assert(m.commandPatch(world,command));checkSpeech('speech-'+command,line);

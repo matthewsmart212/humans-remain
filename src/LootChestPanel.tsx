@@ -1,3 +1,4 @@
+import {patchLetterDescription} from './patch-letter';
 import {useStationFeedback} from './use-station-feedback';
 import React from 'react';
 import type {World} from './survival-engine';
@@ -36,6 +37,11 @@ export default function LootChestPanel({world,onClose,onChange}:Props){
   weight={load.weight} loadLabel={load.label} message={message} className="rare-cache-menu">
   {(remaining&&!canTake||!remaining&&!hasNote)&&<p className="rare-cache-empty">{remaining?'Backpack full':lootChestEmptyMessage(world.lootChestId)}</p>}
   <div className="rare-cache-list" aria-label={`${name} contents`}>
+   {hasNote&&<div className="rare-cache-reward rare-cache-letter">
+    <span className="rare-cache-note-icon" aria-hidden="true"/>
+    <div><strong>A folded note</strong><small>{patchLetterDescription(world)}</small></div>
+    <button type="button" aria-label="Read the folded note" onClick={readNote}>Read</button>
+   </div>}
    {rewards.map(({kind,name,description,count,capacity})=><div className="rare-cache-reward" key={kind}>
     <img src={BAG_IMAGES[kind==='pallets'?'logs':kind]} alt="" draggable={false}/>
     <div><strong>{name}</strong><small>{description}</small></div>
@@ -44,11 +50,6 @@ export default function LootChestPanel({world,onClose,onChange}:Props){
      {canTake&&!capacity?'Pack full':'Take'}
     </button>
    </div>)}
-   {hasNote&&<div className="rare-cache-reward">
-    <span className="rare-cache-note-icon" aria-hidden="true"/>
-    <div><strong>A folded note</strong><small>{world.patchQuest?.noteRead?'Signed P-04':'Left with the supplies'}</small></div>
-    <button type="button" aria-label="Read the folded note" onClick={readNote}>Read</button>
-   </div>}
   </div>
   {canTake&&rewards.length>1&&<button className="supply-primary rare-cache-collect-all" onClick={takeAll}>
    Take all that fits
