@@ -355,6 +355,8 @@ try{
  assert.deepEqual(labels,['Ask Patch','Follow me','Stay here','Return to camp']);
  const end=find(chatRoot,'patch-chat-end');
  assert.equal(end.attrs['aria-label'],'End conversation');
+ const selected=options.children.filter(button=>button.attrs['aria-pressed']==='true');
+ assert.deepEqual(selected.map(button=>button.attrs['data-choice']),[world.patchQuest.command],'The active command is announced to screen readers');
  for(const device of devices){
   const style=cascade(css,{...device,containerWidth:device.width});
   assert.equal(style.value(tray,'position'),'absolute');
