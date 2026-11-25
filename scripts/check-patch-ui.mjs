@@ -20,7 +20,7 @@ I was told nobody would come. I thought it best to leave these anyway.
 
 The well needs work. So do the walls. I wanted to have more ready for you, but I need a few replacement parts myself.
 
-There is an old maintenance station beyond the lake. I am going to try there.
+I have a shelter under the old hoist beyond Stillwater Lake. My left knee has started slipping. I am going back there before it gets worse.
 
 If you see three short amber flashes in the trees, that will be me. Please do not shoot.
 
@@ -315,7 +315,7 @@ try{
  m.installImportedArt(authored.records);
  world.layout=m.placePatchMaintenanceStation(authored.layout);
  const site=m.patchQuestSite(world.layout);
- assert(site,'The published layout contains P-04 and the service locker');
+ assert(site,'The published rescue shelter contains P-04');
  world.stationPanel=undefined;
  Object.assign(world.player,{x:site.robot.x+55,y:site.robot.y+30});
  const chatMarkup=()=>m.renderToStaticMarkup(m.React.createElement(m.PatchChatHUD,props));
@@ -325,13 +325,13 @@ try{
   assert(!find(root,'station-menu')&&!descendants(root).some(n=>n.attrs.role==='dialog'||n.attrs['aria-modal']==='true'||n.tag==='img'),'Chat exposes replies without a dialog, portrait or backdrop');
   assert.equal(tray.attrs.role,'group');
   assert.equal(transcript.attrs.role,'status');
-  assert(transcript.text.includes(m.patchChat(world).line),'Assistive technology can read the current world bubble');
+  assert(transcript.text.includes(m.patchChat(world).line),'Assistive technology can read the current subtitle');
   assert.equal(world.stationPanel,undefined);
   return {root,tray,options,labels:options.children.map(n=>n.text)};
  };
  assert.equal(chatMarkup(),'','Approaching alone reveals no controls');
  assert(m.inspectPatch(world));
- assert.deepEqual(readChat().labels,['Ask Patch']);
+ assert.deepEqual(readChat().labels,['Inspect the damaged drive','Ask Patch']);
  assert(m.choosePatchChat(world,'ask'));
  assert(readChat().labels.includes('What happened to your receiver?'));
  assert(m.choosePatchChat(world,'topic:reclamation'));
@@ -341,10 +341,15 @@ try{
   assert(m.choosePatchChat(world,'more'));
   pages.push(m.patchChat(world).line);
  }
- assert.equal(pages.join(' '),m.patchDialogueReply(world,'reclamation'),'Every word of the gate story reaches a bubble');
+ assert.equal(pages.join(' '),m.patchDialogueReply(world,'reclamation'),'Every word of the gate story reaches the subtitles');
  assert(m.choosePatchChat(world,'followup'));
  while(m.patchChat(world).pageIndex+1<m.patchChat(world).pageCount)assert(m.choosePatchChat(world,'more'));
  assert(readChat().labels.includes('Ask something else'));
+ m.closePatchChat(world);
+ assert(m.inspectPatch(world));
+ assert(m.choosePatchChat(world,'diagnose'));
+ assert(world.patchQuest.diagnosed&&!world.patchQuest.servoClaimed,'Reading the drive plate starts the investigation');
+ assert.equal(world.stationPanel,undefined);
  m.closePatchChat(world);
  Object.assign(world.patchQuest,{servoClaimed:true,servoInstalled:true});
  assert(m.inspectPatch(world));assert(readChat().labels.includes('Come with us'));assert(!readChat().labels.includes('Follow me'));
@@ -353,14 +358,21 @@ try{
  assert(m.inspectPatch(world));
  const {root:chatRoot,tray,options,labels}=readChat();
  assert.deepEqual(labels,['Ask Patch','Follow me','Stay here','Return to camp']);
+ // The game-wide paragraph rule once left dispatch evidence nearly invisible on parchment.
+ const journalFixture=wrap('<div class="patch-field-notes"><section class="field-notes-book"><div class="field-notes-scroll"><div class="field-notes-entry"><article><p>Stores transfer 14.</p></article></div></div></section></div>');
+ const evidence=descendants(journalFixture).find(node=>node.tag==='p');
  const end=find(chatRoot,'patch-chat-end');
  assert.equal(end.attrs['aria-label'],'End conversation');
  const selected=options.children.filter(button=>button.attrs['aria-pressed']==='true');
  assert.deepEqual(selected.map(button=>button.attrs['data-choice']),[world.patchQuest.command],'The active command is announced to screen readers');
  for(const device of devices){
   const style=cascade(css,{...device,containerWidth:device.width});
+  const journalInk=style.value(evidence,'color');
+  assert(raster.contrast(journalInk)>=4.5,`${device.name}: field journal evidence must be legible on the actual paper`);
+  assert.equal(style.value(evidence,'-webkit-text-fill-color'),journalInk,'Safari draws journal evidence in the same ink');
   assert.equal(style.value(tray,'position'),'absolute');
   assert.equal(style.value(tray,'pointer-events'),'none','Empty tray space passes through to gameplay');
+  assert.equal(style.value(options,'flex-direction'),'column','Responses form one list beside the actors');
   assert.equal(style.value(options,'overflow-y'),'auto','Replies remain reachable when the phone has little vertical room');
   assert.equal(style.value(options,'touch-action'),'pan-y');
   for(const button of [...options.children,end]){

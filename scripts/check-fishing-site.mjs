@@ -203,8 +203,12 @@ try{
    globalThis.fetch=async()=>{throw Error('Offline fixture')};console.warn=()=>{};
    const loaded=await m.loadPublishedGameWorld();
    assert.equal(loaded.source,'Cached published world');assert.equal(loaded.layout.name,offlineOwner.layout.name);
-   assert.deepEqual(loaded.layout.items,[...offlineOwner.layout.items,...approvedPatchSite],
-    'Offline loading preserves every owner placement and appends only the approved Patch site');
+   const beforeRoute=offlineOwner.layout.items.length+approvedPatchSite.length;
+   assert.deepEqual(loaded.layout.items.slice(0,beforeRoute),[...offlineOwner.layout.items,...approvedPatchSite],
+    'Offline loading preserves every owner placement including its active pier');
+   assert(loaded.layout.items.slice(beforeRoute).every(p=>/^(stillwater-evacuation-shelter|west-bank-dispatch-post|logging-road-cable-works)(-|$)/.test(p.id)),
+    'The new evacuation route only adds its own authored scenery');
+   assert.equal(loaded.layout.patchRouteVersion,1);
    assert.equal(loaded.layout.patchSiteVersion,1,'The offline site migration is recorded once');
    assert.equal(m.ASSET_BY_ID.get(m.FISHING_PIER_ID).image,replacement.config.base.url,
     'Comparing bundle timestamps does not overwrite cached owner artwork');

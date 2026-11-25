@@ -1,4 +1,4 @@
-import {PATCH_SOUND_KEY,PatchCueTracker,type PatchCue} from './patch-audio-cues';
+import {PATCH_CUES,PATCH_SOUND_KEY,PatchCueTracker,type PatchCue} from './patch-audio-cues';
 import type {World} from './survival-engine';
 
 export function patchSoundEnabled(){try{return localStorage.getItem(PATCH_SOUND_KEY)!=='off'}catch{return true}}
@@ -20,7 +20,7 @@ export class PatchAudio{
     const Audio=window.AudioContext||(window as typeof window&{webkitAudioContext?:typeof AudioContext}).webkitAudioContext;
     if(!Audio)return;
     const context=this.context=new Audio();
-    for(const cue of ['beacon','servo','home'] as const){
+    for(const cue of PATCH_CUES){
      void fetch('/audio/patch/'+cue+'.wav').then(res=>res.arrayBuffer()).then(data=>context.decodeAudioData(data)).then(buffer=>{if(this.context===context)this.buffers.set(cue,buffer)}).catch(()=>{});
     }
    }

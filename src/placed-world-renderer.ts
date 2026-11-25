@@ -1,3 +1,5 @@
+import {patchChat} from './patch-chat';
+import {patchMeetingCamera,drawPatchMeeting} from './patch-meeting';
 import {patchDrawables,drawPatchFeedback,drawPatchGroundContacts} from './patch-renderer';
 import {drawBurningHearth,hasPaintedHearthAnimation} from './hearth-animation-art';
 import {FISHING_PIER_ID} from './fishing-site-art';
@@ -285,7 +287,7 @@ export function placedDrawables(ctx:CanvasRenderingContext2D,imgs:Record<string,
 }
 function rotatePlacement(ctx:CanvasRenderingContext2D,p:Placement){ctx.translate(p.x,p.y);ctx.rotate((p.rotation||0)*Math.PI/180);ctx.translate(-p.x,-p.y);if(p.flipX||p.flipY){const b=placementBounds(p),cx=b.x+b.width/2,cy=b.y+b.height/2;ctx.translate(cx,cy);ctx.scale(p.flipX?-1:1,p.flipY?-1:1);ctx.translate(-cx,-cy)}}
 export type EditorView={x:number;y:number;zoom:number;follow:boolean;grid:boolean;collision:boolean;selected:string|null;ghost:Placement|null;placingSpawn:boolean;playing?:boolean;fullZoom?:boolean;hideFoliage?:boolean};
-export function editorCamera(width:number,height:number,w:World,view:EditorView,pixelRatio=Math.min(2,globalThis.devicePixelRatio||1),now=menuClock()){
+export function editorCamera(width:number,height:number,w:World,view:EditorView,pixelRatio=Math.min(2,globalThis.devicePixelRatio||1),now=menuClock(),meetingEnabled=true){
  const lw=width/pixelRatio,lh=height/pixelRatio;
  const zoom=view.playing?clampPlayZoom(view.zoom,view.fullZoom?FULL_PLAY_ZOOM:MIN_PLAY_ZOOM):view.zoom;
  const baseScale=Math.max(width/1800,height/900)*zoom;
@@ -297,10 +299,15 @@ export function editorCamera(width:number,height:number,w:World,view:EditorView,
  // Clamp the ordinary camera first. Menu framing may reveal the map's faded
  // edge behind the panel so the player is still visible at world boundaries.
  if(view.follow){const b=worldBounds(w);x=vw>b.width?b.left+(b.width-vw)/2:Math.max(b.left,Math.min(b.right-vw,x));y=vh>b.height?b.top+(b.height-vh)/2:Math.max(b.top,Math.min(b.bottom-vh,y))}
- const pan=stationMenuPan(w,lw,lh,{x,y,scale:scale/pixelRatio},!!(view.playing&&view.follow),now);return{scale,x:x+pan.x,y:y+pan.y};
+ const followPlay=!!(view.playing&&view.follow);
+ const pan=stationMenuPan(w,lw,lh,{x,y,scale:scale/pixelRatio},followPlay,now);
+ const base={x:x+pan.x,y:y+pan.y,scale:scale/pixelRatio};
+ const shot=followPlay&&meetingEnabled?patchMeetingCamera(w,base,lw,lh,now):{...base,meeting:0};
+ return {...shot,scale:shot.scale*pixelRatio};
 }
 export function drawWorldEditor(ctx:CanvasRenderingContext2D,atlas:Atlas,imgs:Record<string,HTMLImageElement>,w:World,view:EditorView,fade=0,peers:readonly import('./coop-protocol').CoopPeer[]=[]){
- const c=editorCamera(ctx.canvas.width,ctx.canvas.height,w,view,Math.min(2,(ctx as CanvasRenderingContext2D&{pixelRatio?:number}).pixelRatio||globalThis.devicePixelRatio||1));
+ const density=Math.min(2,(ctx as CanvasRenderingContext2D&{pixelRatio?:number}).pixelRatio||globalThis.devicePixelRatio||1);
+ const c=editorCamera(ctx.canvas.width,ctx.canvas.height,w,view,density);
  const viewport={x:c.x,y:c.y,width:ctx.canvas.width/c.scale,height:ctx.canvas.height/c.scale,scale:c.scale};
  clearTerrainViewport(ctx);if(w.scene){ctx.fillStyle=w.scene.background;ctx.fillRect(0,0,ctx.canvas.width,ctx.canvas.height)}ctx.save();ctx.scale(c.scale,c.scale);ctx.translate(-c.x,-c.y);if(w.combatTest&&!w.weather?.reducedMotion){const t=timeOf(w),amount=Math.min(1,Math.max(0,(w.shakeUntil-t)/.12));if(amount)ctx.translate(Math.sin(t*139)*2*amount/c.scale,Math.cos(t*113)*1.5*amount/c.scale)}if(w.scene)drawSceneTerrain(ctx,imgs,w.scene);else drawHomeTerrain(ctx,imgs,w.layout?.terrainImage,w.layout?.terrainBorder,viewport);
  drawFishingSiteGround(ctx,imgs,w,viewport);
@@ -388,5 +395,10 @@ export function drawWorldEditor(ctx:CanvasRenderingContext2D,atlas:Atlas,imgs:Re
  }
  const spawn=w.layout?.spawn;if(spawn&&!view.playing&&!w.scene){ctx.strokeStyle='#a2ecdf';ctx.lineWidth=2/c.scale;ctx.beginPath();ctx.arc(spawn.x,spawn.y,24,0,Math.PI*2);ctx.moveTo(spawn.x-33,spawn.y);ctx.lineTo(spawn.x+33,spawn.y);ctx.moveTo(spawn.x,spawn.y-33);ctx.lineTo(spawn.x,spawn.y+33);ctx.stroke();ctx.fillStyle='#133338';ctx.fillRect(spawn.x-45,spawn.y+32,90,24);ctx.fillStyle='#b7ecdf';ctx.font="900 18px 'Barlow Condensed'";ctx.textAlign='center';ctx.fillText('SPAWN',spawn.x,spawn.y+50)}ctx.restore();
  drawCombatScreenFeedback(ctx,w);
+ if(view.playing&&(c.meeting>0||patchChat(w))){
+  ctx.save();ctx.scale(density,density);
+  drawPatchMeeting(ctx,w,ctx.canvas.width/density,ctx.canvas.height/density,c.meeting);
+  ctx.restore();
+ }
  if(fade>0){ctx.save();ctx.globalAlpha=Math.min(1,fade);ctx.fillStyle='#100e0c';ctx.fillRect(0,0,ctx.canvas.width,ctx.canvas.height);ctx.restore()}
 }

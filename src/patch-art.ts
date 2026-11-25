@@ -55,9 +55,34 @@ export const patchStationEntry:CatalogueEntry={
 };
 export const patchLockerEntry:CatalogueEntry={
  ...shared,id:PATCH_LOCKER_ID,name:'Maintenance service locker',
- purpose:'Holds the one drive servo needed to restore P-04’s damaged leg.',
+ purpose:'P-04’s old tool locker outside the first-aid shelter.',
  appearance:'A small weathered industrial service locker with an amber rescue chevron.',
- states:'Available or searched; the servo is recorded as a quest item.',
+ states:'Empty service locker',
  image:PATCH_LOCKER_IMAGE,crop:[0,0,...PATCH_LOCKER_SIZE],
  artPreview:{worldWidth:PATCH_LOCKER_WIDTH},artworkExports:[PATCH_LOCKER_IMAGE],
+};
+
+export type PatchRouteKind='shelter'|'dispatch'|'hauler';
+export const PATCH_ROUTE_ART={
+ shelter:{id:'art_patch_rescue_shelter',name:'Rescue shelter',width:235,
+  image:'/survival/patch-v5/shelter.webp',purpose:'P-04’s first-aid tarp, stretcher and laid-out bedding beside the west-bank shed.'},
+ dispatch:{id:'art_patch_signal_post',name:'Signal post',width:265,
+  image:'/survival/patch-v5/dispatch.webp',purpose:'The abandoned evacuation mast and its last dispatch ledger.'},
+ hauler:{id:'art_patch_cable_hauler',name:'Cable works',width:365,
+  image:'/survival/patch-v5/hauler.webp',purpose:'A stranded cable hauler off the logging road, with an exposed drive and a hand brake.'},
+} as const;
+export const PATCH_ROUTE_SIZE=[960,720] as const;
+export const patchRouteEntries:CatalogueEntry[]=Object.values(PATCH_ROUTE_ART).map(a=>({
+ ...shared,id:a.id,name:a.name,purpose:a.purpose,states:'Abandoned evacuation route',
+ image:a.image,crop:[0,0,...PATCH_ROUTE_SIZE],artPreview:{worldWidth:a.width},artworkExports:[a.image],
+}));
+// Normalized outlines around the painted ground contacts leave the workbench and brake accessible.
+export const PATCH_ROUTE_COLLISIONS:Record<PatchRouteKind,AssetCollision>={
+ shelter:{lineWidth:.012,paths:[
+  {closed:true,points:[[.15,.76],[.23,.74],[.25,.81],[.15,.84]]},
+  {closed:true,points:[[.30,.74],[.47,.63],[.78,.72],[.67,.90],[.56,.87]]},
+  {closed:true,points:[[.73,.89],[.81,.83],[.80,.92],[.73,.95]]},
+ ]},
+ dispatch:{lineWidth:.012,paths:[{closed:true,points:[[.25,.76],[.39,.66],[.68,.60],[.77,.75],[.77,.84],[.51,.94],[.28,.88]]}]},
+ hauler:{lineWidth:.012,paths:[{closed:true,points:[[.035,.68],[.12,.57],[.55,.53],[.91,.65],[.96,.77],[.52,.94],[.39,.94],[.11,.78]]}]}
 };

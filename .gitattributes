@@ -291,3 +291,6 @@ public/survival/expedition-menu-v2/loading-panel.webp -filter -diff -merge
 
 # Pencil landmark on the reverse of the camp letter, bundled on both platforms.
 /public/survival/patch-v4/*.webp -filter -diff -merge -text
+
+# Authored rescue-route scenery must load in web and offline native clients.
+/public/survival/patch-v5/*.webp -filter -diff -merge -text

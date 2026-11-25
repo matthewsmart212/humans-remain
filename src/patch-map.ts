@@ -1,5 +1,5 @@
 import {campLootChest} from './loot-chest';
-import {patchQuestSite} from './patch-placement';
+import {patchRescueSite,patchRouteSite} from './patch-placement';
 import type {Vec,World} from './survival-engine';
 
 export type PatchMapLead=Vec&{label:string};
@@ -21,10 +21,18 @@ export function patchMapLead(world:World):PatchMapLead|undefined{
  }
  if(state.servoInstalled)return {...state.position,label:'P-04'};
  if(!state.noteRead&&!state.discovered&&!state.servoClaimed)return;
- const site=patchQuestSite(world.layout);
+ const site=patchRescueSite(world.layout);
  if(!site)return;
- if(!state.discovered)return {...site.approach,label:'Maintenance station'};
- return state.servoClaimed?{...site.robot,label:'P-04'}:{...site.locker,label:'Service locker'};
+ if(!state.discovered)return {...site.approach,label:'Rescue shelter'};
+ if(state.servoClaimed||!state.diagnosed)return {...site.robot,label:'P-04'};
+ if(!state.dispatchRead){
+  const post=patchRouteSite(world.layout,'dispatch');
+  return post?{...post.approach,label:'Signal post'}:undefined;
+ }
+ const hauler=patchRouteSite(world.layout,'hauler');
+ if(!hauler)return;
+ if(state.haulerInspected)return hauler.release?{...hauler.release,label:'Brake housing'}:undefined;
+ return {...hauler.approach,label:'Cable works'};
 }
 
 export function samePatchMapLead(a:PatchMapLead|undefined,b:PatchMapLead|undefined){

@@ -5,6 +5,7 @@ import BowLockGlyph from './BowLockGlyph';
 import {toggleBowLock} from './bow-lock';
 import {useWaypointNavigation} from './use-waypoint-navigation';
 import WaypointGuide from './WaypointGuide';
+import {PatchFieldJournal} from './PatchFieldJournal';
 import CampStationPanel from './CampStationPanel';
 import React,{useEffect,useRef,useState,type RefObject} from 'react';
 import {Map as MapIcon} from 'lucide-react';
@@ -119,10 +120,12 @@ export default function FieldKitHUD({world,controller,enabled,mobile,input,sprin
  const select=(item:QuickItem)=>{if(disabled||statsRef.current.action.owner!==world.current)return;release();selectQuickItem(world.current,item);refresh()};
  return <div className="field-kit" data-threat={!!stats.campThreat} data-fishing={!!action.fishing} data-fishing-phase={action.fishing?stats.fishing?.phase:undefined} data-input={mobile?'touch':'desktop'} data-map-open={mapOpen} data-waypoint={!!navigation.target} data-sky-expanded={dayExpanded} style={{'--fishing-offset':`${ACTION_HEX.width-34}px`,'--kit-top-height':`${FIELD_KIT_TOP.height}px`,'--kit-top-radius':`${FIELD_KIT_TOP.radius}px`,'--kit-quick-height':`${QUICK_BAR_LAYOUT.height}px`,'--kit-target-right':`${repairAction?ACTION_HEX.width+4:ACTION_HEX.width-ACTION_HEX.cells.primary.left+4}px`,'--kit-target-mid':`${ACTION_HEX.cells.primary.top+ACTION_HEX.cells.primary.height/2}px`} as React.CSSProperties}>
   {mobile&&!disabled&&<FieldKitMovement input={input} onStart={onMove} isPinching={isPinching}/>}
+  {!stats.patchChat&&<>
   <FieldKitVitals stats={stats}/>
   {!stats.stationPanel&&!bagOpen&&!mapOpen&&<ExpeditionStatus threat={stats.campThreat}/>}
   {!stats.stationPanel&&!bagOpen&&<div className="kit-utilities">{stats.cycle&&<SkyClock cycle={stats.cycle} world={world} paused={!enabled} onExpanded={setDayExpanded}/>}<div className="kit-utility-buttons">{navigation.target&&<KitButton activateOnClick glyph={<WaypointGuide world={world}/>} label="" ariaLabel="Waypoint direction. Open map to edit or remove" className="kit-utility kit-waypoint-toggle" disabled={disabled} onDown={()=>onMap(true)}/>}<KitButton icon="settings" label="" ariaLabel="Open game settings. Pauses game" className="kit-utility" onDown={onPause}/><KitButton icon="backpack" label="" ariaLabel={'Open backpack'+(stats.loadLabel==='Comfortable'?'':'. '+stats.loadLabel)} loadBadge={stats.loadLabel==='Comfortable'?undefined:stats.loadLabel} className="kit-utility" onDown={()=>{world.current!.stationPanel=undefined;onBag(true)}}/><KitButton activateOnClick glyph={<MapIcon size={21} strokeWidth={1.8}/>} label="" ariaLabel="Open map (M)" className="kit-utility kit-map-toggle" disabled={!enabled||stats.downed} onDown={()=>onMap(true)}/></div></div>}
   {!!stats.notice&&<div className="kit-notice" role="status">{stats.notice}</div>}
+  </>}
   {!bagOpen&&!stats.stationPanel&&!stats.patchChat&&<div className="kit-action-cluster" style={{width:ACTION_HEX.width,height:ACTION_HEX.height}}>
    {(stats.fishing&&action.fishing||stats.fishingReceipt)&&<FishingHUD hud={action.fishing?stats.fishing??undefined:undefined} receipt={stats.fishingReceipt} inputMode={mobile?'touch':'keyboard'} disabled={disabled} onCatch={catchFish} onOpenBag={openFishingBag}/>}
    {!action.fishing&&!stats.fishingReceipt&&!quickExpanded&&(stats.warehouseStock?<FieldKitWarehouseStock stock={stats.warehouseStock}/>:caption.target?.revealed&&<FieldKitTargetCard target={caption.target} description={caption.description}/>)}
@@ -134,6 +137,7 @@ export default function FieldKitHUD({world,controller,enabled,mobile,input,sprin
   </div>}
   {!bagOpen&&!stats.stationPanel&&!stats.patchChat&&<QuickBar torch={stats.torch} axes={stats.axes} selected={stats.selected} cooked={stats.cooked} cookedRabbit={stats.cookedRabbit} cookedVenison={stats.cookedVenison} cookedFish={stats.cookedFish} cookedCarp={stats.cookedCarp} cookedPike={stats.cookedPike} provisions={stats.provisions} disabled={disabled} onSelect={select} onExpandedChange={setQuickExpanded}/>}
   {stats.patchChat&&!disabled&&<PatchChatHUD world={world.current} onChange={save=>{if(save)onCheckpoint?.();refresh()}}/>}
+  {!disabled&&!stats.patchChat&&!stats.combat&&!stats.campThreat&&!stats.fishing?.active&&stats.patchTracker&&<PatchFieldJournal world={world.current} tracker={stats.patchTracker} concealTab={!!stats.notice}/>}
   {stats.stationPanel&&!bagOpen&&enabled&&<CampStationPanel key={stats.stationPanel} world={world.current} onClose={()=>{world.current.stationPanel=undefined;refresh()}} onChange={()=>{onCheckpoint?.();refresh()}}/>}
   <FieldKitBag open={bagOpen} stats={stats} onClose={()=>onBag(false)} onUse={id=>{if(stats.action.owner!==world.current)return false;const result=useBackpackItem(world.current,id);refresh();return result}} onDrop={(id,quantity)=>{if(stats.action.owner!==world.current)return{ok:false,message:'This run has ended.'};const result=dropBackpackItem(world.current,id,quantity);refresh();return result}}/>
  </div>;

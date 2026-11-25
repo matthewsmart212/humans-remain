@@ -4,6 +4,8 @@ import type {World} from '../src/survival-engine';
 
 const sounds:Record<PatchCue,number>={
  beacon:require('../public/audio/patch/beacon.wav'),
+ ledger:require('../public/audio/patch/ledger.wav'),
+ brake:require('../public/audio/patch/brake.wav'),
  servo:require('../public/audio/patch/servo.wav'),
  home:require('../public/audio/patch/home.wav'),
 };

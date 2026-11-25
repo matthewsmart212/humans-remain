@@ -54,4 +54,35 @@ for(let i=0;i<6;i++){
 }
 w.player.x+=600;w.tick=648;
 assert.equal(cues.update(w,true),undefined,'A distant distress signal is silent');
-console.log('Patch lookout, interpolated observations, audio cadence, proximity and one-shot cues passed.');
+
+// Use the field interactions, including the load plate on the other side of the brake.
+const survey=game.emptyLayout();
+survey.items=['dispatch','hauler'].map((kind,i)=>({
+ id:game.PATCH_ROUTE_IDS[kind],assetId:game.PATCH_ROUTE_ART[kind].id,
+ x:1600+i*1200,y:1600,scale:1,solid:true,role:'prop',
+}));
+const field=game.createWorld(survey),fieldCues=new game.PatchCueTracker();
+field.editorPreview=true;field.progression={};
+const state=game.ensurePatchQuest(field);state.discovered=true;state.diagnosed=true;
+const dispatch=game.patchRouteSite(survey,'dispatch'),hauler=game.patchRouteSite(survey,'hauler');
+Object.assign(field.player,dispatch.approach);
+assert.equal(fieldCues.update(field,true),undefined);
+assert(game.examinePatchSite(field,'dispatch'));
+assert.equal(fieldCues.update(field,true)?.cue,'ledger');
+assert(!game.examinePatchSite(field,'dispatch'));
+assert.equal(fieldCues.update(field,true),undefined,'Rereading an existing clue stays quiet');
+Object.assign(field.player,hauler.approach);
+assert(game.examinePatchSite(field,'hauler-inspect'));
+assert.equal(fieldCues.update(field,true),undefined,'Inspecting the plate does not release the brake');
+Object.assign(field.player,hauler.release);
+assert(game.examinePatchSite(field,'hauler-salvage'));
+assert.equal(fieldCues.update(field,true)?.cue,'brake');
+assert.equal(fieldCues.update(field,true),undefined);
+field.patchQuest=structuredClone(state);
+assert.equal(fieldCues.update(field,true),undefined,'Restoring both discoveries never replays them');
+field.patchQuest={...state,dispatchRead:false,haulerInspected:false,servoClaimed:false};
+assert.equal(fieldCues.update(field,true),undefined);
+field.patchQuest.dispatchRead=true;
+assert.equal(fieldCues.update(field,false),undefined,'A muted discovery produces no sound');
+assert.equal(fieldCues.update(field,true),undefined,'Turning sounds on does not catch up on missed cues');
+console.log('Patch lookout, audio cadence, proximity, field discoveries, mute and restore behavior passed.');

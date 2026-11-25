@@ -114,34 +114,63 @@
  .camp-studio .field-kit .station-menu.patch-note-menu .patch-note-provenance { font-size: 9px; letter-spacing: .8px; }
 }
 
-/* Only the reply targets intercept input. The robot, path and survivor stay in view. */
+/* Response lines share the matte at the edge of the shot. The remaining scene
+   keeps its normal movement surface and the subtitle is painted on the left. */
 .patch-chat-hud {
  --patch-safe-top: env(safe-area-inset-top,0px); --patch-safe-right: env(safe-area-inset-right,0px);
  --patch-safe-bottom: env(safe-area-inset-bottom,0px); --patch-safe-left: env(safe-area-inset-left,0px);
  position: absolute; z-index: 3; right: var(--kit-right); bottom: var(--kit-bottom);
- width: min(42%,380px); max-height: 41%; min-height: 0; box-sizing: border-box;
- display: grid; grid-template-columns: minmax(0,1fr) 44px; grid-template-rows: minmax(0,1fr); align-items: end; gap: 5px; pointer-events: none; outline: none;
+ width: min(42%,355px); max-height: 50%; min-height: 0; box-sizing: border-box;
+ display: grid; grid-template-columns: minmax(0,1fr) 44px; grid-template-rows: minmax(0,1fr);
+ align-items: end; column-gap: 4px; pointer-events: none; outline: none;
 }
 .patch-chat-transcript {
  position: absolute; width: 1px; height: 1px; overflow: hidden;
  clip-path: inset(50%); white-space: nowrap;
 }
 .patch-chat-options {
- display: grid; grid-template-columns: repeat(2,minmax(0,1fr)); min-width: 0;
- gap: 5px; min-height: 0; align-self: stretch; overflow-y: auto; overscroll-behavior: contain;
- touch-action: pan-y; pointer-events: auto; scrollbar-width: thin; scrollbar-color: #ad9160 transparent;
+ display: flex; flex-direction: column; align-self: stretch; min-width: 0; min-height: 0;
+ overflow-y: auto; overscroll-behavior: contain; touch-action: pan-y; pointer-events: auto;
+ scrollbar-width: none;
+ border-block: 1px solid #9b855c88;
+ background: linear-gradient(100deg,#111913f7,#131c15e6 68%,#111912cc);
 }
-.patch-chat-options button:first-child:last-child { grid-column: 1/-1; }
+.patch-chat-options::-webkit-scrollbar { display: none; }
+.patch-chat-scroll-track { position: absolute; top: 3px; bottom: 3px; right: 49px; width: 2px; pointer-events: none; }
+.patch-chat-scroll-track span { position: absolute; inset-inline: 0; background: #ba9c64; }
 .camp-studio .field-kit .patch-chat-hud button {
- margin: 0; min-width: 0; min-height: 44px; border: 1px solid #b39c70; padding: 6px 9px;
- border-radius: 5px; color: #f7efd8; background: #18241df5; box-shadow: 0 2px 5px #05110988;
- font: 600 15px/1.16 Barlow,sans-serif; text-align: left; text-wrap: balance; pointer-events: auto;
+ display: flex; align-items: center; justify-content: flex-start; flex: none; box-sizing: border-box; min-width: 0; min-height: 44px;
+ margin: 0; padding: 7px 13px; border: 0; border-radius: 0; box-shadow: none;
+ background: transparent; color: #f7efdc; font: 500 16px/1.26 Barlow,sans-serif;
+ text-align: left; text-wrap: pretty; pointer-events: auto;
 }
-.camp-studio .field-kit .patch-chat-hud button[data-choice=recruit] { color: #ffe2a1; border-color: #e4b970; }
-.camp-studio .field-kit .patch-chat-hud button[aria-pressed=true] { border-color: #f0d39b; background: #42513b; }
-.camp-studio .field-kit .patch-chat-hud button:hover { background: #324132; }
-.camp-studio .field-kit .patch-chat-hud button:focus-visible { outline: 2px solid #ffe5a6; outline-offset: -3px; }
-.camp-studio .field-kit .patch-chat-hud .patch-chat-end { width: 44px; height: 44px; flex: none; text-align: center; font-size: 24px; }
+.camp-studio .field-kit .patch-chat-options button + button { border-top: 1px solid #b7a47738; }
+.patch-chat-options button::before {
+ content: ''; flex: 0 0 6px; width: 6px; height: 6px; box-sizing: border-box;
+ transform: rotate(45deg); margin: 0 13px 0 1px; border: 1px solid #c3ad83; opacity: .75;
+}
+.camp-studio .field-kit .patch-chat-options button:first-child,
+.camp-studio .field-kit .patch-chat-options button[aria-pressed=true] { color: #ffe2ac; }
+.patch-chat-options button:first-child::before, .patch-chat-options button[aria-pressed=true]::before {
+ opacity: 1; border-color: #edc88c; background: #e1b16a;
+}
+.camp-studio .field-kit .patch-chat-options button[aria-pressed=true]::after {
+ content: '✓'; margin-left: auto; padding-left: 6px; color: #edc88c;
+}
+.camp-studio .field-kit .patch-chat-options button:focus-visible,
+.camp-studio .field-kit .patch-chat-options button:active { outline: 2px solid #dfc291; outline-offset: -2px; background: #433d2c; }
+@media(hover:hover) {
+ .camp-studio .field-kit .patch-chat-options button:hover { background: #413e2f; color: #ffe2ac; }
+}
+.camp-studio .field-kit .patch-chat-hud .patch-chat-end {
+ width: 44px; height: 44px; padding: 0; justify-content: center;
+ color: #ede1c7; background: transparent; font: 400 21px/1 Barlow,sans-serif;
+}
+.patch-chat-end span {
+ display: grid; place-items: center; width: 29px; height: 29px; pointer-events: none;
+ border: 1px solid #c7af8088; border-radius: 50%; background: #182019e8;
+}
+.patch-chat-end:focus-visible span { outline: 2px solid #dfc291; outline-offset: 2px; }
 @media(orientation:portrait) {
- .patch-chat-hud { width: min(380px,calc(100% - var(--kit-left) - var(--kit-right))); }
+ .patch-chat-hud { max-height: 36%; width: min(355px,calc(100% - var(--kit-left) - var(--kit-right))); }
 }

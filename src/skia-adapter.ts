@@ -153,9 +153,13 @@ const riverSamplers=(image:SkImage,b:{x:number;y:number;width:number;height:numb
 
 class Gradient{
  stops:{at:number;color:string}[]=[];
- constructor(public x:number,public y:number,public inner:number,public outer:number){}
+ constructor(public x:number,public y:number,public inner:number,public outer:number,private end?:{x:number;y:number}){}
  addColorStop(at:number,color:string){this.stops.push({at,color})}
- shader():SkShader{const stops=[...this.stops].sort((a,b)=>a.at-b.at);return Skia.Shader.MakeRadialGradient({x:this.x,y:this.y},this.outer,stops.map(s=>Skia.Color(s.color)),stops.map(s=>(this.inner+(this.outer-this.inner)*s.at)/this.outer),TileMode.Clamp)}
+ shader():SkShader{
+  const stops=[...this.stops].sort((a,b)=>a.at-b.at),colors=stops.map(s=>Skia.Color(s.color)),start={x:this.x,y:this.y};
+  if(this.end)return Skia.Shader.MakeLinearGradient(start,this.end,colors,stops.map(s=>s.at),TileMode.Clamp);
+  return Skia.Shader.MakeRadialGradient(start,this.outer,colors,stops.map(s=>(this.inner+(this.outer-this.inner)*s.at)/this.outer),TileMode.Clamp);
+ }
 }
 class NativeLayer{
  private w=900;private h=1200;surface:SkSurface;context:SkiaContext;
@@ -362,6 +366,7 @@ class SkiaContext{
  fill(){this.c.drawPath(this.path.path(),this.paint())} stroke(){this.c.drawPath(this.path.path(),this.paint(true))}
  strokeRounded(){this.c.drawPath(this.path.path(),this.paint(true,true))}
  setLineDash(d:number[]){this.dash=d}
+ createLinearGradient(x:number,y:number,ex:number,ey:number){return new Gradient(x,y,0,1,{x:ex,y:ey})}
  createRadialGradient(x:number,y:number,r0:number,_x:number,_y:number,r1:number){return new Gradient(x,y,r0,r1)}
  private get textFace(){return dialogueFont&&this.font.endsWith("'Barlow'")?dialogueFont:this.face}
  measureText(s:string){

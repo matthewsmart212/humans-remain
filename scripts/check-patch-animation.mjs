@@ -33,7 +33,7 @@ const results=[],browserFrames=new Map(),browserCalls=new Map();
 try{
  for(const target of targets){
   const skiaRoot=path.resolve(target==='native'?'native/node_modules/@shopify/react-native-skia':'node_modules/@shopify/react-native-skia');
-  const file=path.join(temporary,target+'.cjs'),modules=['patch-art','patch-animation','patch-chat','patch-chat-bounds','patch-dialogue','patch-speech-bubble','player-presentation','patch-renderer','patch-quest','patch-placement','gameplay-artwork','survival-engine','world-layout','skia-adapter'];
+  const file=path.join(temporary,target+'.cjs'),modules=['patch-art','patch-animation','patch-meeting','placed-world-renderer','continuous-zoom','patch-chat','patch-chat-bounds','patch-dialogue','patch-speech-bubble','player-presentation','patch-renderer','patch-quest','patch-placement','gameplay-artwork','survival-engine','world-layout','skia-adapter'];
   await build({stdin:{contents:modules.map(id=>`export * from './src/${id}';`).join('\n')+`\nexport {JsiSkApi} from ${JSON.stringify(path.join(skiaRoot,'lib/module/skia/web/JsiSkia.js'))};`,resolveDir:root},bundle:true,platform:'node',format:'cjs',outfile:file,logLevel:'error'});
   const m=require(file),kitRequire=createRequire(path.join(skiaRoot,'package.json'));
   const kit=await kitRequire('canvaskit-wasm')({locateFile:f=>path.join(path.dirname(kitRequire.resolve('canvaskit-wasm')),f)}),api=m.JsiSkApi(kit);
@@ -123,10 +123,10 @@ try{
      assert.deepEqual(draw.slice(1,6),['patchWalk',phase*256,row*256,256,256],'The painter uses the selected walking cell');
      const [ratio,dx,dy]=frame.registration;
      assert(ratio>.95&&ratio<1.03,'Registration keeps the enlarged size');
-     assert.deepEqual(draw.slice(6),[128+(dx-128*ratio)*.45,170+(dy-228*ratio)*.45,256*ratio*.45,256*ratio*.45],'The gait registration is isotropic and foot-anchored');
+     assert.deepEqual(draw.slice(6),[ground.x+(dx-128*ratio)*.45,ground.y+(dy-228*ratio)*.45,256*ratio*.45,256*ratio*.45],'The gait registration is isotropic and foot-anchored');
      assert(!rendered.calls.some(c=>['rotate','translate','scale'].includes(c[0])),'Walking never rocks or bobs the entire standing image');
      const glow=rendered.calls.find(c=>c[0]==='createRadialGradient'),[lx,ly]=metadata.lamps[row][phase];assert(glow,'Lamp feedback is rendered');
-     assert.equal(glow[1],128+(dx+(lx-128)*ratio)*.45);assert.equal(glow[2],170+(dy+(ly-228)*ratio)*.45,'Lamp follows this exact gait cell');
+     assert.equal(glow[1],ground.x+(dx+(lx-128)*ratio)*.45);assert.equal(glow[2],ground.y+(dy+(ly-228)*ratio)*.45,'Lamp follows this exact gait cell');
      if(target==='browser'){browserFrames.set(name,rendered.pixels);browserCalls.set(name,rendered.calls)}
      else{
       assert.deepEqual(rendered.calls,browserCalls.get(name),'Browser and native use identical crop, anchor, shadow and lamp commands');
@@ -149,10 +149,10 @@ try{
    const fallback=render('loading-fallback',true,{patchRobot:images.patchRobot,patchDamaged:images.patchDamaged});
    assert.equal(fallback.calls.find(c=>c[0]==='drawImage')[1],'patchRobot','Late walk download retains a visible companion');
    q.servoInstalled=false;q.moving=false;world.tick=0;const damaged=render('damaged');world.tick=360;assert(damaged.pixels.equals(render().pixels),'Reduced-motion rescue beacon is steady');
-   assert.deepEqual(damaged.calls.find(c=>c[0]==='drawImage').slice(6),[128-128*.45,170-228*.45,256*.45,256*.45],'The damaged pose is enlarged by the same amount');
+   assert.deepEqual(damaged.calls.find(c=>c[0]==='drawImage').slice(6),[ground.x-128*.45,ground.y-228*.45,256*.45,256*.45],'The damaged pose is enlarged by the same amount');
    world.patchRepair={worked:3,duration:6,held:true};const half=render('repair-half');
    const arc=half.calls.filter(c=>c[0]==='moveTo'||c[0]==='lineTo');assert.equal(arc.length,21);
-   assert.deepEqual(arc[0],['moveTo',128,158]);assert(Math.abs(arc.at(-1)[1]-128)<1e-7);assert.equal(arc.at(-1)[2],188,'Half repair draws only the right half of the larger ring');
+   assert.deepEqual(arc[0],['moveTo',ground.x,ground.y-12]);assert(Math.abs(arc.at(-1)[1]-128)<1e-7);assert.equal(arc.at(-1)[2],ground.y+18,'Half repair draws only the right half of the larger ring');
    world.patchRepair=undefined;
    assert.equal(m.patchDrawables({},images,world,{x:4000,y:4000,width:100,height:100}).length,0,'Distant actors do no GPU work');
    q.servoInstalled=true;assert.equal(m.patchDrawables({},images,world,{x:80,y:55,width:96,height:20}).length,1,'Expanded cull bounds retain visible head/lamp edges');
@@ -220,8 +220,10 @@ try{
      const display=m.presentPlayer(world,m.samplePlayer(world),.5);
      m.patchDrawables(ctx,images,display,view)[0].draw();
      m.drawPatchFeedback(ctx,images,display,view);
+     assert.equal(painted.length,0,'Active meeting dialogue is outside the ambient bubble painter');
+     ctx.translate(view.x,view.y);ctx.scale(1/scale,1/scale);
+     m.drawPatchMeeting(ctx,display,pw,ph,1);
      assert.equal(painted.shift(),page.speaker);
-     if(page.pageCount>1)assert.equal(painted.shift(),(page.pageIndex+1)+' / '+page.pageCount);
      assert.equal(painted.join(' '),page.line,'Canvas displays the complete page without ellipses');
      phoneSurface.flush();
      if(previews){const shot=phoneSurface.makeImageSnapshot();fs.writeFileSync(path.join(previews,target+'-chat-'+pw+'-'+page.pageIndex+'.png'),Buffer.from(shot.encodeToBytes()));shot.dispose()}
@@ -232,10 +234,35 @@ try{
    }while(true);
    assert.equal(reply.join(' '),m.patchDialogueReply(world,'reclamation'));
    assert(reply.length>1);m.setPatchChatBounds(world,undefined);m.closePatchChat(world);
+   // Render-space framing never changes actor coordinates or the user's zoom.
+   const followView={follow:true,playing:true,zoom:.73,x:0,y:0,grid:false,collision:false};
+   const sourcePose=structuredClone(q.position);
+   const camera=(time,density=1)=>m.editorCamera(844*density,390*density,world,followView,density,time);
+   world.weather.reducedMotion=false;world.player.x=q.position.x+55;world.player.y=q.position.y+24;
+   const baseline=camera(10);assert(m.inspectPatch(world));const enter=camera(10),mid=camera(10.32),close=camera(10.65),retina=camera(10.65,2);
+   assert.deepEqual(enter,baseline);assert(mid.scale>baseline.scale&&mid.scale<close.scale);
+   assert(close.scale>2*baseline.scale,'Normal phone gameplay pushes into an actual close two-shot');
+   assert.equal(close.meeting,1);assert.equal(retina.scale,close.scale*2);assert.equal(retina.x,close.x);
+   for(const actor of [q.position,world.player]){
+    const sx=(actor.x-close.x)*close.scale,sy=(actor.y-close.y)*close.scale;
+    assert(sx>40&&sx<445,'Both subjects clear landscape reply choices');
+    assert(sy>45&&sy<265,'Their feet clear the subtitle band');
+   }
+   const mapReference=m.editorCamera(844,390,world,followView,1,10.65,false);
+   assert.deepEqual(mapReference,baseline,'Atlas queries can sample the unmodified gameplay frame');
+   assert(m.choosePatchChat(world,'ask'));assert(m.choosePatchChat(world,'topic:reclamation'));
+   assert.deepEqual(camera(10.7),close,'Changing speaker coverage starts at the previous frame');
+   const answer=camera(11.2);assert(answer.scale>close.scale,'The gate account draws closer');
+   assert(m.choosePatchChat(world,'more'));assert.deepEqual(camera(11.4),answer,'Paging holds the shot');
+   m.closePatchChat(world);assert.deepEqual(camera(11.4),answer);
+   const leaving=camera(11.61);assert(leaving.scale>baseline.scale&&leaving.scale<answer.scale);
+   assert.deepEqual(camera(11.9),baseline);assert.deepEqual(q.position,sourcePose);assert.equal(followView.zoom,.73);
+   world.weather.reducedMotion=true;assert(m.inspectPatch(world));assert.equal(camera(12).meeting,1);
+   m.closePatchChat(world);assert.deepEqual(camera(12),baseline,'Reduced motion changes shots without travel');
    results.push({target,skiaVersion:JSON.parse(fs.readFileSync(path.join(skiaRoot,'package.json'))).version,walkFrames:frameHashes.size,legFrames:legHashes.size,smallestAdjacentLegChange:smallestLegDifference,maxParityMean:maxParityError,maxParityPixels:mostParityPixels});
   }finally{for(const image of Object.values(images))image?.dispose();surface.dispose();dialogueFont.dispose();font.dispose();face.dispose();adapter.disposeLighting()}
  }
- const report={passed:true,results,checks:['eight headings and eight actual leg poses','256-pixel bounds and transparent cell gutters','1.5x standing/damaged/walking scale','distance-driven phases and continuous turns','steady planted idle','essential reduced-motion locomotion','per-frame lamp registration','larger partial repair arc','browser/native offline atlas parity','shared depth and expanded culling','real repair/recruitment/command speech bubbles and timed expiry','one/two-line speech and native/web bubble rendering parity','complete paged gate conversation at three real phone sizes and zoom levels, including edge and tray clearance'],physicalIPhoneTested:false};
+ const report={passed:true,results,checks:['eight headings and eight actual leg poses','256-pixel bounds and transparent cell gutters','1.5x standing/damaged/walking scale','distance-driven phases and continuous turns','steady planted idle','essential reduced-motion locomotion','per-frame lamp registration','larger partial repair arc','browser/native offline atlas parity','shared depth and expanded culling','real repair/recruitment/command speech bubbles and timed expiry','one/two-line speech and native/web bubble rendering parity','complete field subtitles at three phone sizes and zoom levels, including edge and choice clearance','two-actor camera entry/exit, atlas isolation, depth-independent zoom and reduced motion'],physicalIPhoneTested:false};
  if(previews)fs.writeFileSync(path.join(previews,'report.json'),JSON.stringify(report,null,2)+'\n');
  console.log(JSON.stringify(report,null,2));
 }finally{fs.rmSync(temporary,{recursive:true,force:true})}

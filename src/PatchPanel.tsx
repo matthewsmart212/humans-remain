@@ -5,6 +5,7 @@ import StationMenu from './StationMenu';
 import {LOOT_CHEST_ID,lootChestInMenuRange} from './loot-chest';
 import {PATCH_NOTE_TEXT,PATCH_QUEST_TITLE} from './patch-quest';
 import {patchChat,choosePatchChat,closePatchChat,type PatchChat} from './patch-chat';
+import {patchJournalStage} from './patch-journal';
 import {patchDialogueReply} from './patch-dialogue';
 import {setPatchChatBounds} from './patch-chat-bounds';
 import './patch-panel.css';
@@ -50,7 +51,7 @@ function LetterReader({world,onClose}:Pick<Props,'world'|'onClose'>){
      <div><h3>The industrial gate</h3><p>{patchDialogueReply(world,'reclamation')}</p></div>
     </div>:reverse?<div className="patch-note-sketch">
      <img src="/survival/patch-v4/station-sketch.webp" alt="A pencil sketch of a broken-roofed shed with a chain hoist."/>
-     <div><h3>Maintenance station</h3><p>{patchLetterDirections(world)}</p></div>
+     <div><h3>Lakeside rescue shelter</h3><p>{patchLetterDirections(world)}</p></div>
     </div>:<>
      {noteParagraphs.slice(0,-1).map((paragraph,index)=><p className={index===0?'patch-note-salutation':index===1?'patch-note-promise':undefined} key={index}>{paragraph}</p>)}
      <div className="patch-note-signature"><span className="patch-note-signature-mark" aria-hidden="true"><i/><i/><i/></span><span>{noteParagraphs.at(-1)}</span></div>
@@ -70,13 +71,25 @@ export function PatchChatHUD({world,onChange}:ChatProps){
 
 function PatchReplies({world,chat,onChange}:ChatProps&{chat:PatchChat}){
  const tray=useRef<HTMLElement>(null),choices=useRef<HTMLDivElement>(null);
+ const scrollMark=useRef<HTMLSpanElement>(null);
  const pressedChoice=useRef<EventTarget|null>(null);
  const focusNext=useRef(false);
+ const showScrollPosition=()=>{
+  const list=choices.current,mark=scrollMark.current;
+  if(!list||!mark)return;
+  const total=list.scrollHeight;
+  mark.hidden=total<=list.clientHeight+1;
+  if(!mark.hidden){
+   mark.style.top=(100*list.scrollTop/total)+'%';
+   mark.style.height=(100*list.clientHeight/total)+'%';
+  }
+ };
  useLayoutEffect(()=>{
   const el=tray.current,kit=el?.closest('.field-kit');
   if(!el||!kit)return;
   const measure=()=>{
    const rect=el.getBoundingClientRect(),frame=kit.getBoundingClientRect();
+   showScrollPosition();
    const css=getComputedStyle(el);
    const inset=(edge:string)=>parseFloat(css.getPropertyValue('--patch-safe-'+edge))||0;
    setPatchChatBounds(world,{x:rect.left-frame.left,y:rect.top-frame.top,width:rect.width,height:rect.height},
@@ -92,12 +105,13 @@ function PatchReplies({world,chat,onChange}:ChatProps&{chat:PatchChat}){
  useLayoutEffect(()=>{
   const list=choices.current;
   if(list)list.scrollTop=0;
+  showScrollPosition();
   if(focusNext.current){list?.querySelector('button')?.focus({preventScroll:true});focusNext.current=false}
  },[chat]);
  const choose=(id:string,event:React.MouseEvent<HTMLButtonElement>)=>{
-  const recruited=world.patchQuest?.recruited,command=world.patchQuest?.command;
+  const stage=patchJournalStage(world),command=world.patchQuest?.command;
   focusNext.current=event.detail===0;
-  if(choosePatchChat(world,id,chat))onChange(recruited!==world.patchQuest?.recruited||command!==world.patchQuest?.command);
+  if(choosePatchChat(world,id,chat))onChange(stage!==patchJournalStage(world)||command!==world.patchQuest?.command);
  };
  const end=()=>{if(closePatchChat(world))onChange()};
  const buttonKeys=(event:React.KeyboardEvent)=>{if(event.key==='Enter'||event.key===' ')event.stopPropagation()};
@@ -114,9 +128,10 @@ function PatchReplies({world,chat,onChange}:ChatProps&{chat:PatchChat}){
    pressedChoice.current=null;
   }}>
   <span className="patch-chat-transcript" role="status" aria-live="polite" aria-atomic="true">{chat.speaker} — {chat.line}</span>
-  <div ref={choices} className="patch-chat-options">
+  <div ref={choices} className="patch-chat-options" onScroll={showScrollPosition}>
    {chat.choices.map(choice=><button type="button" key={choice.id} data-choice={choice.id} aria-pressed={['follow','stay','camp'].includes(choice.id)?world.patchQuest?.command===choice.id:undefined} onClick={e=>choose(choice.id,e)}>{choice.label}</button>)}
   </div>
-  <button type="button" className="patch-chat-end" aria-label="End conversation" title="End conversation" onClick={end}>×</button>
+  <span className="patch-chat-scroll-track" aria-hidden="true"><span ref={scrollMark} hidden/></span>
+  <button type="button" className="patch-chat-end" aria-label="End conversation" title="End conversation" onClick={end}><span aria-hidden="true">×</span></button>
  </section>;
 }

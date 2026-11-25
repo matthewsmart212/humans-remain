@@ -1,3 +1,4 @@
+import {patchMeetingInput} from './patch-chat';
 import {stepPatchAwareness} from './patch-awareness';
 import {stepFishing} from './fishing';
 import {ensurePatchQuest,stepPatchQuest} from './patch-quest';
@@ -64,7 +65,9 @@ export function stepCampPlaySession(world:World,input:{x:number;y:number},sprint
  if(world.phase==='over')return;
  let phaseStart=profile?performance.now():0;
  const finishPhase=profile?(phase:SimulationPhase)=>{const now=performance.now();profile(phase,now-phaseStart);phaseStart=performance.now()}:undefined;
- stepGates(world,STEP);movePlayer(world,input,sprint);stepWaypoint(world);
+ stepGates(world,STEP);
+ const movement=patchMeetingInput(world,input);
+ movePlayer(world,movement,movement===input&&sprint);stepWaypoint(world);
  finishPhase?.('simMovementMs');
  world.tick++;
  stepLootChest(world);

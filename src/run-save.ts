@@ -63,7 +63,10 @@ export function migrateSavedCampPerimeter(w:World,route:{sceneId:string;spawn:Sa
   return p.assetId.startsWith('camp_circular_wall_')||!old||old.x!==p.x||old.y!==p.y||old.scale!==p.scale||JSON.stringify(old.collision)!==JSON.stringify(p.collision);
  }).flatMap(p=>placementBodies(p));
  const occupied=(p:SavedPoint)=>added.some(c=>hitCollider(c,p.x,p.y,19));
- const points=[w.player,next.spawn,...route.filter(r=>r?.sceneId===CAMP_SCENE_ID&&point(r.spawn)).map(r=>r.spawn)];
+ const priorLayout=w.layout;
+ const coveredTrailPoint=(p:SavedPoint)=>occupied(p)&&!layoutBlocked(priorLayout,p.x,p.y,15)&&layoutBlocked(next,p.x,p.y,15);
+ const companion=w.patchQuest?.servoInstalled&&coveredTrailPoint(w.patchQuest.position)?[w.patchQuest.position]:[];
+ const points=[w.player,next.spawn,...companion,...route.filter(r=>r?.sceneId===CAMP_SCENE_ID&&point(r.spawn)).map(r=>r.spawn)];
  const moves:{target:SavedPoint;position:SavedPoint}[]=[];
  for(const target of points){
   const refit=headquartersRefitReturnPoint(w.layout,next,target)??smallholdingReturnPoint(w.layout,next,target);
@@ -79,6 +82,12 @@ export function migrateSavedCampPerimeter(w:World,route:{sceneId:string;spawn:Sa
  const spawn=moves.find(move=>move.target===next.spawn)?.position;
  w.layout=spawn?{...next,spawn:{...spawn}}:next;
  for(const move of moves)if(move.target!==next.spawn)Object.assign(move.target,move.position);
+ if(w.patchQuest?.servoInstalled){
+  // New scenery can cover an old breadcrumb even if the actor is standing
+  // clear. Keep the remaining walked route and let normal navigation bridge the gap.
+  w.patchQuest.followTrail=w.patchQuest.followTrail.filter(p=>!coveredTrailPoint(p));
+  w.patchQuest.homeTrail=w.patchQuest.homeTrail.filter(p=>!coveredTrailPoint(p));
+ }
  return true;
 }
 export function decodeRun(text:string):TravelSnapshot{
@@ -92,6 +101,7 @@ export function decodeRun(text:string):TravelSnapshot{
   if(typeof id!=='string'||ids.has(id)||id!==CAMP_SCENE_ID&&!SCENES.has(id)||!w?.layout||!Array.isArray(w.layout.items)||!w.player||!Number.isFinite(w.player.x)||!Number.isFinite(w.player.y)||!Number.isFinite(w.player.hp)||!Number.isSafeInteger(w.tick)||w.tick<0||!Array.isArray(w.enemies)||!Array.isArray(w.animals)||!Array.isArray(w.loot)||!w.bag||!w.stock||!w.camp||!w.fire||!['day','night','over'].includes(w.phase))throw Error('The saved world is incomplete.');
   if(w.layout.fishingSiteVersion!==undefined&&w.layout.fishingSiteVersion!==1)throw Error('The saved fishing site version is unsupported.');
   if(!validFishingProgress(w.fishing))throw Error('The saved fishing progress is incomplete.');
+  if(w.layout.patchRouteVersion!==undefined&&w.layout.patchRouteVersion!==1)throw Error('The saved rescue route version is unsupported.');
   if(w.layout.patchSiteVersion!==undefined&&w.layout.patchSiteVersion!==1)throw Error('The saved maintenance site version is unsupported.');
   if(!validPatchQuest(w.patchQuest))throw Error('The saved companion progress is incomplete.');
   if(['cookedFish','cookedCarp','cookedPike'].some(key=>{const value=w[key as 'cookedFish'|'cookedCarp'|'cookedPike'];return value!==undefined&&(!Number.isSafeInteger(value)||value<0)}))throw Error('The saved fish inventory is incomplete.');

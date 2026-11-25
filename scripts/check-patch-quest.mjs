@@ -8,7 +8,7 @@ import {build} from 'esbuild';
 const temporary=fs.mkdtempSync(path.join(os.tmpdir(),'patch-quest-'));
 try{
  await build({stdin:{contents:[
-  ...['patch-quest','patch-chat','patch-map','patch-placement','studio-play','survival-engine','imported-art','loot-chest','run-save','scene-travel','world-scenes','world-layout','world-assets','layout-views','field-kit','station-access','camp-gates'].map(id=>`export * from './src/${id}';`),
+  ...['patch-quest','patch-chat','patch-map','patch-journal','patch-placement','studio-play','survival-engine','imported-art','loot-chest','run-save','scene-travel','world-scenes','world-layout','world-assets','layout-views','field-kit','station-access','camp-gates'].map(id=>`export * from './src/${id}';`),
   "export * from './native/run-save-store';",
  ].join('\n'),resolveDir:process.cwd()},bundle:true,platform:'node',format:'cjs',outfile:path.join(temporary,'model.cjs'),logLevel:'error'});
  const m=createRequire(import.meta.url)(path.join(temporary,'model.cjs'));
@@ -21,18 +21,47 @@ try{
  assert(q&&!q.noteRead&&!q.discovered&&!q.servoClaimed&&!q.servoInstalled);
  assert.equal(m.patchStatus(world).title,'P-04');
  assert.equal(m.patchMapLead(world),undefined,'No map spoiler on a new run');
- assert(m.PATCH_NOTE_TEXT.includes('I am going to try there.'),'The note precedes the stranding');
+ assert(m.PATCH_NOTE_TEXT.includes('I am going back there'),'The note precedes the stranding');
  assert(m.PATCH_NOTE_TEXT.endsWith('P-04'));
 
- // Find the guaranteed part first, with an already overloaded bag. Neither
- // a quest item nor the note consumes an inventory slot or weight allowance.
- world.bag.pallets=999;playerAt(world,site.locker);
- assert(m.claimPatchServo(world));assert(!m.claimPatchServo(world),'No duplicate servo');
- assert(q.servoClaimed&&!q.discovered&&!q.noteRead);
- assert.deepEqual(m.patchMapLead(world),{...site.approach,label:'Maintenance station'});
- assert.equal(world.bag.pallets,999);assert.equal(m.beginPatchRepair(world),false);
- playerAt(world,{x:site.robot.x,y:site.robot.y+45});
- assert(m.inspectPatch(world));assert(q.discovered&&!q.noteRead);
+ const post=m.patchRouteSite(layout,'dispatch'),hauler=m.patchRouteSite(layout,'hauler');
+ assert(post&&hauler?.release,'The reachable search route is installed');
+ const robotDock={x:site.robot.x,y:site.robot.y+45};
+ let searchSteps=0;
+ function walkSearchLeg(to){
+  const route=m.pathTo(world.player,to,world,Infinity,26);
+  assert(route.length>0,'The clue leads to a reachable place');
+  for(const point of [...route,to]){
+   for(let n=0;n<200;n++){
+    const dx=point.x-world.player.x,dy=point.y-world.player.y,span=Math.hypot(dx,dy);
+    if(span<3)break;
+    const travel=Math.min(span,4.75);m.moveBody(world,world.player,dx/span*travel,dy/span*travel);
+    step(world);searchSteps++;
+    assert(n<199,'A search route is obstructed at '+JSON.stringify(point));
+   }
+  }
+  assert(m.withinActionReach(world,to,60),'The survivor walks within reach of the physical clue');
+ }
+ assert.equal(m.patchJournal(world),undefined,'No quest spoilers before finding evidence');
+ world.bag.pallets=999;
+ playerAt(world,hauler.release);assert(!m.claimPatchServo(world),'A fresh survivor cannot take an unidentified machine drive');
+ playerAt(world,site.locker);assert(!m.patchInteraction(world),'The retired locker no longer yields a servo');
+ playerAt(world,robotDock);assert(m.inspectPatch(world));assert(q.discovered&&!q.noteRead);
+ assert.equal(m.patchJournal(world).stage,'diagnose');
+ assert(m.choosePatchChat(world,'diagnose'));assert(q.diagnosed);m.closePatchChat(world);
+ assert(world.repairCheckpoint);world.repairCheckpoint=false;
+ assert.deepEqual(m.patchMapLead(world),{...post.approach,label:'Signal post'});
+ walkSearchLeg(post.approach);assert(m.examinePatchSite(world,'dispatch'));assert(!m.examinePatchSite(world,'dispatch'));assert(world.repairCheckpoint);world.repairCheckpoint=false;
+ assert.deepEqual(m.patchMapLead(world),{...hauler.approach,label:'Cable works'});
+ walkSearchLeg(hauler.approach);assert(m.examinePatchSite(world,'hauler-inspect'));
+ assert(world.repairCheckpoint);world.repairCheckpoint=false;
+ assert(!m.claimPatchServo(world),'The load plate cannot release the drum on the opposite side');
+ assert.deepEqual(m.patchMapLead(world),{...hauler.release,label:'Brake housing'});
+ walkSearchLeg(hauler.release);assert(m.claimPatchServo(world));assert(!m.claimPatchServo(world));assert(world.repairCheckpoint);world.repairCheckpoint=false;
+ assert.deepEqual(m.patchJournal(world).entries.map(e=>e.id),['shelter','drive','dispatch','plate','recovered']);
+ assert.equal(m.patchJournal(world).stage,'repair');assert.equal(world.bag.pallets,999);
+ walkSearchLeg(robotDock);
+ assert(searchSteps>3000,'The dispatch and the works are independent destinations');
  assert(m.beginPatchRepair(world),'No hammer or workshop is required');m.holdPatchRepair(world,true);step(world,120);
  assert(m.patchRepairProgress(world)>.3&&!q.servoInstalled);
  step(world,1,{x:1,y:0});assert(!world.patchRepair&&q.servoClaimed&&!q.servoInstalled,'Movement cancels without consuming');
@@ -53,6 +82,7 @@ try{
  for(const p of m.layoutViews(world.layout).gates)(world.gateMotions??={})[p.id]={amount:1,target:1};
  const chest=m.campLootChest(world),home={x:chest.x,y:chest.y+78};
  const route=m.pathTo(world.player,home,world,Infinity,31);assert(route.length>20,'This is an actual outdoor route');route.push(home);
+ world.repairCheckpoint=false;
  let routeIndex=0,walked=0,stalled=0,lastDistance=Infinity;
  for(let tick=0;tick<18000&&!q.suppliesDelivered;tick++){
   const target=route[routeIndex];
@@ -69,7 +99,7 @@ try{
   assert(!m.worldBlocked(world,q.position.x,q.position.y,15),'Patch stays on clear physical ground');
   assert(Math.hypot(q.position.x-before.x,q.position.y-before.y)<=470/60+.01,'Recovery does not teleport');
  }
- assert(q.suppliesDelivered&&q.returnedToCamp,'The companion reaches the chest over the authored route');
+ assert(q.suppliesDelivered&&q.returnedToCamp,'The companion reaches the chest over the authored route');assert(world.repairCheckpoint);
  assert.equal(m.patchSpeech(world),'Shelter occupied.');
  assert.equal(world.notice,'This time, someone brought the rescuer home.');
  assert.deepEqual(m.patchMapLead(world),{...q.position,label:'Patch'});
@@ -83,6 +113,48 @@ try{
  playerAt(emptied,home);assert(m.deliverPatchSupplies(emptied));assert.deepEqual(emptied.lootChests[m.LOOT_CHEST_ID].contents,{pallets:2,scrap:2});
  assert(!m.deliverPatchSupplies(world));step(world,120);assert.equal(contents.pallets,2);assert.equal(contents.scrap,2);
  assert.equal(JSON.stringify(world.layout),originalLayout,'Runtime progress never mutates the editor layout');
+
+ // Exercise the bedside, the chest apron, and the actual stopping point on
+ // the walked escort route. A solid camp prop can close an individual approach.
+ const meeting=fresh(),actor=m.ensurePatchQuest(meeting),neutral={x:0,y:0};
+ meeting.enemies=[];meeting.animals=[];meeting.survivalEnabled=false;
+ for(const [robot,repaired] of [[site.robot,false],[home,true],[q.position,true]]){
+  Object.assign(actor,{position:{...robot},discovered:true,servoInstalled:repaired,servoClaimed:repaired,
+   recruited:repaired,returnedToCamp:repaired,suppliesDelivered:repaired,command:'stay'});
+  const starts=[[0,0],[37,23],[65,22],...Array.from({length:16},(_,n)=>[74*Math.cos(n*Math.PI/8),74*Math.sin(n*Math.PI/8)])];
+  let checked=0,alreadyClear=0;
+  for(const [index,[dx,dy]] of starts.entries()){
+   const start={x:robot.x+dx,y:robot.y+dy};playerAt(meeting,start);
+   const accessible=!m.worldBlocked(meeting,start.x,start.y,19)&&m.inspectPatch(meeting);
+   if(index===0||robot===home&&index===1)assert(accessible,'Coincident feet and the photographed camp approach must be reachable');
+   if(!accessible)continue;
+   checked++;
+   for(let tick=0;tick<65;tick++){
+    const before={x:meeting.player.x,y:meeting.player.y};
+    if(index<2)m.stepCampPlaySession(meeting,neutral,false,false);
+    else{m.movePlayer(meeting,m.patchMeetingInput(meeting,neutral));step(meeting)}
+    const travelled=Math.hypot(meeting.player.x-before.x,meeting.player.y-before.y);
+    assert(travelled<=2.7,'The entrance walks at a normal gentle pace');
+    assert(!m.worldBlocked(meeting,meeting.player.x,meeting.player.y,19));
+    assert(m.withinActionReach(meeting,actor.position,80)&&m.patchChat(meeting),'Physical staging retains conversation access');
+   }
+   assert.deepEqual(actor.position,robot,'The stranded or waiting robot stays put');
+   assert(Math.abs(meeting.player.x-robot.x)>=56,'The survivor clears the optic from approach '+JSON.stringify({dx,dy,robot,repaired,player:meeting.player}));
+   if(Math.abs(dx)>=56){
+    alreadyClear++;assert.deepEqual({x:meeting.player.x,y:meeting.player.y},start,'A clear composition needs no step');
+   }
+   if(robot===home&&index===1){
+    assert.equal(actor.direction,'down-right','The homecoming shows the painted amber eye in three-quarter view');
+    assert.equal(meeting.player.direction,'left','The survivor faces the rescuer in profile');
+   }
+   m.closePatchChat(meeting);
+  }
+  assert(checked>=9&&alreadyClear>0,'Exercise both overlapping and unobstructed views from the usable directions');
+ }
+ playerAt(meeting,actor.position);assert(m.inspectPatch(meeting));m.stepCampPlaySession(meeting,neutral,false,false);
+ const steer={x:0,y:1};assert.equal(m.patchMeetingInput(meeting,steer),steer,'The first movement input takes over');
+ assert.equal(m.patchMeetingInput(meeting,neutral),neutral,'Releasing the stick does not resume the entrance');
+ m.closePatchChat(meeting);
 
  // All commands are physical. Stay is stable, and Return uses the walked
  // ground trail even when the camera's texture-stream mask is elsewhere.
@@ -151,7 +223,7 @@ try{
  // Reading after recruitment never resets discovery or unique grants.
  playerAt(world,{x:chest.x,y:chest.y+45});world.lootChestId=m.LOOT_CHEST_ID;world.stationPanel='rare-cache';
  assert(m.readPatchNote(world));assert(q.noteRead&&q.suppliesDelivered&&q.servoInstalled);
- const missing=fresh();missing.layout={...missing.layout,items:missing.layout.items.filter(p=>p.id!==m.PATCH_STATION_PLACEMENT_ID)};
+ const missing=fresh();missing.layout={...missing.layout,items:missing.layout.items.filter(p=>p.id!==m.PATCH_ROUTE_IDS.shelter)};
  const missingChest=m.campLootChest(missing);missing.lootChests={[m.LOOT_CHEST_ID]:{openedAt:0,menuShown:true,rewardVersion:2,contents:{}}};
  missing.lootChestId=m.LOOT_CHEST_ID;missing.stationPanel='rare-cache';playerAt(missing,{x:missingChest.x,y:missingChest.y+45});
  assert(m.readPatchNote(missing),'Owner removal cannot hide the paper');assert.equal(m.patchMapLead(missing),undefined,'No ghost lead for missing scenery');assert(!m.patchInteraction({...missing,stationPanel:undefined}));
@@ -164,24 +236,23 @@ try{
  const integratedChest=m.campLootChest(integrated);playerAt(integrated,{x:integratedChest.x,y:integratedChest.y+45});
  let shown=controller.sample(integrated).action;assert(shown.key.startsWith('rare-chest:'));assert(controller.press(integrated,shown));controller.release();
  liveStep(m.LOOT_CHEST_OPEN_TICKS+m.LOOT_CHEST_REVEAL_HOLD_TICKS);assert.equal(integrated.stationPanel,'rare-cache');
- assert(m.readPatchNote(integrated));assert.deepEqual(m.patchMapLead(integrated),{...site.approach,label:'Maintenance station'});
+ assert(m.readPatchNote(integrated));assert.deepEqual(m.patchMapLead(integrated),{...site.approach,label:'Rescue shelter'});
  const preservedWaypoint={x:270,y:300,sceneId:'camp'};integrated.waypoint=preservedWaypoint;
- const staged=fresh();m.ensurePatchQuest(staged);playerAt(staged,site.robot);m.inspectPatch(staged);
- assert.deepEqual(m.patchMapLead(staged),{...site.locker,label:'Service locker'});
- m.closePatchChat(staged);playerAt(staged,site.locker);m.claimPatchServo(staged);
- assert.deepEqual(m.patchMapLead(staged),{...site.robot,label:'P-04'});
- assert.equal(m.patchMapLead({...staged,scene:{id:'bunker'}}),undefined,'Camp leads stay outdoors');
+ assert.equal(m.patchMapLead({...integrated,scene:{id:'bunker'}}),undefined,'Camp leads stay outdoors');
  integrated.stationPanel='patch-note';assert(m.atStation(integrated));
  controller.sample(integrated);assert.equal(integrated.stationPanel,'patch-note','Paper stays open beside its chest');
  integrated.player.x+=500;controller.sample(integrated);assert.equal(integrated.stationPanel,undefined,'The paper closes outside chest range');
- playerAt(integrated,site.locker);shown=controller.sample(integrated).action;
- assert.equal(shown.key,'patch:locker');assert(controller.press(integrated,shown));controller.release();
  playerAt(integrated,{x:site.robot.x,y:site.robot.y+45});shown=controller.sample(integrated).action;
  assert.equal(shown.label,'INSPECT');assert(controller.press(integrated,shown));controller.release();
  assert.equal(integrated.stationPanel,undefined);assert(!m.atStation(integrated));assert(m.patchChat(integrated));
+ assert(m.choosePatchChat(integrated,'diagnose'));
  const startedX=integrated.player.x;liveStep(3,{x:1,y:0});assert(integrated.player.x>startedX,'Player movement continues during a conversation');assert(m.patchChat(integrated));
  integrated.player.x+=300;liveStep();assert(!m.patchChat(integrated),'Walking away ends the live exchange');
- playerAt(integrated,{x:site.robot.x,y:site.robot.y+45});shown=controller.sample(integrated).action;
+ for(const [position,key] of [[post.approach,'patch:dispatch'],[hauler.approach,'patch:hauler-inspect'],[hauler.release,'patch:hauler-salvage']]){
+  playerAt(integrated,position);shown=controller.sample(integrated).action;
+  assert.equal(shown.key,key);assert(controller.press(integrated,shown));controller.release();
+ }
+ playerAt(integrated,robotDock);shown=controller.sample(integrated).action;
  assert.equal(shown.label,'TALK');assert(controller.press(integrated,shown));controller.release();
  assert(m.patchChat(integrated),'The player can still ask about the part before fitting it');m.closePatchChat(integrated);
  shown=controller.sample(integrated).repairAction;
@@ -225,10 +296,28 @@ try{
  assert.deepEqual(active(await store.load()).patchQuest,q);
  const raw=JSON.parse(encoded),old=structuredClone(raw);delete active(old).patchQuest;
  const migrated=active(m.decodeRun(JSON.stringify(old)));assert(migrated.patchQuest&&!migrated.patchQuest.noteRead&&!migrated.patchQuest.servoClaimed,'An older run gains fresh optional quest facts');
+ // In the previous release, Patch could be told to wait on the ground now
+ // occupied by the hauler. A restored companion and its trails must stay usable.
+ const priorRoute=structuredClone(raw),priorWorld=active(priorRoute);
+ const routeIds=Object.values(m.PATCH_ROUTE_IDS);
+ priorWorld.layout.items=priorWorld.layout.items.filter(item=>!routeIds.some(id=>item.id===id||item.id.startsWith(id+'-')));
+ delete priorWorld.layout.patchRouteVersion;
+ const footprint={x:hauler.placement.x,y:hauler.placement.y},safeGround=hauler.approach;
+ assert(!m.layoutBlocked(priorWorld.layout,footprint.x,footprint.y,15));
+ assert(m.layoutBlocked(layout,footprint.x,footprint.y,15));
+ Object.assign(priorWorld.patchQuest,{position:footprint,command:'stay',homeTrail:[safeGround,footprint],followTrail:[footprint,safeGround]});
+ const restored=active(m.decodeRun(JSON.stringify(priorRoute))),companion=restored.patchQuest;
+ assert.equal(restored.layout.patchRouteVersion,1);
+ assert(!m.worldBlocked(restored,companion.position.x,companion.position.y,15),'Move Patch onto clear ground beside the new hauler');
+ assert(Math.hypot(companion.position.x-footprint.x,companion.position.y-footprint.y)<150);
+ assert.deepEqual(companion.homeTrail,[safeGround]);assert.deepEqual(companion.followTrail,[safeGround]);
+ assert.equal(companion.command,'stay');assert(companion.suppliesDelivered);
+ priorWorld.patchQuest.position=safeGround;
+ assert.deepEqual(active(m.decodeRun(JSON.stringify(priorRoute))).patchQuest.position,safeGround,'Keep a waiting companion on undisturbed ground');
  for(const corrupt of [
   v=>v.version=2,v=>v.position.x=NaN,v=>v.servoClaimed=false,v=>v.discovered=false,v=>v.servoInstalled=false,
-  v=>v.recruited=false,v=>v.returnedToCamp=false,v=>v.command='fly',v=>v.homeTrail=[{x:1e9,y:0}],v=>v.followTrail=null,
+  v=>v.recruited=false,v=>v.returnedToCamp=false,v=>v.command='fly',v=>v.dispatchRead='true',v=>v.diagnosed=false,v=>v.dispatchRead=false,v=>v.homeTrail=[{x:1e9,y:0}],v=>v.followTrail=null,
  ]){const bad=structuredClone(raw);corrupt(active(bad).patchQuest);assert.throws(()=>m.decodeRun(JSON.stringify(bad)),/Patch|patch|companion|incomplete|supported/)}
  const newRun=fresh(),newState=m.ensurePatchQuest(newRun);assert(!newState.noteRead&&!newState.servoClaimed&&!newState.suppliesDelivered);assert(!newRun.lootChests?.[m.LOOT_CHEST_ID]);
- console.log(`PASS: stage-aware atlas leads, separate conversation and repair controls, staged feedback, homecoming, out-of-order note/discovery/servo, full-bag unique claims, movement/damage/release cancellation, exact six-second repair, authored bridge journey (${walked} movement ticks), physical follow/stay/return, wall-corner approach, smooth catch-up and stable tool-safe stopping, travel-driven gait, conversation pause/resume, once-only chest parcel, owner-removal paper, actual FieldKit/controller/studio-loop repair and range guards, companion gate occupancy, fresh-run reset, strict web/native round trips and transient-input omission.`);
+ console.log(`PASS: stage-aware atlas leads, separate conversation and repair controls, staged feedback, homecoming, journal evidence, diagnosis/dispatch/load plate/opposite brake progression (${searchSteps} search movement ticks), late note discovery, full-bag unique claims, movement/damage/release cancellation, exact six-second repair, authored bridge journey (${walked} movement ticks), physical follow/stay/return, wall-corner approach, smooth catch-up and stable tool-safe stopping, travel-driven gait, conversation pause/resume, once-only chest parcel, owner-removal paper, actual FieldKit/controller/studio-loop repair and range guards, companion gate occupancy, fresh-run reset, strict web/native round trips and transient-input omission.`);
 }finally{fs.rmSync(temporary,{recursive:true,force:true})}

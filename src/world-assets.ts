@@ -1,4 +1,4 @@
-import {PATCH_STATION_ID,PATCH_LOCKER_ID,PATCH_STATION_IMAGE,PATCH_LOCKER_IMAGE,PATCH_STATION_SIZE,PATCH_LOCKER_SIZE,PATCH_STATION_ANCHOR,PATCH_LOCKER_ANCHOR,PATCH_STATION_COLLISION,PATCH_LOCKER_COLLISION} from './patch-art';
+import {PATCH_ROUTE_ART,PATCH_ROUTE_SIZE,PATCH_ROUTE_COLLISIONS,PATCH_STATION_ID,PATCH_LOCKER_ID,PATCH_STATION_IMAGE,PATCH_LOCKER_IMAGE,PATCH_STATION_SIZE,PATCH_LOCKER_SIZE,PATCH_STATION_ANCHOR,PATCH_LOCKER_ANCHOR,PATCH_STATION_COLLISION,PATCH_LOCKER_COLLISION} from './patch-art';
 import {SMALLHOLDING_YARD_ASSETS,YARD_IMAGE,YARD_IMAGE_SIZE} from './smallholding-yard';
 import {FISHING_PIER_ID,FISHING_REEDS_ID,FISHING_PIER_IMAGE,FISHING_REEDS_IMAGE,FISHING_PIER_SIZE,FISHING_REEDS_SIZE,FISHING_PIER_ANCHOR,FISHING_REEDS_ANCHOR,FISHING_PIER_COLLISION} from './fishing-site-art';
 import {EVACUATION_VAN_ID,EVACUATION_BACKPACK_ID,EVACUATION_VAN_IMAGE,EVACUATION_BACKPACK_IMAGE,EVACUATION_VAN_SIZE,EVACUATION_BACKPACK_SIZE,EVACUATION_VAN_ANCHOR,EVACUATION_BACKPACK_ANCHOR,EVACUATION_VAN_COLLISION,EVACUATION_BACKPACK_COLLISION} from './evacuation-van-art';
@@ -63,6 +63,7 @@ sizes[EVACUATION_VAN_IMAGE]=[...EVACUATION_VAN_SIZE];
 sizes[EVACUATION_BACKPACK_IMAGE]=[...EVACUATION_BACKPACK_SIZE];
 sizes[PATCH_STATION_IMAGE]=[...PATCH_STATION_SIZE];
 sizes[PATCH_LOCKER_IMAGE]=[...PATCH_LOCKER_SIZE];
+for(const asset of Object.values(PATCH_ROUTE_ART))sizes[asset.image]=[...PATCH_ROUTE_SIZE];
 sizes[FISHING_PIER_IMAGE]=[...FISHING_PIER_SIZE];
 sizes[FISHING_REEDS_IMAGE]=[...FISHING_REEDS_SIZE];
 sizes[COTTAGE_EXTERIOR]=sizes[COTTAGE_INTERIOR]=[...COTTAGE_SIZE];
@@ -95,7 +96,13 @@ for(const e of entries.filter(e=>e.image&&!e.canonicalArt&&!e.id.startsWith('map
   const station=e.id===PATCH_STATION_ID;
   a.anchor=(station?PATCH_STATION_ANCHOR:PATCH_LOCKER_ANCHOR).map((fraction,i)=>crop[i+2]*fraction);
   a.body=[];a.collision=station?PATCH_STATION_COLLISION:PATCH_LOCKER_COLLISION;a.allowTransparency=false;
-  a.note=station?'Find the rescue unit beside the abandoned service bay.':'Search for P-04’s replacement drive servo.';
+  a.note=station?'Find the rescue unit beside the abandoned service bay.':'An empty service locker left at the rescue shelter.';
+ }
+ for(const kind of ['shelter','dispatch','hauler'] as const){
+  const art=PATCH_ROUTE_ART[kind];
+  if(e.id!==art.id)continue;
+  a.anchor=[crop[2]*.5,crop[3]*.88];a.body=[];a.collision=PATCH_ROUTE_COLLISIONS[kind];
+  a.allowTransparency=true;a.note=art.purpose;
  }
  if(e.id===FISHING_PIER_ID){
   a.anchor=FISHING_PIER_ANCHOR.map((fraction,i)=>crop[i+2]*fraction);

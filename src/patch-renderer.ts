@@ -1,9 +1,8 @@
 import {PATCH_ROBOT_ANCHOR,PATCH_ROBOT_CELL,PATCH_ROBOT_SCALE} from './patch-art';
 import {drawPatchBubble} from './patch-speech-bubble';
 import {patchChat} from './patch-chat';
-import {patchChatBounds} from './patch-chat-bounds';
 import {patchSpriteFrame} from './patch-animation';
-import {patchQuestSite} from './patch-placement';
+import {patchLandmarks,patchRescueSite} from './patch-placement';
 import {ASSET_BY_ID} from './world-assets';
 import {placementArtPoint} from './world-layout';
 import {patchBeacon,patchRepairProgress,patchSpeech} from './patch-quest';
@@ -15,7 +14,7 @@ const TAU=Math.PI*2,VISUAL_SCALE=PATCH_ROBOT_SCALE/.3;
 
 function pose(w:PresentedWorld,view?:FoliageViewport,editor=false,margin=0){
  if(w.scene||!w.layout||!w.progression&&!editor)return null;
- const q=w.patchQuest,site=patchQuestSite(w.layout);
+ const q=w.patchQuest,site=patchRescueSite(w.layout);
  if(!q?.servoInstalled&&!site)return null;
  const position=q?.servoInstalled?(w.presentedPatch??q.position):site!.robot;
  const halfWidth=PATCH_ROBOT_CELL*PATCH_ROBOT_SCALE/2+24,above=PATCH_ROBOT_ANCHOR[1]*PATCH_ROBOT_SCALE+32,below=(PATCH_ROBOT_CELL-PATCH_ROBOT_ANCHOR[1])*PATCH_ROBOT_SCALE+8;
@@ -29,8 +28,8 @@ function visibleFrame(p:NonNullable<ReturnType<typeof pose>>,imgs:Record<string,
 }
 /** Tight masonry/metal contacts belong beneath the complete prop painting. */
 export function drawPatchGroundContacts(ctx:CanvasRenderingContext2D,w:World,view:FoliageViewport){
- if(w.scene)return;const site=patchQuestSite(w.layout);if(!site)return;
- for(const p of [site.station,site.lockerPlacement]){
+ if(w.scene||!w.layout)return;
+ for(const p of patchLandmarks(w.layout)){
   if(p.x<view.x-500||p.x>view.x+view.width+500||p.y<view.y-350||p.y>view.y+view.height+350)continue;
   const collision=p.collision??ASSET_BY_ID.get(p.assetId)?.collision;if(!collision)continue;
   ctx.save();ctx.fillStyle='#172119';ctx.strokeStyle='#172119';ctx.lineJoin='round';
@@ -83,14 +82,15 @@ export function drawPatchFeedback(ctx:CanvasRenderingContext2D,imgs:Record<strin
   ctx.fillStyle=glow;ctx.beginPath();ctx.arc(lampX,lampY,radius,0,TAU);ctx.fill();
   ctx.fillStyle='#ffe1a4';ctx.beginPath();ctx.arc(lampX,lampY,1.5*VISUAL_SCALE,0,TAU);ctx.fill();ctx.restore();
  }
- const chat=patchChat(w),speech=chat?.line??patchSpeech(w);if(!speech)return;
+ if(patchChat(w))return;
+ const speech=patchSpeech(w);if(!speech)return;
  const scale=view.scale||1;
  // Cancel the world transform for a logical-pixel bubble while the projected
  // lamp, feet and choice tray continue to share the same screen coordinates.
  ctx.save();ctx.translate(view.x,view.y);ctx.scale(1/scale,1/scale);
  const feet=(p.y-view.y)*scale,head=feet-(p.damaged?157:200)*PATCH_ROBOT_SCALE*scale;
- drawPatchBubble(ctx,speech,chat,{x:(p.x-view.x)*scale,head,feet,halfWidth:(p.damaged?41:28)*scale},
-  view.width*scale,view.height*scale,chat?patchChatBounds(w):undefined);
+ drawPatchBubble(ctx,speech,{x:(p.x-view.x)*scale,head,feet,halfWidth:(p.damaged?41:28)*scale},
+  view.width*scale,view.height*scale);
  ctx.restore();
 }
 
@@ -98,6 +98,9 @@ export function drawPatchFeedback(ctx:CanvasRenderingContext2D,imgs:Record<strin
 export function patchNightLight(w:World,view:FoliageViewport){
  const p=pose(w,view,false,145);
  if(!p||Math.hypot(p.x-w.player.x,p.y-w.player.y)>1000||!lineClear(w.player,p,w))return;
- const pulse=patchBeacon(w);
- return {x:p.x,y:p.y-(p.damaged?32:49),radius:p.damaged?125:145,strength:.24+pulse*.55};
+ const pulse=patchBeacon(w),talking=!!patchChat(w);
+ // In the two-shot the lamp lights the survivor opposite him, even through
+ // the long rest between the three signal flashes.
+ const radius=talking?203:p.damaged?125:145;
+ return {x:p.x,y:p.y-(p.damaged?32:49),radius,strength:talking ? .72+pulse*.18 : .24+pulse*.55};
 }

@@ -4,9 +4,10 @@ import {PATCH_ROBOT_FRAMES,PATCH_WALK_CYCLE_DISTANCE} from './patch-art';
 import {nearbyCombatThreat} from './combat-model';
 import {closePatchChat,openPatchChat,patchChat,stepPatchChat} from './patch-chat';
 import {patchSupportSpeech} from './patch-awareness';
-import {patchQuestSite} from './patch-placement';
+import {patchRescueSite,patchRouteSite} from './patch-placement';
+import {patchObjective} from './patch-journal';
 
-export const PATCH_QUEST_TITLE='A Light Left On';
+export {PATCH_QUEST_TITLE} from './patch-journal';
 export const PATCH_REPAIR_SECONDS=6;
 export const PATCH_NOTE_TEXT=`To whoever finds this place,
 
@@ -16,7 +17,7 @@ I was told nobody would come. I thought it best to leave these anyway.
 
 The well needs work. So do the walls. I wanted to have more ready for you, but I need a few replacement parts myself.
 
-There is an old maintenance station beyond the lake. I am going to try there.
+I have a shelter under the old hoist beyond Stillwater Lake. My left knee has started slipping. I am going back there before it gets worse.
 
 If you see three short amber flashes in the trees, that will be me. Please do not shoot.
 
@@ -30,13 +31,16 @@ export type PatchCommand='follow'|'stay'|'camp';
 /** These are run-owned facts. Editor placements never contain quest progress. */
 export type PatchQuestState={
  version:1;noteRead:boolean;discovered:boolean;servoClaimed:boolean;servoInstalled:boolean;
+ /** Older runs can already have the component without having seen these clues. */
+ diagnosed?:boolean;dispatchRead?:boolean;haulerInspected?:boolean;
  recruited:boolean;returnedToCamp:boolean;suppliesDelivered:boolean;
  position:Vec;direction:Direction;command:PatchCommand;moving:boolean;walkDistance:number;
  /** Real walked ground preserves a way back through bridges and open gates. */
  followTrail:Vec[];homeTrail:Vec[];
 };
 export type PatchRepair={worked:number;duration:number;held:boolean;updatedAt:number;origin:Vec;hp:number;hurtUntil:number};
-export type PatchInteraction={key:'patch:robot'|'patch:locker';action:'patch';target:'robot'|'locker';label:string;shortLabel:'INSPECT'|'TALK'|'TAKE';canRepair?:boolean;disabled:boolean;x:number;y:number};
+type PatchTarget='robot'|'dispatch'|'hauler-inspect'|'hauler-salvage';
+export type PatchInteraction={key:`patch:${PatchTarget}`;action:'patch';target:PatchTarget;label:string;shortLabel:'INSPECT'|'TALK'|'READ'|'SALVAGE';canRepair?:boolean;disabled:boolean;x:number;y:number};
 export type PatchStatus={title:string;line:string;objective:string;canRepair:boolean;canRecruit:boolean;canCommand:boolean;servo:boolean};
 
 // Stay just outside action reach so a following companion does not replace
@@ -77,13 +81,13 @@ export function patchBeacon(w:World){
 }
 function active(w:World){return !w.scene&&!!w.progression&&!!w.layout&&w.phase!=='over'&&w.player.hp>0&&!w.player.downedUntil}
 function available(w:World){return active(w)&&!w.bruteGrab&&!w.dodge&&!w.buildingRepair&&!w.fishingSession&&!w.axeSwing&&!w.spearThrust&&!w.swordThrust&&!w.bowShot&&timeOf(w)>=w.attackUntil}
-function robotPresent(w:World,state:PatchQuestState){return state.servoInstalled||!!patchQuestSite(w.layout)}
+function robotPresent(w:World,state:PatchQuestState){return state.servoInstalled||!!patchRescueSite(w.layout)}
 function nearRobot(w:World,state:PatchQuestState){return robotPresent(w,state)&&withinActionReach(w,state.position,INTERACT_REACH)}
 
 /** The paper remains readable even if an owner deliberately removes the site. */
 export function ensurePatchQuest(w:World):PatchQuestState|undefined{
  if(w.scene||!w.progression||!w.layout)return;
- const site=patchQuestSite(w.layout);
+ const site=patchRescueSite(w.layout);
  const state=w.patchQuest??={version:1,noteRead:false,discovered:false,servoClaimed:false,servoInstalled:false,
   recruited:false,returnedToCamp:false,suppliesDelivered:false,position:point(site?.robot??campLootChest(w)??w.player),
   direction:'down-right',command:'stay',moving:false,walkDistance:0,followTrail:[],homeTrail:[]};
@@ -94,7 +98,8 @@ export function ensurePatchQuest(w:World):PatchQuestState|undefined{
 }
 export function readPatchNote(w:World){
  if(!active(w)||!['rare-cache','patch-note'].includes(w.stationPanel??'')||(w.lootChestId??LOOT_CHEST_ID)!==LOOT_CHEST_ID||!w.lootChests?.[LOOT_CHEST_ID]||!lootChestInMenuRange(w,LOOT_CHEST_ID))return false;
- const state=ensurePatchQuest(w);if(!state)return false;state.noteRead=true;return true;
+ const state=ensurePatchQuest(w);if(!state)return false;
+ if(!state.noteRead){state.noteRead=true;w.repairCheckpoint=true}return true;
 }
 export function canTalkToPatch(w:World){
  const state=w.patchQuest;
@@ -104,30 +109,66 @@ export function canTalkToPatch(w:World){
 export function inspectPatch(w:World){
  const state=ensurePatchQuest(w);
  if(!state||!canTalkToPatch(w))return false;
- state.discovered=true;
+ if(!state.discovered){state.discovered=true;w.repairCheckpoint=true}
  state.moving=false;
- if(state.servoInstalled&&distance(w.player,state.position)>3){
-  state.direction=facing(w.player.x-state.position.x,w.player.y-state.position.y);
+ if(distance(w.player,state.position)>3){
+  w.player.direction=facing(state.position.x-w.player.x,state.position.y-w.player.y);
+  if(state.servoInstalled)state.direction=facing(w.player.x-state.position.x,w.player.y-state.position.y);
  }
  runtime(state).speechUntil=0;
  return openPatchChat(w);
 }
-/** This unique component is a story fact, independent of backpack capacity. */
+export function diagnosePatch(w:World){
+ const q=w.patchQuest;
+ if(!q?.discovered||q.diagnosed||q.servoClaimed||!patchChat(w)||!canTalkToPatch(w))return false;
+ q.diagnosed=true;w.repairCheckpoint=true;
+ return true;
+}
+function readDispatch(w:World){
+ const q=w.patchQuest,post=patchRouteSite(w.layout,'dispatch');
+ if(!q?.diagnosed||q.dispatchRead||q.servoClaimed||!post||!withinActionReach(w,post.approach,INTERACT_REACH))return false;
+ q.dispatchRead=true;w.repairCheckpoint=true;w.notice='Dispatch copied · Last W-6 fitted to a hauler at the cable works.';w.noticeUntil=timeOf(w)+6;
+ return true;
+}
+function inspectHauler(w:World){
+ const q=w.patchQuest,hauler=patchRouteSite(w.layout,'hauler');
+ if(!q?.dispatchRead||q.haulerInspected||q.servoClaimed||!hauler||!withinActionReach(w,hauler.approach,INTERACT_REACH))return false;
+ q.haulerInspected=true;w.repairCheckpoint=true;w.notice='Load plate matches · Reach the brake housing on the far side.';w.noticeUntil=timeOf(w)+6;
+ return true;
+}
+/** The retired machine has a service plate on one side and a brake on the other.
+ * The unique salvaged drive travels independently of backpack capacity. */
 export function claimPatchServo(w:World){
- const state=ensurePatchQuest(w),site=patchQuestSite(w.layout);
- if(!state||!site||!available(w)||w.stationPanel||state.servoClaimed||!withinActionReach(w,site.locker,INTERACT_REACH))return false;
- state.servoClaimed=true;w.notice=state.discovered?'Drive servo secured · Bring it back to P-04':'Drive servo secured · Stamped P-04';w.noticeUntil=timeOf(w)+4;return true;
+ const q=w.patchQuest,hauler=patchRouteSite(w.layout,'hauler');
+ if(!q?.haulerInspected||!q.dispatchRead||q.servoClaimed||!available(w)||w.stationPanel||patchChat(w)||!hauler?.release||!withinActionReach(w,hauler.release,INTERACT_REACH))return false;
+ q.servoClaimed=true;w.repairCheckpoint=true;w.notice='W-6 drive recovered · Bring it back to P-04.';w.noticeUntil=timeOf(w)+5;
+ return true;
+}
+export function examinePatchSite(w:World,target:Exclude<PatchTarget,'robot'>){
+ if(!available(w)||w.stationPanel||patchChat(w))return false;
+ if(target==='dispatch')return readDispatch(w);
+ if(target==='hauler-inspect')return inspectHauler(w);
+ return target==='hauler-salvage'&&claimPatchServo(w);
 }
 export function patchInteraction(w:World):PatchInteraction|null{
  const state=ensurePatchQuest(w);if(!state||!active(w)||w.stationPanel||patchChat(w))return null;
- const site=patchQuestSite(w.layout),choices:PatchInteraction[]=[];
+ const choices:PatchInteraction[]=[];
  if(nearRobot(w,state)){
   const repair=state.discovered&&state.servoClaimed&&!state.servoInstalled;
   choices.push({key:'patch:robot',action:'patch',target:'robot',...state.position,
    label:state.suppliesDelivered?'Talk to Patch':state.discovered?'Talk to P-04':'Inspect P-04',
    shortLabel:state.discovered?'TALK':'INSPECT',canRepair:repair,disabled:!available(w)});
  }
- if(site&&!state.servoClaimed&&withinActionReach(w,site.locker,INTERACT_REACH))choices.push({key:'patch:locker',action:'patch',target:'locker',...site.locker,label:'Take drive servo',shortLabel:'TAKE',disabled:!available(w)});
+ if(state.diagnosed&&!state.servoClaimed){
+  const site=patchRouteSite(w.layout,state.dispatchRead?'hauler':'dispatch');
+  const target=state.dispatchRead?(state.haulerInspected?'hauler-salvage':'hauler-inspect'):'dispatch';
+  const position=state.haulerInspected?site?.release:site?.approach;
+  if(position&&withinActionReach(w,position,INTERACT_REACH)){
+   const label=target==='dispatch'?'Read the dispatch ledger':target==='hauler-inspect'?'Inspect the hauler load plate':'Release the brake and salvage the drive';
+   choices.push({key:`patch:${target}`,action:'patch',target,...position,label,
+    shortLabel:target==='dispatch'?'READ':target==='hauler-inspect'?'INSPECT':'SALVAGE',disabled:!available(w)});
+  }
+ }
  choices.sort((a,b)=>distance(w.player,a)-distance(w.player,b));return choices[0]??null;
 }
 export function patchStatus(w:World):PatchStatus|null{
@@ -137,7 +178,7 @@ export function patchStatus(w:World):PatchStatus|null{
  const canRecruit=state.servoInstalled&&!state.recruited,canCommand=state.suppliesDelivered;
  const home=homePoint(w),campIdle=state.command==='stay'&&!!home&&distance(state.position,home)<150;
  const line=state.suppliesDelivered?(campIdle?'Shelter occupied.':state.command==='follow'?'With you.':state.command==='camp'?'On my way home.':'I will wait here.'):state.recruited?'I have something for the camp.':state.servoInstalled?'Supplies… still required?':state.servoClaimed?'Replacement servo secured.':'Drive servo damaged.';
- const objective=state.suppliesDelivered?'':state.recruited?'Walk him back to the chest where he left the tools.':state.servoInstalled?'Invite P-04 to come home with you.':state.servoClaimed?'Stand beside P-04 and hold REPAIR for six seconds.':'Look for the service locker beside the maintenance station.';
+ const objective=state.suppliesDelivered?'':patchObjective(state);
  return{title,line,objective,canRepair,canRecruit,canCommand,servo:state.servoClaimed&&!state.servoInstalled};
 }
 export const patchRepairProgress=(w:World)=>w.patchRepair?Math.max(0,Math.min(1,w.patchRepair.worked/w.patchRepair.duration)):0;
@@ -170,14 +211,14 @@ function stepRepair(w:World,input:Vec){
  job.worked=Math.min(job.duration,job.worked+dt);
  if(job.worked>=job.duration-1e-8){
   // The servo is committed once, only after the final uninterrupted tick.
-  state.servoInstalled=true;state.moving=false;w.patchRepair=undefined;
+  state.servoInstalled=true;state.moving=false;w.patchRepair=undefined;w.repairCheckpoint=true;
   say(w,'Supplies… still required?',4);w.notice='Drive restored · Speak to P-04';w.noticeUntil=timeOf(w)+4;
  }
 }
 export function recruitPatch(w:World){
  const state=ensurePatchQuest(w);
  if(!state||!available(w)||!state.servoInstalled||state.recruited||!nearRobot(w,state)||w.stationPanel)return false;
- state.recruited=true;state.command='follow';state.followTrail=[point(w.player)];
+ state.recruited=true;w.repairCheckpoint=true;state.command='follow';state.followTrail=[point(w.player)];
  runtime(state).followSample=point(w.player);closePatchChat(w);say(w,'I know that camp. Lead the way.',4);return true;
 }
 export function commandPatch(w:World,command:PatchCommand){
@@ -273,7 +314,7 @@ export function deliverPatchSupplies(w:World){
  if(!chests[LOOT_CHEST_ID])chests[LOOT_CHEST_ID]={openedAt:w.tick,menuShown:true,rewardVersion:2,contents:Object.fromEntries(LOOT_CHEST_REWARDS.map(reward=>[reward.kind,reward.amount]))};
  const contents=lootChestContents(w,LOOT_CHEST_ID);
  contents.pallets=(contents.pallets??0)+2;contents.scrap=(contents.scrap??0)+2;
- state.returnedToCamp=true;state.suppliesDelivered=true;state.command='stay';state.moving=false;
+ state.returnedToCamp=true;state.suppliesDelivered=true;w.repairCheckpoint=true;state.command='stay';state.moving=false;
  state.followTrail=[];state.homeTrail=[point(state.position)];
  const r=runtime(state);r.path=[];r.homeSample=point(state.position);
  say(w,'Shelter occupied.',6);w.notice='This time, someone brought the rescuer home.';w.noticeUntil=timeOf(w)+6;
@@ -341,6 +382,8 @@ export function validPatchQuest(value:unknown):value is PatchQuestState|undefine
  if(!['noteRead','discovered','servoClaimed','servoInstalled','recruited','returnedToCamp','suppliesDelivered','moving'].every(key=>typeof value[key]==='boolean'))return false;
  if(!savedPoint(value.position)||!['down','right','up','left','down-right','down-left','up-right','up-left'].includes(String(value.direction))||!['follow','stay','camp'].includes(String(value.command))||!finite(value.walkDistance,0,112))return false;
  if(!Array.isArray(value.followTrail)||value.followTrail.length>512||!value.followTrail.every(savedPoint)||!Array.isArray(value.homeTrail)||value.homeTrail.length>1024||!value.homeTrail.every(savedPoint))return false;
+ if(['diagnosed','dispatchRead','haulerInspected'].some(key=>value[key]!==undefined&&typeof value[key]!=='boolean'))return false;
+ if(value.diagnosed&&!value.discovered||value.dispatchRead&&!value.diagnosed||value.haulerInspected&&!value.dispatchRead)return false;
  if(value.servoInstalled&&(!value.servoClaimed||!value.discovered)||value.recruited&&!value.servoInstalled||value.returnedToCamp&&!value.recruited||value.suppliesDelivered&&!value.returnedToCamp)return false;
  if(!value.recruited&&value.command!=='stay'||value.command==='camp'&&!value.suppliesDelivered)return false;
  return true;

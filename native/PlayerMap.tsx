@@ -23,6 +23,8 @@ import {PLAYER_MAP_MARKER,mapArtDisplayFactor} from '../src/player-map-art';
 import {playerMapLabels} from '../src/player-map-labels';
 import {PLAYER_MAP_NIGHT,playerMapNightAmount,playerMapInk} from '../src/player-map-lighting';
 import {patchMapLead,samePatchMapLead} from '../src/patch-map';
+import {PatchFieldJournal} from './PatchFieldJournal';
+import {patchJournalStage} from '../src/patch-journal';
 import {PATCH_QUEST_TITLE} from '../src/patch-quest';
 import {clearWaypoint,currentWaypoint,placeWaypoint,WaypointTap,WAYPOINT_PIN} from '../src/waypoint';
 
@@ -284,6 +286,7 @@ function NativePlayerMap({world,width,height,safe,onClose,active=true,fullZoom=f
    {lead&&<Pressable accessibilityRole="button" accessibilityLabel={`Show ${lead.label} on the map`} onPress={showLead} style={({pressed})=>[s.lead,{left:Math.max(12,safe.left),bottom:Math.max(12,safe.bottom)},pressed&&s.pressed]}>
     <ControlSymbol kind="location"/><View><Text style={s.leadTitle}>{PATCH_QUEST_TITLE}</Text><Text style={s.leadLabel}>Locate {lead.label}</Text></View>
    </Pressable>}
+   {active&&patchJournalStage(sample.world)&&<PatchFieldJournal world={sample.world} width={size.width} height={size.height} safe={safe}/>}
    <MapAction kind="place" label={placingWaypoint?'Cancel waypoint placement':'Place waypoint'} selected={placingWaypoint} top={Math.max(12,safe.top)+58} right={Math.max(12,safe.right)} onPress={()=>{waypointTap.current.cancel();setPlacingWaypoint(v=>!v)}}/>
    {sample.waypoint&&<MapAction kind="clear" label="Remove waypoint" top={Math.max(12,safe.top)+116} right={Math.max(12,safe.right)} onPress={removeDestination}/>}
    {placingWaypoint&&<View pointerEvents="none" style={[s.placementHint,{top:Math.max(12,safe.top)+62,right:Math.max(12,safe.right)+64}]}><Text style={s.placementText}>Tap a spot to set your waypoint</Text></View>}

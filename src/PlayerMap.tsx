@@ -8,6 +8,8 @@ import {playerMapLabels} from './player-map-labels';
 import {PLAYER_MAP_NIGHT,playerMapNightAmount,playerMapInk} from './player-map-lighting';
 import {clearWaypoint,currentWaypoint,placeWaypoint,WaypointTap,WAYPOINT_PIN} from './waypoint';
 import {patchMapLead,samePatchMapLead,type PatchMapLead} from './patch-map';
+import {PatchFieldJournal} from './PatchFieldJournal';
+import {patchJournalStage} from './patch-journal';
 import {PATCH_QUEST_TITLE} from './patch-quest';
 import './player-map.css';
 import {stationCSSColors} from './station-css-colors';
@@ -142,6 +144,7 @@ function PlayerMapContent({world,onClose,continuous}:Props&{titleId:string}){
   <button type="button" className="player-map-close" aria-label="Exit map" title="Exit map (M / Esc)" onClick={onClose}><X size={22} strokeWidth={2}/></button>
   <button type="button" className="player-map-close player-map-place" aria-label={placingWaypoint?'Cancel waypoint placement':'Place waypoint'} aria-pressed={placingWaypoint} title="Place waypoint" onPointerDown={e=>e.stopPropagation()} onClick={()=>{waypointTap.current.cancel();setPlacingWaypoint(v=>!v)}}><MapPinPlus size={23}/></button>
   {position.waypoint&&<button type="button" className="player-map-close player-map-clear" aria-label="Remove waypoint" title="Remove waypoint" onPointerDown={e=>e.stopPropagation()} onClick={removeDestination}><Trash2 size={20}/></button>}
+  {patchJournalStage(position.world)&&<PatchFieldJournal world={position.world}/>}
   {lead&&<button type="button" className="player-map-lead" onClick={showLead} aria-label={`Show ${lead.label} on the map`}>
    <Crosshair size={20} aria-hidden="true"/><span><small>{PATCH_QUEST_TITLE}</small><strong>Locate {lead.label}</strong></span>
   </button>}

@@ -1,11 +1,12 @@
 import {PATCH_LETTER_POSTSCRIPT,patchLetterDirections} from '../src/patch-letter';
 import React,{useEffect,useLayoutEffect,useRef,useState} from 'react';
-import {AccessibilityInfo,BackHandler,Image,ImageBackground,Platform,Pressable,ScrollView,StyleSheet,Text,useWindowDimensions,View} from 'react-native';
+import {AccessibilityInfo,BackHandler,Image,ImageBackground,Platform,Pressable,ScrollView,StyleSheet,Text,View} from 'react-native';
 import type {World} from '../src/survival-engine';
 import {type MenuInsets} from '../src/station-menu-layout';
 import {patchPanelLayout} from '../src/patch-panel-layout';
 import {LOOT_CHEST_ID,lootChestInMenuRange} from '../src/loot-chest';
 import {PATCH_NOTE_TEXT,PATCH_QUEST_TITLE} from '../src/patch-quest';
+import {patchJournalStage} from '../src/patch-journal';
 import {patchDialogueReply} from '../src/patch-dialogue';
 import {patchChat,backPatchChat,choosePatchChat} from '../src/patch-chat';
 import {setPatchChatBounds} from '../src/patch-chat-bounds';
@@ -52,7 +53,7 @@ export function PatchNotePanel({world,onClose,onChange,...frame}:Props){
       <Text accessibilityRole="header" style={s.sketchTitle}>The industrial gate</Text><Text selectable style={s.paragraph}>{patchDialogueReply(world,'reclamation')}</Text>
      </View>:reverse?<View style={[s.sketchRow,!tightNote&&s.sketchWide]}>
       <Image source={require('../public/survival/patch-v4/station-sketch.webp')} resizeMode="contain" accessibilityLabel="A pencil sketch of a broken-roofed shed with a chain hoist." style={[s.sketchArt,!tightNote&&s.sketchArtWide,shortSketch&&s.sketchArtShort]}/>
-      <View style={s.sketchCaption}><Text style={s.sketchTitle}>Maintenance station</Text><Text selectable style={s.paragraph}>{patchLetterDirections(world)}</Text></View>
+      <View style={s.sketchCaption}><Text style={s.sketchTitle}>Lakeside rescue shelter</Text><Text selectable style={s.paragraph}>{patchLetterDirections(world)}</Text></View>
      </View>:<>
       {noteParagraphs.slice(0,-1).map((paragraph,index)=><Text selectable key={index} style={[s.paragraph,tightNote&&s.paragraphTight,index===0&&s.salutation,index===1&&s.promise]}>{paragraph}</Text>)}
       <View style={s.signature}><View accessible={false} style={s.signatureMark}><View style={s.signatureBar}/><View style={s.signatureBar}/><View style={s.signatureBar}/></View><Text selectable style={s.signatureText}>{noteParagraphs.at(-1)}</Text></View>
@@ -72,14 +73,11 @@ export function PatchChatHUD({world,width,height,safe,onClose,onChange}:ChatProp
  const chat=patchChat(world);
  const scroll=useRef<React.ComponentRef<typeof ScrollView>>(null);
  const [rect,setRect]=useState<Bounds>();
- const {fontScale}=useWindowDimensions();
  const safeWidth=width-safe.left-safe.right;
  const landscape=width>height;
- const trayWidth=Math.min(380,landscape?width*.42:safeWidth-24,safeWidth-24);
- const optionsWidth=trayWidth-50;
- const singleColumn=optionsWidth<210||fontScale>1.35||(chat?.choices.length===1);
- const chipWidth=singleColumn?optionsWidth:(optionsWidth-6)/2;
- const maxHeight=Math.min(height*.41,height-safe.top-safe.bottom-24);
+ const trayWidth=Math.min(355,landscape?width*.42:safeWidth-24,safeWidth-24);
+ const optionsWidth=trayWidth-48;
+ const maxHeight=Math.min(height*(landscape ? .50 : .36),height-safe.top-safe.bottom-24);
  const bottom=Math.max(12,safe.bottom+10);
  const right=Math.max(12,safe.right+8);
  const live=!!chat;
@@ -90,6 +88,7 @@ export function PatchChatHUD({world,width,height,safe,onClose,onChange}:ChatProp
  useEffect(()=>{
   if(chat?.line)AccessibilityInfo.announceForAccessibility(chat.speaker+'. '+chat.line);
   scroll.current?.scrollTo({y:0,animated:false});
+  if(chat?.choices.length)scroll.current?.flashScrollIndicators?.();
  },[chat?.speaker,chat?.line,chat?.view,chat?.pageIndex]);
  const back=()=>{if(!backPatchChat(world))return false;onChange(false);return true};
  const backRef=useRef(back);backRef.current=back;
@@ -100,25 +99,27 @@ export function PatchChatHUD({world,width,height,safe,onClose,onChange}:ChatProp
  },[live]);
  if(!chat)return null;
  const choose=(id:string)=>{
-  const recruited=world.patchQuest?.recruited,command=world.patchQuest?.command;
-  if(choosePatchChat(world,id,chat))onChange(recruited!==world.patchQuest?.recruited||command!==world.patchQuest?.command);
+  const stage=patchJournalStage(world),command=world.patchQuest?.command;
+  if(choosePatchChat(world,id,chat))onChange(stage!==patchJournalStage(world)||command!==world.patchQuest?.command);
  };
  return <View pointerEvents="box-none" onAccessibilityEscape={back} style={[s.chatDock,{width:trayWidth,maxHeight,right,bottom}]}
   onLayout={event=>setRect(event.nativeEvent.layout)}>
-  <ScrollView ref={scroll} style={{width:optionsWidth,maxHeight}} contentContainerStyle={s.chatChoices}
-   accessibilityLabel={chat.speaker+' response choices'} showsVerticalScrollIndicator indicatorStyle="white" bounces={false}>
-   {chat.choices.map(item=>{
+  <ScrollView ref={scroll} style={[s.chatList,{width:optionsWidth,maxHeight}]}
+   accessibilityLabel={chat.speaker+' response choices'} showsVerticalScrollIndicator persistentScrollbar indicatorStyle="white" bounces={false}>
+   {chat.choices.map((item,index)=>{
     const isCommand=item.id==='follow'||item.id==='camp'||item.id==='stay';
     const selected=isCommand&&world.patchQuest?.command===item.id;
     return <Pressable key={item.id} accessibilityRole="button" accessibilityLabel={item.label}
      accessibilityState={isCommand?{selected}:undefined} onPress={()=>choose(item.id)}
-     style={({pressed})=>[s.chatChoice,{width:chipWidth},item.id==='recruit'&&s.chatInvite,selected&&s.chatSelected,pressed&&s.chatPressed]}>
-     <Text style={s.chatChoiceLabel}>{item.label}</Text>
+     style={({pressed})=>[s.chatChoice,index>0&&s.chatDivider,pressed&&s.chatPressed]}>
+     <View accessible={false} style={[s.chatDiamond,(index===0||selected)&&s.chatDiamondLit]}/>
+     <Text style={[s.chatChoiceLabel,(index===0||selected)&&s.chatChoiceGold]}>{item.label}</Text>
+     {selected&&<Text accessible={false} style={s.chatCheck}>✓</Text>}
     </Pressable>;
    })}
   </ScrollView>
    <Pressable accessibilityRole="button" accessibilityLabel="End conversation" onPress={onClose}
-    style={({pressed})=>[s.chatEnd,pressed&&s.chatPressed]}><Text allowFontScaling={false} style={s.chatEndMark}>×</Text></Pressable>
+    style={({pressed})=>[s.chatEnd,pressed&&s.chatPressed]}><View style={s.chatEndRing}><Text allowFontScaling={false} style={s.chatEndMark}>×</Text></View></Pressable>
  </View>;
 }
 
@@ -145,13 +146,17 @@ const s=StyleSheet.create({
  turnButton:{minHeight:44,paddingHorizontal:9,justifyContent:'center'},turnLabel:{fontSize:14,fontWeight:'600',color:'#ecc887'},
  returnButton:{minHeight:44,marginLeft:'auto',paddingHorizontal:9,justifyContent:'center'},returnPressed:{opacity:.7},returnLabel:{fontSize:14,fontWeight:'600',color:'#e7e2d1'},
  memoryArt:{width:'100%',height:175},memoryArtShort:{height:105},
- chatDock:{position:'absolute',flexDirection:'row',alignItems:'flex-end',gap:6},
- chatChoices:{flexDirection:'row',flexWrap:'wrap',alignItems:'stretch',justifyContent:'flex-end',gap:6},
- chatChoice:{minHeight:44,justifyContent:'center',paddingHorizontal:10,paddingVertical:7,borderRadius:5,borderWidth:1,borderColor:'#a49369',backgroundColor:'#16231ef2'},
- chatSelected:{borderColor:'#efd5a3',backgroundColor:'#42513b'},chatInvite:{borderColor:'#e4b970'},
- chatChoiceLabel:{color:'#f8eed6',fontSize:15,lineHeight:20,fontWeight:'600'},
- chatEnd:{width:44,minHeight:44,alignItems:'center',justifyContent:'center',borderRadius:5,borderWidth:1,borderColor:'#90836a',backgroundColor:'#16231ef2'},
- chatEndMark:{fontSize:24,color:'#efe2c6'},chatPressed:{backgroundColor:'#46513a'},
+ chatDock:{position:'absolute',flexDirection:'row',alignItems:'flex-end',gap:4},
+ chatList:{backgroundColor:'#111913ed',borderTopWidth:1,borderBottomWidth:1,borderColor:'#9b855c88'},
+ chatChoice:{minHeight:44,flexDirection:'row',alignItems:'center',gap:13,paddingHorizontal:13,paddingVertical:7},
+ chatDivider:{borderTopWidth:StyleSheet.hairlineWidth,borderColor:'#b7a47755'},
+ chatDiamond:{width:6,height:6,borderWidth:1,borderColor:'#c3ad83',transform:[{rotate:'45deg'}]},
+ chatDiamondLit:{backgroundColor:'#e1b16a',borderColor:'#edc88c'},
+ chatChoiceLabel:{flex:1,color:'#f7efdc',fontSize:16,lineHeight:21,fontWeight:'500'},chatChoiceGold:{color:'#ffe2ac'},
+ chatCheck:{color:'#edc88c',fontSize:15},
+ chatEnd:{width:44,minHeight:44,alignItems:'center',justifyContent:'center'},
+ chatEndRing:{width:29,height:29,borderRadius:15,alignItems:'center',justifyContent:'center',backgroundColor:'#182019e8',borderWidth:1,borderColor:'#c7af8088'},
+ chatEndMark:{fontSize:21,lineHeight:24,color:'#ede1c7'},chatPressed:{backgroundColor:'#433d2c'},
  noteIcon:{width:28,height:35,marginHorizontal:5,borderWidth:1,borderColor:'#b49d70',borderRadius:2,backgroundColor:'#dfd1ad',transform:[{rotate:'-5deg'}],paddingTop:10,gap:4,alignItems:'center'},
  noteFold:{position:'absolute',right:-1,top:-1,width:8,height:8,borderLeftWidth:1,borderBottomWidth:1,borderColor:'#b49d70',backgroundColor:'#ede3c8'},
  noteRule:{width:15,height:1,backgroundColor:'#787a62'},
