@@ -14,7 +14,7 @@
 }
 .camp-studio .patch-field-notes .field-notes-tab[hidden],.patch-field-notes .field-notes-tab[hidden] {display:none}
 .camp-studio .patch-field-notes .field-notes-tab,.patch-field-notes .field-notes-tab {
- position:relative;isolation:isolate;display:flex;justify-content:flex-start;align-items:center;gap:6px;
+ position:relative;isolation:isolate;display:flex;justify-content:flex-start;align-items:center;gap:5px;
  width:min(256px,40vw);min-height:45px;text-align:left;padding:5px 7px;
  color:#fcf3df;border:1px solid #b19366;border-radius:5px;
  background:linear-gradient(125deg,#18575966,#0d434959),var(--journal-cloth) center/128px,var(--journal-teal);
@@ -35,7 +35,7 @@
 .field-notes-bookmark img {display:block;width:21px;height:21px;object-fit:contain;filter:drop-shadow(0 1px 1px #061f21)}
 .field-notes-copy {min-width:0;flex:1}
 .field-notes-copy > b {display:block;color:#f5c77e;font:700 15px/1.06 Barlow,sans-serif}
-.field-notes-lead {display:block;margin-top:2px;color:#f9f2e3;font:700 12.5px/1.2 'Barlow Condensed',Barlow,sans-serif}
+.field-notes-lead {display:block;margin-top:2px;color:#f9f2e3;font:700 12px/1.25 'Barlow Condensed',Barlow,sans-serif}
 .field-notes-lead strong {font-weight:700}
 .field-notes-lead > span {color:#dfbd91;font-family:Barlow,sans-serif;font-weight:500}
 .field-notes-chevron {flex:none;color:#e1c293;width:11px}
