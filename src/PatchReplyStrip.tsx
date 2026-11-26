@@ -39,6 +39,21 @@ export function PatchReplyStrip({width,height,safe,choices,choiceSetKey,speaker,
    list.current.scrollLeft=start.left-dx;
   }
  };
+ const touchEnd=(event:React.TouchEvent)=>{
+  // Mobile browsers can suppress the compatibility click immediately following
+  // a scroll. Finish a verified tap here, and cancel that later click.
+  event.stopPropagation();
+  if(event.cancelable)event.preventDefault();
+  const start=press.current,touch=event.changedTouches[0];
+  press.current=null;
+  if(!start?.button||start.dragged||event.touches.length||!touch)return;
+  if(Math.hypot(touch.clientX-start.x,touch.clientY-start.y)>7)return;
+  if(buttonAt(document.elementFromPoint(touch.clientX,touch.clientY))!==start.button)return;
+  const id=start.button.getAttribute('data-choice');
+  keyboardChoice.current=false;
+  if(id!==null)onChoose(id);
+  else onClose();
+ };
  const activate=(event:React.MouseEvent)=>{
   const start=press.current;
   press.current=null;
@@ -55,7 +70,7 @@ export function PatchReplyStrip({width,height,safe,choices,choiceSetKey,speaker,
     '--reply-gap':gap+'px','--reply-width':cardWidth+'px','--reply-font':fontSize+'px'} as React.CSSProperties}
    onPointerDown={down} onPointerMove={move} onPointerUp={e=>e.stopPropagation()}
    onPointerCancel={e=>{press.current=null;e.stopPropagation()}}
-   onClickCapture={activate} onClick={e=>e.stopPropagation()} onWheel={e=>e.stopPropagation()}>
+   onTouchEnd={touchEnd} onClickCapture={activate} onClick={e=>e.stopPropagation()} onWheel={e=>e.stopPropagation()}>
    <div className="patch-reply-label" aria-hidden="true" style={{visibility:choices.length?'visible':'hidden'}}>
     YOUR REPLY<span/>
    </div>
