@@ -65,6 +65,7 @@ function meetingShot(w:World,width:number,height:number,detail:number):Shot{
  const subjectSpan=Math.max(q.position.x+43,player.x+39)-Math.min(q.position.x-43,player.x-39);
  const headroom=Math.max(q.position.y,player.y)+3-Math.min(q.position.y-(q.servoInstalled?93:71),player.y-119);
  const fitted=Math.min(Math.max(90,stageRight-stageLeft)/subjectSpan,(stageBottom-stageTop)/headroom,3.25);
+ const greetingScale=.70*fitted*.90;
  const closeScale=.70*fitted*mix(.90,1,detail);
  // Frame the actual larger silhouettes around that lens. Both outlines are
  // measured from their registered feet in atlas pixels.
@@ -72,25 +73,26 @@ function meetingShot(w:World,width:number,height:number,detail:number):Shot{
  const left=Math.min(q.position.x-patchHalf,player.x-39),right=Math.max(q.position.x+patchHalf,player.x+39);
  const top=Math.min(q.position.y-(q.servoInstalled?200:158)*PATCH_ROBOT_SCALE,player.y-119),bottom=Math.max(q.position.y,player.y)+3;
  const groupWidth=(right-left)*closeScale;
- // Plant the actors just above the fixed reply row. The same footing works
- // across turns and leaves the upper part of the shot open for speech.
+ // Keep the pair beside the shelter, with room on their right for speech
+ // and a clear stretch of ground between their feet and the replies.
  const controlsTop=controls?.y??patchReplyStripLayout(width,height,safe).bounds.y;
- const stageX=clamp(width*(wide ? .44 : .5),stageLeft+groupWidth/2,width-safe.right-12-groupWidth/2);
+ const stageX=clamp(width*(wide ? .414 : .5),stageLeft+groupWidth/2,width-safe.right-12-groupWidth/2);
  const groupHeight=(bottom-top)*closeScale;
- const stageY=clamp(height*(wide ? .49 : .46),safe.top+10+groupHeight/2,controlsTop-12-groupHeight/2);
+ // In landscape the closer answer shot grows down from the greeting's
+ // headroom, so a page turn doesn't push the plaque across the shelter.
+ const detailOffset=wide?(bottom-top)*(closeScale-greetingScale)/2:0;
+ const stageY=clamp(height*(wide ? .445 : .46)+detailOffset,safe.top+10+groupHeight/2,controlsTop-12-groupHeight/2);
  const cx=(left+right)*.5+(width*.5-stageX)/closeScale;
  const cy=(top+bottom)*.5+(height*.5-stageY)/closeScale;
  return {cx,cy,scale:closeScale,width,height};
 }
 
-/** Gentle edge shading and letterbox bars around the live meeting. */
+/** Shade the edges of the full-bleed scene during the camera transition. */
 export function drawPatchMeeting(ctx:CanvasRenderingContext2D,width:number,height:number,amount:number){
  if(amount<=0)return;
  ctx.save();ctx.globalAlpha=amount;
  const vignette=ctx.createRadialGradient(width*.445,height*.37,Math.min(width,height)*.22,width*.445,height*.37,Math.hypot(width,height)*.66);
  vignette.addColorStop(0,'#11191500');vignette.addColorStop(.64,'#10171413');vignette.addColorStop(1,'#080d0bab');
  ctx.fillStyle=vignette;ctx.fillRect(0,0,width,height);
- const matte=Math.min(16,Math.round(height*.029))*amount;
- ctx.fillStyle='#101410';ctx.fillRect(0,0,width,matte);ctx.fillRect(0,height-matte,width,matte);
  ctx.restore();
 }

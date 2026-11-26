@@ -1,7 +1,8 @@
 import React,{useLayoutEffect,useRef} from 'react';
 import {
- isPatchCommand,patchReplyStripLayout,patchReplyWidth,primaryPatchReply,type PatchReplyStripProps,
+ isPatchCommand,patchReplyStripLayout,patchReplySizing,primaryPatchReply,type PatchReplyStripProps,
 } from './patch-reply-strip-layout';
+import {usePatchReplyEdges} from './use-patch-reply-edges';
 import './patch-reply-strip.css';
 
 const art='/survival/patch-ui-v1/';
@@ -10,8 +11,19 @@ const buttonAt=(target:EventTarget|null)=>target instanceof Element?target.close
 
 export function PatchReplyStrip({width,height,safe,choices,choiceSetKey,speaker,command,onChoose,onClose}:PatchReplyStripProps){
  const list=useRef<HTMLDivElement>(null),press=useRef<Press|null>(null),keyboardChoice=useRef(false);
- const {bounds,row,gap,closeWidth,fontSize,listWidth}=patchReplyStripLayout(width,height,safe);
- const cardWidth=patchReplyWidth(listWidth,gap,choices.length,fontSize);
+ const {bounds,row,paintHeight,gap,closeWidth,closeSize,fontSize,listWidth}=patchReplyStripLayout(width,height,safe);
+ const {minimum,padding,grow}=patchReplySizing(listWidth,gap,choices.length,fontSize);
+ const {left,right,measure}=usePatchReplyEdges();
+ useLayoutEffect(()=>{
+  const el=list.current;
+  if(!el)return;
+  const read=()=>measure(el.scrollLeft,el.clientWidth,el.scrollWidth);
+  const observer=new ResizeObserver(read);
+  observer.observe(el);
+  for(const button of el.children)observer.observe(button);
+  read();
+  return ()=>observer.disconnect();
+ },[choiceSetKey,choices.length,measure]);
  useLayoutEffect(()=>{
   press.current=null;
   if(!list.current)return;
@@ -67,7 +79,7 @@ export function PatchReplyStrip({width,height,safe,choices,choiceSetKey,speaker,
   <div aria-hidden="true" className="patch-reply-shade" style={{top:bounds.y-28}}/>
   <div className="patch-reply-strip" role="group" aria-label={speaker+' response choices'}
    style={{left:bounds.x,top:bounds.y,width:bounds.width,height:bounds.height,
-    '--reply-gap':gap+'px','--reply-width':cardWidth+'px','--reply-font':fontSize+'px'} as React.CSSProperties}
+    '--reply-gap':gap+'px','--reply-paint':paintHeight+'px','--reply-close-size':closeSize+'px','--reply-min':minimum+'px','--reply-pad':padding+'px','--reply-grow':grow,'--reply-font':fontSize+'px'} as React.CSSProperties}
    onPointerDown={down} onPointerMove={move} onPointerUp={e=>e.stopPropagation()}
    onPointerCancel={e=>{press.current=null;e.stopPropagation()}}
    onTouchEnd={touchEnd} onClickCapture={activate} onClick={e=>e.stopPropagation()} onWheel={e=>e.stopPropagation()}>
@@ -75,7 +87,9 @@ export function PatchReplyStrip({width,height,safe,choices,choiceSetKey,speaker,
     YOUR REPLY<span/>
    </div>
    <div className="patch-reply-row" style={{height:row}}>
-    <div className="patch-reply-list" ref={list}>
+    <div className="patch-reply-list" ref={list} onScroll={e=>{
+     const el=e.currentTarget;measure(el.scrollLeft,el.clientWidth,el.scrollWidth);
+    }}>
      {choices.map(choice=>{
       const primary=primaryPatchReply(choice.id),selected=isPatchCommand(choice.id)&&command===choice.id;
       return <button type="button" key={choice.id} data-choice={choice.id} data-primary={primary}
@@ -86,9 +100,11 @@ export function PatchReplyStrip({width,height,safe,choices,choiceSetKey,speaker,
       </button>;
      })}
     </div>
+    {left&&<span aria-hidden="true" className="patch-reply-fade patch-reply-fade--left"/>}
+    {right&&<span aria-hidden="true" className="patch-reply-fade patch-reply-fade--right" style={{right:closeWidth+gap}}/>}
     <button type="button" className="patch-reply-close" aria-label="Close conversation"
      title="Close conversation" style={{width:closeWidth,height:row}} onClick={onClose}>
-     <img src={art+'close.png'} alt="" draggable={false}/>
+     <img src={art+'reply-close.webp'} alt="" draggable={false}/>
     </button>
    </div>
   </div>

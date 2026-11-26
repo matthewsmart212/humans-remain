@@ -9,7 +9,7 @@ import {patchJournalStage} from './patch-journal';
 import {patchDialogueReply} from './patch-dialogue';
 import {PatchReplyStrip} from './PatchReplyStrip';
 import {patchReplyStripLayout} from './patch-reply-strip-layout';
-import {conversationBubbleMetrics,conversationBubblePath,placeConversationBubble} from './patch-bubble-placement';
+import {conversationBubbleMetrics,conversationBubbleTail,placeConversationBubble} from './patch-bubble-placement';
 import type {MenuInsets} from './station-menu-layout';
 import {patchChatActors,subscribePatchChatActors,setPatchChatBounds} from './patch-chat-bounds';
 import './patch-panel.css';
@@ -176,17 +176,19 @@ function WorldSpeech({world,frame,metrics,replyTop,speaker,section,more,onAdvanc
  const bubbleHeight=2*padY+headerHeight+lineHeight*section.lines;
  const placement=actors&&placeConversationBubble(width,height,safe,replyTop,actors.patch,actors.survivor,bubbleWidth,bubbleHeight);
  const pressed=useRef<{x:number;y:number}|null>(null);
+ const tail=placement&&conversationBubbleTail(placement);
  return <div className="patch-chat-bubble" style={{left:placement?.x,top:placement?.y,width:bubbleWidth,height:bubbleHeight,
   visibility:placement?'visible':'hidden',padding:padY+'px '+padX+'px'}}>
   <svg className="patch-chat-pointer" aria-hidden="true" width={bubbleWidth} height={bubbleHeight}>
-   {placement&&<><defs>
-    <linearGradient id="patch-pine" x2=".85" y2="1" gradientUnits="objectBoundingBox">
-     <stop stopColor="#293d33"/><stop offset=".55" stopColor="#20322a"/><stop offset="1" stopColor="#192922"/>
-    </linearGradient>
-    <linearGradient id="patch-copper" x2="1" y2=".4">
-     <stop stopColor="#b68f62"/><stop offset=".29" stopColor="#d4ad7c"/><stop offset=".66" stopColor="#886341"/><stop offset="1" stopColor="#bf9b73"/>
-    </linearGradient>
-   </defs><path d={conversationBubblePath(placement)} stroke="url(#patch-copper)" strokeWidth="1.5" strokeLinejoin="round" fill="url(#patch-pine)"/></>}
+   <image href="/survival/patch-ui-v1/speech-plate.webp" width={bubbleWidth} height={bubbleHeight} preserveAspectRatio="none"/>
+   {tail&&<>
+    <defs><linearGradient id="patch-copper" x2="1" y2=".6">
+     <stop stopColor="#dfa66d"/><stop offset=".4" stopColor="#b77e4c"/><stop offset=".8" stopColor="#97673f"/><stop offset="1" stopColor="#d29a61"/>
+    </linearGradient></defs>
+    <path d={tail.fill} fill="#1a2823"/>
+    <path d={tail.outline} stroke="#402d20" strokeWidth="2.3" strokeLinejoin="round" fill="none"/>
+    <path d={tail.outline} stroke="url(#patch-copper)" strokeWidth="1.3" strokeLinejoin="round" fill="none"/>
+   </>}
   </svg>
   <div className="patch-chat-transcript" role="status" aria-live="polite" aria-atomic="true">
    <div className="patch-chat-identity" style={{height:headerHeight}}>

@@ -11,13 +11,13 @@ const overlap=(a:MenuRect,b:MenuRect)=>
 export function conversationBubbleMetrics(width:number,height:number,safe:MenuInsets,replyTop:number,fontScale=1){
  const scale=clamp(Math.min(width/844,height/390),.94,1.4);
  const font=Math.round(17*scale*clamp(fontScale,1,1.4));
- const lineHeight=Math.ceil(font*1.26),padX=Math.round(15*scale),padY=Math.round(9*scale);
- const headerHeight=Math.ceil(font*1.5);
+ const lineHeight=Math.ceil(font*1.26),padX=Math.round(22*scale),padY=Math.round(12*scale);
+ const headerHeight=Math.round(font*1.69);
  const usableWidth=Math.max(1,width-safe.left-safe.right-20);
  // A compact landscape screen needs room beside the subjects when there is
  // too little headroom for the measured page (e.g. the 568-point SE).
  const minWidth=width>height?Math.min(272*scale,usableWidth*.40):272*scale;
- const bubbleWidth=Math.min(usableWidth,Math.round(clamp(width*.36,minWidth,456*scale)));
+ const bubbleWidth=Math.min(usableWidth,Math.round(clamp(width*.337,minWidth,456*scale)));
  const stageHeight=Math.max(1,replyTop-safe.top-20);
  const maxLines=clamp(Math.floor((stageHeight*.49-2*padY-headerHeight)/lineHeight),1,4);
  return {width:bubbleWidth,font,lineHeight,padX,padY,headerHeight,maxLines};
@@ -37,8 +37,8 @@ export function placeConversationBubble(width:number,height:number,safe:MenuInse
  const head=Math.min(patch.y,survivor.y);
  const gap=12;
  const candidates=[
-  [x+12,patch.y-gap-h], [x-w-12,patch.y-gap-h],
-  [x+12,head-gap-h],[x-w-12,head-gap-h],
+  [x+32,patch.y-gap-h], [x-w-12,patch.y-gap-h],
+  [x+32,head-gap-h],[x-w-12,head-gap-h],
   [x-w*.5,head-gap-h],
   [right(patch)+gap,y-h*.78],[patch.x-gap-w,y-h*.78],
   [Math.max(right(patch),right(survivor))+gap,y-h*.78],[Math.min(patch.x,survivor.x)-gap-w,y-h*.78],
@@ -76,19 +76,36 @@ export function placeConversationBubble(width:number,height:number,safe:MenuInse
   }
  }
  const dx=targetX-tailX,dy=targetY-tailY;
- const reach=Math.min(.92,22/Math.max(1,Math.hypot(dx,dy)));
+ const reach=Math.min(.92,34/Math.max(1,Math.hypot(dx,dy)));
  return {...best,edge,tailX,tailY,tipX:tailX+dx*reach,tipY:tailY+dy*reach};
 }
 
-/** Continuous copper outline around both plaque and pointer, used by Skia and SVG. */
-export function conversationBubblePath(b:ConversationBubble){
- const {width:w,height:h,edge,tailX:x,tailY:y,tipX:tx,tipY:ty}=b;
- const pointer=(side:ConversationBubble['edge'],ax:number,ay:number,bx:number,by:number)=>
-  edge===side?`L ${ax} ${ay} L ${tx} ${ty} L ${bx} ${by}`:'';
- return [
-  'M 8 0', pointer('top',x-7,0,x+7,0), `H ${w-8} Q ${w} 0 ${w} 8`,
-  pointer('right',w,y-6,w,y+6), `V ${h-8} Q ${w} ${h} ${w-8} ${h}`,
-  pointer('bottom',x+7,h,x-7,h), `H 8 Q 0 ${h} 0 ${h-8}`,
-  pointer('left',0,y+6,0,y-6), 'V 8 Q 0 0 8 0 Z',
- ].join(' ');
+/** Fit the tail over the painted lip. Coordinates follow the slightly bowed
+ * edges of the text-free 434 × 151 enamel artwork, including its lower-left seam. */
+export function conversationBubbleTail(b:ConversationBubble){
+ const {edge,width:w,height:h,tailX:x,tailY:y,tipX:tx,tipY:ty}=b;
+ // On the preferred upper shoulder the left rail flows straight into the
+ // pointer, just like the painted plate. Cover the short corner seam.
+ if(edge==='bottom'&&tx<3){
+  const joinX=w*.004,joinY=h*.80,footX=Math.min(17,w*.065),footY=h*.94;
+  const outline=`M ${joinX} ${joinY} L ${tx} ${ty} L ${footX} ${footY}`;
+  const fill=outline+` l 1 -2.5 L ${joinX+2} ${joinY-1} Z`;
+  return {outline,fill};
+ }
+ const horizontal=edge==='bottom'||edge==='top';
+ const inset=edge==='top'||edge==='left'?1:-1;
+ const lip=(offset:number)=>{
+  if(horizontal){
+   const u=(x+offset)/w;
+   const v=edge==='bottom' ? .936+.058*u : .015+.021*Math.pow(Math.sin(u*Math.PI),4);
+   return {x:x+offset,y:h*v};
+  }
+  const v=(y+offset)/h;
+  return {x:w*(edge==='left' ? .015*(1-v) : 1-.014*v),y:y+offset};
+ };
+ const a=lip(-7),c=lip(7);
+ const outline=`M ${a.x} ${a.y} L ${tx} ${ty} L ${c.x} ${c.y}`;
+ const sealX=horizontal?0:2.4*inset,sealY=horizontal?2.4*inset:0;
+ const fill=outline+` l ${sealX} ${sealY} L ${a.x+sealX} ${a.y+sealY} Z`;
+ return {outline,fill};
 }

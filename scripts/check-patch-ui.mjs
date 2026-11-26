@@ -331,9 +331,12 @@ try{
   assert.equal(end.attrs['aria-label'],'Close conversation');
   assert.equal(end.parent,options.parent,'The close target has its own space outside the scroller');
   const buttons=descendants(options).filter(n=>n.tag==='button');
-  assert.deepEqual(buttons.map(n=>n.attrs['data-choice']),chat.choices.filter(c=>c.id!=='more').map(c=>c.id),'Choices retain their authored order and gates');
+  const choices=chat.choices.filter(c=>c.id!=='more');
+  const labels=buttons.map(n=>n.children.find(child=>child.tag==='span')?.text);
+  assert.deepEqual(buttons.map(n=>n.attrs['data-choice']),choices.map(c=>c.id),'Choices retain their authored order and gates');
+  assert.deepEqual(labels,choices.map(c=>c.label),'The visible reply text retains every authored word');
   assert.equal(world.stationPanel,undefined);
-  return {root,tray,options,end,buttons,labels:buttons.map(n=>n.attrs['aria-label']??n.children.find(child=>child.tag==='span')?.text)};
+  return {root,tray,options,end,buttons,labels};
  };
  assert.equal(chatMarkup(),'','Approaching alone reveals no controls');
  assert(m.inspectPatch(world));
@@ -381,6 +384,13 @@ try{
   assert.equal(style.value(tray,'position'),'absolute');
   assert.equal(style.value(tray,'pointer-events'),'none','The uncovered world remains interactive');
   for(const button of [...buttons,end])assert(parseFloat(style.value(button,'min-height'))>=44,'All reply targets are at least 44px tall');
+  for(const button of buttons){
+   const label=button.children.find(child=>child.tag==='span');
+   assert(label?.text.length,'Every reply keeps its complete authored label');
+   assert.equal(style.value(button,'width'),'max-content','Each frame grows to the width of its own reply and icon');
+   assert.equal(style.value(label,'white-space'),'nowrap','A label occupies one line even when its row overflows');
+   assert.notEqual(style.value(label,'text-overflow'),'ellipsis','The row preserves all of each response');
+  }
   assert.equal(style.value(options,'overflow-x'),'auto','All replies can be reached horizontally');
   assert.equal(style.value(options,'touch-action'),'none','A drag at either edge stays with the reply strip');
   assert.equal(style.value(end,'flex'),'none','The close target cannot collapse as replies overflow');
@@ -388,15 +398,13 @@ try{
   assert(bounds.x>=device.safe.left&&bounds.x+bounds.width<=device.width-device.safe.right);
   assert(bounds.y>=device.safe.top&&bounds.y+bounds.height<=device.height-device.safe.bottom);
   assert(closeWidth>=44&&row>=44&&listWidth+gap+closeWidth===bounds.width,'Every choice set reserves a separate 44-point close target');
-  for(const count of [1,3,6]){
-   const buttonWidth=m.patchReplyWidth(listWidth,gap,count,fontSize);
-   assert(buttonWidth>=Math.min(listWidth,150)&&buttonWidth<=listWidth,'The chip width stays readable');
-   if(count===6)assert(count*buttonWidth+(count-1)*gap>listWidth,'The real six-choice branch scrolls on phones');
-  }
+  const count=questions.labels.length;
+  const {minimum}=m.patchReplySizing(listWidth,gap,count,fontSize);
+  assert(count*minimum+(count-1)*gap>listWidth,'The six shelter choices overflow into the scroller before the close target');
  }
  m.closePatchChat(world);
  assert.equal(chatMarkup(),'');
  console.log(`PASS: Patch UI real markup, complete app CSS cascade (canonical paper baseline minimum ${minimumContrast.toFixed(2)}:1), original pale-ink regression fixture, exact lore, retained zero-weight note, note emblem, back/range behavior and staged commands.`);
  console.log(`PASS: actual ${raster.width}×${raster.height} paper, ${raster.samples} central reading-area pixels over black; minimum body/signature contrast ${minimumBodyRasterContrast.toFixed(2)}:1, provenance ${minimumMetadataRasterContrast.toFixed(2)}:1, alpha ${raster.minimumAlpha}/255. Native ink declarations pass the same texture thresholds.`);
- console.log(`PASS: shared story safe-area bounds and scroll/text-width constraints at ${geometry.join('; ')}; ordered horizontal replies, paged speech, speaker identity and independent close target.`);
+ console.log(`PASS: shared story safe-area bounds and scroll/text-width constraints at ${geometry.join('; ')}; ordered single-line replies, paged speech, speaker identity and independent close target.`);
 }finally{fs.rmSync(temporary,{recursive:true,force:true})}

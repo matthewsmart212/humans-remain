@@ -12,13 +12,16 @@
  font:700 10px/1.1 system-ui,sans-serif; letter-spacing:1.7px;
 }
 .patch-reply-label span {flex:1; height:1px; background:linear-gradient(to right,#b89c6999,#b89c691c);}
-.patch-reply-row {display:flex; align-items:center; gap:var(--reply-gap); min-width:0;}
+.patch-reply-row {position:relative; display:flex; align-items:center; gap:var(--reply-gap); min-width:0;}
 .patch-reply-list {
  display:flex; align-items:stretch; gap:var(--reply-gap); height:100%; min-width:0; flex:1 1 0;
  overflow-x:auto; overflow-y:hidden; overscroll-behavior-x:contain; touch-action:none;
  scrollbar-width:none; -webkit-overflow-scrolling:touch;
 }
 .patch-reply-list::-webkit-scrollbar {display:none;}
+.patch-reply-fade {position:absolute; top:0; bottom:0; width:18px; pointer-events:none;}
+.patch-reply-fade--left {left:0; background:linear-gradient(to right,#171c16c7,transparent);}
+.patch-reply-fade--right {background:linear-gradient(to left,#171c16c7,transparent);}
 .camp-studio .field-kit .patch-reply-list button,
 .camp-studio .field-kit .patch-reply-close {
  display:flex; justify-content:center; align-items:center; box-sizing:border-box; margin:0;
@@ -26,8 +29,8 @@
  color:#fff2d9; box-shadow:none; cursor:pointer; appearance:none; -webkit-appearance:none;
 }
 .camp-studio .field-kit .patch-reply-list button {
- flex:0 0 var(--reply-width); gap:7px; padding:0 12px;
- background:transparent url('/survival/patch-ui-v1/reply-pine.webp') center/100% 100% no-repeat;
+ flex:var(--reply-grow) 0 auto; width:max-content; min-width:var(--reply-min); gap:7px; padding:0 var(--reply-pad);
+ background:transparent url('/survival/patch-ui-v1/reply-pine.webp') center/100% var(--reply-paint) no-repeat;
  font:600 var(--reply-font)/1.14 system-ui,sans-serif; text-transform:none; letter-spacing:normal;
  text-shadow:0 1px 2px #16120dd9; touch-action:none;
 }
@@ -35,9 +38,9 @@
  background-image:url('/survival/patch-ui-v1/reply-amber.webp');
 }
 .patch-reply-list button img {width:1.25em; height:1.25em; flex:none; object-fit:contain; filter:brightness(1.2);}
-.patch-reply-list button span {min-width:0; text-align:center; white-space:normal;}
+.patch-reply-list button span {flex:none; text-align:center; white-space:nowrap;}
 .patch-reply-list button i {color:#efba69; font-style:normal;}
 .camp-studio .field-kit .patch-reply-close {flex:none; background:transparent; touch-action:manipulation;}
-.patch-reply-close img {width:32px; height:32px; object-fit:contain;}
+.patch-reply-close img {width:var(--reply-close-size); height:var(--reply-close-size); object-fit:contain;}
 .patch-reply-strip button:active {filter:brightness(1.15);}
 .patch-reply-strip button:focus-visible {outline:2px solid #ffe3a5; outline-offset:-4px;}
