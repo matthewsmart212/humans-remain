@@ -1,0 +1,81 @@
+import React,{useLayoutEffect,useRef} from 'react';
+import {
+ isPatchCommand,patchReplyStripLayout,patchReplyWidth,primaryPatchReply,type PatchReplyStripProps,
+} from './patch-reply-strip-layout';
+import './patch-reply-strip.css';
+
+const art='/survival/patch-ui-v1/';
+type Press={button:Element|null;pointer:number;x:number;y:number;left:number;inList:boolean;dragged:boolean};
+const buttonAt=(target:EventTarget|null)=>target instanceof Element?target.closest('button'):null;
+
+export function PatchReplyStrip({width,height,safe,choices,choiceSetKey,speaker,command,onChoose,onClose}:PatchReplyStripProps){
+ const list=useRef<HTMLDivElement>(null),press=useRef<Press|null>(null),keyboardChoice=useRef(false);
+ const {bounds,row,gap,closeWidth,fontSize,listWidth}=patchReplyStripLayout(width,height,safe);
+ const cardWidth=patchReplyWidth(listWidth,gap,choices.length,fontSize);
+ useLayoutEffect(()=>{
+  press.current=null;
+  if(!list.current)return;
+  list.current.scrollLeft=0;
+  if(keyboardChoice.current){
+   list.current.querySelector('button')?.focus({preventScroll:true});
+   keyboardChoice.current=false;
+  }
+ },[choiceSetKey]);
+
+ const down=(event:React.PointerEvent)=>{
+  event.stopPropagation();
+  press.current={button:buttonAt(event.target),pointer:event.pointerId,x:event.clientX,y:event.clientY,left:list.current?.scrollLeft??0,inList:list.current?.contains(event.target as Node)??false,dragged:!event.isPrimary};
+ };
+ const move=(event:React.PointerEvent)=>{
+  event.stopPropagation();
+  const start=press.current;
+  if(!start||start.pointer!==event.pointerId)return;
+  const dx=event.clientX-start.x;
+  if(Math.hypot(dx,event.clientY-start.y)>7)start.dragged=true;
+  // Claim a horizontal drag after the tap tolerance. The browser's history swipe
+  // would otherwise take over when a finger keeps moving beyond the last reply.
+  if(start.dragged&&start.inList&&event.buttons!==0&&list.current){
+   if(!list.current.hasPointerCapture(event.pointerId))list.current.setPointerCapture(event.pointerId);
+   list.current.scrollLeft=start.left-dx;
+  }
+ };
+ const activate=(event:React.MouseEvent)=>{
+  const start=press.current;
+  press.current=null;
+  // Inspect can unmount under a finger; its mouse-compatible click may arrive
+  // on the new HUD. Only a complete press on this control can activate it.
+  if(event.detail>0&&(!start||start.dragged||start.button!==buttonAt(event.target))){
+   event.preventDefault();event.stopPropagation();
+  }
+ };
+ return <>
+  <div aria-hidden="true" className="patch-reply-shade" style={{top:bounds.y-28}}/>
+  <div className="patch-reply-strip" role="group" aria-label={speaker+' response choices'}
+   style={{left:bounds.x,top:bounds.y,width:bounds.width,height:bounds.height,
+    '--reply-gap':gap+'px','--reply-width':cardWidth+'px','--reply-font':fontSize+'px'} as React.CSSProperties}
+   onPointerDown={down} onPointerMove={move} onPointerUp={e=>e.stopPropagation()}
+   onPointerCancel={e=>{press.current=null;e.stopPropagation()}}
+   onClickCapture={activate} onClick={e=>e.stopPropagation()} onWheel={e=>e.stopPropagation()}>
+   <div className="patch-reply-label" aria-hidden="true" style={{visibility:choices.length?'visible':'hidden'}}>
+    YOUR REPLY<span/>
+   </div>
+   <div className="patch-reply-row" style={{height:row}}>
+    <div className="patch-reply-list" ref={list}>
+     {choices.map(choice=>{
+      const primary=primaryPatchReply(choice.id),selected=isPatchCommand(choice.id)&&command===choice.id;
+      return <button type="button" key={choice.id} data-choice={choice.id} data-primary={primary}
+       aria-pressed={isPatchCommand(choice.id)?selected:undefined}
+       onClick={event=>{keyboardChoice.current=event.detail===0;onChoose(choice.id)}}>
+       {primary&&<img alt="" draggable={false} src={art+(choice.id==='diagnose'?'wrench':'follow')+'.png'}/>}
+       <span>{choice.label}</span>{selected&&<i aria-hidden="true">✓</i>}
+      </button>;
+     })}
+    </div>
+    <button type="button" className="patch-reply-close" aria-label="Close conversation"
+     title="Close conversation" style={{width:closeWidth,height:row}} onClick={onClose}>
+     <img src={art+'close.png'} alt="" draggable={false}/>
+    </button>
+   </div>
+  </div>
+ </>;
+}

@@ -118,96 +118,44 @@
 .patch-chat-hud {
  --patch-safe-top: env(safe-area-inset-top,0px); --patch-safe-right: env(safe-area-inset-right,0px);
  --patch-safe-bottom: env(safe-area-inset-bottom,0px); --patch-safe-left: env(safe-area-inset-left,0px);
- --patch-brass: #bb9860; --patch-corner: clamp(15px,2.7vw,36px);
- position: absolute; z-index: 3; box-sizing: border-box; pointer-events: none; outline: none;
+ position: absolute; inset: 0; z-index: 3; pointer-events: none; outline: none;
 }
-.patch-chat-frame {
- background: linear-gradient(135deg,#20444352,#071b2066 75%),url('/survival/patch-ui-v1/panel-texture.webp') center/210px repeat #103433;
- border-radius: 9px; box-shadow: inset 0 0 0 1px #c09b65,inset 0 0 0 3px #142b2b,inset 0 0 0 4px #906f404d,0 3px 8px #07131299;
+.patch-chat-bubble {
+ position: absolute; box-sizing: border-box; pointer-events: auto; touch-action: manipulation;
+ border-radius: 11px; color: #fcf0d7; text-align: left;
+ filter: drop-shadow(0 2px 3px #100f0b88);
 }
-.patch-chat-corners { position: absolute; inset: 0; pointer-events: none; z-index: 1; }
-.patch-chat-corners i {
- position: absolute; width: var(--patch-corner); height: var(--patch-corner);
- background: url('/survival/patch-ui-v1/copper-corner.png') center/100% 100% no-repeat;
+.patch-chat-bubble::before,.patch-chat-bubble::after {
+ content: ''; z-index: 1; position: absolute; width: 3px; height: 3px; background: #987650; border-radius: 100%;
+ box-shadow: inset 0 .75px .25px #dbb88a,0 1px 1px #0c100b; pointer-events: none;
 }
-.patch-chat-corners i:first-child { left: 0; top: 0; }
-.patch-chat-corners i:nth-child(2) { right: 0; top: 0; transform: scaleX(-1); }
-.patch-chat-corners i:nth-child(3) { right: 0; bottom: 0; transform: rotate(180deg); }
-.patch-chat-corners i:last-child { left: 0; bottom: 0; transform: scaleY(-1); }
-.patch-chat-speech,.patch-chat-actions { position: absolute; box-sizing: border-box; min-height: 0; min-width: 0; }
-.patch-chat-speech { display: flex; align-items: center; gap: calc(var(--patch-pad) * 1.4); padding: var(--patch-pad) calc(var(--patch-pad) * 1.55); }
-.patch-chat-portrait { flex: none; width: var(--patch-portrait); height: var(--patch-portrait); }
-.patch-chat-portrait img { width: 100%; height: 100%; object-fit: contain; filter: drop-shadow(0 2px 2px #030f10); }
-.patch-chat-transcript { display: flex; flex-direction: column; align-items: flex-start; gap: 4px; max-height: 100%; min-height: 0; min-width: 0; }
-.patch-chat-name {
- flex: none; display: block; padding: 1px 12px 2px; min-width: 3.2em; text-align: center; box-sizing: border-box;
- background: linear-gradient(170deg,#f0d79a,#c5a264 55%,#ac854e); color: #24271e;
- clip-path: polygon(5px 0,calc(100% - 5px) 0,100% 5px,100% calc(100% - 5px),calc(100% - 5px) 100%,5px 100%,0 calc(100% - 5px),0 5px);
- font: 800 calc(var(--patch-speech-size) * 1.02)/1.1 'Barlow Condensed',sans-serif; letter-spacing: .08em;
+.patch-chat-bubble::before { top: 6px; left: 7px; }
+.patch-chat-bubble::after { bottom: 6px; right: 7px; }
+.patch-chat-transcript { position: relative; }
+.patch-chat-pointer { position: absolute; inset: 0; pointer-events: none; overflow: visible; }
+.patch-chat-identity {
+ position: relative; box-sizing: border-box; display: flex; align-items: baseline; gap: 8px;
+ color: #eaa757; text-transform: uppercase; font: 750 calc(var(--patch-font) * .93)/1.16 system-ui,sans-serif;
+ letter-spacing: .065em; text-shadow: 0 1px 2px #0b140f;
 }
-.patch-chat-identity { display: flex; align-items: baseline; gap: 8px; }
-.patch-chat-identity b { font: 800 calc(var(--patch-speech-size) * 1.14)/1.1 'Barlow Condensed',sans-serif; text-transform: uppercase; letter-spacing: .065em; color: #edc787; }
-.patch-chat-identity small { font: 600 calc(var(--patch-choice-size) * .86)/1.1 Barlow,sans-serif; color: #c6b28e; }
-.patch-chat-copy { min-height: 0; overflow-y: auto; overscroll-behavior: contain; pointer-events: auto; touch-action: pan-y; }
-.camp-studio .field-kit .patch-chat-hud p.patch-chat-line {
- color: #fcf2d6; font: 600 var(--patch-speech-size)/1.24 Barlow,sans-serif; margin: 0;
- text-shadow: 0 1px 2px #08181c; white-space: normal; overflow-wrap: break-word;
+.patch-chat-identity::after {
+ content: ''; position: absolute; left: 0; right: 0; bottom: 4px; height: 1px;
+ background: linear-gradient(90deg,#a485566e,#c8ae701a 90%,transparent);
 }
-.patch-chat-actions { padding: var(--patch-pad); display: flex; flex-direction: column; }
-.patch-chat-greeting .patch-chat-actions { justify-content: center; }
-.patch-chat-greeting[data-wide=true] .patch-chat-actions::before {
- content: ''; position: absolute; top: 13%; bottom: 13%; left: 0; width: 1px;
- background: linear-gradient(transparent,#bea377 18%,#bea377 82%,transparent);
+.patch-chat-name { font-weight: 750; }
+.patch-chat-identity small { color: #d3c9ae; font-size: .82em; }
+.patch-chat-next { margin-left: auto; color: #e2b477; }
+.patch-chat-line {
+ display: block; font: 600 var(--patch-font)/var(--patch-leading) system-ui,sans-serif;
+ color: #fcf0d7; text-transform: none; letter-spacing: normal; white-space: normal; text-wrap: wrap; text-align: left;
 }
-.patch-chat-branch .patch-chat-actions { padding-top: 0; padding-bottom: calc(var(--patch-pad) * 1.05); }
-.camp-studio .field-kit .patch-chat-actions h3 {
- margin: 0 4px; flex: none; min-height: var(--patch-heading); display: flex; align-items: center;
- padding: 0 calc(var(--patch-heading) + 2px) 0 4px; border-bottom: 1px solid #99875588;
- font: 700 calc(var(--patch-speech-size) * 1.19)/1.1 'Barlow Condensed',sans-serif;
- letter-spacing: .025em; color: #f7e8c5;
+.patch-chat-probe { position: absolute; visibility: hidden; pointer-events: none; }
+.camp-studio .field-kit button.patch-chat-advance {
+ position: absolute; inset: 0; display: block; width: 100%; height: 100%; min-height: 44px; margin: 0;
+ border: 0; border-radius: inherit; background: transparent; box-shadow: none; pointer-events: auto; touch-action: manipulation;
 }
-.patch-chat-options {
- display: flex; flex-direction: column; min-width: 0; min-height: 0;
- overflow-y: auto; overscroll-behavior: contain; touch-action: pan-y; pointer-events: auto;
- scrollbar-width: thin; scrollbar-color: #99865c #142a2b;
+.camp-studio .field-kit button.patch-chat-advance:focus-visible { outline: 2px solid #e9be80; outline-offset: 1px; }
+@media(prefers-reduced-motion:no-preference) {
+ .patch-chat-bubble { animation: patch-speech-arrive .11s ease-out; }
+ @keyframes patch-speech-arrive { from { opacity: .3; } }
 }
-.patch-chat-greeting .patch-chat-options { gap: 4px; }
-.camp-studio .field-kit .patch-chat-hud button {
- display: flex; align-items: center; justify-content: flex-start; gap: var(--patch-pad);
- min-width: 0; min-height: 44px; flex: none; box-sizing: border-box; margin: 0; box-shadow: none; padding: 5px calc(var(--patch-pad) * 1.2);
- background: transparent; border: 0; border-radius: 0; font: 600 var(--patch-choice-size)/1.17 Barlow,sans-serif;
- text-align: left; text-wrap: pretty; color: #f4e9cd; pointer-events: auto;
-}
-.camp-studio .field-kit .patch-chat-options button { min-height: var(--patch-row,44px); }
-.camp-studio .field-kit .patch-chat-greeting .patch-chat-options button {
- border: 1px solid #aa925f; border-radius: 4px; background: linear-gradient(125deg,#244342,#152f30);
- box-shadow: inset 0 0 0 2px #142b2d;
-}
-.camp-studio .field-kit .patch-chat-greeting .patch-chat-options button:first-child { border-color: #f1c97f; color: #ffdf9e; }
-.camp-studio .field-kit .patch-chat-greeting .patch-chat-options button:first-child { margin-right: var(--patch-heading); }
-.patch-chat-diamond { width: 6px; height: 6px; margin-inline: 4px; flex: none; transform: rotate(45deg); border: 1px solid #b5aa80; }
-.patch-chat-options button:first-child .patch-chat-diamond { background: #e2ba73; }
-.patch-chat-icon { width: calc(var(--patch-choice-size) * 1.56); height: calc(var(--patch-choice-size) * 1.56); flex: none; object-fit: contain; }
-.patch-chat-chevron {
- width: 7px; height: 7px; flex: none; margin-left: auto; margin-right: 3px; transform: rotate(-45deg);
- border-right: 1.5px solid #d8bf89; border-bottom: 1.5px solid #d8bf89;
-}
-.camp-studio .field-kit .patch-chat-branch .patch-chat-options button { padding-left: calc(var(--patch-pad) * 1.5); border-bottom: 1px solid #777e665e; }
-.camp-studio .field-kit .patch-chat-branch .patch-chat-options button:first-child,
-.camp-studio .field-kit .patch-chat-options button[aria-pressed=true] {
- background: #455b45aa; box-shadow: inset 3px 0 #e0b974; color: #ffe4ac;
-}
-.camp-studio .field-kit .patch-chat-options button[aria-pressed=true] .patch-chat-chevron {
- width: 6px; height: 10px; border-color: #f4d492; transform: rotate(45deg);
-}
-.camp-studio .field-kit .patch-chat-options button:focus-visible,
-.camp-studio .field-kit .patch-chat-options button:active { background: #435c4b; outline: 2px solid #ebc47e; outline-offset: -2px; }
-@media(hover:hover) { .camp-studio .field-kit .patch-chat-options button:hover { background: #435b4a; } }
-.camp-studio .field-kit .patch-chat-hud .patch-chat-end {
- position: absolute; width: var(--patch-heading); height: var(--patch-heading); min-width: 44px; min-height: 44px; padding: 0; justify-content: center;
- right: var(--patch-pad); top: 0; color: #f7e5c2; background: transparent;
-}
-.camp-studio .field-kit .patch-chat-greeting .patch-chat-end { top: var(--patch-pad); }
-.patch-chat-end img { width: 72%; height: 72%; object-fit: contain; pointer-events: none; }
-.patch-chat-end:focus-visible { outline: 2px solid #f0cc8d; outline-offset: -2px; }
-.patch-chat-greeting[data-wide=false] .patch-chat-actions { padding-top: 0; }

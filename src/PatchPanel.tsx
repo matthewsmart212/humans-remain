@@ -1,5 +1,5 @@
 import {PATCH_LETTER_POSTSCRIPT,patchLetterDirections} from './patch-letter';
-import React,{useLayoutEffect,useRef,useState} from 'react';
+import React,{useCallback,useLayoutEffect,useRef,useState,useSyncExternalStore} from 'react';
 import type {World} from './survival-engine';
 import StationMenu from './StationMenu';
 import {LOOT_CHEST_ID,lootChestInMenuRange} from './loot-chest';
@@ -7,8 +7,11 @@ import {PATCH_NOTE_TEXT,PATCH_QUEST_TITLE} from './patch-quest';
 import {patchChat,choosePatchChat,closePatchChat,type PatchChat} from './patch-chat';
 import {patchJournalStage} from './patch-journal';
 import {patchDialogueReply} from './patch-dialogue';
-import {patchConversationLayout,localPatchRect,patchChoiceIcon} from './patch-conversation-layout';
-import {setPatchChatBounds} from './patch-chat-bounds';
+import {PatchReplyStrip} from './PatchReplyStrip';
+import {patchReplyStripLayout} from './patch-reply-strip-layout';
+import {conversationBubbleMetrics,conversationBubblePath,placeConversationBubble} from './patch-bubble-placement';
+import type {MenuInsets} from './station-menu-layout';
+import {patchChatActors,subscribePatchChatActors,setPatchChatBounds} from './patch-chat-bounds';
 import './patch-panel.css';
 
 type Props={world:World;onClose:()=>void;onChange:()=>void};
@@ -70,84 +73,132 @@ export function PatchChatHUD({world,onChange}:ChatProps){
  return chat?<PatchReplies world={world} chat={chat} onChange={onChange}/>:null;
 }
 
-const art='/survival/patch-ui-v1/';
-const emptyInsets={top:0,right:0,bottom:0,left:0};
-function Corners(){
- return <span aria-hidden="true" className="patch-chat-corners"><i/><i/><i/><i/></span>;
+type Frame={width:number;height:number;safe:MenuInsets};
+const initialFrame:Frame={width:844,height:390,safe:{top:0,right:0,bottom:0,left:0}};
+
+type SpeechSection={text:string;lines:number;singleLineWidth?:number};
+
+/** Read the browser's actual word positions with the same width and font as the bubble. */
+function measureSections(probe:HTMLElement,maxLines:number):SpeechSection[]{
+ const node=probe.firstChild;
+ if(!node||!node.textContent)return [];
+ const text=node.textContent,range=document.createRange();
+ const starts:number[]=[];
+ let lastY=-Infinity;
+ for(const word of text.matchAll(/\S+/g)){
+  range.setStart(node,word.index!);
+  range.setEnd(node,word.index!+word[0].length);
+  const y=range.getBoundingClientRect().top;
+  if(Math.abs(y-lastY)>1){starts.push(word.index!);lastY=y}
+ }
+ range.selectNodeContents(node);
+ const singleLineWidth=starts.length===1?Math.ceil(range.getBoundingClientRect().width):undefined;
+ const pages:SpeechSection[]=[];
+ for(let i=0;i<starts.length;i+=maxLines){
+  pages.push({text:text.slice(starts[i],starts[i+maxLines]).trim(),lines:Math.min(maxLines,starts.length-i),singleLineWidth});
+ }
+ return pages;
 }
 
 function PatchReplies({world,chat,onChange}:ChatProps&{chat:PatchChat}){
- const tray=useRef<HTMLElement>(null),choices=useRef<HTMLDivElement>(null),copy=useRef<HTMLDivElement>(null);
- const pressedChoice=useRef<EventTarget|null>(null),focusNext=useRef(false);
- const [frame,setFrame]=useState({width:844,height:390,safe:emptyInsets});
- const layout=patchConversationLayout(frame.width,frame.height,frame.safe,chat.view,chat.choices.length);
- const {hud,speech,actions,greeting}=layout;
+ const tray=useRef<HTMLElement>(null),probe=useRef<HTMLSpanElement>(null);
+ const [frame,setFrame]=useState(initialFrame);
+ const {width,height,safe}=frame;
+ const {bounds}=patchReplyStripLayout(width,height,safe);
+ const metrics=conversationBubbleMetrics(width,height,safe,bounds.y);
+ const {width:bubbleWidth,padX,font,lineHeight,maxLines}=metrics;
+ const [measurement,setMeasurement]=useState<{chat:PatchChat;pages:SpeechSection[]}>();
+ const [position,setPosition]=useState<{chat:PatchChat;index:number}>();
+ const pages=measurement?.chat===chat?measurement.pages:[{text:chat.line,lines:1}];
+ const index=position?.chat===chat?Math.min(position.index,pages.length-1):0;
+ const moreHere=index+1<pages.length;
+ const more=moreHere||chat.choices.some(c=>c.id==='more');
  useLayoutEffect(()=>{
-  const el=tray.current,kit=el?.closest('.field-kit');
-  if(!el||!kit)return;
+  const el=tray.current;
+  if(!el)return;
   const measure=()=>{
-   const rect=kit.getBoundingClientRect(),css=getComputedStyle(el);
+   const rect=el.getBoundingClientRect(),css=getComputedStyle(el);
    const inset=(edge:string)=>parseFloat(css.getPropertyValue('--patch-safe-'+edge))||0;
    setFrame({width:rect.width,height:rect.height,safe:{top:inset('top'),right:inset('right'),bottom:inset('bottom'),left:inset('left')}});
   };
-  el.focus({preventScroll:true});
-  measure();const observer=new ResizeObserver(measure);observer.observe(kit);
+  el.focus({preventScroll:true});measure();
+  const observer=new ResizeObserver(measure);observer.observe(el);
   window.addEventListener('resize',measure);
   return ()=>{observer.disconnect();window.removeEventListener('resize',measure);setPatchChatBounds(world,undefined)};
  },[world]);
  useLayoutEffect(()=>{
-  setPatchChatBounds(world,actions,frame.safe);
- },[world,actions.x,actions.y,actions.width,actions.height,frame.safe]);
+  setPatchChatBounds(world,bounds,safe);
+ },[world,bounds.x,bounds.y,bounds.width,bounds.height,safe]);
  useLayoutEffect(()=>{
-  if(choices.current)choices.current.scrollTop=0;
-  if(copy.current)copy.current.scrollTop=0;
-  if(focusNext.current){choices.current?.querySelector('button')?.focus({preventScroll:true});focusNext.current=false}
- },[chat]);
- const choose=(id:string,event:React.MouseEvent<HTMLButtonElement>)=>{
+  const el=probe.current;
+  if(!el)return;
+  const measure=()=>{
+   const sections=measureSections(el,maxLines);
+   if(sections.length)setMeasurement({chat,pages:sections});
+  };
+  measure();
+  const observer=new ResizeObserver(measure);observer.observe(el);
+  document.fonts?.addEventListener('loadingdone',measure);
+  return ()=>{observer.disconnect();document.fonts?.removeEventListener('loadingdone',measure)};
+ },[chat,bubbleWidth,font,lineHeight,padX,maxLines]);
+ const choose=(id:string)=>{
+  if(id==='back'&&index>0){setPosition({chat,index:index-1});return}
   const stage=patchJournalStage(world),command=world.patchQuest?.command;
-  focusNext.current=event.detail===0;
   if(choosePatchChat(world,id,chat))onChange(stage!==patchJournalStage(world)||command!==world.patchQuest?.command);
  };
+ const advance=()=>{
+  if(moreHere)setPosition({chat,index:index+1});
+  else if(more)choose('more');
+ };
+ const replies=chat.choices.filter(c=>c.id!=='more'&&(!moreHere||c.id==='back'));
  const end=()=>{if(closePatchChat(world))onChange()};
- const buttonKeys=(event:React.KeyboardEvent)=>{if(event.key==='Enter'||event.key===' ')event.stopPropagation()};
- return <section ref={tray} role="group" aria-label={`Replies to ${chat.speaker}`} tabIndex={-1}
-  className={`patch-chat-hud ${greeting?'patch-chat-greeting patch-chat-frame':'patch-chat-branch'}`} data-wide={layout.wide}
-  style={{left:hud.x,top:hud.y,width:hud.width,height:hud.height,
-   '--patch-pad':layout.pad+'px','--patch-row':layout.row+'px','--patch-heading':layout.header+'px',
-   '--patch-portrait':layout.portrait+'px','--patch-speech-size':layout.font+'px','--patch-choice-size':layout.labelFont+'px'} as React.CSSProperties}
-  onKeyDown={buttonKeys} onKeyUp={buttonKeys}
-  onPointerDown={e=>{pressedChoice.current=(e.target as HTMLElement).closest('button');e.stopPropagation()}}
-  onPointerCancel={()=>{pressedChoice.current=null}}
-  onClickCapture={e=>{
-   // Mobile browsers can retarget Inspect’s synthetic click after its release
-   // swaps the action hex for the reply controls underneath the finger.
-   if(e.detail>0&&pressedChoice.current!==(e.target as HTMLElement).closest('button')){
-    e.preventDefault();e.stopPropagation();
-   }
-   pressedChoice.current=null;
-  }}>
-  <div className={`patch-chat-speech ${greeting?'':'patch-chat-frame'}`} style={localPatchRect(speech,hud)}>
-   {!greeting&&<Corners/>}
-   <div className="patch-chat-portrait"><img src={art+'portrait.webp'} alt="Patch, a battered rescue robot with an amber lamp" draggable={false}/></div>
-   <div className="patch-chat-transcript" role="status" aria-live="polite" aria-atomic="true">
-    {greeting?<span className="patch-chat-name">{chat.speaker}</span>:
-     <span className="patch-chat-identity" aria-label={chat.speaker}><b>Patch</b><small>P-04</small></span>}
-    <div ref={copy} className="patch-chat-copy"><p className="patch-chat-line">{chat.line}</p></div>
-   </div>
-  </div>
-  <div className={`patch-chat-actions ${greeting?'':'patch-chat-frame'}`} style={localPatchRect(actions,hud)}>
-   {!greeting&&<><Corners/><h3>Ask Patch</h3></>}
-   <div ref={choices} className="patch-chat-options">
-    {chat.choices.map(choice=>{
-     const icon=(greeting||choice.id==='topic:damage')&&patchChoiceIcon(choice.id);
-     return <button type="button" key={choice.id} data-choice={choice.id} aria-pressed={['follow','stay','camp'].includes(choice.id)?world.patchQuest?.command===choice.id:undefined} onClick={e=>choose(choice.id,e)}>
-      {icon?<img className="patch-chat-icon" src={art+icon+'.png'} aria-hidden="true" alt="" draggable={false}/>:!greeting&&<i className="patch-chat-diamond" aria-hidden="true"/>}
-      <span>{choice.label}</span>{(greeting||choice.id==='more')&&<i aria-hidden="true" className="patch-chat-chevron"/>}
-     </button>;
-    })}
-   </div>
-   <button type="button" className="patch-chat-end" aria-label="End conversation" title="End conversation" onClick={end}><img src={art+'close.png'} alt="" draggable={false}/></button>
-  </div>
-  {greeting&&<Corners/>}
+ const buttonKeys=(e:React.KeyboardEvent)=>{if(e.key==='Enter'||e.key===' ')e.stopPropagation()};
+ return <section ref={tray} className="patch-chat-hud" role="group" aria-label={'Conversation with '+chat.speaker} tabIndex={-1}
+  onPointerDown={e=>e.stopPropagation()} onPointerUp={e=>e.stopPropagation()} onKeyDown={buttonKeys} onKeyUp={buttonKeys}
+  style={{'--patch-font':font+'px','--patch-leading':lineHeight+'px'} as React.CSSProperties}>
+  <span aria-hidden="true" ref={probe} className="patch-chat-line patch-chat-probe" style={{width:bubbleWidth-2*padX}}>{chat.line}</span>
+  <WorldSpeech world={world} frame={frame} metrics={metrics} replyTop={bounds.y} more={more}
+   speaker={chat.speaker} section={pages[index]} onAdvance={advance}/>
+  <PatchReplyStrip width={width} height={height} safe={safe} choices={replies} speaker={chat.speaker}
+   choiceSetKey={[chat.view,chat.question,...replies.map(c=>c.id)].join('|')} command={world.patchQuest?.command} onChoose={choose} onClose={end}/>
  </section>;
+}
+
+type BubbleProps={world:World;frame:Frame;metrics:ReturnType<typeof conversationBubbleMetrics>;replyTop:number;
+ speaker:string;section:SpeechSection;more:boolean;onAdvance:()=>void};
+
+function WorldSpeech({world,frame,metrics,replyTop,speaker,section,more,onAdvance}:BubbleProps){
+ const subscribe=useCallback((notify:()=>void)=>subscribePatchChatActors(world,notify),[world]);
+ const actors=useSyncExternalStore(subscribe,()=>patchChatActors(world),()=>undefined);
+ const {width,height,safe}=frame;
+ const {padX,padY,headerHeight,lineHeight}=metrics;
+ const bubbleWidth=section.singleLineWidth?Math.min(metrics.width,Math.max(142,section.singleLineWidth+2*padX+1)):metrics.width;
+ const bubbleHeight=2*padY+headerHeight+lineHeight*section.lines;
+ const placement=actors&&placeConversationBubble(width,height,safe,replyTop,actors.patch,actors.survivor,bubbleWidth,bubbleHeight);
+ const pressed=useRef<{x:number;y:number}|null>(null);
+ return <div className="patch-chat-bubble" style={{left:placement?.x,top:placement?.y,width:bubbleWidth,height:bubbleHeight,
+  visibility:placement?'visible':'hidden',padding:padY+'px '+padX+'px'}}>
+  <svg className="patch-chat-pointer" aria-hidden="true" width={bubbleWidth} height={bubbleHeight}>
+   {placement&&<><defs>
+    <linearGradient id="patch-pine" x2=".85" y2="1" gradientUnits="objectBoundingBox">
+     <stop stopColor="#293d33"/><stop offset=".55" stopColor="#20322a"/><stop offset="1" stopColor="#192922"/>
+    </linearGradient>
+    <linearGradient id="patch-copper" x2="1" y2=".4">
+     <stop stopColor="#b68f62"/><stop offset=".29" stopColor="#d4ad7c"/><stop offset=".66" stopColor="#886341"/><stop offset="1" stopColor="#bf9b73"/>
+    </linearGradient>
+   </defs><path d={conversationBubblePath(placement)} stroke="url(#patch-copper)" strokeWidth="1.5" strokeLinejoin="round" fill="url(#patch-pine)"/></>}
+  </svg>
+  <div className="patch-chat-transcript" role="status" aria-live="polite" aria-atomic="true">
+   <div className="patch-chat-identity" style={{height:headerHeight}}>
+    <strong className="patch-chat-name">{speaker}</strong>{speaker==='Patch'&&<small>P-04</small>}
+    {more&&<span className="patch-chat-next" aria-hidden="true">▸</span>}
+   </div>
+   <span className="patch-chat-line">{section.text}</span>
+  </div>
+  {more&&<button type="button" aria-label="Continue dialogue" className="patch-chat-advance"
+   onPointerDown={e=>{pressed.current={x:e.clientX,y:e.clientY}}}
+   onPointerCancel={()=>{pressed.current=null}}
+   onPointerMove={e=>{if(pressed.current&&Math.hypot(e.clientX-pressed.current.x,e.clientY-pressed.current.y)>8)pressed.current=null}}
+   onClick={e=>{if(e.detail===0||pressed.current)onAdvance();pressed.current=null}}/>}
+ </div>;
 }

@@ -1,6 +1,7 @@
 import {PATCH_ROBOT_ANCHOR,PATCH_ROBOT_CELL,PATCH_ROBOT_SCALE} from './patch-art';
 import {drawPatchBubble} from './patch-speech-bubble';
 import {patchChat} from './patch-chat';
+import {publishPatchChatActors} from './patch-chat-bounds';
 import {patchSpriteFrame,type PatchSpriteFrame} from './patch-animation';
 import {patchLandmarks,patchRescueSite} from './patch-placement';
 import {ASSET_BY_ID} from './world-assets';
@@ -78,7 +79,10 @@ export function patchDrawables(ctx:CanvasRenderingContext2D,imgs:Record<string,H
 /** Small amber emitter and short speech remain legible after night shading.
  * A wall between the player and robot also hides this overlay. */
 export function drawPatchFeedback(ctx:CanvasRenderingContext2D,imgs:Record<string,HTMLImageElement>,w:World,view:FoliageViewport){
- const p=pose(w,view);if(!p)return;const frame=visibleFrame(p,imgs);if(!frame)return;
+ const p=pose(w,view);if(!p)return;
+ const talking=!!patchChat(w);
+ if(talking)publishPatchChatActors(w,p,{x:view.x,y:view.y,scale:view.scale||1});
+ const frame=visibleFrame(p,imgs);if(!frame)return;
  if(Math.hypot(p.x-w.player.x,p.y-w.player.y)>1000||!lineClear(w.player,p,w))return;
  const pulse=patchBeacon(w),{x:lampX,y:lampY}=emitter(p,frame);
  if(pulse>0){
@@ -87,7 +91,7 @@ export function drawPatchFeedback(ctx:CanvasRenderingContext2D,imgs:Record<strin
   ctx.fillStyle=glow;ctx.beginPath();ctx.arc(lampX,lampY,radius,0,TAU);ctx.fill();
   ctx.fillStyle='#ffe1a4';ctx.beginPath();ctx.arc(lampX,lampY,1.5*VISUAL_SCALE,0,TAU);ctx.fill();ctx.restore();
  }
- if(patchChat(w))return;
+ if(talking)return;
  const speech=patchSpeech(w);if(!speech)return;
  const scale=view.scale||1;
  // Cancel the world transform for a logical-pixel bubble while the projected

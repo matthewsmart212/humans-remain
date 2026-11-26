@@ -33,7 +33,7 @@ const results=[],browserFrames=new Map(),browserCalls=new Map();
 try{
  for(const target of targets){
   const skiaRoot=path.resolve(target==='native'?'native/node_modules/@shopify/react-native-skia':'node_modules/@shopify/react-native-skia');
-  const file=path.join(temporary,target+'.cjs'),modules=['patch-art','patch-animation','patch-meeting','placed-world-renderer','continuous-zoom','patch-chat','patch-chat-bounds','patch-conversation-layout','patch-dialogue','patch-speech-bubble','player-presentation','patch-renderer','patch-quest','patch-placement','gameplay-artwork','survival-engine','world-layout','skia-adapter'];
+  const file=path.join(temporary,target+'.cjs'),modules=['patch-art','patch-animation','patch-meeting','placed-world-renderer','continuous-zoom','patch-chat','patch-chat-bounds','patch-reply-strip-layout','patch-bubble-placement','patch-dialogue','patch-speech-bubble','player-presentation','patch-renderer','patch-quest','patch-placement','gameplay-artwork','survival-engine','world-layout','skia-adapter'];
   await build({stdin:{contents:modules.map(id=>`export * from './src/${id}';`).join('\n')+`\nexport {JsiSkApi} from ${JSON.stringify(path.join(skiaRoot,'lib/module/skia/web/JsiSkia.js'))};`,resolveDir:root},bundle:true,platform:'node',format:'cjs',outfile:file,logLevel:'error'});
   const m=require(file),kitRequire=createRequire(path.join(skiaRoot,'package.json'));
   const kit=await kitRequire('canvaskit-wasm')({locateFile:f=>path.join(path.dirname(kitRequire.resolve('canvaskit-wasm')),f)}),api=m.JsiSkApi(kit);
@@ -203,6 +203,7 @@ try{
    Object.assign(world.player,{x:q.position.x+68,y:q.position.y+26});
    assert(m.inspectPatch(world));assert(m.choosePatchChat(world,'ask'));assert(m.choosePatchChat(world,'topic:reclamation'));
    const reply=[],phoneBounds=[
+    {width:568,height:320,scale:.53,x:245,y:130},
     {width:667,height:320,scale:.38,x:330,y:156},
     {width:844,height:390,scale:.9,x:96,y:55},
     {width:390,height:844,scale:1.8,x:310,y:790},
@@ -211,15 +212,26 @@ try{
     const page=m.patchChat(world);reply.push(page.line);
     for(const phone of phoneBounds){
      const {width:pw,height:ph,scale,x,y}=phone;
-     const safe={left:pw>ph?44:0,right:pw>ph?44:0,top:0,bottom:18};
-     const panel=m.patchConversationLayout(pw,ph,safe,page.view,page.choices.length);
-     m.setPatchChatBounds(world,panel.actions,safe);
+     const notch=pw>ph&&pw>568?44:0;
+     const safe={left:notch,right:notch,top:0,bottom:pw===568?0:18};
+     const {bounds}=m.patchReplyStripLayout(pw,ph,safe);
+     m.setPatchChatBounds(world,bounds,safe);
      const framed=m.patchMeetingCamera(world,{x:0,y:0,scale},pw,ph,world.tick/60);
      for(const [actor,half,tall] of [[q.position,92*artScale,200*artScale],[world.player,39,119]]){
       const left=(actor.x-half-framed.x)*framed.scale,right=(actor.x+half-framed.x)*framed.scale;
       const top=(actor.y-tall-framed.y)*framed.scale,bottom=(actor.y-framed.y)*framed.scale;
       assert(left>=safe.left&&right<=pw-safe.right&&top>=0&&bottom<=ph,'Both complete sprites stay inside the safe viewport');
-      for(const r of [panel.speech,panel.actions])assert(right<=r.x||left>=r.x+r.width||bottom<=r.y||top>=r.y+r.height,'Portrait and reply cards clear the staged actors');
+      assert(bottom<bounds.y,'The reply strip clears both staged actors');
+     }
+     // Use the same logical-point pose, bubble height and candidate selection
+     // as the live clients, including a page at its maximum measured height.
+     m.publishPatchChatActors(world,q.position,framed);
+     const actors=m.patchChatActors(world),metrics=m.conversationBubbleMetrics(pw,ph,safe,bounds.y);
+     const bubble=m.placeConversationBubble(pw,ph,safe,bounds.y,actors.patch,actors.survivor,
+      metrics.width,2*metrics.padY+metrics.headerHeight+metrics.maxLines*metrics.lineHeight);
+     assert(bubble.x>=safe.left&&bubble.x+bubble.width<=pw-safe.right&&bubble.y>=safe.top&&bubble.y+bubble.height<bounds.y,'The full speech page fits between safe insets and the reply row');
+     for(const actor of [actors.patch,actors.survivor]){
+      assert(actor.x+actor.width<=bubble.x||actor.x>=bubble.x+bubble.width||actor.y+actor.height<=bubble.y||actor.y>=bubble.y+bubble.height,'Speech leaves both characters visible in the settled shot '+JSON.stringify({pw,ph,bubble,actor,bounds}));
      }
      const view={x:q.position.x-x/scale,y:q.position.y-y/scale,width:pw/scale,height:ph/scale,scale};
      const phoneSurface=api.Surface.Make(pw,ph),ctx=new adapter.SkiaContext(phoneSurface.getCanvas(),pw,ph,font);
@@ -232,7 +244,9 @@ try{
      assert.equal(painted.length,0,'Active meeting dialogue is outside the ambient bubble painter');
      ctx.translate(view.x,view.y);ctx.scale(1/scale,1/scale);
      m.drawPatchMeeting(ctx,pw,ph,1);
-     assert.deepEqual(painted,[],'The canvas does not repeat the portrait HUD transcript');
+     assert.deepEqual(painted,[],'The canvas does not repeat the speech bubble transcript');
+     const projected=m.patchChatActors(world).patch;
+     assert(Math.abs(projected.x+projected.width/2-x)<=1,'Changing camera scale and position moves the speech anchor with the visible Patch');
      phoneSurface.flush();
      if(previews){const shot=phoneSurface.makeImageSnapshot();fs.writeFileSync(path.join(previews,target+'-chat-'+pw+'-'+page.pageIndex+'.png'),Buffer.from(shot.encodeToBytes()));shot.dispose()}
      ctx.dispose();phoneSurface.dispose();
@@ -254,8 +268,8 @@ try{
    assert.equal(close.meeting,1);assert.equal(retina.scale,close.scale*2);assert.equal(retina.x,close.x);
    for(const actor of [q.position,world.player]){
     const sx=(actor.x-close.x)*close.scale,sy=(actor.y-close.y)*close.scale;
-    assert(sx>40&&sx<445,'Both subjects clear landscape reply choices');
-    assert(sy>45&&sy<265,'Their feet clear the subtitle band');
+    assert(sx>40&&sx<844-40,'Both subjects remain between landscape safe insets');
+    assert(sy>45&&sy<m.patchReplyStripLayout(844,390,{top:0,right:44,bottom:0,left:44}).bounds.y,'Their feet clear the reply strip');
    }
    const mapReference=m.editorCamera(844,390,world,followView,1,10.65,false);
    assert.deepEqual(mapReference,baseline,'Atlas queries can sample the unmodified gameplay frame');
@@ -271,7 +285,7 @@ try{
    results.push({target,skiaVersion:JSON.parse(fs.readFileSync(path.join(skiaRoot,'package.json'))).version,walkFrames:frameHashes.size,legFrames:legHashes.size,smallestAdjacentLegChange:smallestLegDifference,maxParityMean:maxParityError,maxParityPixels:mostParityPixels});
   }finally{for(const image of Object.values(images))image?.dispose();surface.dispose();dialogueFont.dispose();font.dispose();face.dispose();adapter.disposeLighting()}
  }
- const report={passed:true,results,checks:['eight headings and eight actual leg poses','256-pixel bounds and transparent cell gutters','30 percent larger standing/damaged/walking scale','distance-driven phases and continuous turns','steady planted idle','essential reduced-motion locomotion','per-frame lamp registration','larger partial repair arc','browser/native offline atlas parity','shared depth and expanded culling','real repair/recruitment/command speech bubbles and timed expiry','one/two-line speech and native/web bubble rendering parity','single active transcript in the web/native HUD at three viewport sizes','two-actor camera entry/exit, atlas isolation, depth-independent zoom and reduced motion'],physicalIPhoneTested:false};
+ const report={passed:true,results,checks:['eight headings and eight actual leg poses','256-pixel bounds and transparent cell gutters','30 percent larger standing/damaged/walking scale','distance-driven phases and continuous turns','steady planted idle','essential reduced-motion locomotion','per-frame lamp registration','larger partial repair arc','browser/native offline atlas parity','shared depth and expanded culling','real repair/recruitment/command speech bubbles and timed expiry','one/two-line speech and native/web bubble rendering parity','per-frame actor projection, maximum page clearance and safe-area reply placement at four viewport sizes','two-actor camera entry/exit, atlas isolation, depth-independent zoom and reduced motion'],physicalIPhoneTested:false};
  if(previews)fs.writeFileSync(path.join(previews,'report.json'),JSON.stringify(report,null,2)+'\n');
  console.log(JSON.stringify(report,null,2));
 }finally{fs.rmSync(temporary,{recursive:true,force:true})}

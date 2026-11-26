@@ -1,7 +1,7 @@
 import {patchChat} from './patch-chat';
 import {PATCH_ROBOT_SCALE} from './patch-art';
 import {patchChatBounds} from './patch-chat-bounds';
-import {patchConversationLayout} from './patch-conversation-layout';
+import {patchReplyStripLayout} from './patch-reply-strip-layout';
 import type {PatchQuestState} from './patch-quest';
 import type {World} from './survival-engine';
 
@@ -72,20 +72,18 @@ function meetingShot(w:World,width:number,height:number,detail:number):Shot{
  const left=Math.min(q.position.x-patchHalf,player.x-39),right=Math.max(q.position.x+patchHalf,player.x+39);
  const top=Math.min(q.position.y-(q.servoInstalled?200:158)*PATCH_ROBOT_SCALE,player.y-119),bottom=Math.max(q.position.y,player.y)+3;
  const groupWidth=(right-left)*closeScale;
- // Reserve the same actor area across greeting, questions and page turns.
- // This keeps a new portrait or a taller list from shifting resting feet.
- const greeting=patchConversationLayout(width,height,safe,'greeting',2);
- const branch=patchConversationLayout(width,height,safe,'topics',6);
- const clearRight=wide?Math.min(greeting.actions.x,branch.actions.x,controls?.x??width)-12:width-safe.right-12;
- const clearBottom=Math.min(greeting.speech.y,branch.speech.y)-10;
- const stageX=clamp(width*(wide ? .41 : .5),stageLeft+groupWidth/2,clearRight-groupWidth/2);
- const stageY=(Math.max(stageTop,safe.top+10)+Math.min(stageBottom,clearBottom))*.5;
+ // Plant the actors just above the fixed reply row. The same footing works
+ // across turns and leaves the upper part of the shot open for speech.
+ const controlsTop=controls?.y??patchReplyStripLayout(width,height,safe).bounds.y;
+ const stageX=clamp(width*(wide ? .44 : .5),stageLeft+groupWidth/2,width-safe.right-12-groupWidth/2);
+ const groupHeight=(bottom-top)*closeScale;
+ const stageY=clamp(height*(wide ? .49 : .46),safe.top+10+groupHeight/2,controlsTop-12-groupHeight/2);
  const cx=(left+right)*.5+(width*.5-stageX)/closeScale;
  const cy=(top+bottom)*.5+(height*.5-stageY)/closeScale;
  return {cx,cy,scale:closeScale,width,height};
 }
 
-/** Gentle edge shading and letterbox bars behind the native or web portrait HUD. */
+/** Gentle edge shading and letterbox bars around the live meeting. */
 export function drawPatchMeeting(ctx:CanvasRenderingContext2D,width:number,height:number,amount:number){
  if(amount<=0)return;
  ctx.save();ctx.globalAlpha=amount;

@@ -48,7 +48,18 @@ try{
  playerAt(world,site.locker);assert(!m.patchInteraction(world),'The retired locker no longer yields a servo');
  playerAt(world,robotDock);assert(m.inspectPatch(world));assert(q.discovered&&!q.noteRead);
  assert.equal(m.patchJournal(world).stage,'diagnose');
+ for(let i=0;i<3;i++){
+  const closing=m.patchChat(world);
+  assert(m.closePatchChat(world));
+  assert(!m.choosePatchChat(world,'diagnose',closing),'Releasing a reply after dismissing cannot start diagnosis');
+  assert(m.inspectPatch(world));
+  assert(!m.choosePatchChat(world,'diagnose',closing),'A stale tap cannot select a matching reply after reopening');
+  assert(!q.diagnosed&&q.discovered,'Dismissal preserves the discovery and leaves the investigation untouched');
+ }
  assert(m.choosePatchChat(world,'diagnose'));assert(q.diagnosed);m.closePatchChat(world);
+ assert(m.inspectPatch(world));
+ assert(!m.patchChat(world).choices.some(choice=>choice.id==='diagnose'),'An earned milestone survives dismissing and reopening');
+ m.closePatchChat(world);
  assert(world.repairCheckpoint);world.repairCheckpoint=false;
  assert.deepEqual(m.patchMapLead(world),{...post.approach,label:'Signal post'});
  walkSearchLeg(post.approach);assert(m.examinePatchSite(world,'dispatch'));assert(!m.examinePatchSite(world,'dispatch'));assert(world.repairCheckpoint);world.repairCheckpoint=false;

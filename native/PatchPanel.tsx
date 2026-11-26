@@ -1,6 +1,6 @@
 import {PATCH_LETTER_POSTSCRIPT,patchLetterDirections} from '../src/patch-letter';
-import React,{useEffect,useLayoutEffect,useRef,useState} from 'react';
-import {AccessibilityInfo,BackHandler,Image,ImageBackground,Platform,Pressable,ScrollView,StyleSheet,Text,View,useWindowDimensions} from 'react-native';
+import React,{useCallback,useEffect,useLayoutEffect,useState} from 'react';
+import {BackHandler,Image,ImageBackground,Platform,Pressable,ScrollView,StyleSheet,Text,View} from 'react-native';
 import type {World} from '../src/survival-engine';
 import {type MenuInsets} from '../src/station-menu-layout';
 import {patchPanelLayout} from '../src/patch-panel-layout';
@@ -8,8 +8,10 @@ import {LOOT_CHEST_ID,lootChestInMenuRange} from '../src/loot-chest';
 import {PATCH_NOTE_TEXT,PATCH_QUEST_TITLE} from '../src/patch-quest';
 import {patchJournalStage} from '../src/patch-journal';
 import {patchDialogueReply} from '../src/patch-dialogue';
-import {patchChat,backPatchChat,choosePatchChat} from '../src/patch-chat';
-import {patchConversationLayout,localPatchRect,patchChoiceIcon} from '../src/patch-conversation-layout';
+import {patchChat,backPatchChat,choosePatchChat,type PatchChat} from '../src/patch-chat';
+import {patchReplyStripLayout} from '../src/patch-reply-strip-layout';
+import {PatchConversationBubble} from './PatchConversationBubble';
+import {PatchReplyStrip} from './PatchReplyStrip';
 import {setPatchChatBounds} from '../src/patch-chat-bounds';
 import StationMenu from './StationMenu';
 
@@ -67,91 +69,39 @@ export function PatchNotePanel({world,onClose,onChange,...frame}:Props){
 }
 
 type ChatProps=Omit<Props,'onChange'>&{onChange:(save:boolean)=>void};
-const panelTexture=require('../public/survival/patch-ui-v1/panel-texture.webp');
-const cornerArt=require('../public/survival/patch-ui-v1/copper-corner.png');
-const portraitArt=require('../public/survival/patch-ui-v1/portrait.webp');
-const closeArt=require('../public/survival/patch-ui-v1/close.png');
-const glyphs={
- wrench:require('../public/survival/patch-ui-v1/wrench.png'),
- talk:require('../public/survival/patch-ui-v1/talk.png'),
- follow:require('../public/survival/patch-ui-v1/follow.png'),
-};
-
-function FramePaint({corner}:{corner:number}){
- return <View pointerEvents="none" accessible={false} importantForAccessibility="no-hide-descendants" style={s.framePaint}>
-  <Image source={panelTexture} resizeMode="stretch" style={s.frameTexture}/>
-  <View style={s.innerStroke}/>
-  {[s.topLeft,s.topRight,s.lowerLeft,s.lowerRight].map((style,index)=><Image key={index} source={cornerArt} style={[{width:corner,height:corner},style]}/>)}
- </View>;
+export function PatchChatHUD(props:ChatProps){
+ const chat=patchChat(props.world);
+ return chat?<PatchConversation {...props} chat={chat}/>:null;
 }
 
-export function PatchChatHUD({world,width,height,safe,onClose,onChange}:ChatProps){
- const chat=patchChat(world),scroll=useRef<React.ComponentRef<typeof ScrollView>>(null);
- const copy=useRef<React.ComponentRef<typeof ScrollView>>(null);
- const {fontScale}=useWindowDimensions();
- const layout=patchConversationLayout(width,height,safe,chat?.view??'greeting',chat?.choices.length??0);
- const {hud,actions,speech,greeting,pad,row,header,font,labelFont}=layout;
- const corner=Math.min(36,Math.max(16,Math.round(width*.027)));
- const live=!!chat;
+function PatchConversation({world,width,height,safe,onClose,onChange,chat}:ChatProps&{chat:PatchChat}){
+ const {bounds}=patchReplyStripLayout(width,height,safe);
+ const [readable,setReadable]=useState<PatchChat>();
+ const onReadable=useCallback((ready:boolean)=>setReadable(ready?chat:undefined),[chat]);
  useLayoutEffect(()=>{
-  setPatchChatBounds(world,live?actions:undefined,safe);
+  setPatchChatBounds(world,bounds,safe);
   return ()=>setPatchChatBounds(world,undefined);
- },[world,live,actions.x,actions.y,actions.width,actions.height,safe.top,safe.bottom,safe.left,safe.right]);
+ },[world,bounds.x,bounds.y,bounds.width,bounds.height,safe.top,safe.right,safe.bottom,safe.left]);
+ const back=useCallback(()=>{
+  if(!backPatchChat(world))return false;
+  onChange(false);
+  return true;
+ },[world,onChange]);
  useEffect(()=>{
-  if(chat?.line)AccessibilityInfo.announceForAccessibility(chat.speaker+'. '+chat.line);
-  scroll.current?.scrollTo({y:0,animated:false});copy.current?.scrollTo({y:0,animated:false});
-  if(chat?.choices.length)scroll.current?.flashScrollIndicators?.();
- },[chat?.speaker,chat?.line,chat?.view,chat?.pageIndex]);
- const back=()=>{if(!backPatchChat(world))return false;onChange(false);return true};
- const backRef=useRef(back);backRef.current=back;
- useEffect(()=>{
-  if(!live)return;
-  const sub=BackHandler.addEventListener('hardwareBackPress',()=>backRef.current());
-  return ()=>sub.remove();
- },[live]);
- if(!chat)return null;
+  const subscription=BackHandler.addEventListener('hardwareBackPress',back);
+  return ()=>subscription.remove();
+ },[back]);
  const choose=(id:string)=>{
   const stage=patchJournalStage(world),command=world.patchQuest?.command;
   if(choosePatchChat(world,id,chat))onChange(stage!==patchJournalStage(world)||command!==world.patchQuest?.command);
  };
- const portrait=Math.round(layout.portrait*(fontScale>1.35 ? .76 : 1));
- return <View pointerEvents="box-none" onAccessibilityEscape={back} style={[s.absolute,localPatchRect(hud,{x:0,y:0,width,height})]}>
-  {greeting&&<FramePaint corner={corner}/>}
-  <View pointerEvents="box-none" style={[s.chatSpeech,localPatchRect(speech,hud),{gap:pad*1.4,paddingVertical:pad,paddingHorizontal:pad*1.55}]}>
-   {!greeting&&<FramePaint corner={corner}/>}
-   <Image source={portraitArt} resizeMode="contain" accessible={false} style={{width:portrait,height:portrait}}/>
-   <View pointerEvents="box-none" style={s.chatCopy}>
-     {greeting?<Text maxFontSizeMultiplier={1.4} style={[s.namePlate,{fontSize:font}]}>{chat.speaker}</Text>:
-     <View accessible accessibilityLabel={chat.speaker} style={s.identity}><Text style={[s.identityName,{fontSize:font*1.14}]}>PATCH</Text><Text style={[s.designation,{fontSize:labelFont*.86}]}>P-04</Text></View>}
-    <ScrollView ref={copy} style={s.speechScroll} bounces={false} showsVerticalScrollIndicator indicatorStyle="white">
-     <Text selectable style={[s.speechLine,{fontSize:font,lineHeight:Math.round(font*1.25)}]}>{chat.line}</Text>
-    </ScrollView>
-   </View>
-  </View>
-  <View pointerEvents="box-none" style={[s.absolute,localPatchRect(actions,hud),
-   {padding:pad,paddingTop:greeting?(layout.wide?pad:0):0,justifyContent:greeting?'center':'flex-start'}]}>
-   {!greeting&&<FramePaint corner={corner}/>}
-   {greeting&&layout.wide&&<View style={s.verticalRule}/>}
-   {!greeting&&<View style={[s.panelHeading,{height:header,paddingRight:header}]}><Text maxFontSizeMultiplier={1.4} accessibilityRole="header" style={[s.panelTitle,{fontSize:font*1.2}]}>Ask Patch</Text></View>}
-   <ScrollView ref={scroll} style={s.answerList} contentContainerStyle={greeting?s.rowsSpaced:undefined}
-    accessibilityLabel={chat.speaker+' response choices'} showsVerticalScrollIndicator persistentScrollbar indicatorStyle="white" bounces={false}>
-    {chat.choices.map((item,index)=>{
-     const isCommand=item.id==='follow'||item.id==='camp'||item.id==='stay',selected=isCommand&&world.patchQuest?.command===item.id;
-     const icon=(greeting||item.id==='topic:damage')&&patchChoiceIcon(item.id);
-     return <Pressable key={item.id} accessibilityRole="button" accessibilityLabel={item.label} accessibilityState={isCommand?{selected}:undefined}
-      onPress={()=>choose(item.id)} style={({pressed})=>[s.choice,{minHeight:row,gap:pad,paddingHorizontal:pad*1.2},
-       greeting?s.insetChoice:s.branchChoice,greeting&&index===0&&[s.primaryChoice,{marginRight:header}],!greeting&&index===0&&s.activeChoice,selected&&s.activeChoice,pressed&&s.choicePressed]}>
-      {icon?<Image accessible={false} source={glyphs[icon]} style={{width:labelFont*1.56,height:labelFont*1.56}}/>:!greeting&&<View accessible={false} style={s.diamond}/>}
-      <Text style={[s.choiceText,{fontSize:labelFont,lineHeight:Math.round(labelFont*1.2)},(index===0||selected)&&s.choiceGold]}>{item.label}</Text>
-      {selected?<Text accessible={false} style={s.choiceGold}>✓</Text>:(greeting||item.id==='more')&&<View accessible={false} style={s.chevron}/>}
-     </Pressable>;
-    })}
-   </ScrollView>
-   <Pressable accessibilityRole="button" accessibilityLabel="End conversation" onPress={onClose}
-    style={({pressed})=>[s.chatEnd,{width:header,height:header,right:pad,top:greeting?pad:0},pressed&&s.returnPressed]}>
-    <Image source={closeArt} accessible={false} style={{width:header*.72,height:header*.72}}/>
-   </Pressable>
-  </View>
+ const choices=chat.choices.filter(item=>item.id!=='more'&&(readable===chat||item.id==='back'));
+ const choiceSetKey=JSON.stringify([chat.view,chat.question,chat.pageIndex,chat.choices.map(item=>item.id)]);
+ return <View pointerEvents="box-none" onAccessibilityEscape={back} style={StyleSheet.absoluteFill}>
+  <PatchConversationBubble chat={chat} world={world} width={width} height={height} safe={safe}
+   replyTop={bounds.y} onContinue={()=>choose('more')} onReadable={onReadable}/>
+  <PatchReplyStrip width={width} height={height} safe={safe} choices={choices} choiceSetKey={choiceSetKey}
+   speaker={chat.speaker} command={world.patchQuest?.command} onChoose={choose} onClose={onClose}/>
  </View>;
 }
 
@@ -178,28 +128,6 @@ const s=StyleSheet.create({
  turnButton:{minHeight:44,paddingHorizontal:9,justifyContent:'center'},turnLabel:{fontSize:14,fontWeight:'600',color:'#ecc887'},
  returnButton:{minHeight:44,marginLeft:'auto',paddingHorizontal:9,justifyContent:'center'},returnPressed:{opacity:.7},returnLabel:{fontSize:14,fontWeight:'600',color:'#e7e2d1'},
  memoryArt:{width:'100%',height:175},memoryArtShort:{height:105},
- absolute:{position:'absolute'},
- framePaint:{...StyleSheet.absoluteFill,borderRadius:9,backgroundColor:'#123434',overflow:'hidden',borderWidth:1,borderColor:'#be9c69'},
- frameTexture:{width:'100%',height:'100%',opacity:.88},innerStroke:{position:'absolute',inset:3,borderWidth:1,borderRadius:5,borderColor:'#86765177'},
- topLeft:{position:'absolute',left:0,top:0},topRight:{position:'absolute',right:0,top:0,transform:[{scaleX:-1}]},
- lowerLeft:{position:'absolute',left:0,bottom:0,transform:[{scaleY:-1}]},lowerRight:{position:'absolute',right:0,bottom:0,transform:[{rotate:'180deg'}]},
- chatSpeech:{position:'absolute',flexDirection:'row',alignItems:'center'},
- chatCopy:{flex:1,alignSelf:'stretch',justifyContent:'center',minHeight:0,gap:4},
- namePlate:{alignSelf:'flex-start',color:'#26291f',backgroundColor:'#d2b275',borderRadius:2,borderWidth:1,borderColor:'#e4c990',fontFamily:'FieldKitBarlow',letterSpacing:1,paddingHorizontal:10},
- identity:{flexDirection:'row',alignItems:'baseline',gap:8},identityName:{fontFamily:'FieldKitBarlow',color:'#edc787',letterSpacing:1},designation:{fontWeight:'600',color:'#c6b28e'},
- speechScroll:{flexGrow:0,flexShrink:1},speechLine:{color:'#fcf2d6',fontWeight:'600'},
- verticalRule:{position:'absolute',left:0,top:'13%',bottom:'13%',width:1,backgroundColor:'#9e8661'},
- panelHeading:{justifyContent:'center',marginHorizontal:4,borderBottomWidth:StyleSheet.hairlineWidth,borderColor:'#99875588'},
- panelTitle:{fontFamily:'FieldKitBarlow',color:'#f7e8c5',paddingLeft:4},
- answerList:{flexGrow:0,flexShrink:1},rowsSpaced:{gap:4},
- choice:{minHeight:44,paddingVertical:5,flexDirection:'row',alignItems:'center'},
- insetChoice:{backgroundColor:'#214142',borderWidth:1,borderRadius:4,borderColor:'#aa925f'},primaryChoice:{borderColor:'#f1c97f'},
- branchChoice:{borderBottomWidth:StyleSheet.hairlineWidth,borderBottomColor:'#777e6690',borderLeftWidth:3,borderLeftColor:'transparent'},
- activeChoice:{backgroundColor:'#415b49',borderLeftColor:'#e0b974'},choicePressed:{backgroundColor:'#496756'},
- choiceText:{flex:1,fontWeight:'600',color:'#f4e9cd'},choiceGold:{color:'#ffdf9e'},
- diamond:{width:6,height:6,marginHorizontal:4,transform:[{rotate:'45deg'}],borderWidth:1,borderColor:'#b5aa80'},
- chevron:{width:7,height:7,marginRight:3,transform:[{rotate:'-45deg'}],borderRightWidth:1.5,borderBottomWidth:1.5,borderColor:'#d8bf89'},
- chatEnd:{position:'absolute',minWidth:44,minHeight:44,alignItems:'center',justifyContent:'center'},
  noteIcon:{width:28,height:35,marginHorizontal:5,borderWidth:1,borderColor:'#b49d70',borderRadius:2,backgroundColor:'#dfd1ad',transform:[{rotate:'-5deg'}],paddingTop:10,gap:4,alignItems:'center'},
  noteFold:{position:'absolute',right:-1,top:-1,width:8,height:8,borderLeftWidth:1,borderBottomWidth:1,borderColor:'#b49d70',backgroundColor:'#ede3c8'},
  noteRule:{width:15,height:1,backgroundColor:'#787a62'},
