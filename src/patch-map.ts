@@ -1,3 +1,4 @@
+import {patchSpeakerName} from './patch-quest';
 import {campLootChest} from './loot-chest';
 import {patchRescueSite,patchRouteSite} from './patch-placement';
 import type {Vec,World} from './survival-engine';
@@ -11,7 +12,7 @@ export function patchMapLead(world:World):PatchMapLead|undefined{
  if(world.scene||!world.progression||!state)return;
  if(state.suppliesDelivered){
   const separated=Math.hypot(state.position.x-world.player.x,state.position.y-world.player.y)>450;
-  if(state.command==='stay'||separated)return {...state.position,label:'Patch'};
+  if(state.command==='stay'||separated)return {...state.position,label:patchSpeakerName(state)};
   return;
  }
  if(state.recruited){

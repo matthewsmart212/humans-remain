@@ -156,6 +156,24 @@ try{
   assert.deepEqual(groundCalls,['save','image','shadow','restore'],'Ground contact draws one decal and shadow, then restores canvas state');
   assert.doesNotThrow(()=>m.drawLootChestGround({},imgs,world,{x:4000,y:4000,width:100,height:100}),'Offscreen footing does no drawing');
   assert.doesNotThrow(()=>m.drawLootChestGround({},imgs,{...world,scene:{}},viewport),'Footing never appears in another scene');
+  const sceneryData=api.Data.fromBytes(fs.readFileSync('public/survival/patch-v6/scenery.webp'));
+  const scenery=api.Image.MakeImageFromEncoded(sceneryData);sceneryData.dispose();assert(scenery);
+  imgs.patchScenery=scenery;
+  const delivery=world.lootChests[m.LOOT_CHEST_ID];
+  delivery.contents={repairHammer:1,pallets:2,scrap:2};
+  const ordinary=render();
+  world.patchQuest={suppliesDelivered:true};
+  const wrapped=render('delivered-parcel');
+  assert(difference(ordinary,wrapped)>400,'Delivered supplies are visible inside the open well');
+  delivery.contents.pallets=0;
+  assert.equal(difference(wrapped,render()),0,'Parcel remains while scrap is unclaimed');
+  delivery.contents.scrap=0;
+  assert.equal(difference(ordinary,render()),0,'Collecting both supplies clears the parcel');
+  delivery.openedAt=world.tick;const noCorner=render();
+  delivery.contents.pallets=1;
+  const corner=difference(noCorner,render('delivered-paper-corner'));
+  assert(corner>12&&corner<400,'A small paper corner shows beneath the closed lid');
+  scenery.dispose();
   atlas.dispose();ground.dispose();terrain?.dispose();surface.dispose();font.dispose();adapter.disposeLighting();
   results.push({target,version:JSON.parse(fs.readFileSync(path.join(skiaRoot,'package.json'))).version,openingSeconds:m.LOOT_CHEST_OPEN_TICKS/60,glowCoverage:+coverage.toFixed(3),closedEffectPixels:changed,lidBrightnessGain:+lidGain.toFixed(1),topRailBrightnessGain:+rimGain.toFixed(1),realTerrain:!!terrain});
  }

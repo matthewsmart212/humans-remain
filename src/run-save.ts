@@ -30,7 +30,7 @@ import {fitHeadquartersInterior,headquartersRefitReturnPoint} from './headquarte
 import {hitCollider} from './camp-collision';
 import {addApprovedCampPerimeter} from './camp-perimeter';
 import {requiredImages} from './world-assets';
-import {seedSmallholdingRabbits,seedWoodlandChestWolves} from './wildlife-population';
+import {migrateCableWorksWolfDen,seedSmallholdingRabbits,seedWoodlandChestWolves} from './wildlife-population';
 
 export const RUN_SAVE_KEY='safety-last-expedition-v1';
 /** Saved camps may retain older or owner-edited assets. Prepare their own
@@ -145,6 +145,7 @@ export function decodeRun(text:string):TravelSnapshot{
     const clear=nearbyClearGround(target,(x,y)=>worldBlocked(w,x,y,19));
     if(clear&&clear!==target)Object.assign(target,clear);
    }
+   migrateCableWorksWolfDen(w);
    seedWoodlandChestWolves(w);
    seedSmallholdingRabbits(w);
    restorePatchQuest(w);

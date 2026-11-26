@@ -4,6 +4,7 @@ import {patchChat} from './patch-chat';
 import {publishPatchChatActors} from './patch-chat-bounds';
 import {patchSpriteFrame,type PatchSpriteFrame} from './patch-animation';
 import {patchLandmarks,patchRescueSite} from './patch-placement';
+import {patchScenerySprites} from './patch-scenery';
 import {ASSET_BY_ID} from './world-assets';
 import {placementArtPoint} from './world-layout';
 import {patchBeacon,patchRepairProgress,patchSpeech} from './patch-quest';
@@ -50,6 +51,23 @@ export function drawPatchGroundContacts(ctx:CanvasRenderingContext2D,w:World,vie
   ctx.restore();
  }
 }
+/** Ground impressions follow the terrain. Upright props share the actor and building depth sort. */
+export function drawPatchScenery(ctx:CanvasRenderingContext2D,image:HTMLImageElement|undefined,w:World,view:FoliageViewport,objects:{y:number;layer?:number;draw:()=>void}[]){
+ if(!image||w.scene||!w.layout)return;
+ for(const sprite of patchScenerySprites(w,view)){
+  const draw=()=>{
+   ctx.save();
+   ctx.translate(sprite.x,sprite.y);
+   if(sprite.angle)ctx.rotate(sprite.angle);
+   if(sprite.flipX||sprite.flipY)ctx.scale(sprite.flipX?-1:1,sprite.flipY?-1:1);
+   ctx.globalAlpha=sprite.alpha;
+   ctx.drawImage(image,...sprite.crop,-sprite.width/2,-sprite.height,sprite.width,sprite.height);
+   ctx.restore();
+  };
+  objects.push({y:sprite.sortY??sprite.y,layer:sprite.ground?-1:0,draw});
+ }
+}
+
 /** One registered sprite per visible robot, sorted at the same feet as actors. */
 export function patchDrawables(ctx:CanvasRenderingContext2D,imgs:Record<string,HTMLImageElement>,w:World,view?:FoliageViewport,editor=false){
  const p=pose(w,view,editor);if(!p)return[];

@@ -1,74 +1,142 @@
 import {facing,lineClear,worldBlocked,type Vec,type World} from './survival-engine';
-import {canTalkToPatch,commandPatch,diagnosePatch,patchStatus,recruitPatch,type PatchQuestState} from './patch-quest';
-import {patchDialogueFollowup,patchDialogueReply,patchDialogueTopics,patchOpeningLine,type PatchTopicId} from './patch-dialogue';
+import {acceptPatchRepair,canTalkToPatch,commandPatch,diagnosePatch,patchSpeakerName,recruitPatch,type PatchQuestState} from './patch-quest';
+import {patchArrivalReply,patchDialogueFollowup,patchDialogueReply,patchDialogueTopics,patchOpeningLine,type PatchTopicId} from './patch-dialogue';
+
+import {fieldNoteDestination,markFieldNote} from './patch-field-notes';
+import {canBorrowPatchScanner,borrowPatchScanner} from './patch-scanner';
 
 type Choice={id:string;label:string};
-type Turn={view:'greeting'}|{view:'topics'}|{view:'answer'|'followup';topic:PatchTopicId;inspection?:boolean};
+type Exchange='arrival'|'inspection'|'scanner'|'marker'|'loan'|'wire'|'homecoming'|'welcome';
+type Turn={view:'greeting'|'topics'}|{view:'answer'|'followup';topic:PatchTopicId}|{view:'exchange';exchange:Exchange};
 export type PatchChat={
  readonly speaker:string;readonly line:string;readonly choices:readonly Choice[];
  readonly pageIndex:number;readonly pageCount:number;readonly view:Turn['view'];readonly question?:string;
 };
 type Entrance={target:Vec;previousDistance:number};
-type Session={turn:Turn;pages:string[];snapshot:PatchChat;hp:number;entrance?:Entrance};
-
-// The renderer sees an interpolated World. Quest identity is shared across
-// those views, and replaced for a restored or restarted run.
+type Cursor={turn:Turn;page:number};
+type Session={turn:Turn;pages:string[];history:Cursor[];snapshot:PatchChat;hp:number;entrance?:Entrance};
 const sessions=new WeakMap<PatchQuestState,Session>();
+const accompanied=new WeakSet<PatchQuestState>();
+/** Presence is local to a running room, independent of saved quest state. */
+export function setPatchCrewPresent(w:World,present:boolean){
+ const q=w.patchQuest;
+ if(!q||present===accompanied.has(q))return;
+ if(present)accompanied.add(q);else accompanied.delete(q);
+ const session=sessions.get(q);
+ if(session?.snapshot.choices.some(choice=>choice.id==='recruit')){
+  session.snapshot={...session.snapshot,choices:session.snapshot.choices.map(choice=>choice.id==='recruit'?invite(q):choice)};
+ }
+}
 export function patchChat(w:World){return w.patchQuest?sessions.get(w.patchQuest)?.snapshot:undefined}
 export function closePatchChat(w:World){return !!w.patchQuest&&sessions.delete(w.patchQuest)}
 
-/** Prefer a pause between sentences. Only split a long sentence between words. */
+/** Let the platform measure long sentences. Never split a spoken phrase by character count. */
 function speechPages(line:string){
+ const sentences=line.match(/[^.!?]+[.!?]+|[^.!?]+$/g)??[line];
  const pages:string[]=[];
- let current='';
- for(const sentence of line.match(/[^.!?]+[.!?]+|[^.!?]+$/g)??[line]){
-  const text=sentence.trim();
+ for(const sentence of sentences){
+  const text=sentence.trim(),last=pages.length-1;
   if(!text)continue;
-  if(current&&current.length+text.length+1>78){pages.push(current);current=''}
-  for(const word of text.split(/\s+/)){
-   if(current&&current.length+word.length+1>78){pages.push(current);current=''}
-   current=current?current+' '+word:word;
-  }
+  if(last>=0&&pages[last].length+text.length+1<=78)pages[last]+=' '+text;
+  else pages.push(text);
  }
- if(current)pages.push(current);
  return pages;
 }
 
-function show(w:World,turn:Turn,page:number|'last'=0,existingPages?:string[]){
- const state=w.patchQuest,status=patchStatus(w);
- if(!state||!status)return false;
- const topics=patchDialogueTopics(w);
- let line:string,question:string|undefined;
- let choices:Choice[];
- if(turn.view==='greeting'){
-  line=patchOpeningLine(w);
-  choices=[{id:'ask',label:'Ask Patch'}];
-  if(!state.servoClaimed&&!state.diagnosed)choices.unshift({id:'diagnose',label:'Inspect the damaged drive'});
-  if(status.canRecruit)choices.unshift({id:'recruit',label:'Come with us'});
-  if(status.canCommand)choices.push({id:'follow',label:'Follow me'},{id:'stay',label:'Stay here'},{id:'camp',label:'Return to camp'});
- }else if(turn.view==='topics'){
-  line='Listening.';
-  choices=topics.map(topic=>({id:'topic:'+topic.id,label:topic.label}));
- }else{
-  const selected=topics.find(topic=>topic.id===turn.topic);
-  if(!selected)return false;
-  const followup=patchDialogueFollowup(w,turn.topic);
-  const reply=turn.view==='followup'?followup?.reply:patchDialogueReply(w,turn.topic);
-  if(!reply)return false;
-  question=turn.inspection?'Inspect the damaged drive':turn.view==='followup'?followup?.question:selected.label;
-  line=reply;
-  choices=[{id:'ask',label:'Ask something else'}];
-  if(turn.view==='answer'&&turn.topic==='damage'&&!state.diagnosed&&!state.servoClaimed)choices.unshift({id:'diagnose',label:'Inspect the damaged drive'});
-  if(turn.view==='answer'&&followup)choices.unshift({id:'followup',label:followup.question});
+const ask={id:'ask',label:'Ask something else'};
+const back={id:'back',label:'Back'};
+const knee={id:'topic:damage',label:'Let me look at your knee.'};
+const repair={id:'repair',label:'You can borrow mine.'};
+const pauseRepair={id:'leave',label:'Give me a moment.'};
+const lift={id:'diagnose',label:'Let me lift it.'};
+const wire={id:'tell-wire',label:'Will you tell me?'};
+const leaveWire={id:'leave-wire',label:'We can leave it there.'};
+const scanner={id:'borrow-scanner',label:'I’ll borrow it.'};
+const scannerLine='My left foot dragged all the way back. Borrow my scanner? It can pick out that scrape.';
+const firstPage:Cursor={turn:{view:'greeting'},page:0};
+const invite=(q:PatchQuestState):Choice=>({id:'recruit',label:accompanied.has(q)?'Walk back with us.':'Walk back with me.'});
+
+function greetingChoices(w:World):Choice[]{
+ const q=w.patchQuest!;
+ const questions={id:'ask',label:patchSpeakerName(q)==='Patch'?'Ask Patch':'Ask a question'};
+ if(!q.diagnosed&&!q.servoClaimed){
+  const choices=[{id:'arrival',label:patchArrivalReply(w).label}];
+  const bed=patchDialogueTopics(w).find(topic=>topic.id==='bed');
+  if(bed)choices.push({id:'topic:bed',label:bed.label});
+  choices.push(knee);return choices;
  }
- const pages=existingPages??speechPages(line);
- const index=page==='last'?pages.length-1:page;
- if(index<0||index>=pages.length)return false;
- if(index+1<pages.length)choices=[{id:'more',label:'Continue'}];
- if(index>0||turn.view!=='greeting')choices.push({id:'back',label:'Back'});
- const snapshot:PatchChat={speaker:status.title,line:pages[index],choices,pageIndex:index,pageCount:pages.length,view:turn.view,question};
- sessions.set(state,{turn,pages,snapshot,hp:w.player.hp,entrance:sessions.get(state)?.entrance});
+ if(q.servoClaimed&&!q.servoInstalled)return [repair,questions,pauseRepair];
+ if(q.servoInstalled&&!q.recruited)return [
+  invite(q),questions,{id:'leave',label:'Rest here a while.'},
+ ];
+ if(q.suppliesDelivered)return [questions,{id:'follow',label:'Follow me'},{id:'stay',label:'Stay here'},{id:'camp',label:'Return to camp'}];
+ if(canBorrowPatchScanner(w))return [{id:'scanner-offer',label:'About your scanner.'},questions];
+ return [questions];
+}
+
+type Dialogue={line:string;choices:Choice[];question?:string};
+function exchangeDialogue(w:World,exchange:Exchange):Dialogue{
+ const q=w.patchQuest!;
+ const lead=fieldNoteDestination(w);
+ const marker:Choice[]=lead?[{id:'mark-post',label:q.dispatchRead?(q.haulerInspected?'Mark the brake housing.':'Mark the cable works.'):'Mark the post for me.'}]:[];
+ const trail=q.dispatchRead?'My scanner can pick out sled runners and broad crawler treads. Want to borrow it?':scannerLine;
+ switch(exchange){
+  case 'arrival':return {line:patchArrivalReply(w).line,choices:[knee,{id:'arrival-followup',label:'Why leave supplies for strangers?'},ask]};
+  case 'inspection':
+  case 'scanner':return {
+   line:exchange==='inspection'?'W-6. We sent the spares through the signal post. '+trail:trail,
+   choices:canBorrowPatchScanner(w)?[scanner,...marker,ask]:[...marker,ask],
+  };
+  case 'loan':return {line:q.dispatchRead?'Two narrow runners for the sled. The cable crawler left much wider tracks.':'Watch the left edge of the prints. My good foot lifts clear.',choices:[ask,{id:'leave',label:'I’ll follow the trail.'}]};
+  case 'marker':return {line:q.haulerInspected?'The brake housing is marked. Look on the other side of the drum.':q.dispatchRead?'The cable works are marked. Look for the W-6 plate.':'West end of the southern bridge. I can keep the light on.',choices:[ask,{id:'leave',label:'I’ll head out.'}]};
+  case 'wire':return {line:'I did. The lamp still works.',choices:[wire,leaveWire]};
+  case 'homecoming':return {line:'I signed that letter P-04. Now that I’m staying… call me Patch.',choices:[{id:'welcome',label:'There’s room for you here, too.'},ask]};
+  case 'welcome':return {line:'I allowed for one more person when I counted the spaces. I never counted myself.',choices:[ask]};
+ }
+}
+function dialogue(w:World,turn:Turn):Dialogue|undefined{
+ const q=w.patchQuest!;
+ if(turn.view==='exchange')return exchangeDialogue(w,turn.exchange);
+ if(turn.view==='greeting')return {line:patchOpeningLine(w),choices:greetingChoices(w)};
+ const topics=patchDialogueTopics(w);
+ if(turn.view==='topics')return {line:'Listening.',choices:topics.map(topic=>({id:'topic:'+topic.id,label:topic.label}))};
+ if(!('topic' in turn))return;
+ const selected=topics.find(topic=>topic.id===turn.topic);
+ if(!selected)return;
+ const followup=patchDialogueFollowup(w,turn.topic);
+ if(turn.view==='followup')return followup&&{question:followup.question,line:followup.reply,choices:turn.topic==='reclamation'?[leaveWire,ask]:[ask]};
+ const line=patchDialogueReply(w,turn.topic);if(!line)return;
+ const choices:Choice[]=[];
+ if(turn.topic==='bed')choices.push({id:'topic:reclamation',label:'Who cut that wire?'});
+ if(turn.topic==='camp'&&w.player.hp<50)choices.push({id:'stay-close',label:'Stay close.'},{id:'stay',label:'I’ll rest here.'});
+ if(turn.topic==='damage'){
+  if(!q.diagnosed&&!q.servoClaimed)choices.push(lift);
+  else if(q.servoClaimed&&!q.servoInstalled)choices.push(repair);
+ }
+ if(followup)choices.push({id:'followup',label:followup.question});
+ if(turn.topic==='reclamation')choices.push(leaveWire);
+ choices.push(ask);
+ return {line,choices,question:selected.label};
+}
+
+function show(w:World,turn:Turn,page=0,history:Cursor[]=[],existingPages?:string[]){
+ const q=w.patchQuest;
+ if(!q)return false;
+ const text=dialogue(w,turn);if(!text)return false;
+ const introduction=turn.view==='exchange'&&turn.exchange==='homecoming';
+ const pages=existingPages??(introduction?['I signed that letter P-04. Now that I’m staying…','Call me Patch.']:speechPages(text.line));
+ if(page<0||page>=pages.length)return false;
+ if(introduction&&page===1&&q.nameIntroduced===false){q.nameIntroduced=true;w.repairCheckpoint=true}
+ const choices=page+1<pages.length?[{id:'more',label:'Continue'}]:[...text.choices];
+ if(page>0||history.length)choices.push(back);
+ const snapshot:PatchChat={speaker:patchSpeakerName(q),line:pages[page],choices,pageIndex:page,pageCount:pages.length,view:turn.view,question:text.question};
+ sessions.set(q,{turn,pages,history,snapshot,hp:w.player.hp,entrance:sessions.get(q)?.entrance});
  return true;
+}
+
+export function openPatchBedChat(w:World){
+ if(!canTalkToPatch(w)||!patchDialogueTopics(w).some(topic=>topic.id==='bed'))return false;
+ return show(w,{view:'answer',topic:'bed'},0,[firstPage]);
 }
 
 /** The survivor's head and the robot's optic occupy the same screen space
@@ -101,7 +169,8 @@ export function openPatchChat(w:World){
  const q=w.patchQuest;
  if(!q?.discovered||!canTalkToPatch(w))return false;
  if(patchChat(w))return true;
- if(!show(w,{view:'greeting'}))return false;
+ const entry:Turn=q.suppliesDelivered&&q.nameIntroduced===false?{view:'exchange',exchange:'homecoming'}:{view:'greeting'};
+ if(!show(w,entry))return false;
  sessions.get(q)!.entrance=entranceMark(w,q.position);
  return true;
 }
@@ -136,24 +205,34 @@ export function stepPatchChat(w:World){
 export function choosePatchChat(w:World,id:string,expected?:PatchChat){
  const session=w.patchQuest&&sessions.get(w.patchQuest);
  if(!session||expected&&expected!==session.snapshot||!stepPatchChat(w)||!session.snapshot.choices.some(c=>c.id===id))return false;
- const {turn,snapshot,pages}=session;
- if(id==='more')return show(w,turn,snapshot.pageIndex+1,pages);
+ const {turn,snapshot,pages,history}=session;
+ const next=(to:Turn)=>show(w,to,0,[...history,{turn,page:snapshot.pageIndex}]);
+ if(id==='more')return show(w,turn,snapshot.pageIndex+1,history,pages);
  if(id==='back')return backPatchChat(w);
- if(id==='ask')return show(w,{view:'topics'});
- if(id==='followup'&&'topic' in turn)return show(w,{view:'followup',topic:turn.topic});
- if(id==='diagnose')return diagnosePatch(w)&&show(w,{view:'answer',topic:'damage',inspection:true});
+ if(id==='ask')return show(w,{view:'topics'},0,[firstPage]);
+ if(id==='leave')return closePatchChat(w);
+ if(id==='leave-wire')return show(w,{view:'greeting'});
+ if(id==='arrival'||id==='welcome')return next({view:'exchange',exchange:id});
+ if(id==='arrival-followup')return next({view:'followup',topic:'supplies'});
+ if(id==='followup'&&'topic' in turn)return next({view:'followup',topic:turn.topic});
+ if(id==='diagnose')return diagnosePatch(w)&&next({view:'exchange',exchange:'inspection'});
+ if(id==='scanner-offer')return canBorrowPatchScanner(w)&&next({view:'exchange',exchange:'scanner'});
+ if(id==='borrow-scanner')return borrowPatchScanner(w)&&show(w,{view:'exchange',exchange:'loan'},0,[firstPage]);
+ if(id==='mark-post')return markFieldNote(w)&&show(w,{view:'exchange',exchange:'marker'},0,[firstPage]);
+ if(id==='repair')return acceptPatchRepair(w);
+ if(id==='stay-close')return commandPatch(w,'follow');
  if(id==='recruit')return recruitPatch(w);
  if(id==='follow'||id==='stay'||id==='camp')return commandPatch(w,id);
+ if(id==='topic:reclamation')return next({view:'exchange',exchange:'wire'});
+ if(id==='tell-wire')return next({view:'answer',topic:'reclamation'});
  const topic=patchDialogueTopics(w).find(item=>'topic:'+item.id===id);
- return !!topic&&show(w,{view:'answer',topic:topic.id});
+ return !!topic&&next({view:'answer',topic:topic.id});
 }
 export function backPatchChat(w:World){
  const session=w.patchQuest&&sessions.get(w.patchQuest);
  if(!session||!stepPatchChat(w))return false;
- const {turn,snapshot,pages}=session;
- if(snapshot.pageIndex>0)return show(w,turn,snapshot.pageIndex-1,pages);
- if(turn.view==='followup')return show(w,{view:'answer',topic:turn.topic},'last');
- if(turn.view==='answer')return show(w,{view:'topics'});
- if(turn.view==='topics')return show(w,{view:'greeting'});
- return closePatchChat(w);
+ const {turn,snapshot,pages,history}=session;
+ if(snapshot.pageIndex>0)return show(w,turn,snapshot.pageIndex-1,history,pages);
+ const previous=history.at(-1);
+ return previous?show(w,previous.turn,previous.page,history.slice(0,-1)):closePatchChat(w);
 }

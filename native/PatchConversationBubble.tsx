@@ -4,12 +4,13 @@ import {Canvas,Group,LinearGradient,Path,vec} from '@shopify/react-native-skia';
 import type {PatchChat} from '../src/patch-chat';
 import type {World} from '../src/survival-engine';
 import type {MenuInsets} from '../src/station-menu-layout';
+import {patchSpeechSections} from '../src/patch-speech-sections';
 import {patchChatActors,subscribePatchChatActors} from '../src/patch-chat-bounds';
 import {conversationBubbleMetrics,conversationBubbleTail,placeConversationBubble} from '../src/patch-bubble-placement';
 
 type Props={
  chat:PatchChat;world:World;width:number;height:number;safe:MenuInsets;replyTop:number;
- onContinue:()=>void;onReadable:(ready:boolean)=>void;
+ onContinue:()=>void;onReadable:(ready:boolean)=>void;localBack:React.RefObject<(()=>boolean)|null>;
 };
 type MeasuredLine={text:string;width:number;height:number};
 const plate=require('../public/survival/patch-ui-v1/speech-plate.webp');
@@ -37,15 +38,21 @@ export function PatchConversationBubble(props:Props){
  return <MeasuredBubble key={JSON.stringify([props.chat.view,props.chat.question,props.chat.line,props.chat.pageIndex,m.width,m.font,m.maxLines])} {...props} metrics={m}/>;
 }
 
-function MeasuredBubble({chat,world,width,height,safe,replyTop,onContinue,onReadable,metrics:m}:Props&{metrics:ReturnType<typeof conversationBubbleMetrics>}){
+function MeasuredBubble({chat,world,width,height,safe,replyTop,onContinue,onReadable,localBack,metrics:m}:Props&{metrics:ReturnType<typeof conversationBubbleMetrics>}){
  const [lines,setLines]=useState<MeasuredLine[]>([]),[section,setSection]=useState(0);
  const subscribe=useCallback((listener:()=>void)=>subscribePatchChatActors(world,listener),[world]);
  const snapshot=useCallback(()=>patchChatActors(world),[world]);
  const actors=useSyncExternalStore(subscribe,snapshot,snapshot);
- const visible=lines.slice(section*m.maxLines,(section+1)*m.maxLines);
- const moreHere=(section+1)*m.maxLines<lines.length;
+ const sections=React.useMemo(()=>patchSpeechSections(lines.map(line=>line.text),m.maxLines,m.width-2*m.padX,m.font),[lines,m.maxLines,m.width,m.padX,m.font]);
+ const current=sections[Math.min(section,sections.length-1)];
+ const visible=current?lines.slice(current.start,current.start+current.count):[];
+ const moreHere=section+1<sections.length;
  const canAdvance=moreHere||chat.choices.some(choice=>choice.id==='more');
- const body=visible.map(line=>line.text.trimEnd()).join('\n');
+ const body=current?.text??'';
+ useLayoutEffect(()=>{
+  localBack.current=()=>{if(section===0)return false;setSection(section-1);return true};
+  return ()=>{localBack.current=null};
+ },[localBack,section]);
  const ready=visible.length>0&&!moreHere&&!!actors;
  useLayoutEffect(()=>onReadable(ready),[onReadable,ready]);
  useEffect(()=>{

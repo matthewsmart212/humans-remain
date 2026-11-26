@@ -1,6 +1,6 @@
 import React,{useLayoutEffect,useRef} from 'react';
 import {
- isPatchCommand,patchReplyStripLayout,patchReplySizing,primaryPatchReply,type PatchReplyStripProps,
+ isPatchCommand,patchReplyStripLayout,patchReplySizing,primaryPatchReply,patchReplyIcon,type PatchReplyStripProps,
 } from './patch-reply-strip-layout';
 import {usePatchReplyEdges} from './use-patch-reply-edges';
 import './patch-reply-strip.css';
@@ -91,11 +91,11 @@ export function PatchReplyStrip({width,height,safe,choices,choiceSetKey,speaker,
      const el=e.currentTarget;measure(el.scrollLeft,el.clientWidth,el.scrollWidth);
     }}>
      {choices.map(choice=>{
-      const primary=primaryPatchReply(choice.id),selected=isPatchCommand(choice.id)&&command===choice.id;
+      const primary=primaryPatchReply(choice.id,choices),icon=patchReplyIcon(choice.id),selected=isPatchCommand(choice.id)&&command===choice.id;
       return <button type="button" key={choice.id} data-choice={choice.id} data-primary={primary}
        aria-pressed={isPatchCommand(choice.id)?selected:undefined}
        onClick={event=>{keyboardChoice.current=event.detail===0;onChoose(choice.id)}}>
-       {primary&&<img alt="" draggable={false} src={art+(choice.id==='diagnose'?'wrench':'follow')+'.png'}/>}
+       {icon&&<img alt="" draggable={false} src={art+icon+'.png'}/>}
        <span>{choice.label}</span>{selected&&<i aria-hidden="true">✓</i>}
       </button>;
      })}

@@ -13,6 +13,18 @@ export const PATCH_LOCKER_WIDTH=66;
 export const PATCH_STATION_ANCHOR=[.5,.90] as const;
 export const PATCH_LOCKER_ANCHOR=[.5,.9] as const;
 export const PATCH_IMAGES={patchRobot:'/survival/patch-v1/robot.webp',patchDamaged:'/survival/patch-v1/damaged.webp',patchWalk:'/survival/patch-v2/walk.webp'};
+export const PATCH_SCENERY_IMAGE='/survival/patch-v6/scenery.webp';
+/** Pixel frames have transparent gutters. Track cells face right before world rotation. */
+export const PATCH_SCENERY_FRAMES={
+ hoist:[4,4,204,328],gantry:[212,4,450,342],sign:[666,4,185,250],scanner:[856,4,163,160],
+ gear:[4,350,188,185],brake:[196,350,230,177],tread:[432,350,116,74],scrape:[551,350,126,56],
+ crawler:[682,350,155,88],ropeDrag:[841,350,175,61],human:[432,443,79,49],
+ puddle:[644,443,198,64],taut:[4,541,420,70],slack:[428,541,420,88],
+ sled:[4,640,310,150],socket:[320,640,118,135],paw:[448,640,120,95],path:[574,640,440,151],
+ fern:[4,796,274,219],reeds:[282,796,238,219],parcel:[528,799,222,170],letter:[762,799,180,159],
+ birch:[856,165,163,178],log:[853,541,164,83],
+} as const;
+
 export const PATCH_ROBOT_CELL=256;
 export const PATCH_ROBOT_ANCHOR=[128,228] as const;
 // Fixed world units per atlas pixel across damaged, idle and walking art.

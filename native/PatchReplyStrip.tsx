@@ -1,7 +1,7 @@
 import React,{useLayoutEffect,useRef} from 'react';
 import {Image,Pressable,ScrollView,StyleSheet,Text,View} from 'react-native';
 import {
- isPatchCommand,patchReplyStripLayout,patchReplySizing,primaryPatchReply,type PatchReplyStripProps,
+ isPatchCommand,patchReplyStripLayout,patchReplySizing,primaryPatchReply,patchReplyIcon,type PatchReplyStripProps,
 } from '../src/patch-reply-strip-layout';
 import {usePatchReplyEdges} from '../src/use-patch-reply-edges';
 
@@ -55,7 +55,7 @@ export function PatchReplyStrip({width,height,safe,choices,choiceSetKey,speaker,
      onTouchCancel={()=>{touch.current.dragged=true}}
      onScrollBeginDrag={()=>{touch.current.dragged=true}}>
      {choices.map(choice=>{
-      const primary=primaryPatchReply(choice.id),selected=isPatchCommand(choice.id)&&command===choice.id;
+      const primary=primaryPatchReply(choice.id,choices),icon=patchReplyIcon(choice.id),selected=isPatchCommand(choice.id)&&command===choice.id;
       return <Pressable key={choice.id} accessibilityRole="button" accessibilityLabel={choice.label}
        accessibilityState={isPatchCommand(choice.id)?{selected}:undefined}
        onPress={event=>{
@@ -64,7 +64,7 @@ export function PatchReplyStrip({width,height,safe,choices,choiceSetKey,speaker,
        }}
        style={({pressed})=>[s.choice,{minWidth:minimum,height:row,paddingHorizontal:padding,flexGrow:grow},pressed&&s.pressed]}>
        <Image source={primary?amber:pine} resizeMode="stretch" accessible={false} style={[s.frame,{top:(row-paintHeight)/2,height:paintHeight}]}/>
-       {primary&&<Image source={choice.id==='diagnose'?wrench:follow} resizeMode="contain" accessible={false}
+       {icon&&<Image source={icon==='wrench'?wrench:follow} resizeMode="contain" accessible={false}
         style={{width:fontSize*1.25,height:fontSize*1.25,tintColor:'#f9e0b2'}}/>}
        <Text numberOfLines={1} maxFontSizeMultiplier={maxScale} style={[s.choiceText,{fontSize,lineHeight}]}>{choice.label}</Text>
        {selected&&<Text accessible={false} style={s.selected}>✓</Text>}

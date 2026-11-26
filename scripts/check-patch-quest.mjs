@@ -8,7 +8,7 @@ import {build} from 'esbuild';
 const temporary=fs.mkdtempSync(path.join(os.tmpdir(),'patch-quest-'));
 try{
  await build({stdin:{contents:[
-  ...['patch-quest','patch-chat','patch-map','patch-journal','patch-placement','studio-play','survival-engine','imported-art','loot-chest','run-save','scene-travel','world-scenes','world-layout','world-assets','layout-views','field-kit','station-access','camp-gates'].map(id=>`export * from './src/${id}';`),
+  ...['patch-quest','patch-chat','patch-map','patch-journal','patch-placement','studio-play','survival-engine','imported-art','loot-chest','run-save','scene-travel','world-scenes','world-layout','world-assets','layout-views','field-kit','station-access','camp-gates','wildlife-population','patch-evidence'].map(id=>`export * from './src/${id}';`),
   "export * from './native/run-save-store';",
  ].join('\n'),resolveDir:process.cwd()},bundle:true,platform:'node',format:'cjs',outfile:path.join(temporary,'model.cjs'),logLevel:'error'});
  const m=createRequire(import.meta.url)(path.join(temporary,'model.cjs'));
@@ -17,6 +17,8 @@ try{
  const fresh=()=>m.createCampPlaySession(layout,undefined,'survival');
  const step=(w,n=1,input={x:0,y:0})=>{for(let i=0;i<n;i++){w.tick++;m.stepPatchQuest(w,input)}};
  const playerAt=(w,p)=>Object.assign(w.player,{x:p.x,y:p.y,hp:100,hurtUntil:0,downedUntil:0});
+ const finishLine=w=>{while(m.patchChat(w)?.choices.some(choice=>choice.id==='more'))assert(m.choosePatchChat(w,'more'));};
+ const askToInspect=w=>{finishLine(w);assert(m.choosePatchChat(w,'topic:damage'));finishLine(w);};
  const world=fresh(),q=m.ensurePatchQuest(world),originalLayout=JSON.stringify(world.layout);
  assert(q&&!q.noteRead&&!q.discovered&&!q.servoClaimed&&!q.servoInstalled);
  assert.equal(m.patchStatus(world).title,'P-04');
@@ -26,6 +28,24 @@ try{
 
  const post=m.patchRouteSite(layout,'dispatch'),hauler=m.patchRouteSite(layout,'hauler');
  assert(post&&hauler?.release,'The reachable search route is installed');
+ // The service apron is outside the pack's ordinary patrol and sight envelope.
+ const wolves=world.animals.filter(a=>a.wildlife?.group==='north-wolves');
+ assert.equal(wolves.length,2);
+ for(const wolf of wolves)for(const point of [hauler.approach,hauler.release]){
+  assert(Math.hypot(wolf.predator.home.x-point.x,wolf.predator.home.y-point.y)>900);
+ }
+ const legacy=fresh();
+ const slots=legacy.ecology.slots.filter(slot=>slot.group==='north-wolves');
+ const original=slots.map(s=>({...s.home}));
+ for(const slot of slots){slot.home.x-=200;slot.home.y+=850;}
+ const living=legacy.animals.find(a=>a.id===slots[0].entityId);
+ Object.assign(living,slots[0].home,{hp:53});
+ Object.assign(legacy.player,{x:living.x,y:living.y});
+ const visible={x:living.x,y:living.y};
+ m.migrateCableWorksWolfDen(legacy);m.migrateCableWorksWolfDen(legacy);
+ assert.deepEqual(slots.map(s=>s.home),original);
+ assert.equal(living.hp,53);assert.deepEqual({x:living.x,y:living.y},visible,'Visible animals keep their position across save migration');
+
  const robotDock={x:site.robot.x,y:site.robot.y+45};
  let searchSteps=0;
  function walkSearchLeg(to){
@@ -49,14 +69,14 @@ try{
  playerAt(world,robotDock);assert(m.inspectPatch(world));assert(q.discovered&&!q.noteRead);
  assert.equal(m.patchJournal(world).stage,'diagnose');
  for(let i=0;i<3;i++){
-  const closing=m.patchChat(world);
+  askToInspect(world);const closing=m.patchChat(world);
   assert(m.closePatchChat(world));
   assert(!m.choosePatchChat(world,'diagnose',closing),'Releasing a reply after dismissing cannot start diagnosis');
   assert(m.inspectPatch(world));
   assert(!m.choosePatchChat(world,'diagnose',closing),'A stale tap cannot select a matching reply after reopening');
   assert(!q.diagnosed&&q.discovered,'Dismissal preserves the discovery and leaves the investigation untouched');
  }
- assert(m.choosePatchChat(world,'diagnose'));assert(q.diagnosed);m.closePatchChat(world);
+ askToInspect(world);assert(m.choosePatchChat(world,'diagnose'));assert(q.diagnosed);m.closePatchChat(world);
  assert(m.inspectPatch(world));
  assert(!m.patchChat(world).choices.some(choice=>choice.id==='diagnose'),'An earned milestone survives dismissing and reopening');
  m.closePatchChat(world);
@@ -113,6 +133,10 @@ try{
  assert(q.suppliesDelivered&&q.returnedToCamp,'The companion reaches the chest over the authored route');assert(world.repairCheckpoint);
  assert.equal(m.patchSpeech(world),'Shelter occupied.');
  assert.equal(world.notice,'This time, someone brought the rescuer home.');
+ assert.equal(m.patchStatus(world).title,'P-04');
+ playerAt(world,q.position);assert(m.inspectPatch(world));finishLine(world);
+ assert(q.nameIntroduced,'The nickname is earned when Patch speaks his introduction');
+ m.closePatchChat(world);
  assert.deepEqual(m.patchMapLead(world),{...q.position,label:'Patch'});
  assert.equal(m.patchStatus(world).title,'Patch');assert.equal(q.command,'stay');
  assert.equal(world.bag.pallets,999,'The parcel remains outside a full bag');
@@ -260,12 +284,18 @@ try{
  playerAt(integrated,{x:site.robot.x,y:site.robot.y+45});shown=controller.sample(integrated).action;
  assert.equal(shown.label,'INSPECT');assert(controller.press(integrated,shown));controller.release();
  assert.equal(integrated.stationPanel,undefined);assert(!m.atStation(integrated));assert(m.patchChat(integrated));
- assert(m.choosePatchChat(integrated,'diagnose'));
+ askToInspect(integrated);assert(m.choosePatchChat(integrated,'diagnose'));
  const startedX=integrated.player.x;liveStep(3,{x:1,y:0});assert(integrated.player.x>startedX,'Player movement continues during a conversation');assert(m.patchChat(integrated));
  integrated.player.x+=300;liveStep();assert(!m.patchChat(integrated),'Walking away ends the live exchange');
  for(const [position,key] of [[post.approach,'patch:dispatch'],[hauler.approach,'patch:hauler-inspect'],[hauler.release,'patch:hauler-salvage']]){
   playerAt(integrated,position);shown=controller.sample(integrated).action;
   assert.equal(shown.key,key);assert(controller.press(integrated,shown));controller.release();
+  if(key!=='patch:hauler-salvage'){
+   assert.equal(integrated.stationPanel,'patch-evidence');
+   assert(m.atStation(integrated),'The close-up stays open at the clue');
+   assert(m.patchEvidence(integrated).title.includes(key==='patch:dispatch'?'dispatch':'plate'));
+   integrated.stationPanel=undefined;
+  }
  }
  playerAt(integrated,robotDock);shown=controller.sample(integrated).action;
  assert.equal(shown.label,'TALK');assert(controller.press(integrated,shown));controller.release();

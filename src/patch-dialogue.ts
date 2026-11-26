@@ -1,19 +1,35 @@
 import {patchRouteSite} from './patch-placement';
 import type {World} from './survival-engine';
-import {patchStatus} from './patch-quest';
+import {patchSpeakerName,patchStatus} from './patch-quest';
+import {LOOT_CHEST_ID,LOOT_CHEST_REWARDS} from './loot-chest';
 
 export type PatchTopicId='supplies'|'identity'|'reclamation'|'damage'|'drive'|'camp'|'watch'|'bed';
 type Topic={id:PatchTopicId;label:string};
 type Followup={question:string;reply:string};
 
 const identity:Topic={id:'identity',label:'What did you do before?'};
-const receiver:Topic={id:'reclamation',label:'What happened to your receiver?'};
+const receiver:Topic={id:'reclamation',label:'Who cut that wire?'};
 const damage:Topic={id:'damage',label:'Can I get you moving?'};
 const drive:Topic={id:'drive',label:'How does the leg feel?'};
 const camp:Topic={id:'camp',label:'How are we doing?'};
 const watch:Topic={id:'watch',label:'Can you keep watch?'};
+const loadTestPassed='Load test passed. I thought I would have to watch you walk away from here.';
 
 /** Only show questions a survivor could ask at this point in their meeting. */
+export function patchArrivalReply(world:World){
+ const chest=world.lootChests?.[LOOT_CHEST_ID];
+ // Other caches can contain the same gear. Only an actual transfer out of
+ // the camp chest is evidence that the survivor used P-04's supplies.
+ const taken=LOOT_CHEST_REWARDS.filter(item=>chest?.contents?.[item.kind]===0).length;
+ if(taken)return {
+  label:world.patchQuest?.noteRead?'I did. Thank you.':taken===1?'I took a tool.':'I took the tools.',
+  line:'Did the handles fit? I guessed.',
+ };
+ if(world.patchQuest?.noteRead)return {label:'I found your note.',line:'The paper stayed dry? Good. I put it under the lid three times. The wind kept finding it.'};
+ if(chest?.menuShown)return {label:'I left the tools there.',line:'They’ll keep. They’re yours when you need them.'};
+ return {label:'I followed your light.',line:'Then I’m glad I kept it on.'};
+}
+
 export function patchDialogueTopics(world:World):readonly Topic[]{
  const state=world.patchQuest;
  if(!state?.discovered)return [];
@@ -33,7 +49,7 @@ export function patchDialogueReply(world:World,id:PatchTopicId):string|undefined
    if(state.suppliesDelivered)return 'I used to open that chest just to see if a tool was missing. An empty space meant someone had made it.';
    if(state.noteRead)return 'The paper stayed dry? Good. I put it under the lid three times. The wind kept finding it.';
    return 'Yes. There is a shelter across the lake. I left tools there for whoever came next.';
-  case 'identity':return state.suppliesDelivered
+  case 'identity':return patchSpeakerName(state)==='Patch'
    ?'Evacuation support, P-04. That is the name on the plate. When you call me Patch, I know it is you.'
    :'Evacuation support. I carried water and pulled the rescue sled. In smoke, people could find me by the lamp.';
   case 'reclamation':return 'At the industrial gate I had an injured passenger on my sled. The order came through. Leave them. I cut my receiver wire and pulled them through the gate.';
@@ -45,7 +61,7 @@ export function patchDialogueReply(world:World,id:PatchTopicId):string|undefined
    return 'My left knee slips under load. I cannot see the plate from this angle. Would you lift the cover for me?';
   case 'drive':return state.recruited
    ?'There is a little click on the left. That is all right. I can hear your footsteps between mine.'
-   :'Load test passed. I thought I would have to watch you walk away from here.';
+   :loadTestPassed;
   case 'watch':return 'Ask me to follow. If I see a machine, I will call its bearing. And if you look hurt or need food or water, I will say so. Someone should look out for you.';
   case 'camp':
    if(world.player.hp<50)return 'You are hurt. May I stay close? You did that for me.';
@@ -59,7 +75,7 @@ export function patchDialogueReply(world:World,id:PatchTopicId):string|undefined
 /** A second, optional exchange is local to this conversation, including on restored saves. */
 export function patchDialogueFollowup(world:World,id:PatchTopicId):Followup|undefined{
  if(!patchDialogueTopics(world).some(topic=>topic.id===id))return;
- if(id==='reclamation')return {question:'Do you want me to reconnect it?',reply:'No, thank you. They could send that order again. I would like to keep choosing.'};
+ if(id==='reclamation')return {question:'Could I fix it?',reply:'No, thank you. They could send that order again. I would like to keep choosing.'};
  if(id==='supplies')return world.patchQuest!.suppliesDelivered
   ?{question:'There’s room for you here, too.',reply:'I allowed for one more person when I counted the spaces. I never counted myself.'}
   :{question:'Why leave supplies for strangers?',reply:'Someone coming through that door would be tired. I knew that much about them.'};
@@ -77,7 +93,7 @@ export function patchOpeningLine(world:World):string{
   if(state.diagnosed)return 'The signal post is north of here, at the bridge. I can keep the light on.';
   return state.noteRead?'Human detected. You saw the flashes. Did you find the tools?':'Human detected. Oh. You came towards the light.';
  }
- if(!state.recruited)return 'Supplies… still required? I can carry them now.';
+ if(!state.recruited)return loadTestPassed;
  if(!state.suppliesDelivered)return 'I know this path from the other direction. You lead this time.';
  if(state.command==='follow')return 'Two sets of tracks. I used to make this trip alone.';
  if(state.command==='camp')return 'I know the way back. Three flashes if you need to find me.';

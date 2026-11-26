@@ -201,7 +201,7 @@ try{
    // Every word of the industrial-gate answer must survive real choices,
    // including page changes. The HUD owns that transcript in a meeting.
    Object.assign(world.player,{x:q.position.x+68,y:q.position.y+26});
-   assert(m.inspectPatch(world));assert(m.choosePatchChat(world,'ask'));assert(m.choosePatchChat(world,'topic:reclamation'));
+   assert(m.inspectPatch(world));assert(m.choosePatchChat(world,'ask'));assert(m.choosePatchChat(world,'topic:reclamation'));assert(m.choosePatchChat(world,'tell-wire'));
    const reply=[],phoneBounds=[
     {width:568,height:320,scale:.53,x:245,y:130},
     {width:667,height:320,scale:.38,x:330,y:156},
@@ -264,7 +264,13 @@ try{
    world.weather.reducedMotion=false;world.player.x=q.position.x+55;world.player.y=q.position.y+24;
    const baseline=camera(10);assert(m.inspectPatch(world));const enter=camera(10),mid=camera(10.32),close=camera(10.65),retina=camera(10.65,2);
    assert.deepEqual(enter,baseline);assert(mid.scale>baseline.scale&&mid.scale<close.scale);
-   assert(Math.abs(close.scale-.70*1.5679918032786886)<1e-10,'The greeting uses 70 percent of the previous magnification at this measured pose');
+   assert(close.scale<=.70*1.5679918032786886+1e-10,'The greeting retains its reduced lens or widens to fit the full speech page');
+   const phoneSafe={top:0,right:44,bottom:0,left:44};
+   const controlsTop=m.patchReplyStripLayout(844,390,phoneSafe).bounds.y;
+   const speech=m.conversationBubbleMetrics(844,390,phoneSafe,controlsTop);
+   const maximumPageHeight=speech.headerHeight+2*speech.padY+speech.lineHeight*speech.maxLines;
+   const actorTop=Math.min(q.position.y-(q.servoInstalled?200:158)*m.PATCH_ROBOT_SCALE,world.player.y-119);
+   assert((actorTop-close.y)*close.scale>=maximumPageHeight+8,'A full bubble fits above both actors in the greeting');
    assert.equal(close.meeting,1);assert.equal(retina.scale,close.scale*2);assert.equal(retina.x,close.x);
    for(const actor of [q.position,world.player]){
     const sx=(actor.x-close.x)*close.scale,sy=(actor.y-close.y)*close.scale;
@@ -273,9 +279,10 @@ try{
    }
    const mapReference=m.editorCamera(844,390,world,followView,1,10.65,false);
    assert.deepEqual(mapReference,baseline,'Atlas queries can sample the unmodified gameplay frame');
-   assert(m.choosePatchChat(world,'ask'));assert(m.choosePatchChat(world,'topic:reclamation'));
+   assert(m.choosePatchChat(world,'ask'));assert(m.choosePatchChat(world,'topic:reclamation'));assert(m.choosePatchChat(world,'tell-wire'));
    assert.deepEqual(camera(10.7),close,'Changing speaker coverage starts at the previous frame');
-   const answer=camera(11.2);assert(Math.abs(answer.scale-.70*1.7422131147540982)<1e-10,'The gate account retains its closer lens with the same reduction');
+   const answer=camera(11.2);assert(answer.scale>=close.scale-1e-10&&answer.scale<=.70*1.7422131147540982+1e-10,'The answer may move closer while retaining its reduced lens and full-page headroom');
+   assert((actorTop-answer.y)*answer.scale>=maximumPageHeight+8,'A long account still clears both silhouettes');
    assert(m.choosePatchChat(world,'more'));assert.deepEqual(camera(11.4),answer,'Paging holds the shot');
    m.closePatchChat(world);assert.deepEqual(camera(11.4),answer);
    const leaving=camera(11.61);assert(leaving.scale>baseline.scale&&leaving.scale<answer.scale);

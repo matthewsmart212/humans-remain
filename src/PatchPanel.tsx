@@ -3,7 +3,8 @@ import React,{useCallback,useLayoutEffect,useRef,useState,useSyncExternalStore} 
 import type {World} from './survival-engine';
 import StationMenu from './StationMenu';
 import {LOOT_CHEST_ID,lootChestInMenuRange} from './loot-chest';
-import {PATCH_NOTE_TEXT,PATCH_QUEST_TITLE} from './patch-quest';
+import {PATCH_NOTE_TEXT,PATCH_QUEST_TITLE,patchSpeakerName} from './patch-quest';
+import {patchSpeechSections} from './patch-speech-sections';
 import {patchChat,choosePatchChat,closePatchChat,type PatchChat} from './patch-chat';
 import {patchJournalStage} from './patch-journal';
 import {patchDialogueReply} from './patch-dialogue';
@@ -44,7 +45,7 @@ function LetterReader({world,onClose}:Pick<Props,'world'|'onClose'>){
  return <StationMenu compact presentation="letter" world={world} title={PATCH_QUEST_TITLE} label={`${PATCH_QUEST_TITLE}, a folded note from P-04`} emblem={<NoteEmblem/>} closeLabel="Back to supplies" onClose={onClose} className="patch-note-menu"
   footerAction={<div className="patch-note-actions">
    <button type="button" className="patch-note-turn" aria-label={reverse?'Read the front of the letter':'Turn over to see the station sketch'} onClick={()=>setSide(reverse?'letter':'sketch')}>{caption} <span aria-hidden="true">↶</span></button>
-   {reverse&&world.patchQuest?.suppliesDelivered&&<button type="button" className="patch-note-turn" aria-pressed={memory} onClick={()=>setSide(memory?'sketch':'memory')}>{memory?'Station sketch':'Gate memory'}</button>}
+   {reverse&&patchSpeakerName(world.patchQuest)==='Patch'&&<button type="button" className="patch-note-turn" aria-pressed={memory} onClick={()=>setSide(memory?'sketch':'memory')}>{memory?'Station sketch':'Gate memory'}</button>}
    <button type="button" className="patch-note-return" onClick={onClose}>Back to supplies</button>
   </div>}>
   <article key={side} className="patch-note-paper" tabIndex={0} aria-label={memory?'Gate memory':reverse?'Station sketch':"P-04's note"}>
@@ -59,7 +60,7 @@ function LetterReader({world,onClose}:Pick<Props,'world'|'onClose'>){
     </div>:<>
      {noteParagraphs.slice(0,-1).map((paragraph,index)=><p className={index===0?'patch-note-salutation':index===1?'patch-note-promise':undefined} key={index}>{paragraph}</p>)}
      <div className="patch-note-signature"><span className="patch-note-signature-mark" aria-hidden="true"><i/><i/><i/></span><span>{noteParagraphs.at(-1)}</span></div>
-     {world.patchQuest?.suppliesDelivered&&<p className="patch-note-postscript">{PATCH_LETTER_POSTSCRIPT}</p>}
+     {patchSpeakerName(world.patchQuest)==='Patch'&&<p className="patch-note-postscript">{PATCH_LETTER_POSTSCRIPT}</p>}
     </>}
    </div>
   </article>
@@ -79,7 +80,7 @@ const initialFrame:Frame={width:844,height:390,safe:{top:0,right:0,bottom:0,left
 type SpeechSection={text:string;lines:number;singleLineWidth?:number};
 
 /** Read the browser's actual word positions with the same width and font as the bubble. */
-function measureSections(probe:HTMLElement,maxLines:number):SpeechSection[]{
+function measureSections(probe:HTMLElement,maxLines:number,font:number):SpeechSection[]{
  const node=probe.firstChild;
  if(!node||!node.textContent)return [];
  const text=node.textContent,range=document.createRange();
@@ -93,11 +94,10 @@ function measureSections(probe:HTMLElement,maxLines:number):SpeechSection[]{
  }
  range.selectNodeContents(node);
  const singleLineWidth=starts.length===1?Math.ceil(range.getBoundingClientRect().width):undefined;
- const pages:SpeechSection[]=[];
- for(let i=0;i<starts.length;i+=maxLines){
-  pages.push({text:text.slice(starts[i],starts[i+maxLines]).trim(),lines:Math.min(maxLines,starts.length-i),singleLineWidth});
- }
- return pages;
+ const lines=starts.map((start,i)=>text.slice(start,starts[i+1]).trim());
+ return patchSpeechSections(lines,maxLines,probe.clientWidth,font).map(section=>({
+  text:section.text.replace(/\n/g,' '),lines:section.count,singleLineWidth,
+ }));
 }
 
 function PatchReplies({world,chat,onChange}:ChatProps&{chat:PatchChat}){
@@ -133,7 +133,7 @@ function PatchReplies({world,chat,onChange}:ChatProps&{chat:PatchChat}){
   const el=probe.current;
   if(!el)return;
   const measure=()=>{
-   const sections=measureSections(el,maxLines);
+   const sections=measureSections(el,maxLines,font);
    if(sections.length)setMeasurement({chat,pages:sections});
   };
   measure();

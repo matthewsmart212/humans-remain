@@ -1,0 +1,101 @@
+import assert from 'node:assert/strict';
+import fs from 'node:fs';
+import os from 'node:os';
+import path from 'node:path';
+import {createRequire} from 'node:module';
+import {build} from 'esbuild';
+
+const temp=fs.mkdtempSync(path.join(os.tmpdir(),'patch-scanner-'));
+try{
+ const output=path.join(temp,'model.cjs');
+ const modules=['patch-scanner','patch-scanner-trail','patch-quest','patch-chat','patch-placement','patch-field-notes','patch-map','studio-play','survival-engine','run-save','scene-travel','imported-art','river-collision'];
+ await build({stdin:{contents:modules.map(id=>`export * from './src/${id}'`).join('\n'),resolveDir:process.cwd()},bundle:true,platform:'node',format:'cjs',outfile:output,logLevel:'error'});
+ const m=createRequire(import.meta.url)(output);
+ const src=JSON.parse(fs.readFileSync('native/assets/world-snapshot.json','utf8'));m.installImportedArt(src.records);
+ const layout=m.placePatchMaintenanceStation(src.layout),w=m.createCampPlaySession(layout,undefined,'survival');
+ const q=m.ensurePatchQuest(w),site=m.patchRescueSite(layout),post=m.patchRouteSite(layout,'dispatch');
+ Object.assign(w.player,site.approach);
+ assert(!m.patchScannerAvailable(w)&&!m.pulsePatchScanner(w));
+ function choose(id,world=w){
+  while(m.patchChat(world).choices.some(choice=>choice.id==='more'))assert(m.choosePatchChat(world,'more'));
+  assert(m.choosePatchChat(world,id),`Missing or inactive conversation reply ${id}`);
+ }
+ assert(m.inspectPatch(w));assert(!m.borrowPatchScanner(w));choose('topic:damage');choose('diagnose');
+ assert(m.canBorrowPatchScanner(w));choose('borrow-scanner');assert(!m.borrowPatchScanner(w));
+ assert(!m.pulsePatchScanner(w),'Chat owns input');m.closePatchChat(w);
+ assert(m.validPatchQuest(q));assert(m.validPatchQuest({...q,scannerLoaned:undefined}));
+ assert(!m.validPatchQuest({...q,diagnosed:false}));assert(!m.validPatchQuest({...q,scannerLoaned:'yes'}));
+ assert(m.patchScannerAvailable(w));assert.equal(m.patchMapLead(w).label,'Signal post');
+ const tracks=m.patchScannerTrail(layout,'footprints'),work=m.patchScannerTrail(layout,'haulage');
+ assert(tracks.length>50&&work.length>50);
+ assert(tracks.every(t=>!m.onPatchBridge(t)&&['right-tread','left-skid'].includes(t.kind)));
+ assert(work.every(t=>!m.onPatchBridge(t)&&['rope','crawler'].includes(t.kind)));
+ function sample(origin,direction,world=w){Object.assign(world.player,origin,{direction});world.tick+=240;assert(m.pulsePatchScanner(world));world.tick+=66;return m.samplePatchScan(world)}
+ const sampleAtCot=sample(site.approach,'left');
+ assert.deepEqual(new Set(sampleAtCot.prints.map(p=>p.kind)),new Set(['right-tread','left-skid']),'Looking at his sole shows two different marks');
+ const frame=sample(site.approach,'up-right');assert(frame.prints.length>=2&&frame.prints.length<=3);
+ assert.deepEqual(new Set(frame.prints.map(p=>p.kind)),new Set(['right-tread','left-skid']));
+ assert(frame.prints.every(p=>p.opacity>0&&!m.worldBlocked(w,p.x,p.y,19)));
+ assert.equal(frame.rays.length,13);assert(frame.rays.every(r=>r.radius>=0&&r.radius<=frame.radius));
+ assert.deepEqual(m.samplePatchScan({...w,player:{...w.player}}),frame,'The interpolated render world sees the same pulse');
+ const first=frame.prints.map(({x,y})=>({x,y}));assert(m.pulsePatchScanner(w));assert(!m.pulsePatchScanner(w));
+ w.tick+=65;assert.deepEqual(m.samplePatchScan(w).prints.map(({x,y})=>({x,y})),first);
+ assert.equal(sample(site.approach,'down').prints.length,0,'No omnidirectional quest arrow');
+ assert.match(m.patchScannerHint(w),/knee.*northeast/,'A reversed first scan gives a local start direction');
+ sample({x:-2256,y:4931},'up');assert.match(m.patchScannerHint(w),/Dry boards/,'Guide a player arriving at the east bridgehead');
+ sample(post.approach,'up-left');assert.match(m.patchScannerHint(w),/Read the ledger/,'The physical ledger replaces the missing tread at the end');
+ assert.equal(sample({x:-2790,y:4889},'left').prints.length,0);assert.match(m.patchScannerHint(w),/Dry boards/);
+ w.tick+=240;assert(!m.samplePatchScan(w));assert(!m.patchScannerHint(w));
+ assert(!q.dispatchRead&&!q.haulerInspected&&!q.servoClaimed,'Scan and rescan cannot advance the investigation');
+ // Edited scenery cannot leave painted tracks in water or under the owner's buildings.
+ const forkMark=tracks.find(mark=>mark.x<-3630&&mark.y<6800);
+ const obstacle={...site.station,id:'owner-road-obstruction',x:forkMark.x,y:forkMark.y,
+  frame:{sourceAssetId:site.station.assetId,width:62,height:62,anchor:[.5,.5]},
+  collision:{lineWidth:.01,paths:[{closed:true,points:[[0,0],[1,0],[1,1],[0,1]]}]},solid:true};
+ const edited={...w,layout:{...layout,items:[...layout.items,obstacle]},player:{...w.player},patchQuest:{...q}};
+ assert(m.worldBlocked(edited,forkMark.x,forkMark.y,19));
+ const from={x:forkMark.x+120,y:forkMark.y};const blocked=sample(from,'left',edited);
+ assert(!blocked.prints.some(p=>p.x===forkMark.x&&p.y===forkMark.y));
+ assert(blocked.rays.some(r=>r.radius<blocked.radius));
+ const moved={...layout,items:layout.items.map(p=>p.id===post.placement.id?{...p,x:p.x-150,y:p.y+80}:p)};
+ const movedPost=m.patchRouteSite(moved,'dispatch');assert.notDeepEqual(movedPost.approach,post.approach);
+ const movedWorld={...edited,layout:moved,patchQuest:{...q},player:{...w.player}};sample(movedPost.approach,'down',movedWorld);
+ assert.match(m.patchScannerHint(movedWorld),/Read the ledger/);
+ const flooded={...layout,items:layout.items.map(p=>p.id===post.placement.id?{...p,x:-2835,y:4580}:p)};
+ const wetTrail=m.patchScannerTrail(flooded,'footprints'),wetMark=wetTrail.find(p=>m.riverWaterBlocked(p.x,p.y,5,flooded));
+ assert(wetMark,'Test setup moves the author’s ledger across water');
+ const wetWorld={...edited,layout:flooded,patchQuest:{...q},player:{...w.player}};
+ const shore=Array.from({length:24},(_,i)=>({x:wetMark.x+210*Math.cos(i*Math.PI/12),y:wetMark.y+210*Math.sin(i*Math.PI/12)})).find(p=>!m.worldBlocked(wetWorld,p.x,p.y,19));
+ assert(shore,'The survivor can scan from the shore');
+ const across=sample(shore,m.facing(wetMark.x-shore.x,wetMark.y-shore.y),wetWorld);
+ assert(!across.prints.some(p=>p.x===wetMark.x&&p.y===wetMark.y),'Flooded tracks cannot light up across water');
+ for(const print of across.prints)assert(!m.worldBlocked(wetWorld,print.x,print.y,m.PATCH_TRACK_WIDTH[print.kind]*.6));
+ const removed={...layout,items:layout.items.filter(p=>p.id!==post.placement.id)};
+ assert.deepEqual(m.patchScannerTrail(removed,'footprints'),[]);
+ assert.deepEqual(m.patchScannerTrail(removed,'haulage'),[]);
+ const oldLayout={...layout,patchRouteVersion:undefined,items:layout.items.filter(p=>!Object.values(m.PATCH_ROUTE_IDS).some(id=>p.id.startsWith(id)))};
+ assert(m.patchScannerTrail(m.placePatchMaintenanceStation(oldLayout),'footprints').length>50,'Migrating older scenery restores the surveyed trail');
+ const without=m.createCampPlaySession(layout,undefined,'survival');Object.assign(without.player,site.approach);
+ assert(m.inspectPatch(without));choose('topic:damage',without);choose('diagnose',without);choose('mark-post',without);
+ assert.deepEqual(without.waypoint,{...post.approach,sceneId:'camp'});assert(!without.patchQuest.scannerLoaned);m.closePatchChat(without);
+ Object.assign(without.player,post.approach);assert(m.examinePatchSite(without,'dispatch'),'Compass route reaches the same real ledger');
+ const progress=structuredClone(q);delete progress.scannerLoaned;assert(m.validPatchQuest(progress));
+ assert.equal(m.patchMapLead({...w,patchQuest:progress}).label,'Signal post','A scanner-free save retains the compass');
+ Object.assign(w.player,post.approach);assert(m.examinePatchSite(w,'dispatch'));w.stationPanel=undefined;
+ assert.equal(m.patchMapLead(w).label,'Cable works');const drag=sample(post.approach,'left');assert(drag.prints.some(p=>p.kind==='rope'));
+ const cleat=work.find(p=>p.kind==='crawler');const near={x:cleat.x-45*Math.cos(cleat.angle),y:cleat.y-45*Math.sin(cleat.angle)};
+ assert(sample(near,m.facing(cleat.x-near.x,cleat.y-near.y)).prints.some(p=>p.kind==='crawler'));
+ assert(!q.haulerInspected&&!q.servoClaimed);
+ const travel=new m.SceneTravel(w,{pin(){},prepare:async()=>{},ready:()=>true});
+ const saved=m.encodeRun(travel);assert(saved);
+ const restored=m.decodeRun(saved).worlds.find(([id])=>id==='camp')[1];
+ assert(restored.patchQuest.scannerLoaned&&m.patchScannerAvailable(restored));
+ assert(!m.samplePatchScan(restored),'Real save restores the loan without an active pulse');
+ const legacy=JSON.parse(saved);delete legacy.worlds[0][1].patchQuest.scannerLoaned;
+ const older=m.decodeRun(JSON.stringify(legacy)).worlds[0][1];
+ assert(!m.patchScannerAvailable(older));assert.equal(m.patchMapLead(older).label,'Cable works');
+ assert(!m.patchScannerAvailable({...w,scene:{id:'iron-mine'}}));
+ assert(!m.patchScannerAvailable({...w,patchQuest:{...q,servoClaimed:true}}));
+ assert(!m.samplePatchScan({...w,patchQuest:structuredClone(q)}),'Restoring saved facts never revives an old pulse');
+ console.log('Verified scanner loan, two surveyed routes, dry bridge boards, direction, collision, repeat, fade, persistent facts and journal fallback.');
+}finally{fs.rmSync(temp,{recursive:true,force:true})}

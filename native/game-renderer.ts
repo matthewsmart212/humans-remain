@@ -32,6 +32,7 @@ import type {TerrainView} from '../src/outdoor-terrain';
 import {WORLD_URL} from './config';
 import type {GamePerformanceRecorder} from '../src/performance-recording';
 import {NativeFrameWorkScheduler} from './frame-work-scheduler';
+import {GameplayArtwork,patchGameplayImages} from '../src/gameplay-artwork';
 
 export const PLAY_VIEW:EditorView={x:0,y:0,zoom:1,follow:true,grid:false,collision:false,selected:null,ghost:null,placingSpawn:false,playing:true,hideFoliage:false};
 
@@ -114,9 +115,12 @@ export async function createNativeRenderer(view:EditorView={...PLAY_VIEW},diagno
  const releaseImages=(keys:string[])=>{for(const key of keys)delete prepared[key];loader.release(keys);revision++};
  const streamSources={...CAMP_CHUNK_IMAGES,...RIVER_DETAIL_IMAGES};
  const streams=open('Terrain streams',()=>createTerrainArtStreams(warmImages,releaseImages,keys=>{loader.promote(Object.fromEntries(keys.map(k=>[k,streamSources[k]])));const images=new Set(keys.map(k=>loader.images[k]));for(const job of queue)if(images.has(job.image))job.priority='foreground'},diagnostics,'native'));
+ const patchArt=new GameplayArtwork(sources=>warmImages(sources,'background'),releaseImages);
+ let nextPatchArtUpdate=0;
  return {
   warmImages,releaseImages,setFrameManaged,get revision(){return revision},
   async prepareTerrain(world:World,width:number,height:number){
+   await patchArt.update(patchGameplayImages(world)).catch(()=>{/* Optional set dressing will retry during play. */});
    // Use the actual draw/culling/LOD hooks to select exactly the same artwork
    // as gameplay. Finish warming the admitted buffer before removing loading.
    const preview=this.draw(world,width,height);preview.dispose();
@@ -124,6 +128,11 @@ export async function createNativeRenderer(view:EditorView={...PLAY_VIEW},diagno
   },
   textureStats:()=>({graphics:{backend:'native-skia',shaderFieldBytes:adapter.shaderFieldBytes()},camp:streams.camp.stats(),rivers:streams.rivers.stats(),artwork:{...loader.stats(),warming:queue.length,warmQueue:queue.slice(0,12).map(job=>({key:job.key,priority:job.priority,ageMs:Math.round(performance.now()-job.queuedAt)}))}}),
   draw(world:World,width:number,height:number,fade=0,peers:readonly CoopPeer[]=[]){
+   const now=performance.now();
+   if(now>=nextPatchArtUpdate){
+    nextPatchArtUpdate=now+750;
+    void patchArt.update(patchGameplayImages(world),now).catch(()=>{/* The artwork stream retries failed loads. */});
+   }
    const recorder=Skia.PictureRecorder(),canvas=recorder.beginRecording(Skia.XYWHRect(0,0,width,height));
    const density=Math.min(2,PixelRatio.get());
    // Match web's physical-pixel camera/LOD thresholds, then map the Picture
@@ -138,6 +147,6 @@ export async function createNativeRenderer(view:EditorView={...PLAY_VIEW},diagno
    const started=diagnostics?.tracing?performance.now():undefined;
    try{drawWorldEditor(ctx as unknown as CanvasRenderingContext2D,{} as Atlas,prepared as unknown as Record<string,HTMLImageElement>,world,view,fade,peers);return recorder.finishRecordingAsPicture()}finally{if(started!==undefined)diagnostics!.phase('worldDrawMs',performance.now()-started);const cleanup=started!==undefined?performance.now():undefined;ctx.dispose();recorder.dispose();if(cleanup!==undefined)diagnostics!.phase('cleanupMs',performance.now()-cleanup)}
   },
-  dispose(){if(disposed)return;disposed=true;unregisterPreparation();if(!sharedPreparation)preparation.dispose();streams.dispose();for(const job of queue.splice(0))job.reject(Error('Renderer closed'));loader.dispose();for(const key of Object.keys(prepared))delete prepared[key];preparationSurface.dispose();preparationPaint.dispose();adapter.disposeLighting();dialogueFont?.dispose();font.dispose();face.dispose()}
+  dispose(){if(disposed)return;disposed=true;patchArt.dispose();unregisterPreparation();if(!sharedPreparation)preparation.dispose();streams.dispose();for(const job of queue.splice(0))job.reject(Error('Renderer closed'));loader.dispose();for(const key of Object.keys(prepared))delete prepared[key];preparationSurface.dispose();preparationPaint.dispose();adapter.disposeLighting();dialogueFont?.dispose();font.dispose();face.dispose()}
  };
 }

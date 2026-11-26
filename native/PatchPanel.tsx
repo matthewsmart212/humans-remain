@@ -1,11 +1,11 @@
 import {PATCH_LETTER_POSTSCRIPT,patchLetterDirections} from '../src/patch-letter';
-import React,{useCallback,useEffect,useLayoutEffect,useState} from 'react';
+import React,{useCallback,useEffect,useLayoutEffect,useRef,useState} from 'react';
 import {BackHandler,Image,ImageBackground,Platform,Pressable,ScrollView,StyleSheet,Text,View} from 'react-native';
 import type {World} from '../src/survival-engine';
 import {type MenuInsets} from '../src/station-menu-layout';
 import {patchPanelLayout} from '../src/patch-panel-layout';
 import {LOOT_CHEST_ID,lootChestInMenuRange} from '../src/loot-chest';
-import {PATCH_NOTE_TEXT,PATCH_QUEST_TITLE} from '../src/patch-quest';
+import {PATCH_NOTE_TEXT,PATCH_QUEST_TITLE,patchSpeakerName} from '../src/patch-quest';
 import {patchJournalStage} from '../src/patch-journal';
 import {patchDialogueReply} from '../src/patch-dialogue';
 import {patchChat,backPatchChat,choosePatchChat,type PatchChat} from '../src/patch-chat';
@@ -44,7 +44,7 @@ export function PatchNotePanel({world,onClose,onChange,...frame}:Props){
  return <StationMenu presentation="letter" world={world} {...frame} title={PATCH_QUEST_TITLE} label={`${PATCH_QUEST_TITLE}, a folded note from P-04`} closeLabel="Back to supplies" onClose={back}
   footerAction={<View style={s.letterActions}>
    <Pressable accessibilityRole="button" accessibilityLabel={reverse?'Read the front of the letter':'Turn over to see the station sketch'} onPress={()=>setSide(reverse?'letter':'sketch')} style={({pressed})=>[s.turnButton,pressed&&s.returnPressed]}><Text style={s.turnLabel}>{reverse?'Read letter':'Turn over'} ↶</Text></Pressable>
-   {reverse&&world.patchQuest?.suppliesDelivered&&<Pressable accessibilityRole="button" onPress={()=>setSide(memory?'sketch':'gate')} style={({pressed})=>[s.turnButton,pressed&&s.returnPressed]}><Text style={s.turnLabel}>{memory?'Station sketch':'Gate memory'}</Text></Pressable>}
+   {reverse&&patchSpeakerName(world.patchQuest)==='Patch'&&<Pressable accessibilityRole="button" onPress={()=>setSide(memory?'sketch':'gate')} style={({pressed})=>[s.turnButton,pressed&&s.returnPressed]}><Text style={s.turnLabel}>{memory?'Station sketch':'Gate memory'}</Text></Pressable>}
    <Pressable accessibilityRole="button" accessibilityLabel="Back to supplies" onPress={back} style={({pressed})=>[s.returnButton,pressed&&s.returnPressed]}><Text style={s.returnLabel}>Back to supplies</Text></Pressable>
   </View>}>
   <ScrollView key={side} style={s.paper} contentContainerStyle={s.paperScrollContent} accessibilityLabel={memory?'The industrial gate':reverse?'Station sketch':"P-04's note"} showsVerticalScrollIndicator indicatorStyle="white">
@@ -60,7 +60,7 @@ export function PatchNotePanel({world,onClose,onChange,...frame}:Props){
      </View>:<>
       {noteParagraphs.slice(0,-1).map((paragraph,index)=><Text selectable key={index} style={[s.paragraph,tightNote&&s.paragraphTight,index===0&&s.salutation,index===1&&s.promise]}>{paragraph}</Text>)}
       <View style={s.signature}><View accessible={false} style={s.signatureMark}><View style={s.signatureBar}/><View style={s.signatureBar}/><View style={s.signatureBar}/></View><Text selectable style={s.signatureText}>{noteParagraphs.at(-1)}</Text></View>
-      {world.patchQuest?.suppliesDelivered&&<Text selectable style={[s.paragraph,s.postscript]}>{PATCH_LETTER_POSTSCRIPT}</Text>}
+      {patchSpeakerName(world.patchQuest)==='Patch'&&<Text selectable style={[s.paragraph,s.postscript]}>{PATCH_LETTER_POSTSCRIPT}</Text>}
      </>}
     </View>
    </ImageBackground>
@@ -77,12 +77,14 @@ export function PatchChatHUD(props:ChatProps){
 function PatchConversation({world,width,height,safe,onClose,onChange,chat}:ChatProps&{chat:PatchChat}){
  const {bounds}=patchReplyStripLayout(width,height,safe);
  const [readable,setReadable]=useState<PatchChat>();
+ const localBack=useRef<(()=>boolean)|null>(null);
  const onReadable=useCallback((ready:boolean)=>setReadable(ready?chat:undefined),[chat]);
  useLayoutEffect(()=>{
   setPatchChatBounds(world,bounds,safe);
   return ()=>setPatchChatBounds(world,undefined);
  },[world,bounds.x,bounds.y,bounds.width,bounds.height,safe.top,safe.right,safe.bottom,safe.left]);
  const back=useCallback(()=>{
+  if(localBack.current?.())return true;
   if(!backPatchChat(world))return false;
   onChange(false);
   return true;
@@ -92,6 +94,7 @@ function PatchConversation({world,width,height,safe,onClose,onChange,chat}:ChatP
   return ()=>subscription.remove();
  },[back]);
  const choose=(id:string)=>{
+  if(id==='back'&&localBack.current?.())return;
   const stage=patchJournalStage(world),command=world.patchQuest?.command;
   if(choosePatchChat(world,id,chat))onChange(stage!==patchJournalStage(world)||command!==world.patchQuest?.command);
  };
@@ -99,7 +102,7 @@ function PatchConversation({world,width,height,safe,onClose,onChange,chat}:ChatP
  const choiceSetKey=JSON.stringify([chat.view,chat.question,chat.pageIndex,chat.choices.map(item=>item.id)]);
  return <View pointerEvents="box-none" onAccessibilityEscape={back} style={StyleSheet.absoluteFill}>
   <PatchConversationBubble chat={chat} world={world} width={width} height={height} safe={safe}
-   replyTop={bounds.y} onContinue={()=>choose('more')} onReadable={onReadable}/>
+   localBack={localBack} replyTop={bounds.y} onContinue={()=>choose('more')} onReadable={onReadable}/>
   <PatchReplyStrip width={width} height={height} safe={safe} choices={choices} choiceSetKey={choiceSetKey}
    speaker={chat.speaker} command={world.patchQuest?.command} onChoose={choose} onClose={onClose}/>
  </View>;

@@ -1,3 +1,4 @@
+import {atPatchEvidence} from './patch-evidence';
 import {buildingRestored} from './camp-restoration';
 import {lootChestOpened,lootChestInMenuRange} from './loot-chest';
 import {nearbyHeadquarters} from './run-progression';
@@ -18,4 +19,4 @@ export function nearbyChest(world:World){
  return nearest;
 }
 export const atStorage=(w:World)=>buildingRestored(w,'warehouse')&&!!nearbyWarehouse(w)||!!nearbyChest(w)||campAction(w)==='deposit';
-export const atStation=(w:World)=>w.stationPanel==='patch-note'?lootChestOpened(w,'campfire-cache-01')&&lootChestInMenuRange(w,'campfire-cache-01'):w.stationPanel==='rare-cache'?lootChestOpened(w,w.lootChestId)&&lootChestInMenuRange(w):w.stationPanel==='headquarters'?!!nearbyHeadquarters(w):w.stationPanel==='smithy'?buildingRestored(w,'workshop')&&!!w.smithyId&&nearbySmithy(w)?.placement.id===w.smithyId:w.stationPanel==='furnace'?buildingRestored(w,'furnace')&&!!w.furnaceId&&nearbyFurnace(w)?.placement.id===w.furnaceId:w.stationPanel==='fire'?campAction(w)==='cook':w.stationPanel==='storage'?atStorage(w):w.stationPanel==='warehouse'?buildingRestored(w,'warehouse')&&!!nearbyWarehouse(w):false;
+export const atStation=(w:World)=>w.stationPanel==='patch-evidence'?atPatchEvidence(w):w.stationPanel==='patch-note'?lootChestOpened(w,'campfire-cache-01')&&lootChestInMenuRange(w,'campfire-cache-01'):w.stationPanel==='rare-cache'?lootChestOpened(w,w.lootChestId)&&lootChestInMenuRange(w):w.stationPanel==='headquarters'?!!nearbyHeadquarters(w):w.stationPanel==='smithy'?buildingRestored(w,'workshop')&&!!w.smithyId&&nearbySmithy(w)?.placement.id===w.smithyId:w.stationPanel==='furnace'?buildingRestored(w,'furnace')&&!!w.furnaceId&&nearbyFurnace(w)?.placement.id===w.furnaceId:w.stationPanel==='fire'?campAction(w)==='cook':w.stationPanel==='storage'?atStorage(w):w.stationPanel==='warehouse'?buildingRestored(w,'warehouse')&&!!nearbyWarehouse(w):false;

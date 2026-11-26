@@ -1,6 +1,8 @@
 import {patchChat} from './patch-chat';
 import {patchMeetingCamera,drawPatchMeeting} from './patch-meeting';
-import {patchDrawables,drawPatchFeedback,drawPatchGroundContacts} from './patch-renderer';
+import {patchDrawables,drawPatchFeedback,drawPatchGroundContacts,drawPatchScenery} from './patch-renderer';
+import {drawHeldPatchScanner,drawPatchScanner,heldPatchScanner} from './patch-scanner-renderer';
+import {samplePatchScan} from './patch-scanner';
 import {drawBurningHearth,hasPaintedHearthAnimation} from './hearth-animation-art';
 import {FISHING_PIER_ID} from './fishing-site-art';
 import {drawFishingSiteGround,fishingPierForegroundDrawables} from './fishing-site-renderer';
@@ -319,6 +321,13 @@ export function drawWorldEditor(ctx:CanvasRenderingContext2D,atlas:Atlas,imgs:Re
  if(campContacts)drawCampGroundContacts(ctx,campContacts,w,imgs.treeCanopyShade,view.hideFoliage);
  const pickupScale=c.scale/Math.min(2,(ctx as CanvasRenderingContext2D&{pixelRatio?:number}).pixelRatio||globalThis.devicePixelRatio||1);
  if(view.playing)drawLootChestGround(ctx,imgs,w,{x:c.x,y:c.y,width:ctx.canvas.width/c.scale,height:ctx.canvas.height/c.scale});
+ drawPatchScenery(ctx,imgs.patchScenery,w,viewport,placed);
+ const scan=view.playing?samplePatchScan(w):undefined;
+ const scanner=scan&&imgs.patchScenery?heldPatchScanner(w,scan):undefined;
+ if(scan){
+  placed.push({layer:-1,y:Infinity,draw:()=>drawPatchScanner(ctx,imgs.patchScenery,scan,viewport,scanner?.lens)});
+  if(scanner)placed.push({y:w.player.y+(scanner.behind?-.01:.01),draw:()=>drawHeldPatchScanner(ctx,imgs.patchScenery,scanner,scan.opacity)});
+ }
  // Chest and effects now share one depth-sorted drawable, behind players in front.
  const pickupCues=view.playing?visiblePickupCues(w,{x:c.x,y:c.y,width:ctx.canvas.width/c.scale,height:ctx.canvas.height/c.scale,scale:c.scale}):[];
  const groundLoot=[...stoneDrawables(ctx,imgs,w,viewport),...scrapDrawables(ctx,imgs,w,viewport),...treeLogDrawables(ctx,imgs,w,viewport)];
@@ -331,7 +340,7 @@ export function drawWorldEditor(ctx:CanvasRenderingContext2D,atlas:Atlas,imgs:Re
    if(Math.abs(chest.x-w.player.x)<160&&Math.abs(chest.y-w.player.y)<250)outline.covers.push({y:chest.y,draw:chest.mask});
   }
  }
- const draws:WorldDraw[]=[...patchDrawables(ctx,imgs,w,viewport,!view.playing),...groundLoot,...predatorDrawables(ctx,imgs,w,viewport),...placed,...chests,...bonfireFoodDrawables(ctx,imgs,w),...combatDrawables(ctx,imgs,w),...chickenDrawables(ctx,imgs,w,viewport),...deerDrawables(ctx,imgs,w,viewport),...rabbitDrawables(ctx,imgs,w,viewport)];if(!brutePlayerCarried(w))draws.push({y:w.player.y,draw:()=>drawWorker(ctx,imgs,w,atlas)});
+ const draws:WorldDraw[]=[...patchDrawables(ctx,imgs,w,viewport,!view.playing),...groundLoot,...predatorDrawables(ctx,imgs,w,viewport),...placed,...chests,...bonfireFoodDrawables(ctx,imgs,w),...combatDrawables(ctx,imgs,w),...chickenDrawables(ctx,imgs,w,viewport),...deerDrawables(ctx,imgs,w,viewport),...rabbitDrawables(ctx,imgs,w,viewport)];if(!brutePlayerCarried(w))draws.push({y:w.player.y,draw:()=>drawWorker(ctx,imgs,scanner?{...w,player:{...w.player,equipped:null}}:w,atlas)});
  draws.push(...bowArrowDrawables(ctx,imgs,w));
  // Co-op phase 1: visual peers only. No peer is inserted into the local simulation.
  for(const peer of peers){

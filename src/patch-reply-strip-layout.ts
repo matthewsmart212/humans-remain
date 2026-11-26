@@ -42,4 +42,12 @@ export function patchReplySizing(listWidth:number,gap:number,count:number,fontSi
 }
 
 export function isPatchCommand(id:string){return id==='camp'||id==='follow'||id==='stay'}
-export function primaryPatchReply(id:string){return id==='diagnose'||id==='recruit'}
+const primaryReplies=new Set(['arrival','diagnose','recruit','repair','borrow-scanner','scanner-offer','stay-close','welcome']);
+export function primaryPatchReply(id:string,choices:PatchChat['choices']){
+ if(id==='topic:damage')return choices[0]?.id===id;
+ return primaryReplies.has(id);
+}
+export function patchReplyIcon(id:string){
+ if(id==='diagnose'||id==='repair')return 'wrench';
+ if(id==='recruit'||id==='stay-close')return 'follow';
+}

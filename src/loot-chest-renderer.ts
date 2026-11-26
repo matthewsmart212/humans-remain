@@ -1,5 +1,5 @@
-import {drawChestRig,CHEST_LOCK_X,CHEST_WIDTH_SCALE,CHEST_MOUTH_INTERIOR,type ChestInterior} from './loot-chest-rig';
-import {campLootChest,LOOT_CHEST_IMAGE_KEY,LOOT_CHEST_GROUND_KEY} from './loot-chest';
+import {drawChestDelivery,drawChestRig,CHEST_LOCK_X,CHEST_WIDTH_SCALE,CHEST_MOUTH_INTERIOR,type ChestInterior} from './loot-chest-rig';
+import {campLootChest,LOOT_CHEST_ID,LOOT_CHEST_IMAGE_KEY,LOOT_CHEST_GROUND_KEY} from './loot-chest';
 import {lootChestFx,type LootChestFx} from './loot-chest-fx';
 import type {World} from './survival-engine';
 
@@ -195,6 +195,8 @@ export function drawLootChestGround(ctx:CanvasRenderingContext2D,imgs:Record<str
 export function lootChestDrawables(ctx:CanvasRenderingContext2D,imgs:Record<string,HTMLImageElement>,w:World,viewport:Viewport){
  const p=campLootChest(w);if(!p||!visible(p.x,p.y,viewport))return [];
  const sprite=imgs[LOOT_CHEST_IMAGE_KEY],fx=lootChestFx(w);
+ const supplies=w.patchQuest?.suppliesDelivered?w.lootChests?.[LOOT_CHEST_ID]?.contents:undefined;
+ const deliveryArt=(supplies?.pallets??0)>0||(supplies?.scrap??0)>0?imgs.patchScenery:undefined;
  const body=()=>{
   if(sprite)drawChestRig(ctx,sprite,w,0,0);
   else{ctx.fillStyle='#393028';ctx.fillRect(-83,-70,166,70)}
@@ -207,6 +209,7 @@ export function lootChestDrawables(ctx:CanvasRenderingContext2D,imgs:Record<stri
   light(ctx,x,y,fx,false);
   body();
   light(ctx,x,y,fx,true);
+  if(deliveryArt&&sprite)drawChestDelivery(ctx,deliveryArt,w);
   openingScan(ctx,x,y,fx);inlays(ctx,x,y,fx);lidGlints(ctx,x,y,fx);motes(ctx,x,y,fx);openingSparks(ctx,x,y,fx);sealFlare(ctx,x,y,fx);
  })}];
 }

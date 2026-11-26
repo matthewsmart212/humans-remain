@@ -21,6 +21,7 @@ import {BONFIRE_FOOD_IMAGES} from './bonfire-food-art';
 import {RABBIT_FOOD_IMAGES,VENISON_FOOD_IMAGES,FISH_FOOD_IMAGES} from './food-items';
 import {FISHING_ART} from './fishing-art';
 import {PATCH_IMAGES} from './patch-art';
+import {PATCH_SCENERY_IMAGE,patchScenerySprites} from './patch-scenery';
 
 // The pinned food sprites serve the spit, thrown food and ground pickups in every role.
 const campfireFoodImages={...BONFIRE_FOOD_IMAGES,...RABBIT_FOOD_IMAGES,...VENISON_FOOD_IMAGES,...FISH_FOOD_IMAGES};
@@ -37,12 +38,23 @@ export function playerMovementImagesForRole(role:SurvivorRoleId):Record<string,s
   torch:'/survival/equipment/torch-v1.png'
  };
 }
+/** One local prop atlas serves the landmarks and the borrowed scanner on both platforms. */
+export function patchGameplayImages(w:World):Record<string,string>{
+ const out:Record<string,string>={};
+ if(w.scene||!w.layout)return out;
+ const q=w.patchQuest,p=w.player;
+ if(q&&Math.hypot(q.position.x-p.x,q.position.y-p.y)<2100)Object.assign(out,PATCH_IMAGES);
+ if(q?.scannerLoaned&&!q.servoClaimed||patchScenerySprites(w,{x:p.x-1500,y:p.y-1500,width:3000,height:3000}).length)
+  out.patchScenery=PATCH_SCENERY_IMAGE;
+ return out;
+}
+
 const equipment:Record<string,string>={...MINING_IMAGES,...KNIFE_IMAGES,...SWORD_IMAGES,...SPEAR_IMAGES};
 /** Prefetch carried tools and nearby creatures, preserving the original art. */
 export function gameplayImageSources(w:World):Record<string,string>{
  const out:Record<string,string>=w.layout&&!w.scene?{...LOOT_CHEST_IMAGES}:{},gear=new Set(Object.entries(w.gear?.bag??{}).filter(([,count])=>!!count).map(([id])=>id));
  if(w.fishing?.claimed)out.fishingScoutDrone=FISHING_ART.scoutDrone;
- if(!w.scene&&w.patchQuest&&Math.hypot(w.patchQuest.position.x-w.player.x,w.patchQuest.position.y-w.player.y)<2100)Object.assign(out,PATCH_IMAGES);
+ Object.assign(out,patchGameplayImages(w));
  if(w.survivorRole==='hunter')Object.assign(out,HUNTER_IMAGE_SOURCES);
  if(w.player.equipped)gear.add(w.player.equipped);
  for(const drop of w.loot)gear.add(drop.kind);

@@ -153,3 +153,9 @@
  .patch-chat-bubble { animation: patch-speech-arrive .11s ease-out; }
  @keyframes patch-speech-arrive { from { opacity: .3; } }
 }
+
+.patch-evidence-sheet { padding: 20px clamp(20px,4vw,48px) 24px; }
+.patch-evidence-sheet .patch-note-sketch img { width: 42%; height: clamp(88px,31vh,145px); object-fit: contain; }
+.camp-studio .field-kit .station-menu.patch-note-menu .patch-evidence-sheet .patch-note-provenance { margin-bottom: 12px; }
+.camp-studio .field-kit .station-menu.patch-note-menu .patch-evidence-sheet p.patch-evidence-annotation { margin: 8px 0 0; font-style: italic; }
+.patch-evidence-annotation small { display: block; font: 600 12px/1.5 'Barlow', sans-serif; color: #63543d; }

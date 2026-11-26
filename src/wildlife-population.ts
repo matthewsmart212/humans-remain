@@ -17,6 +17,7 @@ export type WildlifeMember={slot:string;group:string;alertUntil?:number};
 const habitat=(id:string,name:string,x:number,y:number,members:Species[]):Habitat=>({id,name,at:{x,y},members});
 /** Stable territories make learning the landscape worthwhile. Group members
  * have nearby homes, but roam independently and share a local alarm. */
+const northWolves=habitat('north-wolves','Northwestern hunting grounds',-4300,-3850,['wolf','wolf']);
 export const WILDLIFE_HABITATS:Habitat[]=[
  habitat('camp-meadow','Camp meadow',100,800,Array(4).fill('chicken')),
  habitat('east-meadow','East meadow',3500,2800,Array(4).fill('chicken')),
@@ -36,7 +37,7 @@ export const WILDLIFE_HABITATS:Habitat[]=[
  habitat('east-boars','East thicket',5500,1000,['boar','boar']),
  ...[[-4500,8000],[2500,-3000],[8000,1500]].map(([x,y],i)=>habitat(`boar-${i}`,'Boar territory',x,y,['boar'])),
  habitat('south-wolves','Southeastern hunting grounds',8500,7500,['wolf','wolf']),
- habitat('north-wolves','Northwestern hunting grounds',-4500,-3000,['wolf','wolf']),
+ northWolves,
  ...[[5000,4300],[-2500,6500],[9000,-3000]].map(([x,y],i)=>habitat(`wolf-${i}`,'Lone wolf territory',x,y,['wolf'])),
 ];
 export const WILDLIFE_RETURN_SECONDS={chicken:600,rabbit:720,doe:1200,stag:1200,boar:1500,wolf:1800} as const;
@@ -62,6 +63,41 @@ function spawn(w:World,slot:WildlifeSlot,index:number){
  else if(species==='doe'||species==='stag')a.deer={...motion,kind:species,stride:0};
  else a.predator={...motion,kind:species,readyAt:t+1.2,engaged:false,angle:0};
  w.animals.push(a);slot.entityId=a.id;slot.missingAt=undefined;return true;
+}
+
+function habitatHome(h:Habitat,i:number):Vec{
+ const angle=i*2.399963,r=h.members.length>1?95:0;
+ return {x:h.at.x+Math.cos(angle)*r,y:h.at.y+Math.sin(angle)*r};
+}
+
+/** Older expeditions placed the den within sight of the W-6 inspection plate.
+ * Preserve each wolf, its health and its respawn clock. A visible wolf walks
+ * back on its own and an ongoing chase can finish normally. */
+export function migrateCableWorksWolfDen(w:World){
+ const ecology=w.ecology;
+ if(!ecology||w.scene)return;
+ const oldDen={...northWolves,at:{x:-4500,y:-3000}};
+ for(const [index,slot] of ecology.slots.entries()){
+  if(slot.group!==northWolves.id)continue;
+  const member=northWolves.members.findIndex((_,i)=>slot.id===northWolves.id+':'+i);
+  if(member<0)continue;
+  const next=habitatHome(northWolves,member);
+  const previous=habitatHome(oldDen,member);
+  if(Math.hypot(slot.home.x-previous.x,slot.home.y-previous.y)>1)continue;
+  slot.home=next;
+  const wolf=w.animals.find(a=>a.id===slot.entityId);
+  if(!wolf?.predator||wolf.hp<=0)continue;
+  const home=clearHome(w,next,index,w.animals.filter(a=>a!==wolf&&a.hp>0));
+  if(!home)continue;
+  wolf.predator.home=home;
+  if(!wolf.predator.engaged){
+   wolf.predator.target={...home};
+   wolf.predator.state='return';
+   if(Math.hypot(wolf.x-w.player.x,wolf.y-w.player.y)>1700&&Math.hypot(home.x-w.player.x,home.y-w.player.y)>1700){
+    wolf.x=home.x;wolf.y=home.y;
+   }
+  }
+ }
 }
 
 /** Keep the pack's territory attached to the authored woodland camp, even if it moves in Build. */
@@ -96,8 +132,7 @@ export function seedWildlife(w:World){
  if(w.scene||!usesPaintedHomeTerrain(w.layout?.terrainImage)||w.ecology)return false;
  const slots:WildlifeSlot[]=[];
  for(const h of WILDLIFE_HABITATS)h.members.forEach((species,i)=>{
-  const angle=i*2.399963,r=h.members.length>1?95:0;
-  slots.push({id:`${h.id}:${i}`,group:h.id,species,home:{x:h.at.x+Math.cos(angle)*r,y:h.at.y+Math.sin(angle)*r}});
+  slots.push({id:`${h.id}:${i}`,group:h.id,species,home:habitatHome(h,i)});
  });
  w.ecology={slots,nextCheck:0};slots.forEach((slot,i)=>spawn(w,slot,i));seedWoodlandChestWolves(w);seedSmallholdingRabbits(w);return true;
 }

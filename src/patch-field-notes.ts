@@ -32,7 +32,12 @@ const trackerCopy={
 
 export function fieldNoteTrackerCopy(w:World){
  const stage=patchJournalStage(w);
+ if(stage==='home'&&w.patchQuest?.nameIntroduced===false)return {action:'Speak with P-04',location:'Camp chest'};
  if(!stage||stage==='home')return;
+ if(w.patchQuest?.scannerLoaned){
+  if(stage==='dispatch')return {action:'Scan for his tread',location:'Signal post'};
+  if(stage==='salvage'&&!w.patchQuest.haulerInspected)return {action:'Trace the sled marks',location:'Logging road'};
+ }
  return trackerCopy[stage==='salvage'&&w.patchQuest?.haulerInspected?'brake':stage];
 }
 

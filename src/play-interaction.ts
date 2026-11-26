@@ -33,7 +33,7 @@ import {startHealthRecovery} from './survival-needs';
 import {nearPotatoPatch,potatoPatchAction} from './potato-farming';
 import {fishingTackleTargets,claimFishingTackle,fishingBaitTargets,gatherFishingBait,FISHING_BAIT_LIMIT} from './fishing';
 import {FISHING_ART} from './fishing-art';
-import {patchInteraction,patchRepairProgress,beginPatchRepair,holdPatchRepair,examinePatchSite,inspectPatch} from './patch-quest';
+import {patchInteraction,patchRepairProgress,beginPatchRepair,holdPatchRepair,examinePatchSite,inspectPatch,patchSpeakerName} from './patch-quest';
 
 export type PlayInteraction={repairAction?:PlayInteraction;repair?:boolean;patchRepair?:boolean;image?:string;key:string;label:string;shortLabel:string;icon:'gate'|'chest'|'collect'|'cook'|'water';disabled:boolean;available?:boolean;target?:FieldKitTarget;perform:()=>unknown};
 
@@ -45,6 +45,13 @@ const stationArt={
  warehouse:headquartersMenuImage(WAREHOUSE_ART.empty),
  garden:headquartersMenuImage(potatoStageUrl(1,0)),
 };
+const patchTargets={
+ robot:{label:'P-04',image:'/survival/patch-v1/portrait.webp',detail:undefined},
+ cot:{label:'Dry bedroll',image:undefined,detail:'Someone kept the blanket dry'},
+ dispatch:{label:'Signal post',image:'/survival/patch-v5/dispatch-slip.webp',detail:'Dispatch ledger'},
+ 'hauler-inspect':{label:'Hauler load plate',image:'/survival/patch-v5/drive-rubbing.webp',detail:'Check the stamped number'},
+ 'hauler-salvage':{label:'Brake housing',image:'/survival/patch-v5/drive-rubbing.webp',detail:'W-6 rescue drive'},
+} as const;
 const pickupItems={
  pallets:'logs',stone:'stone',scrap:'scrap',fuel:'fuel',ironOre:'ironOre',ironIngot:'ironIngot',
  rawMeat:'raw',rawRabbit:'rabbitRaw',rawVenison:'venisonRaw',rawFish:'fishRaw',rawCarp:'carpRaw',rawPike:'pikeRaw',
@@ -97,12 +104,19 @@ export function playInteraction(world:World):PlayInteraction|null{
  };
  const companion=patchInteraction(world);
  if(companion){
-  const robot=companion.target==='robot';
-  const target={id:companion.key,x:companion.x,y:companion.y,label:robot?(world.patchQuest?.suppliesDelivered?'Patch':'P-04'):companion.target==='dispatch'?'Signal post':companion.target==='hauler-inspect'?'Hauler load plate':'Brake housing'};
+  const kind=companion.target;
+  const info=patchTargets[kind];
+  const label=kind==='robot'?patchSpeakerName(world.patchQuest):info.label;
+  const target={id:companion.key,x:companion.x,y:companion.y,label};
   const action:PlayInteraction={key:companion.key,label:companion.label,shortLabel:companion.shortLabel,
-   icon:robot||companion.target==='dispatch'?'chest':'collect',image:robot?'/survival/patch-v1/portrait.webp':undefined,
-   disabled:companion.disabled,target:{...target,detail:robot?undefined:companion.target==='dispatch'?'Dispatch ledger':companion.target==='hauler-inspect'?'Check the stamped number':'W-6 rescue drive'},
-   perform:()=>companion.target==='robot'?inspectPatch(world):examinePatchSite(world,companion.target)};
+   icon:kind==='robot'||kind==='dispatch'?'chest':'collect',image:info.image,
+   disabled:companion.disabled,target:{...target,detail:info.detail},
+   perform:()=>{
+    if(kind==='robot')return inspectPatch(world);
+    if(!examinePatchSite(world,kind))return false;
+    if(kind==='dispatch'||kind==='hauler-inspect')world.stationPanel='patch-evidence';
+    return true;
+   }};
   if(companion.canRepair){
    const progress=patchRepairProgress(world),holding=!!world.patchRepair?.held;
    const stage=progress<1/3?'Opening the drive housing':progress<2/3?'Seating the servo':'Calibrating the joint';

@@ -2,6 +2,7 @@ import {createWeatherRenderer,type WeatherView} from './weather-skia';
 import {createDrawingPath} from './skia-drawing-path';
 import {createGroundLightningRenderer} from './ground-lightning-skia';
 import {createLootChestLight} from './loot-chest-skia';
+import {createPatchScanLight,PATCH_SCAN_RELIEF} from './patch-scan-light';
 import type {LootChestFx} from './loot-chest-fx';
 import type {GroundStrike} from './ground-lightning';
 import {createArtworkSilhouettes} from './weather-silhouette';
@@ -37,7 +38,8 @@ export function createDialogueFont(skia:Pick<typeof SkiaApi,'Typeface'|'Font'>,b
 }
 export function createSkiaAdapter(Skia:Pick<typeof SkiaApi,'Paint'|'Shader'|'Color'|'Surface'|'Matrix'|'Path'|'PathEffect'|'XYWHRect'|'ColorFilter'|'ImageFilter'|'MakeVertices'|'RuntimeEffect'|'Image'|'Data'>,diagnostics?:GamePerformanceRecorder,dialogueFont?:SkFont){
 const lighting=open('Night lighting',()=>createNightLighting(Skia)),weather=open('Weather',()=>createWeatherRenderer(Skia)),silhouettes=open('Silhouettes',()=>createArtworkSilhouettes(Skia,diagnostics)),lightning=open('Lightning',()=>createGroundLightningRenderer(Skia));
-const chestLight=createLootChestLight(Skia);
+const chestLight=createLootChestLight(Skia),scanLight=createPatchScanLight(Skia);
+let scanRelief:ReturnType<typeof Skia.RuntimeEffect.Make>;
 const groundColour=(()=>{const effect=Skia.RuntimeEffect.Make(WORLD_GROUND_COLOUR_SHADER);if(!effect)throw Error('The terrain colour shader could not compile.');return effect})();
 const roadSection=(()=>{const effect=Skia.RuntimeEffect.Make(WORLD_ROAD_SECTION_SHADER);if(!effect)throw Error('The road section shader could not compile.');return effect})();
 const roadPilot=(()=>{const effect=Skia.RuntimeEffect.Make(ROAD_PILOT_SHADER);if(!effect)throw Error('The road pilot shader could not compile.');return effect})();
@@ -350,6 +352,24 @@ class SkiaContext{
   }finally{this.c.restore()}
  }
  drawGroundLightning(strike:GroundStrike|undefined,age:number,reduced:boolean){lightning.draw(this.c,strike,age,reduced)}
+ drawPatchScanLight(aperture:{x:number;y:number},angle:number,halfAngle:number,radius:number,reach:number){
+  return scanLight.draw(this.c,aperture,angle,halfAngle,radius,reach,this.globalAlpha);
+ }
+ drawPatchScanPrint(image:SkImage,crop:readonly [number,number,number,number],width:number,height:number){
+  scanRelief??=Skia.RuntimeEffect.Make(PATCH_SCAN_RELIEF);
+  if(!scanRelief)return false;
+  const effect=scanRelief;
+  const paint=cachedPaint('patch-track',[image],null,keep=>{
+   const art=keep(image.makeShaderOptions(TileMode.Clamp,TileMode.Clamp,FilterMode.Linear,MipmapMode.None));
+   const shaded=keep(effect.makeShaderWithChildren([],[art]));
+   const paint=keep(Skia.Paint());paint.setShader(shaded);return paint;
+  });
+  paint.setAlphaf(this.globalAlpha);
+  const [x,y,w,h]=crop;
+  this.c.save();this.c.translate(-width/2,-height/2);this.c.scale(width/w,height/h);this.c.translate(-x,-y);
+  this.c.drawRect({x,y,width:w,height:h},paint);this.c.restore();
+  return true;
+ }
  drawLootChestLight(x:number,y:number,fx:LootChestFx,front:boolean){chestLight.draw(this.c,x,y,fx,front)}
  drawWeather(state:WeatherState|undefined,view:WeatherView,night:number,shelters:readonly (readonly [number,number][])[]){weather.draw(this.c,state,view,night,shelters)}
  drawNightLighting(lights:CampLight[],amount:number,view:LightViewport,torch?:import('./torch').TorchBeam,warningLights:CampLight[]=[],rescueLight?:CampLight){lighting.draw(this.c,lights,amount,view,torch,warningLights,rescueLight)}
@@ -395,5 +415,5 @@ class SkiaContext{
   if(sw>1000&&sh>1000&&dw>sw*1.4)this.c.drawImageRectCubic(im,src,dst,1/3,1/3,p);else this.c.drawImageRectOptions(im,src,dst,FilterMode.Linear,MipmapMode.None,p);if(layer)im.dispose()}
 }
 
-return {SkiaContext,NativeLayer,releaseImage,shaderFieldBytes:()=>fieldSize*fieldSize*4+[...flowFields.values()].reduce((sum,f)=>sum+f.bytes,0),warmLighting:lighting.warm,disposeLighting:()=>{waterPaint?.dispose();waterPaint=undefined;for(const key of waterfallSamplerCache.keys())dropWaterfallSampler(key);for(const key of riverSamplerCache.keys())dropRiverSampler(key);for(const key of terrainCache.keys())drop(key);for(const entry of flowFields.values())for(const resource of [...entry.resources].reverse())resource.dispose();flowFields.clear();waterfallEffect.dispose();waterfallSectionEffect.dispose();lighting.dispose();weather.dispose();lightning.dispose();chestLight.dispose();for(const shader of colourSamplers.values())shader.dispose();colourSamplers.clear();colourImage.dispose();groundColour.dispose();rockEffect.dispose();roadSection.dispose();roadPilot.dispose();riverEffect.dispose();fishingPierEffect.dispose();for(const meshes of roadMeshes.values())for(const mesh of meshes)mesh?.dispose();roadMeshes.clear();for(const {paint,dash}of solidPaints.values()){paint.dispose();dash?.dispose()}solidPaints.clear();for(const paint of spritePaints.splice(0))paint?.dispose();for(const resource of spriteResources.splice(0))resource.dispose();clearPaint?.dispose();clearPaint=undefined}};
+return {SkiaContext,NativeLayer,releaseImage,shaderFieldBytes:()=>fieldSize*fieldSize*4+[...flowFields.values()].reduce((sum,f)=>sum+f.bytes,0),warmLighting:lighting.warm,disposeLighting:()=>{waterPaint?.dispose();waterPaint=undefined;for(const key of waterfallSamplerCache.keys())dropWaterfallSampler(key);for(const key of riverSamplerCache.keys())dropRiverSampler(key);for(const key of terrainCache.keys())drop(key);for(const entry of flowFields.values())for(const resource of [...entry.resources].reverse())resource.dispose();flowFields.clear();waterfallEffect.dispose();waterfallSectionEffect.dispose();lighting.dispose();weather.dispose();lightning.dispose();chestLight.dispose();scanLight.dispose();scanRelief?.dispose();for(const shader of colourSamplers.values())shader.dispose();colourSamplers.clear();colourImage.dispose();groundColour.dispose();rockEffect.dispose();roadSection.dispose();roadPilot.dispose();riverEffect.dispose();fishingPierEffect.dispose();for(const meshes of roadMeshes.values())for(const mesh of meshes)mesh?.dispose();roadMeshes.clear();for(const {paint,dash}of solidPaints.values()){paint.dispose();dash?.dispose()}solidPaints.clear();for(const paint of spritePaints.splice(0))paint?.dispose();for(const resource of spriteResources.splice(0))resource.dispose();clearPaint?.dispose();clearPaint=undefined}};
 }

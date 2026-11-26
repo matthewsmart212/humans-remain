@@ -1,3 +1,5 @@
+import PatchScannerControl from './PatchScannerControl';
+import {pulsePatchScanner} from './patch-scanner';
 import {PatchChatHUD} from './PatchPanel';
 import FieldKitTargetCard from './FieldKitTargetCard';
 import ExpeditionStatus from './ExpeditionStatus';
@@ -9,7 +11,7 @@ import {PatchFieldJournal} from './PatchFieldJournal';
 import CampStationPanel from './CampStationPanel';
 import React,{useEffect,useRef,useState,type RefObject} from 'react';
 import {Map as MapIcon} from 'lucide-react';
-import {fieldKitArt,fieldKitBadge,FieldKitController,sameFieldKit,type FieldKitIcon,type FieldKitSnapshot} from './field-kit';
+import {fieldKitArt,fieldKitBadge,FieldKitController,opensPatchPanelOnRelease,sameFieldKit,type FieldKitIcon,type FieldKitSnapshot} from './field-kit';
 import {useBackpackItem,dropBackpackItem} from './backpack';
 import FieldKitBag from './FieldKitBag';
 import SkyClock from './SkyClock';
@@ -38,17 +40,17 @@ export function KitButton({activateOnRelease=false,activateOnClick=false,attenti
  const main=cell===ACTION_HEX.cells.primary;
  const iconSize=main?36:holdToRepair||cooldown?18:22;
  const pointer=useRef<number|null>(null),keyboard=useRef<string|null>(null),up=useRef(onUp),cancel=useRef(onCancel);up.current=onUp;cancel.current=onCancel;
- const releaseTap=useRef(false);
+ const releaseTap=useRef<(()=>void)|null>(null);
  const overButton=(event:React.PointerEvent<HTMLButtonElement>)=>event.currentTarget.contains(document.elementFromPoint(event.clientX,event.clientY));
- const release=(cancelled=false)=>{releaseTap.current=false;if(pointer.current===null&&keyboard.current===null)return;pointer.current=null;keyboard.current=null;(cancelled?cancel.current??up.current:up.current)?.()};
+ const release=(cancelled=false)=>{releaseTap.current=null;if(pointer.current===null&&keyboard.current===null)return;pointer.current=null;keyboard.current=null;(cancelled?cancel.current??up.current:up.current)?.()};
  useEffect(()=>()=>release(true),[]);
  useEffect(()=>{if(disabled)release(true)},[disabled]);
  return <button type="button" className={`kit-button ${className}`} aria-label={ariaLabel||label} aria-pressed={pressed} aria-disabled={disabled} data-unavailable={unavailable} data-hold-repair={holdToRepair} disabled={disabled} data-cooling={!!cooldown} style={cell}
-  onContextMenu={e=>e.preventDefault()} onPointerDown={e=>{e.stopPropagation();if(activateOnClick||disabled||e.button!==0||pointer.current!==null||keyboard.current!==null)return;e.preventDefault();pointer.current=e.pointerId;e.currentTarget.setPointerCapture(e.pointerId);releaseTap.current=activateOnRelease;if(!activateOnRelease)onDown()}}
-  onPointerMove={e=>{if(e.pointerId===pointer.current&&releaseTap.current&&!overButton(e))release(true)}}
+  onContextMenu={e=>e.preventDefault()} onPointerDown={e=>{e.stopPropagation();if(activateOnClick||disabled||e.button!==0||pointer.current!==null||keyboard.current!==null)return;e.preventDefault();pointer.current=e.pointerId;e.currentTarget.setPointerCapture(e.pointerId);releaseTap.current=activateOnRelease?onDown:null;if(!activateOnRelease)onDown()}}
+  onPointerMove={e=>{if(e.pointerId===pointer.current&&(releaseTap.current||repairProgress!==undefined)&&!overButton(e))release(true)}}
   onPointerUp={e=>{
    if(e.pointerId!==pointer.current)return;
-   if(releaseTap.current&&activateOnRelease&&overButton(e)&&!disabled)onDown();
+   if(activateOnRelease&&overButton(e)&&!disabled)releaseTap.current?.();
    release();
   }} onPointerCancel={e=>{if(e.pointerId===pointer.current)release(true)}} onLostPointerCapture={e=>{if(e.pointerId===pointer.current)release(true)}} onBlur={()=>release(true)}
   onClick={e=>{e.stopPropagation();if(activateOnClick){if(!disabled)onDown();return}if(e.detail===0&&!(e.nativeEvent as PointerEvent|undefined)?.pointerType&&!disabled&&pointer.current===null&&keyboard.current===null){onDown();onUp?.()}}}
@@ -105,7 +107,8 @@ export default function FieldKitHUD({world,controller,enabled,mobile,input,sprin
  useEffect(()=>{refresh();const timer=setInterval(refresh,100);return()=>{clearInterval(timer);controller.cancel();onHeld(false)}},[world,controller]);
  useEffect(()=>{if(!enabled||bagOpen||mapOpen||stats.stationPanel){release();input.current={x:0,y:0}}},[enabled,bagOpen,mapOpen,stats.stationPanel]);
  useEffect(()=>{const hide=()=>{if(document.hidden)release()};window.addEventListener('blur',release);window.addEventListener('resize',release);document.addEventListener('visibilitychange',hide);return()=>{window.removeEventListener('blur',release);window.removeEventListener('resize',release);document.removeEventListener('visibilitychange',hide)}},[]);
- const action=stats.action,repairAction=stats.repairAction,caption=repairAction??action,disabled=!enabled||bagOpen||mapOpen||!!stats.stationPanel||stats.downed;
+ const action=stats.action,repairAction=stats.repairAction,secondaryRepair=repairAction?.key===action.key?undefined:repairAction,caption=repairAction??action,disabled=!enabled||bagOpen||mapOpen||!!stats.stationPanel||stats.downed;
+ const scan=()=>{if(!disabled&&world.current===statsRef.current.action.owner&&pulsePatchScanner(world.current))refresh()};
  const grabbed=action.key==='brute-escape';
  const press=()=>{if(disabled)return;if(controller.press(world.current,action)){onHeld(controller.holdingAttack);if(statsRef.current.action.key.startsWith('broken:'))onCheckpoint?.()}refresh()};
  const pressRepair=()=>{const shown=statsRef.current.repairAction;if(disabled||!shown)return;if(controller.pressRepair(world.current,shown)){onHeld(controller.holdingAttack);if(shown.target?.buildingId==='headquarters')onCheckpoint?.()}refresh()};
@@ -118,7 +121,7 @@ export default function FieldKitHUD({world,controller,enabled,mobile,input,sprin
  const lock=()=>{if(disabled)return;release();toggleBowLock(world.current);refresh()};
  useEffect(()=>{const key=(e:KeyboardEvent)=>{if(e.code!=='KeyQ'||e.repeat||e.altKey||e.ctrlKey||e.metaKey||!available.current||statsRef.current.patchChat||world.current.bruteGrab||world.current.player.equipped!=='bow'||(e.target instanceof HTMLElement&&(e.target.isContentEditable||/INPUT|TEXTAREA|SELECT/.test(e.target.tagName))))return;e.preventDefault();release();toggleBowLock(world.current);refresh()};window.addEventListener('keydown',key);return()=>window.removeEventListener('keydown',key)},[]);
  const select=(item:QuickItem)=>{if(disabled||statsRef.current.action.owner!==world.current)return;release();selectQuickItem(world.current,item);refresh()};
- return <div className="field-kit" data-threat={!!stats.campThreat} data-fishing={!!action.fishing} data-fishing-phase={action.fishing?stats.fishing?.phase:undefined} data-input={mobile?'touch':'desktop'} data-map-open={mapOpen} data-waypoint={!!navigation.target} data-sky-expanded={dayExpanded} style={{'--fishing-offset':`${ACTION_HEX.width-34}px`,'--kit-top-height':`${FIELD_KIT_TOP.height}px`,'--kit-top-radius':`${FIELD_KIT_TOP.radius}px`,'--kit-quick-height':`${QUICK_BAR_LAYOUT.height}px`,'--kit-target-right':`${repairAction?ACTION_HEX.width+4:ACTION_HEX.width-ACTION_HEX.cells.primary.left+4}px`,'--kit-target-mid':`${ACTION_HEX.cells.primary.top+ACTION_HEX.cells.primary.height/2}px`} as React.CSSProperties}>
+ return <div className="field-kit" data-threat={!!stats.campThreat} data-fishing={!!action.fishing} data-fishing-phase={action.fishing?stats.fishing?.phase:undefined} data-input={mobile?'touch':'desktop'} data-map-open={mapOpen} data-waypoint={!!navigation.target} data-sky-expanded={dayExpanded} style={{'--fishing-offset':`${ACTION_HEX.width-34}px`,'--kit-top-height':`${FIELD_KIT_TOP.height}px`,'--kit-top-radius':`${FIELD_KIT_TOP.radius}px`,'--kit-quick-height':`${QUICK_BAR_LAYOUT.height}px`,'--kit-target-right':`${secondaryRepair?ACTION_HEX.width+4:ACTION_HEX.width-ACTION_HEX.cells.primary.left+4}px`,'--kit-target-mid':`${ACTION_HEX.cells.primary.top+ACTION_HEX.cells.primary.height/2}px`} as React.CSSProperties}>
   {mobile&&!disabled&&<FieldKitMovement input={input} onStart={onMove} isPinching={isPinching}/>}
   {!stats.patchChat&&<>
   <FieldKitVitals stats={stats}/>
@@ -127,10 +130,11 @@ export default function FieldKitHUD({world,controller,enabled,mobile,input,sprin
   {!!stats.notice&&<div className="kit-notice" role="status">{stats.notice}</div>}
   </>}
   {!bagOpen&&!stats.stationPanel&&!stats.patchChat&&<div className="kit-action-cluster" style={{width:ACTION_HEX.width,height:ACTION_HEX.height}}>
+   {!disabled&&stats.scannerAvailable&&<PatchScannerControl hint={stats.scannerHint} onScan={scan}/>}
    {(stats.fishing&&action.fishing||stats.fishingReceipt)&&<FishingHUD hud={action.fishing?stats.fishing??undefined:undefined} receipt={stats.fishingReceipt} inputMode={mobile?'touch':'keyboard'} disabled={disabled} onCatch={catchFish} onOpenBag={openFishingBag}/>}
    {!action.fishing&&!stats.fishingReceipt&&!quickExpanded&&(stats.warehouseStock?<FieldKitWarehouseStock stock={stats.warehouseStock}/>:caption.target?.revealed&&<FieldKitTargetCard target={caption.target} description={caption.description}/>)}
-   {!stats.fishing?.catch&&<><KitButton activateOnRelease={action.key==='patch:robot'} cell={ACTION_HEX.cells.primary} className="kit-primary" attention={action.fishing&&stats.fishing?.phase==='bite'?'bite':undefined} label={action.label} holdToRepair={!!action.repair&&action.label==='REPAIR'} icon={action.icon} image={action.image} ariaLabel={action.disabled&&action.target?'Inspect '+action.target.label+'. '+action.target.detail:action.description} unavailable={action.disabled} disabled={disabled||action.disabled&&!action.target} repairProgress={action.target?.repairState?action.target.progress:undefined} pressed={action.fishing&&stats.fishing?.active?stats.fishing.holding:undefined} onDown={press} onUp={releasePrimary} onCancel={cancelPrimary}/>
-   {repairAction&&<KitButton cell={ACTION_HEX.cells.repair} className="kit-secondary kit-repair" label={repairAction.label} holdToRepair={!!repairAction.repair&&repairAction.label==='REPAIR'} icon={repairAction.icon} image={repairAction.image} ariaLabel={repairAction.description} unavailable={repairAction.disabled} disabled={disabled||repairAction.disabled&&!repairAction.target} repairProgress={repairAction.target?.repairState?repairAction.target.progress:undefined} onDown={pressRepair} onUp={releaseRepair}/>}
+   {!stats.fishing?.catch&&<><KitButton activateOnRelease={opensPatchPanelOnRelease(action.key)} cell={ACTION_HEX.cells.primary} className="kit-primary" attention={action.fishing&&stats.fishing?.phase==='bite'?'bite':undefined} label={action.label} holdToRepair={!!action.repair&&action.label==='REPAIR'} icon={action.icon} image={action.image} ariaLabel={action.disabled&&action.target?'Inspect '+action.target.label+'. '+action.target.detail:action.description} unavailable={action.disabled} disabled={disabled||action.disabled&&!action.target} repairProgress={action.target?.repairState?action.target.progress:undefined} pressed={action.fishing&&stats.fishing?.active?stats.fishing.holding:undefined} onDown={press} onUp={releasePrimary} onCancel={cancelPrimary}/>
+   {secondaryRepair&&<KitButton cell={ACTION_HEX.cells.repair} className="kit-secondary kit-repair" label={secondaryRepair.label} holdToRepair={!!secondaryRepair.repair&&secondaryRepair.label==='REPAIR'} icon={secondaryRepair.icon} image={secondaryRepair.image} ariaLabel={secondaryRepair.description} unavailable={secondaryRepair.disabled} disabled={disabled||secondaryRepair.disabled&&!secondaryRepair.target} repairProgress={secondaryRepair.target?.repairState?secondaryRepair.target.progress:undefined} onDown={pressRepair} onUp={releaseRepair}/>}
    {stats.fishing?.active&&!stats.fishing.catch?<KitButton cell={ACTION_HEX.cells.sprint} className="kit-north kit-secondary" label="STOP" icon="close" ariaLabel="Stop fishing" disabled={disabled} onDown={stop}/>:<KitButton cell={ACTION_HEX.cells.sprint} className="kit-north kit-secondary" label="SPRINT" icon="sprint" ariaLabel={sprinting?'Walk. Tap to stop sprinting':'Sprint. Tap to start sprinting'} pressed={sprinting} disabled={disabled||grabbed} onDown={onSprint}/>}
    {!grabbed&&!stats.fishing?.active&&(stats.selected==='bow'?<KitButton cell={ACTION_HEX.cells.dodge} className="kit-north-west kit-secondary kit-bow-lock" label={stats.bowTarget?'UNLOCK':'LOCK'} glyph={<BowLockGlyph locked={!!stats.bowTarget}/>} ariaLabel={stats.bowTarget?`Release lock on ${stats.bowTarget.label.toLowerCase()} (Q)`:'Lock onto a nearby target (Q)'} pressed={!!stats.bowTarget} disabled={disabled} onDown={lock}/>:stats.combat&&<KitButton cell={ACTION_HEX.cells.dodge} className="kit-north-west kit-secondary" label="DODGE" cooldown={stats.dodge>0?`${stats.dodge.toFixed(1)}s`:undefined} icon="dodge" ariaLabel={stats.dodge>0?`Dodge ready in ${stats.dodge.toFixed(1)} seconds`:'Dodge'} disabled={disabled||stats.dodge>0} onDown={()=>{onDodge();refresh()}}/>)}
    {!mobile&&<span className="kit-key-hint">{action.fishing?'Space / E · Action · WASD aim while holding cast · Esc stop':grabbed?'Tap Space repeatedly to break free':<>WASD move · Space action{repairAction?' · R repair':''} · Shift run{stats.selected==='bow'?' · Q lock':stats.combat?' · Q dodge':''} · M map</>}</span>}</>}

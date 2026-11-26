@@ -1,4 +1,5 @@
 import {LOOT_CHEST_ID,LOOT_CHEST_OPEN_TICKS} from './loot-chest';
+import {PATCH_SCENERY_FRAMES} from './patch-art';
 import type {World} from './survival-engine';
 type Point=readonly [number,number];
 export type ChestInterior=readonly [top:number,bottom:number,leftTop:number,rightTop:number,leftBottom:number,rightBottom:number];
@@ -50,4 +51,19 @@ export function drawChestRig(ctx:CanvasRenderingContext2D,image:HTMLImageElement
  triangle(ctx,image,crop,q[0],q[1],q[2],false);triangle(ctx,image,crop,q[0],q[2],q[3],true);ctx.restore();
  // A narrow dark hinge edge gives the rigid lid thickness at its edge-on pose.
  ctx.strokeStyle='#382b20';ctx.globalAlpha=.7;ctx.lineWidth=1.1;ctx.beginPath();ctx.moveTo(x-bw,y+bottom);ctx.lineTo(x+bw,y+bottom);ctx.stroke();ctx.globalAlpha=1;
+}
+
+/** The same hinge gap and front lip constrain this opaque parcel. Paint it
+ * after the compartment's mint reflection so its brown paper stays visible. */
+export function drawChestDelivery(ctx:CanvasRenderingContext2D,image:HTMLImageElement,w:World){
+ const h=chestHinge(w),visibleTop=Math.max(h.front,MOUTH_FRONT-47);
+ if(h.t>0&&visibleTop<MOUTH_FRONT-1){
+  ctx.save();ctx.beginPath();ctx.moveTo(-88,visibleTop);ctx.lineTo(88,visibleTop);
+  ctx.lineTo(88,MOUTH_FRONT-1);ctx.lineTo(-88,MOUTH_FRONT-1);ctx.closePath();ctx.clip();
+  ctx.drawImage(image,...PATCH_SCENERY_FRAMES.parcel,-46,MOUTH_FRONT-43,87,49);ctx.restore();
+ }
+ if(h.t<.27){
+  ctx.save();ctx.globalAlpha=1-h.t/.27;
+  ctx.drawImage(image,...PATCH_SCENERY_FRAMES.letter,23,MOUTH_FRONT-5,24,8);ctx.restore();
+ }
 }

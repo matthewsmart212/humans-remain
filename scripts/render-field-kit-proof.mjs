@@ -19,7 +19,7 @@ export async function renderFieldKitProof(m,make){
   world.enemies=mode==='combat'||mode==='expanded'?[{id:900,x:world.player.x+120,y:world.player.y,hp:100,maxHp:100,attackAt:0,path:[],repathAt:0,flashUntil:0}]:[];
   if(mode==='interaction'){world.enemies=[];Object.assign(world.player,m.stationFront(world.camp,'well'))}
   if(mode.startsWith('fire')){Object.assign(world.player,m.stationFront(world.camp,'hearth'));world.stationPanel='fire';world.camp.hearth.fuel=mode==='fire-cold'?0:mode==='fire-ready'?145:167;world.fire.queue=mode==='fire'?[{id:9991,species:'chicken',remaining:7}]:[];world.fire.rack=mode==='fire'?['rabbit']:mode==='fire-ready'?['chicken','rabbit','venison','chicken','rabbit','venison']:[];world.bag.rawRabbit=2;world.bag.rawVenison=1;if(mode==='fire-cold')world.bag.pallets=0}
-  if(mode==='storage'){const chest=m.layoutViews(world.layout).chests[0];[world.player.x,world.player.y]=m.placementPoint(chest,chest.x,chest.y+22*chest.scale);world.stationPanel='storage';world.stock.pallets=8;world.stock.scrap=15}
+  if(mode==='storage'){const chest=m.layoutViews(world.layout).chests[0];Object.assign(world.player,m.chestDock(chest));world.stationPanel='storage';world.stock.pallets=8;world.stock.scrap=15}
   if(mode==='food'){world.cooked=3;world.player.equipped='meal'}
   const originalState=globalThis.__kitReact.useState;
   globalThis.__kitReact.useState=value=>typeof value==='boolean'?[mode==='expanded',()=>{}]:originalState(value);

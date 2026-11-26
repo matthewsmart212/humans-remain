@@ -1,6 +1,7 @@
 import {patchChat} from './patch-chat';
 import {PATCH_ROBOT_SCALE} from './patch-art';
 import {patchChatBounds} from './patch-chat-bounds';
+import {conversationBubbleMetrics} from './patch-bubble-placement';
 import {patchReplyStripLayout} from './patch-reply-strip-layout';
 import type {PatchQuestState} from './patch-quest';
 import type {World} from './survival-engine';
@@ -66,22 +67,30 @@ function meetingShot(w:World,width:number,height:number,detail:number):Shot{
  const headroom=Math.max(q.position.y,player.y)+3-Math.min(q.position.y-(q.servoInstalled?93:71),player.y-119);
  const fitted=Math.min(Math.max(90,stageRight-stageLeft)/subjectSpan,(stageBottom-stageTop)/headroom,3.25);
  const greetingScale=.70*fitted*.90;
- const closeScale=.70*fitted*mix(.90,1,detail);
+ const lens=.70*fitted*mix(.90,1,detail);
  // Frame the actual larger silhouettes around that lens. Both outlines are
  // measured from their registered feet in atlas pixels.
  const patchHalf=(q.servoInstalled?92:83)*PATCH_ROBOT_SCALE;
  const left=Math.min(q.position.x-patchHalf,player.x-39),right=Math.max(q.position.x+patchHalf,player.x+39);
  const top=Math.min(q.position.y-(q.servoInstalled?200:158)*PATCH_ROBOT_SCALE,player.y-119),bottom=Math.max(q.position.y,player.y)+3;
+ const controlsTop=controls?.y??patchReplyStripLayout(width,height,safe).bounds.y;
+ // Reserve headroom for a full page throughout the exchange. Otherwise a
+ // taller reply can force the pointer across the survivor on a short screen.
+ const metrics=conversationBubbleMetrics(width,height,safe,controlsTop);
+ const pageHeight=metrics.headerHeight+2*metrics.padY+metrics.maxLines*metrics.lineHeight;
+ const speechBottom=safe.top+8+pageHeight+10;
+ const availableHeight=controlsTop-12-speechBottom;
+ const closeScale=wide?Math.min(lens,Math.max(60,availableHeight)/(bottom-top)):lens;
  const groupWidth=(right-left)*closeScale;
  // Keep the pair beside the shelter, with room on their right for speech
  // and a clear stretch of ground between their feet and the replies.
- const controlsTop=controls?.y??patchReplyStripLayout(width,height,safe).bounds.y;
  const stageX=clamp(width*(wide ? .414 : .5),stageLeft+groupWidth/2,width-safe.right-12-groupWidth/2);
  const groupHeight=(bottom-top)*closeScale;
  // In landscape the closer answer shot grows down from the greeting's
  // headroom, so a page turn doesn't push the plaque across the shelter.
  const detailOffset=wide?(bottom-top)*(closeScale-greetingScale)/2:0;
- const stageY=clamp(height*(wide ? .445 : .46)+detailOffset,safe.top+10+groupHeight/2,controlsTop-12-groupHeight/2);
+ const minY=(wide?speechBottom:safe.top+10)+groupHeight/2;
+ const stageY=clamp(height*(wide ? .445 : .46)+detailOffset,minY,controlsTop-12-groupHeight/2);
  const cx=(left+right)*.5+(width*.5-stageX)/closeScale;
  const cy=(top+bottom)*.5+(height*.5-stageY)/closeScale;
  return {cx,cy,scale:closeScale,width,height};

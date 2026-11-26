@@ -340,12 +340,17 @@ try{
  };
  assert.equal(chatMarkup(),'','Approaching alone reveals no controls');
  assert(m.inspectPatch(world));
- assert.deepEqual(readChat().labels,['Inspect the damaged drive','Ask Patch']);
+ assert.deepEqual(readChat().labels,['I did. Thank you.','Who is the bedroll for?','Let me look at your knee.']);
+ assert(m.choosePatchChat(world,'topic:bed'));
+ while(m.patchChat(world).choices.some(c=>c.id==='more'))assert(m.choosePatchChat(world,'more'));
+ assert(m.choosePatchChat(world,'topic:reclamation'));assert(m.choosePatchChat(world,'leave-wire'));
+ assert.equal(m.patchChat(world).view,'greeting','The bedroll leads to the cut wire and the survivor can decline the memory');
+ assert(m.choosePatchChat(world,'arrival'));
  assert(m.choosePatchChat(world,'ask'));
  const questions=readChat();
- assert(questions.labels.includes('What happened to your receiver?'));
+ assert(questions.labels.includes('Who cut that wire?'));
  assert(questions.labels.length>=6,'The shelter has a real overflowing row including Back');
- assert(m.choosePatchChat(world,'topic:reclamation'));
+ assert(m.choosePatchChat(world,'topic:reclamation'));assert(m.choosePatchChat(world,'tell-wire'));
  const pages=[m.patchChat(world).line];
  while(m.patchChat(world).pageIndex+1<m.patchChat(world).pageCount){
   const page=readChat();
@@ -360,12 +365,14 @@ try{
  assert(readChat().labels.includes('Ask something else'));
  m.closePatchChat(world);
  assert(m.inspectPatch(world));
+ assert(m.choosePatchChat(world,'topic:damage'));
+ while(m.patchChat(world).choices.some(c=>c.id==='more'))assert(m.choosePatchChat(world,'more'));
  assert(m.choosePatchChat(world,'diagnose'));
  assert(world.patchQuest.diagnosed&&!world.patchQuest.servoClaimed,'Reading the drive plate starts the investigation');
  assert.equal(world.stationPanel,undefined);
  m.closePatchChat(world);
  Object.assign(world.patchQuest,{servoClaimed:true,servoInstalled:true});
- assert(m.inspectPatch(world));assert(readChat().labels.includes('Come with us'));assert(!readChat().labels.includes('Follow me'));
+ assert(m.inspectPatch(world));assert(readChat().labels.includes('Walk back with me.'));assert(!readChat().labels.includes('Follow me'));
  m.closePatchChat(world);
  Object.assign(world.patchQuest,{recruited:true,returnedToCamp:true,suppliesDelivered:true});
  assert(m.inspectPatch(world));

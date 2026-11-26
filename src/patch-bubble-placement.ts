@@ -35,10 +35,10 @@ export function placeConversationBubble(width:number,height:number,safe:MenuInse
  const w=Math.min(bubbleWidth,Math.max(1,limitX-left)),h=bubbleHeight;
  const x=patch.x+patch.width*.5,y=patch.y+Math.min(patch.height*.08,9);
  const head=Math.min(patch.y,survivor.y);
- const gap=12;
+ const gap=12,shoulder=Math.round(clamp(width*.026,16,32));
  const candidates=[
-  [x+32,patch.y-gap-h], [x-w-12,patch.y-gap-h],
-  [x+32,head-gap-h],[x-w-12,head-gap-h],
+  [x+shoulder,patch.y-gap-h], [x-w-12,patch.y-gap-h],
+  [x+shoulder,head-gap-h],[x-w-12,head-gap-h],
   [x-w*.5,head-gap-h],
   [right(patch)+gap,y-h*.78],[patch.x-gap-w,y-h*.78],
   [Math.max(right(patch),right(survivor))+gap,y-h*.78],[Math.min(patch.x,survivor.x)-gap-w,y-h*.78],
@@ -76,7 +76,7 @@ export function placeConversationBubble(width:number,height:number,safe:MenuInse
   }
  }
  const dx=targetX-tailX,dy=targetY-tailY;
- const reach=Math.min(.92,34/Math.max(1,Math.hypot(dx,dy)));
+ const reach=Math.min(.92,46/Math.max(1,Math.hypot(dx,dy)));
  return {...best,edge,tailX,tailY,tipX:tailX+dx*reach,tipY:tailY+dy*reach};
 }
 

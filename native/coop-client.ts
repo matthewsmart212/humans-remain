@@ -1,3 +1,4 @@
+import {setPatchCrewPresent} from '../src/patch-chat';
 import {COOP_PROTOCOL_VERSION,COOP_ROOM_CODE,validCoopPose,type CoopPeer,type CoopPose,type CoopServerPacket} from '../src/coop-protocol';
 import {interpolateWalkDistance} from '../src/player-presentation';
 import type {World} from '../src/survival-engine';
@@ -94,12 +95,18 @@ export class CoopClient {
  }
  start(){if(this.isHost&&this.ws?.readyState===WebSocket.OPEN)this.ws.send(JSON.stringify({type:'start'}))}
  sendPose(world:World,now=Date.now()){
-  if(this.ws?.readyState!==WebSocket.OPEN||this.status!=='connected'||now-this.lastPoseAt<100)return;
+  const socket=this.ws;
+  if(!socket||socket.readyState!==WebSocket.OPEN||this.status!=='connected'){setPatchCrewPresent(world,false);return}
+  if(now-this.lastPoseAt<100)return;
+  if(world.patchQuest?.servoInstalled&&!world.patchQuest.recruited){
+   const present=this.players.some(peer=>peer.id!==this.id&&peer.sceneId===(world.scene?.id||'camp')&&Math.hypot(peer.x-world.player.x,peer.y-world.player.y)<=360);
+   setPatchCrewPresent(world,present);
+  }
   this.lastPoseAt=now;
   const p=world.player;
   const pose:CoopPose={x:p.x,y:p.y,direction:p.direction,moving:p.moving,sprinting:p.sprinting,walkDistance:p.walkDistance,sceneId:world.scene?.id||'camp'};
-  this.ws.send(JSON.stringify({type:'pose',pose}));
-  if(now-this.lastPingAt>5000){this.lastPingAt=now;this.ws.send(JSON.stringify({type:'ping',nonce:now}))}
+  socket.send(JSON.stringify({type:'pose',pose}));
+  if(now-this.lastPingAt>5000){this.lastPingAt=now;socket.send(JSON.stringify({type:'ping',nonce:now}))}
  }
  remotePoses(now=Date.now()):CoopPeer[]{
   const result:CoopPeer[]=[];

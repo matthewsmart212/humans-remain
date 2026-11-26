@@ -2,10 +2,11 @@ import {facing,moveBody,pathTo,timeOf,withinActionReach,worldBlocked,STEP,type D
 import {campLootChest,lootChestContents,lootChestInMenuRange,LOOT_CHEST_ID,LOOT_CHEST_REWARDS} from './loot-chest';
 import {PATCH_ROBOT_FRAMES,PATCH_WALK_CYCLE_DISTANCE} from './patch-art';
 import {nearbyCombatThreat} from './combat-model';
-import {closePatchChat,openPatchChat,patchChat,stepPatchChat} from './patch-chat';
+import {closePatchChat,openPatchChat,openPatchBedChat,patchChat,stepPatchChat} from './patch-chat';
 import {patchSupportSpeech} from './patch-awareness';
 import {patchRescueSite,patchRouteSite} from './patch-placement';
 import {patchObjective} from './patch-journal';
+import {patchCotPosition} from './patch-scenery';
 
 export {PATCH_QUEST_TITLE} from './patch-journal';
 export const PATCH_REPAIR_SECONDS=6;
@@ -33,13 +34,15 @@ export type PatchQuestState={
  version:1;noteRead:boolean;discovered:boolean;servoClaimed:boolean;servoInstalled:boolean;
  /** Older runs can already have the component without having seen these clues. */
  diagnosed?:boolean;dispatchRead?:boolean;haulerInspected?:boolean;
- recruited:boolean;returnedToCamp:boolean;suppliesDelivered:boolean;
+ /** Optional field tool lent by P-04 after inspecting his knee. */
+ scannerLoaned?:boolean;
+ recruited:boolean;returnedToCamp:boolean;suppliesDelivered:boolean;nameIntroduced?:boolean;
  position:Vec;direction:Direction;command:PatchCommand;moving:boolean;walkDistance:number;
  /** Real walked ground preserves a way back through bridges and open gates. */
  followTrail:Vec[];homeTrail:Vec[];
 };
 export type PatchRepair={worked:number;duration:number;held:boolean;updatedAt:number;origin:Vec;hp:number;hurtUntil:number};
-type PatchTarget='robot'|'dispatch'|'hauler-inspect'|'hauler-salvage';
+type PatchTarget='robot'|'cot'|'dispatch'|'hauler-inspect'|'hauler-salvage';
 export type PatchInteraction={key:`patch:${PatchTarget}`;action:'patch';target:PatchTarget;label:string;shortLabel:'INSPECT'|'TALK'|'READ'|'SALVAGE';canRepair?:boolean;disabled:boolean;x:number;y:number};
 export type PatchStatus={title:string;line:string;objective:string;canRepair:boolean;canRecruit:boolean;canCommand:boolean;servo:boolean};
 
@@ -48,7 +51,7 @@ export type PatchStatus={title:string;line:string;objective:string;canRepair:boo
 const BODY=15,INTERACT_REACH=80,FOLLOW_GAP=88,FOLLOW_SETTLE=2,TRAIL_STEP=28;
 const point=(p:Vec):Vec=>({x:p.x,y:p.y});
 const distance=(a:Vec,b:Vec)=>Math.hypot(a.x-b.x,a.y-b.y);
-type Runtime={path:Vec[];routeAt:number;routeTarget?:Vec;speed:number;speech?:string;speechUntil:number;homeSample?:Vec;followSample?:Vec};
+type Runtime={repairOffered?:boolean;path:Vec[];routeAt:number;routeTarget?:Vec;speed:number;speech?:string;speechUntil:number;homeSample?:Vec;followSample?:Vec};
 // Presentation interpolates the player into a new World every frame. The
 // quest object is shared by those views and identifies this particular run.
 const runtimes=new WeakMap<PatchQuestState,Runtime>();
@@ -123,7 +126,7 @@ export function inspectPatch(w:World){
   w.player.direction=facing(state.position.x-w.player.x,state.position.y-w.player.y);
  }
  faceDuringConversation(state,w.player);
- runtime(state).speechUntil=0;
+ runtime(state).speechUntil=0;runtime(state).repairOffered=false;
  return openPatchChat(w);
 }
 export function diagnosePatch(w:World){
@@ -154,9 +157,18 @@ export function claimPatchServo(w:World){
 }
 export function examinePatchSite(w:World,target:Exclude<PatchTarget,'robot'>){
  if(!available(w)||w.stationPanel||patchChat(w))return false;
+ if(target==='cot'){
+  const cot=patchCotPosition(w.layout);
+  if(!cot||w.patchQuest?.recruited||!withinActionReach(w,cot,48)||!inspectPatch(w))return false;
+  return openPatchBedChat(w);
+ }
  if(target==='dispatch')return readDispatch(w);
  if(target==='hauler-inspect')return inspectHauler(w);
  return target==='hauler-salvage'&&claimPatchServo(w);
+}
+export function patchSpeakerName(state:PatchQuestState|undefined){
+ // Completed saves from before the introduction already know his name.
+ return state?.suppliesDelivered&&state.nameIntroduced!==false?'Patch':'P-04';
 }
 export function patchInteraction(w:World):PatchInteraction|null{
  const state=ensurePatchQuest(w);if(!state||!active(w)||w.stationPanel||patchChat(w))return null;
@@ -164,8 +176,14 @@ export function patchInteraction(w:World):PatchInteraction|null{
  if(nearRobot(w,state)){
   const repair=state.discovered&&state.servoClaimed&&!state.servoInstalled;
   choices.push({key:'patch:robot',action:'patch',target:'robot',...state.position,
-   label:state.suppliesDelivered?'Talk to Patch':state.discovered?'Talk to P-04':'Inspect P-04',
+   label:state.discovered?'Talk to '+patchSpeakerName(state):'Inspect P-04',
    shortLabel:state.discovered?'TALK':'INSPECT',canRepair:repair,disabled:!available(w)});
+ }
+ if(!state.recruited&&nearRobot(w,state)){
+  const cot=patchCotPosition(w.layout);
+  if(cot&&withinActionReach(w,cot,48)){
+   choices.push({key:'patch:cot',action:'patch',target:'cot',...cot,label:'Look at the dry bedroll',shortLabel:'INSPECT',disabled:!available(w)});
+  }
  }
  if(state.diagnosed&&!state.servoClaimed){
   const site=patchRouteSite(w.layout,state.dispatchRead?'hauler':'dispatch');
@@ -181,7 +199,7 @@ export function patchInteraction(w:World):PatchInteraction|null{
 }
 export function patchStatus(w:World):PatchStatus|null{
  const state=ensurePatchQuest(w);if(!state)return null;
- const title=state.suppliesDelivered?'Patch':'P-04';
+ const title=patchSpeakerName(state);
  const canRepair=state.discovered&&state.servoClaimed&&!state.servoInstalled;
  const canRecruit=state.servoInstalled&&!state.recruited,canCommand=state.suppliesDelivered;
  const home=homePoint(w),campIdle=state.command==='stay'&&!!home&&distance(state.position,home)<150;
@@ -190,6 +208,18 @@ export function patchStatus(w:World):PatchStatus|null{
  return{title,line,objective,canRepair,canRecruit,canCommand,servo:state.servoClaimed&&!state.servoInstalled};
 }
 export const patchRepairProgress=(w:World)=>w.patchRepair?Math.max(0,Math.min(1,w.patchRepair.worked/w.patchRepair.duration)):0;
+/** A reply hands input back to the hold control. It never starts the repair timer. */
+export function acceptPatchRepair(w:World){
+ const q=w.patchQuest;
+ if(!q?.servoClaimed||q.servoInstalled||!patchChat(w)||!canTalkToPatch(w))return false;
+ closePatchChat(w);runtime(q).repairOffered=true;
+ w.notice='Hold REPAIR beside P-04 for six seconds.';w.noticeUntil=timeOf(w)+5;
+ return true;
+}
+export function patchRepairOffered(w:World){
+ const q=w.patchQuest;
+ return !!q&&q.servoClaimed&&!q.servoInstalled&&!!runtimes.get(q)?.repairOffered&&nearRobot(w,q);
+}
 export function beginPatchRepair(w:World){
  const state=ensurePatchQuest(w);
  if(!state||!available(w)||w.patchRepair||!state.discovered||!state.servoClaimed||state.servoInstalled||!nearRobot(w,state)||w.player.hurtUntil>timeOf(w)||w.stationPanel)return false;
@@ -219,7 +249,7 @@ function stepRepair(w:World,input:Vec){
  job.worked=Math.min(job.duration,job.worked+dt);
  if(job.worked>=job.duration-1e-8){
   // The servo is committed once, only after the final uninterrupted tick.
-  state.servoInstalled=true;state.moving=false;w.patchRepair=undefined;w.repairCheckpoint=true;
+  state.servoInstalled=true;runtime(state).repairOffered=false;state.moving=false;w.patchRepair=undefined;w.repairCheckpoint=true;
   say(w,'Supplies… still required?',4);w.notice='Drive restored · Speak to P-04';w.noticeUntil=timeOf(w)+4;
  }
 }
@@ -322,7 +352,7 @@ export function deliverPatchSupplies(w:World){
  if(!chests[LOOT_CHEST_ID])chests[LOOT_CHEST_ID]={openedAt:w.tick,menuShown:true,rewardVersion:2,contents:Object.fromEntries(LOOT_CHEST_REWARDS.map(reward=>[reward.kind,reward.amount]))};
  const contents=lootChestContents(w,LOOT_CHEST_ID);
  contents.pallets=(contents.pallets??0)+2;contents.scrap=(contents.scrap??0)+2;
- state.returnedToCamp=true;state.suppliesDelivered=true;w.repairCheckpoint=true;state.command='stay';state.moving=false;
+ state.returnedToCamp=true;state.suppliesDelivered=true;state.nameIntroduced=false;w.repairCheckpoint=true;state.command='stay';state.moving=false;
  state.followTrail=[];state.homeTrail=[point(state.position)];
  const r=runtime(state);r.path=[];r.homeSample=point(state.position);
  say(w,'Shelter occupied.',6);w.notice='This time, someone brought the rescuer home.';w.noticeUntil=timeOf(w)+6;
@@ -388,10 +418,11 @@ export function validPatchQuest(value:unknown):value is PatchQuestState|undefine
  if(value===undefined)return true;
  if(!record(value)||value.version!==1)return false;
  if(!['noteRead','discovered','servoClaimed','servoInstalled','recruited','returnedToCamp','suppliesDelivered','moving'].every(key=>typeof value[key]==='boolean'))return false;
+ if(value.nameIntroduced!==undefined&&(typeof value.nameIntroduced!=='boolean'||!value.suppliesDelivered))return false;
  if(!savedPoint(value.position)||!['down','right','up','left','down-right','down-left','up-right','up-left'].includes(String(value.direction))||!['follow','stay','camp'].includes(String(value.command))||!finite(value.walkDistance,0,112))return false;
  if(!Array.isArray(value.followTrail)||value.followTrail.length>512||!value.followTrail.every(savedPoint)||!Array.isArray(value.homeTrail)||value.homeTrail.length>1024||!value.homeTrail.every(savedPoint))return false;
- if(['diagnosed','dispatchRead','haulerInspected'].some(key=>value[key]!==undefined&&typeof value[key]!=='boolean'))return false;
- if(value.diagnosed&&!value.discovered||value.dispatchRead&&!value.diagnosed||value.haulerInspected&&!value.dispatchRead)return false;
+ if(['diagnosed','dispatchRead','haulerInspected','scannerLoaned'].some(key=>value[key]!==undefined&&typeof value[key]!=='boolean'))return false;
+ if(value.scannerLoaned&&!value.diagnosed||value.diagnosed&&!value.discovered||value.dispatchRead&&!value.diagnosed||value.haulerInspected&&!value.dispatchRead)return false;
  if(value.servoInstalled&&(!value.servoClaimed||!value.discovered)||value.recruited&&!value.servoInstalled||value.returnedToCamp&&!value.recruited||value.suppliesDelivered&&!value.returnedToCamp)return false;
  if(!value.recruited&&value.command!=='stay'||value.command==='camp'&&!value.suppliesDelivered)return false;
  return true;
