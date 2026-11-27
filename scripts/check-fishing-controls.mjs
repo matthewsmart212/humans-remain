@@ -31,13 +31,13 @@ const aliases={
  react:'module.exports=globalThis.__fishReact;',
  'react/jsx-runtime':"export const jsx=(type,props)=>({type,props});export const jsxs=jsx;export const Fragment='fragment';",
  'react-native':"export const View='view',Text='text',Image='image',ImageBackground='image-background',Pressable='pressable',ScrollView='scroll',Platform={OS:'ios',select:o=>o.ios??o.default},BackHandler={addEventListener:()=>({remove(){}})};export const useWindowDimensions=()=>({width:390,height:844});export const Easing={linear:x=>x};export const Animated={View:'view',Image:'image',add:(a,b)=>a+b,Value:class {constructor(v){this.v=v}setValue(v){this.v=v}interpolate(){return '0deg'}}};export const AccessibilityInfo={isReduceMotionEnabled:async()=>true,addEventListener:()=>({remove(){}})};export const AppState={currentState:'active',addEventListener:(event,listener)=>{const map=globalThis.__fishAppState,list=map.get(event)||new Set();map.set(event,list);list.add(listener);return{remove:()=>list.delete(listener)}}};export const StyleSheet={create:x=>x,absoluteFill:{position:'absolute',left:0,right:0,top:0,bottom:0}};",
- 'react-native-reanimated':"export default {View:'animated-view',Image:'animated-image'};export const useSharedValue=value=>globalThis.__fishReact.useRef({value}).current,useAnimatedStyle=fn=>fn(),cancelAnimation=()=>{},Easing={linear:x=>x},withTiming=value=>value;",
+ 'react-native-reanimated':"export default {View:'animated-view',Image:'animated-image'};export const FadeIn={duration:ms=>({ms})},FadeOut=FadeIn;export const useSharedValue=value=>globalThis.__fishReact.useRef({value}).current,useAnimatedStyle=fn=>fn(),cancelAnimation=()=>{},Easing={linear:x=>x},withTiming=value=>value;",
  'react-native-gesture-handler':"export const GestureDetector='gesture-detector',GestureStateManager={deactivate(){}},useManualGesture=options=>options;",
  'expo-font':'export const useFonts=()=>[true];',
  'expo-audio':'export const createAudioPlayer=()=>({volume:1,playing:false,seekTo:async()=>{},play(){},pause(){},remove(){}});',
  'expo-haptics':'export const ImpactFeedbackStyle={Light:1,Medium:2,Heavy:3},NotificationFeedbackType={Success:1};export const selectionAsync=async()=>{},impactAsync=async()=>{},notificationAsync=async()=>{};',
  '@react-native-async-storage/async-storage':'export default {getItem:async()=>null,setItem:async()=>{}};',
- '@shopify/react-native-skia':"export const Canvas='canvas',Group='group',Path='path',Rect='rect',LinearGradient='linear-gradient',RadialGradient='radial-gradient';",
+ '@shopify/react-native-skia':"export const vec=(x,y)=>({x,y});export const Canvas='canvas',Group='group',Path='path',Rect='rect',LinearGradient='linear-gradient',RadialGradient='radial-gradient';",
 };
 const hostGlobals=new Map(['window','document','ResizeObserver'].map(name=>[name,Object.getOwnPropertyDescriptor(globalThis,name)]));
 try{
