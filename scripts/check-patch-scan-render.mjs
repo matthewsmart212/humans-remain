@@ -73,7 +73,7 @@ try{
    world.tick+=45;
    const lingering=paint();assert(lingering.some(Boolean),'Painted marks persist after the sweep');
    assert(beam.filter((v,i)=>i%4===3&&v).length>lingering.filter((v,i)=>i%4===3&&v).length,'Light covers open ground beyond the impression');
-   world.tick+=180;assert(!paint().some(Boolean),'Expired marks disappear');
+   world.tick+=320;assert(!paint().some(Boolean),'Expired marks disappear');
    if(target==='browser')reference.set(kind,{pixels:lingering,worldX:world.player.x,worldY:world.player.y});
    else{
     const expected=reference.get(kind);

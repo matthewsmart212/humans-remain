@@ -6,15 +6,14 @@ import type {WorldLayout} from './world-layout';
 
 export type PatchTrackKind='right-tread'|'left-skid'|'crawler'|'rope';
 export const PATCH_TRACK_WIDTH={ 'right-tread':59,'left-skid':68,crawler:98,rope:89 } as const;
-export type PatchTrack=Vec&{kind:PatchTrackKind;angle:number};
+export type PatchTrack=Vec&{kind:PatchTrackKind;angle:number;section?:1|2|3};
 export type PatchTrailStage='footprints'|'haulage';
 type SurveyPoint=readonly [number,number];
 
 // Ground surveyed on the published Stillwater map. The western trail stays on
-// the bank. The other approaches the mast via the lower and waterworks bridges.
+// the bank. The old logging trail is used by saves already past the ledger.
 export const PATCH_TRAIL_FORK:Vec={x:-3590,y:7245};
 const bank:readonly SurveyPoint[]=[[-3640,6810],[-3860,6310],[-4100,5800],[-4140,5510],[-3550,5050]];
-const crossings:readonly SurveyPoint[]=[[-3480,7230],[-3415,7267],[-2544,7840],[-2380,7630],[-1350,7515],[-1360,6440],[-1510,6250],[-1841,6121],[-2000,5570],[-2260,4920],[-2350,4889],[-3300,4889]];
 const loggingRoad:readonly SurveyPoint[]=[[-3776,4726],[-3770,4650],[-4590,4380],[-5400,3480],[-5620,3180],[-5360,2320],[-5250,2030],[-5700,1320],[-5980,600],[-5990,-200],[-5900,-850],[-5570,-1530],[-5200,-2010],[-4815,-2410]];
 const point=([x,y]:SurveyPoint):Vec=>({x,y});
 const bridges=RIVER_BRIDGES.map(({from,to,width})=>({
@@ -73,10 +72,17 @@ export function patchScannerTrail(layout:WorldLayout,stage:PatchTrailStage):read
    {x:site.robot.x-15,y:site.robot.y+12,angle:bootAngle,kind:'right-tread'},
    {x:site.robot.x+18,y:site.robot.y+15,angle:bootAngle,kind:'left-skid'},
   ];
-  survey={shelter,post,hauler,footprints:[...atCot,...layTracks([shelter,junction,...bank.map(point),post],'footprints'),
-   ...layTracks([junction,...crossings.map(point),post],'footprints')],
+  const footprints=[...atCot,...layTracks([shelter,junction,...bank.map(point),post],'footprints')];
+  footprints.forEach((mark,i)=>{mark.section=i<footprints.length*.22?1:i<footprints.length*.88?2:3});
+  survey={shelter,post,hauler,footprints,
    haulage:layTracks([post,...loggingRoad.map(point),hauler],'haulage')};
   surveys.set(layout,survey);
  }
  return survey[stage];
+}
+
+/** Point the compass at the next stretch of prints if the survivor loses the trail. */
+export function nextPatchFootprints(layout:WorldLayout,found:number){
+ const marks=patchScannerTrail(layout,'footprints');
+ return marks.find(mark=>mark.section===found+1);
 }

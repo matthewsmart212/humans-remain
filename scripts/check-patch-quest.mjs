@@ -8,7 +8,7 @@ import {build} from 'esbuild';
 const temporary=fs.mkdtempSync(path.join(os.tmpdir(),'patch-quest-'));
 try{
  await build({stdin:{contents:[
-  ...['patch-quest','patch-chat','patch-map','patch-journal','patch-placement','studio-play','survival-engine','imported-art','loot-chest','run-save','scene-travel','world-scenes','world-layout','world-assets','layout-views','field-kit','station-access','camp-gates','wildlife-population','patch-evidence'].map(id=>`export * from './src/${id}';`),
+  ...['patch-scanner','patch-scanner-trail','patch-quest','patch-chat','patch-map','patch-journal','patch-placement','studio-play','survival-engine','imported-art','loot-chest','run-save','scene-travel','world-scenes','world-layout','world-assets','layout-views','field-kit','station-access','camp-gates','wildlife-population','patch-evidence'].map(id=>`export * from './src/${id}';`),
   "export * from './native/run-save-store';",
  ].join('\n'),resolveDir:process.cwd()},bundle:true,platform:'node',format:'cjs',outfile:path.join(temporary,'model.cjs'),logLevel:'error'});
  const m=createRequire(import.meta.url)(path.join(temporary,'model.cjs'));
@@ -18,12 +18,12 @@ try{
  const step=(w,n=1,input={x:0,y:0})=>{for(let i=0;i<n;i++){w.tick++;m.stepPatchQuest(w,input)}};
  const playerAt=(w,p)=>Object.assign(w.player,{x:p.x,y:p.y,hp:100,hurtUntil:0,downedUntil:0});
  const finishLine=w=>{while(m.patchChat(w)?.choices.some(choice=>choice.id==='more'))assert(m.choosePatchChat(w,'more'));};
- const askToInspect=w=>{finishLine(w);assert(m.choosePatchChat(w,'topic:damage'));finishLine(w);};
+
  const world=fresh(),q=m.ensurePatchQuest(world),originalLayout=JSON.stringify(world.layout);
  assert(q&&!q.noteRead&&!q.discovered&&!q.servoClaimed&&!q.servoInstalled);
  assert.equal(m.patchStatus(world).title,'P-04');
  assert.equal(m.patchMapLead(world),undefined,'No map spoiler on a new run');
- assert(m.PATCH_NOTE_TEXT.includes('I am going back there'),'The note precedes the stranding');
+ assert(m.PATCH_NOTE_TEXT.includes('before it gives out'),'The note precedes the stranding');
  assert(m.PATCH_NOTE_TEXT.endsWith('P-04'));
 
  const post=m.patchRouteSite(layout,'dispatch'),hauler=m.patchRouteSite(layout,'hauler');
@@ -69,30 +69,37 @@ try{
  playerAt(world,robotDock);assert(m.inspectPatch(world));assert(q.discovered&&!q.noteRead);
  assert.equal(m.patchJournal(world).stage,'diagnose');
  for(let i=0;i<3;i++){
-  askToInspect(world);const closing=m.patchChat(world);
+  finishLine(world);const closing=m.patchChat(world);
   assert(m.closePatchChat(world));
-  assert(!m.choosePatchChat(world,'diagnose',closing),'Releasing a reply after dismissing cannot start diagnosis');
+  assert(!m.choosePatchChat(world,'borrow-scanner',closing),'Releasing a reply after dismissing cannot start diagnosis');
   assert(m.inspectPatch(world));
-  assert(!m.choosePatchChat(world,'diagnose',closing),'A stale tap cannot select a matching reply after reopening');
+  assert(!m.choosePatchChat(world,'borrow-scanner',closing),'A stale tap cannot select a matching reply after reopening');
   assert(!q.diagnosed&&q.discovered,'Dismissal preserves the discovery and leaves the investigation untouched');
  }
- askToInspect(world);assert(m.choosePatchChat(world,'diagnose'));assert(q.diagnosed);m.closePatchChat(world);
+ finishLine(world);assert(m.choosePatchChat(world,'borrow-scanner'));assert(q.diagnosed);m.closePatchChat(world);
  assert(m.inspectPatch(world));
- assert(!m.patchChat(world).choices.some(choice=>choice.id==='diagnose'),'An earned milestone survives dismissing and reopening');
+ assert(!m.patchChat(world).choices.some(choice=>choice.id==='borrow-scanner'),'An earned milestone survives dismissing and reopening');
  m.closePatchChat(world);
  assert(world.repairCheckpoint);world.repairCheckpoint=false;
- assert.deepEqual(m.patchMapLead(world),{...post.approach,label:'Signal post'});
- walkSearchLeg(post.approach);assert(m.examinePatchSite(world,'dispatch'));assert(!m.examinePatchSite(world,'dispatch'));assert(world.repairCheckpoint);world.repairCheckpoint=false;
- assert.deepEqual(m.patchMapLead(world),{...hauler.approach,label:'Cable works'});
- walkSearchLeg(hauler.approach);assert(m.examinePatchSite(world,'hauler-inspect'));
- assert(world.repairCheckpoint);world.repairCheckpoint=false;
- assert(!m.claimPatchServo(world),'The load plate cannot release the drum on the opposite side');
- assert.deepEqual(m.patchMapLead(world),{...hauler.release,label:'Brake housing'});
- walkSearchLeg(hauler.release);assert(m.claimPatchServo(world));assert(!m.claimPatchServo(world));assert(world.repairCheckpoint);world.repairCheckpoint=false;
- assert.deepEqual(m.patchJournal(world).entries.map(e=>e.id),['shelter','drive','dispatch','plate','recovered']);
+ const bootMarks=m.patchScannerTrail(layout,'footprints');
+ const sweep=(w,mark)=>{
+  w.player.direction=m.facing(mark.x-w.player.x,mark.y-w.player.y);w.tick+=25;
+  assert(m.pulsePatchScanner(w));
+ };
+ assert.equal(m.patchMapLead(world).label,'P-04’s footprints');
+ // Walk the west bank, scanning from actual clear ground all the way to the mast.
+ for(const mark of bootMarks.filter((p,i)=>i%2===1)){
+  if(m.worldBlocked(world,mark.x,mark.y,36))continue;
+  sweep(world,mark);walkSearchLeg(mark);
+ }
+ assert(m.withinActionReach(world,post.approach,80),'Last prints are within reach of the spare');
+ assert.equal(q.footprintsFound,3);
+ assert.deepEqual(m.patchMapLead(world),{...post.approach,label:'Spare W-6 drive'});
+ assert(m.examinePatchSite(world,'spare'));assert(!m.examinePatchSite(world,'spare'));
+ assert.deepEqual(m.patchJournal(world).entries.map(e=>e.id),['shelter','drive','scanner','prints','recovered']);
  assert.equal(m.patchJournal(world).stage,'repair');assert.equal(world.bag.pallets,999);
  walkSearchLeg(robotDock);
- assert(searchSteps>3000,'The dispatch and the works are independent destinations');
+ assert(searchSteps>900,'Walk the whole outward and return journey');
  assert(m.beginPatchRepair(world),'No hammer or workshop is required');m.holdPatchRepair(world,true);step(world,120);
  assert(m.patchRepairProgress(world)>.3&&!q.servoInstalled);
  step(world,1,{x:1,y:0});assert(!world.patchRepair&&q.servoClaimed&&!q.servoInstalled,'Movement cancels without consuming');
@@ -284,19 +291,18 @@ try{
  playerAt(integrated,{x:site.robot.x,y:site.robot.y+45});shown=controller.sample(integrated).action;
  assert.equal(shown.label,'INSPECT');assert(controller.press(integrated,shown));controller.release();
  assert.equal(integrated.stationPanel,undefined);assert(!m.atStation(integrated));assert(m.patchChat(integrated));
- askToInspect(integrated);assert(m.choosePatchChat(integrated,'diagnose'));
  const startedX=integrated.player.x;liveStep(3,{x:1,y:0});assert(integrated.player.x>startedX,'Player movement continues during a conversation');assert(m.patchChat(integrated));
  integrated.player.x+=300;liveStep();assert(!m.patchChat(integrated),'Walking away ends the live exchange');
- for(const [position,key] of [[post.approach,'patch:dispatch'],[hauler.approach,'patch:hauler-inspect'],[hauler.release,'patch:hauler-salvage']]){
-  playerAt(integrated,position);shown=controller.sample(integrated).action;
-  assert.equal(shown.key,key);assert(controller.press(integrated,shown));controller.release();
-  if(key!=='patch:hauler-salvage'){
-   assert.equal(integrated.stationPanel,'patch-evidence');
-   assert(m.atStation(integrated),'The close-up stays open at the clue');
-   assert(m.patchEvidence(integrated).title.includes(key==='patch:dispatch'?'dispatch':'plate'));
-   integrated.stationPanel=undefined;
-  }
+ playerAt(integrated,robotDock);assert(m.inspectPatch(integrated));finishLine(integrated);
+ assert(m.choosePatchChat(integrated,'borrow-scanner'));assert(!m.patchChat(integrated));
+ for(const section of [1,2,3]){
+  const mark=bootMarks.find(p=>p.section===section);
+  playerAt(integrated,{x:mark.x+48,y:mark.y});sweep(integrated,mark);
+  assert.equal(integrated.patchQuest.footprintsFound,section);
  }
+ playerAt(integrated,post.approach);shown=controller.sample(integrated).action;
+ assert.equal(shown.key,'patch:spare');assert(controller.press(integrated,shown));controller.release();
+ assert(integrated.patchQuest.servoClaimed);assert(!integrated.stationPanel);
  playerAt(integrated,robotDock);shown=controller.sample(integrated).action;
  assert.equal(shown.label,'TALK');assert(controller.press(integrated,shown));controller.release();
  assert(m.patchChat(integrated),'The player can still ask about the part before fitting it');m.closePatchChat(integrated);
@@ -361,8 +367,8 @@ try{
  assert.deepEqual(active(m.decodeRun(JSON.stringify(priorRoute))).patchQuest.position,safeGround,'Keep a waiting companion on undisturbed ground');
  for(const corrupt of [
   v=>v.version=2,v=>v.position.x=NaN,v=>v.servoClaimed=false,v=>v.discovered=false,v=>v.servoInstalled=false,
-  v=>v.recruited=false,v=>v.returnedToCamp=false,v=>v.command='fly',v=>v.dispatchRead='true',v=>v.diagnosed=false,v=>v.dispatchRead=false,v=>v.homeTrail=[{x:1e9,y:0}],v=>v.followTrail=null,
+  v=>v.recruited=false,v=>v.returnedToCamp=false,v=>v.command='fly',v=>v.dispatchRead='true',v=>v.diagnosed=false,v=>v.footprintsFound=4,v=>v.scannerLoaned=false,v=>v.homeTrail=[{x:1e9,y:0}],v=>v.followTrail=null,
  ]){const bad=structuredClone(raw);corrupt(active(bad).patchQuest);assert.throws(()=>m.decodeRun(JSON.stringify(bad)),/Patch|patch|companion|incomplete|supported/)}
  const newRun=fresh(),newState=m.ensurePatchQuest(newRun);assert(!newState.noteRead&&!newState.servoClaimed&&!newState.suppliesDelivered);assert(!newRun.lootChests?.[m.LOOT_CHEST_ID]);
- console.log(`PASS: stage-aware atlas leads, separate conversation and repair controls, staged feedback, homecoming, journal evidence, diagnosis/dispatch/load plate/opposite brake progression (${searchSteps} search movement ticks), late note discovery, full-bag unique claims, movement/damage/release cancellation, exact six-second repair, authored bridge journey (${walked} movement ticks), physical follow/stay/return, wall-corner approach, smooth catch-up and stable tool-safe stopping, travel-driven gait, conversation pause/resume, once-only chest parcel, owner-removal paper, actual FieldKit/controller/studio-loop repair and range guards, companion gate occupancy, fresh-run reset, strict web/native round trips and transient-input omission.`);
+ console.log(`PASS: stage-aware atlas leads, separate conversation and repair controls, staged feedback, homecoming, journal evidence, scanner handoff, west-bank footprints, mast pickup and return (${searchSteps} search movement ticks), late note discovery, full-bag unique claims, movement/damage/release cancellation, exact six-second repair, authored bridge journey (${walked} movement ticks), physical follow/stay/return, wall-corner approach, smooth catch-up and stable tool-safe stopping, travel-driven gait, conversation pause/resume, once-only chest parcel, owner-removal paper, actual FieldKit/controller/studio-loop repair and range guards, companion gate occupancy, fresh-run reset, strict web/native round trips and transient-input omission.`);
 }finally{fs.rmSync(temporary,{recursive:true,force:true})}

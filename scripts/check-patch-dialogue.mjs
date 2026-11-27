@@ -110,7 +110,7 @@ try{
  const setTools=(noteRead,contents)=>{state.noteRead=noteRead;world.lootChests=contents?{[m.LOOT_CHEST_ID]:{openedAt:0,menuShown:true,rewardVersion:2,contents}}:undefined};
  setTools(false,null);assert.equal(m.patchArrivalReply(world).label,'I followed your light.');
  setTools(true,{woodenAxe:1});assert.equal(m.patchArrivalReply(world).label,'I found your note.');
- setTools(true,{woodenAxe:0});assert.equal(m.patchArrivalReply(world).label,'I did. Thank you.');
+ setTools(true,{woodenAxe:0});assert.equal(m.patchArrivalReply(world).label,'Thanks for the tools.');
  setTools(false,{woodenAxe:0});assert.equal(m.patchArrivalReply(world).label,'I took a tool.');
  assert.equal(m.patchSpeechSections(['I cut my receiver wire and pulled them through the','gate.'],1,247,16)[1].text,'through the gate.');
  assert.deepEqual(m.patchSpeechSections(['I cut my receiver wire','and pulled them through the','gate.'],2,247,16).map(s=>s.count),[1,2]);

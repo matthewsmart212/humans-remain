@@ -2,11 +2,10 @@ import {facing,lineClear,worldBlocked,type Vec,type World} from './survival-engi
 import {acceptPatchRepair,canTalkToPatch,commandPatch,diagnosePatch,patchSpeakerName,recruitPatch,type PatchQuestState} from './patch-quest';
 import {patchArrivalReply,patchDialogueFollowup,patchDialogueReply,patchDialogueTopics,patchOpeningLine,type PatchTopicId} from './patch-dialogue';
 
-import {fieldNoteDestination,markFieldNote} from './patch-field-notes';
 import {canBorrowPatchScanner,borrowPatchScanner} from './patch-scanner';
 
 type Choice={id:string;label:string};
-type Exchange='arrival'|'inspection'|'scanner'|'marker'|'loan'|'wire'|'homecoming'|'welcome';
+type Exchange='arrival'|'wire'|'homecoming'|'welcome';
 type Turn={view:'greeting'|'topics'}|{view:'answer'|'followup';topic:PatchTopicId}|{view:'exchange';exchange:Exchange};
 export type PatchChat={
  readonly speaker:string;readonly line:string;readonly choices:readonly Choice[];
@@ -45,50 +44,35 @@ function speechPages(line:string){
 
 const ask={id:'ask',label:'Ask something else'};
 const back={id:'back',label:'Back'};
-const knee={id:'topic:damage',label:'Let me look at your knee.'};
-const repair={id:'repair',label:'You can borrow mine.'};
+const repair={id:'repair',label:'Let’s fit the W-6.'};
 const pauseRepair={id:'leave',label:'Give me a moment.'};
-const lift={id:'diagnose',label:'Let me lift it.'};
 const wire={id:'tell-wire',label:'Will you tell me?'};
 const leaveWire={id:'leave-wire',label:'We can leave it there.'};
-const scanner={id:'borrow-scanner',label:'I’ll borrow it.'};
-const scannerLine='My left foot dragged all the way back. Borrow my scanner? It can pick out that scrape.';
+const scanner={id:'borrow-scanner',label:'Take the scanner'};
+const headOut={id:'leave',label:'I’ll follow the prints.'};
 const firstPage:Cursor={turn:{view:'greeting'},page:0};
 const invite=(q:PatchQuestState):Choice=>({id:'recruit',label:accompanied.has(q)?'Walk back with us.':'Walk back with me.'});
 
 function greetingChoices(w:World):Choice[]{
  const q=w.patchQuest!;
  const questions={id:'ask',label:patchSpeakerName(q)==='Patch'?'Ask Patch':'Ask a question'};
- if(!q.diagnosed&&!q.servoClaimed){
-  const choices=[{id:'arrival',label:patchArrivalReply(w).label}];
-  const bed=patchDialogueTopics(w).find(topic=>topic.id==='bed');
-  if(bed)choices.push({id:'topic:bed',label:bed.label});
-  choices.push(knee);return choices;
+ if(!q.servoClaimed&&!q.dispatchRead){
+  if(q.scannerLoaned)return [q.footprintsFound===3?{id:'leave',label:'I’ll get the drive.'}:headOut,questions];
+  return [scanner,{id:'arrival',label:patchArrivalReply(w).label},questions];
  }
  if(q.servoClaimed&&!q.servoInstalled)return [repair,questions,pauseRepair];
  if(q.servoInstalled&&!q.recruited)return [
   invite(q),questions,{id:'leave',label:'Rest here a while.'},
  ];
  if(q.suppliesDelivered)return [questions,{id:'follow',label:'Follow me'},{id:'stay',label:'Stay here'},{id:'camp',label:'Return to camp'}];
- if(canBorrowPatchScanner(w))return [{id:'scanner-offer',label:'About your scanner.'},questions];
+ if(canBorrowPatchScanner(w))return [scanner,questions];
  return [questions];
 }
 
 type Dialogue={line:string;choices:Choice[];question?:string};
 function exchangeDialogue(w:World,exchange:Exchange):Dialogue{
- const q=w.patchQuest!;
- const lead=fieldNoteDestination(w);
- const marker:Choice[]=lead?[{id:'mark-post',label:q.dispatchRead?(q.haulerInspected?'Mark the brake housing.':'Mark the cable works.'):'Mark the post for me.'}]:[];
- const trail=q.dispatchRead?'My scanner can pick out sled runners and broad crawler treads. Want to borrow it?':scannerLine;
  switch(exchange){
-  case 'arrival':return {line:patchArrivalReply(w).line,choices:[knee,{id:'arrival-followup',label:'Why leave supplies for strangers?'},ask]};
-  case 'inspection':
-  case 'scanner':return {
-   line:exchange==='inspection'?'W-6. We sent the spares through the signal post. '+trail:trail,
-   choices:canBorrowPatchScanner(w)?[scanner,...marker,ask]:[...marker,ask],
-  };
-  case 'loan':return {line:q.dispatchRead?'Two narrow runners for the sled. The cable crawler left much wider tracks.':'Watch the left edge of the prints. My good foot lifts clear.',choices:[ask,{id:'leave',label:'I’ll follow the trail.'}]};
-  case 'marker':return {line:q.haulerInspected?'The brake housing is marked. Look on the other side of the drum.':q.dispatchRead?'The cable works are marked. Look for the W-6 plate.':'West end of the southern bridge. I can keep the light on.',choices:[ask,{id:'leave',label:'I’ll head out.'}]};
+  case 'arrival':return {line:patchArrivalReply(w).line,choices:[scanner,{id:'arrival-followup',label:'Why leave supplies for strangers?'},ask]};
   case 'wire':return {line:'I did. The lamp still works.',choices:[wire,leaveWire]};
   case 'homecoming':return {line:'I signed that letter P-04. Now that I’m staying… call me Patch.',choices:[{id:'welcome',label:'There’s room for you here, too.'},ask]};
   case 'welcome':return {line:'I allowed for one more person when I counted the spaces. I never counted myself.',choices:[ask]};
@@ -110,7 +94,7 @@ function dialogue(w:World,turn:Turn):Dialogue|undefined{
  if(turn.topic==='bed')choices.push({id:'topic:reclamation',label:'Who cut that wire?'});
  if(turn.topic==='camp'&&w.player.hp<50)choices.push({id:'stay-close',label:'Stay close.'},{id:'stay',label:'I’ll rest here.'});
  if(turn.topic==='damage'){
-  if(!q.diagnosed&&!q.servoClaimed)choices.push(lift);
+  if(!q.servoClaimed&&!q.scannerLoaned)choices.push(scanner);
   else if(q.servoClaimed&&!q.servoInstalled)choices.push(repair);
  }
  if(followup)choices.push({id:'followup',label:followup.question});
@@ -215,10 +199,11 @@ export function choosePatchChat(w:World,id:string,expected?:PatchChat){
  if(id==='arrival'||id==='welcome')return next({view:'exchange',exchange:id});
  if(id==='arrival-followup')return next({view:'followup',topic:'supplies'});
  if(id==='followup'&&'topic' in turn)return next({view:'followup',topic:turn.topic});
- if(id==='diagnose')return diagnosePatch(w)&&next({view:'exchange',exchange:'inspection'});
- if(id==='scanner-offer')return canBorrowPatchScanner(w)&&next({view:'exchange',exchange:'scanner'});
- if(id==='borrow-scanner')return borrowPatchScanner(w)&&show(w,{view:'exchange',exchange:'loan'},0,[firstPage]);
- if(id==='mark-post')return markFieldNote(w)&&show(w,{view:'exchange',exchange:'marker'},0,[firstPage]);
+ if(id==='borrow-scanner'){
+  if(!w.patchQuest?.diagnosed&&!diagnosePatch(w))return false;
+  if(!borrowPatchScanner(w))return false;
+  return closePatchChat(w);
+ }
  if(id==='repair')return acceptPatchRepair(w);
  if(id==='stay-close')return commandPatch(w,'follow');
  if(id==='recruit')return recruitPatch(w);

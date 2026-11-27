@@ -169,7 +169,7 @@ try{
    Object.assign(world.player,q.position);world.stationPanel=undefined;
    assert(m.beginPatchRepair(world));assert(m.holdPatchRepair(world,true));
    for(let i=0;i<360;i++){world.tick++;m.stepPatchQuest(world)}
-   assert(q.servoInstalled);assert.equal(m.patchSpeech(world),'Supplies… still required?');
+   assert(q.servoInstalled);assert.equal(m.patchSpeech(world),'That’s both feet under me. Thank you.');
    const checkSpeech=(name,expected)=>{
     const shot=render(name),text=shot.calls.filter(call=>call[0]==='fillText');
     assert(text.length>=1&&text.length<=2,'World speech stays within two readable lines');
@@ -189,7 +189,7 @@ try{
     }
     return shot;
    };
-   assert.equal(checkSpeech('speech-repair','Supplies… still required?').calls.filter(call=>call[0]==='fillText').length,2);
+   assert.equal(checkSpeech('speech-repair','That’s both feet under me. Thank you.').calls.filter(call=>call[0]==='fillText').length,2);
    assert(m.recruitPatch(world));checkSpeech('speech-recruited','I know that camp. Lead the way.');
    Object.assign(q,{returnedToCamp:true,suppliesDelivered:true});
    for(const [command,line] of [['follow','With you.'],['stay','I will wait here.'],['camp','Returning to camp.']]){

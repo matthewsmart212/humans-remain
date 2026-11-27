@@ -48,7 +48,7 @@ const stationArt={
 const patchTargets={
  robot:{label:'P-04',image:'/survival/patch-v1/portrait.webp',detail:undefined},
  cot:{label:'Dry bedroll',image:undefined,detail:'Someone kept the blanket dry'},
- dispatch:{label:'Signal post',image:'/survival/patch-v5/dispatch-slip.webp',detail:'Dispatch ledger'},
+ spare:{label:'Spare W-6 drive',image:'/survival/patch-v5/drive-rubbing.webp',detail:'Take it back to P-04'},
  'hauler-inspect':{label:'Hauler load plate',image:'/survival/patch-v5/drive-rubbing.webp',detail:'Check the stamped number'},
  'hauler-salvage':{label:'Brake housing',image:'/survival/patch-v5/drive-rubbing.webp',detail:'W-6 rescue drive'},
 } as const;
@@ -109,12 +109,12 @@ export function playInteraction(world:World):PlayInteraction|null{
   const label=kind==='robot'?patchSpeakerName(world.patchQuest):info.label;
   const target={id:companion.key,x:companion.x,y:companion.y,label};
   const action:PlayInteraction={key:companion.key,label:companion.label,shortLabel:companion.shortLabel,
-   icon:kind==='robot'||kind==='dispatch'?'chest':'collect',image:info.image,
+   icon:kind==='robot'?'chest':'collect',image:info.image,
    disabled:companion.disabled,target:{...target,detail:info.detail},
    perform:()=>{
     if(kind==='robot')return inspectPatch(world);
     if(!examinePatchSite(world,kind))return false;
-    if(kind==='dispatch'||kind==='hauler-inspect')world.stationPanel='patch-evidence';
+    if(kind==='hauler-inspect')world.stationPanel='patch-evidence';
     return true;
    }};
   if(companion.canRepair){

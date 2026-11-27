@@ -1,11 +1,11 @@
 import {patchChat} from './patch-chat';
 import {patchRescueSite,patchRouteSite} from './patch-placement';
 import {canTalkToPatch,type PatchQuestState} from './patch-quest';
-import {onPatchBridge,PATCH_TRACK_WIDTH,PATCH_TRAIL_FORK,patchScannerTrail,type PatchTrack,type PatchTrailStage} from './patch-scanner-trail';
-import {DIRECTION_ANGLES,STEP,facing,withinActionReach,worldBlocked,type Vec,type World} from './survival-engine';
+import {nextPatchFootprints,onPatchBridge,PATCH_TRACK_WIDTH,PATCH_TRAIL_FORK,patchScannerTrail,type PatchTrack,type PatchTrailStage} from './patch-scanner-trail';
+import {DIRECTION_ANGLES,STEP,facing,timeOf,withinActionReach,worldBlocked,type Vec,type World} from './survival-engine';
 
 const RADIUS=290,HALF_ANGLE=40*Math.PI/180;
-const SWEEP_SECONDS=.65,FADE_START=1.8,END=3.4;
+const SWEEP_SECONDS=.65,FADE_START=3.6,END=5.2;
 export type PatchScanPrint=PatchTrack&{opacity:number};
 type Ray={angle:number;radius:number};
 export type PatchScanFrame={origin:Vec;angle:number;halfAngle:number;radius:number;rays:readonly Ray[];
@@ -20,6 +20,7 @@ export function canBorrowPatchScanner(w:World){
 export function borrowPatchScanner(w:World){
  if(!patchChat(w)||!canBorrowPatchScanner(w))return false;
  w.patchQuest!.scannerLoaned=true;w.repairCheckpoint=true;
+ w.notice=w.patchQuest!.dispatchRead?'Field scanner ready · Scan for sled tracks.':'Field scanner ready · Face his footprints and tap SCAN.';w.noticeUntil=timeOf(w)+5;
  return true;
 }
 export function patchScannerAvailable(w:World){
@@ -42,12 +43,20 @@ const compassNames={up:'north','up-right':'northeast',right:'east','down-right':
 function reading(w:World,prints:readonly PatchTrack[],stage:PatchTrailStage){
  const site=patchRescueSite(w.layout),ledger=patchRouteSite(w.layout,'dispatch');
  if(stage==='footprints'&&site&&ledger){
-  if(withinActionReach(w,ledger.approach,80))return 'The marks end at the signal post. Read the ledger.';
-  if(!prints.length&&withinActionReach(w,ledger.approach,280))return 'Look for the orange signal mast. The ledger is at its base.';
-  if(Math.hypot(w.player.x-site.robot.x,w.player.y-site.robot.y)<=112){
-   const bearing=compassNames[facing(PATCH_TRAIL_FORK.x-site.approach.x,PATCH_TRAIL_FORK.y-site.approach.y)];
-   return prints.length?`His left toe dragged. Scan the mud ${bearing} of the cot.`:
-    `Face his knee for a sample. The prints leave the cot to the ${bearing}.`;
+  const found=w.patchQuest?.footprintsFound??0;
+  if(found===3)return 'His prints end at the orange mast. Take the spare W-6 at its base.';
+  if(!found&&Math.hypot(w.player.x-site.robot.x,w.player.y-site.robot.y)<=145)return 'Face his feet and tap SCAN.';
+  const next=nextPatchFootprints(w.layout!,found);
+  if(next){
+   const bearing=compassNames[facing(next.x-w.player.x,next.y-w.player.y)];
+   if(!prints.length)return `Face ${bearing} toward the next prints and scan again.`;
+   if(found===1&&Math.hypot(w.player.x-site.robot.x,w.player.y-site.robot.y)<=145){
+    const start=compassNames[facing(PATCH_TRAIL_FORK.x-site.approach.x,PATCH_TRAIL_FORK.y-site.approach.y)];
+    return `Footprint matched. Follow the prints ${start} from the cot.`;
+   }
+   const local=prints.find(mark=>mark.section===found);
+   const onward=local?compassNames[facing(Math.cos(local.angle),Math.sin(local.angle))]:bearing;
+   return `Follow the prints ${onward}. Scan again farther along the bank.`;
   }
  }
  if(stage==='haulage'&&!prints.length&&ledger&&withinActionReach(w,ledger.approach,80)){
@@ -81,6 +90,10 @@ export function pulsePatchScanner(w:World){
   if(worldBlocked(w,mark.x,mark.y,clearance)||beamReach(w,origin,heading,distance)<distance)return [];
   return [{...mark,distance}];
  }).sort((a,b)=>a.distance-b.distance).slice(0,3);
+ const expected=(q.footprintsFound??0)+1;
+ if(stage==='footprints'&&prints.some(mark=>mark.section===expected)){
+  q.footprintsFound=expected;w.repairCheckpoint=true;
+ }
  scans.set(q,{tick:w.tick,stage,origin,angle,rays,prints,hint:reading(w,prints,stage)});
  return true;
 }

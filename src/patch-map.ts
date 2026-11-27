@@ -1,3 +1,4 @@
+import {nextPatchFootprints} from './patch-scanner-trail';
 import {patchSpeakerName} from './patch-quest';
 import {campLootChest} from './loot-chest';
 import {patchRescueSite,patchRouteSite} from './patch-placement';
@@ -27,8 +28,13 @@ export function patchMapLead(world:World):PatchMapLead|undefined{
  if(!state.discovered)return {...site.approach,label:'Rescue shelter'};
  if(state.servoClaimed||!state.diagnosed)return {...site.robot,label:'P-04'};
  if(!state.dispatchRead){
+  if(!state.scannerLoaned)return {...site.robot,label:'Field scanner'};
+  if((state.footprintsFound??0)<3){
+   const next=world.layout&&nextPatchFootprints(world.layout,state.footprintsFound??0);
+   return next?{x:next.x,y:next.y,label:'P-04’s footprints'}:undefined;
+  }
   const post=patchRouteSite(world.layout,'dispatch');
-  return post?{...post.approach,label:'Signal post'}:undefined;
+  return post?{...post.approach,label:'Spare W-6 drive'}:undefined;
  }
  const hauler=patchRouteSite(world.layout,'hauler');
  if(!hauler)return;

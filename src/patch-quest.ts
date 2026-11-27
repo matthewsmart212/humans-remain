@@ -12,19 +12,13 @@ export {PATCH_QUEST_TITLE} from './patch-journal';
 export const PATCH_REPAIR_SECONDS=6;
 export const PATCH_NOTE_TEXT=`To whoever finds this place,
 
-The tools are yours.
+The tools are yours. I kept the handles wrapped so they’d stay dry.
 
-I was told nobody would come. I thought it best to leave these anyway.
+My left knee keeps slipping. I’m heading back to my shelter before it gives out.
 
-The well needs work. So do the walls. I wanted to have more ready for you, but I need a few replacement parts myself.
+Cross the southern bridge at Stillwater Lake, then follow the west bank south. Look for three amber flashes under the old hoist. That’s my lamp.
 
-I have a shelter under the old hoist beyond Stillwater Lake. My left knee has started slipping. I am going back there before it gets worse.
-
-If you see three short amber flashes in the trees, that will be me. Please do not shoot.
-
-Light the fire if you decide to stay.
-
-I would like to know someone made it.
+Light the fire if you stay. I’d like to know someone made it.
 
 P-04`;
 
@@ -34,7 +28,8 @@ export type PatchQuestState={
  version:1;noteRead:boolean;discovered:boolean;servoClaimed:boolean;servoInstalled:boolean;
  /** Older runs can already have the component without having seen these clues. */
  diagnosed?:boolean;dispatchRead?:boolean;haulerInspected?:boolean;
- /** Optional field tool lent by P-04 after inspecting his knee. */
+ /** A successful sweep on each successive stretch of the west-bank trail. */
+ footprintsFound?:number;
  scannerLoaned?:boolean;
  recruited:boolean;returnedToCamp:boolean;suppliesDelivered:boolean;nameIntroduced?:boolean;
  position:Vec;direction:Direction;command:PatchCommand;moving:boolean;walkDistance:number;
@@ -42,8 +37,8 @@ export type PatchQuestState={
  followTrail:Vec[];homeTrail:Vec[];
 };
 export type PatchRepair={worked:number;duration:number;held:boolean;updatedAt:number;origin:Vec;hp:number;hurtUntil:number};
-type PatchTarget='robot'|'cot'|'dispatch'|'hauler-inspect'|'hauler-salvage';
-export type PatchInteraction={key:`patch:${PatchTarget}`;action:'patch';target:PatchTarget;label:string;shortLabel:'INSPECT'|'TALK'|'READ'|'SALVAGE';canRepair?:boolean;disabled:boolean;x:number;y:number};
+type PatchTarget='robot'|'cot'|'spare'|'hauler-inspect'|'hauler-salvage';
+export type PatchInteraction={key:`patch:${PatchTarget}`;action:'patch';target:PatchTarget;label:string;shortLabel:'INSPECT'|'TALK'|'TAKE'|'SALVAGE';canRepair?:boolean;disabled:boolean;x:number;y:number};
 export type PatchStatus={title:string;line:string;objective:string;canRepair:boolean;canRecruit:boolean;canCommand:boolean;servo:boolean};
 
 // Stay just outside action reach so a following companion does not replace
@@ -135,12 +130,6 @@ export function diagnosePatch(w:World){
  q.diagnosed=true;w.repairCheckpoint=true;
  return true;
 }
-function readDispatch(w:World){
- const q=w.patchQuest,post=patchRouteSite(w.layout,'dispatch');
- if(!q?.diagnosed||q.dispatchRead||q.servoClaimed||!post||!withinActionReach(w,post.approach,INTERACT_REACH))return false;
- q.dispatchRead=true;w.repairCheckpoint=true;w.notice='Dispatch copied · Last W-6 fitted to a hauler at the cable works.';w.noticeUntil=timeOf(w)+6;
- return true;
-}
 function inspectHauler(w:World){
  const q=w.patchQuest,hauler=patchRouteSite(w.layout,'hauler');
  if(!q?.dispatchRead||q.haulerInspected||q.servoClaimed||!hauler||!withinActionReach(w,hauler.approach,INTERACT_REACH))return false;
@@ -162,7 +151,13 @@ export function examinePatchSite(w:World,target:Exclude<PatchTarget,'robot'>){
   if(!cot||w.patchQuest?.recruited||!withinActionReach(w,cot,48)||!inspectPatch(w))return false;
   return openPatchBedChat(w);
  }
- if(target==='dispatch')return readDispatch(w);
+ if(target==='spare'){
+  const q=w.patchQuest,post=patchRouteSite(w.layout,'dispatch');
+  if(!q?.scannerLoaned||q.dispatchRead||q.footprintsFound!==3||q.servoClaimed||!post||!withinActionReach(w,post.approach,INTERACT_REACH))return false;
+  q.servoClaimed=true;w.repairCheckpoint=true;
+  w.notice='W-6 collected · Return to P-04 at the shelter.';w.noticeUntil=timeOf(w)+5;
+  return true;
+ }
  if(target==='hauler-inspect')return inspectHauler(w);
  return target==='hauler-salvage'&&claimPatchServo(w);
 }
@@ -185,16 +180,17 @@ export function patchInteraction(w:World):PatchInteraction|null{
    choices.push({key:'patch:cot',action:'patch',target:'cot',...cot,label:'Look at the dry bedroll',shortLabel:'INSPECT',disabled:!available(w)});
   }
  }
- if(state.diagnosed&&!state.servoClaimed){
+ if(!state.servoClaimed&&(state.dispatchRead||state.scannerLoaned&&state.footprintsFound===3)){
   const site=patchRouteSite(w.layout,state.dispatchRead?'hauler':'dispatch');
-  const target=state.dispatchRead?(state.haulerInspected?'hauler-salvage':'hauler-inspect'):'dispatch';
+  const target=state.dispatchRead?(state.haulerInspected?'hauler-salvage':'hauler-inspect'):'spare';
   const position=state.haulerInspected?site?.release:site?.approach;
   if(position&&withinActionReach(w,position,INTERACT_REACH)){
-   const label=target==='dispatch'?'Read the dispatch ledger':target==='hauler-inspect'?'Inspect the hauler load plate':'Release the brake and salvage the drive';
+   const label=target==='spare'?'Take the spare W-6 drive':target==='hauler-inspect'?'Inspect the hauler load plate':'Release the brake and salvage the drive';
    choices.push({key:`patch:${target}`,action:'patch',target,...position,label,
-    shortLabel:target==='dispatch'?'READ':target==='hauler-inspect'?'INSPECT':'SALVAGE',disabled:!available(w)});
+    shortLabel:target==='spare'?'TAKE':target==='hauler-inspect'?'INSPECT':'SALVAGE',disabled:!available(w)});
   }
  }
+ if(!state.scannerLoaned||state.servoClaimed)return choices.find(choice=>choice.target==='robot')??choices[0]??null;
  choices.sort((a,b)=>distance(w.player,a)-distance(w.player,b));return choices[0]??null;
 }
 export function patchStatus(w:World):PatchStatus|null{
@@ -203,7 +199,7 @@ export function patchStatus(w:World):PatchStatus|null{
  const canRepair=state.discovered&&state.servoClaimed&&!state.servoInstalled;
  const canRecruit=state.servoInstalled&&!state.recruited,canCommand=state.suppliesDelivered;
  const home=homePoint(w),campIdle=state.command==='stay'&&!!home&&distance(state.position,home)<150;
- const line=state.suppliesDelivered?(campIdle?'Shelter occupied.':state.command==='follow'?'With you.':state.command==='camp'?'On my way home.':'I will wait here.'):state.recruited?'I have something for the camp.':state.servoInstalled?'Supplies… still required?':state.servoClaimed?'Replacement servo secured.':'Drive servo damaged.';
+ const line=state.suppliesDelivered?(campIdle?'Shelter occupied.':state.command==='follow'?'With you.':state.command==='camp'?'On my way home.':'I will wait here.'):state.recruited?'I have something for the camp.':state.servoInstalled?'I can walk again.':state.servoClaimed?'Replacement servo secured.':'Drive servo damaged.';
  const objective=state.suppliesDelivered?'':patchObjective(state);
  return{title,line,objective,canRepair,canRecruit,canCommand,servo:state.servoClaimed&&!state.servoInstalled};
 }
@@ -250,7 +246,7 @@ function stepRepair(w:World,input:Vec){
  if(job.worked>=job.duration-1e-8){
   // The servo is committed once, only after the final uninterrupted tick.
   state.servoInstalled=true;runtime(state).repairOffered=false;state.moving=false;w.patchRepair=undefined;w.repairCheckpoint=true;
-  say(w,'Supplies… still required?',4);w.notice='Drive restored · Speak to P-04';w.noticeUntil=timeOf(w)+4;
+  say(w,'That’s both feet under me. Thank you.',4);w.notice='Drive restored · Speak to P-04';w.noticeUntil=timeOf(w)+4;
  }
 }
 export function recruitPatch(w:World){
@@ -422,6 +418,7 @@ export function validPatchQuest(value:unknown):value is PatchQuestState|undefine
  if(!savedPoint(value.position)||!['down','right','up','left','down-right','down-left','up-right','up-left'].includes(String(value.direction))||!['follow','stay','camp'].includes(String(value.command))||!finite(value.walkDistance,0,112))return false;
  if(!Array.isArray(value.followTrail)||value.followTrail.length>512||!value.followTrail.every(savedPoint)||!Array.isArray(value.homeTrail)||value.homeTrail.length>1024||!value.homeTrail.every(savedPoint))return false;
  if(['diagnosed','dispatchRead','haulerInspected','scannerLoaned'].some(key=>value[key]!==undefined&&typeof value[key]!=='boolean'))return false;
+ if(value.footprintsFound!==undefined&&(!finite(value.footprintsFound,0,3)||!Number.isInteger(value.footprintsFound)||!value.scannerLoaned))return false;
  if(value.scannerLoaned&&!value.diagnosed||value.diagnosed&&!value.discovered||value.dispatchRead&&!value.diagnosed||value.haulerInspected&&!value.dispatchRead)return false;
  if(value.servoInstalled&&(!value.servoClaimed||!value.discovered)||value.recruited&&!value.servoInstalled||value.returnedToCamp&&!value.recruited||value.suppliesDelivered&&!value.returnedToCamp)return false;
  if(!value.recruited&&value.command!=='stay'||value.command==='camp'&&!value.suppliesDelivered)return false;

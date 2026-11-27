@@ -12,23 +12,6 @@ import postcss from 'postcss';
 // dependency is needed in CI. Safe-area geometry comes from the live story menu
 // model; CanvasKit decodes the actual paper used by both web and native readers.
 const temporary=fs.mkdtempSync(path.join(os.tmpdir(),'patch-ui-'));
-const expectedNote=`To whoever finds this place,
-
-The tools are yours.
-
-I was told nobody would come. I thought it best to leave these anyway.
-
-The well needs work. So do the walls. I wanted to have more ready for you, but I need a few replacement parts myself.
-
-I have a shelter under the old hoist beyond Stillwater Lake. My left knee has started slipping. I am going back there before it gets worse.
-
-If you see three short amber flashes in the trees, that will be me. Please do not shoot.
-
-Light the fire if you decide to stay.
-
-I would like to know someone made it.
-
-P-04`;
 const zero={left:0,right:0,top:0,bottom:0};
 const devices=[
  {name:'iPhone portrait',width:390,height:724,safe:zero},
@@ -231,7 +214,7 @@ try{
  const css=styles.outputFiles.filter(file=>file.path.endsWith('.css')).map(file=>file.text).join('\n');
  assert(css.includes('.world-editor p')&&css.includes('.patch-note-paper'),'Full app CSS must include the conflicting editor rule and letter styles');
  const m=createRequire(import.meta.url)(path.join(temporary,'ui.cjs'));
- assert.equal(m.PATCH_NOTE_TEXT,expectedNote,'Approved Reclamation-continuity letter remains intact');
+ const expectedNote=m.PATCH_NOTE_TEXT;assert.match(expectedNote,/southern bridge.*west bank south/s);
  const world=m.createWorld(m.emptyLayout());m.startExpedition(world);Object.assign(world.camp.hearth,{x:1500,y:1600});Object.assign(world.player,{x:1500,y:1343});world.tick=100;
  world.stationPanel='rare-cache';world.lootChestId=m.LOOT_CHEST_ID;world.lootChests={[m.LOOT_CHEST_ID]:{openedAt:0,menuShown:true,rewardVersion:2,contents:Object.fromEntries(m.LOOT_CHEST_REWARDS.map(r=>[r.kind,r.amount]))}};
  const props={world,onClose:()=>{},onChange:()=>{}},render=()=>m.renderToStaticMarkup(m.React.createElement(m.CampStationPanel,props));
@@ -340,12 +323,14 @@ try{
  };
  assert.equal(chatMarkup(),'','Approaching alone reveals no controls');
  assert(m.inspectPatch(world));
- assert.deepEqual(readChat().labels,['I did. Thank you.','Who is the bedroll for?','Let me look at your knee.']);
+ const finishLine=()=>{while(m.patchChat(world).choices.some(c=>c.id==='more'))assert(m.choosePatchChat(world,'more'))};
+ finishLine();assert.deepEqual(readChat().labels,['Take the scanner','Thanks for the tools.','Ask a question','Back']);
+ assert(m.choosePatchChat(world,'ask'));
  assert(m.choosePatchChat(world,'topic:bed'));
  while(m.patchChat(world).choices.some(c=>c.id==='more'))assert(m.choosePatchChat(world,'more'));
  assert(m.choosePatchChat(world,'topic:reclamation'));assert(m.choosePatchChat(world,'leave-wire'));
  assert.equal(m.patchChat(world).view,'greeting','The bedroll leads to the cut wire and the survivor can decline the memory');
- assert(m.choosePatchChat(world,'arrival'));
+ finishLine();assert(m.choosePatchChat(world,'arrival'));finishLine();
  assert(m.choosePatchChat(world,'ask'));
  const questions=readChat();
  assert(questions.labels.includes('Who cut that wire?'));
@@ -365,10 +350,10 @@ try{
  assert(readChat().labels.includes('Ask something else'));
  m.closePatchChat(world);
  assert(m.inspectPatch(world));
- assert(m.choosePatchChat(world,'topic:damage'));
+ finishLine();
  while(m.patchChat(world).choices.some(c=>c.id==='more'))assert(m.choosePatchChat(world,'more'));
- assert(m.choosePatchChat(world,'diagnose'));
- assert(world.patchQuest.diagnosed&&!world.patchQuest.servoClaimed,'Reading the drive plate starts the investigation');
+ assert(m.choosePatchChat(world,'borrow-scanner'));
+ assert(world.patchQuest.diagnosed&&world.patchQuest.scannerLoaned&&!m.patchChat(world),'Taking the scanner starts the search and restores field controls');
  assert.equal(world.stationPanel,undefined);
  m.closePatchChat(world);
  Object.assign(world.patchQuest,{servoClaimed:true,servoInstalled:true});

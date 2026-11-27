@@ -82,9 +82,13 @@ export function patchScenerySprites(world:World,view:Viewport):PatchScenerySprit
    add('scrape',x+4,y+13,37,12,{angle:angle-.06,ground:true,alpha:.83});
   }
  }
+ const post=patchRouteSite(layout,'dispatch')?.placement;
+ if(post&&nearView(post,view,240*post.scale)&&!world.patchQuest?.dispatchRead&&!world.patchQuest?.servoClaimed&&world.patchQuest?.footprintsFound===3){
+  atSite(post,'dispatch')('gear',75,41,52,49,{inFront:true});
+ }
  const hauler=patchRouteSite(layout,'hauler')?.placement;
  if(hauler&&nearView(hauler,view,420*hauler.scale)){
-  const add=atSite(hauler,'hauler'),released=!!world.patchQuest?.servoClaimed;
+  const add=atSite(hauler,'hauler'),released=!!world.patchQuest?.dispatchRead&&!!world.patchQuest.servoClaimed;
   add('gantry',-151,-46,338,270);
   add('sled',-229,46,143,68);
   // The forward lamp and panel are baked into the vehicle painting. The eye

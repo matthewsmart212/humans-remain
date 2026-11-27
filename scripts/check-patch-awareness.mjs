@@ -67,10 +67,10 @@ const state=game.ensurePatchQuest(field);state.discovered=true;state.diagnosed=t
 const dispatch=game.patchRouteSite(survey,'dispatch'),hauler=game.patchRouteSite(survey,'hauler');
 Object.assign(field.player,dispatch.approach);
 assert.equal(fieldCues.update(field,true),undefined);
-assert(game.examinePatchSite(field,'dispatch'));
+assert(!game.examinePatchSite(field,'spare'),'Walking to the post without tracking cannot claim the spare');
+state.dispatchRead=true; // A returning save that already read the dispatch ledger.
 assert.equal(fieldCues.update(field,true)?.cue,'ledger');
-assert(!game.examinePatchSite(field,'dispatch'));
-assert.equal(fieldCues.update(field,true),undefined,'Rereading an existing clue stays quiet');
+assert.equal(fieldCues.update(field,true),undefined);
 Object.assign(field.player,hauler.approach);
 assert(game.examinePatchSite(field,'hauler-inspect'));
 assert.equal(fieldCues.update(field,true),undefined,'Inspecting the plate does not release the brake');
