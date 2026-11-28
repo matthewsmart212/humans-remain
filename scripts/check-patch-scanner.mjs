@@ -8,7 +8,7 @@ import {build} from 'esbuild';
 const temp=fs.mkdtempSync(path.join(os.tmpdir(),'patch-scanner-'));
 try{
  const output=path.join(temp,'model.cjs');
- const modules=['patch-scanner','patch-scanner-trail','patch-quest','patch-chat','patch-placement','patch-field-notes','patch-map','studio-play','survival-engine','run-save','scene-travel','imported-art','river-collision'];
+ const modules=['patch-scanner','patch-scanner-trail','patch-quest','patch-chat','patch-placement','patch-field-notes','patch-map','studio-play','survival-engine','run-save','scene-travel','imported-art','river-collision','field-kit','quick-items'];
  await build({stdin:{contents:modules.map(id=>`export * from './src/${id}'`).join('\n'),resolveDir:process.cwd()},bundle:true,platform:'node',format:'cjs',outfile:output,logLevel:'error'});
  const m=createRequire(import.meta.url)(output);
  const src=JSON.parse(fs.readFileSync('native/assets/world-snapshot.json','utf8'));m.installImportedArt(src.records);
@@ -24,6 +24,8 @@ try{
  assert(!m.patchChat(w)&&!m.borrowPatchScanner(w));
  assert(m.validPatchQuest(q));assert(m.validPatchQuest({...q,scannerLoaned:undefined}));
  assert(!m.validPatchQuest({...q,diagnosed:false}));assert(!m.validPatchQuest({...q,scannerLoaned:'yes'}));
+ assert(m.isPatchScannerOn(w)&&q.scannerOn===true,'Borrowing powers on the equipped scanner');
+ assert(!m.validPatchQuest({...q,scannerOn:'yes'}),'Saved power must be a boolean');
  assert(m.patchScannerAvailable(w));assert.equal(m.patchMapLead(w).label,'P-04’s footprints');
  const tracks=m.patchScannerTrail(layout,'footprints'),work=m.patchScannerTrail(layout,'haulage');
  assert(tracks.length>50&&work.length>50);
@@ -37,6 +39,42 @@ try{
  }
  const sampleAtCot=sample(site.approach,'left');
  assert.deepEqual(new Set(sampleAtCot.prints.map(p=>p.kind)),new Set(['right-tread','left-skid']),'Looking at his sole shows two different marks');
+ // Exercise the actual HUD controller: one physical hold cannot toggle twice,
+ // stale actions cannot flip power back, and switching tools preserves the choice.
+ const powerWorld={...w,player:{...w.player},patchQuest:structuredClone(q)},powerQuest=powerWorld.patchQuest;
+ assert(sample(site.approach,'up-right',powerWorld).prints.length);
+ Object.assign(powerWorld.player,{x:14000,y:14000});
+ const controller=new m.FieldKitController(),turnOff=controller.sample(powerWorld).action;
+ assert.equal(turnOff.label,'TURN OFF');assert(!turnOff.disabled&&!turnOff.attack);
+ const notice=powerWorld.notice;
+ assert(controller.press(powerWorld,turnOff));assert.equal(powerQuest.scannerOn,false);
+ assert.equal(controller.holdingAttack,false);assert(!powerWorld.attackQueuedUntil);
+ assert(!controller.press(powerWorld,controller.sample(powerWorld).action),'A held action cannot toggle repeatedly');
+ controller.release();assert(!controller.press(powerWorld,turnOff),'A stale on-state action cannot toggle the off-state device');
+ assert.equal(controller.sample(powerWorld).action.label,'TURN ON');
+ assert.equal(powerWorld.notice,notice,'Power toggles do not repeat tutorial banners');
+ const offFrame=m.samplePatchScan(powerWorld);
+ assert(offFrame.equipped&&offFrame.opacity===0&&offFrame.prints.length===0,'Off removes all light and marks while retaining the physical held scanner');
+ const beforeOff=powerQuest.footprintsFound,unseen=tracks.find(mark=>mark.section===2);
+ Object.assign(powerWorld.player,{x:unseen.x+45,y:unseen.y,direction:'left'});powerWorld.tick+=180;
+ assert(!m.stepPatchScanner(powerWorld)&&!m.pulsePatchScanner(powerWorld));
+ assert.equal(powerQuest.footprintsFound,beforeOff,'Powered-off scanning cannot advance the quest');
+ assert(!m.patchScannerHint(powerWorld));
+ assert(m.selectQuickItem(powerWorld,'fists'));assert(!m.togglePatchScanner(powerWorld),'A stowed scanner cannot be toggled');
+ assert(m.selectQuickItem(powerWorld,'scanner'));assert(!m.isPatchScannerOn(powerWorld),'Re-equipping keeps an explicit off choice');
+ const powerSave=m.encodeRun(new m.SceneTravel(powerWorld,{pin(){},prepare:async()=>{},ready:()=>true}));
+ const powerRestored=m.decodeRun(powerSave).worlds.find(([id])=>id==='camp')[1];
+ assert.equal(powerRestored.patchQuest.scannerOn,false);assert.equal(powerRestored.player.equipped,'scanner');
+ assert.equal(m.samplePatchScan(powerRestored).opacity,0,'Save/resume keeps the scanner off');
+ Object.assign(powerWorld.player,{x:14000,y:14000});
+ const turnOn=controller.sample(powerWorld).action;assert(controller.press(powerWorld,turnOn));controller.release();
+ assert(m.isPatchScannerOn(powerWorld));assert.equal(m.samplePatchScan(powerWorld).opacity,1);
+ Object.assign(powerWorld.player,site.approach);
+ assert(controller.sample(powerWorld).action.key.startsWith('patch:'),'Nearby quest interactions retain priority over scanner power');
+ assert(m.togglePatchScanner(powerWorld),'The compact fallback can still switch power beside a quest interaction');
+ assert(controller.sample(powerWorld).action.key.startsWith('patch:'));
+ const legacyPower={...powerWorld,patchQuest:{...powerQuest,scannerOn:undefined}};
+ assert(m.isPatchScannerOn(legacyPower),'Owned legacy scanners without a saved preference default on');
  const frame=sample(site.approach,'up-right');assert(frame.prints.length>=2);
  assert.deepEqual(new Set(frame.prints.map(p=>p.kind)),new Set(['right-tread','left-skid']));
  assert(frame.prints.every(p=>p.opacity>0));
@@ -112,5 +150,5 @@ try{
  assert(!m.patchScannerAvailable(older));assert.equal(m.patchMapLead(older).label,'Cable works');
  assert(!m.patchScannerAvailable({...w,scene:{id:'iron-mine'}}));
  assert.equal(m.samplePatchScan({...w,patchQuest:structuredClone(q)}).prints.length,0,'Copying persistent facts never revives transient marks');
- console.log('Verified scanner acquisition, continuous held beam, render-only sampling, moving/facing, unblocked evidence, independent fade, ordered trail, pickup, legacy leads and save/resume.');
+ console.log('Verified scanner acquisition, single-tap power on/off, held/stale-action guards, immediate beam and mark shutdown, powered-off quest guard, tool switching and power save/resume, contextual interactions, legacy defaults, continuous beam, render-only sampling, moving/facing, evidence fade and ordered trail.');
 }finally{fs.rmSync(temp,{recursive:true,force:true})}

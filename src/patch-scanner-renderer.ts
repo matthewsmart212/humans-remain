@@ -19,7 +19,7 @@ const scannerWidth=33,gripX=96,gripY=71,lensX=23,lensY=96;
 
 export function heldPatchScanner(w:World,frame:PatchScanFrame,images?:Readonly<Record<string,unknown>>){
  const p=w.player,dir=p.direction;
- if(frame.opacity<=0||p.downedUntil||p.hp<=0)return;
+ if(!(frame.equipped??frame.opacity>0)||p.downedUntil||p.hp<=0)return;
  const hunter=w.survivorRole==='hunter',engineer=w.survivorRole==='engineer',grip=weaponGrip(w);
  const running=(p.runBlend??0)>.45;
  const cycle=p.moving?(hunter?hunterCycle(dir,p.walkDistance,running,images):engineer?engineerCycle(dir,p.walkDistance,running):runnerCycle(dir,p.walkDistance,running)):undefined;
@@ -34,18 +34,20 @@ export function heldPatchScanner(w:World,frame:PatchScanFrame,images?:Readonly<R
  return {x,y,lens,flip,tilt,scale,behind:grip.behind};
 }
 
-export function drawHeldPatchScanner(ctx:CanvasRenderingContext2D,image:HTMLImageElement,rig:NonNullable<ReturnType<typeof heldPatchScanner>>,opacity:number){
+export function drawHeldPatchScanner(ctx:CanvasRenderingContext2D,image:HTMLImageElement,rig:NonNullable<ReturnType<typeof heldPatchScanner>>,power:number){
  const [sx,sy,sw,sh]=PATCH_SCENERY_FRAMES.scanner;
  ctx.save();
- ctx.globalAlpha=opacity;
+ ctx.globalAlpha=1;
  ctx.translate(rig.x,rig.y);
  ctx.rotate(rig.tilt);
  ctx.scale(rig.flip*rig.scale,rig.scale);
  ctx.drawImage(image,sx,sy,sw,sh,-gripX,-gripY,sw,sh);
- const x=lensX-gripX,y=lensY-gripY;
- const glint=ctx.createRadialGradient(x,y,0,x,y,30);
- glint.addColorStop(0,'#e0f8ffeb');glint.addColorStop(.22,'#72c9ffae');glint.addColorStop(1,'#3585ff00');
- ctx.fillStyle=glint;ctx.fillRect(x-30,y-30,60,60);
+ if(power>0){
+  const x=lensX-gripX,y=lensY-gripY;
+  const glint=ctx.createRadialGradient(x,y,0,x,y,30);
+  glint.addColorStop(0,'#e0f8ffeb');glint.addColorStop(.22,'#72d9ff9e');glint.addColorStop(1,'#3585ff00');
+  ctx.globalAlpha=power;ctx.fillStyle=glint;ctx.fillRect(x-30,y-30,60,60);
+ }
  ctx.restore();
 }
 
@@ -59,7 +61,7 @@ function blueTrack(image:HTMLImageElement,kind:PatchScanPrint['kind']){
  tile=document.createElement('canvas');tile.width=width;tile.height=height;
  const brush=tile.getContext('2d');if(!brush)return;
  brush.drawImage(image,x,y,width,height,0,0,width,height);
- brush.globalCompositeOperation='source-in';brush.fillStyle='#79d7ff';brush.fillRect(0,0,width,height);
+ brush.globalCompositeOperation='source-in';brush.fillStyle='#8bdcffe0';brush.fillRect(0,0,width,height);
  frames.set(kind,tile);return tile;
 }
 
@@ -79,23 +81,30 @@ function drawImpression(ctx:CanvasRenderingContext2D,image:HTMLImageElement,prin
  ctx.restore();
 }
 
-/** Canvas fallback uses narrow, feathered sectors matching the shader's penumbra. */
+/** Canvas fallback keeps the same soft projection, without outlined radar arcs. */
 function drawBeamFallback(ctx:CanvasRenderingContext2D,frame:PatchScanFrame,apex:Vec){
  const {radius,angle,halfAngle,sweep,opacity}=frame;
  const light=ctx.createRadialGradient(apex.x,apex.y,0,apex.x,apex.y,radius);
- light.addColorStop(0,'#1657ff38');light.addColorStop(.75,'#1657ff20');light.addColorStop(1,'#1657ff00');
- const slices=40,width=2*halfAngle/slices;
+ light.addColorStop(0,'#388dff6c');light.addColorStop(.08,'#2d88ff48');
+ light.addColorStop(.3,'#2781ff3d');light.addColorStop(.65,'#1e70ff1c');light.addColorStop(1,'#1e70ff00');
+ const ripple=ctx.createRadialGradient(apex.x,apex.y,0,apex.x,apex.y,radius);
+ const start=Math.max(0,sweep-.095),end=Math.min(1,sweep+.095);
+ ripple.addColorStop(0,'#8cdeff00');ripple.addColorStop(start,'#8cdeff00');
+ ripple.addColorStop(sweep,'#8cdeff13');ripple.addColorStop(end,'#8cdeff00');ripple.addColorStop(1,'#8cdeff00');
+ const smooth=(a:number,b:number,value:number)=>{const t=Math.max(0,Math.min(1,(value-a)/(b-a)));return t*t*(3-2*t)};
+ const waveFade=smooth(.04,.18,sweep)*(1-smooth(.72,1,sweep))*(1-smooth(.15,1,sweep));
+ const slices=48,width=2*halfAngle/slices;
+ ctx.globalCompositeOperation='screen';
  for(let i=0;i<slices;i++){
   const a=angle-halfAngle+i*width,offset=Math.abs((i+.5)/slices*2-1);
-  const feather=Math.max(0,Math.min(1,(1-offset)/.24));
-  ctx.globalAlpha=opacity*feather*feather*(3-2*feather);
-  ctx.beginPath();ctx.moveTo(apex.x,apex.y);ctx.arc(apex.x,apex.y,radius,a,a+width+.001);ctx.closePath();
+  const feather=1-smooth(.35,1,offset),core=1-smooth(0,.65,offset);
+  ctx.globalAlpha=opacity*feather*(.65+.35*core);
+  ctx.beginPath();ctx.moveTo(apex.x,apex.y);
+  // Explicit vertices also work with the native adapter's addArc semantics.
+  for(const edge of [a,a+width/2,a+width+.001])ctx.lineTo(apex.x+Math.cos(edge)*radius,apex.y+Math.sin(edge)*radius);
+  ctx.closePath();
   ctx.fillStyle=light;ctx.fill();
-  for(const phase of [sweep,(sweep+.5)%1]){
-   const reach=radius*phase,fade=1-Math.max(0,Math.min(1,(phase-.75)/.25));
-   ctx.beginPath();ctx.arc(apex.x,apex.y,reach,a,a+width+.001);
-   ctx.strokeStyle='#48c4ff';ctx.globalAlpha=opacity*feather*fade*.45;ctx.lineWidth=2.2;ctx.stroke();
-  }
+  ctx.globalAlpha=opacity*feather*waveFade;ctx.fillStyle=ripple;ctx.fill();
  }
 }
 

@@ -31,6 +31,8 @@ export type PatchQuestState={
  /** A successful sweep on each successive stretch of the west-bank trail. */
  footprintsFound?:number;
  scannerLoaned?:boolean;
+ /** Absent in older saves; a borrowed scanner defaults to powered on. */
+ scannerOn?:boolean;
  recruited:boolean;returnedToCamp:boolean;suppliesDelivered:boolean;nameIntroduced?:boolean;
  position:Vec;direction:Direction;command:PatchCommand;moving:boolean;walkDistance:number;
  /** Real walked ground preserves a way back through bridges and open gates. */
@@ -421,7 +423,7 @@ export function validPatchQuest(value:unknown):value is PatchQuestState|undefine
  if(value.nameIntroduced!==undefined&&(typeof value.nameIntroduced!=='boolean'||!value.suppliesDelivered))return false;
  if(!savedPoint(value.position)||!['down','right','up','left','down-right','down-left','up-right','up-left'].includes(String(value.direction))||!['follow','stay','camp'].includes(String(value.command))||!finite(value.walkDistance,0,112))return false;
  if(!Array.isArray(value.followTrail)||value.followTrail.length>512||!value.followTrail.every(savedPoint)||!Array.isArray(value.homeTrail)||value.homeTrail.length>1024||!value.homeTrail.every(savedPoint))return false;
- if(['diagnosed','dispatchRead','haulerInspected','scannerLoaned'].some(key=>value[key]!==undefined&&typeof value[key]!=='boolean'))return false;
+ if(['diagnosed','dispatchRead','haulerInspected','scannerLoaned','scannerOn'].some(key=>value[key]!==undefined&&typeof value[key]!=='boolean'))return false;
  if(value.footprintsFound!==undefined&&(!finite(value.footprintsFound,0,3)||!Number.isInteger(value.footprintsFound)||!value.scannerLoaned))return false;
  if(value.scannerLoaned&&!value.diagnosed||value.diagnosed&&!value.discovered||value.dispatchRead&&!value.diagnosed||value.haulerInspected&&!value.dispatchRead)return false;
  if(value.servoInstalled&&(!value.servoClaimed||!value.discovered)||value.recruited&&!value.servoInstalled||value.returnedToCamp&&!value.recruited||value.suppliesDelivered&&!value.returnedToCamp)return false;

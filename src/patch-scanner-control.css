@@ -5,3 +5,16 @@
 .patch-scanner-hint {
  position:absolute;width:1px;height:1px;overflow:hidden;clip-path:inset(50%);white-space:nowrap;
 }
+.camp-studio .field-kit .patch-scanner-power {
+ display:flex;flex-direction:column;align-items:center;justify-content:center;gap:1px;
+ width:44px;height:48px;min-height:44px;margin:0;padding:3px;box-sizing:border-box;
+ border:1px solid #71847c;border-radius:11px;background:#143334ed;color:#a7b8b7;
+ font:800 9px/10px 'Barlow Condensed',Barlow,sans-serif;letter-spacing:.6px;
+ pointer-events:auto;touch-action:manipulation;-webkit-tap-highlight-color:transparent;
+}
+.camp-studio .field-kit .patch-scanner-power[aria-pressed=true] {border-color:#65b5c6;background:#163e45f2;color:#a0edff}
+.camp-studio .field-kit .patch-scanner-power:active {opacity:.72}
+.camp-studio .field-kit .patch-scanner-power:focus-visible {outline:2px solid #a0edff;outline-offset:3px}
+
+.kit-scanner-outline {position:absolute;inset:0;width:100%;height:100%;pointer-events:none}
+.kit-primary .kit-map-glyph {display:flex;width:36px;height:36px;align-items:center;justify-content:center}

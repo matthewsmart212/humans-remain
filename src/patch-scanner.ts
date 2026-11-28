@@ -5,11 +5,11 @@ import {nextPatchFootprints,onPatchBridge,PATCH_TRAIL_FORK,patchScannerTrail,typ
 import {DIRECTION_ANGLES,STEP,facing,timeOf,withinActionReach,type Vec,type World} from './survival-engine';
 
 const RADIUS=410,HALF_ANGLE=52*Math.PI/180;
-const SWEEP_SECONDS=1.6,PRINT_HOLD=.7,PRINT_FADE=2.1,UPDATE_SECONDS=.08;
+const SWEEP_SECONDS=3.2,PRINT_HOLD=.7,PRINT_FADE=2.1,UPDATE_SECONDS=.08;
 export type PatchScanPrint=PatchTrack&{opacity:number};
 type Ray={angle:number;radius:number};
 export type PatchScanFrame={origin:Vec;angle:number;halfAngle:number;radius:number;rays:readonly Ray[];
- sweep:number;opacity:number;prints:readonly PatchScanPrint[];aperture?:Vec};
+ sweep:number;opacity:number;prints:readonly PatchScanPrint[];aperture?:Vec;equipped?:boolean};
 type RevealedPrint={mark:PatchTrack;seen:number};
 type Scan={tick:number;stage:PatchTrailStage;prints:Map<PatchTrack,RevealedPrint>;hint:string};
 const scans=new WeakMap<PatchQuestState,Scan>();
@@ -20,8 +20,8 @@ export function canBorrowPatchScanner(w:World){
 }
 export function borrowPatchScanner(w:World){
  if(!patchChat(w)||!canBorrowPatchScanner(w))return false;
- w.patchQuest!.scannerLoaned=true;w.player.equipped='scanner';w.repairCheckpoint=true;
- w.notice='Scanner equipped · Follow the blue tracks. Switch tools to put it away.';w.noticeUntil=timeOf(w)+5;
+ w.patchQuest!.scannerLoaned=true;w.patchQuest!.scannerOn=true;w.player.equipped='scanner';w.repairCheckpoint=true;
+ w.notice='Scanner equipped · Follow the blue tracks. Tap the power button to switch it off.';w.noticeUntil=timeOf(w)+5;
  return true;
 }
 export function patchScannerAvailable(w:World){
@@ -35,7 +35,20 @@ const stageFor=(q:PatchQuestState):PatchTrailStage=>q.dispatchRead?'haulage':'fo
 export function isPatchScannerEquipped(w:World){
  return w.player.equipped==='scanner'&&patchScannerAvailable(w);
 }
-const emitting=(w:World)=>isPatchScannerEquipped(w)&&!w.dodge&&!w.axeSwing&&!w.spearThrust&&!w.swordThrust&&!w.bowShot;
+const holding=(w:World)=>isPatchScannerEquipped(w)&&!w.dodge&&!w.axeSwing&&!w.spearThrust&&!w.swordThrust&&!w.bowShot;
+/** Old saves did not record power: their equipped scanner remains on. */
+export function isPatchScannerOn(w:World){return !!w.patchQuest?.scannerLoaned&&w.patchQuest.scannerOn!==false}
+const emitting=(w:World)=>holding(w)&&isPatchScannerOn(w);
+/** Power belongs to this run and survives tool changes and save/resume. */
+export function togglePatchScanner(w:World){
+ if(!isPatchScannerEquipped(w))return false;
+ const q=w.patchQuest!;
+ q.scannerOn=!isPatchScannerOn(w);w.repairCheckpoint=true;
+ // Switching the device off clears its whole display, including lingering marks.
+ if(!q.scannerOn)scans.delete(q);
+ else stepPatchScanner(w,true);
+ return true;
+}
 const compassNames={up:'north','up-right':'northeast',right:'east','down-right':'southeast',
  down:'south','down-left':'southwest',left:'west','up-left':'northwest'} as const;
 
@@ -105,14 +118,14 @@ export function patchScannerHint(w:World){
 }
 export function samplePatchScan(w:World):PatchScanFrame|undefined{
  if(!patchScannerAvailable(w))return;
- const active=emitting(w),q=w.patchQuest!,scan=scans.get(q),now=timeOf(w);
+ const equipped=holding(w),active=equipped&&isPatchScannerOn(w),q=w.patchQuest!,scan=scans.get(q),now=timeOf(w);
  const prints=scan?.stage===stageFor(q)&&w.tick>=scan.tick?[...scan.prints.values()].flatMap(({mark,seen})=>{
   const opacity=Math.max(0,Math.min(1,1-(now-seen-PRINT_HOLD)/PRINT_FADE));
   return opacity>0?[{...mark,opacity}]:[];
  }):[];
- if(!active&&!prints.length)return;
+ if(!equipped&&!prints.length)return;
  const angle=DIRECTION_ANGLES[w.player.direction];
  const rays=Array.from({length:13},(_,i)=>({angle:angle-HALF_ANGLE+2*HALF_ANGLE*i/12,radius:RADIUS}));
  return {origin:{x:w.player.x,y:w.player.y},angle,halfAngle:HALF_ANGLE,radius:RADIUS,rays,
-  sweep:(now%SWEEP_SECONDS)/SWEEP_SECONDS,opacity:active?1:0,prints};
+  sweep:(now%SWEEP_SECONDS)/SWEEP_SECONDS,opacity:active?1:0,prints,equipped};
 }

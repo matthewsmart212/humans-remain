@@ -65,7 +65,7 @@ try{
   press(toggle(tree));tree=draw();const scanner=slots(tree).find(n=>text(n)==='Scanner');assert(scanner,'The acquired scanner remains in the toolbar after recovering the drive');
   press(scanner);tree=draw();assert.equal(m.selectedQuickItem(world),'scanner');assert.equal(world.player.equipped,'scanner');assert.equal(text(slots(tree)[0]),'Scanner','The equipped scanner occupies the compact toolbar');
   world.attackQueuedUntil=999;assert(!m.requestAttack(world));assert.equal(world.attackQueuedUntil,undefined);assert(!m.attack(world),'Holding the scanner never punches');
-  const scanAction=new m.FieldKitController().sample(world).action;assert.equal(scanAction.key,'scanner-active');assert(!scanAction.attack,'Scanner HUD remains a tool action');
+  const scanAction=new m.FieldKitController().sample(world).action;assert.equal(scanAction.key,'scanner-power:on');assert.equal(scanAction.label,'TURN OFF');assert(!scanAction.attack,'Scanner HUD remains a tool action');
   press(toggle(tree));tree=draw();press(slots(tree).find(n=>text(n)==='Fists'));tree=draw();assert.equal(m.selectedQuickItem(world),'fists','Selecting another item stows the scanner');
   press(toggle(tree));tree=draw();assert.equal(expandedEvents.at(-1),true);reset();assert.equal(expandedEvents.at(-1),false,'Unmounting an open selector restores the captions');
   console.log(`${platform}: compact active item, four owned slots, tap/keyboard selection, no duplicate activation, food depletion, disabled state, six-item overflow, spear/sword selection, stored-knife filtering and acquired scanner selection/stowing/nonattack passed`);

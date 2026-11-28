@@ -4,7 +4,7 @@ import {AppState,View,Text,Image,StyleSheet,type GestureResponderEvent} from 're
 import {ACTION_HEX,actionHexOutline,actionHexAt,pointInActionHex,type ActionHexSlot} from '../src/action-hex';
 import {FIELD_KIT_NATIVE_ART as art} from './field-kit-art';
 import type {FieldKitIcon} from '../src/field-kit';
-type Action={activateOnRelease?:boolean;label:string;detail?:string;attention?:'bite';holdToRepair?:boolean;ariaLabel?:string;icon?:FieldKitIcon;glyph?:React.ReactNode;image?:number;disabled:boolean;unavailable?:boolean;repairProgress?:number;pressed?:boolean;onDown:()=>void;onUp?:()=>void;onCancel?:()=>void};
+type Action={activeColor?:string;activateOnRelease?:boolean;label:string;detail?:string;attention?:'bite';holdToRepair?:boolean;ariaLabel?:string;icon?:FieldKitIcon;glyph?:React.ReactNode;image?:number;disabled:boolean;unavailable?:boolean;repairProgress?:number;pressed?:boolean;onDown:()=>void;onUp?:()=>void;onCancel?:()=>void};
 type Props={primary:Action;sprint:Action;dodge?:Action;repair?:Action};
 const frames={primary:require('../public/survival/ui-action-hex-v1/primary.png'),secondary:require('../public/survival/ui-action-hex-v1/secondary.png'),active:require('../public/survival/ui-action-hex-v1/active.png')};
 export default function HexActions(props:Props){
@@ -20,6 +20,7 @@ export default function HexActions(props:Props){
    const iconSize=main?36:holdRepair||action.detail?18:22;
    return <View key={slot} pointerEvents="none" accessible accessibilityRole="button" accessibilityLabel={action.ariaLabel??action.label} accessibilityState={{disabled:action.disabled,...(action.pressed===undefined?{}:{selected:active})}} accessibilityActions={[{name:'activate',label:action.label}]} onAccessibilityAction={e=>{if(e.nativeEvent.actionName==='activate'&&!action.disabled){action.onDown();action.onUp?.()}}} style={[s.button,cell,(action.disabled||action.unavailable)&&s.disabled,touching.includes(slot)&&s.touching]}>
     <Image source={frames[active?'active':main?'primary':'secondary']} resizeMode="stretch" style={[StyleSheet.absoluteFill,{width:cell.width,height:cell.height}]}/>
+    {active&&action.activeColor&&<Canvas pointerEvents="none" style={StyleSheet.absoluteFill}><Path path={actionHexOutline(cell)} style="stroke" strokeWidth={1.2} strokeJoin="round" color={action.activeColor} opacity={.65}/></Canvas>}
     {action.attention==='bite'&&<Canvas pointerEvents="none" style={StyleSheet.absoluteFill}><Path path={actionHexOutline(cell)} style="stroke" strokeWidth={3} strokeJoin="round" color="#ffe6a0"/></Canvas>}
     <View pointerEvents="none" style={s.content}>
      {action.glyph??<Image source={action.image??art[action.icon as keyof typeof art]}
@@ -31,7 +32,7 @@ export default function HexActions(props:Props){
      </View>
     </View>
     {action.repairProgress!==undefined&&<Canvas pointerEvents="none" style={StyleSheet.absoluteFill}><Path path={actionHexOutline(cell)} style="stroke" strokeWidth={1.8} strokeJoin="round" strokeCap="round" color="#ffd37d" start={0} end={Math.max(0,Math.min(1,action.repairProgress))}/></Canvas>}
-    {action.pressed!==undefined&&<View style={[s.pip,{top:cell.height*.25},active&&s.activePip]}/>}
+    {action.pressed!==undefined&&<View style={[s.pip,{top:cell.height*.25},active&&s.activePip,active&&action.activeColor?{backgroundColor:action.activeColor,borderColor:'#204b56'}:undefined]}/>}
    </View>
   })}
  </View>;

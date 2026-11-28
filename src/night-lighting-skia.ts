@@ -30,7 +30,7 @@ export function createNightLighting(Skia:Pick<typeof SkiaApi,'Paint'|'Shader'|'S
  ${PATCH_SCAN_FEATHER}
  float ultraviolet(float2 p){
   if(scanPower<=0.0)return 0.0;
-  return scanPower*scanFeather(p-scanOrigin,scanAxis,scanReach,scanHalfAngle)*0.56;
+  return scanPower*scanFeather(p-scanOrigin,scanAxis,scanReach,scanHalfAngle)*0.72;
  }
  float warningLight(float2 p,float4 source){
   return (1.0-smoothstep(0.1,1.0,length(p-source.xy)/max(1.0,source.z)))*source.w;
