@@ -14,7 +14,7 @@ const VIEWS:Record<Direction,keyof typeof SHEETS>={
 export const HUNTER_IMAGE_SOURCES:Record<string,string>={...HUNTER_WALK_V2_SOURCES};
 for(const [direction,sheet] of Object.entries(SHEETS)){
  HUNTER_IMAGE_SOURCES[sheet]=`/survival/hunter-v1/${direction}.webp`;
- HUNTER_IMAGE_SOURCES[sheet+'Run']=`/survival/hunter-v1/run-v4/${direction}.webp`;
+ HUNTER_IMAGE_SOURCES[sheet+'Run']=`/survival/hunter-v1/run-v5/${direction}.webp`;
 }
 
 const WIDTH=206,HEIGHT=236,SCALE=112/222;
@@ -41,8 +41,8 @@ const IDLE_FRAME:Record<Direction,number>={
  down:0,'down-right':8,right:7,'up-right':7,up:7,
  'up-left':7,left:7,'down-left':8
 };
-// Three atlas pixels per world unit keep all 24 poses on a single mobile texture.
-const RUN_WIDTH=288,RUN_HEIGHT=400,RUN_COLS=6,RUN_FRAMES=24;
+// Each facing packs its own stride into a single mobile texture.
+const RUN_WIDTH=288,RUN_HEIGHT=400,RUN_COLS=6;
 const RUN_ANCHOR:readonly [number,number]=[RUN_WIDTH/2,RUN_HEIGHT-4];
 type HunterPoses=Poses&{run:readonly RunnerSprite[]};
 export const HUNTER_ART:Record<Direction,HunterPoses>=Object.fromEntries(
@@ -51,11 +51,11 @@ export const HUNTER_ART:Record<Direction,HunterPoses>=Object.fromEntries(
    idle:HUNTER_WALK_V2[direction][IDLE_FRAME[direction]],
    punch:HUNTER_LEGACY_ART[direction].punch,
    walk:HUNTER_WALK_V2[direction],
-   run:Array.from({length:RUN_FRAMES},(_,index):RunnerSprite=>({
+   run:HUNTER_RUN_GRIPS[VIEWS[direction]].map((hand,index):RunnerSprite=>({
     sheet:SHEETS[VIEWS[direction]]+'Run',
     crop:[index%RUN_COLS*RUN_WIDTH,Math.floor(index/RUN_COLS)*RUN_HEIGHT,RUN_WIDTH,RUN_HEIGHT],
     anchor:RUN_ANCHOR,scale:1/3,
-    hand:HUNTER_RUN_GRIPS[VIEWS[direction]][index]
+    hand
    }))
   }
  ])
@@ -69,10 +69,8 @@ export function hunterCycle(direction:Direction,distance:number,running:boolean,
  if(running&&(!images||images[art.run[0].sheet])){
   const phase=((distance%112)+112)%112/112;
   const mirror=VIEWS[direction]!==direction;
-  // Mirroring also swaps the painted legs. Advance half a stride so a turn
-  // through north or south keeps the same anatomical foot in contact.
-  const index=(Math.floor(phase*RUN_FRAMES)+(mirror?RUN_FRAMES/2:0))%RUN_FRAMES;
-  return {sprite:art.run[index],mirror,frame:Math.floor(index*4/RUN_FRAMES),bob:0};
+  const index=Math.floor(phase*art.run.length);
+  return {sprite:art.run[index],mirror,frame:Math.floor(index*4/art.run.length),bob:0};
  }
  if(images&&!images[art.idle.sheet])return hunterLegacyCycle(direction,distance,running);
  return hunterWalkV2Cycle(direction,distance,running);
