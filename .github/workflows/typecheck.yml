@@ -71,6 +71,8 @@ jobs:
       - name: Test Patch rescue, following and owner world preservation
         run: |
           node scripts/check-patch-quest.mjs
+          node scripts/check-patch-scanner.mjs
+          node scripts/check-quick-selector.mjs
           node scripts/check-patch-dialogue.mjs
           node scripts/check-patch-site.mjs
           node scripts/check-patch-animation.mjs --browser-only
@@ -100,5 +102,7 @@ jobs:
         working-directory: native
       - name: Render rare chest effects with web and native Skia
         run: node scripts/check-loot-chest-fx.mjs
-      - name: Verify Patch walking frames on web and native Skia
-        run: node scripts/check-patch-animation.mjs
+      - name: Verify Patch walking frames and scanner on web and native Skia
+        run: |
+          node scripts/check-patch-animation.mjs
+          node scripts/check-patch-scan-render.mjs

@@ -43,7 +43,7 @@ export function fieldNoteTrackerCopy(w:World){
  if(w.patchQuest?.scannerLoaned){
   if(stage==='dispatch'){
    const found=w.patchQuest.footprintsFound??0;
-   if(!found)return {action:'Tap SCAN',location:'Prints beside P-04'};
+   if(!found)return {action:'Equip scanner',location:'Prints beside P-04'};
    if(found===3)return {action:'Take the W-6',location:'Orange signal mast'};
    return {action:'Follow the footprints',location:'Scan ahead · west bank'};
   }

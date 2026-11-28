@@ -353,8 +353,8 @@ class SkiaContext{
   }finally{this.c.restore()}
  }
  drawGroundLightning(strike:GroundStrike|undefined,age:number,reduced:boolean){lightning.draw(this.c,strike,age,reduced)}
- drawPatchScanLight(aperture:{x:number;y:number},angle:number,halfAngle:number,radius:number,reach:number){
-  return scanLight.draw(this.c,aperture,angle,halfAngle,radius,reach,this.globalAlpha);
+ drawPatchScanLight(aperture:{x:number;y:number},angle:number,halfAngle:number,radius:number,phase:number){
+  return scanLight.draw(this.c,aperture,angle,halfAngle,radius,phase,this.globalAlpha);
  }
  drawPatchScanPrint(image:SkImage,crop:readonly [number,number,number,number],width:number,height:number){
   scanRelief??=Skia.RuntimeEffect.Make(PATCH_SCAN_RELIEF);

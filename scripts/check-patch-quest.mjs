@@ -83,6 +83,7 @@ try{
  assert(world.repairCheckpoint);world.repairCheckpoint=false;
  const bootMarks=m.patchScannerTrail(layout,'footprints');
  const sweep=(w,mark)=>{
+  w.player.equipped='scanner';
   w.player.direction=m.facing(mark.x-w.player.x,mark.y-w.player.y);w.tick+=25;
   assert(m.pulsePatchScanner(w));
  };

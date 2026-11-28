@@ -84,8 +84,8 @@ export function patchDialogueFollowup(world:World,id:PatchTopicId):Followup|unde
 
 function patchSearchReminder(q:NonNullable<World['patchQuest']>){
  if(q.footprintsFound===3)return 'The drive’s at the foot of the orange mast. Bring it back and we’ll fit it.';
- if(q.footprintsFound)return 'Follow my prints along the west bank. Keep scanning until you reach the mast.';
- return 'Start by my left foot. Tap the scanner and the prints will light up blue.';
+ if(q.footprintsFound)return 'Keep my scanner equipped and follow my prints along the west bank to the mast.';
+ return 'Start by my left foot. Equip my scanner from your toolbar and the prints will light up blue. Keep it out while you walk.';
 }
 
 export function patchOpeningLine(world:World):string{

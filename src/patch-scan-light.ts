@@ -1,28 +1,36 @@
 import type {SkCanvas,SkPaint,SkRuntimeEffect,Skia as SkiaApi} from '@shopify/react-native-skia';
 
-/** Point source with an angular penumbra. Coordinates lie on the ground beneath the actors. */
+/** Shared by the blue overlay and the night mask, so neither extends beyond the other. */
+export const PATCH_SCAN_FEATHER=`
+float scanFeather(float2 delta,float2 axis,float radius,float halfAngle){
+ float d=length(delta);
+ float cosine=dot(delta/max(0.001,d),axis);
+ float angular=smoothstep(cos(halfAngle),cos(halfAngle*0.76),cosine);
+ float radial=1.0-smoothstep(radius*0.75,radius,d);
+ return angular*radial;
+}`;
+
+/** A steady field with two travelling wavefronts, rather than a frozen pulse. */
 const beamSource=`
 uniform float2 aperture;
 uniform float2 axis;
 uniform float radius;
-uniform float reach;
-uniform float outerCos;
-uniform float innerCos;
+uniform float phase;
+uniform float halfAngle;
+${PATCH_SCAN_FEATHER}
+float wave(float d,float front){
+ float head=1.0-smoothstep(0.65,3.0,abs(d-front));
+ float tail=(1.0-smoothstep(0.0,16.0,front-d))*step(d,front);
+ return head*0.38+tail*0.10;
+}
 half4 main(float2 p){
- float2 fromLamp=p-aperture;
- float d=length(fromLamp);
- float angle=dot(fromLamp/max(0.5,d),axis);
- float feather=smoothstep(outerCos,innerCos,angle);
- float distanceToFront=reach-length(p-aperture*(1.0-reach/radius));
- float body=smoothstep(-1.0,10.0,distanceToFront);
- float travel=clamp(d/radius,0.0,1.0);
- float spill=(0.13+0.32*(1.0-travel)*(1.0-travel))*body;
- float core=1.0-smoothstep(0.55,2.8,abs(distanceToFront));
- float echo=0.20*(1.0-smoothstep(0.0,5.0,abs(distanceToFront-9.0)));
- float apertureLight=0.28*(1.0-smoothstep(0.0,21.0,d));
- float rim=feather*(core*0.70+echo);
- float alpha=clamp(feather*(spill+apertureLight)+rim,0.0,0.91);
- float3 ink=mix(float3(0.16,0.45,1.0),float3(0.58,0.88,1.0),min(1.0,rim*1.6+apertureLight));
+ float2 delta=p-aperture;
+ float d=length(delta),travel=clamp(d/radius,0.0,1.0);
+ float feather=scanFeather(delta,axis,radius,halfAngle);
+ float bands=wave(d,radius*phase)+wave(d,radius*fract(phase+0.5));
+ float source=0.12*(1.0-smoothstep(0.0,26.0,d));
+ float alpha=feather*(0.13+0.17*(1.0-travel)+bands+source);
+ float3 ink=mix(float3(0.05,0.29,1.0),float3(0.24,0.75,1.0),min(1.0,bands*1.7+source));
  return half4(ink*alpha,alpha);
 }`;
 
@@ -41,12 +49,12 @@ half4 main(float2 p){
 export function createPatchScanLight(Skia:Pick<typeof SkiaApi,'Paint'|'RuntimeEffect'>){
  let effect:SkRuntimeEffect|null=null,paint:SkPaint|undefined;
  return {
-  draw(canvas:SkCanvas,aperture:{x:number;y:number},angle:number,halfAngle:number,radius:number,reach:number,opacity:number){
+  draw(canvas:SkCanvas,aperture:{x:number;y:number},angle:number,halfAngle:number,radius:number,phase:number,opacity:number){
    effect??=Skia.RuntimeEffect.Make(beamSource);
    if(!effect)return false;
    paint??=Skia.Paint();
    const shader=effect.makeShader([aperture.x,aperture.y,Math.cos(angle),Math.sin(angle),
-    radius,reach,Math.cos(halfAngle),Math.cos(halfAngle*.62)]);
+    radius,phase,halfAngle]);
    paint.setShader(shader);paint.setAlphaf(opacity);
    canvas.drawRect({x:-radius-48,y:-radius-48,width:2*radius+96,height:2*radius+96},paint);
    paint.setShader(null);shader.dispose();

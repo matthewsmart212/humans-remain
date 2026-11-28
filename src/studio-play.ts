@@ -1,6 +1,7 @@
 import {patchMeetingInput} from './patch-chat';
 import {stepPatchAwareness} from './patch-awareness';
 import {stepFishing} from './fishing';
+import {stepPatchScanner} from './patch-scanner';
 import {ensurePatchQuest,stepPatchQuest} from './patch-quest';
 import {placePatchMaintenanceStation} from './patch-placement';
 import {stepBuildingRepair} from './building-repair';
@@ -88,6 +89,7 @@ export function stepCampPlaySession(world:World,input:{x:number;y:number},sprint
  world.effects=world.effects.filter(e=>world.tick*STEP-e.born<(e.type==='kill'&&e.enemyKind==='iron-brute'?1.7:1.2));
  if(world.survivalEnabled){stepPlayerSurvival(world);if(world.player.hp<=0){world.phase='over';world.cause||='THE CREW WENT DOWN'}}
  stepPatchQuest(world,input);
+ stepPatchScanner(world);
  stepPatchAwareness(world);
  stepFishing(world,STEP);
  finishPhase?.('simSurvivalMs');

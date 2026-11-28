@@ -3,11 +3,11 @@ import {availableQuickItems,quickItemCount,quickBarWidth,quickBarSliceImage,QUIC
 import QuickItemIcon from './QuickItemIcon';
 import {ACTION_HEX} from './action-hex';
 
-export default function QuickBar({selected,torch,cooked,cookedRabbit=0,cookedVenison=0,cookedFish=0,cookedCarp=0,cookedPike=0,provisions,axes,disabled,onSelect,onExpandedChange}:QuickBarProps){
+export default function QuickBar({selected,scanner,torch,cooked,cookedRabbit=0,cookedVenison=0,cookedFish=0,cookedCarp=0,cookedPike=0,provisions,axes,disabled,onSelect,onExpandedChange}:QuickBarProps){
  const [expanded,setExpanded]=useState(false),root=useRef<HTMLElement>(null),toggle=useRef<HTMLButtonElement>(null),itemsId=useId();
  const notifyExpanded=useRef(onExpandedChange);notifyExpanded.current=onExpandedChange;
  const pointer=useRef<{id:number;x:number;y:number;moved:boolean}|null>(null);
- const items=availableQuickItems({torch,cooked,cookedRabbit,cookedVenison,cookedFish,cookedCarp,cookedPike,provisions,axes}),active=items.find(item=>item.id===selected)??items[0],open=expanded&&!disabled,empty=items.length===1&&items[0].id==='fists';
+ const items=availableQuickItems({scanner,torch,cooked,cookedRabbit,cookedVenison,cookedFish,cookedCarp,cookedPike,provisions,axes}),active=items.find(item=>item.id===selected)??items[0],open=expanded&&!disabled,empty=items.length===1&&items[0].id==='fists';
  const visible=open?items:active?[active]:[];
  useEffect(()=>{notifyExpanded.current?.(open)},[open]);
  useEffect(()=>()=>notifyExpanded.current?.(false),[]);

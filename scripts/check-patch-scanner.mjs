@@ -29,46 +29,58 @@ try{
  assert(tracks.length>50&&work.length>50);
  assert(tracks.every(t=>!m.onPatchBridge(t)&&['right-tread','left-skid'].includes(t.kind)));
  assert(work.every(t=>!m.onPatchBridge(t)&&['rope','crawler'].includes(t.kind)));
- function sample(origin,direction,world=w){Object.assign(world.player,origin,{direction});world.tick+=240;assert(m.pulsePatchScanner(world));world.tick+=66;return m.samplePatchScan(world)}
+ function sample(origin,direction,world=w){
+  // Let previously revealed marks expire before beginning a new observation.
+  world.tick+=240;Object.assign(world.player,origin,{direction,equipped:'scanner'});
+  m.stepPatchScanner(world);world.tick+=12;m.stepPatchScanner(world);
+  return m.samplePatchScan(world);
+ }
  const sampleAtCot=sample(site.approach,'left');
  assert.deepEqual(new Set(sampleAtCot.prints.map(p=>p.kind)),new Set(['right-tread','left-skid']),'Looking at his sole shows two different marks');
- const frame=sample(site.approach,'up-right');assert(frame.prints.length>=2&&frame.prints.length<=6);
+ const frame=sample(site.approach,'up-right');assert(frame.prints.length>=2);
  assert.deepEqual(new Set(frame.prints.map(p=>p.kind)),new Set(['right-tread','left-skid']));
- assert(frame.prints.every(p=>p.opacity>0&&!m.worldBlocked(w,p.x,p.y,19)));
- assert.equal(frame.rays.length,13);assert(frame.rays.every(r=>r.radius>=0&&r.radius<=frame.radius));
- assert.deepEqual(m.samplePatchScan({...w,player:{...w.player}}),frame,'The interpolated render world sees the same pulse');
- const first=frame.prints.map(({x,y})=>({x,y}));assert(m.pulsePatchScanner(w));assert(!m.pulsePatchScanner(w));
- w.tick+=65;assert.deepEqual(m.samplePatchScan(w).prints.map(({x,y})=>({x,y})),first);
- assert.equal(sample(site.approach,'down').prints.length,0,'No omnidirectional quest arrow');
+ assert(frame.prints.every(p=>p.opacity>0));
+ assert.equal(frame.rays.length,13);assert(frame.rays.every(r=>r.radius===frame.radius),'Objects never shorten scanner rays');
+ assert.deepEqual(m.samplePatchScan({...w,player:{...w.player}}),frame,'The interpolated render world sees the same marks');
+ const facts=JSON.stringify(q);m.samplePatchScan(w);m.samplePatchScan(w);
+ assert.equal(JSON.stringify(q),facts,'Rendering never advances quest facts');
+ const moved={...w,player:{...w.player,x:w.player.x+90,y:w.player.y+30,direction:'down',moving:true}};
+ const moving=m.samplePatchScan(moved);
+ assert.deepEqual(moving.origin,{x:moved.player.x,y:moved.player.y});
+ assert.equal(moving.angle,m.DIRECTION_ANGLES.down,'The continuous light follows rendered position and facing');
+ w.tick+=600;m.stepPatchScanner(w);
+ assert.equal(m.samplePatchScan(w).opacity,1,'Holding the scanner keeps its beam on beyond eight seconds');
+ assert(m.samplePatchScan(w).prints.length,'The held beam keeps nearby evidence revealed');
+ w.player.direction='down';w.tick+=12;m.stepPatchScanner(w);
+ assert(m.samplePatchScan(w).prints.length,'Turning away leaves the evidence briefly visible');
+ w.tick+=190;m.stepPatchScanner(w);
+ assert.equal(m.samplePatchScan(w).prints.length,0,'Old marks fade independently while the scanner remains equipped');
+ assert.equal(m.samplePatchScan(w).opacity,1);
+ assert.equal(sample(site.approach,'down').prints.length,0,'Marks outside the forward cone remain hidden');
  assert.equal(q.footprintsFound,1,'Repeated scans of the shelter cannot advance the trail twice');
  sample(post.approach,'down');assert.equal(q.footprintsFound,1);assert(!m.examinePatchSite(w,'spare'),'Skipping the bank cannot unlock the pickup');
- w.tick+=250;assert(m.samplePatchScan(w).opacity>.7);w.tick+=240;assert(!m.samplePatchScan(w));assert(!m.patchScannerHint(w));
- // Edited scenery cannot leave painted tracks in water or under the owner's buildings.
+ const discovered=sample(site.approach,'up-right');assert(discovered.prints.length);
+ w.player.equipped=null;m.stepPatchScanner(w);
+ assert.equal(m.samplePatchScan(w).opacity,0,'Putting the scanner away removes its beam immediately');
+ w.tick+=60;m.stepPatchScanner(w);
+ const fading=m.samplePatchScan(w);assert(fading.prints.some(p=>p.opacity>0&&p.opacity<1),'Only revealed evidence fades after putting it away');
+ w.tick+=180;m.stepPatchScanner(w);assert(!m.samplePatchScan(w));assert(!m.patchScannerHint(w));
+ // An owner can place scenery over the route without breaking the investigation.
  const forkMark=tracks.find(mark=>mark.x<-3630&&mark.y<6800);
  const obstacle={...site.station,id:'owner-road-obstruction',x:forkMark.x,y:forkMark.y,
   frame:{sourceAssetId:site.station.assetId,width:62,height:62,anchor:[.5,.5]},
   collision:{lineWidth:.01,paths:[{closed:true,points:[[0,0],[1,0],[1,1],[0,1]]}]},solid:true};
  const edited={...w,layout:{...layout,items:[...layout.items,obstacle]},player:{...w.player},patchQuest:{...q}};
  assert(m.worldBlocked(edited,forkMark.x,forkMark.y,19));
- const from={x:forkMark.x+120,y:forkMark.y};const blocked=sample(from,'left',edited);
- assert(!blocked.prints.some(p=>p.x===forkMark.x&&p.y===forkMark.y));
- assert(blocked.rays.some(r=>r.radius<blocked.radius));
- const moved={...layout,items:layout.items.map(p=>p.id===post.placement.id?{...p,x:p.x-150,y:p.y+80}:p)};
- const movedPost=m.patchRouteSite(moved,'dispatch');assert.notDeepEqual(movedPost.approach,post.approach);
- const movedWorld={...edited,layout:moved,patchQuest:{...q},player:{...w.player}};sample(movedPost.approach,'down',movedWorld);
+ const blocked=sample({x:forkMark.x+120,y:forkMark.y},'left',edited);
+ assert(blocked.prints.some(p=>p.x===forkMark.x&&p.y===forkMark.y),'Scenery cannot hide the surveyed tracks');
+ assert(blocked.rays.every(r=>r.radius===blocked.radius));
+ const movedLayout={...layout,items:layout.items.map(p=>p.id===post.placement.id?{...p,x:p.x-150,y:p.y+80}:p)};
+ const movedPost=m.patchRouteSite(movedLayout,'dispatch');assert.notDeepEqual(movedPost.approach,post.approach);
+ const movedWorld={...edited,layout:movedLayout,patchQuest:{...q},player:{...w.player}};sample(movedPost.approach,'down',movedWorld);
  assert(m.patchScannerHint(movedWorld));
- const flooded={...layout,items:layout.items.map(p=>p.id===post.placement.id?{...p,x:-2835,y:4580}:p)};
- const wetTrail=m.patchScannerTrail(flooded,'footprints'),wetMark=wetTrail.find(p=>m.riverWaterBlocked(p.x,p.y,5,flooded));
- assert(wetMark,'Test setup moves the author’s ledger across water');
- const wetWorld={...edited,layout:flooded,patchQuest:{...q},player:{...w.player}};
- const shore=Array.from({length:24},(_,i)=>({x:wetMark.x+210*Math.cos(i*Math.PI/12),y:wetMark.y+210*Math.sin(i*Math.PI/12)})).find(p=>!m.worldBlocked(wetWorld,p.x,p.y,19));
- assert(shore,'The survivor can scan from the shore');
- const across=sample(shore,m.facing(wetMark.x-shore.x,wetMark.y-shore.y),wetWorld);
- assert(!across.prints.some(p=>p.x===wetMark.x&&p.y===wetMark.y),'Flooded tracks cannot light up across water');
- for(const print of across.prints)assert(!m.worldBlocked(wetWorld,print.x,print.y,m.PATCH_TRACK_WIDTH[print.kind]*.6));
  const removed={...layout,items:layout.items.filter(p=>p.id!==post.placement.id)};
- assert.deepEqual(m.patchScannerTrail(removed,'footprints'),[]);
- assert.deepEqual(m.patchScannerTrail(removed,'haulage'),[]);
+ assert.deepEqual(m.patchScannerTrail(removed,'footprints'),[]);assert.deepEqual(m.patchScannerTrail(removed,'haulage'),[]);
  const oldLayout={...layout,patchRouteVersion:undefined,items:layout.items.filter(p=>!Object.values(m.PATCH_ROUTE_IDS).some(id=>p.id.startsWith(id)))};
  assert(m.patchScannerTrail(m.placePatchMaintenanceStation(oldLayout),'footprints').length>50,'Migrating older scenery restores the surveyed trail');
  const without=m.createCampPlaySession(layout,undefined,'survival');Object.assign(without.player,site.approach);
@@ -76,31 +88,29 @@ try{
  Object.assign(without.player,post.approach);assert(!m.examinePatchSite(without,'spare'));
  const progress=structuredClone(q);delete progress.footprintsFound;delete progress.scannerLoaned;assert(m.validPatchQuest(progress));
  assert.equal(m.patchMapLead({...w,patchQuest:progress}).label,'Field scanner','Older diagnosed runs can find the loan again');
- const middle=tracks.find(p=>p.section===2);
- sample({x:middle.x+45,y:middle.y},'left');assert.equal(q.footprintsFound,2);
+ const middle=tracks.find(p=>p.section===2);sample({x:middle.x+45,y:middle.y},'left');assert.equal(q.footprintsFound,2);
  const partial=new m.SceneTravel(w,{pin(){},prepare:async()=>{},ready:()=>true});
  const restoredTrail=m.decodeRun(m.encodeRun(partial)).worlds.find(([id])=>id==='camp')[1];
- assert.equal(restoredTrail.patchQuest.footprintsFound,2);assert(!m.samplePatchScan(restoredTrail));
+ assert.equal(restoredTrail.patchQuest.footprintsFound,2);
+ assert.equal(restoredTrail.player.equipped,'scanner','Save/resume retains the equipped tool');
+ assert.equal(m.samplePatchScan(restoredTrail).prints.length,0,'Transient evidence is not restored as stale glowing marks');
  const end=tracks.at(-1);sample({x:end.x-42,y:end.y},'right',restoredTrail);
  assert.equal(restoredTrail.patchQuest.footprintsFound,3);
- Object.assign(restoredTrail.player,post.approach);assert(m.examinePatchSite(restoredTrail,'spare'));
- assert(!m.examinePatchSite(restoredTrail,'spare'));assert(!m.patchScannerAvailable(restoredTrail));
+ Object.assign(restoredTrail.player,post.approach);assert(m.examinePatchSite(restoredTrail,'spare'));assert(!m.examinePatchSite(restoredTrail,'spare'));
  // Saves that already found the dispatch keep their original cable-hauler lead.
  delete q.footprintsFound;q.dispatchRead=true;
  assert.equal(m.patchMapLead(w).label,'Cable works');const drag=sample(post.approach,'left');assert(drag.prints.some(p=>p.kind==='rope'));
  const cleat=work.find(p=>p.kind==='crawler');const near={x:cleat.x-45*Math.cos(cleat.angle),y:cleat.y-45*Math.sin(cleat.angle)};
  assert(sample(near,m.facing(cleat.x-near.x,cleat.y-near.y)).prints.some(p=>p.kind==='crawler'));
  assert(!q.haulerInspected&&!q.servoClaimed);
- const travel=new m.SceneTravel(w,{pin(){},prepare:async()=>{},ready:()=>true});
- const saved=m.encodeRun(travel);assert(saved);
+ const travel=new m.SceneTravel(w,{pin(){},prepare:async()=>{},ready:()=>true}),saved=m.encodeRun(travel);assert(saved);
  const restored=m.decodeRun(saved).worlds.find(([id])=>id==='camp')[1];
  assert(restored.patchQuest.scannerLoaned&&m.patchScannerAvailable(restored));
- assert(!m.samplePatchScan(restored),'Real save restores the loan without an active pulse');
+ assert.equal(m.samplePatchScan(restored).prints.length,0,'Save restores the equipped light without stale evidence');
  const legacy=JSON.parse(saved);delete legacy.worlds[0][1].patchQuest.scannerLoaned;
  const older=m.decodeRun(JSON.stringify(legacy)).worlds[0][1];
  assert(!m.patchScannerAvailable(older));assert.equal(m.patchMapLead(older).label,'Cable works');
  assert(!m.patchScannerAvailable({...w,scene:{id:'iron-mine'}}));
- assert(!m.patchScannerAvailable({...w,patchQuest:{...q,servoClaimed:true}}));
- assert(!m.samplePatchScan({...w,patchQuest:structuredClone(q)}),'Restoring saved facts never revives an old pulse');
- console.log('Verified scanner loan, ordered west-bank trail, single pickup, legacy haulage, direction, collision, repeat, fade, persistent facts and resume and compass recovery.');
+ assert.equal(m.samplePatchScan({...w,patchQuest:structuredClone(q)}).prints.length,0,'Copying persistent facts never revives transient marks');
+ console.log('Verified scanner acquisition, continuous held beam, render-only sampling, moving/facing, unblocked evidence, independent fade, ordered trail, pickup, legacy leads and save/resume.');
 }finally{fs.rmSync(temp,{recursive:true,force:true})}

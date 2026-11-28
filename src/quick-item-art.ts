@@ -5,6 +5,7 @@ type IconCrop={source:[number,number];bounds:[number,number,number,number];rotat
 // Long weapons use their painted silhouette rather than the transparent canvas.
 // Spear tips and upper grips read better here than a miniature full-length shaft.
 const crops:Partial<Record<QuickItem,IconCrop>>={
+ scanner:{source:[1024,1024],bounds:[856,4,163,160],rotation:0},
  potato:{source:[256,256],bounds:[70,120,99,83],rotation:0},
  carrot:{source:[256,256],bounds:[76,81,117,136],rotation:0},
  repairHammer:{source:[512,768],bounds:[60,35,402,705],rotation:30},

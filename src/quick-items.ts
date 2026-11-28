@@ -6,12 +6,14 @@ import {clearAttackQueue,timeOf,type World} from './survival-engine';
 import {PROVISION_IDS,PROVISIONS,isProvision,type ProvisionId} from './food-provisions-data';
 import {provisionCounts} from './expedition-inventory';
 import {ACTION_HEX} from './action-hex';
+import {PATCH_SCENERY_IMAGE} from './patch-art';
 
-export type QuickItem='fishingRod'|'fishMeal'|'carpMeal'|'pikeMeal'|'woodenPickaxe'|'metalPickaxe'|ProvisionId|'repairHammer'|'bow'|'woodenSword'|'metalSword'|'woodenSpear'|'metalSpear'|'woodenKnife'|'scrapKnife'|'torch'|'fists'|'woodenAxe'|'axe'|'meal'|'rabbitMeal'|'venisonMeal';
+export type QuickItem='scanner'|'fishingRod'|'fishMeal'|'carpMeal'|'pikeMeal'|'woodenPickaxe'|'metalPickaxe'|ProvisionId|'repairHammer'|'bow'|'woodenSword'|'metalSword'|'woodenSpear'|'metalSpear'|'woodenKnife'|'scrapKnife'|'torch'|'fists'|'woodenAxe'|'axe'|'meal'|'rabbitMeal'|'venisonMeal';
 export const QUICK_ITEMS:readonly {id:QuickItem;label:string;image:string}[]=[
  {id:'fists',label:'Fists',image:'/survival/ui-field-kit-v1/punch.png'},
  {id:'repairHammer',label:'Hammer',image:'/survival/equipment/repair-hammer-v1.webp'},
  {id:'torch',label:'Torch',image:'/survival/ui-field-kit-v1/torch.png'},
+ {id:'scanner',label:'Scanner',image:PATCH_SCENERY_IMAGE},
  {id:'fishingRod',label:'Fishing rod',image:GEAR.fishingRod.image},
  {id:'bow',label:'Bow',image:'/survival/scrap-runner/bow-v1/bow-icon.webp'},
  {id:'woodenAxe',label:'Wood axe',image:AXE_GEAR.woodenAxe.image},
@@ -33,7 +35,7 @@ export const QUICK_ITEMS:readonly {id:QuickItem;label:string;image:string}[]=[
  ...PROVISION_IDS.map(id=>({id,label:id==='beans'?'Beans':id==='energyBar'?'Energy bar':id==='huntersMeal'?"Hunter’s meal":PROVISIONS[id].name,image:PROVISIONS[id].image})),
 ];
 export const QUICK_EMPTY_SLOTS=0;
-export type QuickBarInventory={torch?:boolean;cooked:number;cookedRabbit?:number;cookedVenison?:number;cookedFish?:number;cookedCarp?:number;cookedPike?:number;provisions?:Partial<Record<ProvisionId,number>>;axes?:GearInventory};
+export type QuickBarInventory={scanner?:boolean;torch?:boolean;cooked:number;cookedRabbit?:number;cookedVenison?:number;cookedFish?:number;cookedCarp?:number;cookedPike?:number;provisions?:Partial<Record<ProvisionId,number>>;axes?:GearInventory};
 export type QuickBarProps=QuickBarInventory&{selected:QuickItem;disabled:boolean;onSelect:(id:QuickItem)=>void;onExpandedChange?:(expanded:boolean)=>void};
 // One scale for both primary controls; opening the selector never shrinks items.
 export const QUICK_BAR_LAYOUT={height:ACTION_HEX.cells.primary.height,closedWidth:ACTION_HEX.cells.primary.width,slotWidth:64,toggleWidth:40,padding:6,gap:4,iconSize:42,closedIconSize:34*1.2} as const;
@@ -56,16 +58,17 @@ export const QUICK_BAR_FRAME={
  edgeImage:{position:'absolute' as const,left:8-edgeImageWidth,top:0,width:edgeImageWidth,height:barHeight},
 };
 export const quickItemCount=(id:QuickItem,cooked:number,rabbit=0,venison=0,arrows?:number,provisions:Partial<Record<ProvisionId,number>>={},fish=0,carp=0,pike=0)=>isProvision(id)?provisions[id]??0:id==='bow'?arrows:id==='meal'?cooked:id==='rabbitMeal'?rabbit:id==='venisonMeal'?venison:id==='fishMeal'?fish:id==='carpMeal'?carp:id==='pikeMeal'?pike:undefined;
-export function availableQuickItems({torch=false,cooked,cookedRabbit=0,cookedVenison=0,cookedFish=0,cookedCarp=0,cookedPike=0,provisions={},axes={axe:0,woodenAxe:0}}:QuickBarInventory){
- const items=QUICK_ITEMS.filter(item=>(item.id!=='torch'||torch)&&quickItemCount(item.id,cooked,cookedRabbit,cookedVenison,undefined,provisions,cookedFish,cookedCarp,cookedPike)!==0&&(!isGear(item.id)||(axes[item.id]??0)>0));
+export function availableQuickItems({scanner=false,torch=false,cooked,cookedRabbit=0,cookedVenison=0,cookedFish=0,cookedCarp=0,cookedPike=0,provisions={},axes={axe:0,woodenAxe:0}}:QuickBarInventory){
+ const items=QUICK_ITEMS.filter(item=>(item.id!=='scanner'||scanner)&&(item.id!=='torch'||torch)&&quickItemCount(item.id,cooked,cookedRabbit,cookedVenison,undefined,provisions,cookedFish,cookedCarp,cookedPike)!==0&&(!isGear(item.id)||(axes[item.id]??0)>0));
  // Fists remain available even before picking up tools.
  return items;
 }
-export function selectedQuickItem(w:World):QuickItem{if(isProvision(w.player.equipped)&&provisionCounts(w,'bag')[w.player.equipped]>0)return w.player.equipped;return w.player.equipped==='torch'&&w.tools.torch?'torch':isGear(w.player.equipped)&&hasGear(w,w.player.equipped)?w.player.equipped:w.player.equipped==='carpMeal'&&(w.cookedCarp||0)>0?'carpMeal':w.player.equipped==='pikeMeal'&&(w.cookedPike||0)>0?'pikeMeal':w.player.equipped==='fishMeal'&&(w.cookedFish||0)>0?'fishMeal':w.player.equipped==='meal'&&w.cooked>0?'meal':w.player.equipped==='rabbitMeal'&&w.cookedRabbit>0?'rabbitMeal':w.player.equipped==='venisonMeal'&&w.cookedVenison>0?'venisonMeal':'fists'}
+export function selectedQuickItem(w:World):QuickItem{if(isProvision(w.player.equipped)&&provisionCounts(w,'bag')[w.player.equipped]>0)return w.player.equipped;return w.player.equipped==='scanner'&&w.patchQuest?.scannerLoaned?'scanner':w.player.equipped==='torch'&&w.tools.torch?'torch':isGear(w.player.equipped)&&hasGear(w,w.player.equipped)?w.player.equipped:w.player.equipped==='carpMeal'&&(w.cookedCarp||0)>0?'carpMeal':w.player.equipped==='pikeMeal'&&(w.cookedPike||0)>0?'pikeMeal':w.player.equipped==='fishMeal'&&(w.cookedFish||0)>0?'fishMeal':w.player.equipped==='meal'&&w.cooked>0?'meal':w.player.equipped==='rabbitMeal'&&w.cookedRabbit>0?'rabbitMeal':w.player.equipped==='venisonMeal'&&w.cookedVenison>0?'venisonMeal':'fists'}
 export function selectQuickItem(w:World,item:QuickItem){
  if(w.stationPanel||w.phase==='over'||w.player.hp<=0||w.player.downedUntil||w.dodge||w.axeSwing||w.bowShot||timeOf(w)<w.attackUntil)return false;
  if(isProvision(item)&&provisionCounts(w,'bag')[item]<=0)return false;
  if(item==='torch'&&!w.tools.torch)return false;
+ if(item==='scanner'&&!w.patchQuest?.scannerLoaned)return false;
  if(isGear(item)&&!hasGear(w,item))return false;
  if(item==='carpMeal'&&!((w.cookedCarp||0)>0))return false;
  if(item==='pikeMeal'&&!((w.cookedPike||0)>0))return false;

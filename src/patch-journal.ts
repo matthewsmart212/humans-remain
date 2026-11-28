@@ -28,9 +28,9 @@ export function patchObjective(q:PatchQuestState):string{
   case 'diagnose':return 'Talk to P-04 at the shelter and take his field scanner.';
   case 'dispatch':
    if(!q.scannerLoaned)return 'Take the field scanner from P-04 at the shelter.';
-   if(!q.footprintsFound)return 'Face the ground beside his feet and tap SCAN. Follow the blue prints.';
+   if(!q.footprintsFound)return 'Equip the scanner from your toolbar and face the ground beside his feet. Follow the blue prints.';
    if(q.footprintsFound===3)return 'Take the spare W-6 at the foot of the orange signal mast.';
-   return 'Follow the blue footprints along the west bank. Scan ahead when the trail fades.';
+   return 'Keep the scanner equipped and follow the blue footprints along the west bank.';
   case 'salvage':return q.haulerInspected?'Go around the cable-hauler to its brake housing. Free the W-6 drive.':q.scannerLoaned?'Follow sled runners and crawler cleats up the logging road. Check the hauler’s load plate west of the northern bridge.':'Follow the logging road toward the northwest iron mine. Find the cable works west of the northern bridge and check the hauler’s load plate.';
   case 'repair':return q.discovered?'Bring the W-6 back to P-04 at the shelter. Talk to him, then hold REPAIR to fit it.':'Find P-04 at the lakeside rescue shelter. You have a drive that might fit.';
   case 'invite':return 'Speak to P-04 and invite him back to camp.';

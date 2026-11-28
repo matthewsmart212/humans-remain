@@ -322,12 +322,10 @@ export function drawWorldEditor(ctx:CanvasRenderingContext2D,atlas:Atlas,imgs:Re
  const pickupScale=c.scale/Math.min(2,(ctx as CanvasRenderingContext2D&{pixelRatio?:number}).pixelRatio||globalThis.devicePixelRatio||1);
  if(view.playing)drawLootChestGround(ctx,imgs,w,{x:c.x,y:c.y,width:ctx.canvas.width/c.scale,height:ctx.canvas.height/c.scale});
  drawPatchScenery(ctx,imgs.patchScenery,w,viewport,placed);
- const scan=view.playing?samplePatchScan(w):undefined;
- const scanner=scan&&imgs.patchScenery?heldPatchScanner(w,scan):undefined;
- if(scan){
-  placed.push({layer:-1,y:Infinity,draw:()=>drawPatchScanner(ctx,imgs.patchScenery,scan,viewport,scanner?.lens)});
-  if(scanner)placed.push({y:w.player.y+(scanner.behind?-.01:.01),draw:()=>drawHeldPatchScanner(ctx,imgs.patchScenery,scanner,scan.opacity)});
- }
+ const scanFrame=view.playing?samplePatchScan(w):undefined;
+ const scanner=scanFrame&&imgs.patchScenery?heldPatchScanner(w,scanFrame,imgs):undefined;
+ const scan=scanFrame&&scanner?{...scanFrame,aperture:scanner.lens}:scanFrame;
+ if(scan&&scanner)placed.push({y:w.player.y+(scanner.behind?-.01:.01),draw:()=>drawHeldPatchScanner(ctx,imgs.patchScenery,scanner,scan.opacity)});
  // Chest and effects now share one depth-sorted drawable, behind players in front.
  const pickupCues=view.playing?visiblePickupCues(w,{x:c.x,y:c.y,width:ctx.canvas.width/c.scale,height:ctx.canvas.height/c.scale,scale:c.scale}):[];
  const groundLoot=[...stoneDrawables(ctx,imgs,w,viewport),...scrapDrawables(ctx,imgs,w,viewport),...treeLogDrawables(ctx,imgs,w,viewport)];
@@ -371,6 +369,8 @@ export function drawWorldEditor(ctx:CanvasRenderingContext2D,atlas:Atlas,imgs:Re
  drawCampLighting(ctx,w,{x:c.x,y:c.y,width:ctx.canvas.width/c.scale,height:ctx.canvas.height/c.scale},imgs,scan);
  if(w.scene?.weather!=='sheltered'&&w.scene?.lighting!=='baked'&&w.weather){const weatherCtx=ctx as CanvasRenderingContext2D&{artworkSilhouette?:(image:HTMLImageElement,crop?:readonly number[])=>ShelterOutline;drawWeather?:(s:WeatherState,v:WeatherView,n:number,shelters:readonly (readonly [number,number][])[])=>void};weatherCtx.drawWeather?.(w.weather,{x:c.x,y:c.y,width:ctx.canvas.width/c.scale,height:ctx.canvas.height/c.scale,scale:c.scale,pixelRatio:Math.min(2,(ctx as CanvasRenderingContext2D&{pixelRatio?:number}).pixelRatio||globalThis.devicePixelRatio||1)},nightStrength(w),w.weather.rain&&weatherCtx.artworkSilhouette?weatherShelters(w,imgs,(im,crop)=>weatherCtx.artworkSilhouette!(im,crop)):[])}
  if(w.weather){const strike=groundLightning(w,{x:c.x,y:c.y,width:ctx.canvas.width/c.scale,height:ctx.canvas.height/c.scale});if(strike)(ctx as CanvasRenderingContext2D&{drawGroundLightning?:(strike:GroundStrike,age:number,reduced:boolean)=>void}).drawGroundLightning?.(strike,w.weather.strikeAge,w.weather.reducedMotion)}
+ // Scanner light and evidence remain readable through scenery and weather.
+ if(scan)drawPatchScanner(ctx,imgs.patchScenery,scan,viewport);
  // These are light sources: darkness and weather must not dim their cores.
  if(w.combatTest){drawCombatGround(ctx,w,imgs);drawBomberGround(ctx,w);drawWalkerEmissives(ctx,w);drawBomberEmissives(ctx,w)}
  if(view.playing)drawPatchFeedback(ctx,imgs,w,{...viewport,scale:pickupScale});

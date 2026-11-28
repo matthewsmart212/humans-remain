@@ -4,9 +4,9 @@ import {FIELD_KIT_NATIVE_ART as art} from './field-kit-art';
 import {QuickItemIcon} from './FieldItemArt';
 import {availableQuickItems,quickItemCount,quickBarWidth,quickBarSliceImage,QUICK_BAR_LAYOUT as layout,QUICK_BAR_SLICES,type QuickBarProps} from '../src/quick-items';
 const closedFrame=require('../public/survival/ui-action-hex-v1/primary.png');
-export default function NativeQuickBar({selected,torch,cooked,cookedRabbit=0,cookedVenison=0,cookedFish=0,cookedCarp=0,cookedPike=0,provisions,axes,disabled,onSelect,onExpandedChange,maxWidth=400}:QuickBarProps&{maxWidth?:number}){
+export default function NativeQuickBar({selected,scanner,torch,cooked,cookedRabbit=0,cookedVenison=0,cookedFish=0,cookedCarp=0,cookedPike=0,provisions,axes,disabled,onSelect,onExpandedChange,maxWidth=400}:QuickBarProps&{maxWidth?:number}){
  const [expanded,setExpanded]=useState(false),[reducedMotion,setReducedMotion]=useState(false),width=useRef(new Animated.Value(layout.closedWidth)).current,scroll=useRef<React.ElementRef<typeof ScrollView>>(null);
- const items=availableQuickItems({torch,cooked,cookedRabbit,cookedVenison,cookedFish,cookedCarp,cookedPike,provisions,axes}),active=items.find(item=>item.id===selected)??items[0],open=expanded&&!disabled,empty=items.length===1&&items[0].id==='fists',visible=open?items:active?[active]:[];
+ const items=availableQuickItems({scanner,torch,cooked,cookedRabbit,cookedVenison,cookedFish,cookedCarp,cookedPike,provisions,axes}),active=items.find(item=>item.id===selected)??items[0],open=expanded&&!disabled,empty=items.length===1&&items[0].id==='fists',visible=open?items:active?[active]:[];
  const expandedChanged=useRef(onExpandedChange);expandedChanged.current=onExpandedChange;
  useEffect(()=>{expandedChanged.current?.(open)},[open]);
  useEffect(()=>()=>{expandedChanged.current?.(false)},[]);

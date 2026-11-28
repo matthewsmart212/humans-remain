@@ -9,6 +9,7 @@ import {IRONWORKS_NATIVE_ART} from './ironworks-art';
 
 const itemImages:Record<BagItemId|QuickItem,number>={
  ...FOOD_NATIVE_ART,
+ scanner:require('../public/survival/patch-v6/scenery.webp'),
  fishingRod:require('../public/survival/fishing-gameplay-v1/rod.webp'),
  fishRaw:require('../public/survival/fishing-gameplay-v1/raw-perch.webp'),
  carpRaw:require('../public/survival/fishing-gameplay-v2/raw-carp.webp'),
@@ -51,6 +52,7 @@ export function QuickItemIcon({id,size}:{id:QuickItem;size:number}){
 
 const quickItemsByPath=new Map(QUICK_ITEMS.map(item=>[item.image,item.id]));
 const actionImages:Record<string,number>={
+ '/survival/patch-ui-v1/scanner-control.webp':require('../public/survival/patch-ui-v1/scanner-control.webp'),
  '/survival/patch-v5/dispatch-slip.webp':require('../public/survival/patch-v5/dispatch-slip.webp'),
  '/survival/patch-v5/drive-rubbing.webp':require('../public/survival/patch-v5/drive-rubbing.webp'),
  '/survival/patch-v1/portrait.webp':require('../public/survival/patch-v1/portrait.webp'),
