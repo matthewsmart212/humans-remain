@@ -1,6 +1,6 @@
 import {drawRepairHammer} from './repair-hammer';
 import {ENGINEER_ART,engineerCycle} from './engineer-sprites';
-import {HUNTER_ART,HUNTER_LEGACY_ART,hunterCycle,hunterFacing} from './hunter-sprites';
+import {HUNTER_ART,HUNTER_LEGACY_ART,hunterCycle,hunterFacing,hunterIdleSprite} from './hunter-sprites';
 import {isPickaxe} from './pickaxes';
 import {drawPickaxe} from './mining-renderer';
 import {heldProvision} from './food-provisions';
@@ -41,7 +41,10 @@ export function drawWorker(ctx:CanvasRenderingContext2D,imgs:Record<string,HTMLI
  const moving=(animation.pose==='walk'||animation.pose==='run'||swordMoving||isPickaxe(p.equipped)&&!!w.axeSwing&&p.moving)&&!p.downedUntil;
  const running=!w.swordThrust&&(p.runBlend??0)>.45;
  const cycle=moving?(hunter?hunterCycle(animation.direction,p.walkDistance,running,imgs):engineer?engineerCycle(animation.direction,p.walkDistance,running):runnerCycle(animation.direction,p.walkDistance,running)):undefined;
- const f:RunnerSprite=animation.pose==='punch'?art.punch:cycle?.sprite??art.idle;
+ const hunterIdle=hunter&&animation.pose==='idle'&&!p.moving&&!held&&!p.downedUntil
+  ?hunterIdleSprite(animation.direction,w.weather?.reducedMotion?0:t,imgs)
+  :undefined;
+ const f:RunnerSprite=animation.pose==='punch'?art.punch:cycle?.sprite??hunterIdle??art.idle;
  const image=imgs[f.sheet];if(!image)return;
  ctx.save();ctx.translate(held?.x??p.x,held?.y??p.y-(w.bruteGrab?.lift??0));
  if(held){if(held.tilt)ctx.rotate(held.tilt);if(facing.mirror)ctx.scale(-1,1);drawCharacterSprite(ctx,image,f);ctx.restore();return}

@@ -171,6 +171,7 @@ public/survival/expedition-menu-v2/loading-panel.webp -filter -diff -merge
 /docs/qa/hunter-run-v2/cadence.gif -filter -diff -merge -text
 /public/survival/hunter-v1/run-v3/*.webp -filter -diff -merge -text
 /public/survival/hunter-v1/run-v4/*.webp -filter -diff -merge -text
+/public/survival/hunter-v1/idle-v1/*.webp -filter -diff -merge -text
 /docs/qa/hunter-run-v3/gait.gif -filter -diff -merge -text
 /docs/qa/hunter-run-v3/on-terrain.mp4 -filter -diff -merge -text
 /docs/qa/hunter-run-v4/on-terrain.mp4 -filter -diff -merge -text

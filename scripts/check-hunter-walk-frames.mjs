@@ -251,7 +251,7 @@ const images=Object.fromEntries(Object.keys(HUNTER_IMAGE_SOURCES).map(key=>[key,
 const world=createWorld();
 world.survivorRole='hunter';
 Object.assign(world.player,{direction:'left',moving:true,sprinting:true,runBlend:1,walkBlend:1,walkDistance:45});
-function checkDraw(textures,sprite,message){
+function checkDraw(textures,sprite,message,expectedMirror=true){
  const draws=[];
  let mirrored=false;
  const ctx={
@@ -261,7 +261,7 @@ function checkDraw(textures,sprite,message){
  };
  drawWorker(ctx,textures,world);
  assert.deepEqual(draws,[[sprite.sheet,...sprite.crop]],message);
- assert(mirrored,'The left-facing body renders with a horizontal mirror');
+ assert.equal(mirrored,expectedMirror,'The body mirrors only in westward facings');
 }
 const sprint=hunterCycle('left',45,true).sprite;
 const walk=hunterCycle('left',45,false).sprite;
@@ -276,6 +276,25 @@ Object.assign(world.player,{sprinting:false,runBlend:0});
 checkDraw(images,walk,'Returning to walking draws the Ludo walk');
 Object.assign(world.player,{moving:false,runBlend:1});
 checkDraw(images,HUNTER_ART.left.idle,'At rest the Hunter uses the planted idle pose');
+
+// At rest, north and northeast play their own atlas, and northwest reuses northeast.
+for(const [direction,sheet,count,mirror] of [
+ ['up','hunterUpIdle',56,false],
+ ['up-right','hunterUpRightIdle',49,false],
+ ['up-left','hunterUpRightIdle',49,true]
+]){
+ world.player.direction=direction;
+ world.tick=30;
+ const frame=Math.floor(world.tick*STEP*24);
+ checkDraw(images,{sheet,crop:[frame%8*283,Math.floor(frame/8)*436,283,436]},direction+' plays idle',mirror);
+ const first={sheet,crop:[0,0,283,436]};
+ assert.deepEqual(hunter.hunterIdleSprite(direction,(count+.1)/24,images).crop,first.crop);
+ const withoutIdle={...images};
+ delete withoutIdle[sheet];
+ checkDraw(withoutIdle,HUNTER_ART[direction].idle,direction+' falls back while idle loads',mirror);
+}
+world.player.direction='left';
+world.tick=0;
 
 // The gear renderer uses the palm of the selected drawing, including the flight poses.
 Object.assign(world.player,{moving:true,sprinting:true,runBlend:1});

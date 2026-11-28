@@ -17,6 +17,24 @@ for(const [direction,sheet] of Object.entries(SHEETS)){
  HUNTER_IMAGE_SOURCES[sheet+'Run']=`/survival/hunter-v1/run-v5/${direction}.webp`;
 }
 
+const IDLE_ATLASES:Partial<Record<keyof typeof SHEETS,number>>={up:56,'up-right':49};
+const IDLE_WIDTH=283,IDLE_HEIGHT=436,IDLE_COLS=8,IDLE_FPS=24;
+for(const direction of Object.keys(IDLE_ATLASES) as (keyof typeof SHEETS)[]){
+ HUNTER_IMAGE_SOURCES[SHEETS[direction]+'Idle']=`/survival/hunter-v1/idle-v1/${direction}.webp`;
+}
+
+export function hunterIdleSprite(direction:Direction,time:number,images:Readonly<Record<string,unknown>>):RunnerSprite|undefined{
+ const view=VIEWS[direction],count=IDLE_ATLASES[view],sheet=SHEETS[view]+'Idle';
+ if(!count||!images[sheet])return undefined;
+ const frame=Math.floor(time*IDLE_FPS)%count;
+ return {
+  sheet,
+  crop:[frame%IDLE_COLS*IDLE_WIDTH,Math.floor(frame/IDLE_COLS)*IDLE_HEIGHT,IDLE_WIDTH,IDLE_HEIGHT],
+  anchor:[IDLE_WIDTH/2,IDLE_HEIGHT-4],
+  scale:112/410
+ };
+}
+
 const WIDTH=206,HEIGHT=236,SCALE=112/222;
 const ANCHOR:readonly [number,number]=[103,232];
 const legacyFrame=(sheet:string,index:number):RunnerSprite=>({
