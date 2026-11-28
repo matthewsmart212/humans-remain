@@ -44,11 +44,11 @@ const IDLE_FRAME:Record<Direction,number>={
 // Each facing packs its own stride into a single mobile texture.
 const RUN_WIDTH=288,RUN_HEIGHT=400,RUN_COLS=6;
 const RUN_ANCHOR:readonly [number,number]=[RUN_WIDTH/2,RUN_HEIGHT-4];
-// Match the painted head/body proportions to each walking view. Sprint poses
-// bend the knees and lean forward, so matching total cell/pose height instead
-// makes the head grow. Keep one scale per facing to retain the authored bounce.
+// Match the visible walking silhouette, with one scale per facing to retain
+// the authored bounce. East and northeast need .308 to keep their full painted
+// height; sizing those views by hood width alone made the whole runner shrink.
 const RUN_SCALE:Record<keyof typeof SHEETS,number>={
- down:.304,'down-right':.290,right:.274,'up-right':.270,up:.304
+ down:.304,'down-right':.290,right:.308,'up-right':.308,up:.304
 };
 type HunterPoses=Poses&{run:readonly RunnerSprite[]};
 export const HUNTER_ART:Record<Direction,HunterPoses>=Object.fromEntries(

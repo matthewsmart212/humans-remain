@@ -188,7 +188,7 @@ for(const [filename,{count,runCount}] of Object.entries(unique)){
  assert.equal(run.height(),Math.ceil(runCount/runColumns)*runHeight);
  // Inspect the silhouettes so an empty, repeated or held drawing cannot stand in for a new pose.
  const info={...run.getImageInfo(),width:runWidth,height:runHeight,colorType:skia.ColorType.RGBA_8888,colorSpace:skia.ColorSpace.SRGB};
- const poses=new Set();
+ const poses=new Set(),runHeights=[];
  const facing=filename.slice(0,-4);
  const sprites=HUNTER_ART[facing].run;
  for(let index=0;index<runCount;index++){
@@ -200,9 +200,29 @@ for(const [filename,{count,runCount}] of Object.entries(unique)){
   const palmX=Math.round(anchor[0]+hand[0]/scale),palmY=Math.round(anchor[1]+hand[1]/scale);
   assert.equal(silhouette[palmY*runWidth+palmX],1,filename+' grip lands on the painted sprite in frame '+index);
   assert.ok(silhouette.includes(1),filename+' contains a visible sprint pose '+index);
+  runHeights.push((Math.floor(silhouette.lastIndexOf(1)/runWidth)-Math.floor(silhouette.indexOf(1)/runWidth)+1)*scale);
   poses.add(createHash('sha256').update(silhouette).digest('hex'));
  }
  assert.equal(poses.size,runCount,filename+' has distinct sprint silhouettes');
+ if(facing==='right'||facing==='up-right'){
+  // Compare painted height, not transparent cell size, while allowing authored stride bounce.
+  const walk=skia.MakeImageFromEncoded(bytes);
+  assert.ok(walk,filename+' walking atlas decodes for the height comparison');
+  const walkHeights=HUNTER_ART[facing].walk.map(({crop:[x,y,width,height],scale})=>{
+   const pixels=walk.readPixels(x,y,{...walk.getImageInfo(),width,height,colorType:skia.ColorType.RGBA_8888,colorSpace:skia.ColorSpace.SRGB});
+   assert.ok(pixels,filename+' walking frame decodes for the height comparison');
+   let top=height,bottom=-1;
+   for(let i=0;i<width*height;i++)if(pixels[i*4+3]>=128){
+    const row=Math.floor(i/width);top=Math.min(top,row);bottom=Math.max(bottom,row);
+   }
+   assert(bottom>=top,filename+' walking frame contains a painted silhouette');
+   return (bottom-top+1)*scale;
+  });
+  const median=values=>{const sorted=values.slice().sort((a,b)=>a-b);return (sorted[Math.floor((sorted.length-1)/2)]+sorted[Math.floor(sorted.length/2)])/2};
+  const ratio=median(runHeights)/median(walkHeights);
+  assert(Math.abs(ratio-1)<=.03,facing+' median running height stays within 3% of walking; ratio='+ratio.toFixed(3));
+  walk.delete();
+ }
  run.delete();
 }
 
