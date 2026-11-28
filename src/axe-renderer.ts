@@ -1,5 +1,6 @@
 import {timeOf,type World,type Direction} from './survival-engine';
 import type {RunnerSprite} from './runner-cycles';
+import {drawCharacterSprite} from './character-sprite';
 import {axeProfile} from './axe-combat';
 
 export const AXE_IMAGE_SOURCES={woodenAxe:'/survival/equipment/wooden-axe-v1.webp',campAxe:'/survival/equipment/camp-axe-v1.png'};
@@ -57,6 +58,5 @@ export function drawAxe(ctx:CanvasRenderingContext2D,image:HTMLImageElement,atta
  * in the hand rather than pasted across the character. */
 export function drawAxeGrip(ctx:CanvasRenderingContext2D,image:HTMLImageElement,sprite:RunnerSprite,hand:Point){
  ctx.save();ctx.beginPath();ctx.ellipse(hand[0],hand[1],4.7,5.1,0,0,Math.PI*2);ctx.clip();
- const [sx,sy,sw,sh]=sprite.crop,k=sprite.scale;
- ctx.drawImage(image,sx,sy,sw,sh,-sprite.anchor[0]*k,-sprite.anchor[1]*k,sw*k,sh*k);ctx.restore();
+ drawCharacterSprite(ctx,image,sprite);ctx.restore();
 }

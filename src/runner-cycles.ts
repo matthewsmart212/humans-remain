@@ -1,7 +1,8 @@
 import type {Direction} from './survival-engine';
 import registered from './runner-cycle-frames.json';
 
-export type RunnerSprite={sheet:string;crop:readonly number[];anchor:readonly number[];scale:number;hand?:readonly [number,number]};
+// Scale is vertical and defaults both axes; registered artwork can override horizontal scale.
+export type RunnerSprite={sheet:string;crop:readonly number[];anchor:readonly number[];scale:number;scaleX?:number;hand?:readonly [number,number]};
 export const RUNNER_CYCLES:Record<string,readonly RunnerSprite[]>=registered;
 export const RUNNER_CYCLE_SOURCES={
  runnerCycleDown:'/survival/scrap-runner/scrap-runner-down-walk-sprint-v1.png',

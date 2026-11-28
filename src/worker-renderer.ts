@@ -12,6 +12,7 @@ import {timeOf,type World} from './survival-engine';
 import {workerAnimation} from './worker-animation';
 import {SURVIVOR_ART} from './survivor-art';
 import {runnerCycle,runnerFacing,type RunnerSprite} from './runner-cycles';
+import {drawCharacterSprite} from './character-sprite';
 import {runnerLegView,drawRunnerLegs,drawRunnerTorso} from './runner-leg-motion';
 import type {Atlas} from './packaging-renderer';
 import {drawMovingSwordThrust} from './runner-thrust-renderer';
@@ -42,9 +43,8 @@ export function drawWorker(ctx:CanvasRenderingContext2D,imgs:Record<string,HTMLI
  const cycle=moving?(hunter?hunterCycle(animation.direction,p.walkDistance,running,imgs):engineer?engineerCycle(animation.direction,p.walkDistance,running):runnerCycle(animation.direction,p.walkDistance,running)):undefined;
  const f:RunnerSprite=animation.pose==='punch'?art.punch:cycle?.sprite??art.idle;
  const image=imgs[f.sheet];if(!image)return;
- const [sx,sy,sw,sh]=f.crop,k=f.scale;
  ctx.save();ctx.translate(held?.x??p.x,held?.y??p.y-(w.bruteGrab?.lift??0));
- if(held){if(held.tilt)ctx.rotate(held.tilt);if(facing.mirror)ctx.scale(-1,1);ctx.drawImage(image,sx,sy,sw,sh,-f.anchor[0]*k,-f.anchor[1]*k,sw*k,sh*k);ctx.restore();return}
+ if(held){if(held.tilt)ctx.rotate(held.tilt);if(facing.mirror)ctx.scale(-1,1);drawCharacterSprite(ctx,image,f);ctx.restore();return}
  if(p.hurtUntil>t&&!w.weather?.reducedMotion&&Math.floor(t*18)%2===0)ctx.globalAlpha=.5;
  if(p.downedUntil)ctx.scale(1,87/142);
  const fishingState=fishingRenderState(w),fishing=p.equipped==='fishingRod'?fishingState:null;
@@ -85,7 +85,7 @@ export function drawWorker(ctx:CanvasRenderingContext2D,imgs:Record<string,HTMLI
  else if(!ownSprite&&legView&&imgs.runnerLegLayers){
   drawRunnerLegs(ctx,imgs.runnerLegLayers,legView,p.walkDistance,running);
   drawRunnerTorso(ctx,image,f,legView,running,cycle!.frame);
- }else ctx.drawImage(image,sx,sy,sw,sh,-f.anchor[0]*k,-f.anchor[1]*k,sw*k,sh*k);
+ }else drawCharacterSprite(ctx,image,f);
  if(torch&&!torch.behind){drawTorch(ctx,imgs.torch,torch,w.torchOn);drawAxeGrip(ctx,image,f,torch.hand)}
  if(bow&&!bow.behind){drawBowCarry(ctx,imgs.bowCarry,bow);drawWeaponGrip(ctx,image,f,bow)}
  if(knife&&!knife.behind&&knifeImage){drawKnife(ctx,knifeImage,knife);drawKnifeGrip(ctx,image,f,knife)}

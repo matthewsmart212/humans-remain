@@ -1,6 +1,7 @@
 import type {World} from './survival-engine';
 import {workerAnimation} from './worker-animation';
 import {runnerCycle,runnerFacing,type RunnerSprite} from './runner-cycles';
+import {drawCharacterSprite} from './character-sprite';
 
 export type WeaponPoint=readonly [number,number];
 export type WeaponView='down'|'down-right'|'right'|'up-right'|'up';
@@ -25,6 +26,5 @@ export function weaponGrip(w:World){
 export function drawWeaponGrip(ctx:CanvasRenderingContext2D,image:HTMLImageElement,sprite:RunnerSprite,pose:{hand:WeaponPoint;striking:boolean}){
  const radius=pose.striking?7.7:5.8;
  ctx.save();ctx.beginPath();ctx.ellipse(pose.hand[0],pose.hand[1],radius,radius,0,0,Math.PI*2);ctx.clip();
- const [sx,sy,sw,sh]=sprite.crop,k=sprite.scale;
- ctx.drawImage(image,sx,sy,sw,sh,-sprite.anchor[0]*k,-sprite.anchor[1]*k,sw*k,sh*k);ctx.restore();
+ drawCharacterSprite(ctx,image,sprite);ctx.restore();
 }

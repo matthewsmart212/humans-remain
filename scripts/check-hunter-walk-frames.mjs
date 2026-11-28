@@ -10,7 +10,7 @@ async function loadSource(path){
  return import('data:text/javascript;base64,'+Buffer.from(result.outputFiles[0].text).toString('base64'));
 }
 
-const [hunter,{axeAttachment},{drawWorker},{createWorld,movePlayer,STEP},{emptyLayout},{playerMovementImagesForRole},{torchPose},{worldBounds},skia]=await Promise.all([
+const [hunter,{axeAttachment,drawAxeGrip},{drawWorker},{createWorld,movePlayer,STEP},{emptyLayout},{playerMovementImagesForRole},{torchPose},{worldBounds},{drawWeaponGrip},skia]=await Promise.all([
  loadSource('src/hunter-sprites.ts'),
  loadSource('src/axe-renderer.ts'),
  loadSource('src/worker-renderer.ts'),
@@ -19,6 +19,7 @@ const [hunter,{axeAttachment},{drawWorker},{createWorld,movePlayer,STEP},{emptyL
  loadSource('src/gameplay-artwork.ts'),
  loadSource('src/torch.ts'),
  loadSource('src/world-bounds.ts'),
+ loadSource('src/weapon-grip.ts'),
  CanvasKitInit()
 ]);
 const {hunterCycle,HUNTER_ART,HUNTER_LEGACY_ART,HUNTER_IMAGE_SOURCES,hunterFacing}=hunter;
@@ -149,12 +150,15 @@ for(const [direction,view] of Object.entries(views)){
    assert.deepEqual(cycle.sprite.crop,[
     (index%columns)*width,Math.floor(index/columns)*height,width,height
    ],direction+' crop '+index);
-   assert.deepEqual(cycle.sprite.anchor,[width/2,height-4],direction+' foot pivot');
+   assert.deepEqual(cycle.sprite.anchor,[width/2,height-(running?8:4)],direction+' registered foot pivot');
    if(running){
     assert(Number.isFinite(cycle.sprite.scale)&&cycle.sprite.scale>0&&cycle.sprite.scale<1,direction+' valid run scale');
+    assert(Number.isFinite(cycle.sprite.scaleX)&&cycle.sprite.scaleX>0&&cycle.sprite.scaleX<1,direction+' valid horizontal registration');
     assert.equal(cycle.sprite.scale,HUNTER_ART[direction].run[0].scale,direction+' keeps one body scale throughout the stride');
+    assert.equal(cycle.sprite.scaleX,HUNTER_ART[direction].run[0].scaleX,direction+' keeps one body width throughout the stride');
     const authored=view.source.replace('.png','');
     assert.equal(cycle.sprite.scale,HUNTER_ART[authored].run[index].scale,direction+' mirrored scale matches its authored view');
+    assert.equal(cycle.sprite.scaleX,HUNTER_ART[authored].run[index].scaleX,direction+' mirrored width matches its authored view');
     assert.deepEqual(cycle.sprite.hand,HUNTER_ART[authored].run[index].hand,direction+' mirrors the body and palm together');
    }else assert.equal(cycle.sprite.scale,112/410,'Walking artwork keeps its established size');
    assert.equal(HUNTER_IMAGE_SOURCES[cycle.sprite.sheet],url,direction+' image URL');
@@ -173,7 +177,21 @@ for(const [direction,view] of Object.entries(views)){
  }
 }
 
-// Verify that each registered sheet contains the expected grid and real image bytes.
+const median=values=>{const sorted=values.slice().sort((a,b)=>a-b);return (sorted[Math.floor((sorted.length-1)/2)]+sorted[Math.floor(sorted.length/2)])/2};
+function silhouetteMetrics(silhouette,width,sprite){
+ const top=Math.floor(silhouette.indexOf(1)/width),bottom=Math.floor(silhouette.lastIndexOf(1)/width)+1;
+ assert(top>=0&&bottom>top,'A measured frame contains a painted body');
+ // Measure the stable hood region, excluding outstretched arms and the cape.
+ const headBottom=Math.min(bottom,top+Math.ceil(50/sprite.scale));
+ let left=width,right=-1;
+ for(let row=top;row<headBottom;row++)for(let x=0;x<width;x++)if(silhouette[row*width+x]){
+  left=Math.min(left,x);right=Math.max(right,x);
+ }
+ return {height:(bottom-top)*sprite.scale,crown:(sprite.anchor[1]-top)*sprite.scale,
+  sole:(bottom-sprite.anchor[1])*sprite.scale,hood:(right-left+1)*(sprite.scaleX??sprite.scale)};
+}
+
+// Verify real pixels, registration against walking/idle, and the exact painted palms.
 const unique={};
 for(const view of Object.values(views))unique[view.source]=view;
 for(const [filename,{count,runCount}] of Object.entries(unique)){
@@ -188,7 +206,7 @@ for(const [filename,{count,runCount}] of Object.entries(unique)){
  assert.equal(run.height(),Math.ceil(runCount/runColumns)*runHeight);
  // Inspect the silhouettes so an empty, repeated or held drawing cannot stand in for a new pose.
  const info={...run.getImageInfo(),width:runWidth,height:runHeight,colorType:skia.ColorType.RGBA_8888,colorSpace:skia.ColorSpace.SRGB};
- const poses=new Set(),runHeights=[];
+ const poses=new Set(),runMetrics=[];
  const facing=filename.slice(0,-4);
  const sprites=HUNTER_ART[facing].run;
  for(let index=0;index<runCount;index++){
@@ -196,33 +214,34 @@ for(const [filename,{count,runCount}] of Object.entries(unique)){
   assert.ok(pixels,filename+' decoded sprint frame '+index);
   const silhouette=Buffer.alloc(runWidth*runHeight);
   for(let i=0;i<silhouette.length;i++)silhouette[i]=pixels[i*4+3]>=128?1:0;
-  const {hand,anchor,scale}=sprites[index];
-  const palmX=Math.round(anchor[0]+hand[0]/scale),palmY=Math.round(anchor[1]+hand[1]/scale);
+  const {hand,anchor,scale,scaleX}=sprites[index];
+  const palmX=Math.round(anchor[0]+hand[0]/(scaleX??scale)),palmY=Math.round(anchor[1]+hand[1]/scale);
   assert.equal(silhouette[palmY*runWidth+palmX],1,filename+' grip lands on the painted sprite in frame '+index);
   assert.ok(silhouette.includes(1),filename+' contains a visible sprint pose '+index);
-  runHeights.push((Math.floor(silhouette.lastIndexOf(1)/runWidth)-Math.floor(silhouette.indexOf(1)/runWidth)+1)*scale);
+  runMetrics.push(silhouetteMetrics(silhouette,runWidth,sprites[index]));
   poses.add(createHash('sha256').update(silhouette).digest('hex'));
  }
  assert.equal(poses.size,runCount,filename+' has distinct sprint silhouettes');
- if(facing==='right'||facing==='up-right'){
-  // Compare painted height, not transparent cell size, while allowing authored stride bounce.
-  const walk=skia.MakeImageFromEncoded(bytes);
-  assert.ok(walk,filename+' walking atlas decodes for the height comparison');
-  const walkHeights=HUNTER_ART[facing].walk.map(({crop:[x,y,width,height],scale})=>{
-   const pixels=walk.readPixels(x,y,{...walk.getImageInfo(),width,height,colorType:skia.ColorType.RGBA_8888,colorSpace:skia.ColorSpace.SRGB});
-   assert.ok(pixels,filename+' walking frame decodes for the height comparison');
-   let top=height,bottom=-1;
-   for(let i=0;i<width*height;i++)if(pixels[i*4+3]>=128){
-    const row=Math.floor(i/width);top=Math.min(top,row);bottom=Math.max(bottom,row);
-   }
-   assert(bottom>=top,filename+' walking frame contains a painted silhouette');
-   return (bottom-top+1)*scale;
-  });
-  const median=values=>{const sorted=values.slice().sort((a,b)=>a-b);return (sorted[Math.floor((sorted.length-1)/2)]+sorted[Math.floor(sorted.length/2)])/2};
-  const ratio=median(runHeights)/median(walkHeights);
-  assert(Math.abs(ratio-1)<=.03,facing+' median running height stays within 3% of walking; ratio='+ratio.toFixed(3));
-  walk.delete();
- }
+ const walk=skia.MakeImageFromEncoded(bytes);
+ assert.ok(walk,filename+' walking atlas decodes for the registration comparison');
+ const walkMetrics=HUNTER_ART[facing].walk.map(sprite=>{
+  const [x,y,width,height]=sprite.crop;
+  const pixels=walk.readPixels(x,y,{...walk.getImageInfo(),width,height,colorType:skia.ColorType.RGBA_8888,colorSpace:skia.ColorSpace.SRGB});
+  assert.ok(pixels,filename+' walking frame decodes for the registration comparison');
+  const silhouette=Buffer.alloc(width*height);
+  for(let i=0;i<silhouette.length;i++)silhouette[i]=pixels[i*4+3]>=128?1:0;
+  return silhouetteMetrics(silhouette,width,sprite);
+ });
+ const middle=(frames,key)=>median(frames.map(frame=>frame[key]));
+ const heightRatio=middle(runMetrics,'height')/middle(walkMetrics,'height');
+ const widthRatio=middle(runMetrics,'hood')/middle(walkMetrics,'hood');
+ assert(Math.abs(heightRatio-1)<=.03,facing+' running height stays within 3% of walking; ratio='+heightRatio.toFixed(3));
+ assert(Math.abs(widthRatio-1)<=.03,facing+' hood width stays within 3% of walking; ratio='+widthRatio.toFixed(3));
+ assert(Math.abs(middle(runMetrics,'crown')-middle(walkMetrics,'crown'))<=1,facing+' walking and running share the same ground-to-head registration');
+ const idle=walkMetrics[HUNTER_ART[facing].walk.indexOf(HUNTER_ART[facing].idle)];
+ assert(Math.abs(middle(runMetrics,'crown')-idle.crown)<=1.5,facing+' stopping does not shift the head vertically');
+ assert(Math.abs(Math.max(...runMetrics.map(frame=>frame.sole))-Math.max(...walkMetrics.map(frame=>frame.sole)))<=.25,facing+' planted feet share the walking ground line');
+ walk.delete();
  run.delete();
 }
 
@@ -265,17 +284,25 @@ for(const [direction,{runCount}] of Object.entries(views)){
  for(let index=0;index<runCount;index++){
   const distance=(index+.25)*112/runCount;
   Object.assign(world.player,{direction,walkDistance:distance,equipped:'axe'});
-  const {hand}=hunterCycle(direction,distance,true).sprite;
+  const sprite=hunterCycle(direction,distance,true).sprite,{hand}=sprite;
   assert.ok(hand?.length===2&&hand.every(Number.isFinite),direction+' measured sprint palm '+index);
   let translation;
-  const axeDraws=[];
+  const axeDraws=[],bodyDraws=[];
   const ctx={
    save(){},restore(){},rotate(){},scale(){},beginPath(){},ellipse(){},clip(){},
    translate(x,y){translation=[x,y]},
-   drawImage(image){if(image===equippedImages.campAxe)axeDraws.push(translation)}
+   drawImage(image,...args){if(image===equippedImages.campAxe)axeDraws.push(translation);if(image===images[sprite.sheet])bodyDraws.push(args)}
   };
   drawWorker(ctx,equippedImages,world);
   assert.deepEqual(axeDraws,[hand],direction+' carried axe follows sprint palm '+index);
+  assert(bodyDraws.length>0,'The equipped Hunter body is drawn');
+  for(const draw of bodyDraws.slice(1))assert.deepEqual(draw,bodyDraws[0],direction+' visible hand redraw uses the body registration');
+  assert.equal(bodyDraws[0][6],runWidth*sprite.scaleX,direction+' actual drawing respects the calibrated width');
+  assert.equal(bodyDraws[0][7],runHeight*sprite.scale,direction+' actual drawing respects the calibrated height');
+  drawAxeGrip(ctx,images[sprite.sheet],sprite,hand);
+  assert.deepEqual(bodyDraws.at(-1),bodyDraws[0],direction+' axe and torch hands use the same registration');
+  drawWeaponGrip(ctx,images[sprite.sheet],sprite,{hand,striking:false});
+  assert.deepEqual(bodyDraws.at(-1),bodyDraws[0],direction+' other weapon hands use the same registration');
   world.player.equipped='torch';
   const pose=torchPose(world,images);
   assert.deepEqual(pose.hand,hand,direction+' torch follows sprint palm '+index);

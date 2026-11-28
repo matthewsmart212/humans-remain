@@ -43,12 +43,19 @@ const IDLE_FRAME:Record<Direction,number>={
 };
 // Each facing packs its own stride into a single mobile texture.
 const RUN_WIDTH=288,RUN_HEIGHT=400,RUN_COLS=6;
-const RUN_ANCHOR:readonly [number,number]=[RUN_WIDTH/2,RUN_HEIGHT-4];
-// Match the visible walking silhouette, with one scale per facing to retain
-// the authored bounce. East and northeast need .308 to keep their full painted
-// height; sizing those views by hood width alone made the whole runner shrink.
-const RUN_SCALE:Record<keyof typeof SHEETS,number>={
- down:.304,'down-right':.290,right:.308,'up-right':.308,up:.304
+const RUN_GRIP_ANCHOR:readonly [number,number]=[RUN_WIDTH/2,RUN_HEIGHT-4];
+// Painted run soles reach row 396. Like the walk atlas, the ground pivot sits
+// four source pixels above planted soles, retaining the authored flight poses.
+const RUN_ANCHOR:readonly [number,number]=[RUN_WIDTH/2,RUN_HEIGHT-8];
+// The two packs have different aspect ratios. Register hood width and crown
+// height against the walking view separately, with a fixed transform for every
+// frame so switching gait does not widen/shrink the body or shift its baseline.
+const RUN_REGISTRATION:Record<keyof typeof SHEETS,{scaleX:number;scale:number}>={
+ down:{scaleX:.304,scale:.305},
+ 'down-right':{scaleX:.290,scale:.303},
+ right:{scaleX:.274,scale:.304},
+ 'up-right':{scaleX:.270,scale:.302},
+ up:{scaleX:.304,scale:.307}
 };
 type HunterPoses=Poses&{run:readonly RunnerSprite[]};
 export const HUNTER_ART:Record<Direction,HunterPoses>=Object.fromEntries(
@@ -58,14 +65,17 @@ export const HUNTER_ART:Record<Direction,HunterPoses>=Object.fromEntries(
    punch:HUNTER_LEGACY_ART[direction].punch,
    walk:HUNTER_WALK_V2[direction],
    run:HUNTER_RUN_GRIPS[VIEWS[direction]].map((hand,index):RunnerSprite=>{
-    const scale=RUN_SCALE[VIEWS[direction]];
-    // Palm offsets were measured in world units at the original 1/3 scale.
-    const gripScale=scale/(1/3);
+    const {scaleX,scale}=RUN_REGISTRATION[VIEWS[direction]];
+    // Convert the original 1/3-scale palm back to source pixels, then apply
+    // the same independent axes and new ground pivot as the painted body.
     return {
      sheet:SHEETS[VIEWS[direction]]+'Run',
      crop:[index%RUN_COLS*RUN_WIDTH,Math.floor(index/RUN_COLS)*RUN_HEIGHT,RUN_WIDTH,RUN_HEIGHT],
-     anchor:RUN_ANCHOR,scale,
-     hand:[hand[0]*gripScale,hand[1]*gripScale]
+     anchor:RUN_ANCHOR,scale,scaleX,
+     hand:[
+      (hand[0]*3+RUN_GRIP_ANCHOR[0]-RUN_ANCHOR[0])*scaleX,
+      (hand[1]*3+RUN_GRIP_ANCHOR[1]-RUN_ANCHOR[1])*scale
+     ]
     };
    })
   }
