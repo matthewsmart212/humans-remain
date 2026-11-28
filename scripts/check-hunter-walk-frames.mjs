@@ -10,7 +10,7 @@ async function loadSource(path){
  return import('data:text/javascript;base64,'+Buffer.from(result.outputFiles[0].text).toString('base64'));
 }
 
-const [hunter,{axeAttachment},{drawWorker},{createWorld,movePlayer,STEP},{emptyLayout},{playerMovementImagesForRole},{torchPose},skia]=await Promise.all([
+const [hunter,{axeAttachment},{drawWorker},{createWorld,movePlayer,STEP},{emptyLayout},{playerMovementImagesForRole},{torchPose},{worldBounds},skia]=await Promise.all([
  loadSource('src/hunter-sprites.ts'),
  loadSource('src/axe-renderer.ts'),
  loadSource('src/worker-renderer.ts'),
@@ -18,6 +18,7 @@ const [hunter,{axeAttachment},{drawWorker},{createWorld,movePlayer,STEP},{emptyL
  loadSource('src/world-layout.ts'),
  loadSource('src/gameplay-artwork.ts'),
  loadSource('src/torch.ts'),
+ loadSource('src/world-bounds.ts'),
  CanvasKitInit()
 ]);
 const {hunterCycle,HUNTER_ART,HUNTER_LEGACY_ART,HUNTER_IMAGE_SOURCES,hunterFacing}=hunter;
@@ -40,24 +41,31 @@ let checked=0;
 const hunterPreload=playerMovementImagesForRole('hunter');
 const survivorPreload=playerMovementImagesForRole('survivor');
 
-// Measure a stride from actual movement at full speed on open ground.
-function measureStride(role,running){
+function openGround(role='hunter'){
  const w=createWorld(emptyLayout());
  w.survivorRole=role;
- const p=w.player,startX=p.x;
+ Object.assign(w.player,{x:1500,y:1500});
+ return w;
+}
+
+// Measure a complete stride through the actual movement simulation.
+function measureStride(role,running,input={x:1,y:0},prepare=()=>{}){
+ const w=openGround(role);
+ prepare(w);
+ const p=w.player,start={x:p.x,y:p.y};
  p.runBlend=running?1:0;
  const poses=[];
- for(let step=1;step<=120;step++){
+ for(let step=1;step<=240;step++){
   const previous=p.walkDistance;
   if(role==='hunter'&&running){
    const sprite=hunterCycle('right',previous,true).sprite;
    if(sprite!==poses.at(-1))poses.push(sprite);
   }
-  movePlayer(w,{x:1,y:0},running);
+  movePlayer(w,input,running);
   assert(p.moving,'Open ground permits movement');
   if(p.walkDistance>=previous)continue;
 
-  const distance=p.x-startX,seconds=step*STEP;
+  const distance=Math.hypot(p.x-start.x,p.y-start.y),seconds=step*STEP;
   const stoppedPhase=p.walkDistance;
   movePlayer(w,{x:0,y:0},false);
   assert.equal(p.walkDistance,stoppedPhase,'Stopping holds the gait phase');
@@ -65,17 +73,60 @@ function measureStride(role,running){
  }
  assert.fail(role+' gait never wrapped');
 }
+function assertStride(gait,expected,message){
+ assert(gait.distance>=expected-1e-7&&gait.distance<expected+gait.speed*STEP+1e-7,message);
+}
 const survivorRun=measureStride('survivor',true);
 const hunterRun=measureStride('hunter',true);
 assert.deepEqual(hunterRun.poses,HUNTER_ART.right.run,'All east run poses appear in order before wrapping');
 assert(Math.abs(hunterRun.speed-survivorRun.speed)<1e-8,'Hunter and Survivor cover the same ground per second');
-assert(hunterRun.seconds>=.88&&hunterRun.seconds<.88+STEP,'Hunter completes the 880 ms sprint loop within one simulation step');
+assertStride(hunterRun,220,'Hunter completes a sprint stride in 220 world units');
 for(const role of ['survivor','medic','engineer']){
  const gait=role==='survivor'?survivorRun:measureStride(role,true);
- assert(gait.distance>=200&&gait.distance<200+gait.speed*STEP,role+' completes a sprint stride in 200 world units');
+ assertStride(gait,200,role+' keeps its 200-unit sprint stride');
+ assertStride(measureStride(role,false),160,role+' keeps its 160-unit walking stride');
 }
 const hunterWalk=measureStride('hunter',false);
-assert(hunterWalk.distance>=160&&hunterWalk.distance<160+hunterWalk.speed*STEP,'Hunter walking stride remains 160 world units');
+assertStride(hunterWalk,180,'Hunter completes a walking stride in 180 world units');
+assert(hunterRun.seconds<hunterWalk.seconds,'Sprinting cycles the feet faster than walking');
+
+// Reduced travel must stretch frame delays without changing the ground covered per stride.
+for(const running of [false,true]){
+ const full=running?hunterRun:hunterWalk,units=running?220:180;
+ const slow=measureStride('hunter',running,{x:.5,y:0});
+ assertStride(slow,units,'Half joystick input preserves the '+(running?'run':'walk')+' stride');
+ assert(Math.abs(slow.speed-full.speed*.5)<1e-8,'Half joystick input halves travel speed');
+ assert(slow.seconds>=full.seconds*1.9,'Half joystick input slows animation with movement');
+ const heavy=measureStride('hunter',running,{x:1,y:0},w=>{w.bag.stone=32});
+ assertStride(heavy,units,'A heavy backpack preserves the distance per stride');
+ assert(heavy.speed<full.speed&&heavy.seconds>full.seconds,'Backpack slowdown also slows animation');
+ const diagonal=measureStride('hunter',running,{x:1,y:1});
+ assertStride(diagonal,units,'Diagonal travel preserves the distance per stride');
+ assert(Math.abs(diagonal.speed-full.speed)<1e-8,'Diagonal movement has the same speed');
+ assert.equal(diagonal.seconds,full.seconds,'Diagonal movement has the same cadence');
+}
+
+const blocked=openGround(),edge=worldBounds(blocked).right-19;
+Object.assign(blocked.player,{x:edge,walkDistance:43,runBlend:1});
+for(let step=0;step<30;step++)movePlayer(blocked,{x:1,y:0},true);
+assert.equal(blocked.player.x,edge,'The boundary blocks attempted movement');
+assert.equal(blocked.player.walkDistance,43,'Pushing a wall does not advance animation');
+assert.equal(blocked.player.moving,false,'A blocked Hunter is stationary');
+
+const transition=openGround();
+transition.player.walkDistance=43;
+for(const running of [true,false,true,false]){
+ for(let step=0;step<12;step++){
+  const previous=transition.player.walkDistance;
+  movePlayer(transition,{x:1,y:0},running);
+  const advance=(transition.player.walkDistance-previous+112)%112;
+  assert(advance>0&&advance<12,'Changing gait advances continuously without resetting the feet');
+ }
+ assert(transition.player.runBlend>0&&transition.player.runBlend<1,'Sprint changes ease between gaits');
+}
+const stoppedPhase=transition.player.walkDistance;
+for(let step=0;step<40;step++)movePlayer(transition,{x:0,y:0},false);
+assert.equal(transition.player.walkDistance,stoppedPhase,'Settling to idle preserves the foot phase');
 
 for(const [direction,view] of Object.entries(views)){
  const mirror=!!view.mirror;
@@ -99,7 +150,13 @@ for(const [direction,view] of Object.entries(views)){
     (index%columns)*width,Math.floor(index/columns)*height,width,height
    ],direction+' crop '+index);
    assert.deepEqual(cycle.sprite.anchor,[width/2,height-4],direction+' foot pivot');
-   assert.equal(cycle.sprite.scale,running?1/3:112/410);
+   if(running){
+    assert(Number.isFinite(cycle.sprite.scale)&&cycle.sprite.scale>0&&cycle.sprite.scale<1,direction+' valid run scale');
+    assert.equal(cycle.sprite.scale,HUNTER_ART[direction].run[0].scale,direction+' keeps one body scale throughout the stride');
+    const authored=view.source.replace('.png','');
+    assert.equal(cycle.sprite.scale,HUNTER_ART[authored].run[index].scale,direction+' mirrored scale matches its authored view');
+    assert.deepEqual(cycle.sprite.hand,HUNTER_ART[authored].run[index].hand,direction+' mirrors the body and palm together');
+   }else assert.equal(cycle.sprite.scale,112/410,'Walking artwork keeps its established size');
    assert.equal(HUNTER_IMAGE_SOURCES[cycle.sprite.sheet],url,direction+' image URL');
    assert.equal(hunterPreload[cycle.sprite.sheet],url,direction+' movement preload');
    assert.equal(survivorPreload[cycle.sprite.sheet],undefined,direction+' Hunter art is role specific');
@@ -211,4 +268,4 @@ for(const frame of [-2,4,5,11,NaN,Infinity]){
  const a=axeAttachment({tick:80,player:{runBlend:0}},'right','walk',{frame,mirror:false});
  assert.ok(a.hand.every(Number.isFinite),'out-of-range grip '+String(frame));
 }
-console.log('Hunter: 88 walking frames, 66 sprint frames, 8 directions, '+checked+' gait and grip states, live transitions and loading fallbacks passed.');
+console.log('Hunter: 88 walking frames, 66 sprint frames, 8 directions, '+checked+' gait and grip states, distance-paced cadence, stable sprite scales, live transitions and loading fallbacks passed.');

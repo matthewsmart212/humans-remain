@@ -100,13 +100,17 @@ export function moveBody(w:World,p:Vec,dx:number,dy:number,r=19){
 }
 export const SPRINT_SPEED=1.55;
 const WALK_SPEED=285;
-// The Hunter takes 880 ms per stride at full speed. Slower travel stretches the cycle.
-const HUNTER_SPRINT_STRIDE=WALK_SPEED*SPRINT_SPEED*.880;
+// One complete left/right step cycle, measured in world distance. At full speed
+// the Hunter walks in ~632 ms and runs in ~498 ms; sprinting lengthens the stride
+// while increasing cadence. Actual travel also slows the feet under load/on a
+// partial stick and holds the phase when collision stops movement.
+const HUNTER_WALK_STRIDE=180,HUNTER_SPRINT_STRIDE=220;
 
 function advancePlayerGait(w:World,travelled:number){
  const p=w.player;
- const sprintStride=w.survivorRole==='hunter'?HUNTER_SPRINT_STRIDE:200;
- const stride=160+(sprintStride-160)*p.runBlend;
+ const hunter=w.survivorRole==='hunter';
+ const walkStride=hunter?HUNTER_WALK_STRIDE:160,sprintStride=hunter?HUNTER_SPRINT_STRIDE:200;
+ const stride=walkStride+(sprintStride-walkStride)*p.runBlend;
  p.walkDistance=(p.walkDistance+travelled*112/stride)%112;
 }
 /** A short, committed sidestep. Dodge cannot pass through authored collision,

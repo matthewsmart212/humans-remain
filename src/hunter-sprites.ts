@@ -44,6 +44,12 @@ const IDLE_FRAME:Record<Direction,number>={
 // Each facing packs its own stride into a single mobile texture.
 const RUN_WIDTH=288,RUN_HEIGHT=400,RUN_COLS=6;
 const RUN_ANCHOR:readonly [number,number]=[RUN_WIDTH/2,RUN_HEIGHT-4];
+// Match the painted head/body proportions to each walking view. Sprint poses
+// bend the knees and lean forward, so matching total cell/pose height instead
+// makes the head grow. Keep one scale per facing to retain the authored bounce.
+const RUN_SCALE:Record<keyof typeof SHEETS,number>={
+ down:.304,'down-right':.290,right:.274,'up-right':.270,up:.304
+};
 type HunterPoses=Poses&{run:readonly RunnerSprite[]};
 export const HUNTER_ART:Record<Direction,HunterPoses>=Object.fromEntries(
  (Object.keys(VIEWS) as Direction[]).map<[Direction,HunterPoses]>(direction=>[
@@ -51,12 +57,17 @@ export const HUNTER_ART:Record<Direction,HunterPoses>=Object.fromEntries(
    idle:HUNTER_WALK_V2[direction][IDLE_FRAME[direction]],
    punch:HUNTER_LEGACY_ART[direction].punch,
    walk:HUNTER_WALK_V2[direction],
-   run:HUNTER_RUN_GRIPS[VIEWS[direction]].map((hand,index):RunnerSprite=>({
-    sheet:SHEETS[VIEWS[direction]]+'Run',
-    crop:[index%RUN_COLS*RUN_WIDTH,Math.floor(index/RUN_COLS)*RUN_HEIGHT,RUN_WIDTH,RUN_HEIGHT],
-    anchor:RUN_ANCHOR,scale:1/3,
-    hand
-   }))
+   run:HUNTER_RUN_GRIPS[VIEWS[direction]].map((hand,index):RunnerSprite=>{
+    const scale=RUN_SCALE[VIEWS[direction]];
+    // Palm offsets were measured in world units at the original 1/3 scale.
+    const gripScale=scale/(1/3);
+    return {
+     sheet:SHEETS[VIEWS[direction]]+'Run',
+     crop:[index%RUN_COLS*RUN_WIDTH,Math.floor(index/RUN_COLS)*RUN_HEIGHT,RUN_WIDTH,RUN_HEIGHT],
+     anchor:RUN_ANCHOR,scale,
+     hand:[hand[0]*gripScale,hand[1]*gripScale]
+    };
+   })
   }
  ])
 ) as Record<Direction,HunterPoses>;
