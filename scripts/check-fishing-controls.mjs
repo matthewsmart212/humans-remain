@@ -37,7 +37,7 @@ const aliases={
  'expo-audio':'export const createAudioPlayer=()=>({volume:1,playing:false,seekTo:async()=>{},play(){},pause(){},remove(){}});',
  'expo-haptics':'export const ImpactFeedbackStyle={Light:1,Medium:2,Heavy:3},NotificationFeedbackType={Success:1};export const selectionAsync=async()=>{},impactAsync=async()=>{},notificationAsync=async()=>{};',
  '@react-native-async-storage/async-storage':'export default {getItem:async()=>null,setItem:async()=>{}};',
- '@shopify/react-native-skia':"export const vec=(x,y)=>({x,y});export const Canvas='canvas',Group='group',Path='path',Rect='rect',LinearGradient='linear-gradient',RadialGradient='radial-gradient';",
+ '@shopify/react-native-skia':"export const vec=(x,y)=>({x,y});export const Canvas='canvas',Group='group',Path='path',Circle='circle',Rect='rect',LinearGradient='linear-gradient',RadialGradient='radial-gradient';",
 };
 const hostGlobals=new Map(['window','document','ResizeObserver'].map(name=>[name,Object.getOwnPropertyDescriptor(globalThis,name)]));
 try{
