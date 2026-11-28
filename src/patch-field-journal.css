@@ -35,10 +35,6 @@
 .field-notes-bookmark img {display:block;width:21px;height:21px;object-fit:contain;filter:drop-shadow(0 1px 1px #061f21)}
 .field-notes-copy {min-width:0;flex:1}
 .field-notes-copy > b {display:block;color:#f5c77e;font:700 15px/1.06 Barlow,sans-serif}
-.field-notes-lead {display:block;margin-top:2px;color:#f9f2e3;font:700 12px/1.25 'Barlow Condensed',Barlow,sans-serif}
-.field-notes-lead strong {font-weight:700}
-.field-notes-lead > span {color:#dfbd91;font-family:Barlow,sans-serif;font-weight:500}
-.field-notes-chevron {flex:none;color:#e1c293;width:11px}
 .camp-studio .in-atlas .field-notes-tab,.in-atlas .field-notes-tab {width:auto;min-width:136px}
 .camp-studio .patch-field-notes .field-notes-tab:hover {border-color:#efc789}
 .field-notes-book {
@@ -71,5 +67,10 @@
 .field-notes-pages span {font:500 13px/1 Barlow,sans-serif;color:#f1e6cd}
 .camp-studio .patch-field-notes button:disabled,.patch-field-notes button:disabled {cursor:default;opacity:.5}
 .patch-field-notes button:focus-visible {outline:2px solid #f6c372;outline-offset:-3px}
-@media(orientation:portrait){.camp-studio .patch-field-notes:not(.in-atlas) .field-notes-tab {width:min(256px,82vw)}}
+.camp-studio .patch-field-notes:not(.in-atlas) .field-notes-tab,.patch-field-notes:not(.in-atlas) .field-notes-tab {
+ width:44px;height:44px;min-height:44px;justify-content:center;padding:0;border-radius:12px;overflow:hidden;
+}
+.patch-field-notes:not(.in-atlas) .field-notes-bookmark {align-self:center;flex:none;padding:0;border:0;box-shadow:none}
+.patch-field-notes:not(.in-atlas) .field-notes-tab::before {display:none}
+.patch-field-notes:not(.in-atlas) .field-notes-tab::after {width:9px;height:9px;top:2px;right:2px;transform:rotate(90deg)}
 .field-kit:has(.kit-vitals-toggle[data-expanded=true]) .patch-field-notes:not([data-open=true]) {display:none}

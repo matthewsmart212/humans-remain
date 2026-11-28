@@ -138,8 +138,8 @@ try{
   assert(Math.hypot(q.position.x-before.x,q.position.y-before.y)<=470/60+.01,'Recovery does not teleport');
  }
  assert(q.suppliesDelivered&&q.returnedToCamp,'The companion reaches the chest over the authored route');assert(world.repairCheckpoint);
- assert.equal(m.patchSpeech(world),'Shelter occupied.');
- assert.equal(world.notice,'This time, someone brought the rescuer home.');
+ assert.equal(m.patchSpeech(world),'Supplies are in the chest.');
+ assert.equal(world.notice,'P-04 is home · Speak to him by the chest.');
  assert.equal(m.patchStatus(world).title,'P-04');
  playerAt(world,q.position);assert(m.inspectPatch(world));finishLine(world);
  assert(q.nameIntroduced,'The nickname is earned when Patch speaks his introduction');
@@ -287,7 +287,11 @@ try{
  assert.equal(m.patchMapLead({...integrated,scene:{id:'bunker'}}),undefined,'Camp leads stay outdoors');
  integrated.stationPanel='patch-note';assert(m.atStation(integrated));
  controller.sample(integrated);assert.equal(integrated.stationPanel,'patch-note','Paper stays open beside its chest');
+ liveStep();assert(!integrated.notice?.startsWith('Quest added'),'Wait until the letter is closed');
  integrated.player.x+=500;controller.sample(integrated);assert.equal(integrated.stationPanel,undefined,'The paper closes outside chest range');
+ liveStep();assert.match(integrated.notice,/Quest added/);
+ const expires=integrated.noticeUntil;
+ liveStep(180);assert(expires<m.timeOf(integrated)&&integrated.noticeUntil===expires,'The journal announcement expires once');
  playerAt(integrated,{x:site.robot.x,y:site.robot.y+45});shown=controller.sample(integrated).action;
  assert.equal(shown.label,'INSPECT');assert(controller.press(integrated,shown));controller.release();
  assert.equal(integrated.stationPanel,undefined);assert(!m.atStation(integrated));assert(m.patchChat(integrated));

@@ -9,7 +9,7 @@ import {patchChat,choosePatchChat,closePatchChat,type PatchChat} from './patch-c
 import {patchJournalStage} from './patch-journal';
 import {patchDialogueReply} from './patch-dialogue';
 import {PatchReplyStrip} from './PatchReplyStrip';
-import {patchReplyStripLayout} from './patch-reply-strip-layout';
+import {patchBarChoices,patchReplyStripLayout} from './patch-reply-strip-layout';
 import {conversationBubbleMetrics,conversationBubbleTail,placeConversationBubble} from './patch-bubble-placement';
 import type {MenuInsets} from './station-menu-layout';
 import {patchChatActors,subscribePatchChatActors,setPatchChatBounds} from './patch-chat-bounds';
@@ -112,7 +112,7 @@ function PatchReplies({world,chat,onChange}:ChatProps&{chat:PatchChat}){
  const pages=measurement?.chat===chat?measurement.pages:[{text:chat.line,lines:1}];
  const index=position?.chat===chat?Math.min(position.index,pages.length-1):0;
  const moreHere=index+1<pages.length;
- const more=moreHere||chat.choices.some(c=>c.id==='more');
+
  useLayoutEffect(()=>{
   const el=tray.current;
   if(!el)return;
@@ -142,32 +142,29 @@ function PatchReplies({world,chat,onChange}:ChatProps&{chat:PatchChat}){
   return ()=>{observer.disconnect();document.fonts?.removeEventListener('loadingdone',measure)};
  },[chat,bubbleWidth,font,lineHeight,padX,maxLines]);
  const choose=(id:string)=>{
+  if(id==='more'&&moreHere){setPosition({chat,index:index+1});return}
   if(id==='back'&&index>0){setPosition({chat,index:index-1});return}
   const stage=patchJournalStage(world),command=world.patchQuest?.command;
   if(choosePatchChat(world,id,chat))onChange(stage!==patchJournalStage(world)||command!==world.patchQuest?.command);
  };
- const advance=()=>{
-  if(moreHere)setPosition({chat,index:index+1});
-  else if(more)choose('more');
- };
- const replies=chat.choices.filter(c=>c.id!=='more'&&(!moreHere||c.id==='back'));
+ const replies=patchBarChoices(chat,moreHere);
  const end=()=>{if(closePatchChat(world))onChange()};
  const buttonKeys=(e:React.KeyboardEvent)=>{if(e.key==='Enter'||e.key===' ')e.stopPropagation()};
  return <section ref={tray} className="patch-chat-hud" role="group" aria-label={'Conversation with '+chat.speaker} tabIndex={-1}
   onPointerDown={e=>e.stopPropagation()} onPointerUp={e=>e.stopPropagation()} onKeyDown={buttonKeys} onKeyUp={buttonKeys}
   style={{'--patch-font':font+'px','--patch-leading':lineHeight+'px'} as React.CSSProperties}>
   <span aria-hidden="true" ref={probe} className="patch-chat-line patch-chat-probe" style={{width:bubbleWidth-2*padX}}>{chat.line}</span>
-  <WorldSpeech world={world} frame={frame} metrics={metrics} replyTop={bounds.y} more={more}
-   speaker={chat.speaker} section={pages[index]} onAdvance={advance}/>
+  <WorldSpeech world={world} frame={frame} metrics={metrics} replyTop={bounds.y}
+   speaker={chat.speaker} section={pages[index]}/>
   <PatchReplyStrip width={width} height={height} safe={safe} choices={replies} speaker={chat.speaker}
    choiceSetKey={[chat.view,chat.question,...replies.map(c=>c.id)].join('|')} command={world.patchQuest?.command} onChoose={choose} onClose={end}/>
  </section>;
 }
 
 type BubbleProps={world:World;frame:Frame;metrics:ReturnType<typeof conversationBubbleMetrics>;replyTop:number;
- speaker:string;section:SpeechSection;more:boolean;onAdvance:()=>void};
+ speaker:string;section:SpeechSection};
 
-function WorldSpeech({world,frame,metrics,replyTop,speaker,section,more,onAdvance}:BubbleProps){
+function WorldSpeech({world,frame,metrics,replyTop,speaker,section}:BubbleProps){
  const subscribe=useCallback((notify:()=>void)=>subscribePatchChatActors(world,notify),[world]);
  const actors=useSyncExternalStore(subscribe,()=>patchChatActors(world),()=>undefined);
  const {width,height,safe}=frame;
@@ -175,7 +172,6 @@ function WorldSpeech({world,frame,metrics,replyTop,speaker,section,more,onAdvanc
  const bubbleWidth=section.singleLineWidth?Math.min(metrics.width,Math.max(142,section.singleLineWidth+2*padX+1)):metrics.width;
  const bubbleHeight=2*padY+headerHeight+lineHeight*section.lines;
  const placement=actors&&placeConversationBubble(width,height,safe,replyTop,actors.patch,actors.survivor,bubbleWidth,bubbleHeight);
- const pressed=useRef<{x:number;y:number}|null>(null);
  const tail=placement&&conversationBubbleTail(placement);
  return <div className="patch-chat-bubble" style={{left:placement?.x,top:placement?.y,width:bubbleWidth,height:bubbleHeight,
   visibility:placement?'visible':'hidden',padding:padY+'px '+padX+'px'}}>
@@ -193,14 +189,8 @@ function WorldSpeech({world,frame,metrics,replyTop,speaker,section,more,onAdvanc
   <div className="patch-chat-transcript" role="status" aria-live="polite" aria-atomic="true">
    <div className="patch-chat-identity" style={{height:headerHeight}}>
     <strong className="patch-chat-name">{speaker}</strong>{speaker==='Patch'&&<small>P-04</small>}
-    {more&&<span className="patch-chat-next" aria-hidden="true">▸</span>}
    </div>
    <span className="patch-chat-line">{section.text}</span>
   </div>
-  {more&&<button type="button" aria-label="Continue dialogue" className="patch-chat-advance"
-   onPointerDown={e=>{pressed.current={x:e.clientX,y:e.clientY}}}
-   onPointerCancel={()=>{pressed.current=null}}
-   onPointerMove={e=>{if(pressed.current&&Math.hypot(e.clientX-pressed.current.x,e.clientY-pressed.current.y)>8)pressed.current=null}}
-   onClick={e=>{if(e.detail===0||pressed.current)onAdvance();pressed.current=null}}/>}
  </div>;
 }

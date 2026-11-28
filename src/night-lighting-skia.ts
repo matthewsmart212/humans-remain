@@ -1,8 +1,10 @@
+import type {PatchScanFrame} from './patch-scanner';
 import type {TorchBeam} from './torch';
 import {BlendMode,TileMode,FilterMode,MipmapMode} from '@shopify/react-native-skia/lib/module/skia/types';
 import type {SkCanvas,Skia as SkiaApi,SkShader} from '@shopify/react-native-skia';
 import {MAX_NIGHT_LIGHTS,type CampLight,type LightViewport} from './lighting-model';
 
+const NO_SCAN_RAYS=Array<number>(13).fill(0);
 const stops=[0,.06,.15,.25,.4,.55,.7,.85,1];
 const falloff=stops.map(d=>{const t=Math.max(0,(d-.06)/.94);return t*t*(3-2*t)});
 type Disposable={dispose:()=>void};
@@ -20,6 +22,26 @@ export function createNightLighting(Skia:Pick<typeof SkiaApi,'Paint'|'Shader'|'S
  uniform float4 warning0;
  uniform float4 warning1;
  uniform float4 rescue;
+ uniform float2 scanOrigin;
+ uniform float2 scanAxis;
+ uniform float scanHalfAngle;
+ uniform float scanReach;
+ uniform float scanPower;
+ uniform float rayRadius[13];
+ float ultraviolet(float2 p){
+  if(scanPower<=0.0)return 0.0;
+  float2 delta=p-scanOrigin;
+  float along=dot(delta,scanAxis);
+  if(along<=0.0)return 0.0;
+  float a=atan(delta.y*scanAxis.x-delta.x*scanAxis.y,along);
+  if(abs(a)>=scanHalfAngle)return 0.0;
+  float index=(a/scanHalfAngle+1.0)*6.0;
+  float limit=0.0;
+  for(int i=0;i<13;i++)limit+=rayRadius[i]*max(0.0,1.0-abs(index-float(i)));
+  float reach=min(limit,scanReach);
+  return scanPower*(1.0-smoothstep(reach*.68,reach+0.01,length(delta)))*
+   (1.0-smoothstep(scanHalfAngle*.72,scanHalfAngle,abs(a)));
+ }
  float warningLight(float2 p,float4 source){
   return (1.0-smoothstep(0.1,1.0,length(p-source.xy)/max(1.0,source.z)))*source.w;
  }
@@ -33,12 +55,15 @@ export function createNightLighting(Skia:Pick<typeof SkiaApi,'Paint'|'Shader'|'S
   float torchLight=max(beam,spill)*torchEnabled;
   float red=max(warningLight(p,warning0),warningLight(p,warning1));
   float amber=warningLight(p,rescue);
-  float light=max(amber,max(torchLight,red));
+  float uv=ultraviolet(p);
+  float light=max(uv,max(amber,max(torchLight,red)));
   half4 night=field.eval(p)*darkness*(1.0-light*0.96);
   float glow=max(amber*darkness*0.11,torchLight*(0.035+darkness*0.025));
   half4 shaded=half4(half3(1.0,0.77,0.39)*glow,glow)+night*(1.0-glow);
   float redGlow=red*0.08*darkness;
-  return half4(half3(1.0,0.045,0.018)*redGlow,redGlow)+shaded*(1.0-redGlow);
+  shaded=half4(half3(1.0,0.045,0.018)*redGlow,redGlow)+shaded*(1.0-redGlow);
+  float blue=uv*darkness*.19;
+  return half4(half3(.12,.47,1.0)*blue,blue)+shaded*(1.0-blue);
  }`);
  if(!effect)throw Error('Torch lighting shader could not compile');
  let field:SkShader;
@@ -81,13 +106,16 @@ export function createNightLighting(Skia:Pick<typeof SkiaApi,'Paint'|'Shader'|'S
  return{
   // Upload the small cached mask to the actual surface before the first frame.
   warm(canvas:SkCanvas,lights:CampLight[]){if(disposed)return;prepare(lights);paint.setAlphaf(1);canvas.drawRect(Skia.XYWHRect(0,0,1,1),paint)},
-  draw(canvas:SkCanvas,lights:CampLight[],amount:number,view:LightViewport,torch?:TorchBeam,warningLights:CampLight[]=[],rescueLight?:CampLight){
+  draw(canvas:SkCanvas,lights:CampLight[],amount:number,view:LightViewport,torch?:TorchBeam,warningLights:CampLight[]=[],rescueLight?:CampLight,scan?:PatchScanFrame){
    if(disposed||(amount<=0&&!torch))return;prepare(lights);
    const warningUniforms=[0,1].flatMap(i=>{const l=warningLights[i];return l?[l.x,l.y,Math.max(1,l.radius),Math.max(0,Math.min(1,l.strength))]:[0,0,1,0]});
    const rescueUniforms=rescueLight?[rescueLight.x,rescueLight.y,rescueLight.radius,rescueLight.strength]:[0,0,1,0];
-   const shader=torch||warningLights.length||rescueLight?effect.makeShaderWithChildren([
+   const shader=torch||warningLights.length||rescueLight||scan?effect.makeShaderWithChildren([
     torch?.x??0,torch?.y??0,torch?.dx??1,torch?.dy??0,torch?.range??1,
     Math.max(0,Math.min(1,amount)),torch?1:0,...warningUniforms,...rescueUniforms,
+    scan?.origin.x??0,scan?.origin.y??0,Math.cos(scan?.angle??0),Math.sin(scan?.angle??0),
+    scan?.halfAngle??1,scan?scan.radius*scan.sweep:0,scan?.opacity??0,
+    ...(scan?scan.rays.map(ray=>ray.radius):NO_SCAN_RAYS),
    ],[field]):undefined;
    paint.setShader(shader??field);paint.setAlphaf(shader?1:Math.min(1,amount));
    canvas.drawRect(Skia.XYWHRect(view.x,view.y,view.width,view.height),paint);

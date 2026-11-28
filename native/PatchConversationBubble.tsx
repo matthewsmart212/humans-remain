@@ -1,5 +1,5 @@
 import React,{memo,useCallback,useEffect,useLayoutEffect,useState,useSyncExternalStore} from 'react';
-import {AccessibilityInfo,Animated,Image,Pressable,StyleSheet,Text,View,useWindowDimensions} from 'react-native';
+import {AccessibilityInfo,Animated,Image,StyleSheet,Text,View,useWindowDimensions} from 'react-native';
 import {Canvas,Group,LinearGradient,Path,vec} from '@shopify/react-native-skia';
 import type {PatchChat} from '../src/patch-chat';
 import type {World} from '../src/survival-engine';
@@ -10,7 +10,7 @@ import {conversationBubbleMetrics,conversationBubbleTail,placeConversationBubble
 
 type Props={
  chat:PatchChat;world:World;width:number;height:number;safe:MenuInsets;replyTop:number;
- onContinue:()=>void;onReadable:(ready:boolean)=>void;localBack:React.RefObject<(()=>boolean)|null>;
+ localNext:React.RefObject<(()=>boolean)|null>;onPassage:(more:boolean|undefined)=>void;localBack:React.RefObject<(()=>boolean)|null>;
 };
 type MeasuredLine={text:string;width:number;height:number};
 const plate=require('../public/survival/patch-ui-v1/speech-plate.webp');
@@ -38,7 +38,7 @@ export function PatchConversationBubble(props:Props){
  return <MeasuredBubble key={JSON.stringify([props.chat.view,props.chat.question,props.chat.line,props.chat.pageIndex,m.width,m.font,m.maxLines])} {...props} metrics={m}/>;
 }
 
-function MeasuredBubble({chat,world,width,height,safe,replyTop,onContinue,onReadable,localBack,metrics:m}:Props&{metrics:ReturnType<typeof conversationBubbleMetrics>}){
+function MeasuredBubble({chat,world,width,height,safe,replyTop,localNext,onPassage,localBack,metrics:m}:Props&{metrics:ReturnType<typeof conversationBubbleMetrics>}){
  const [lines,setLines]=useState<MeasuredLine[]>([]),[section,setSection]=useState(0);
  const subscribe=useCallback((listener:()=>void)=>subscribePatchChatActors(world,listener),[world]);
  const snapshot=useCallback(()=>patchChatActors(world),[world]);
@@ -47,14 +47,17 @@ function MeasuredBubble({chat,world,width,height,safe,replyTop,onContinue,onRead
  const current=sections[Math.min(section,sections.length-1)];
  const visible=current?lines.slice(current.start,current.start+current.count):[];
  const moreHere=section+1<sections.length;
- const canAdvance=moreHere||chat.choices.some(choice=>choice.id==='more');
  const body=current?.text??'';
  useLayoutEffect(()=>{
   localBack.current=()=>{if(section===0)return false;setSection(section-1);return true};
   return ()=>{localBack.current=null};
  },[localBack,section]);
- const ready=visible.length>0&&!moreHere&&!!actors;
- useLayoutEffect(()=>onReadable(ready),[onReadable,ready]);
+ const ready=visible.length>0&&!!actors;
+ useLayoutEffect(()=>{
+  localNext.current=()=>{if(!moreHere)return false;setSection(section+1);return true};
+  return ()=>{localNext.current=null};
+ },[localNext,section,moreHere]);
+ useLayoutEffect(()=>onPassage(ready?moreHere:undefined),[onPassage,ready,moreHere]);
  useEffect(()=>{
   if(body)AccessibilityInfo.announceForAccessibility(chat.speaker+'. '+body.replace(/\n/g,' '));
  },[chat.speaker,body]);
@@ -72,10 +75,6 @@ function MeasuredBubble({chat,world,width,height,safe,replyTop,onContinue,onRead
  const textHeight=visible.reduce((sum,line)=>sum+Math.max(line.height,m.lineHeight),0);
  const h=Math.ceil(2*m.padY+m.headerHeight+textHeight);
  const card=actors&&visible.length?placeConversationBubble(width,height,safe,replyTop,actors.patch,actors.survivor,w,h):undefined;
- const advance=()=>{
-  if(moreHere)setSection(section+1);
-  else if(canAdvance)onContinue();
- };
  return <>
   <View pointerEvents="none" accessible={false} accessibilityElementsHidden importantForAccessibility="no-hide-descendants" style={[s.measure,{width:m.width-2*m.padX}]}>
    <Text allowFontScaling={false} textBreakStrategy="simple" lineBreakStrategyIOS="none" style={[s.dialogue,bodyStyle]}
@@ -84,20 +83,18 @@ function MeasuredBubble({chat,world,width,height,safe,replyTop,onContinue,onRead
      setLines(previous=>next.length===previous.length&&next.every((line,i)=>line.text===previous[i].text&&line.width===previous[i].width&&line.height===previous[i].height)?previous:next);
     }}>{chat.line}</Text>
   </View>
-  {card&&<Pressable accessible accessibilityRole={canAdvance?'button':'text'} accessibilityLabel={chat.speaker+'. '+body.replace(/\n/g,' ')}
-    accessibilityHint={canAdvance?'Continue conversation':undefined} onPress={advance}
+  {card&&<View accessible accessibilityRole="text" accessibilityLabel={chat.speaker+'. '+body.replace(/\n/g,' ')}
     style={{position:'absolute',left:card.x,top:card.y,width:card.width,height:card.height,paddingHorizontal:m.padX,paddingVertical:m.padY}}>
    <BubblePaint {...conversationBubbleTail(card)} width={card.width} height={card.height}/>
    <View style={{height:m.headerHeight}}>
     <View style={s.heading}>
      <Text allowFontScaling={false} style={[s.name,{fontSize:m.font}]}>{chat.speaker.toUpperCase()}</Text>
      {chat.speaker==='Patch'&&<Text allowFontScaling={false} style={[s.designation,{fontSize:m.font*.78}]}>P-04</Text>}
-     {canAdvance&&<Text allowFontScaling={false} style={[s.continue,{fontSize:m.font*.83}]}>▸</Text>}
     </View>
     <View style={s.rule}/>
    </View>
    <Animated.Text allowFontScaling={false} textBreakStrategy="simple" lineBreakStrategyIOS="none" style={[s.dialogue,bodyStyle,{opacity}]}>{body}</Animated.Text>
-  </Pressable>}
+  </View>}
  </>;
 }
 
@@ -106,7 +103,6 @@ const s=StyleSheet.create({
  heading:{flexDirection:'row',alignItems:'baseline',gap:9},
  name:{fontWeight:'800',fontStyle:'italic',color:'#ee9b38',textShadowColor:'#341e0d',textShadowRadius:1,textShadowOffset:{width:0,height:1},letterSpacing:1.1,includeFontPadding:false},
  designation:{fontWeight:'700',color:'#cfc6ad',letterSpacing:1,includeFontPadding:false},
- continue:{marginLeft:'auto',color:'#e2b980',includeFontPadding:false},
  rule:{height:StyleSheet.hairlineWidth,backgroundColor:'#a08b6585',marginTop:3},
  dialogue:{fontWeight:'600',color:'#f7eacc',letterSpacing:.05,includeFontPadding:false},
 });

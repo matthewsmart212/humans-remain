@@ -43,9 +43,23 @@ export function drawHeldPatchScanner(ctx:CanvasRenderingContext2D,image:HTMLImag
  ctx.drawImage(image,sx,sy,sw,sh,-gripX,-gripY,sw,sh);
  const x=lensX-gripX,y=lensY-gripY;
  const glint=ctx.createRadialGradient(x,y,0,x,y,30);
- glint.addColorStop(0,'#fff3cfeb');glint.addColorStop(.22,'#d8f0daae');glint.addColorStop(1,'#a0d9dc00');
+ glint.addColorStop(0,'#e0f8ffeb');glint.addColorStop(.22,'#72c9ffae');glint.addColorStop(1,'#3585ff00');
  ctx.fillStyle=glint;ctx.fillRect(x-30,y-30,60,60);
  ctx.restore();
+}
+
+const blueTracks=new WeakMap<HTMLImageElement,Map<PatchScanPrint['kind'],HTMLCanvasElement>>();
+function blueTrack(image:HTMLImageElement,kind:PatchScanPrint['kind']){
+ let frames=blueTracks.get(image);
+ if(!frames){frames=new Map();blueTracks.set(image,frames)}
+ let tile=frames.get(kind);
+ if(tile)return tile;
+ const [x,y,width,height]=PATCH_SCENERY_FRAMES[trackFrames[kind]];
+ tile=document.createElement('canvas');tile.width=width;tile.height=height;
+ const brush=tile.getContext('2d');if(!brush)return;
+ brush.drawImage(image,x,y,width,height,0,0,width,height);
+ brush.globalCompositeOperation='source-in';brush.fillStyle='#79d7ff';brush.fillRect(0,0,width,height);
+ frames.set(kind,tile);return tile;
 }
 
 function drawImpression(ctx:CanvasRenderingContext2D,image:HTMLImageElement,print:PatchScanPrint){
@@ -56,7 +70,11 @@ function drawImpression(ctx:CanvasRenderingContext2D,image:HTMLImageElement,prin
  ctx.globalAlpha=print.opacity;
  ctx.translate(print.x,print.y);
  ctx.rotate(print.angle);
- ctx.drawImage(image,sx,sy,sw,sh,-width/2,-height/2,width,height);
+ if(!(ctx as ScanCanvas).drawPatchScanPrint?.(image,[sx,sy,sw,sh],width,height)){
+  const tile=typeof document==='undefined'?undefined:blueTrack(image,print.kind);
+  if(tile)ctx.drawImage(tile,-width/2,-height/2,width,height);
+  else ctx.drawImage(image,sx,sy,sw,sh,-width/2,-height/2,width,height);
+ }
  ctx.restore();
 }
 
@@ -85,13 +103,13 @@ export function drawPatchScanner(ctx:CanvasRenderingContext2D,image:HTMLImageEle
   sweepEdge(ctx,frame,radius,true,apex);ctx.clip();
   if(!(ctx as ScanCanvas).drawPatchScanLight?.(apex,frame.angle,frame.halfAngle,radius,reach)){
    const light=ctx.createRadialGradient(apex.x,apex.y,0,apex.x,apex.y,radius);
-   light.addColorStop(0,'#c1e7df6b');light.addColorStop(.5,'#92c6c336');light.addColorStop(1,'#8fbfbe0a');
+   light.addColorStop(0,'#5da4ff99');light.addColorStop(.5,'#468afa62');light.addColorStop(1,'#457bf520');
    ctx.fillStyle=light;
    ctx.globalAlpha=opacity*.24;
    for(let trim=0;trim<4&&2*trim+1<frame.rays.length;trim++){sweepEdge(ctx,frame,reach,true,apex,trim);ctx.fill()}
    ctx.globalAlpha=opacity;
-   if(reach>9){sweepEdge(ctx,frame,reach-9,false,apex,1);ctx.strokeStyle='#acdad631';ctx.lineWidth=3;ctx.stroke()}
-   sweepEdge(ctx,frame,reach,false,apex,1);ctx.strokeStyle='#c9eadbb3';ctx.lineWidth=2.2;ctx.stroke();
+   if(reach>9){sweepEdge(ctx,frame,reach-9,false,apex,1);ctx.strokeStyle='#6face950';ctx.lineWidth=3;ctx.stroke()}
+   sweepEdge(ctx,frame,reach,false,apex,1);ctx.strokeStyle='#abddffcf';ctx.lineWidth=2.2;ctx.stroke();
   }
   ctx.restore();
  }

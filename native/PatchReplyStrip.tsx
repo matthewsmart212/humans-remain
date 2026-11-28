@@ -31,7 +31,7 @@ export function PatchReplyStrip({width,height,safe,choices,choiceSetKey,speaker,
   <View style={[s.absolute,{left:bounds.x,top:bounds.y,width:bounds.width,height:bounds.height}]}>
    <View accessible={false} accessibilityElementsHidden importantForAccessibility="no-hide-descendants"
     style={[s.heading,{height:labelHeight,opacity:choices.length?1:0}]}>
-    <Text maxFontSizeMultiplier={1.25} style={s.headingText}>YOUR REPLY</Text><View style={s.rule}/>
+    <Text maxFontSizeMultiplier={1.25} style={s.headingText}>{choices[0]?.id==='more'?'CONVERSATION':'YOUR REPLY'}</Text><View style={s.rule}/>
    </View>
    <View style={[s.row,{height:row,gap}]}>
     <ScrollView ref={list} horizontal directionalLockEnabled alwaysBounceHorizontal={false} bounces={false}

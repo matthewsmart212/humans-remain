@@ -42,7 +42,7 @@ export function patchReplySizing(listWidth:number,gap:number,count:number,fontSi
 }
 
 export function isPatchCommand(id:string){return id==='camp'||id==='follow'||id==='stay'}
-const primaryReplies=new Set(['arrival','diagnose','recruit','repair','borrow-scanner','scanner-offer','stay-close','welcome']);
+const primaryReplies=new Set(['more','arrival','diagnose','recruit','repair','borrow-scanner','scanner-offer','stay-close','welcome']);
 export function primaryPatchReply(id:string,choices:PatchChat['choices']){
  if(id==='topic:damage')return choices[0]?.id===id;
  return primaryReplies.has(id);
@@ -50,4 +50,9 @@ export function primaryPatchReply(id:string,choices:PatchChat['choices']){
 export function patchReplyIcon(id:string){
  if(id==='diagnose'||id==='repair')return 'wrench';
  if(id==='recruit'||id==='stay-close')return 'follow';
+}
+
+export function patchBarChoices(chat:PatchChat,moreLocal:boolean){
+ if(!moreLocal&&!chat.choices.some(choice=>choice.id==='more'))return chat.choices;
+ return [{id:'more',label:'Continue'},...chat.choices.filter(choice=>choice.id==='back')];
 }

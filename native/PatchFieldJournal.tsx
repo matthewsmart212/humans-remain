@@ -1,8 +1,8 @@
 import React,{useEffect,useState} from 'react';
-import {BackHandler,Image,ImageBackground,Platform,Pressable,ScrollView,StyleSheet,Text,useWindowDimensions,View} from 'react-native';
+import {BackHandler,Image,ImageBackground,Pressable,ScrollView,StyleSheet,Text,View} from 'react-native';
 import type {World} from '../src/survival-engine';
-import {patchJournal,PATCH_QUEST_TITLE} from '../src/patch-journal';
-import {FIELD_NOTE_ART,fieldNoteArt,fieldNoteDestination,fieldNotePage,fieldNoteTrackerCopy,markFieldNote} from '../src/patch-field-notes';
+import {patchJournal} from '../src/patch-journal';
+import {FIELD_NOTE_ART,fieldNoteArt,fieldNoteDestination,fieldNotePage,markFieldNote} from '../src/patch-field-notes';
 import {currentWaypoint} from '../src/waypoint';
 import {BUNDLED_ART} from './bundled-art';
 
@@ -40,7 +40,6 @@ function PageButton({text,label,disabled,onPress}:{text:string;label:string;disa
 
 export function PatchFieldJournal({world,width,height,safe,tracker,concealTab,top}:Props){
  const [open,setOpen]=useState(false),[selected,setSelected]=useState<string>(),[,refresh]=useState(0);
- const {fontScale}=useWindowDimensions();
  const left=Math.max(12,safe.left),right=Math.max(12,safe.right),upper=Math.max(10,safe.top),lower=Math.max(10,safe.bottom);
  const close=()=>{setOpen(false);setSelected(undefined)};
  useEffect(()=>{
@@ -50,16 +49,10 @@ export function PatchFieldJournal({world,width,height,safe,tracker,concealTab,to
  },[open]);
  if(!open){
   if(concealTab)return null;
-  const summary=tracker?fieldNoteTrackerCopy(world):undefined;
-  const tabWidth=tracker?Math.min(fontScale>1.35?310:256,width*(width>height ? .42 : .82),width-left-right):undefined;
-  return <Pressable accessibilityRole="button" accessibilityLabel="Field journal" accessibilityHint={tracker} accessibilityState={{expanded:false}} onPress={()=>setOpen(true)}
-   style={({pressed})=>[s.tab,{left,width:tabWidth},top===undefined?{bottom:lower+56}:{top},pressed&&s.pressed]}>
-   <CoverCloth/>
-   <View style={s.emblem}><Image source={journalIcon} resizeMode="contain" style={s.bookIcon}/></View>
-   <View style={[s.trackerCopy,!!tracker&&s.trackerFlex]}><Text style={s.tabTitle}>{tracker?PATCH_QUEST_TITLE:'Field journal'}</Text>
-    {!!tracker&&<Text style={s.tabDetail}>{summary?<><Text style={s.action}>{summary.action}</Text><Text style={s.location}> · {summary.location}</Text></>:tracker}</Text>}
-   </View>
-   <View accessible={false} style={s.chevron}/><CornerPins/>
+  return <Pressable accessibilityRole="button" accessibilityLabel="Open quest journal" accessibilityHint={tracker} accessibilityState={{expanded:false}} onPress={()=>setOpen(true)}
+   style={({pressed})=>[s.tab,{left},tracker?s.iconTab:undefined,top===undefined?{bottom:lower+56}:{top},pressed&&s.pressed]}>
+   <CoverCloth/><Image source={journalIcon} resizeMode="contain" style={s.bookIcon}/>
+   {tracker?<Image accessible={false} source={corner} style={s.iconPin}/>:<><Text style={s.tabTitle}>Quest journal</Text><CornerPins/></>}
   </Pressable>;
  }
  const journal=patchJournal(world);
@@ -94,11 +87,9 @@ const s=StyleSheet.create({
  clothImage:{width:'100%',height:'100%',opacity:.79},
  insideEdge:{position:'absolute',left:1,right:1,top:1,bottom:1,borderWidth:StyleSheet.hairlineWidth,borderColor:'#a9b3a35e',borderRadius:3},
  pin:{position:'absolute',width:16,height:16},pinTop:{left:-1,top:-1},pinBottom:{right:-1,bottom:-1,transform:[{rotate:'180deg'}]},
- emblem:{width:29,alignSelf:'stretch',paddingRight:5,justifyContent:'center',alignItems:'center',borderRightWidth:1,borderRightColor:'#b0946299'},
- bookIcon:{width:21,height:21},trackerCopy:{minWidth:0},trackerFlex:{flex:1},
- tabTitle:{fontSize:14,lineHeight:17,fontWeight:'700',color:'#f5c77e'},tabDetail:{fontSize:12.5,lineHeight:15,color:'#f9f2e3'},
- action:{fontFamily:'FieldKitBarlow'},location:{fontFamily:Platform.OS==='ios'?'AvenirNextCondensed-Medium':'sans-serif-condensed',color:'#dfbd91'},
- chevron:{height:8,width:8,marginRight:3,borderTopWidth:1.5,borderRightWidth:1.5,borderColor:'#e1c293',transform:[{rotate:'45deg'}]},
+ iconTab:{height:44,width:44,minWidth:44,minHeight:44,justifyContent:'center',paddingHorizontal:0,paddingVertical:0,borderRadius:12,overflow:'hidden'},
+ iconPin:{position:'absolute',top:2,right:2,width:9,height:9,transform:[{rotate:'90deg'}]},
+ bookIcon:{width:22,height:22},tabTitle:{fontSize:14,lineHeight:17,fontWeight:'700',color:'#f5c77e'},
  book:{position:'absolute',zIndex:28,padding:3,backgroundColor:'#103e40',borderColor:'#b0956b',borderWidth:1,borderRadius:5,
   shadowColor:'#071918',shadowRadius:9,shadowOpacity:.62,shadowOffset:{width:0,height:5},elevation:5},
  header:{borderBottomWidth:1,borderColor:'#bba47999',flexDirection:'row',alignItems:'center',justifyContent:'space-between',paddingLeft:15,paddingRight:5,paddingVertical:5},

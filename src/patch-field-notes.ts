@@ -14,7 +14,8 @@ export function fieldNoteArt(id:string){
   case 'note':return FIELD_NOTE_ART.note;
   case 'dispatch':return FIELD_NOTE_ART.dispatch;
   case 'drive':return FIELD_NOTE_ART.drive;
-  case 'plate':case 'recovered':return FIELD_NOTE_ART.hauler;
+  case 'plate':return FIELD_NOTE_ART.hauler;
+  case 'recovered':return FIELD_NOTE_ART.drive;
   case 'repair':case 'invitation':case 'home':return FIELD_NOTE_ART.portrait;
   default:return FIELD_NOTE_ART.shelter;
  }
@@ -34,7 +35,8 @@ const trackerCopy={
 export function fieldNoteTrackerCopy(w:World){
  const stage=patchJournalStage(w);
  if(stage==='home'&&w.patchQuest?.nameIntroduced===false)return {action:'Speak with P-04',location:'Camp chest'};
- if(!stage||stage==='home')return;
+ if(stage==='home')return {action:'Quest complete',location:'Camp'};
+ if(!stage)return;
  if(stage==='repair'&&w.patchQuest&&withinActionReach(w,w.patchQuest.position,80)){
   return patchRepairOffered(w)||w.patchRepair?{action:'Hold REPAIR',location:'Fit the W-6'}:{action:'Talk to P-04',location:'Give him the W-6'};
  }

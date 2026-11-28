@@ -314,7 +314,7 @@ try{
   assert.equal(end.attrs['aria-label'],'Close conversation');
   assert.equal(end.parent,options.parent,'The close target has its own space outside the scroller');
   const buttons=descendants(options).filter(n=>n.tag==='button');
-  const choices=chat.choices.filter(c=>c.id!=='more');
+  const choices=chat.choices;
   const labels=buttons.map(n=>n.children.find(child=>child.tag==='span')?.text);
   assert.deepEqual(buttons.map(n=>n.attrs['data-choice']),choices.map(c=>c.id),'Choices retain their authored order and gates');
   assert.deepEqual(labels,choices.map(c=>c.label),'The visible reply text retains every authored word');
@@ -339,8 +339,8 @@ try{
  const pages=[m.patchChat(world).line];
  while(m.patchChat(world).pageIndex+1<m.patchChat(world).pageCount){
   const page=readChat();
-  assert(!page.labels.includes('Continue'));
-  assert(find(page.tray,'patch-chat-advance'),'Tapping the speech bubble advances a continuing passage');
+  assert.equal(page.labels[0],'Continue');
+  assert.equal(page.buttons[0].attrs['data-primary'],'true','The bottom bar highlights the continuation');
   assert(m.choosePatchChat(world,'more'));
   pages.push(m.patchChat(world).line);
  }

@@ -32,7 +32,7 @@ try{
  function sample(origin,direction,world=w){Object.assign(world.player,origin,{direction});world.tick+=240;assert(m.pulsePatchScanner(world));world.tick+=66;return m.samplePatchScan(world)}
  const sampleAtCot=sample(site.approach,'left');
  assert.deepEqual(new Set(sampleAtCot.prints.map(p=>p.kind)),new Set(['right-tread','left-skid']),'Looking at his sole shows two different marks');
- const frame=sample(site.approach,'up-right');assert(frame.prints.length>=2&&frame.prints.length<=3);
+ const frame=sample(site.approach,'up-right');assert(frame.prints.length>=2&&frame.prints.length<=6);
  assert.deepEqual(new Set(frame.prints.map(p=>p.kind)),new Set(['right-tread','left-skid']));
  assert(frame.prints.every(p=>p.opacity>0&&!m.worldBlocked(w,p.x,p.y,19)));
  assert.equal(frame.rays.length,13);assert(frame.rays.every(r=>r.radius>=0&&r.radius<=frame.radius));
@@ -42,7 +42,7 @@ try{
  assert.equal(sample(site.approach,'down').prints.length,0,'No omnidirectional quest arrow');
  assert.equal(q.footprintsFound,1,'Repeated scans of the shelter cannot advance the trail twice');
  sample(post.approach,'down');assert.equal(q.footprintsFound,1);assert(!m.examinePatchSite(w,'spare'),'Skipping the bank cannot unlock the pickup');
- w.tick+=320;assert(!m.samplePatchScan(w));assert(!m.patchScannerHint(w));
+ w.tick+=250;assert(m.samplePatchScan(w).opacity>.7);w.tick+=240;assert(!m.samplePatchScan(w));assert(!m.patchScannerHint(w));
  // Edited scenery cannot leave painted tracks in water or under the owner's buildings.
  const forkMark=tracks.find(mark=>mark.x<-3630&&mark.y<6800);
  const obstacle={...site.station,id:'owner-road-obstruction',x:forkMark.x,y:forkMark.y,

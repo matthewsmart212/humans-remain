@@ -1,3 +1,4 @@
+import type {PatchScanFrame} from './patch-scanner';
 import {buildingRestored} from './camp-restoration';
 import {patchNightLight} from './patch-renderer';
 import {bomberLights} from './bomber-renderer';
@@ -61,11 +62,11 @@ export function visibleCampLights(lights:CampLight[],view:LightViewport):CampLig
  const cx=view.x+view.width/2,cy=view.y+view.height/2;
  return visible.sort((a,b)=>Math.hypot(a.x-cx,a.y-cy)/a.radius-Math.hypot(b.x-cx,b.y-cy)/b.radius).slice(0,MAX_NIGHT_LIGHTS);
 }
-export type CampLightingContext=CanvasRenderingContext2D&{drawNightLighting:(lights:CampLight[],amount:number,viewport:LightViewport,torch?:TorchBeam,warningLights?:CampLight[],rescueLight?:CampLight)=>void};
-export function drawCampLighting(ctx:CanvasRenderingContext2D,world:World,view:LightViewport,images?:Readonly<Record<string,unknown>>){
+export type CampLightingContext=CanvasRenderingContext2D&{drawNightLighting:(lights:CampLight[],amount:number,viewport:LightViewport,torch?:TorchBeam,warningLights?:CampLight[],rescueLight?:CampLight,scan?:PatchScanFrame)=>void};
+export function drawCampLighting(ctx:CanvasRenderingContext2D,world:World,view:LightViewport,images?:Readonly<Record<string,unknown>>,scan?:PatchScanFrame){
  const amount=nightStrength(world),torch=torchBeam(world,images);if(amount<=0&&!torch)return;
  const lights=campLights(world);
  // Ordinary camps retain one world-space lightmap across the entire camera
  // journey. Only unusually dense maps need a smaller visible-light budget.
- (ctx as CampLightingContext).drawNightLighting(lights.length<=MAX_NIGHT_LIGHTS?lights:visibleCampLights(lights,view),amount,view,torch,bomberLights(world),amount>0?patchNightLight(world,view):undefined);
+ (ctx as CampLightingContext).drawNightLighting(lights.length<=MAX_NIGHT_LIGHTS?lights:visibleCampLights(lights,view),amount,view,torch,bomberLights(world),amount>0?patchNightLight(world,view):undefined,scan);
 }

@@ -73,9 +73,9 @@ type Dialogue={line:string;choices:Choice[];question?:string};
 function exchangeDialogue(w:World,exchange:Exchange):Dialogue{
  switch(exchange){
   case 'arrival':return {line:patchArrivalReply(w).line,choices:[scanner,{id:'arrival-followup',label:'Why leave supplies for strangers?'},ask]};
-  case 'wire':return {line:'I did. The lamp still works.',choices:[wire,leaveWire]};
+  case 'wire':return {line:'I cut it myself. The lamp runs on a separate circuit.',choices:[wire,leaveWire]};
   case 'homecoming':return {line:'I signed that letter P-04. Now that I’m staying… call me Patch.',choices:[{id:'welcome',label:'There’s room for you here, too.'},ask]};
-  case 'welcome':return {line:'I allowed for one more person when I counted the spaces. I never counted myself.',choices:[ask]};
+  case 'welcome':return {line:'Thanks. I’ve made beds for half the valley. About time I claimed one.',choices:[ask]};
  }
 }
 function dialogue(w:World,turn:Turn):Dialogue|undefined{
@@ -83,7 +83,7 @@ function dialogue(w:World,turn:Turn):Dialogue|undefined{
  if(turn.view==='exchange')return exchangeDialogue(w,turn.exchange);
  if(turn.view==='greeting')return {line:patchOpeningLine(w),choices:greetingChoices(w)};
  const topics=patchDialogueTopics(w);
- if(turn.view==='topics')return {line:'Listening.',choices:topics.map(topic=>({id:'topic:'+topic.id,label:topic.label}))};
+ if(turn.view==='topics')return {line:'What’s on your mind?',choices:topics.map(topic=>({id:'topic:'+topic.id,label:topic.label}))};
  if(!('topic' in turn))return;
  const selected=topics.find(topic=>topic.id===turn.topic);
  if(!selected)return;

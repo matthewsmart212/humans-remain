@@ -84,7 +84,7 @@ export function PatchReplyStrip({width,height,safe,choices,choiceSetKey,speaker,
    onPointerCancel={e=>{press.current=null;e.stopPropagation()}}
    onTouchEnd={touchEnd} onClickCapture={activate} onClick={e=>e.stopPropagation()} onWheel={e=>e.stopPropagation()}>
    <div className="patch-reply-label" aria-hidden="true" style={{visibility:choices.length?'visible':'hidden'}}>
-    YOUR REPLY<span/>
+    {choices[0]?.id==='more'?'CONVERSATION':'YOUR REPLY'}<span/>
    </div>
    <div className="patch-reply-row" style={{height:row}}>
     <div className="patch-reply-list" ref={list} onScroll={e=>{

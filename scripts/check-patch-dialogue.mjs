@@ -19,7 +19,7 @@ try{
  state.discovered=true;
  assert.deepEqual(m.patchDialogueTopics(world).map(topic=>topic.id),ids);
  assert.match(m.patchDialogueReply(world,'reclamation'),/cut my receiver wire/);
- assert.match(m.patchDialogueFollowup(world,'reclamation').reply,/keep choosing/);
+ assert.match(m.patchDialogueFollowup(world,'reclamation').reply,/miss the call/);
  const foundAlone=m.patchOpeningLine(world);state.noteRead=true;
  assert.notEqual(m.patchOpeningLine(world),foundAlone,'The first meeting remembers the folded note');
  const unchanged=()=>{
@@ -46,7 +46,7 @@ try{
  state.recruited=true;unchanged();assert(!m.patchStatus(world).canCommand);
  state.returnedToCamp=true;state.suppliesDelivered=true;unchanged();
  assert.notEqual(m.patchDialogueReply(world,'identity'),numberReply,'The nickname belongs to the completed homecoming');
- assert.match(m.patchDialogueReply(world,'watch'),/call its bearing/);
+ assert.match(m.patchDialogueReply(world,'watch'),/call out any machines/);
  const day=m.patchDialogueReply(world,'camp');world.phase='night';const night=m.patchDialogueReply(world,'camp');
  world.player.hp=38;assert.equal(new Set([day,night,m.patchDialogueReply(world,'camp')]).size,3,'Camp observations respond to condition and night');
  const greetings=[];
@@ -62,7 +62,7 @@ try{
  assert.equal(startTalk().view,'greeting');
  const runBefore=JSON.stringify(world);
  assert(m.choosePatchChat(world,'ask'));assert(m.choosePatchChat(world,'topic:reclamation'));
- assert.equal(m.patchChat(world).line,'I did. The lamp still works.');
+ assert.equal(m.patchChat(world).line,'I cut it myself. The lamp runs on a separate circuit.');
  assert(m.choosePatchChat(world,'tell-wire'));
  let snapshot=m.patchChat(world);const first=snapshot,lines=[snapshot.line];
  assert.equal(m.patchSpeech({...world}),snapshot.line,'The world renderer reads the live page from an interpolated frame');
@@ -75,7 +75,7 @@ try{
  assert(m.choosePatchChat(world,'followup'));assert(m.patchChat(world).line.includes('thank you'));
  assert(m.choosePatchChat(world,'back'));assert.equal(m.patchChat(world).line,snapshot.line,'Back returns to the last page of the previous reply');
  while(m.patchChat(world).pageIndex>0)assert(m.choosePatchChat(world,'back'));
- assert(m.backPatchChat(world));assert.equal(m.patchChat(world).line,'I did. The lamp still works.');
+ assert(m.backPatchChat(world));assert.equal(m.patchChat(world).line,'I cut it myself. The lamp runs on a separate circuit.');
  assert(m.backPatchChat(world));assert.equal(m.patchChat(world).view,'topics');
  assert(m.choosePatchChat(world,'back'));assert.equal(m.patchChat(world).view,'greeting');
  assert.equal(JSON.stringify(world),runBefore,'Navigating the conversation never enters serialized game state');

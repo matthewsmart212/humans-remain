@@ -9,7 +9,7 @@ import {PATCH_NOTE_TEXT,PATCH_QUEST_TITLE,patchSpeakerName} from '../src/patch-q
 import {patchJournalStage} from '../src/patch-journal';
 import {patchDialogueReply} from '../src/patch-dialogue';
 import {patchChat,backPatchChat,choosePatchChat,type PatchChat} from '../src/patch-chat';
-import {patchReplyStripLayout} from '../src/patch-reply-strip-layout';
+import {patchBarChoices,patchReplyStripLayout} from '../src/patch-reply-strip-layout';
 import {PatchConversationBubble} from './PatchConversationBubble';
 import {PatchReplyStrip} from './PatchReplyStrip';
 import {setPatchChatBounds} from '../src/patch-chat-bounds';
@@ -76,9 +76,10 @@ export function PatchChatHUD(props:ChatProps){
 
 function PatchConversation({world,width,height,safe,onClose,onChange,chat}:ChatProps&{chat:PatchChat}){
  const {bounds}=patchReplyStripLayout(width,height,safe);
- const [readable,setReadable]=useState<PatchChat>();
+ const [passage,setPassage]=useState<{chat:PatchChat;more:boolean}>();
+ const localNext=useRef<(()=>boolean)|null>(null);
  const localBack=useRef<(()=>boolean)|null>(null);
- const onReadable=useCallback((ready:boolean)=>setReadable(ready?chat:undefined),[chat]);
+ const onPassage=useCallback((more:boolean|undefined)=>setPassage(more===undefined?undefined:{chat,more}),[chat]);
  useLayoutEffect(()=>{
   setPatchChatBounds(world,bounds,safe);
   return ()=>setPatchChatBounds(world,undefined);
@@ -94,15 +95,16 @@ function PatchConversation({world,width,height,safe,onClose,onChange,chat}:ChatP
   return ()=>subscription.remove();
  },[back]);
  const choose=(id:string)=>{
+  if(id==='more'&&localNext.current?.())return;
   if(id==='back'&&localBack.current?.())return;
   const stage=patchJournalStage(world),command=world.patchQuest?.command;
   if(choosePatchChat(world,id,chat))onChange(stage!==patchJournalStage(world)||command!==world.patchQuest?.command);
  };
- const choices=chat.choices.filter(item=>item.id!=='more'&&(readable===chat||item.id==='back'));
- const choiceSetKey=JSON.stringify([chat.view,chat.question,chat.pageIndex,chat.choices.map(item=>item.id)]);
+ const choices=passage?.chat===chat?patchBarChoices(chat,passage.more):[];
+ const choiceSetKey=JSON.stringify([chat.view,chat.question,chat.pageIndex,choices.map(item=>item.id)]);
  return <View pointerEvents="box-none" onAccessibilityEscape={back} style={StyleSheet.absoluteFill}>
   <PatchConversationBubble chat={chat} world={world} width={width} height={height} safe={safe}
-   localBack={localBack} replyTop={bounds.y} onContinue={()=>choose('more')} onReadable={onReadable}/>
+   localBack={localBack} replyTop={bounds.y} localNext={localNext} onPassage={onPassage}/>
   <PatchReplyStrip width={width} height={height} safe={safe} choices={choices} choiceSetKey={choiceSetKey}
    speaker={chat.speaker} command={world.patchQuest?.command} onChoose={choose} onClose={onClose}/>
  </View>;

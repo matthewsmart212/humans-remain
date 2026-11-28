@@ -46,7 +46,7 @@ export type PatchStatus={title:string;line:string;objective:string;canRepair:boo
 const BODY=15,INTERACT_REACH=80,FOLLOW_GAP=88,FOLLOW_SETTLE=2,TRAIL_STEP=28;
 const point=(p:Vec):Vec=>({x:p.x,y:p.y});
 const distance=(a:Vec,b:Vec)=>Math.hypot(a.x-b.x,a.y-b.y);
-type Runtime={repairOffered?:boolean;path:Vec[];routeAt:number;routeTarget?:Vec;speed:number;speech?:string;speechUntil:number;homeSample?:Vec;followSample?:Vec};
+type Runtime={announceJournal?:boolean;repairOffered?:boolean;path:Vec[];routeAt:number;routeTarget?:Vec;speed:number;speech?:string;speechUntil:number;homeSample?:Vec;followSample?:Vec};
 // Presentation interpolates the player into a new World every frame. The
 // quest object is shared by those views and identifies this particular run.
 const runtimes=new WeakMap<PatchQuestState,Runtime>();
@@ -97,7 +97,7 @@ export function ensurePatchQuest(w:World):PatchQuestState|undefined{
 export function readPatchNote(w:World){
  if(!active(w)||!['rare-cache','patch-note'].includes(w.stationPanel??'')||(w.lootChestId??LOOT_CHEST_ID)!==LOOT_CHEST_ID||!w.lootChests?.[LOOT_CHEST_ID]||!lootChestInMenuRange(w,LOOT_CHEST_ID))return false;
  const state=ensurePatchQuest(w);if(!state)return false;
- if(!state.noteRead){state.noteRead=true;w.repairCheckpoint=true}return true;
+ if(!state.noteRead){state.noteRead=true;runtime(state).announceJournal=!state.discovered;w.repairCheckpoint=true}return true;
 }
 export function canTalkToPatch(w:World){
  const state=w.patchQuest;
@@ -351,7 +351,7 @@ export function deliverPatchSupplies(w:World){
  state.returnedToCamp=true;state.suppliesDelivered=true;state.nameIntroduced=false;w.repairCheckpoint=true;state.command='stay';state.moving=false;
  state.followTrail=[];state.homeTrail=[point(state.position)];
  const r=runtime(state);r.path=[];r.homeSample=point(state.position);
- say(w,'Shelter occupied.',6);w.notice='This time, someone brought the rescuer home.';w.noticeUntil=timeOf(w)+6;
+ say(w,'Supplies are in the chest.',4);w.notice='P-04 is home · Speak to him by the chest.';w.noticeUntil=timeOf(w)+6;
  return true;
 }
 /** One actor, bounded route queries, swept collision and no teleport recovery. */
@@ -361,6 +361,10 @@ export function stepPatchQuest(w:World,input:Vec={x:0,y:0}){
  const wasMoving=state.moving;
  state.moving=false;
  if(!active(w)){cancelPatchRepair(w);return}
+ if(runtime(state).announceJournal&&!w.stationPanel&&!chatting){
+  runtime(state).announceJournal=false;
+  w.notice='Quest added · A Light Left On';w.noticeUntil=timeOf(w)+2.8;
+ }
  stepRepair(w,input);
  if(chatting){
   faceDuringConversation(state,w.player);

@@ -13,7 +13,7 @@ const damage:Topic={id:'damage',label:'Can I get you moving?'};
 const drive:Topic={id:'drive',label:'How does the leg feel?'};
 const camp:Topic={id:'camp',label:'How are we doing?'};
 const watch:Topic={id:'watch',label:'Can you keep watch?'};
-const loadTestPassed='It holds. Mind if I walk back to camp with you?';
+const loadTestPassed='It takes my weight. Fancy some company on the walk back?';
 
 /** Only show questions a survivor could ask at this point in their meeting. */
 export function patchArrivalReply(world:World){
@@ -44,15 +44,15 @@ export function patchDialogueReply(world:World,id:PatchTopicId):string|undefined
  if(!patchDialogueTopics(world).some(topic=>topic.id===id))return;
  const state=world.patchQuest!;
  switch(id){
-  case 'bed':return 'Anyone cold. The roof drips on this side. I moved my things here and left the dry side for them.';
+  case 'bed':return 'That’s for anyone I bring in off the bank. It’s the only spot the roof doesn’t drip on. I’m easier to towel off.';
   case 'supplies':
    if(state.suppliesDelivered)return 'I used to open that chest just to see if a tool was missing. An empty space meant someone had made it.';
    if(state.noteRead)return 'I tucked it under the lid. Glad you found it before the rain did.';
    return 'Yes. There is a shelter across the lake. I left tools there for whoever came next.';
   case 'identity':return patchSpeakerName(state)==='Patch'
-   ?'Evacuation support, P-04. That is the name on the plate. When you call me Patch, I know it is you.'
-   :'Evacuation support. I carried water and pulled the rescue sled. In smoke, people could find me by the lamp.';
-  case 'reclamation':return 'At the industrial gate I had an injured passenger on my sled. The order came through. Leave them. I cut my receiver wire and pulled them through the gate.';
+   ?'I pulled people out of the evacuation zone. The crew knew me as P-04. I prefer Patch.'
+   :'I drove a rescue sled. When the smoke got thick, people could still see this lamp.';
+  case 'reclamation':return 'I had a casualty on my sled when the order came to leave them at the gate. I cut my receiver wire and took them through.';
   case 'damage':
    if(state.servoClaimed)return 'That is the drive. Three pins under my knee. If you hold it straight, I can shut the cover.';
    if(state.haulerInspected)return 'A W-6 on the load plate? That is ours. Take the strain off the brake drum. The drive slides out the other side.';
@@ -60,32 +60,32 @@ export function patchDialogueReply(world:World,id:PatchTopicId):string|undefined
    return state.scannerLoaned?patchSearchReminder(state):'The drive in my knee is stripped. I left a spare by the signal mast. My scanner can read the tracks I made coming back.';
 
   case 'drive':return state.recruited
-   ?'There is a little click on the left. That is all right. I can hear your footsteps between mine.'
+   ?'It clicks on hills. I can live with a click.'
    :loadTestPassed;
-  case 'watch':return 'Ask me to follow. If I see a machine, I will call its bearing. And if you look hurt or need food or water, I will say so. Someone should look out for you.';
+  case 'watch':return 'Take me along and I’ll call out any machines I spot. I’ll also tell you when you’re bleeding. People tend to miss that.';
   case 'camp':
-   if(world.player.hp<50)return 'You are hurt. May I stay close? You did that for me.';
-   if(world.phase==='night')return 'After dark I used to count the lights and wonder who was beside them. Tonight I know one of their names.';
+   if(world.player.hp<50)return 'You’re hurt. Want me to stay with you?';
+   if(world.phase==='night')return 'I can take first watch. You’ve got eyelids. Might as well use them.';
    return world.camp.hearth.fuel>0
-    ?'I asked someone to light that fire. I never expected to get warm beside it.'
-    :'My note said to light a fire if you stayed. I think we can call this a place to stay.';
+    ?'Fire’s lit, tools are dry, and I walked here. Pretty good day.'
+    :'Could use a fire. Wet tools I can fix. Wet socks are your department.';
  }
 }
 
 /** A second, optional exchange is local to this conversation, including on restored saves. */
 export function patchDialogueFollowup(world:World,id:PatchTopicId):Followup|undefined{
  if(!patchDialogueTopics(world).some(topic=>topic.id===id))return;
- if(id==='reclamation')return {question:'Could I fix it?',reply:'No, thank you. They could send that order again. I would like to keep choosing.'};
+ if(id==='reclamation')return {question:'Could I fix it?',reply:'No, thank you. If they ever give that order again, I’d rather miss the call.'};
  if(id==='supplies')return world.patchQuest!.suppliesDelivered
-  ?{question:'There’s room for you here, too.',reply:'I allowed for one more person when I counted the spaces. I never counted myself.'}
+  ?{question:'There’s room for you here, too.',reply:'Thanks. I’ve made beds for half the valley. About time I claimed one.'}
   :{question:'Why leave supplies for strangers?',reply:'Ever try cutting firewood with cold hands and no axe? I could do something about the axe.'};
  if(id==='camp')return {question:'Do you miss running rescues?',reply:'I still count everyone on the way out. And again on the way home.'};
 }
 
 function patchSearchReminder(q:NonNullable<World['patchQuest']>){
- if(q.footprintsFound===3)return 'The spare is at the foot of the orange mast. Bring it here and I’ll show you how it fits.';
+ if(q.footprintsFound===3)return 'The drive’s at the foot of the orange mast. Bring it back and we’ll fit it.';
  if(q.footprintsFound)return 'Follow my prints along the west bank. Keep scanning until you reach the mast.';
- return 'Try the scanner on the print by my foot. See that scrape? My knee gave out on the way back.';
+ return 'Start by my left foot. Tap the scanner and the prints will light up blue.';
 }
 
 export function patchOpeningLine(world:World):string{
@@ -93,18 +93,18 @@ export function patchOpeningLine(world:World):string{
  if(!status||!state)return '';
  if(!state.discovered)return status.line;
  if(!state.servoInstalled){
-  if(state.servoClaimed)return 'That’s the W-6. Slide it into my knee. I’ll hold the cover open.';
+  if(state.servoClaimed)return 'That’s the one. I’ll hold the cover. Push the drive in until it clicks.';
   if(state.haulerInspected)return 'The plate matches. Did you find the brake drum on the far side?';
-  if(state.dispatchRead)return 'They put it in a hauler? Then it has kept working all this time, too.';
+  if(state.dispatchRead)return 'The ledger says cable-hauler? Check its load plate for W-6.';
   if(state.scannerLoaned)return patchSearchReminder(state);
-  const greeting=state.noteRead?'You found my note.':'You saw my lamp.';
-  return greeting+' There’s a spare W-6 for my knee at the signal mast. Could you bring it back? My scanner will pick up the scrape where my left foot dragged.';
+  const greeting=state.noteRead?'Found my note, then.':'Glad you spotted the lamp.';
+  return greeting+' I’d stand up, but my left knee has other plans. I left a spare knee drive at the orange signal mast. It’s stamped W-6. Take my scanner. Follow my footprints to the mast and bring the drive back.';
  }
  if(!state.recruited)return loadTestPassed;
  if(!state.suppliesDelivered)return 'Let’s get these supplies into the chest by the campfire. I can carry them now.';
- if(state.command==='follow')return 'Two sets of tracks. I used to make this trip alone.';
- if(state.command==='camp')return 'I know the way back. Three flashes if you need to find me.';
+ if(state.command==='follow')return 'I’m with you. Which way are we heading?';
+ if(state.command==='camp')return 'I’m heading back to camp. Meet you at the chest.';
  return status.line==='Shelter occupied.'
-  ?'Shelter occupied. I have waited a long time to say that.'
-  :'Holding here. My lamp stays on.';
+  ?'I used to check that chest for signs of people. It’s good to have someone to talk to.'
+  :'I’ll wait here. Give me a shout when you’re ready.';
 }

@@ -1,3 +1,4 @@
+import type {PatchScanFrame} from './patch-scanner';
 import {createWeatherRenderer,type WeatherView} from './weather-skia';
 import {createDrawingPath} from './skia-drawing-path';
 import {createGroundLightningRenderer} from './ground-lightning-skia';
@@ -372,7 +373,7 @@ class SkiaContext{
  }
  drawLootChestLight(x:number,y:number,fx:LootChestFx,front:boolean){chestLight.draw(this.c,x,y,fx,front)}
  drawWeather(state:WeatherState|undefined,view:WeatherView,night:number,shelters:readonly (readonly [number,number][])[]){weather.draw(this.c,state,view,night,shelters)}
- drawNightLighting(lights:CampLight[],amount:number,view:LightViewport,torch?:import('./torch').TorchBeam,warningLights:CampLight[]=[],rescueLight?:CampLight){lighting.draw(this.c,lights,amount,view,torch,warningLights,rescueLight)}
+ drawNightLighting(lights:CampLight[],amount:number,view:LightViewport,torch?:import('./torch').TorchBeam,warningLights:CampLight[]=[],rescueLight?:CampLight,scan?:PatchScanFrame){lighting.draw(this.c,lights,amount,view,torch,warningLights,rescueLight,scan)}
  clearRect(x:number,y:number,w:number,h:number){if(!clearPaint){clearPaint=Skia.Paint();clearPaint.setBlendMode(BlendMode.Clear)}this.c.drawRect({x,y,width:w,height:h},clearPaint)}
  fillRect(x:number,y:number,w:number,h:number){this.c.drawRect({x,y,width:w,height:h},this.paint())}
  strokeRect(x:number,y:number,w:number,h:number){this.c.drawRect({x,y,width:w,height:h},this.paint(true))}

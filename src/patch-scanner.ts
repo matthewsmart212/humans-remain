@@ -4,8 +4,8 @@ import {canTalkToPatch,type PatchQuestState} from './patch-quest';
 import {nextPatchFootprints,onPatchBridge,PATCH_TRACK_WIDTH,PATCH_TRAIL_FORK,patchScannerTrail,type PatchTrack,type PatchTrailStage} from './patch-scanner-trail';
 import {DIRECTION_ANGLES,STEP,facing,timeOf,withinActionReach,worldBlocked,type Vec,type World} from './survival-engine';
 
-const RADIUS=290,HALF_ANGLE=40*Math.PI/180;
-const SWEEP_SECONDS=.65,FADE_START=3.6,END=5.2;
+const RADIUS=410,HALF_ANGLE=52*Math.PI/180;
+const SWEEP_SECONDS=.8,FADE_START=6,END=8;
 export type PatchScanPrint=PatchTrack&{opacity:number};
 type Ray={angle:number;radius:number};
 export type PatchScanFrame={origin:Vec;angle:number;halfAngle:number;radius:number;rays:readonly Ray[];
@@ -89,7 +89,7 @@ export function pulsePatchScanner(w:World){
   const clearance=PATCH_TRACK_WIDTH[mark.kind]*.60;
   if(worldBlocked(w,mark.x,mark.y,clearance)||beamReach(w,origin,heading,distance)<distance)return [];
   return [{...mark,distance}];
- }).sort((a,b)=>a.distance-b.distance).slice(0,3);
+ }).sort((a,b)=>a.distance-b.distance).slice(0,6);
  const expected=(q.footprintsFound??0)+1;
  if(stage==='footprints'&&prints.some(mark=>mark.section===expected)){
   q.footprintsFound=expected;w.repairCheckpoint=true;
@@ -108,6 +108,6 @@ export function samplePatchScan(w:World):PatchScanFrame|undefined{
  const scan=activeScan(w);if(!scan)return;
  const age=(w.tick-scan.tick)*STEP,sweep=Math.min(1,age/SWEEP_SECONDS),opacity=Math.min(1,(END-age)/(END-FADE_START));
  const prints=scan.prints.map(({distance,...print})=>({...print,opacity:opacity*Math.max(0,Math.min(1,(age-distance/RADIUS*SWEEP_SECONDS)/.16))}));
- const light=Math.max(0,Math.min(1,(SWEEP_SECONDS+.45-age)/.45));
+ const light=opacity*(1-.24*Math.min(1,age/2));
  return {origin:scan.origin,angle:scan.angle,halfAngle:HALF_ANGLE,radius:RADIUS,rays:scan.rays,sweep,opacity:light,prints};
 }

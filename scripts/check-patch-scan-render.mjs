@@ -39,15 +39,16 @@ try{
   assert(props.some(prop=>prop.layer===-1),'Ground evidence sorts above painted terrain');
   assert(props.some(prop=>prop.layer===0),'Standing props sort with actors');
 
-  function paint(offscreen=false){
+  function paint(offscreen=false,night=false,printsOnly=false){
    const surface=api.Surface.Make(width,height),ctx=new adapter.SkiaContext(surface.getCanvas(),width,height,font);
-   surface.getCanvas().clear(api.Color('#00000000'));
+   surface.getCanvas().clear(api.Color(night?'#908273':'#00000000'));
    const x=world.player.x-42,y=world.player.y-height/2;
    ctx.translate(-x,-y);
    // Render through the interpolated World object used by the frame loop.
    const presented=m.presentPlayer(world,m.samplePlayer(world),.5);
    const scan=m.samplePatchScan(presented);
-   if(scan)m.drawPatchScanner(ctx,atlas,scan,{x:offscreen?x+4000:x,y,width,height},m.heldPatchScanner(presented,scan)?.lens);
+   if(scan)m.drawPatchScanner(ctx,atlas,printsOnly?{...scan,opacity:0}:scan,{x:offscreen?x+4000:x,y,width,height},m.heldPatchScanner(presented,scan)?.lens);
+   if(night)ctx.drawNightLighting([],1,{x,y,width,height},undefined,[],undefined,offscreen?undefined:scan);
    surface.flush();
    const frame=surface.makeImageSnapshot(),pixels=Buffer.from(frame.readPixels());
    frame.dispose();ctx.dispose();surface.dispose();
@@ -69,11 +70,17 @@ try{
    assert(held&&held.lens.y<world.player.y,'Beam leaves the raised tool');
    world.player.moving=true;assert.equal(m.heldPatchScanner(world,active),undefined);world.player.moving=false;
    world.player.direction='left';assert.equal(m.heldPatchScanner(world,active),undefined);world.player.direction='right';
-   const beam=paint(),offscreen=paint(true);assert(!offscreen.some(Boolean),'Offscreen pulse is culled');
+   const offscreen=paint(true);assert(!offscreen.some(Boolean),'Offscreen pulse is culled');
    world.tick+=45;
    const lingering=paint();assert(lingering.some(Boolean),'Painted marks persist after the sweep');
-   assert(beam.filter((v,i)=>i%4===3&&v).length>lingering.filter((v,i)=>i%4===3&&v).length,'Light covers open ground beyond the impression');
-   world.tick+=320;assert(!paint().some(Boolean),'Expired marks disappear');
+   const prints=paint(false,false,true);
+   assert(prints.some((v,i)=>i%4===2&&v>prints[i-2]+60),'Footprints themselves fluoresce blue');
+   world.tick+=240;
+   const lit=paint(false,true),dark=paint(true,true);
+   let bright=0;
+   for(let i=0;i<lit.length;i+=4)if(lit[i+2]>dark[i+2]+35&&lit[i+1]>dark[i+1]+20)bright++;
+   assert(bright>300,'At night the scanner still lights the ground five seconds after activation');
+   world.tick+=240;assert(!paint().some(Boolean),'Expired marks disappear');
    if(target==='browser')reference.set(kind,{pixels:lingering,worldX:world.player.x,worldY:world.player.y});
    else{
     const expected=reference.get(kind);
